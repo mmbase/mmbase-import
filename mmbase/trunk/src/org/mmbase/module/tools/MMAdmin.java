@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.57 2002-12-18 20:57:15 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.58 2003-03-06 13:28:10 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -67,6 +67,12 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
+    public MMAdmin() {
+    }
+
+    /**
+     * @javadoc
+     */
     public void init() {
         String dtmp=System.getProperty("mmbase.kiosk");
         if (dtmp!=null && dtmp.equals("yes")) {
@@ -78,9 +84,16 @@ public class MMAdmin extends ProcessorModule {
     }
 
     /**
-     * @javadoc
+     * Returns a virtual builder used to create node lists from the results
+     * returned by getList().
+     * The default method does not associate the builder with a cloud (mmbase module),
+     * so processormodules that need this association need to override this method.
+     * Note that different lists may return different builders.
+     * @param command the LIST command for which to retrieve the builder
+     * @param params contains the attributes for the list
      */
-    public MMAdmin() {
+    public MMObjectBuilder getListBuilder(String command,Map params) {
+        return new VirtualBuilder(mmb);
     }
 
     /**
@@ -187,6 +200,7 @@ public class MMAdmin extends ProcessorModule {
                 String user=(String)cmds.get(cmdline);
                 doRestart(user);
             } else if (token.equals("LOAD") && !kioskmode) {
+                ApplicationResult result=new ApplicationResult(this);
                 Versions ver=(Versions)mmb.getMMObject("versions");
                 String appname=(String)cmds.get(cmdline);
                 String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
@@ -202,26 +216,30 @@ public class MMAdmin extends ProcessorModule {
                         } else {
                             log.info("installing application : "+name+" new version from "+installedversion+" to "+version);
                         }
-                        if (installApplication(name)) {
-                            lastmsg="Application loaded oke<BR><BR>\n";
-                            lastmsg+="The application has the following install notice for you : <BR><BR>\n";
-                            lastmsg+=app.getInstallNotice();
+                        if (installApplication(name,result)) {
+                            result.success("Application loaded oke\n\n"+
+                                           "The application has the following install notice for you : \n\n"+
+                                           app.getInstallNotice());
                             if (installedversion==-1) {
                                 ver.setInstalledVersion(name,"application",maintainer,version);
                             } else {
                                 ver.updateInstalledVersion(name,"application",maintainer,version);
                             }
-                        } else {
-                            log.warn("Problem installing application : "+name);
                         }
                     } else {
-                            lastmsg="Application was allready loaded (or a higher version)<BR><BR>\n";
-                            lastmsg+="To remind you here is the install notice for you again : <BR><BR>\n";
-                            lastmsg+=app.getInstallNotice();
+                        result.success("Application was allready loaded (or a higher version)\n\n"+
+                                       "To remind you here is the install notice for you again : \n\n"+
+                                       app.getInstallNotice());
                     }
                 } else {
-                    lastmsg="Install error can't find xml file";
+                    result.error("Install error: can't find xml file: "+path+appname+".xml");
                 }
+                if (result.isSuccess()) {
+                    lastmsg=result.getMessage();
+                } else {
+                    lastmsg="Problem installing application : "+appname+"\n"+result.getMessage();
+                }
+                if (vars!=null) vars.put("RESULT",lastmsg);
             } else if (token.equals("SAVE")) {
                 String appname=(String)cmds.get(cmdline);
                 String savepath=(String)vars.get("PATH");
@@ -300,7 +318,19 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("DESCRIPTION")) {
                 return getDescription(tok.nextToken());
             } else if (cmd.equals("LASTMSG")) {
-                return lastmsg;
+                // return lastmsg in html-format.
+                // basically replaces linefeeds and some characters.
+                if (lastmsg==null) {
+                    return "";
+                } else {
+                    StringObject obj=new StringObject(lastmsg);
+                    obj.replace(">","&gt;");
+                    obj.replace("<","&lt;");
+                    obj.replace("\"","&quot;");
+                    obj.replace("&","&amp;");
+                    obj.replace("\n","<br />");
+                    return obj.toString();
+                }
             } else if (cmd.equals("BUILDERVERSION")) {
                 return ""+getBuilderVersion(tok.nextToken());
             } else if (cmd.equals("BUILDERCLASSFILE")) {
@@ -542,110 +572,94 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private boolean installApplication(String applicationname) {
+    private boolean installApplication(String applicationname, ApplicationResult result) {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
         if (app!=null) {
-            if (areBuildersLoaded(app.getNeededBuilders(), path + applicationname)) {
-                if (checkRelDefs(app.getNeededRelDefs())) {
-                    if (checkAllowedRelations(app.getAllowedRelations())) {
-                        if (installDataSources(app.getDataSources(),applicationname)) {
-                            if (installRelationSources(app.getRelationSources())) {
-                            } else {
-                                log.warn("Application installer stopped : can't install relationsources");
-                                return false;
+            if (installBuilders(app.getNeededBuilders(), path + applicationname,result)) {
+                if (installRelDefs(app.getNeededRelDefs(),result)) {
+                    if (installAllowedRelations(app.getAllowedRelations(),result)) {
+                        if (installDataSources(app.getDataSources(),applicationname, result)) {
+                            if (!installRelationSources(app.getRelationSources(), result)) {
+                                result.error("Application installer stopped : can't install relationsources");
                             }
-                        } else {
-                            log.warn("Application installer stopped : can't install datasources");
-                            return false;
                         }
-                    } else {
-                        log.warn("Application installer stopped : can't install allowed relations");
-                        return false;
                     }
-                } else {
-                    log.warn("Application installer stopped : can't install reldefs");
-                    return false;
                 }
-            } else {
-                log.warn("Application installer stopped : not all needed builders present");
-                return false;
             }
         } else {
-            log.warn("Can't install application : "+path+applicationname+".xml");
+            result.error("Can't install application : "+path+applicationname+".xml");
         }
-        return true;
+        return result.isSuccess();
     }
 
     /**
      * @javadoc
      */
-    boolean installDataSources(Vector ds,String appname) {
-        for (Enumeration h = ds.elements();h.hasMoreElements();) {
-            Hashtable bh=(Hashtable)h.nextElement();
-            String path=(String)bh.get("path");
-            String prepath=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
+    boolean installDataSources(Vector ds,String appname, ApplicationResult result) {
+        MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
+        if (syncbul!=null) {
+            for (Enumeration h = ds.elements();h.hasMoreElements();) {
+                Hashtable bh=(Hashtable)h.nextElement();
+                String path=(String)bh.get("path");
+                String prepath=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
 
-            if (fileExists(prepath+path)) {
-            XMLNodeReader nodereader=new XMLNodeReader(prepath+path,prepath+appname+File.separator,mmb);
-
-            String exportsource=nodereader.getExportSource();
-            int timestamp=nodereader.getTimeStamp();
-
-            MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
-            if (syncbul!=null) {
-                Vector importednodes= new Vector();
-                for (Enumeration n = nodereader.getNodes(mmb).elements();n.hasMoreElements();) {
-                    MMObjectNode newnode=(MMObjectNode)n.nextElement();
-                    int exportnumber=newnode.getIntValue("number");
-                    String query="exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'";
-                    Enumeration b=syncbul.search(query);
-                    if (b.hasMoreElements()) {
-                        // XXX To do : we may want to load the node and check/change the fields
-                        MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-                        log.debug("node allready installed : "+exportnumber);
-                    } else {
-                        newnode.setValue("number",-1);
-                        int localnumber=doKeyMergeNode(newnode);
-                        if (localnumber!=-1) {
-                            MMObjectNode syncnode=syncbul.getNewNode("import");
-                            syncnode.setValue("exportsource",exportsource);
-                            syncnode.setValue("exportnumber",exportnumber);
-                            syncnode.setValue("timestamp",timestamp);
-                            syncnode.setValue("localnumber",localnumber);
-                            syncnode.insert("import");
-                            if ((localnumber==newnode.getNumber()) &&
-                                (newnode.parent instanceof Message)) {
-                                importednodes.add(newnode);
+                if (fileExists(prepath+path)) {
+                    XMLNodeReader nodereader=new XMLNodeReader(prepath+path,prepath+appname+File.separator,mmb);
+                    String exportsource=nodereader.getExportSource();
+                    int timestamp=nodereader.getTimeStamp();
+                    Vector importednodes= new Vector();
+                    for (Enumeration n = nodereader.getNodes(mmb).elements();n.hasMoreElements();) {
+                        MMObjectNode newnode=(MMObjectNode)n.nextElement();
+                        int exportnumber=newnode.getIntValue("number");
+                        String query="exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'";
+                        Enumeration b=syncbul.search(query);
+                        if (b.hasMoreElements()) {
+                            // XXX To do : we may want to load the node and check/change the fields
+                            MMObjectNode syncnode=(MMObjectNode)b.nextElement();
+                            log.debug("node allready installed : "+exportnumber);
+                        } else {
+                            newnode.setValue("number",-1);
+                            int localnumber=doKeyMergeNode(newnode,result);
+                            if (localnumber!=-1) {
+                                MMObjectNode syncnode=syncbul.getNewNode("import");
+                                syncnode.setValue("exportsource",exportsource);
+                                syncnode.setValue("exportnumber",exportnumber);
+                                syncnode.setValue("timestamp",timestamp);
+                                syncnode.setValue("localnumber",localnumber);
+                                syncnode.insert("import");
+                                if ((localnumber==newnode.getNumber()) &&
+                                    (newnode.parent instanceof Message)) {
+                                    importednodes.add(newnode);
+                                }
                             }
                         }
                     }
-                }
-                for (Enumeration n = importednodes.elements();n.hasMoreElements();) {
-                    MMObjectNode importnode=(MMObjectNode)n.nextElement();
-                    log.info(importnode.toString());
-                    int exportnumber=importnode.getIntValue("thread");
-                    int localnumber=-1;
-                    Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
-                    if (b.hasMoreElements()) {
-                        MMObjectNode n2=(MMObjectNode)b.nextElement();
-                        localnumber=n2.getIntValue("localnumber");
+                    for (Enumeration n = importednodes.elements();n.hasMoreElements();) {
+                        MMObjectNode importnode=(MMObjectNode)n.nextElement();
+                        log.info(importnode.toString());
+                        int exportnumber=importnode.getIntValue("thread");
+                        int localnumber=-1;
+                        Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
+                        if (b.hasMoreElements()) {
+                            MMObjectNode n2=(MMObjectNode)b.nextElement();
+                            localnumber=n2.getIntValue("localnumber");
+                        }
+                        importnode.setValue("thread",localnumber);
+                        importnode.commit();
                     }
-                    importnode.setValue("thread",localnumber);
-                    importnode.commit();
                 }
-            } else {
-                log.warn("Application installer : can't reach syncnodes builder");
             }
-            }
+            return result.isSuccess();
+        } else {
+            return result.error("Application installer : can't reach syncnodes builder");
         }
-        return true;
     }
 
     /**
      * @javadoc
      */
-    private int doKeyMergeNode(MMObjectNode newnode) {
+    private int doKeyMergeNode(MMObjectNode newnode, ApplicationResult result) {
         MMObjectBuilder bul=newnode.parent;
         if (bul!=null) {
             String checkQ="";
@@ -670,111 +684,108 @@ public class MMAdmin extends ProcessorModule {
                 if (r.hasMoreElements()) {
                     MMObjectNode oldnode=(MMObjectNode)r.nextElement();
                     return oldnode.getIntValue("number");
-                } else {
-                    // so no dub
-                    int localnumber=newnode.insert("import");
-                    return localnumber;
                 }
-
-            } else {
-                int localnumber=newnode.insert("import");
-                return localnumber;
             }
+            int localnumber=newnode.insert("import");
+            if (localnumber==-1) {
+                result.error("Insert of node "+newnode+" failed.");
+            }
+            return localnumber;
+
         } else {
-            log.warn("Application installer can't find builder for : "+newnode);
+            result.error("Application installer can't find builder for : "+newnode);
+            return -1;
         }
-        return -1;
     }
 
     /**
      * @javadoc
      */
-    boolean installRelationSources(Vector ds) {
-        for (Enumeration h = ds.elements();h.hasMoreElements();) {
-            Hashtable bh=(Hashtable)h.nextElement();
-            String path=(String)bh.get("path");
-            path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator+path;
-            if (fileExists(path)) {
-            XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
+    boolean installRelationSources(Vector ds, ApplicationResult result) {
+        MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
+        if (syncbul!=null) {
+            for (Enumeration h = ds.elements();h.hasMoreElements();) {
+                Hashtable bh=(Hashtable)h.nextElement();
+                String path=(String)bh.get("path");
+                path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator+path;
+                if (fileExists(path)) {
+                    XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
 
-            String exportsource=nodereader.getExportSource();
-            int timestamp=nodereader.getTimeStamp();
+                    String exportsource=nodereader.getExportSource();
+                    int timestamp=nodereader.getTimeStamp();
 
-            MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
-            if (syncbul!=null) {
-                for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
-                    MMObjectNode newnode=(MMObjectNode)n.nextElement();
-                    int exportnumber=newnode.getIntValue("number");
-                    Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
-                    if (b.hasMoreElements()) {
-                        // XXX To do : we may want to load the relation node and check/change the fields
-                        MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-                        log.debug("node allready installed : "+exportnumber);
-                    } else {
-                        newnode.setValue("number",-1);
-                        // The following code determines the 'actual' (synced) numbers for the destination and source nodes
-                        // This will normally work well, however:
-                        // It is _theoretically_ possible that one or both nodes are _themselves_ relation nodes.
-                        // (since relations are nodes).
-                        // Due to the order in which syncing takles place, it is possible that such structures will fail
-                        // to get imported.
-                        // ye be warned.
-
-                        // find snumber
-
-                        int snumber=newnode.getIntValue("snumber");
-                        b=syncbul.search("exportnumber=="+snumber+"+exportsource=='"+exportsource+"'");
+                    for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
+                        MMObjectNode newnode=(MMObjectNode)n.nextElement();
+                        int exportnumber=newnode.getIntValue("number");
+                        Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
                         if (b.hasMoreElements()) {
-                            MMObjectNode n2=(MMObjectNode)b.nextElement();
-                            snumber=n2.getIntValue("localnumber");
+                            // XXX To do : we may want to load the relation node and check/change the fields
+                            MMObjectNode syncnode=(MMObjectNode)b.nextElement();
+                            log.debug("node allready installed : "+exportnumber);
                         } else {
-                            snumber=-1;
-                        }
+                            newnode.setValue("number",-1);
+                            // The following code determines the 'actual' (synced) numbers for the destination and source nodes
+                            // This will normally work well, however:
+                            // It is _theoretically_ possible that one or both nodes are _themselves_ relation nodes.
+                            // (since relations are nodes).
+                            // Due to the order in which syncing takles place, it is possible that such structures will fail
+                            // to get imported.
+                            // ye be warned.
 
-                        // find dnumber
-                        int dnumber=newnode.getIntValue("dnumber");
-                        b=syncbul.search("exportnumber=="+dnumber+"+exportsource=='"+exportsource+"'");
-                        if (b.hasMoreElements()) {
-                            MMObjectNode n2=(MMObjectNode)b.nextElement();
-                            dnumber=n2.getIntValue("localnumber");
-                        } else {
-                            dnumber=-1;
-                        }
-
-                        newnode.setValue("snumber",snumber);
-                        newnode.setValue("dnumber",dnumber);
-                        int localnumber=-1;
-                        if (snumber!=-1 && dnumber!=-1) {
-                            localnumber=newnode.insert("import");
-                            if (localnumber!=-1) {
-                                MMObjectNode syncnode=syncbul.getNewNode("import");
-                                syncnode.setValue("exportsource",exportsource);
-                                syncnode.setValue("exportnumber",exportnumber);
-                                syncnode.setValue("timestamp",timestamp);
-                                syncnode.setValue("localnumber",localnumber);
-                                syncnode.insert("import");
+                            // find snumber
+                            int snumber=newnode.getIntValue("snumber");
+                            b=syncbul.search("exportnumber=="+snumber+"+exportsource=='"+exportsource+"'");
+                            if (b.hasMoreElements()) {
+                                MMObjectNode n2=(MMObjectNode)b.nextElement();
+                                snumber=n2.getIntValue("localnumber");
+                            } else {
+                                snumber=-1;
                             }
-                        } else {
-                            log.warn("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
+
+                            // find dnumber
+                            int dnumber=newnode.getIntValue("dnumber");
+                            b=syncbul.search("exportnumber=="+dnumber+"+exportsource=='"+exportsource+"'");
+                            if (b.hasMoreElements()) {
+                                MMObjectNode n2=(MMObjectNode)b.nextElement();
+                                dnumber=n2.getIntValue("localnumber");
+                            } else {
+                                dnumber=-1;
+                            }
+
+                            newnode.setValue("snumber",snumber);
+                            newnode.setValue("dnumber",dnumber);
+                            int localnumber=-1;
+                            if (snumber!=-1 && dnumber!=-1) {
+                                localnumber=newnode.insert("import");
+                                if (localnumber!=-1) {
+                                    MMObjectNode syncnode=syncbul.getNewNode("import");
+                                    syncnode.setValue("exportsource",exportsource);
+                                    syncnode.setValue("exportnumber",exportnumber);
+                                    syncnode.setValue("timestamp",timestamp);
+                                    syncnode.setValue("localnumber",localnumber);
+                                    syncnode.insert("import");
+                                }
+                            } else {
+                               result.error("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
+                            }
                         }
                     }
                 }
-            } else {
-                log.warn("Application installer : can't reach syncnodes builder");
             }
-            }
+        } else {
+            result.error("Application installer : can't reach syncnodes builder");
         }
-        return true;
+        return result.isSuccess();
     }
 
     /**
-     * Checks needed relation definitions.
-     * Retrieves, for each reldef entry, the attributes, and passe sthese on to {@link #checkRelDef}
+     * Checks and if required installs needed relation definitions.
+     * Retrieves, for each reldef entry, the attributes, and passes these on to {@link #installRelDef}
      * @param reldefs a list of hashtables. Each hashtable represents a reldef entry, and contains a list of name-value
      *      pairs (the reldef attributes).
      * @return Always <code>true</code> (?)
      */
-    boolean checkRelDefs(Vector reldefs) {
+    boolean installRelDefs(Vector reldefs, ApplicationResult result) {
         for (Enumeration h = reldefs.elements();h.hasMoreElements();) {
             Hashtable bh=(Hashtable)h.nextElement();
             String source=(String)bh.get("source");
@@ -794,73 +805,77 @@ public class MMAdmin extends ProcessorModule {
             }
             // is not explicitly set to unidirectional, direction is assumed to be bidirectional
             if ("unidirectional".equals(direction)) {
-                checkRelDef(source,target,1,guisourcename,guitargetname,builder);
+                if (!installRelDef(source,target,1,guisourcename,guitargetname,builder,result)) return false;
             } else {
-                checkRelDef(source,target,2,guisourcename,guitargetname,builder);
+                if (!installRelDef(source,target,2,guisourcename,guitargetname,builder,result)) return false;
             }
         }
         return true;
     }
 
     /**
-     * @javadoc
+     * Checks and if required installs needed allowed type relations.
+     * Retrieves, for each allowed relation entry, the attributes, and passes these on to {@link #installTypeRel}
+     * @param relations a list of hashtables. Each hashtable represents a allowedrelation entry, and contains a list of name-value
+     *      pairs (the allowed relation attributes).
+     * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
-    boolean checkAllowedRelations(Vector relations) {
+    boolean installAllowedRelations(Vector relations, ApplicationResult result) {
         for (Enumeration h = relations.elements();h.hasMoreElements();) {
             Hashtable bh=(Hashtable)h.nextElement();
             String from=(String)bh.get("from");
             String to=(String)bh.get("to");
             String type=(String)bh.get("type");
-            checkTypeRel(from,to,type,-1);
+            if (!installTypeRel(from,to,type,-1,result)) return false;
         }
         return true;
     }
 
     /**
-     * @javadoc
+     * Lists the required builders for this application, and makes attempts to install any builders that are
+     * not present.
+     * If there is a failure, the function returns false.
+     * Failure messages are stored in the lastmsg member.
+     * @param neededbuilders a list with builder data that need be installed on teh system for this application to work
+     *                       each element in teh list is a Map containing builder properties (in particular, 'name').
+     * @param applicationroot the rootpath where the application's configuration files are located
+     * @return true if the builders were succesfully installed, false if the installation failed
      */
-    boolean areBuildersLoaded(Vector neededbuilders, String applicationRoot) {
-	boolean succes = true;
-
-        for (Enumeration h = neededbuilders.elements();h.hasMoreElements();) {
-            Hashtable bh= (Hashtable) h.nextElement();
-            String name = (String) bh.get("name");
+    boolean installBuilders(List neededbuilders, String applicationRoot, ApplicationResult result) {
+        for (Iterator i = neededbuilders.iterator(); i.hasNext();) {
+            Map builderdata= (Map) i.next();
+            String name = (String) builderdata.get("name");
             MMObjectBuilder bul = getMMObject(name);
             // if builder not loaded
             if (bul==null) {
-                // if 'inactive' in the config/builder path, we dont know what to do (i dont like inactive builders)
+                // if 'inactive' in the config/builder path, fail
                 String path = mmb.getBuilderPath(name, "");
                 if(path != null) {
-                    log.error("builder '" + name + "' was already on our system, but inactive. To install this application, make the builder '" + path + java.io.File.separator + name +  ".xml" + "' active");
-                    succes = false;
-		    continue;
+                    result.error("The builder '" + name + "' was already on our system, but inactive."+
+                                  "To install this application, make the builder '" +
+                                  path + java.io.File.separator + name +  ".xml" + "' active");
+                    continue;
                 }
-                // well we try to open the %application%/ from inside our application dir...
+                // attempt to open the application root
                 File appFile = new File(applicationRoot);
                 if(!appFile.exists()) {
-                    log.error("could not find application dir :  '" + appFile + "'(builder '" + name + "' )");
-                    return false;
+                    return result.error("Could not find application directory :  '" + appFile + "'");
                 }
-                // well we try to open the %application%/builders/ from inside our application dir...
+                // attempt to open the %application%/builders/ folder
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + "builders");
                 if(!appFile.exists()) {
-                    log.error("could not find builder's dir inside the application :  '" + appFile + "'(builder '" + name + "' )");
-                    succes = false;
-		    continue;
+                    return result.error("Could not find the 'builders' folder inside the application directory  '" + appFile + "'");
                 }
-                // well we will try to open the %application%/builders/%buildername%.xml from inside our application dir...
+                // attempt to open the applicationfile
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + name + ".xml");
                 if(!appFile.exists()) {
-                    log.error("could not find the builderfile :  '" + appFile + "'(builder '" + name + "')");
-		    succes = false;
-		    continue;
+                    result.error("Could not find the builderfile :  '" + appFile + "'(builder '" + name + "')");
+                    continue;
                 }
-                // we now have the location,.....
-                MMObjectBuilder objectTypes = getMMObject("typedef");
+                // check the presence of typedef (if not present, fail)
+                MMObjectBuilder objectTypes = mmb.getTypeDef();
                 if(objectTypes == null) {
-                    log.error("could not find builder typedef");
-                    succes = false;
-		    continue;
+                    return result.error("Could not find the typedef builder.");
                 }
                 // try to add a node to typedef, same as adding a builder...
                 MMObjectNode type = objectTypes.getNewNode("system");
@@ -875,14 +890,14 @@ public class MMAdmin extends ProcessorModule {
                 catch(org.xml.sax.SAXException se) {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
-                    succes = false;
-		    continue;
+                    result.error("A XML parsing error occurred ("+se.toString()+"). Check the log for details.");
+                    continue;
                 }
                 catch(java.io.IOException ioe) {
                     String msg = "builder '" + name + "':\n" + ioe.toString() + "\n" + Logging.stackTrace(ioe);
                     log.error(msg);
-                    succes = false;
-		    continue;
+                    result.error("A file I/O error occurred ("+ioe.toString()+"). Check the log for details.");
+                    continue;
                 }
                 type.setValue("config", config);
                 // insert into mmbase
@@ -890,7 +905,7 @@ public class MMAdmin extends ProcessorModule {
                 // we now made the builder active.. look for other builders...
             }
         }
-        return succes;
+        return result.isSuccess();
     }
 
 
@@ -902,12 +917,13 @@ public class MMAdmin extends ProcessorModule {
      * @param sguiname source GUI name of the relation definition
      * @param dguiname destination GUI name of the relation definition
      * @param builder references the builder to use (only in new format)
+     * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
-    private void checkRelDef(String sname, String dname, int dir,String sguiname, String dguiname, int builder) {
+    private boolean installRelDef(String sname, String dname, int dir,String sguiname, String dguiname, int builder,
+                                  ApplicationResult result) {
         RelDef reldef=mmb.getRelDef();
         if (reldef!=null) {
-            Enumeration res = reldef.search("WHERE sname='"+sname+"' AND dname='"+dname+"'");
-            if (!res.hasMoreElements()) {
+            if(reldef.getNumberByName(sname+"/"+dname)==-1) {
                 MMObjectNode node=reldef.getNewNode("system");
                 node.setValue("sname",sname);
                 node.setValue("dname",dname);
@@ -924,65 +940,71 @@ public class MMAdmin extends ProcessorModule {
                 int id=reldef.insert("system",node);
                 if (id!=-1) {
                     log.debug("RefDef ("+sname+","+dname+") installed");
+                } else {
+                    return result.error("RelDef ("+sname+","+dname+") could not be installed");
                 }
             }
         } else {
-            log.warn("can't get reldef builder");
+            return result.error("Can't get reldef builder");
         }
+        return true;
     }
 
     /**
-     * @javadoc
+     * Checks and if required installs an allowed type relation (typerel object).
+     * @param sname source type name of the type relation
+     * @param dname destination type name of the type relation
+     * @param rname role name of the type relation
+     * @param count cardinality of the type relation
+     * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
-    private void checkTypeRel(String sname, String dname, String rname, int count) {
+    private boolean installTypeRel(String sname, String dname, String rname, int count,
+                                   ApplicationResult result) {
         TypeRel typerel=mmb.getTypeRel();
         if (typerel!=null) {
             TypeDef typedef=mmb.getTypeDef();
             if (typedef==null) {
-                log.warn("can't get typedef builder");
-                return;
+                return result.error("Can't get typedef builder");
             }
             RelDef reldef=mmb.getRelDef();
             if (reldef==null) {
-                log.warn("can't get reldef builder");
-                return;
+                return result.error("Can't get reldef builder");
             }
 
             // figure out rnumber
             int rnumber=reldef.getNumberByName(rname);
             if (rnumber==-1) {
-                log.warn("no reldef : "+rname+" defined");
-                return;
+                return result.error("No reldef with role '"+rname+"' defined");
             }
 
             // figure out snumber
             int snumber=typedef.getIntValue(sname);
             if (snumber==-1) {
-                log.warn("no object : "+sname+" defined");
-                return;
+                return result.error("No builder with name '"+sname+"' defined");
             }
 
             // figure out dnumber
             int dnumber=typedef.getIntValue(dname);
             if (dnumber==-1) {
-                log.warn("no object : "+dname+" defined");
-                return;
+                return result.error("No builder with name '"+dname+"' defined");
             }
 
-            if (!typerel.reldefCorrect(snumber,dnumber,rnumber) ) {
+            if (!typerel.contains(snumber,dnumber,rnumber,false)) {
                 MMObjectNode node=typerel.getNewNode("system");
                 node.setValue("snumber",snumber);
                 node.setValue("dnumber",dnumber);
                 node.setValue("rnumber",rnumber);
                 node.setValue("max",count);
-                int id=typerel.insert("system",node);
-                // should throw error if id!=-1?
-                if (id!=-1) {
+                int id = typerel.insert("system",node);
+                if (id != -1) {
                     log.debug("TypeRel ("+sname+","+dname+","+rname+") installed");
+                } else {
+                    return result.error("TypeRel ("+sname+","+dname+","+rname+") could not be installed");
                 }
             }
+            return true;
         } else {
-            log.warn("can't get typerel builder");
+            return result.error("Can't get typerel builder");
         }
     }
 
@@ -1060,7 +1082,8 @@ public class MMAdmin extends ProcessorModule {
                             } else {
                                 log.info("Auto deploy application : "+aname+" new version from "+installedversion+" to "+version);
                             }
-                            if (installApplication(aname.substring(0,aname.length()-4))) {
+                            ApplicationResult result= new ApplicationResult(this);
+                            if (installApplication(aname.substring(0,aname.length()-4),result)) {
                                 if (installedversion==-1) {
                                     ver.setInstalledVersion(name,"application",maintainer,version);
                                 } else {
@@ -1081,7 +1104,7 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private boolean    writeApplication(String appname,String targetpath,String goal) {
+    private boolean writeApplication(String appname,String targetpath,String goal) {
         if (kioskmode) {
             log.warn("refused to write application, am in kiosk mode");
             return false;
@@ -1867,5 +1890,46 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
+    class ApplicationResult {
+
+        protected String resultMessage;
+        protected boolean success;
+        protected MMAdmin adminModule;
+
+        ApplicationResult(MMAdmin adminModule) {
+            this.adminModule=adminModule;
+            resultMessage = "";
+            success = true;
+        }
+
+        String getMessage() {
+            return resultMessage;
+        }
+
+        boolean isSuccess() {
+            return success;
+        }
+
+        boolean error(String message) {
+            success=false;
+            adminModule.log.error(message);
+            resultMessage += "\n"+message;
+            return false;
+        }
+
+        boolean warn(String message) {
+            success=false;
+            adminModule.log.warn(message);
+            resultMessage += "\n"+message;
+            return false;
+        }
+
+        boolean success(String message) {
+            success=true;
+            resultMessage += "\n"+message;
+            return true;
+        }
+
+    }
 
 }
