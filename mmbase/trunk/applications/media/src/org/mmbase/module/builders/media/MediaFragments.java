@@ -283,10 +283,14 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * Removes related media sources.
      * @param number objectnumber of the media fragment.
-     * @return true if remove was succesful, false otherwise.
      */
-    public boolean removeMediaSources(int number) {
-         return false;
+    public void removeMediaSources(MMObjectNode mediafragment) {
+        Vector ms = getMediaSources(mediafragment);
+        for (Iterator mediaSources = ms.iterator();mediaSources.hasNext();) {
+            MMObjectNode mediaSourceNode = (MMObjectNode)mediaSources.next();
+            mediaSourceBuilder.removeRelations(mediaSourceNode);
+            mediaSourceBuilder.removeNode(mediaSourceNode);
+        }
     }
     
     /**
