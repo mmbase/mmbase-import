@@ -22,7 +22,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.32 2003-11-10 16:47:14 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.33 2004-02-24 12:19:35 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -46,21 +46,21 @@ public class BasicCloudContext implements CloudContext {
     private static Set localClouds = new HashSet();
 
     // map of modules by name
-    private static HashMap localModules = new HashMap();
+    private static Map localModules = new HashMap();
 
     /**
      *  constructor to call from the MMBase class
      *  (protected, so cannot be reached from a script)
      */
     protected BasicCloudContext() {
-        Iterator i=org.mmbase.module.Module.getModules();
-        if (i!=null) {
+        Iterator i = org.mmbase.module.Module.getModules();
+        if (i != null) {
             mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
 
 
             // create transaction manager and temporary node manager
             tmpObjectManager = new TemporaryNodeManager(mmb);
-            transactionManager = new TransactionManager(mmb,tmpObjectManager);
+            transactionManager = new TransactionManager(mmb, tmpObjectManager);
 
             // create module list
             while(i.hasNext()) {
@@ -68,26 +68,25 @@ public class BasicCloudContext implements CloudContext {
                 localModules.put(mod.getName(),mod);
             }
 
-        // set all the names of all accessable clouds..
-        localClouds.add("mmbase");
-
+            // set all the names of all accessable clouds..
+            localClouds.add("mmbase");
+            
         } else {
-        // why dont we start mmbase, when there isnt a running instance, just change the check...
-            String message = "MMBase has not been started, and cannot be started by "
-                      + "this Class. (" + getClass().getName() + ")";
+            // why dont we start mmbase, when there isnt a running instance, just change the check...
+            String message = "MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")";
             log.error(message);
             throw new BridgeException(message);
         }
     }
 
     public ModuleList getModules() {
-        ModuleList ml=new BasicModuleList(localModules.values());
+        ModuleList ml = new BasicModuleList(localModules.values());
         return ml;
     }
 
     public Module getModule(String moduleName) throws NotFoundException {
         Module mod = (Module)localModules.get(moduleName);
-        if (mod==null) {
+        if (mod == null) {
             throw new NotFoundException("Module '" + moduleName + "' does not exist.");
         }
         return mod;
