@@ -19,7 +19,7 @@ import java.util.*;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.3 2003-12-05 15:19:10 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.4 2004-05-18 17:31:47 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
@@ -34,11 +34,13 @@ public class  ListSorter  {
             } else {
                 try {
                     Class claz = null;
+                    boolean pageClass = false;
                     if (comparator.indexOf(".") == -1) {                
                         Class[] classes = pageContext.getPage().getClass().getDeclaredClasses();
                         for (int i = 0; i < classes.length; i++) {
                             if (classes[i].toString().endsWith(comparator)) { 
                                 claz = classes[i];
+                                pageClass = true;
                                 break;
                             }
                         }                        
@@ -47,6 +49,9 @@ public class  ListSorter  {
                         claz = Class.forName(comparator);
                     }
                     
+                    if (pageClass && ! java.lang.reflect.Modifier.isStatic(claz.getModifiers())) {
+                        throw new TaglibException("Don't know how to instantiate non-static inner class: " + comparator + " (make it static please)");
+                    }
                     Comparator comp = (Comparator) claz.newInstance();
                     Collections.sort(list, comp);                     
                 } catch (Exception e) {
