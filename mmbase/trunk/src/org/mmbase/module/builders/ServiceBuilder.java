@@ -7,25 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: ServiceBuilder.java,v 1.15 2001-03-22 16:14:09 vpro Exp $
-$Log: not supported by cvs2svn $
-Revision 1.14  2001/03/22 16:10:25  vpro
-Davzev: nodeLocalChanged now doesnt call sendToRemoteBuilder to signal when ctype is n or d, because for these ctypes no related mmserver exists, so signalling wont work if even if you try that. You could call this a small bug fix.
-
-Revision 1.13  2001/02/22 13:41:13  vpro
-Davzev: Fixed otype 0 bug when getNewNode was done here, by adding super.init() to the init().
-
-Revision 1.12  2001/02/15 14:59:46  vpro
-Davzev: Added debug and comments and changed doClaim() which now retrieves the selected tracknr from the SESSION variable name:serviceobj#TRACKNR.
-
-Revision 1.11  2000/12/20 16:33:00  vpro
-Davzev: added changed some debug
-
-Revision 1.10  2000/11/27 13:28:58  vpro
-davzev: Disabled sendToRemote call in method nodeRemoteChanged since nodeLocalChanged already calls it, also added several method comments.
-
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -40,16 +21,15 @@ import org.mmbase.module.builders.protocoldrivers.*;
 import org.mmbase.util.*;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.15 $ $Date: 2001-03-22 16:14:09 $
+ * @version $Revision: 1.16 $ $Date: 2001-04-05 12:18:51 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
-	private String classname = getClass().getName();
-	private boolean debug = true;
-	// private void debug(String msg){System.out.println(classname+":"+msg);}
+    private static Logger log = Logging.getLoggerInstance(ServiceBuilder.class.getName());
 
 	// Cache of service nodes 
 	Hashtable cache=null;
@@ -64,7 +44,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		if (bul!=null) {
 			bul.setCheckService(getTableName());
 		} else {
-			if (debug) debug("setTableName("+tableName+"): ERROR: mmservers not found!");
+			log.error("setTableName("+tableName+"): ERROR: mmservers not found!");
 		}
 
 		// Used for retrieving selected cdtrack.
@@ -82,7 +62,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 * @return an empty String!?
 	 */
 	public String doClaim(scanpage sp, StringTokenizer tok) {
-		if (debug) debug("doClaim: Getting servicebuildertype node reference and username");
+		log.debug("doClaim: Getting servicebuildertype node reference and username");
 		if (tok.hasMoreTokens()) {
 			String cdplayernumber=tok.nextToken();
 			if (tok.hasMoreTokens()) {
@@ -97,24 +77,24 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 					sessionInfo session=sessions.getSession(sp,sp.sname);
 					tracknr = sessions.getValue(session,cdplayernumber+"TRACKNR");
 					if (tracknr!=null) {
-						if (debug) debug("doClaim: Retrieved tracknr from session value="+tracknr);
-						if (debug) debug("doClaim: Filling info field with: user="+user+" lease=3"+" tracknr="+tracknr);
+						log.debug("doClaim: Retrieved tracknr from session value="+tracknr);
+						log.debug("doClaim: Filling info field with: user="+user+" lease=3"+" tracknr="+tracknr);
 						node.setValue("info","user="+user+" lease=3"+" tracknr="+tracknr);
-						if (debug) debug("doClaim: Changing "+name+" (obj "+cdplayernumber+") state from '"+node.getStringValue("state")+"' to 'claimed'");
+						log.debug("doClaim: Changing "+name+" (obj "+cdplayernumber+") state from '"+node.getStringValue("state")+"' to 'claimed'");
 						node.setValue("state","claimed");
 					} else {
-						debug("doClaim: ERROR: Can't get tracknr from session '"+cdplayernumber+"TRACKNR'");
+						log.error("doClaim: ERROR: Can't get tracknr from session '"+cdplayernumber+"TRACKNR'");
 						node.setValue("state","error");
 						node.setValue("info","ERROR: doClaim(): Can't get tracknr from session '"+cdplayernumber+"TRACKNR' value="+tracknr);
 					}
 					node.commit();
-					if (debug) debug("doClaim: Service "+name+" (obj "+cdplayernumber+") successfully claimed.");
+					log.debug("doClaim: Service "+name+" (obj "+cdplayernumber+") successfully claimed.");
 				} else
-					debug("doClaim: ERROR: Couldn't get node for "+cdplayernumber+" claimed by "+user);
+					log.error("doClaim: ERROR: Couldn't get node for "+cdplayernumber+" claimed by "+user);
 			} else
-				debug("doClaim: ERROR: No username in StringTokenizer so I won't claim service: "+cdplayernumber);
+				log.error("doClaim: ERROR: No username in StringTokenizer so I won't claim service: "+cdplayernumber);
 		} else
-			debug("doClaim: ERROR: Empty StringTokenizer so there's nothing to claim!");
+			log.error("doClaim: ERROR: Empty StringTokenizer so there's nothing to claim!");
 		return "";
 	}
 
@@ -125,7 +105,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 */
 	public MMObjectNode getClaimedBy(String owner) {
 		if(owner != null) {
-			if (debug) debug("getClaimedBy("+owner+"): Seeking service node that was claimed by "+owner);
+			log.debug("getClaimedBy("+owner+"): Seeking service node that was claimed by "+owner);
 			int number;
 			MMObjectNode node = null;
 
@@ -138,22 +118,22 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 				number = ((Integer)e.nextElement()).intValue();
 				node = getNode(number);
 				if(node!=null) {
-					if (debug) debug("getClaimedBy("+owner+"): Possible candidate node: "+node.getStringValue("name")+" number:"+number);
+					log.debug("getClaimedBy("+owner+"): Possible candidate node: "+node.getStringValue("name")+" number:"+number);
 					String info=node.getStringValue("info");
 					if(info!=null) { 
 						StringTagger tagger=new StringTagger(info);
 						String user=tagger.Value("user");
 						if ((user!=null) && user.equals(owner)) {
-							if (debug) debug("getClaimedBy("+owner+"): Found claimed node!: "+node);
+							log.debug("getClaimedBy("+owner+"): Found claimed node!: "+node);
 							return node;
 						}
 					} else
-						debug("getClaimedBy("+owner+"): ERROR: 'info' field is null for node:"+node);
+						log.error("getClaimedBy("+owner+"): ERROR: 'info' field is null for node:"+node);
 				} else
-					debug("getClaimedBy("+owner+"): ERROR: Can't get node for number "+number);
+					log.error("getClaimedBy("+owner+"): ERROR: Can't get node for number "+number);
 			}
 		} else
-			debug("getClaimedBy("+owner+"): ERROR: No owner value="+owner);
+			log.error("getClaimedBy("+owner+"): ERROR: No owner value="+owner);
 		return null;
 	}
 
@@ -169,29 +149,28 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 			int number=node.getIntValue("number");
 			cache.put(new Integer(number),node);
 		}
-		if (debug) debug("getCache(): Created cache, size("+cache.size()+") contents="+cache);
+		log.debug("getCache(): Created cache, size("+cache.size()+") contents="+cache);
 		return(cache);
 	}
 
 
-	// adds a service to this builder, name is allways valid and correct
-	// the Service builder _must_ update all the mmbase admins to reflect
-	// new state. Next version will support name with authentication.
+	/**
+	 * adds a service to this builder, name is allways valid and correct
+	 * the Service builder _must_ update all the mmbase admins to reflect
+	 * new state. Next version will support name with authentication.
+	 */
 	public void addService(String name, String localclass, MMObjectNode mmserver) throws Exception {
 		boolean result = false;
-		if (debug) debug("addService("+name+","+localclass+","+mmserver+"), inserting.");
+		log.info("addService("+name+","+localclass+","+mmserver+"), inserting.");
 
-		//System.out.println("Service Builder ("+tableName+") add service called !");
-		//System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" ");
-
-		if (debug) debug("addService : CREATING A NEW OBJECT NOW !!!!!!!!!!");
+		log.debug("addService - creating a new object now !
 		MMObjectNode newnode=getNewNode("system");
 		newnode.setValue("name",name);
 		newnode.setValue("cdtype","C="+localclass); // Warning this will be altered to devtype
 		newnode.setValue("state","waiting");
 		newnode.setValue("info","");
 		int newid=insert("system",newnode);
-		if (debug) debug("addService : CREATING A NEW OBJECT NOW !!!!!!!!!! IS DONE"+(new java.util.Date()).toGMTString());
+		log.debug("addService : Creating a new object now ! Is done"+(new java.util.Date()).toGMTString());
 		if (newid!=-1) {
 			InsRel bul=(InsRel)mmb.getMMObject("insrel");
 			bul.insert("system",newid,mmserver.getIntValue("number"),14);	
@@ -199,35 +178,39 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		}
 
 		if(result) {
-			if( debug )	
-				debug("addService("+name+","+localclass+","+mmserver+"): successfully inserted");
-		} else
-			debug("addService("+name+","+localclass+","+mmserver+"): ERROR: failure to insert!");
+			log.debug("addService("+name+","+localclass+","+mmserver+"): successfully inserted");
+		} else {
+			log.error("addService("+name+","+localclass+","+mmserver+"): ERROR: failure to insert!");
+		}
 	}
-	
-	// adds a service to this builder, name is allways valid and correct
-	// the Service builder _must_ update all the mmbase admins to reflect
-	// new state. Next version will support name with authentication.
-	// adds a init hashtable for use for authentication and other startup
-	// params.
+
+	/**	
+	 * adds a service to this builder. name is allways valid and correct
+	 * the Service builder _must_ update all the mmbase admins to reflect
+	 * new state. Next version will support name with authentication.
+	 * adds a init hashtable for use for authentication and other startup
+	 * params.
+	 */
 	public void addService(String name, String localclass, MMObjectNode mmserver, Hashtable initparams) throws Exception {
-		if( debug ) debug("addService("+name+","+localclass+","+mmserver+","+initparams+"), called, but we do nothing.");
-		//System.out.println("Service Builder ("+tableName+") add service called !");
-		//System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" "+initparams);
+		log.debug("addService("+name+","+localclass+","+mmserver+","+initparams+"), called, but we do nothing.");
 	}
 
-	// remove a service, does not mean it will be 100% removed from mmbase 
-	// but that its not running at the moment. possible model will be removed 
-	// results in offline state for X hours and removed in X days.
+	/**
+	 * remove a service. Does not mean it will be 100% removed from mmbase 
+	 * but that its not running at the moment. possible model will be removed 
+	 * results in offline state for X hours and removed in X days.
+	 */
 	public void removeService(String name) throws Exception {
-		if( debug ) debug("removeService("+name+"), called, but we do nothing.");
+		log.debug("removeService("+name+"), called, but we do nothing.");
 	}
 
-	// remove a service, does not mean it will be 100% removed from mmbase 
-	// but that its not running at the moment. possible model will be removed 
-	// results in offline state for X hours and removed in X days.
+	/**
+	 * remove a service. does not mean it will be 100% removed from mmbase 
+	 * but that its not running at the moment. possible model will be removed 
+	 * results in offline state for X hours and removed in X days.
+	 */
 	public void removeService(String name, Hashtable initparams) throws Exception {
-		if( debug ) debug("removeService("+name+","+initparams+"), called, but we do nothing.");
+		log.debug("removeService("+name+","+initparams+"), called, but we do nothing.");
 	}
 	
 	/**
@@ -238,10 +221,10 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 * @return true, always!?
 	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super.");
+		log.debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super.");
 		super.nodeRemoteChanged(number,builder,ctype);
 		// Don't sendToRemoteBuilder because nodeLocalChanged already sends a signal to remote side.
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Node Remote Changed!?,do nothing");
+		log.debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Node Remote Changed!?,do nothing");
 		return true;
 	}
 
@@ -254,9 +237,9 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 * @return true, always!?
 	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super.");
+		log.debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super.");
 		super.nodeLocalChanged(number,builder,ctype);
-		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling sendToRemoteBuilder, to send node change to remote side.");
+		log.debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling sendToRemoteBuilder, to send node change to remote side.");
 		// You can't signal new or delete changes because there's no mmserver related when these changes occur.
 		if (!(ctype.equals("n") || ctype.equals("d")) )
 			sendToRemoteBuilder(number,builder,ctype);
@@ -278,21 +261,21 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		if  (e.hasMoreElements()) {
 			MMObjectNode mmservernode=(MMObjectNode)e.nextElement();	
 			String mmservername=mmservernode.getStringValue("name");
-			if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Found attached mmserver:"+mmservername);
+			log.debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Found attached mmserver:"+mmservername);
 			//Get the protocol driver using the mmserver that's attached to current service. 
 			MMServers bul = (MMServers)mmb.getMMObject("mmservers");
 			ProtocolDriver pd=bul.getDriverByName(mmservername);
-			if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Retrieved its protocoldriver: "+pd);
+			log.debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Retrieved its protocoldriver: "+pd);
 			MMObjectNode node=getNode(number);
 			if (node!=null) {
 				String servicename = node.getStringValue("name");
-				if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Sending signal to remote side using remote service reference:"+servicename);
+				log.debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Sending signal to remote side using remote service reference:"+servicename);
 				pd.signalRemoteNode(servicename,builder,ctype);
-				if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Signal has been send with remote service reference used:"+servicename);
+				log.debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Signal has been send with remote service reference used:"+servicename);
 			}else
-				debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): ERROR: Couldn't get node("+number+")!");
+				log.error("sendToRemoteBuilder("+number+","+builder+","+ctype+"): ERROR: Couldn't get node("+number+")!");
 		} else {
-			debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): ERROR: No related mmserver found attached to this service with number:"+number);
+			log.error("sendToRemoteBuilder("+number+","+builder+","+ctype+"): ERROR: No related mmserver found attached to this service with number:"+number);
 		}
 	}
 }
