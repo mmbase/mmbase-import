@@ -46,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.4 2002-08-14 20:58:44 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.5 2002-09-23 10:58:03 michiel Exp $
  * @since   MMBase-1.6
  */
 public  class NodeFunction {
@@ -59,7 +59,7 @@ public  class NodeFunction {
 
     public static String function(String node, String function) {
         if (log.isDebugEnabled()) {
-            log.debug("calling with string " + node + " function: " + function);
+            log.debug("calling with string '" + node + "' function: " + function);
         }
         return function("mmbase", node, function);
     }
@@ -76,7 +76,7 @@ public  class NodeFunction {
             Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);        
             return function(cloud, number, function);
         } catch (BridgeException e) {
-            return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
+            return "could not execute '" + function + "' on node '" + number + "' (" + e.toString() + ")";
         }
     }
 
@@ -96,6 +96,10 @@ public  class NodeFunction {
             node.getStringValue(function);
             return node.getStringValue(function);
         } catch (BridgeException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("could not execute '" + function + "' on node '" + number + "'");
+                log.trace(Logging.stackTrace(e));
+            }
             return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
         }
     }
