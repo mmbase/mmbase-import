@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.containers.*;
+import org.mmbase.bridge.Query;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -21,12 +23,23 @@ import org.mmbase.util.logging.Logging;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.16 2003-11-19 16:57:42 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.17 2004-04-22 17:27:09 michiel Exp $ 
  */
 
-public class IndexTag extends ListReferrerTag implements Writer {
+public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
     private static final Logger log = Logging.getLoggerInstance(IndexTag.class);
+
+
+    private Attribute container = Attribute.NULL;
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c);
+    }
+
 
     private Attribute offset = Attribute.NULL; 
 
@@ -38,8 +51,29 @@ public class IndexTag extends ListReferrerTag implements Writer {
     }
 
     public int doStartTag() throws JspTagException{
+
+        int index;
+        if (container != Attribute.NULL) {
+            if (parentListId != Attribute.NULL) {
+                throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
+            }
+            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+            Query query = c.getQuery();
+            index = query.getOffset() / query.getMaxNumber() + offset.getInt(this, 0);
+        } else if (parentListId != Attribute.NULL) {
+            index = getList().getIndex()  + getOffset();;
+        } else {
+            QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
+            if (tag instanceof QueryContainer) {
+                Query query = ((QueryContainer) tag).getQuery();
+                index = query.getOffset() / query.getMaxNumber() + offset.getInt(this, 0);
+            } else {
+                index = ((ListProvider) tag).getIndex() + getOffset();
+            }
+        }
+
         
-        helper.setValue(new Integer(getList().getIndex() + getOffset()));
+        helper.setValue(new Integer(index));
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }

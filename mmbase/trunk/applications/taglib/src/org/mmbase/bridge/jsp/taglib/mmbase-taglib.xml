@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.248 2004-03-29 09:09:21 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.249 2004-04-22 17:27:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3898,10 +3898,15 @@ like the parameter list or the session (where ever it is available) --&gt;
 		<tagclass>org.mmbase.bridge.jsp.taglib.IndexTag</tagclass>
 		<teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
 		<info>
-			The index of the current item of the current list.
+			The index of the current item of the current list. It can also act as a
+      'querycontainerreferrer' in which case the 'offset' and 'maxnumber' properties of the query
+      are used to calculate the current page (offset/maxnumber). This index can be used in combination
+      with the index-tags inside mm:nextbatches and mm:previousbatched.
 		</info>
 		<see tag="first" />
 		<see tag="last" />
+		<see tag="nextbatches" />
+		<see tag="previousbatches" />
 		<attribute>
 			<name>offset</name>
 			<required>false</required>
