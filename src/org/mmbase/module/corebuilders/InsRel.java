@@ -156,8 +156,8 @@ public class InsRel extends MMObjectBuilder {
 						    MMObjectNode n1=getNode(snumber);
 							MMObjectNode n2=getNode(dnumber);
 							
-							mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-							mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+							mmb.mmc.changedNode(n1.getNumber(),n1.getTableName(),"r");
+							mmb.mmc.changedNode(n2.getNumber(),n2.getTableName(),"r");
    					   		*/
 		        } else
 		            log.error("insert("+owner+","+node+"): rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
@@ -321,7 +321,7 @@ public class InsRel extends MMObjectBuilder {
     	    results=new Vector();
 			for (Enumeration e=list.elements();e.hasMoreElements();) {
 	    		MMObjectNode node=(MMObjectNode)e.nextElement();
-		    	if (node.getIntValue("otype")==otype) {
+		    	if (node.getOType()==otype) {
 			    	results.addElement(node);
     			}
             }
@@ -351,13 +351,13 @@ public class InsRel extends MMObjectBuilder {
             }
         } else if (field.equals("snumber")) {
 			MMObjectNode node2=getNode(node.getIntValue("snumber"));
-			String ty="="+mmb.getTypeDef().getValue(node2.getIntValue("otype"));
+			String ty="="+mmb.getTypeDef().getValue(node2.getOType());
 			if (node2!=null) {
 					return(""+node.getIntValue("snumber")+ty+"("+node2.getGUIIndicator()+")");
 			}
 		} else if (field.equals("dnumber")) {
 			MMObjectNode node2=getNode(node.getIntValue("dnumber"));
-			String ty="="+mmb.getTypeDef().getValue(node2.getIntValue("otype"));
+			String ty="="+mmb.getTypeDef().getValue(node2.getOType());
 			if (node2!=null) {
 					return(""+node.getIntValue("dnumber")+ty+"("+node2.getGUIIndicator()+")");
 			}
@@ -432,7 +432,7 @@ public class InsRel extends MMObjectBuilder {
 		    if (n==null) {
 		        log.warn("Can not determine default reldef for ("+getTableName()+")");
 		    } else {
-		        relnumber=n.getIntValue("number");
+		        relnumber=n.getNumber();
 		    }
 		}
 		node.setValue("rnumber",relnumber);
