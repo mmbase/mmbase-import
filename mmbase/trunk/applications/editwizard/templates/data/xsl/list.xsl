@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.13 2002-07-11 12:08:36 pierre Exp $
+  @version $Id: list.xsl,v 1.14 2002-07-15 12:34:17 pierre Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -92,6 +92,7 @@
   <xsl:template name="javascript">
     <script language="javascript">
       <xsl:text disable-output-escaping="yes"><![CDATA[<!--
+   window.history.forward(1);
    var cancelClick = false;
 
    function objMouseOver(el) {
