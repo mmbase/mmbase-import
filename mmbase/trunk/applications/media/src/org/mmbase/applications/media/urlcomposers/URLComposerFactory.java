@@ -77,6 +77,7 @@ public class URLComposerFactory  {
 
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) { 
             try {
+                log.debug("Instantiating " + klass);
                 Constructor c = klass.getConstructor(constructorArgs);
                 return (URLComposer) c.newInstance(new Object[] {provider, source, fragment, info, cacheExpireObjects});            
             } catch (java.lang.NoSuchMethodException e) { 
@@ -186,18 +187,18 @@ public class URLComposerFactory  {
      */
 
     protected List getTemplates(MMObjectNode fragment) {
-	log.error("init");
+	log.debug("init");
         List templates = new ArrayList();
 
         if (fragment != null) {
-		log.error("not null");
-        log.error("fragment "+fragment);
+            log.debug("not null");
+            log.debug("fragment " + fragment);
             MediaFragments bul = (MediaFragments) fragment.parent;
-		log.error("1");
+            log.debug("1");
             Stack stack = bul.getParentFragments(fragment);
-		log.error("2");
+            log.debug("2");
             Iterator i = stack.iterator();
-		log.error("3");
+            log.debug("3");
             while (i.hasNext()) {
                 MMObjectNode f = (MMObjectNode) i.next();
                 templates.addAll(f.getRelatedNodes("templates"));        
