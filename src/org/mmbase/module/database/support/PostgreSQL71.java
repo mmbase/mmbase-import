@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.24 2003-03-19 15:19:34 kees Exp $
+ * @version $Id: PostgreSQL71.java,v 1.25 2003-03-25 19:53:42 robmaris Exp $
  */
 public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -118,13 +118,17 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
             con=mmb.getConnection();
             meta = con.getMetaData();
 
+            boolean exists = false;
             // retrieve the table info..
             ResultSet rs = meta.getTables(null, null, tableName, null);
-            boolean exists = false;
-            if (rs.next()) {
-                // yipee we found something...
-                log.debug("the tablename found is :" + rs.getString(3) + " looking for("+tableName+")");
-                exists = true;
+            try {
+                if (rs.next()) {
+                    // yipee we found something...
+                    log.debug("the tablename found is :" + rs.getString(3) + " looking for("+tableName+")");
+                    exists = true;
+                }
+            } finally {
+                rs.close();
             }
             // meta.close();
             con.close();
@@ -1097,17 +1101,20 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
 
             String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
             log.debug("gonna excute the followin query: " + sql);
-            ResultSet rs=stmt.executeQuery(sql);
             java.io.DataInputStream is = null;
-
             byte[] data=null;
-            if(rs.next()) {
-                log.debug("found a record, now trying to retieve the stream..with loid #" + rs.getInt(fieldname));
-                Blob b = rs.getBlob(1);
-                data = b.getBytes(0, (int)b.length());
-                log.debug("data was read from the database(#"+data.length+" bytes)");
+            ResultSet rs=stmt.executeQuery(sql);
+            
+            try {
+                if(rs.next()) {
+                    log.debug("found a record, now trying to retieve the stream..with loid #" + rs.getInt(fieldname));
+                    Blob b = rs.getBlob(1);
+                    data = b.getBytes(0, (int)b.length());
+                    log.debug("data was read from the database(#"+data.length+" bytes)");
+                }
+            } finally {
+                rs.close();
             }
-            rs.close();
             stmt.close();
             // a get doesnt make changes !!
             con.commit();
@@ -1259,10 +1266,14 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
             con = mmb.getConnection();
             stmt=con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                number=rs.getInt("NEXTVAL");
-            } else {
-                log.warn("could not retieve the number for new node");
+            try {
+                if (rs.next()) {
+                    number=rs.getInt("NEXTVAL");
+                } else {
+                    log.warn("could not retieve the number for new node");
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
