@@ -1,6 +1,14 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 /**
  * Security from within MMBase
- * Copyright 2002 (Not yet OpenSouce, needs some tweaking)
  * @author Eduard Witteveen
  */
 package org.mmbase.security.implementation.cloud;
@@ -99,7 +107,7 @@ public class Authenticate extends Authentication {
     }   
      
     public boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException {
-        log.info(usercontext);
+        log.debug(usercontext);
 	return ((User)usercontext).getKey() == validKey;
     }
 	
