@@ -389,10 +389,10 @@ NetComponents can be found at:
   <target name="info14" if="java14">
     <echo>
   WARNING
-  MMBase doesn't compile when using J2SE 1.4, you have to change 2
-  files by hand: MultiConnection.java and MultiStatement.java (both in
-  the &lt;org/mmbase/modules/database&gt;-dir). Uncomment the methods for
-  J2SE 1.4, more information is provided in the javadocs in these files.
+  MMBase doesn't compile when using J2SE 1.4, you have to change the following files by hand:
+	MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
+	BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods   
+	More information is provided in the javadocs in these files.
 </echo>
   </target>
 
