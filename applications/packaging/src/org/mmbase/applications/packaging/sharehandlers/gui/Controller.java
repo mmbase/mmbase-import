@@ -140,6 +140,11 @@ public class Controller {
             } else {
                 virtual.setValue("active", "no");
             }
+	    if (shareinfo.containsUser("guest")) {
+                virtual.setValue("public", "yes");
+	    } else {
+                virtual.setValue("public", "no");
+	    }
             list.add(virtual);
         }
 
@@ -174,6 +179,11 @@ public class Controller {
             } else {
                 virtual.setValue("active", "no");
             }
+	    if (shareinfo.containsUser("guest")) {
+                virtual.setValue("public", "yes");
+	    } else {
+                virtual.setValue("public", "no");
+	    }
             list.add(virtual);
         }
 
