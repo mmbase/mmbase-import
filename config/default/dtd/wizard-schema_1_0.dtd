@@ -7,15 +7,16 @@
 <!ATTLIST command fields CDATA #IMPLIED >
 <!ATTLIST command filterrequired NMTOKEN #IMPLIED >
 <!ATTLIST command inline NMTOKEN #IMPLIED >
-<!ATTLIST command nodepath NMTOKEN #IMPLIED >
+<!ATTLIST command nodepath CDATA #IMPLIED >
 <!ATTLIST command objectnumber NMTOKEN #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >
+<!ATTLIST command startnodes CDATA #IMPLIED >
 
 <!ELEMENT default ( #PCDATA ) >
 
-<!ELEMENT field ( #PCDATA | optionlist | prompt )* >
+<!ELEMENT field ( #PCDATA | optionlist | prompt | prefix | postfix )* >
 <!ATTLIST field dtmaxlength NMTOKEN #IMPLIED >
 <!ATTLIST field dtminlength NMTOKEN #IMPLIED >
 <!ATTLIST field dtrequired NMTOKEN #IMPLIED >
@@ -26,7 +27,10 @@
 <!ATTLIST field inline NMTOKEN #IMPLIED >
 <!ATTLIST field wizardname CDATA #IMPLIED >
 
-<!ELEMENT fieldset ( field+, prompt ) >
+<!ELEMENT prefix ( #PCDATA ) >
+<!ELEMENT postfix ( #PCDATA ) >
+
+<!ELEMENT fieldset ( prompt?, field+ ) >
 
 <!ELEMENT form-schema ( field | list | subtitle | title )* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
