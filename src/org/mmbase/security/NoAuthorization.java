@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * This class is used when no authorization is configured.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.6 2002-06-07 12:56:55 pierre Exp $
+ * @version $Id: NoAuthorization.java,v 1.7 2002-07-26 08:47:33 vpro Exp $
  */
 public class NoAuthorization extends Authorization {
     private static Logger log=Logging.getLoggerInstance(NoAuthorization.class.getName());
@@ -55,7 +55,7 @@ public class NoAuthorization extends Authorization {
     /**
      * This method does nothing
      */
-    public void assert(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
     }
 
     /**
@@ -68,7 +68,7 @@ public class NoAuthorization extends Authorization {
     /**
      * This method does nothing
      */
-    public void assert(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) throws org.mmbase.security.SecurityException {
     }
 
     // used to get some very basic functionality inside the security..

@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.62 2002-07-17 14:13:42 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.63 2002-07-26 08:47:32 vpro Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -159,7 +159,7 @@ public class BasicCloud implements Cloud, Cloneable {
                 return new BasicNode(node, nm, nodeid);
             }
         } else {
-            assert(Operation.READ,nodenr);
+            this.verify(Operation.READ,nodenr);
             if (node.parent instanceof InsRel) {
                 return new BasicRelation(node, nm);
             } else {
@@ -461,8 +461,8 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param operation the operation to check (READ, WRITE, CREATE, OWN)
     * @param nodeID the node on which to check the operation
     */
-    void assert(Operation operation, int nodeID) {
-        mmbaseCop.getAuthorization().assert(userContext.getUserContext(),nodeID,operation);
+    void verify(Operation operation, int nodeID) {
+        mmbaseCop.getAuthorization().verify(userContext.getUserContext(),nodeID,operation);
     }
 
     /**
@@ -484,8 +484,8 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param srcNodeID the source node for this relation
     * @param dstNodeID the destination node for this relation
     */
-    void assert(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        mmbaseCop.getAuthorization().assert(userContext.getUserContext(),nodeID,srcNodeID,dstNodeID,operation);
+    void verify(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
+        mmbaseCop.getAuthorization().verify(userContext.getUserContext(),nodeID,srcNodeID,dstNodeID,operation);
     }
 
     /**
