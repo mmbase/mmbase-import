@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.BodyContent;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -29,12 +29,11 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.47.2.2 2005-03-14 18:33:24 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.47.2.3 2005-03-15 10:44:42 michiel Exp $
  */
 
-public class WriterHelper extends BodyTagSupport {
-    // extending from it, becase we need access to protected vars.
-    // this tag is not acutally used as a tag
+public class WriterHelper {
+
 
     private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
     public static boolean NOIMPLICITLIST = true;
@@ -432,7 +431,7 @@ public class WriterHelper extends BodyTagSupport {
 
 
     public String getString() {
-        bodyContent = thisTag.getBodyContent();
+        BodyContent bodyContent = thisTag.getBodyContent();
         if (bodyContent != null) {
             return bodyContent.getString();
         } else {
@@ -447,8 +446,7 @@ public class WriterHelper extends BodyTagSupport {
      */
 
     public int doAfterBody() throws JspException {
-        bodyContent = thisTag.getBodyContent();
-        return super.doAfterBody();
+        return javax.servlet.jsp.tagext.Tag.SKIP_BODY;
     }
 
     /**
@@ -462,6 +460,7 @@ public class WriterHelper extends BodyTagSupport {
         }
         try {
             String body = getString(); // un-nulls also bodyContent
+            BodyContent bodyContent = thisTag.getBodyContent();
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 getPageString(thisTag.getPageContext().getOut()).write(body);
@@ -483,7 +482,6 @@ public class WriterHelper extends BodyTagSupport {
     public void release() {
         overrideWrite = null; // for use next time
         hasBody       = false;
-        bodyContent   = null;
         value         = null;
     }
 
