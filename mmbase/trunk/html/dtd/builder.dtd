@@ -16,16 +16,17 @@
 <!ELEMENT fieldlist (field*)>
 <!ELEMENT field (gui,editor,db)>
 <!ELEMENT names (singular*,plural*)>
-<!ELEMENT gui (name+,gtype)>
+<!ELEMENT gui (guiname+,guitype)>
+<!ELEMENT guiname (#PCDATA)>
+<!ATTLIST guiname xml:lang NMTOKEN "us">
+<!ELEMENT guitype (#PCDATA)>
+<!ELEMENT db (name,type)>
 <!ELEMENT name (#PCDATA)>
-<!ATTLIST name xml:lang NMTOKEN "us">
-<!ELEMENT gtype (#PCDATA)>
-<!ELEMENT db (name,dbtype)>
+<!ELEMENT type (#PCDATA)>
+<!ATTLIST type state CDATA #REQUIRED>
+<!ATTLIST type size CDATA #IMPLIED>
+<!ATTLIST type notnull CDATA #REQUIRED>
 <!ELEMENT editor (positions*)>
-<!ELEMENT dbtype (#PCDATA)>
-<!ATTLIST dbtype state CDATA #REQUIRED>
-<!ATTLIST dbtype size CDATA #IMPLIED>
-<!ATTLIST dbtype notnull CDATA #REQUIRED>
 <!ELEMENT positions (input,list,search)>
 <!ELEMENT input (#PCDATA)>
 <!ELEMENT list (#PCDATA)>
