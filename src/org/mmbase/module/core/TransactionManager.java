@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.4 2000-11-08 16:24:13 vpro Exp $
+	$Id: TransactionManager.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/11/08 16:24:13  vpro
+	Rico: fixed key bussiness
+	
 	Revision 1.3  2000/10/13 11:47:26  vpro
 	Rico: made it working
 	
@@ -31,12 +34,19 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.4 2000-11-08 16:24:13 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
 	private boolean _debug=true;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
+
+	public static final String EXISTS_NO="no";
+	public static final int I_EXISTS_NO=0;
+	public static final String EXISTS_YES="yes";
+	public static final int I_EXISTS_YES=1;
+	public static final String EXISTS_NOLONGER="nolonger";
+	public static final int I_EXISTS_NOLONGER=2;
 
 	private TemporaryNodeManagerInterface tmpNodeManager;
 	private Object usermanager;
@@ -112,6 +122,35 @@ public class TransactionManager implements TransactionManagerInterface {
 		return(tmpnumber);
 	}
 
+
+	public String deleteObject(String transactionname,String owner,String tmpnumber) {
+		MMObjectNode node;
+		Vector v;
+
+		v=(Vector)transactions.get(transactionname);
+		node=tmpNodeManager.getNode(owner,tmpnumber);
+		if (node!=null) {
+			if (v==null) {
+				v=new Vector();
+				v.addElement(node);
+				transactions.put(transactionname,v);
+			} else {
+				int n;
+				n=v.indexOf(node);
+				if (n==-1) {
+					v.addElement(node);
+				} else {
+					debug("addNode(): node not added as it was already in the transaction "+tmpnumber);
+				}
+			}
+			// Mark it as to delete
+			node.setValue("_exists",EXISTS_NOLONGER);
+		} else {
+			debug("Can't add node as it doesn't exist "+tmpnumber);
+		}
+		return(tmpnumber);
+	}
+
 	public Vector getNodes(Object user,String transactionname) {
 		Vector rtn;
 
@@ -180,9 +219,9 @@ public class TransactionManager implements TransactionManagerInterface {
 		boolean okay=false,res=false;
 		int[] nodestate=new int[nodes.size()];
 		int[] nodetype=new int[nodes.size()];
-		boolean[] nodeexist=new boolean[nodes.size()];
+		int[] nodeexist=new int[nodes.size()];
 		int i,tmpstate;
-		String username=findUserName(user);
+		String username=findUserName(user),exists;
 
 		// Nodes are uncommited by default
 		for (i=0;i<nodes.size();i++) nodestate[i]=UNCOMMITED;
@@ -202,10 +241,17 @@ public class TransactionManager implements TransactionManagerInterface {
 		for (i=0;i<nodes.size();i++) {
 			node=(MMObjectNode)nodes.elementAt(i);
 			tmpstate=node.getDBState("_number");
-			if ((tmpstate==FieldDefs.DBSTATE_UNKNOWN || tmpstate==FieldDefs.DBSTATE_VIRTUAL) && node.getStringValue("_exists").equals("no")) {
-				nodeexist[i]=false;
-			} else {
-				nodeexist[i]=true;
+			if ((tmpstate==FieldDefs.DBSTATE_UNKNOWN || tmpstate==FieldDefs.DBSTATE_VIRTUAL)) {
+ 				exists=node.getStringValue("_exists");
+				if (exists.equals(EXISTS_NO)) {
+						nodeexist[i]=I_EXISTS_NO;
+				} else if (exists.equals(EXISTS_YES)) {
+						nodeexist[i]=I_EXISTS_YES;
+				} else if (exists.equals(EXISTS_NOLONGER)) {
+						nodeexist[i]=I_EXISTS_NOLONGER;
+				} else {
+					debug("performCommits: invalid value for _exists "+node);
+				}
 			}
 		}
 
@@ -216,28 +262,101 @@ public class TransactionManager implements TransactionManagerInterface {
 			}
 		}
 
-		// First commit all the NODES
+		// First commit all the RELATIONS that must be deleted
+		for (i=0;i<nodes.size();i++) {
+			if (nodetype[i]==RELATION) {
+				node=(MMObjectNode)nodes.elementAt(i);
+				switch(nodeexist[i]) {
+					case I_EXISTS_YES:
+						break;
+					case I_EXISTS_NO:
+						break;
+					case I_EXISTS_NOLONGER:
+						if (_debug) debug("node "+i+" delete ");
+						if (!debug) {
+							// no return information
+							bul.removeNode(node);
+							res=true;
+						} else {
+							res=true;
+						}
+						break;
+					default:
+						res=false;
+						debug("performCommits invalid exists value "+nodeexist[i]);
+						break;
+				}
+				if (res) {
+					nodestate[i]=COMMITED;
+				} else {
+					nodestate[i]=FAILED;
+				}
+			}
+		}
+
+		// Then commit all the NODES that must be deleted
 		for (i=0;i<nodes.size();i++) {
 			if (nodetype[i]==NODE) {
 				node=(MMObjectNode)nodes.elementAt(i);
-				if (nodeexist[i]) {
-					if (!debug) {
-						res=node.commit();
-					} else {
-						res=true;
-					}
-					if (_debug) debug("node "+i+" commit ");
-				} else {
-					if (_debug) debug("node "+i+" insert ");
-					if (!debug) {
-						if (username.length()>1) {
-							res=node.insert(username)!=-1;
+				switch(nodeexist[i]) {
+					case I_EXISTS_YES:
+						break;
+					case I_EXISTS_NO:
+						break;
+					case I_EXISTS_NOLONGER:
+						if (_debug) debug("node "+i+" delete ");
+						if (!debug) {
+							// no return information
+							bul.removeNode(node);
+							res=true;
 						} else {
-							res=node.insert(node.getStringValue("owner"))!=-1;
+							res=true;
 						}
-					} else {
-						res=true;
-					}
+						break;
+					default:
+						res=false;
+						debug("performCommits invalid exists value "+nodeexist[i]);
+						break;
+				}
+				if (res) {
+					nodestate[i]=COMMITED;
+				} else {
+					nodestate[i]=FAILED;
+				}
+			}
+		}
+
+		// Then commit all the NODES
+		for (i=0;i<nodes.size();i++) {
+			if (nodetype[i]==NODE) {
+				node=(MMObjectNode)nodes.elementAt(i);
+				switch(nodeexist[i]) {
+					case I_EXISTS_YES:
+						if (!debug) {
+							res=node.commit();
+						} else {
+							res=true;
+						}
+						if (_debug) debug("node "+i+" commit ");
+						break;
+					case I_EXISTS_NO:
+						if (_debug) debug("node "+i+" insert ");
+						if (!debug) {
+							if (username.length()>1) {
+								res=node.insert(username)!=-1;
+							} else {
+								res=node.insert(node.getStringValue("owner"))!=-1;
+							}
+						} else {
+							res=true;
+						}
+						break;
+					case I_EXISTS_NOLONGER:
+						break;
+					default:
+						res=false;
+						debug("performCommits invalid exists value "+nodeexist[i]);
+						break;
 				}
 				if (res) {
 					nodestate[i]=COMMITED;
@@ -251,24 +370,34 @@ public class TransactionManager implements TransactionManagerInterface {
 		for (i=0;i<nodes.size();i++) {
 			if (nodetype[i]==RELATION) {
 				node=(MMObjectNode)nodes.elementAt(i);
-				if (nodeexist[i]) {
-					if (!debug) {
-						res=node.commit();
-					} else {
-						res=true;
-					}
-					if (_debug) debug("node "+i+" commit ");
-				} else {
-					if (_debug) debug("node "+i+" insert ");
-					if (!debug) {
-						if (username.length()>1) {
-							res=node.insert(username)!=-1;
+
+				switch(nodeexist[i]) {
+					case I_EXISTS_YES:
+						if (!debug) {
+							res=node.commit();
 						} else {
-							res=node.insert(node.getStringValue("owner"))!=-1;
+							res=true;
 						}
-					} else {
-						res=true;
-					}
+						if (_debug) debug("node "+i+" commit ");
+						break;
+					case I_EXISTS_NO:
+						if (_debug) debug("node "+i+" insert ");
+						if (!debug) {
+							if (username.length()>1) {
+								res=node.insert(username)!=-1;
+							} else {
+								res=node.insert(node.getStringValue("owner"))!=-1;
+							}
+						} else {
+							res=true;
+						}
+						break;
+					case I_EXISTS_NOLONGER:
+						break;
+					default:
+						res=false;
+						debug("performCommits invalid exists value "+nodeexist[i]);
+						break;
 				}
 				if (res) {
 					nodestate[i]=COMMITED;
