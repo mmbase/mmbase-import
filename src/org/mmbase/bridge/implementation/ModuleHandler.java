@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.21 2003-03-06 13:53:58 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.22 2003-08-27 08:24:00 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -84,6 +84,14 @@ public class ModuleHandler implements Module, Comparable {
 
     public String getName() {
         return mmbase_module.getName();
+    }
+
+    public String getProperty(String name) {
+        return mmbase_module.getInitParameter(name);
+    }
+
+    public Map getProperties() {
+        return new HashMap(mmbase_module.getInitParameters());
     }
 
     public String getDescription() {
