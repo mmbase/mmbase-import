@@ -11,17 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.mmbob;
 
 import org.w3c.dom.*;
-
-import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.*;
-import org.mmbase.module.core.*;
-import org.mmbase.bridge.*;
-import org.mmbase.storage.*;
-import org.mmbase.storage.search.*;
 
 
 /**
@@ -49,6 +42,9 @@ public class ForumConfig {
     private String smileysEnabled = "true";
     private String privateMessagesEnabled = "true";
     private int postingsPerPage = -1;
+    private String fromEmailAddress = "";
+    private String htmlHeaderPath = "";
+    private String htmlFooterPath = "";
 
 
     private int quotamax = 100;
@@ -100,6 +96,23 @@ public class ForumConfig {
                             postingsPerPage = (Integer.valueOf(inttemp)).intValue();
                         }
 
+                        fromEmailAddress = getAttributeValue(reader,n,"email","from");
+
+                        for(Enumeration ns2=reader.getChildElements(n,"layout");ns2.hasMoreElements(); ) {
+                            Element n2=(Element)ns2.nextElement();
+                            org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
+                            if (layoutList.getLength() > 0) {
+                                Element footerNode = (Element)layoutList.item(0);
+                                htmlHeaderPath = footerNode.getAttribute("path");
+                            }
+                            layoutList = n2.getElementsByTagName("header");
+                            if (layoutList.getLength() > 0) {
+                                Element headerNode = (Element)layoutList.item(0);
+                                htmlFooterPath = headerNode.getAttribute("path");
+                            }
+                        }
+
+
                         for(Enumeration ns2=reader.getChildElements(n,"avatars");ns2.hasMoreElements(); ) {
                             Element n2=(Element)ns2.nextElement();
                             org.w3c.dom.NodeList avatarsList = n2.getElementsByTagName("upload");
@@ -143,9 +156,6 @@ public class ForumConfig {
                             Element n2 = (Element) ns2.nextElement();
                             nm = n2.getAttributes();
                             if (nm != null) {
-                                String max = null;
-                                String softwarning = null;
-                                String warning = null;
                                 n3 = nm.getNamedItem("max");
                                 if (n3 != null) {
                                    setQuotaMax(n3.getNodeValue());
@@ -349,6 +359,7 @@ public class ForumConfig {
         return avatarsUploadEnabled;
     }
 
+
     public String getAvatarsGalleryEnabled() {
         return avatarsGalleryEnabled;
     }
@@ -367,6 +378,18 @@ public class ForumConfig {
 
     public int getPostingsPerPage() {
         return postingsPerPage;
+    }
+
+    public String getFromEmailAddress() {
+        return fromEmailAddress;
+    }
+
+    public String getHeaderPath() {
+        return htmlHeaderPath;
+    }
+
+    public String getFooterPath() {
+        return htmlFooterPath;
     }
 
 }

@@ -28,7 +28,6 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.FileWatcher;
 
 
-
 /**
  * forumManager
  * ToDo: Write docs!
@@ -443,6 +442,21 @@ public class ForumManager {
     public static int getPostingsPerPage() {
         return config.getPostingsPerPage();
     }
+
+    public static String getFromEmailAddress() {
+        return config.getFromEmailAddress();
+    }
+
+    public static String getHeaderPath() {
+        return config.getHeaderPath();
+    }
+
+    public static String getFooterPath() {
+        return config.getFooterPath();
+    }
+
+
+
 
 
 

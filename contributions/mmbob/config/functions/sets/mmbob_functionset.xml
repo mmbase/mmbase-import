@@ -104,7 +104,6 @@
 		<param name="posterid" type="String" description="Id for the current (on the page) poster for admin/onwership checks" />
 		<return type="Node"> 
 			<field name="language" type="String" description="language code of this forum" />
-			<field name="isadministrator" type="String" description="is the posterid given a administrator of this forum ?  true/false." />
 			<field name="accountcreationtype" type="String" description="TODO" />
 			<field name="accountremovaltype" type="String" description="TODO" />
 			<field name="loginmodetype" type="String" description="TODO" />
@@ -112,6 +111,14 @@
 			<field name="avatarsdisabled" type="String" description="TODO" />
 			<field name="avatarsuploadenabled" type="String" description="TODO" />
 			<field name="avatarsgalleryenabled" type="String" description="TODO" />
+                        <field name="privatemessagesenabled" type="String" description="TODO" />
+                        <field name="smileysenabled" type="String" description="TODO" />
+                        <field name="privatemessagesenabled" type="String" description="TODO" />
+                        <field name="postingsperpage" type="String" description="TODO" />
+                        <field name="fromaddress" type="String" description="TODO" />
+                        <field name="headerpath" type="String" description="TODO" />
+                        <field name="footerpath" type="String" description="TODO" />
+                        <field name="isadministrator" type="String" description="is the posterid given a administrator of this forum ?  true/false." />
 		</return> 
 	</function>
 
