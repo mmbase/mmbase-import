@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.43 2004-07-29 17:16:12 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.44 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -159,7 +159,7 @@ public class BasicQuery implements Query  {
         }
         if (queryCheck != null) {
             Constraint secureConstraint = queryCheck.getConstraint();
-            if (secureConstraint != null) { 
+            if (secureConstraint != null) {
                 Constraint constraint = clone.getConstraint();
                 // remove it from clone (by modifying the 'cloned' constraint)
                 if (secureConstraint.equals(constraint)) {
@@ -261,7 +261,7 @@ public class BasicQuery implements Query  {
 
         // check if it was the lastely 'automaticly' create alias, in which case we free the sequence number again
         // (also to fix #6547)
-        
+
         Integer currentSeq  = (Integer) aliasSequences.get(aliasBase);
         if (currentSeq != null && glueAlias(aliasBase, currentSeq).equals(currentAlias)) {
             if (currentSeq.intValue() == 0) {
@@ -465,28 +465,37 @@ public class BasicQuery implements Query  {
         return new BasicLegacyConstraint(s);
     }
 
-    public FieldNullConstraint    createConstraint(StepField f) {
+    public FieldNullConstraint createConstraint(StepField f) {
         return new BasicFieldNullConstraint(f);
     }
 
-    public FieldValueConstraint        createConstraint(StepField f, Object v) {
+    public FieldValueConstraint createConstraint(StepField f, Object v) {
         return createConstraint(f, FieldCompareConstraint.EQUAL, v);
     }
 
-    public FieldValueConstraint        createConstraint(StepField f, int op, Object v) {
+    public FieldValueConstraint createConstraint(StepField f, int op, Object v, int part) {
+        BasicFieldValueConstraint c = new BasicFieldValueDateConstraint(f, v, part);
+        c.setOperator(op);
+        return c;
+    }
+
+    public FieldValueConstraint createConstraint(StepField f, int op, Object v) {
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
     }
-    public CompareFieldsConstraint     createConstraint(StepField f, int op, StepField  v) {
+
+    public CompareFieldsConstraint createConstraint(StepField f, int op, StepField  v) {
         BasicCompareFieldsConstraint c = new BasicCompareFieldsConstraint(f, v);
         c.setOperator(op);
         return c;
     }
+
     public FieldValueBetweenConstraint createConstraint(StepField f, Object o1, Object o2) {
         return new BasicFieldValueBetweenConstraint(f, o1, o2);
     }
-    public FieldValueInConstraint      createConstraint(StepField f, SortedSet v) {
+
+    public FieldValueInConstraint createConstraint(StepField f, SortedSet v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
             StepField nf = createStepField(step, "number");
@@ -503,17 +512,17 @@ public class BasicQuery implements Query  {
         }
     }
 
-    public Constraint                  setInverse(Constraint c, boolean i) {
+    public Constraint setInverse(Constraint c, boolean i) {
         ((BasicConstraint) c).setInverse(i);
         return c;
     }
 
-    public FieldConstraint             setCaseSensitive(FieldConstraint c, boolean s) {
+    public FieldConstraint setCaseSensitive(FieldConstraint c, boolean s) {
         ((BasicFieldConstraint) c).setCaseSensitive(s);
         return c;
 
     }
-    public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
+    public CompositeConstraint createConstraint(Constraint c1, int operator, Constraint c2) {
         if ((!used) && c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
             ((BasicCompositeConstraint) c1).addChild(c2);
             return (CompositeConstraint) c1;
@@ -523,7 +532,6 @@ public class BasicQuery implements Query  {
             c.addChild(c2);
             return c;
         }
-
     }
 
     public void setConstraint(Constraint c) {
@@ -536,7 +544,6 @@ public class BasicQuery implements Query  {
         BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
         return s;
-
     }
 
     /**
@@ -550,7 +557,6 @@ public class BasicQuery implements Query  {
         return;
     }
 
-
     public void addNode(Step  s, Node node) {
         addNode(s, node.getNumber());
     }
@@ -558,9 +564,10 @@ public class BasicQuery implements Query  {
     public boolean isUsed() {
         return used;
     }
+
     public boolean markUsed() {
         boolean wasUsed = used;
-        if (queryCheck == null) {  // if called manually 
+        if (queryCheck == null) {  // if called manually
             // apply security constraints first, if not yet done, because the query gets unmodifiable from now on.
             ((BasicCloud) cloud).setSecurityConstraint(this);
         }
@@ -592,7 +599,7 @@ public class BasicQuery implements Query  {
             log.debug("Setting security check " + c + " TO " + this);
         }
         queryCheck = c;
-            
+
         insecureConstraint = query.getConstraint(); // current constraint
         Constraint secureConstraint = queryCheck.getConstraint();
         if (secureConstraint != null) {

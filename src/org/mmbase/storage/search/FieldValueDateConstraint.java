@@ -12,7 +12,7 @@ package org.mmbase.storage.search;
 /**
  * @javadoc
  * @author Michiel Meeuwissen
- * @version $Id: FieldValueDateConstraint.java,v 1.1 2004-09-17 10:09:41 michiel Exp $
+ * @version $Id: FieldValueDateConstraint.java,v 1.2 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.8
  */
 public interface FieldValueDateConstraint extends FieldValueConstraint {
@@ -30,10 +30,9 @@ public interface FieldValueDateConstraint extends FieldValueConstraint {
     static final int MINUTE       = 9;
     static final int SECOND       = 10;
 
-
     /**
      * Returns the part of the date-field wich is to be compared.
-     */    
+     */
     int getPart();
 
 }

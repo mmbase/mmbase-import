@@ -16,9 +16,9 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.27 2004-10-09 09:39:31 nico Exp $
+ * @version $Id: Query.java,v 1.28 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.7
- * @see    org.mmbase.bridge.util.Queries
+ * @see org.mmbase.bridge.util.Queries
  */
 public interface Query extends SearchQuery, Cloneable {
 
@@ -84,7 +84,6 @@ public interface Query extends SearchQuery, Cloneable {
      */
     RelationStep addRelationStep(NodeManager otherManager);
 
-
     /**
      * Adds a field to a step.
      * @param step step to add field to
@@ -99,7 +98,6 @@ public interface Query extends SearchQuery, Cloneable {
      * @return new StepField
      */
     StepField addField(String field);
-
 
     /**
      * Removes all fields from the Query object.
@@ -122,11 +120,10 @@ public interface Query extends SearchQuery, Cloneable {
      */
     StepField createStepField(Step step, String fieldName);
 
-
     /**
      * Creates the step field for the given name. For a NodeQuery the arguments is simply the name of the
      * field. For a 'normal' query, it should be prefixed by the (automatic) alias of the Step.
-     * @param fieldIdentifer field identifier to create StepField from 
+     * @param fieldIdentifer field identifier to create StepField from
      * @return new StepField
      */
     StepField createStepField(String fieldIdentifer);
@@ -139,7 +136,6 @@ public interface Query extends SearchQuery, Cloneable {
      * @return new AggregatedField
      */
     AggregatedField addAggregatedField(Step step, Field field, int aggregationType);
-
 
     /**
      * Specifies wether the query result must contain only 'distinct' results.
@@ -154,12 +150,12 @@ public interface Query extends SearchQuery, Cloneable {
      * @see org.mmbase.storage.search.SearchQuery#isDistinct()
      */
     boolean isDistinct();
-    
+
     /**
      * Limits the query-result to maxNumber records.
      * @param maxNumber max number of results
      * @return Query
-     * @see org.mmbase.storage.search.implementation.BasicSearchQuery#setMaxNumber 
+     * @see org.mmbase.storage.search.implementation.BasicSearchQuery#setMaxNumber
      */
     Query setMaxNumber(int maxNumber);
 
@@ -170,7 +166,6 @@ public interface Query extends SearchQuery, Cloneable {
      * @see org.mmbase.storage.search.implementation.BasicSearchQuery#setOffset
      */
     Query setOffset(int offset);
-
 
     /**
      * Gets the 'clean' constraint on this query. I.e. the constraint which were automaticly added
@@ -196,15 +191,14 @@ public interface Query extends SearchQuery, Cloneable {
      * @see  Cloud#getList(String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct)
      * @see  NodeManager#getList(String constraints, String orderby, String directions)
      */
-    LegacyConstraint           createConstraint(String s);
-
+    LegacyConstraint createConstraint(String s);
 
     /**
      * Create a contraint (for use with this Query object). The given field must be 'null'.
      * @param f Stepfield
      * @return FieldNullConstraint
      */
-    FieldNullConstraint         createConstraint(StepField f);
+    FieldNullConstraint createConstraint(StepField f);
 
     /**
      * Create a contraint (for use with this Query object). The given field must equal the given
@@ -213,7 +207,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @param v value
      * @return FieldValueConstraint
      */
-    FieldValueConstraint        createConstraint(StepField f, Object v);
+    FieldValueConstraint createConstraint(StepField f, Object v);
 
     /**
      * Create a contraint (for use with this Query object). The given field and the given
@@ -223,7 +217,18 @@ public interface Query extends SearchQuery, Cloneable {
      * @param v value
      * @return FieldValueConstraint
      */
-    FieldValueConstraint        createConstraint(StepField f, int op, Object v);
+    FieldValueConstraint createConstraint(StepField f, int op, Object v);
+
+    /**
+     * Create a contraint (for use with this Query object). The given date field and the given
+     * value 'v', combined with given operator must evaluate to true for the specified date part.
+     * @param f field
+     * @param op operator
+     * @param v value
+     * @param part part of the date value
+     * @return FieldValueConstraint
+     */
+    FieldValueConstraint createConstraint(StepField f, int op, Object v, int part);
 
     /**
      * Create a contraint (for use with this Query object). The two given fields , combined with
@@ -233,12 +238,12 @@ public interface Query extends SearchQuery, Cloneable {
      * @param v value
      * @return CompareFieldsConstraint
      */
-    CompareFieldsConstraint     createConstraint(StepField f, int op, StepField  v);
+    CompareFieldsConstraint createConstraint(StepField f, int op, StepField  v);
 
     /**
      * Create a contraint (for use with this Query object). The given field must lie between the
      * two given values.
-     * @param f field 
+     * @param f field
      * @param o1 value one
      * @param o2 value two
      * @return FieldValueBetweenConstraint
@@ -254,7 +259,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @param v value
      * @return the new Constraint.
      */
-    FieldValueInConstraint      createConstraint(StepField f, SortedSet v);
+    FieldValueInConstraint createConstraint(StepField f, SortedSet v);
 
     /**
      * Changes the given constraint's 'case sensitivity' (if applicable). Default it is true.
@@ -262,7 +267,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @param sensitive case sensitivity
      * @return modified FieldConstraint
      */
-    FieldConstraint             setCaseSensitive(FieldConstraint constraint, boolean sensitive);
+    FieldConstraint setCaseSensitive(FieldConstraint constraint, boolean sensitive);
 
     /**
      * Changes the given constraint's 'inverse' (if applicable). Default it is (of course) false.
@@ -270,7 +275,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @param i inverse
      * @return Inversed contraint
      */
-    Constraint                  setInverse(Constraint c, boolean i);
+    Constraint setInverse(Constraint c, boolean i);
 
    /**
      * Combines two Constraints to one new one, using a boolean operator (AND or OR). Every new
@@ -283,7 +288,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @param c2 constraint two
      * @return a Composite constraint (might not be a new one)
      */
-    CompositeConstraint         createConstraint(Constraint c1, int op, Constraint c2);
+    CompositeConstraint createConstraint(Constraint c1, int op, Constraint c2);
 
     /**
      * The (composite) constraint can actually be set into the query with this method.
@@ -301,13 +306,12 @@ public interface Query extends SearchQuery, Cloneable {
      */
     SortOrder addSortOrder(StepField f, int direction);
 
-
     /**
      * Adds a node to a step.
      * @param s step
      * @param node node to add
      */
-    void      addNode(Step s, Node node);
+    void addNode(Step s, Node node);
 
     /**
      * Whether this query was used or not. If is was used, then you cannot modify it anymore (would

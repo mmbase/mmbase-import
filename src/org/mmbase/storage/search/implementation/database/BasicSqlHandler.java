@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.38 2004-09-17 09:58:27 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.39 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -131,9 +131,13 @@ public class BasicSqlHandler implements SqlHandler {
             append(stringValue).
             append("'");
         } else if (fieldType == FieldDefs.TYPE_DATETIME) {
-            sb.append("'");
-            appendDateValue(sb, (Date) value);
-            sb.append("'");
+            if (value instanceof Integer) {
+                sb.append(((Integer) value).intValue());
+            } else {
+                sb.append("'");
+                appendDateValue(sb, (Date) value);
+                sb.append("'");
+            }
         } else {
             // Numerical field:
             // represent integeral Number values as integer, other
@@ -583,6 +587,44 @@ public class BasicSqlHandler implements SqlHandler {
     }
     */
 
+    /**
+     * @javadoc
+     */
+    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+        String datePartFunction = null;
+        switch (datePart) {
+            case -1:
+            case FieldValueDateConstraint.YEAR:
+                datePartFunction = "YEAR";
+                break;
+            case FieldValueDateConstraint.MONTH:
+                datePartFunction = "MONTH";
+                break;
+            case FieldValueDateConstraint.DAY_OF_MONTH:
+                datePartFunction = "DAY";
+                break;
+            case FieldValueDateConstraint.HOUR:
+                datePartFunction = "HOUR";
+                break;
+            case FieldValueDateConstraint.MINUTE:
+                datePartFunction = "MINUTE";
+                break;
+            case FieldValueDateConstraint.SECOND:
+                datePartFunction = "SECOND";
+                break;
+            default:
+                throw new UnsupportedOperationException("This date partition function (" + datePart + ") is not supported.");
+        }
+        if (datePartFunction != null) {
+            sb.append(datePartFunction);
+            sb.append("(");
+        }
+        appendField(sb, step, fieldName, multipleSteps);
+        if (datePartFunction != null) {
+            sb.append(")");
+        }
+    }
+
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
@@ -681,7 +723,10 @@ public class BasicSqlHandler implements SqlHandler {
                     sb.append(overallInverse? "NOT (": "");
                 }
 
-                if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
+                if (fieldConstraint instanceof FieldValueDateConstraint) {
+                    int part = ((FieldValueDateConstraint)fieldConstraint).getPart();
+                    appendDateField(sb, step, fieldName, multipleSteps, part);
+                } else if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
                     sb.append("LOWER(");
                     appendField(sb, step, fieldName, multipleSteps);
@@ -761,7 +806,6 @@ public class BasicSqlHandler implements SqlHandler {
                 if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
                     sb.append(overallInverse? ")": "");
                 }
-
             } else {
                 throw new UnsupportedOperationException(
                 "Unknown constraint type: "

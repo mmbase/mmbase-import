@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * A constraint on a 'part' of a DateTime field. E.g. where extract(YEAR, lastmodified) = 2004.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFieldValueDateConstraint.java,v 1.1 2004-09-17 10:09:41 michiel Exp $
+ * @version $Id: BasicFieldValueDateConstraint.java,v 1.2 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.8
  */
 public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint implements FieldValueDateConstraint {
@@ -38,7 +38,7 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
         if (field.getType() != org.mmbase.module.corebuilders.FieldDefs.TYPE_DATETIME) {
             throw new IllegalArgumentException("Date value constraints can only be applied to 'DATETIME' type fields");
         }
-        setValue(value);
+        setPart(part);
     }
 
     public int getPart() {
@@ -48,7 +48,6 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
     public void setPart(int p) {
         part = p;
     }
-
 
     // javadoc is inherited
     public boolean equals(Object obj) {
