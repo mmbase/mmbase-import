@@ -9,13 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import org.mmbase.module.TransactionHandlerException;
-
 /**
  * @author John Balder, 3MPS
- * @version $Id: TransactionManagerException.java,v 1.1 2000-12-14 10:54:52 rico Exp $
+ * @version $Id: TransactionManagerException.java,v 1.2 2000-12-14 11:04:11 wwwtech Exp $
  */
-public class TransactionManagerException extends TransactionHandlerException {
+public class TransactionManagerException extends Exception {
 	
 	public TransactionManagerException(String error) {
 		super(error);
