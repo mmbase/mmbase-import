@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -294,8 +294,23 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
-        // Set directionality for relationstep to SOURCE.
+        // Set checkedDirectionality to true.
+        step2.setCheckedDirectionality(true);
+        strSql = instance.toSql(query, instance);
+        assertTrue(strSql, strSql.equals(
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "WHERE m_i.m_number IN (123,456) "
+        + "AND (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber "
+        + "AND insrel.rnumber=890) "
+        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "ORDER BY m_imageTitle ASC"));
+        
+        // Set directionality for relationstep to SOURCE,
+        // set checkedDirectionality to false.
         step2.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
+        step2.setCheckedDirectionality(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
@@ -307,8 +322,24 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
-        // Set directionality for relationstep to BOTH.
+        // Set checkedDirectionality to true.
+        step2.setCheckedDirectionality(true);
+        strSql = instance.toSql(query, instance);
+        assertTrue(strSql, strSql.equals(
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "WHERE m_i.m_number IN (123,456) "
+        + "AND (m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber "
+        + "AND insrel.dir<>1 "
+        + "AND insrel.rnumber=890) "
+        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "ORDER BY m_imageTitle ASC"));
+        
+        // Set directionality for relationstep to BOTH, 
+        // set checkedDirectionality to false.
         step2.setDirectionality(RelationStep.DIRECTIONS_BOTH);
+        step2.setCheckedDirectionality(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
@@ -321,8 +352,24 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
-        // Reset role.
+        // Set checkedDirectionality to true.
+        step2.setCheckedDirectionality(true);
+        strSql = instance.toSql(query, instance);
+        assertTrue(strSql, strSql.equals(
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "WHERE m_i.m_number IN (123,456) "
+        + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber "
+        + "AND insrel.dir<>1) "
+        + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber) "
+        + "AND insrel.rnumber=890) "
+        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "ORDER BY m_imageTitle ASC"));
+        
+        // Reset role and checkedDirectionality.
         step2.setRole(null);
+        step2.setCheckedDirectionality(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
