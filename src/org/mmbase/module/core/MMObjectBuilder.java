@@ -837,6 +837,8 @@ public class MMObjectBuilder extends MMTable {
 
 	/**
 	* what should a gui display when asked for this node/field combo
+	* Default is the first non system field (first field after owner)
+	* override this to display your own choice (see Images.java)
 	*/
 	public String getGUIIndicator(MMObjectNode node) {
 	
