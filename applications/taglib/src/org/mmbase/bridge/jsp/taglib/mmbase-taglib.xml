@@ -1,5 +1,11 @@
 <!--
 This "enhanced" tld file will be converted to a "normal" tld and a html file.
+
+To convert this file to a standard .tld file you need  an xslt engine like xalan:
+java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2tld.xslt  > mmbase-taglib.tld
+
+To convert this file to html documentation you need  an xslt engine:
+java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
 -->
 <taglib>
   <tlibversion>1.0</tlibversion>
