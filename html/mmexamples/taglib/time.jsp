@@ -18,13 +18,13 @@ time tag attributes see the
 <table>
 <tr><td colspan="2">Show the time in seconds from the start of the epoc</td></tr>
 <tr valign="top">
-  <td width="50%"><pre>&lt;mm:time /&gt;</pre></td>
-  <td width="50%"><mm:time /></td>
+  <td width="50%"><pre>&lt;mm:time time="now" /&gt;</pre></td>
+  <td width="50%"><mm:time time="now"/></td>
 </tr>
 <tr><td colspan="2">Show the time in seconds from EPOC and format it in a nice way</td></tr>
 <tr valign="top">
-  <td width="50%"><pre>&lt;mm:time format="EEEE d MMMM" /&gt;</pre></td>
-  <td width="50%"><mm:time format="EEEE d MMMM" /></td>
+  <td width="50%"><pre>&lt;mm:time time="now" format="EEEE d MMMM" /&gt;</pre></td>
+  <td width="50%"><mm:time time="now" format="EEEE d MMMM" /></td>
 </tr>
 <tr><td colspan="2"> Show the time in different languages and formats. If the format starts with a
 colon, localized date formats can be used with constants FULL, LONG, MEDIUM and SHORT. Otherwise it
