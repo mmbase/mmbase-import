@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.199 2002-12-24 18:02:50 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.200 2002-12-27 12:32:37 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1914,7 +1914,7 @@ public class MMObjectBuilder extends MMTable {
                     if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
                     // now query the correct builder  for the missing nodes...
                     // TODO RvM: use getNodes(NodeSearchQuery) instead.
-                    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
+                    Enumeration enum = builder.searchWithWhere("WHERE " + mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
                     while(enum.hasMoreElements()) {
                         MMObjectNode current = (MMObjectNode)enum.nextElement();
                         convertedNodes.put(new Integer(current.getNumber()), current);
