@@ -25,7 +25,10 @@ import org.mmbase.util.logging.*;
  * @version 9-11-2000
  */
 public class NodeWriter{
-	private static Logger log = Logging.getLoggerInstance(NodeWriter.class.getName());
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(NodeWriter.class.getName());
+
     private MMBase mmb;
     private Vector resultsmsgs;
     private String directory;
@@ -45,7 +48,7 @@ public class NodeWriter{
      *                   trailing slash).
      * @param buildername name of the builder to export
      * @param isRelationNode if <code>true</code>, the source to write is a relationsource.
-     *		Otherwise, a datasource is written.
+     *        Otherwise, a datasource is written.
      */
     NodeWriter(MMBase mmb, Vector resultsmsgs, String directory,
                String builderName, boolean isRelationNode) {
@@ -64,9 +67,8 @@ public class NodeWriter{
             resultsmsgs.addElement("Failed opening file " + file);
         }
         // Write the header
-
-	write("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-	write("<!DOCTYPE builder PUBLIC \"//MMBase - data//\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
+        write("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+        write("<!DOCTYPE builder PUBLIC \"//MMBase - data//\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
         write("<" + builderName + " "
               + "exportsource=\"mmbase://127.0.0.1/install/b1\" "
               + "timestamp=\"20000602143030\">\n");
@@ -80,55 +82,50 @@ public class NodeWriter{
     *  @param node The object to store.
     */
     public void write(MMObjectNode node) {
-    	//
-    	// retrieve basic information of the node
+        // retrieve basic information of the node
         int number=node.getIntValue("number");
         String owner=node.getStringValue("owner");
         // start writing the node
         if (isRelationNode) {
-        	// For a relationnode, the fields snumber, dnumber and rnumber are stored as
-            	// named references (as snumber, rnumber, and rtype).
-
-            	// determine the relation 'type' (use the value of sname in RelDef, or the
-            	// current buildername by default)
-		String rtype = builderName;
-        	int rnumber=node.getIntValue("rnumber");
-        	MMObjectNode reldefnode=mmb.getRelDef().getNode(rnumber);
-        	if (reldefnode!=null) {
-	        	rtype = reldefnode.getStringValue("sname");
-	        }
-	
+            // For a relationnode, the fields snumber, dnumber and rnumber are stored as
+            // named references (as snumber, rnumber, and rtype).
+            // determine the relation 'type' (use the value of sname in RelDef, or the
+            // current buildername by default)
+            String rtype = builderName;
+            int rnumber=node.getIntValue("rnumber");
+            MMObjectNode reldefnode=mmb.getRelDef().getNode(rnumber);
+            if (reldefnode!=null) {
+                rtype = reldefnode.getStringValue("sname");
+            }
             write("\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+ node.getIntValue("snumber") +"\" dnumber=\""+ node.getIntValue("dnumber") +"\" rtype=\""+ rtype +"\"");
-		    // add directionality if used					
-			if (InsRel.usesdir) {
-			    int dir=node.getIntValue("dir");
-			    if (dir==1) {
-				    write(" dir=\"unidirectional\"");
-			    } else {
-				    write(" dir=\"bidirectional\"");
-			    }
-			}
-
-			write(">\n");
-
+            // add directionality if used
+            if (InsRel.usesdir) {
+                int dir=node.getIntValue("dir");
+                if (dir==1) {
+                    write(" dir=\"unidirectional\"");
+                } else {
+                    write(" dir=\"bidirectional\"");
+                }
+            }
+            write(">\n");
         } else {
-        	// For a data node, store the alias if at all possible.
-            	String tm=mmb.OAlias.getAlias(number);
-            	if (tm==null) {
-                	write("\t<node number=\""+number+"\" owner=\""+owner+"\">\n");
-            	} else {
-                	write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
-            	}
+            // For a data node, store the alias if at all possible.
+            String tm=mmb.OAlias.getAlias(number);
+            if (tm==null) {
+                write("\t<node number=\""+number+"\" owner=\""+owner+"\">\n");
+            } else {
+                write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
+            }
         }
         // write the values of the node
-        Hashtable values=node.getValues();	
+        Hashtable values=node.getValues();
         Enumeration nd=values.keys();
         while (nd.hasMoreElements()) {
             String key=(String)nd.nextElement();
             if (isRelationNode) {
-            	// note that the routine below assumes
-            	// fields in a relation node cannot contain binary blobs
-            	//
+                // note that the routine below assumes
+                // fields in a relation node cannot contain binary blobs
+                //
                 if (!key.equals("number") && !key.equals("owner")
                         && !key.equals("otype") && !key.equals("CacheCount")
                         && !key.equals("snumber") && !key.equals("dnumber")
@@ -143,12 +140,12 @@ public class NodeWriter{
         write("\t</node>\n\n");
         nrOfNodes++;
     }
-    
+
     /**
     *  Writes a footer to the xml file, and closes the file.
     */
     public void done() {
-        // write the footer	
+        // write the footer
         write("</"+ builderName + ">\n");
         resultsmsgs.addElement("Saving " + nrOfNodes + " " + builderName
                                + " to : " + file);
@@ -185,28 +182,27 @@ public class NodeWriter{
     *  @return A <code>String</code> descriving in xml-format the field's content (or a reference to that content)
     */
     private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
-	if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
-		// this is a bad way of doing it imho
-		int type=node.getDBType(key);
-		String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));	
-		if (type==FieldDefs.TYPE_BYTE) {
-			String body="\t\t<"+key+" file=\""+stype+"/"+node.getIntValue("number")+"."+key+"\" />\n";
-			File file = new File(targetpath+stype);
-			try {
-				file.mkdirs();
-			} catch(Exception e) {
-				log.error("Can't create dir : "+targetpath+stype);
-			}
-			byte[] value=node.getByteValue(key);
-			saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);
-			return(body);
-		} else {
-			String body="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
-			return(body);
-		}
-
-	}
-	return("");
+        if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
+            // this is a bad way of doing it imho
+            int type=node.getDBType(key);
+            String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
+            if (type==FieldDefs.TYPE_BYTE) {
+                String body="\t\t<"+key+" file=\""+stype+"/"+node.getIntValue("number")+"."+key+"\" />\n";
+                File file = new File(targetpath+stype);
+                try {
+                    file.mkdirs();
+                } catch(Exception e) {
+                    log.error("Can't create dir : "+targetpath+stype);
+                }
+                byte[] value=node.getByteValue(key);
+                saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);
+                return body;
+            } else {
+                String body="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
+                return body;
+           }
+        }
+        return "";
     }
 
     /**
@@ -215,18 +211,19 @@ public class NodeWriter{
     *  @param value binary data to store (byte array)
     *  @return <code>true</code> if the write was succesful, <code>false</code> if an exception occurred
     */
-	static boolean saveFile(String filename,byte[] value) {
-		File sfile = new File(filename);
-		try {
-			DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
-			scan.write(value);
-			scan.flush();
-			scan.close();
-		} catch(Exception e) {
-			e.printStackTrace();
-			return(false);
-		}
-		return(true);
-	}
+    static boolean saveFile(String filename,byte[] value) {
+        File sfile = new File(filename);
+        try {
+            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+            scan.write(value);
+            scan.flush();
+            scan.close();
+        } catch(Exception e) {
+            log.error(e.toString());
+            log.error(Logging.stackTrace(e));
+            return false;
+        }
+        return true;
+    }
 
 }
