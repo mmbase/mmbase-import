@@ -14,10 +14,10 @@
       <%-- based on normal xslt, but a little changed --%>
       <xsl:import href="mm:xslt/mmxf2xhtml.xslt" />
       <xsl:param name="color">green</xsl:param>
-      <xsl:template match = "h" >
-        <xsl:if test="count(ancestor::section)=1"><xsl:if test="string(.)"><h1 style="color:{$color};"><xsl:value-of select="." /></h1></xsl:if></xsl:if>
-        <xsl:if test="count(ancestor::section)=2"><h2 style="color:red;"><strong><xsl:value-of select="." /></strong></h2></xsl:if>
-      </xsl:template>
+
+      <xsl:template match="h" mode="h1"><xsl:if test="string(.)"><h1 style="color:{$color};"><xsl:apply-templates select="node()" /></h1></xsl:if></xsl:template>
+      <xsl:template match="h" mode="h2"><h2 style="color:red;"><strong><xsl:apply-templates select="node()" /></strong></h2></xsl:template>
+
     </mm:xslt>
     <mmxf>
       <section>

@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.9 2004-02-11 20:02:04 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.10 2004-03-02 18:53:02 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -13,7 +13,7 @@
   xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
   version = "1.0" 
   xmlns:mmxf="http://www.mmbase.org/mmxf"
-  exclude-result-prefixes="mmxf" 
+  exclude-result-prefixes="mmxf node" 
 >
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
   <xsl:output method="xml" omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
@@ -39,7 +39,7 @@
         <xsl:for-each select="field[@name='body']/mmxf/section">
           <a>
             <xsl:attribute name="href">#<xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" /></xsl:attribute>
-            <xsl:value-of select="@title" />
+            <xsl:value-of select="h" />
             </a><br />
         </xsl:for-each>
       </div>
@@ -51,20 +51,15 @@
       </p>
   </xsl:template>
 
-   <xsl:template match = "h" >
-     <xsl:if test="count(ancestor::section)=1">
-       <h3 style="color:red;">
-         <a>
-           <xsl:attribute name="id">
-             <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
-           </xsl:attribute>
-           <xsl:value-of select="." />
-         </a>
-       </h3>
-     </xsl:if>
-     <xsl:if test="count(ancestor::section)=2"><p><strong><xsl:value-of select="." /></strong></p></xsl:if>
-     <xsl:if test="count(ancestor::section)=3"><p><xsl:value-of select="." /></p></xsl:if>
-     <xsl:if test="count(ancestor::section)>3"><xsl:value-of select="." /><br /></xsl:if>
+   <xsl:template match = "h" mode="h1">
+     <h3 style="color:red;">
+       <a>
+         <xsl:attribute name="id">
+           <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
+         </xsl:attribute>
+         <xsl:value-of select="node()" />
+       </a>
+     </h3>
    </xsl:template>
      
 </xsl:stylesheet>
