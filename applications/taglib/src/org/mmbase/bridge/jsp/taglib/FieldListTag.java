@@ -31,7 +31,8 @@ import org.mmbase.util.logging.Logging;
 **/
 public class FieldListTag extends NodeReferrerTag implements ListItemInfo {
 
-        
+    private static final int NO_TYPE = -100;
+
     private static Logger log = Logging.getLoggerInstance(FieldListTag.class.getName());
     
     private FieldIterator returnValues;
@@ -42,7 +43,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo {
     private String nodeManagerString = null;
     private NodeProvider nodeProvider = null;
 
-    private int type = NodeManager.ORDER_LIST;
+    private int type = NO_TYPE;
 
     public int size(){
         return listSize;
@@ -94,7 +95,12 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo {
             nodeManager = getCloudProviderVar().getNodeManager(nodeManagerString);
         }
 
-        FieldList fieldList = nodeManager.getFields(type);            
+        FieldList fieldList;
+        if (type != NO_TYPE) {
+            fieldList = nodeManager.getFields(type);
+        } else {
+            fieldList = nodeManager.getFields(); 
+        }
         listSize = fieldList.size();
         returnValues = fieldList.fieldIterator();
 
