@@ -34,4 +34,8 @@ public class UserContext extends org.mmbase.security.UserContext {
         return getIdentifier().equals("");
     }
    
+    public boolean isAdmin() {
+        log.debug("admin function (" + name + ")");
+        return getIdentifier().equals("admin");
+    }
 }
