@@ -140,6 +140,7 @@ public class MessageNode implements Node {
 
     public org.w3c.dom.Element  getXMLValue(String fieldname, org.w3c.dom.Document tree) {
         invalidOperation();  // not implemented
+        return null;
     }
 
     private void invalidOperation() {
@@ -232,13 +233,16 @@ public class MessageNode implements Node {
 
     public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) {
         invalidOperation();  // not implemented
+        return null;
     }
     public org.w3c.dom.Element toXML(org.w3c.dom.Document tree, FieldList f) {
         invalidOperation();  // not implemented
+        return null;
 
     }
     public org.w3c.dom.Element toXML(org.w3c.dom.Document tree, Field f) {
         invalidOperation();  // not implemented
+        return null;
     }
     public boolean mayLink() {
         return false;
