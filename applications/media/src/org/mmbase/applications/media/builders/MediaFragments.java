@@ -29,7 +29,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.11 2003-02-26 12:24:34 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.12 2003-03-19 16:03:23 michiel Exp $
 * @since MMBase-1.7
  */
 
@@ -267,6 +267,29 @@ public class MediaFragments extends MMObjectBuilder {
     }
     
     /**
+     * Adds a parent fragment to the Stack and returns true, or returns false.
+     */
+
+    protected boolean addParentFragment(Stack fragments) {
+        MMObjectNode fragment = (MMObjectNode) fragments.peek();
+        int role = mmb.getRelDef().getNumberByName("posrel");
+        org.mmbase.module.corebuilders.InsRel insrel =  mmb.getRelDef().getBuilder(role);
+        Enumeration e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
+        while (e.hasMoreElements()) {
+            MMObjectNode relation = (MMObjectNode) e.nextElement();
+            if (relation.getIntValue("dnumber") == fragment.getNumber()) { // yes, found a parent node
+                if (log.isDebugEnabled()) {
+                    log.debug("Yes, found parent of " + fragment.getNumber() + " " + relation.getIntValue("snumber"));
+                }
+                MMObjectNode parent = getNode(relation.getIntValue("snumber"));
+                fragments.push(parent);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns a Stack with all parent fragments. Starts stacking from
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
@@ -276,34 +299,10 @@ public class MediaFragments extends MMObjectBuilder {
     public Stack getParentFragments(MMObjectNode fragment) {
         Stack result = new Stack();
         result.push(fragment);
-        log.debug("Finding parent of node " + fragment.getNumber());
-        int role = mmb.getRelDef().getNumberByName("posrel");
-        org.mmbase.module.corebuilders.InsRel insrel =  mmb.getRelDef().getBuilder(role);
-        Enumeration e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
-        while (e.hasMoreElements()) {
-            MMObjectNode relation = (MMObjectNode) e.nextElement();
-            log.debug("Checking relation " + relation);
-            if (relation.getIntValue("dnumber") == fragment.getNumber()) { // yes, found a parent node
-                log.debug("Yes, found parent of " + fragment.getNumber() + " " + relation.getIntValue("snumber"));
-                fragment = getNode(relation.getIntValue("snumber"));
-                result.push(fragment);
-            }            
+        if (log.isDebugEnabled()) {
+            log.debug("Finding parents of node " + fragment.getNumber());
         }
-        
-        role = mmb.getRelDef().getNumberByName("parent");
-        insrel =  mmb.getRelDef().getBuilder(role);
-        e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
-        while (e.hasMoreElements()) {
-            MMObjectNode relation = (MMObjectNode) e.nextElement();
-            log.debug("Checking relation " + relation);
-            if (relation.getIntValue("snumber") == fragment.getNumber()) { // yes, found a parent node
-                if (log.isDebugEnabled()) {
-                    log.debug("Yes, found base=parent of " + fragment.getNumber() + " " + relation.getIntValue("dnumber"));
-                }
-                fragment = getNode(relation.getIntValue("dnumber"));
-                result.push(fragment);
-            }            
-        }
+        while (addParentFragment(result));
         return result;
     }
 
