@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.40 2000-11-15 09:19:23 install Exp $
+$Id: MMSQL92Node.java,v 1.41 2000-11-19 00:00:56 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.40  2000/11/15 09:19:23  install
+Rob Changed getDBKey multiple mmbases can synchronize their keys
+
 Revision 1.39  2000/11/14 12:27:31  install
 Rob : added some comments
 
@@ -162,7 +165,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.40 $ $Date: 2000-11-15 09:19:23 $
+* @$Revision: 1.41 $ $Date: 2000-11-19 00:00:56 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -775,10 +778,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	 * And inserts the DBKey retrieve by getDBKeyOld
 	 */
 	private void checkNumberTable() {
-		System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
+		if (debug) System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
 		if(!created(mmb.baseName+"_numberTable")) {
 			int number = getDBKeyOld();
-	 	 	System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
+	 	 	if (debug) System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
 			String createStatement = getMatchCREATE("numberTable")+"( number integer not null);";
 			try {
 				MultiConnection con=mmb.getConnection();
@@ -804,21 +807,23 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
+			// not part of sql92, please find new trick (daniel)
+			//stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
 			stmt.executeUpdate("update "+mmb.baseName+"_numberTable set number = number+1");
  			ResultSet rs=stmt.executeQuery("select number from "+mmb.baseName+"_numberTable;");
   			while(rs.next()) {
-                number=rs.getInt(1);
-            }
-			stmt.executeUpdate("unlock tables;");
+            		    number=rs.getInt(1);
+			}
+			// not part of sql92, please find new trick (daniel)
+			// stmt.executeUpdate("unlock tables;");
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
 		}
-		System.out.println("MMSQL92NODE -> retrieving number "+number+" from the database");
-		return number; 
+		if (debug) System.out.println("MMSQL92NODE -> retrieving number "+number+" from the database");
+		return (number); 
 	}
 
 	public synchronized int getDBKeyOld() {
@@ -836,7 +841,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("MMBase -> Error getting a new key number");
+			if (debug) System.out.println("MMBase -> Error getting a new key number");
 			return(1);
 		}
 		return(number);
