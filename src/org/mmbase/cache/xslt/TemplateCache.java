@@ -15,6 +15,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import org.mmbase.util.FileWatcher;
 import java.io.File;
+import java.util.Map;
+import java.util.Iterator;
+import javax.xml.transform.URIResolver;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.4 2002-05-15 16:44:42 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.5 2002-05-28 15:26:20 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -46,11 +49,13 @@ public class TemplateCache extends Cache {
     private static FileWatcher templateWatcher = new FileWatcher (true) {
             protected void onChange(File file) {
                 // invalidate cache.
-                String key = "file:///" + file.getPath();
-                if (log.isDebugEnabled()) log.debug("Removing " + key + " from cache");
+                if (log.isDebugEnabled()) log.debug("Removing " + file.toString() + " from cache");
                 synchronized(cache) {
-                    if (cache.remove(key) == null) {
-                        log.error("Could not remove " + key + " from cache!");
+                    int removed = cache.remove(file);
+                    if (removed == 0) {
+                        log.error("Could not remove " + file.toString() + " Template(s) from cache!");
+                    } else {
+                        if (log.isDebugEnabled()) log.debug("Removed " + removed + " entries from cache");
                     }
                 }
                 remove(file);
@@ -89,9 +94,31 @@ public class TemplateCache extends Cache {
     private String getKey(Source src) {
         return src.getSystemId();
     }
+    
+    private String getKey(Source src, URIResolver uri) {     
+        return "" + uri.hashCode() + src.getSystemId();
+    }
+
+    private int remove(File file) {
+        int removed = 0;
+        String key = "file:///" + file.getPath();
+        Iterator i =  getOrderedEntries().iterator();
+        while (i.hasNext()) {
+            String mapKey = (String) ((Map.Entry) i.next()).getKey();
+            if (mapKey.indexOf(key) > 0) {
+                if(remove(mapKey) != null) {
+                    removed++;
+                }
+            }
+        }
+        return 0;        
+    }
 
     public Templates getTemplates(Source src) {
-        String key = getKey(src);
+        return getTemplates(src, null);
+    }
+    public Templates getTemplates(Source src, URIResolver uri) {
+        String key = getKey(src, uri);
         if (key == null) return null;
         return (Templates) get(key);
     }
@@ -106,13 +133,16 @@ public class TemplateCache extends Cache {
         throw new RuntimeException("wrong types in cache");
     }
     public Object put(Source src, Templates value) {
+        return put(src, value, null);
+    }
+    public Object put(Source src, Templates value, URIResolver uri) {
         if (! isActive()) {
             if (log.isDebugEnabled()) {
                 log.debug("XSLT Cache is not active");
             }
             return null;
         }
-        String key = getKey(src);
+        String key = getKey(src, uri);
         if (key == null) return null;
         Object res = super.put(key, value);        
         log.service("Put xslt in cache with key " + key.substring(0, 20) + "...");
