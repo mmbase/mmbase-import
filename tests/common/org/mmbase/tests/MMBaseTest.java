@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.tests;
 import junit.framework.TestCase;
 import java.io.File;
+
+import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.tools.MMAdmin;
 
@@ -33,6 +35,7 @@ public abstract class MMBaseTest extends TestCase {
     static public void startMMBase() throws Exception {
         org.mmbase.module.core.MMBaseContext.init();
         org.mmbase.module.core.MMBase.getMMBase();
+        
         MMAdmin mmadmin = (MMAdmin) org.mmbase.module.core.MMBase.getModule("mmadmin", true);
         while (! mmadmin.getState()) {
             Thread.sleep(1000);
@@ -51,7 +54,7 @@ public abstract class MMBaseTest extends TestCase {
      * If no running MMBase is needed, then you probably want at least to initialize logging.
      */
     static public void startLogging(String configure) throws Exception {
-        Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + configure);
+        Logging.configure(ResourceLoader.getConfigurationRoot().getChildResourceLoader("log"), configure);
     }
 
     /**
