@@ -8,6 +8,17 @@ input.popforminput {
 	padding: 0em 0em 0em 0em;
 	background-color: #EAEAEA;
 	border: #404040 1px solid }	
+
+input.popdurationforminput {  
+	font-family: Arial, Tahoma, Verdana, sans-serif;
+	font-size: 1.1em;
+	font-weight: normal;
+	color: #000000;
+	width: 10em;
+	height: 1.4em;
+	padding: 0em 0em 0em 0em;
+	background-color: #EAEAEA;
+	border: #404040 1px solid }	
 	
 textarea.popforminput { 
 	font-family: arial, tahoma, verdana, sans-serif;

@@ -29,19 +29,19 @@
     <input type="hidden" name="todonumber" value="<mm:write referid="todonumber"/>">
     <input type="hidden" name="myfeedback1" value="<mm:write referid="myfeedback1"/>">
     <input type="hidden" name="myfeedback2" value="<mm:write referid="myfeedback2"/>">
-    <table width="90%" border="1">
+    <table class="font" width="90%">
       <tr>
         <td width="80">Taak</td>
-        <td><input name="todoname" type="text" size="50" maxlength="255" value="<mm:write referid="todoname"/>"></td>
+        <td><input name="todoname" class="popFormInput" type="text" size="50" maxlength="255" value="<mm:write referid="todoname"/>"></td>
       </tr>
       <tr>
         <td>Beschrijving</td>
-        <td><textarea name="tododesc" cols="50" rows="5"><mm:write referid="tododesc"/></textarea></td>
+        <td><textarea name="tododesc" class="popFormInput" cols="50" rows="5"><mm:write referid="tododesc"/></textarea></td>
       </tr>
       <tr>
         <td>Verwachte duur</td>
         <td>
-          <input name="durationvalue" type="text" size="15" maxlength="15" value="<mm:write referid="durationvalue"/>">
+          <input name="durationvalue" class="popDurationFormInput" type="text" size="15" maxlength="15" value="<mm:write referid="durationvalue"/>">
           <select name="durationmeasure">
             <option value="1"<mm:compare referid="durationmeasure" value="1"> selected</mm:compare>>uur</option>
             <option value="2"<mm:compare referid="durationmeasure" value="2"> selected</mm:compare>>dag</option>
@@ -73,7 +73,7 @@
         </tr>
       </mm:compare>
     </table>
-    <input type="submit" value="aanmaken">
-    <input type="submit" value="terug" onClick="newtodoform.command.value='continue'">
+    <input type="submit" class="formbutton" value="aanmaken">
+    <input type="submit" class="formbutton" value="terug" onClick="newtodoform.command.value='continue'">
   </form>
 </div>

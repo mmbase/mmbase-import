@@ -22,7 +22,7 @@
         </mm:treefile>" method="post">
     <input type="hidden" name="command" value="savecomp">
     <input type="hidden" name="returnto" value="editcomp">
-    <input type="hidden" name="todonumber">
+    <input type="hidden" name="todonumber" value="-1">
       <tr style="vertical-align:top;">
         <td width="100" style="vertical-align:top;">Competentie</td>
         <td><b><mm:field name="name"/></b></td>
@@ -66,8 +66,8 @@
   <table class="font" width="80%">
     <tr>
       <td>
-        <button class="formbutton" onClick="editcompform.submit()">aanmaken</button>
-        <button class="formbutton" onClick="editcompform.command.value='no';editcompform.submit()">terug</button>
+        <input type="button" class="formbutton" onClick="editcompform.submit()" value="aanmaken">
+        <input type="button" class="formbutton" onClick="editcompform.command.value='no';editcompform.submit()" value="terug">
       </td>
       <td align="right">
         <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
