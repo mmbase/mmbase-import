@@ -59,18 +59,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private ContextProvider  parent = null;
     private boolean    searchedParent = false;
 
-
-    public void release() {
-        // release is not called in Orion 1.5.2!!
-        log.debug("releasing");
-        container = null;
-        //myHashMap = null;
-        //poster = null;
-        //cleanVars();
-        super.release();
-    }
-
-
     private CloudContext cloudContext;
 
     /**
@@ -103,7 +91,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("Start tag of ContextTag");
         parent = null;
         searchedParent = false;
-        createContainer(getContextTag().getContainer());
+        createContainer(getContextProvider().getContainer());
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
             if (log.isDebugEnabled()) {
@@ -132,6 +120,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      *
      * @param key the key (id) of the node to register
      * @param node the node to put in the hashmap
+     * @deprecated Use getContextProvider().getContainer().registerNode
      */
     public void  registerNode(String key, Node n) throws JspTagException {
         container.registerNode(key, n);
@@ -143,22 +132,30 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * context and registers it in this one.
      *
      *  Returns null if it could not be found.
+     * @deprecated Use getContextProvider().getContainer().findAndRegister
      */
     public Object findAndRegister(int from, String referid, String newid) throws JspTagException {
         return container.findAndRegister(pageContext, from, referid, newid, true);
     }
 
+    /**
+     * @deprecated Use getContextProvider().getContainer().findAndRegister
+     */
     protected Object findAndRegister(int from, String referid, String newid, boolean check) throws JspTagException {
         return container.findAndRegister(pageContext, from, referid, newid, check);
     }
 
-    // javadoc inherited
+    /**
+     * @deprecated Use getContextProvider().getContainer().findAndRegister
+     */
     public Object findAndRegister(String externid, String newid) throws JspTagException {
         return container.findAndRegister(pageContext, externid, newid);
     }
 
 
-    // javadoc inherited
+    /**
+     * @deprecated Use getContextProvider().getContainer().register
+     */
     public void register(String newid, Object n, boolean check) throws JspTagException {
         container.register(newid, n, check);
     }
@@ -166,12 +163,16 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     /**
      * Register an Object with a key in the context. If the Context is
      * a session context, then it will be put in the session, otherwise in the hashmap.
+     * @deprecated Use getContextProvider().getContainer().register
      */
     public void register(String newid, Object n) throws JspTagException {
         container.register(newid, n);
     }
 
 
+    /**
+     * @deprecated Use getContextProvider().getContainer().unRegister
+     */
     public void unRegister(String key) throws JspTagException {
         container.unRegister(key);
     }
@@ -180,6 +181,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * Registers an variable again. This can be used to change the type of a variable, e.g.
      *
      * @since MMBase-1.6
+     * @deprecated Use getContextProvider().getContainer().reregister
      */
     public void reregister(String id, Object n) throws JspTagException {
         container.reregister(id, n);
@@ -189,26 +191,42 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     /**
      * 'present' means 'not null'. 'null' means 'registered, but not present'.
      *  Not registered is not present, of course.
+     * @deprecated Use getContextProvider().getContainer().isPresent
      */
 
     public boolean isPresent(String key) throws JspTagException {
         return container.isPresent(key);
     }
-
     
+    /**
+     * @deprecated Use getContextProvider().getContainer().isRegistered
+     */
     public boolean isRegistered(String key) throws JspTagException {
         return container.isRegistered(key);
     }
+    /**
+     * @deprecated Use getContextProvider().getContainer().isRegisteredSomewhere
+     */
     private boolean isRegisteredSomewhere(String key) throws JspTagException {
         return container.containsKey(key, true); // do check parent.
     }
 
+    /**
+     * @deprecated Use getContextProvider().getContainer().findAndRegister
+     */
     public Object findAndRegister(String id) throws JspTagException {
         return container.findAndRegister(pageContext, id);
     }
+    /**
+     * @deprecated Use getContextProvider().getContainer().findAndRegisterString
+     */
     public String findAndRegisterString(String id) throws JspTagException {
         return container.findAndRegisterString(pageContext, id);
     }
+
+    /**
+     * @deprecated Use getContextProvider().getContainer().getObject
+     */
 
     public Object getContainerObject(String key) throws JspTagException {
         return container.getObject(key);
