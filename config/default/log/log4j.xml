@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.19 2002-08-07 19:16:39 michiel Exp $
+   @version $Id: log4j.xml,v 1.20 2002-10-21 16:15:21 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -19,7 +19,6 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
-    <!ENTITY mmlogger   "org.mmbase.util.logging.log4j2.Log4jImpl" >
     <!ENTITY mmlevel    "org.mmbase.util.logging.log4j2.Log4jLevel" >
     <!ENTITY logdir   "/tmp/" >
 ]>
@@ -82,40 +81,37 @@
   <!-- categories -->
   
   <!-- examples: different level for a few subtrees -->
-  <category class="&mmlogger;" name="org.mmbase.bridge" >
+  <logger name="org.mmbase.bridge" >
     <level class="&mmlevel;" value ="info" />
-  </category>
+  </logger>
 
-  <category class="&mmlogger;" name="org.mmbase.security" >
+  <logger name="org.mmbase.security" >
     <level class="&mmlevel;" value ="info" />
-  </category>
+  </logger>
 
 
   <!-- 'page logging' goes to a different appender -->
-  <category class="&mmlogger;" name="org.mmbase.bridge.jsp.taglib.pageflow"  additivity="false" >
+  <logger name="org.mmbase.bridge.jsp.taglib.pageflow"  additivity="false" >
     <level class="&mmlevel;" value ="service" />
     <appender-ref ref="pagedebug" />
-  </category>
+  </logger>
 
   
   <!-- perhaps you use your own extensions to MMBase -->
-  <category class="&mmlogger;" name="nl.omroep" >
+  <logger name="nl.omroep" >
     <level class="&mmlevel;" value ="trace" />
-  </category>
+  </logger>
   
   <!-- 
   STDERR is a special Category, to wich stderr will be written
   (always with level 'warn' or higher)  
+  The level can be set to 'fatal' and the stderr will not be
+  redirected to mmbase logging.
   -->
-
-  <category class="&mmlogger;" name="org.mmbase.servlet.TestServlet">
+ 
+  <logger name="STDERR">
     <level class="&mmlevel;" value ="info" />	
-  </category>
-
-  
-  <category class="&mmlogger;" name="STDERR">
-    <level class="&mmlevel;" value ="info" />	
-  </category>
+  </logger>
   
   <root>
     <level class="&mmlevel;" value ="service" />
