@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.5 $
+   Version: $Revision: 1.6 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -53,15 +53,15 @@
   <xsl:variable name="BodyOnLoad">preLoadButtons(); doOnLoad_ew(); start_validator();  startHtmlArea();</xsl:variable>
 
   <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/color/wizard.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/color/wizard.css" />
   </xsl:template>
 
   <xsl:template name="extrastyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/extra/wizard.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/extra/wizard.css" />
   </xsl:template>
 
   <xsl:template name="extrajavascript">
-    <script language="javascript" src="{$referrerdir}/javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$templatedir}/javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
   </xsl:template>
 
   <xsl:template name="buttons">
