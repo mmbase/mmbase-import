@@ -67,6 +67,8 @@ public class Channel extends MMObjectBuilder {
 
     /** Field : open */
     public static final String F_OPEN = "open";
+    /** Field : maxusers */
+    public static final String F_MAXUSERS = "maxusers";
     /** Field : state */
     public static final String F_STATE = "state";
     /** Field : session */
@@ -228,6 +230,25 @@ public class Channel extends MMObjectBuilder {
                 return true;
             }
             log.error("close(): Can't close channel "+channelnr);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Makes a channel read only.
+     * @param channel The channel to affect.
+     * @result <code>true</code> if changing the channel open status was successfull.
+     */
+    public boolean readonly(MMObjectNode channel) {
+        Integer channelnr=new Integer(channel.getNumber());
+        if (channel.getIntValue(F_OPEN) != READ_ONLY) {
+            channel.setValue(F_OPEN, READ_ONLY);
+            if (channel.commit()) {
+                log.debug("close(): channel "+channelnr+"("+channel.getValue("name")+") made read only.");
+                return true;
+            }
+            log.error("close(): Can't make channel "+channelnr+" read only");
             return false;
         }
         return true;
@@ -722,6 +743,7 @@ public class Channel extends MMObjectBuilder {
             }
 
             if (cmd.equals("OPEN")) open(channel);
+            if (cmd.equals("READONLY")) readonly(channel);
             if (cmd.equals("CLOSE")) close(channel);
             if (cmd.equals("ISOPEN")) return isOpen(channel);
             if (cmd.equals("DELALLMESSAGES")) removeAllMessages(channel);
@@ -782,6 +804,9 @@ public class Channel extends MMObjectBuilder {
         }
         if (field.equals(F_OPEN)) {
             return isOpen(node);
+        }
+        if (field.equals(F_MAXUSERS)) {
+            if (node.getIntValue(field)==-1) return "unlimited";
         }
         return null;
     }
