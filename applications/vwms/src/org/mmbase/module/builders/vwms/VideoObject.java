@@ -22,8 +22,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
+ * @deprecated not used anywhere
  * @author vpro
- * @version $Id: VideoObject.java,v 1.7 2003-03-07 08:50:12 pierre Exp $
+ * @version $Id: VideoObject.java,v 1.8 2004-10-08 10:48:07 pierre Exp $
  */
 public class VideoObject {
 
