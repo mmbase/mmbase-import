@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.25 2001-05-14 09:58:23 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.26 2001-06-14 08:58:15 rico Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 
@@ -315,6 +315,8 @@ public class MultiRelations extends MMObjectBuilder {
                 catch(NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias table then
                     snode = mmb.OAlias.getNumber(str);
+					// protect against invalid aliases
+					if (snode<0) snode=0;
                 }
                 snodes.setElementAt(""+snode, i);
               }
