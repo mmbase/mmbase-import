@@ -40,11 +40,16 @@ public class IncludeTag extends UrlTag {
     
     protected int debugtype = DEBUG_NONE;
     
-    public int doAfterBody() throws JspTagException {
-        if (page == null) {
+
+    public int doStartTag() throws JspTagException {
+        if (page == null) { // for include tags, page attribute is obligatory.
             throw new JspTagException("Attribute 'page' was not specified");
-        }
-    	return includePage();
+        }        
+        return super.doStartTag();
+    }
+
+    protected void doAfterBodySetValue() throws JspTagException {        
+    	includePage();
     }
 
     /**
@@ -101,7 +106,7 @@ public class IncludeTag extends UrlTag {
             while ((len = in.read(buffer, 0, buffersize)) != -1) {
                 string.append(buffer, 0, len);
             }            
-            bodyContent.print(string);
+            helper.setValue(string.toString());
             
             if (log.isDebugEnabled()) log.debug("found string: " + bodyContent.getString());
             debugEnd(absoluteUrl);
@@ -137,7 +142,7 @@ public class IncludeTag extends UrlTag {
                 javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher(relativeUrl);
                 if (rd == null) log.error("rd is null");
                 rd.include(request, response);
-                bodyContent.write(response.toString());
+                helper.setValue(response.toString());
             } catch (Exception e) {
                 log.debug(Logging.stackTrace(e));
                 throw new JspTagException(e.toString());
@@ -152,9 +157,8 @@ public class IncludeTag extends UrlTag {
      * Includes another page in the current page.
      */
 
-    protected int includePage() throws JspTagException {
+    protected void includePage() throws JspTagException {
         try {
-            bodyContent.clear(); // newlines and such must be removed            
             String gotUrl = getUrl(false);// false: don't write &amp; tags but real &.
             // if not absolute, make it absolute:
             // (how does one check something like that?)
@@ -203,16 +207,10 @@ public class IncludeTag extends UrlTag {
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
             }
-                          
-            if (getId() != null) {
-                getContextTag().register(getId(), bodyContent.getString());
-            }
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-
+          
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
         } 
-        return SKIP_BODY;
     }
 
     /**
@@ -367,6 +365,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void setContentType(String s) {
+        log.debug("settting contenttype to" + s);
     }
     
    
