@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.25 2000-10-13 09:38:11 vpro Exp $
+$Id: scanparser.java,v 1.26 2000-10-13 12:52:39 case Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.25  2000/10/13 09:38:11  vpro
+Rico: added html-input hooks
+
 Revision 1.24  2000/10/10 12:02:59  vpro
 Rico: scanparser added better part support
 
@@ -96,7 +99,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.25 $ $Date: 2000-10-13 09:38:11 $
+ * @$Revision: 1.26 $ $Date: 2000-10-13 12:52:39 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -380,8 +383,9 @@ public class scanparser extends ProcessorModule {
 				postcmd=prepostcmd;
 			}
 		}
-
-		newbody.append(body.substring(postcmd+1));
+		if (postcmd < body.length()) {
+			newbody.append(body.substring(postcmd+1));
+		}
 		body=newbody.toString();
 
 
