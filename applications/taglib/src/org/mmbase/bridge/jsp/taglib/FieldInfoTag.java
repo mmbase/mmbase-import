@@ -320,7 +320,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             byte [] bytes  = getContextTag().getBytes(prefix(fieldName));
             if (bytes.length > 0) {
                 log.debug("Setting bytes of");
-                node.setByteValue(fieldName, getContextTag().getBytes(prefix(fieldName)));
+                node.setByteValue(fieldName, bytes);
             } else { // not changed
                 log.info("Not setting bytes");
             }
@@ -559,7 +559,6 @@ public class FieldInfoTag extends NodeReferrerTag {
             break;
         case TYPE_USEINPUT:
             show = useHtmlInput(node, field);
-            log.error("Setting modified bit!!");
             np.setModified();
             break;
         case TYPE_SEARCHINPUT:
