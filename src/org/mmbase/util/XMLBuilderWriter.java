@@ -51,10 +51,32 @@ public class XMLBuilderWriter  {
 	body+="\t<Urls, people).\n>";
 	body+="-->\n";	
 	body+="<names>\n";
-	body+="\t<!-- singles per language  as defined by RFC xxx -->\n";
-	body+="\t<singular xml:lang=\"us\">"+bul.getDutchSName()+"</singular>\n";
-	body+="\t<!-- multiple per language  as defined by RFC xxx -->\n";
-	body+="\t<plural xml:lang=\"us\">"+bul.getDutchSName()+"</plural>\n";
+	body+="\t<!-- singles per language as defined by ISO 639 -->\n";
+
+	Hashtable names=bul.getSingularNames();
+	if (names!=null) {
+		for (Enumeration e=names.keys();e.hasMoreElements();) {
+			String country=(String)e.nextElement();
+			String name=(String)names.get(country);
+			body+="\t<singular xml:lang=\""+country+"\">"+name+"</singular>\n";
+		}
+	} else {
+		body+="\t<singular xml:lang=\"us\">"+bul.getDutchSName()+"</singular>\n";
+	}
+
+	body+="\t<!-- multiple per language as defined by ISO 639 -->\n";
+
+
+	names=bul.getPluralNames();
+	if (names!=null) {
+		for (Enumeration e=names.keys();e.hasMoreElements();) {
+			String country=(String)e.nextElement();
+			String name=(String)names.get(country);
+			body+="\t<Plural xml:lang=\""+country+"\">"+name+"</plural>\n";
+		}
+	} else {
+		body+="\t<plural xml:lang=\"us\">"+bul.getDutchSName()+"</plural>\n";
+	}
 	body+="</names>\n\n";
 
 
@@ -63,8 +85,18 @@ public class XMLBuilderWriter  {
 	body+="\tsmall description of the builder for human reading\n";
 	body+="-->\n";
 	body+="<descriptions>\n";
-	body+="<!-- descriptions per language  as defined by RFC xxx -->\n";
-	body+="\t<description xml:lang=\"us\">"+bul.getDescription()+"</description>\n";
+	body+="<!-- descriptions per language as defined by ISO 639  -->\n";
+	names=bul.getDescriptions();
+	if (names!=null) {
+		for (Enumeration e=names.keys();e.hasMoreElements();) {
+			String country=(String)e.nextElement();
+			String name=(String)names.get(country);
+			body+="\t<description xml:lang=\""+country+"\">"+name+"</description>\n";
+		}
+	} else {
+		body+="\t<description xml:lang=\"us\">"+bul.getDescription()+"</description>\n";
+	}
+
 	body+="</descriptions>\n\n";
 
 	// properties
@@ -84,8 +116,20 @@ public class XMLBuilderWriter  {
 		body+="\t<field>\n";
 		body+="\t\t<!-- gui related -->\n";
 		body+="\t\t<gui>\n";
-		body+="\t\t\t<name xml:lang=\"us\">Object</name>\n";
-		body+="\t\t\t<type>integer</type>\n";
+
+		FieldDefs def=bul.getField("number");
+		names=def.getGUINames();
+		if (names!=null) {
+			for (Enumeration ee=names.keys();ee.hasMoreElements();) {
+				String country=(String)ee.nextElement();
+				String name=(String)names.get(country);
+				body+="\t\t\t<guiname xml:lang=\""+country+"\">"+name+"</guiname>\n";
+			}
+		} else {
+			body+="\t\t\t<guiname xml:lang=\"us\">"+def.getGUIName()+"</guiname>\n";
+		}
+	//	body+="\t\t\t<guiname xml:lang=\"us\">Object</guiname>\n";
+		body+="\t\t\t<guitype>integer</guitype>\n";
 		body+="\t\t</gui>\n";
 		body+="\t\t<!-- editor related  -->\n";
 		body+="\t\t<editor>\n";
@@ -111,7 +155,7 @@ public class XMLBuilderWriter  {
 	for (Enumeration e=fields.elements();e.hasMoreElements();) {
 		String fieldn=(String)e.nextElement();
 		if (!fieldn.equals("otype")) {
-			FieldDefs def=bul.getField(fieldn);
+			def=bul.getField(fieldn);
 			if (def.getDBName().equals("owner")) {
 				body+="\t<!-- POS "+(i++)+" : <field> '"+def.getDBName()+"' is a default field (see docs) -->\n";
 			} else {
@@ -120,8 +164,17 @@ public class XMLBuilderWriter  {
 			body+="\t<field>\n";
 			body+="\t\t<!-- gui related -->\n";
 			body+="\t\t<gui>\n";
-			body+="\t\t\t<name xml:lang=\"us\">"+def.getGUIName()+"</name>\n";
-			body+="\t\t\t<type>"+def.getGUIType()+"</type>\n";
+			names=def.getGUINames();
+			if (names!=null) {
+				for (Enumeration ee=names.keys();ee.hasMoreElements();) {
+					String country=(String)ee.nextElement();
+					String name=(String)names.get(country);
+					body+="\t\t\t<guiname xml:lang=\""+country+"\">"+name+"</guiname>\n";
+				}
+			} else {
+				body+="\t\t\t<guiname xml:lang=\"us\">"+def.getGUIName()+"</guiname>\n";
+			}
+			body+="\t\t\t<guitype>"+def.getGUIType()+"</guitype>\n";
 			body+="\t\t</gui>\n";
 			body+="\t\t<!-- editor related  -->\n";
 			body+="\t\t<editor>\n";
@@ -151,7 +204,14 @@ public class XMLBuilderWriter  {
 			if (tmpt.equals("int")) tmpt="INTEGER";
 			// end of weird map
 
-			body+="\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\">"+tmpt+"</type>\n";
+			int size=def.getDBSize();
+
+			if (size==-1) {
+				body+="\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\">"+tmpt+"</type>\n";
+			} else {
+				body+="\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\">"+tmpt+"</type>\n";
+			}
+
 			body+="\t\t</db>\n";
 			body+="\t</field>\n\n";
 		}
