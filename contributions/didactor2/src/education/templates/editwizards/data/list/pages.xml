@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van de pagina</description>
         </field>
-	<field fdatapath="field[@name='pos']" ftype="data" />
+   <field fdatapath="field[@name='pos']" ftype="data" />
     </item>
 
     <action type="create">
@@ -17,7 +17,7 @@
 
     <command name="startwizard" inline="true" wizardname="pages" objectnumber="new" />
 
-    <command name="search" nodepath="pages" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="pages" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Paginas</prompt>
         <search-filter>
             <name>Naam bevat</name>

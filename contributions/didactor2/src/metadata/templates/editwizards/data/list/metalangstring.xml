@@ -11,7 +11,7 @@
     <field wizardname="metalangstring" ftype="startwizard" objectnumber="{field[@name='number']}"/>
   </item>
 
-<!-- not needed? 
+<!-- not needed?
    <action type="create">
     <object type="metadata">
     <relation destinationtype="metalangstring" role="posrel">
@@ -30,7 +30,7 @@
 
   <command name="startwizard" inline="true" wizardname="metalangstring" objectnumber="new" />
 
-  <command name="search" nodepath="metalangstring" fields="value" age="7" orderby="number" directions="down" >
+  <command name="search" nodepath="metalangstring" fields="value" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar tekenreeksen</prompt>
     <search-filter>
       <name>Waarde bevat</name>

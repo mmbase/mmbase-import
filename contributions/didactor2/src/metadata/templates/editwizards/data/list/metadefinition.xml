@@ -14,8 +14,10 @@
     <field name="handler" ftype="data">
       <prompt>Handler</prompt>
     </field>
+
+    <field ftype="startwizard" wizardname="metadefinition" />
   </item>
- 
+
   <action type="create">
     <relation destinationtype="metadata" role="related">
       <object type="metadata">
@@ -36,7 +38,7 @@
 
   <command name="startwizard" inline="true" wizardname="metadata" objectnumber="new" />
 
-  <command name="search" nodepath="metadefinition" fields="name,type,handler" age="7" orderby="number" directions="down" >
+  <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar metadata definities</prompt>
     <search-filter>
       <name>Naam bevat</name>

@@ -36,7 +36,7 @@
                     <prompt>Naam</prompt>
                     <description>Naam van de link</description>
                 </field>
-            	<field fdatapath="field[@name='pos']" ftype="data">
+               <field fdatapath="field[@name='pos']" ftype="data">
                   <prompt>Positie</prompt>
                   <description>Positie van de link in de lijst</description>
                 </field>
@@ -49,7 +49,7 @@
 
             <command name="startwizard" inline="true" wizardname="urls" objectnumber="new" />
 
-            <command name="search" nodepath="urls" fields="name" age="7" orderby="number" directions="down" >
+            <command name="search" nodepath="urls" fields="name" age="-1" orderby="number" directions="down" >
                 <prompt>Zoeken naar links</prompt>
                 <search-filter>
                     <name>Naam bevat</name>

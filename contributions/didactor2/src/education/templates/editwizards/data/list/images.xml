@@ -3,7 +3,7 @@
     <title>Bijbehorende Afbeeldingen</title>
 
     <item>
-	<field name="title" ftype="line">
+   <field name="title" ftype="line">
             <prompt>Titel</prompt>
         </field>
         <field name="description" rows="8">
@@ -17,7 +17,7 @@
 
     <command name="startwizard" inline="true" wizardname="image" objectnumber="new" />
 
-    <command name="search" nodepath="images" fields="title" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="images" fields="title" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar afbeeldingen</prompt>
         <search-filter>
             <name>Titel bevat</name>

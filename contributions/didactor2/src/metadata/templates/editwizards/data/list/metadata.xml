@@ -17,12 +17,12 @@
         <field name="value" ftype="data">
             <prompt>Waarde</prompt>
         </field>
- 
+
         <list extends="list/metalangstring.xml"/>
         <list extends="list/metadate.xml"/>
         <list extends="list/metavocabulary.xml"/>
     </item>
- 
+
 
      <action type="create">
         <relation destinationtype="metadata" role="related">
@@ -52,7 +52,7 @@
       <prompt>Nieuwe vocabulary selecteren</prompt>
     </command>
 
-    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
       <prompt>Zoeken naar metadata definities</prompt>
       <search-filter>
         <name>Naam bevat</name>

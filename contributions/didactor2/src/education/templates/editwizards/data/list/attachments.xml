@@ -14,7 +14,7 @@
 
     <command name="startwizard" inline="true" wizardname="attachment" objectnumber="new" />
 
-    <command name="search" nodepath="attachments" fields="title" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="attachments" fields="title" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar bestand</prompt>
         <search-filter>
             <name>Titel bevat</name>
