@@ -42,9 +42,9 @@ transaction was commited, following should result anything:
 <h3>Creating relation in transaction</h3>
 <mm:transaction name="mytranc">
   <mm:node id="node1" number="$nodenumber" />
-  <mm:createnode id="node2" type="news">
-     <mm:setfield name="title">Test node2, created in transaction, made relation to it</mm:setfield>
-	 <mm:setfield name="subtitle"><mm:write referid="curtime" /></mm:setfield>
+  <mm:createnode id="node2" type="urls">
+     <mm:setfield name="description">Test node2, created in transaction, made relation to it</mm:setfield>
+	   <mm:setfield name="url">http://<mm:write referid="curtime" /></mm:setfield>
   </mm:createnode>
   <mm:createrelation source="node1" destination="node2" role="related" />
 </mm:transaction>
