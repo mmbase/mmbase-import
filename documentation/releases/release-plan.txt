@@ -1,20 +1,63 @@
 ===================================================================
-                     MMBase 1.7.0 - Release Plan
-===================================================================  
-  
-TODO for 1.7.0 release of MMBase:
+                     MMBase 1.8.0 - Release Plan
+===================================================================
 
-- Query-project
-- Storage class testing (databaseproject?)
-- Removal of xerces/xalan dependencies (cleaning project)
-- Running on packed war (xml configuration as resources)
-- Media-project
-- taglib 1.0.2 (contenttype tag, function tag)
-- serving images staticly?
-- richtext?
-- testing crawlers (last-modified of objects?)
+TODO for 1.8.0 release of MMBase:
+
+I Core/Project abstraction
+
+The following applications should be removed from the core and moved to a separate application:
+
+- SCAN, including the org.mmbase.module.gui.html.* classes and supporting util classes (i.e. scanpage)
+  This includes removing SCAN specific hooks from some core classes (an alternative is needed to provide backward compatibility).
+- Email application: find a solution for the email module class interface that is now in the core
+- Config module and org.mmbase.config: xml parsers and color coders (perhaps a rewrite is better?)
+- Tools: move utility classes, modules, and builders that are still useful to a tools application (or in case this is too hard, tag them for inclusion in a later release)
+- Future non-core projects should also be deployed in separate applications packages.
+- If possible applicatuons should be configured to work with the Packaging project (if this project proves stable).
+
+II - Cleaning
+
+The following steps should be made to clean the code. Note that part of this is also done during abstraction
+
+- removing all old database support en storage classes
+- remove all utility classes, modules, and builders that are no longer used, i.e. DateSupport or Storable
+- Mark xerces/xalan dependent code for future change (there is no solution for this dependency yet)
+- cleaning of the html-dir
+
+III Improvements
+
+The following Core functionality will be evalued and (if needed and possible) improved in 1.8.  It is possible that actual changes are delayed to a later release if it proves too time consuming for this one.
+
+- Multicast: select an appropriate (or pluggable) communication system, solve issues with bursts of change events
+- Modules and Builders: implement a proper way for loading, unloading, reloading, and shutting down modules and builders
+- Security: field-level security checks
+
+IV Performance and Maintenance
+
+Performance issues should be analyzed and if possible resolved. It is possible that actual changes are delayed to a later release if it proves too time consuming for this one.
+Performance and maintenance related issues are:
+
+- Monitoring of MMBase performance issues, i.e. profiling
+- Running on packaged war (xml configuration as resources)
+- serving images staticly
 - related-nodes optimalisation (passing queries to parent)
-- admin-tools rewrite (maybe use JMX)
-- cleaning of the html-dir (cleaning project)
-- soap-interface?
 - create a better build-process
+
+V Projects
+
+The following projects should be finished or brought in a stable state.
+This is dependent on input from the project manager.
+New projects that are not in a stable state will not be deployed in the 1.8 release.
+
+- Cleaning Project, fase II (see above)
+- Distro project
+- Field types project
+- Richtext project
+- Taglib II project
+- Packaging project (new, formerly 'Applications II')
+
+VI Other
+
+- update and improve documentation
+
