@@ -26,7 +26,7 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.36 2003-08-27 21:33:31 michiel Exp $ 
+ * @version $Id: FieldListTag.java,v 1.37 2003-09-02 17:26:21 michiel Exp $ 
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -94,6 +94,16 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             throw new JspTagException("Unknown field order type " + t);
         }
     }
+    
+    private String varType = null;
+    private String jspVar   = null;
+    public void setVartype(String t) {
+        varType = t;
+    }
+    public void setJspvar(String j) {
+        jspVar = j;
+    }
+
 
     private Attribute fields = Attribute.NULL;
 
@@ -198,9 +208,11 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
         // if we get a result from the query
         // evaluate the body , else skip the body
-        if (fieldIterator.hasNext())
+        if (fieldIterator.hasNext()) {
             return EVAL_BODY_BUFFERED;
-        return SKIP_BODY;
+        } else {
+            return SKIP_BODY;
+        }
     }
 
     public int doAfterBody() throws JspTagException {
@@ -237,6 +249,13 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (fieldIterator.hasNext()){
             currentItemIndex ++;
             currentField = fieldIterator.nextField();
+            if (jspVar != null) {
+                switch (WriterHelper.stringToType(varType == null ? "field" : varType)) {
+                case WriterHelper.TYPE_FIELD:      pageContext.setAttribute(jspVar, currentField); break;
+                case WriterHelper.TYPE_FIELDVALUE: pageContext.setAttribute(jspVar, getNodeVar().getFieldValue(currentField)); break;
+                default: throw new  JspTagException("Unsupported value for vartype attribute '" + varType + "'");
+                }
+            }
             if (getId() != null) {
                 getContextProvider().getContextContainer().register(getId(), currentField);
             }

@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.7 2003-06-06 10:03:10 pierre Exp $ 
+ * @version $Id: WriterTEI.java,v 1.8 2003-09-02 17:26:22 michiel Exp $ 
  */
 
 public class WriterTEI extends TagExtraInfo {
@@ -29,6 +29,56 @@ public class WriterTEI extends TagExtraInfo {
     }
     protected String defaultType() {
         return "Object";
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected String getType(String  typeAttribute) {
+        String type;
+        switch (WriterHelper.stringToType(typeAttribute)) {
+            case WriterHelper.TYPE_OBJECT:
+                type = Object.class.getName(); break;
+            case WriterHelper.TYPE_STRING:
+                type = String.class.getName(); break;
+            case WriterHelper.TYPE_NODE:
+                type = org.mmbase.bridge.Node.class.getName(); break;
+            case WriterHelper.TYPE_CLOUD:
+                type = org.mmbase.bridge.Cloud.class.getName(); break;
+            case WriterHelper.TYPE_TRANSACTION:
+                type = org.mmbase.bridge.Transaction.class.getName(); break;
+            case WriterHelper.TYPE_DECIMAL:
+                type = java.math.BigDecimal.class.getName(); break;
+            case WriterHelper.TYPE_INTEGER:
+                type = Integer.class.getName(); break;
+            case WriterHelper.TYPE_DOUBLE:
+                type = Double.class.getName(); break;
+            case WriterHelper.TYPE_FLOAT:
+                type = Float.class.getName(); break;
+            case WriterHelper.TYPE_LONG:
+                type = Long.class.getName(); break;
+            case WriterHelper.TYPE_VECTOR:// deprecated
+                type = java.util.Vector.class.getName(); break;
+            case WriterHelper.TYPE_LIST:
+                type = java.util.List.class.getName(); break;
+            case WriterHelper.TYPE_DATE:
+                type = java.util.Date.class.getName(); break;
+            case WriterHelper.TYPE_FIELD:
+                type = org.mmbase.bridge.Field.class.getName(); break;
+            case WriterHelper.TYPE_FIELDVALUE:
+                type = org.mmbase.bridge.FieldValue.class.getName(); break;
+            case WriterHelper.TYPE_BYTES:
+                type = "[B"; break; 
+                // this doesn't work like this...
+                // How it does??
+
+                //Class.forName("[B").getName(); break;
+            default:
+                //type = "java.lang.Object"; 
+                throw new RuntimeException("Unknown type '" + typeAttribute + "'");
+            }
+        return type;
+     
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {
@@ -41,44 +91,7 @@ public class WriterTEI extends TagExtraInfo {
             
             String typeAttribute    = (String) data.getAttribute("vartype"); 
             if (typeAttribute == null) typeAttribute = defaultType();           
-            String type;
-            switch (WriterHelper.stringToType(typeAttribute)) {
-            case WriterHelper.TYPE_OBJECT:
-                type = "java.lang.Object"; break;
-            case WriterHelper.TYPE_STRING:
-                type = "java.lang.String"; break;
-            case WriterHelper.TYPE_NODE:
-                type = "org.mmbase.bridge.Node"; break;
-            case WriterHelper.TYPE_CLOUD:
-                type = "org.mmbase.bridge.Cloud"; break;
-            case WriterHelper.TYPE_TRANSACTION:
-                type = "org.mmbase.bridge.Transaction"; break;
-            case WriterHelper.TYPE_DECIMAL:
-                type = "java.math.BigDecimal"; break;
-            case WriterHelper.TYPE_INTEGER:
-                type = "java.lang.Integer"; break;
-            case WriterHelper.TYPE_DOUBLE:
-                type = "java.lang.Double"; break;
-            case WriterHelper.TYPE_FLOAT:
-                type = "java.lang.Float"; break;
-            case WriterHelper.TYPE_LONG:
-                type = "java.lang.Long"; break;
-            case WriterHelper.TYPE_VECTOR:// deprecated
-                type = "java.util.Vector"; break;
-            case WriterHelper.TYPE_LIST:
-                type = "java.util.List"; break;
-            case WriterHelper.TYPE_DATE:
-                type = "java.util.Date"; break;
-            case WriterHelper.TYPE_BYTES:
-                type = "[B"; break; 
-                // this doesn't work like this...
-                // How it does??
-
-                //Class.forName("[B").getName(); break;
-            default:
-                //type = "java.lang.Object"; 
-                throw new RuntimeException("Unknown type '" + typeAttribute + "'");
-            }
+            String type = getType(typeAttribute);
                         
             variableInfo[0] =  new VariableInfo(jspvarAttribute,
                                                 type,
