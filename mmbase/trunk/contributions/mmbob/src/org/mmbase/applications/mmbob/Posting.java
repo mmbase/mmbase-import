@@ -135,10 +135,11 @@ public class Posting {
     }
 
     /**
-     * signal the parent postthread that the posting must be removed
+     * Delete a posting and signal the parent postthread that the posting must be removed
      * @return allways <code>true</code>
      */
     public boolean remove() {
+        node.delete(true);
         parent.childRemoved(this);
         return true;
     }
