@@ -376,7 +376,11 @@ public class ContextAuthorization extends Authorization {
     }
 
     public void assert(UserContext user, int nodeNumber, Operation operation) throws SecurityException {
-        log.info("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+        if (operation.getInt() > Operation.READ_INT ) {
+            log.service("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+        } else if (log.isDebugEnabled() ) {
+            log.service("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+        }
         if (!check(user, nodeNumber, operation) ) {
             String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
             log.error(msg);
