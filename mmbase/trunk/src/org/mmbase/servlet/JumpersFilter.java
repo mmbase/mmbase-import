@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.5 2004-01-11 16:45:55 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.6 2004-01-12 12:46:03 michiel Exp $
  */
 public class JumpersFilter implements Filter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -101,7 +101,7 @@ public class JumpersFilter implements Filter {
                  *  After using this method, the response should be considered to be committed and should not be written to.
                  */
                 // res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + url));
-                res.sentRedirect(url);
+                res.sendRedirect(url);
                 return;
             }
         }
