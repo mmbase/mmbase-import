@@ -101,6 +101,7 @@ public class UrlTag extends ContextReferrerTag {
             pageContext.setAttribute(jspvar, show);
         } else {
             try {                
+                bodyContent.clear();
                 bodyContent.print(show);
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch (java.io.IOException e) {
