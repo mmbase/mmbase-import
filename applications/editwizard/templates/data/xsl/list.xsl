@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.22 2002-07-19 13:17:47 michiel Exp $
+  @version $Id: list.xsl,v 1.23 2002-07-19 18:12:14 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -120,6 +120,7 @@
    -->
 ]]></xsl:text>
       </script>
+      <xsl:call-template name="extrastyle" />
   </xsl:template>
 
   <!-- ================================================================================

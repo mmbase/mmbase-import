@@ -5,8 +5,8 @@
   Basic parameters and settings for all xsl's of the editwizards.
        
   @since  MMBase-1.6
-       @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.12 2002-07-11 08:25:24 michiel Exp $
+  @author Michiel Meeuwissen
+  @version $Id: base.xsl,v 1.13 2002-07-19 18:12:14 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -20,20 +20,6 @@
     indent="no"
     />
 
-    <!-- utitily function. Takes a file and gets the directory part of it -->
-  <xsl:template name="getdirpart">
-    <xsl:param name="dir" />
-    <xsl:variable name="firstdir" select="substring-before($dir, '/') " />
-    <xsl:variable name="restdir" select="substring-after($dir, '/') " />
-    <!-- if still a rest then add firstdir to dir -->
-    <xsl:if test="$restdir">
-      <xsl:value-of select="$firstdir" /><xsl:text>/</xsl:text>
-      <xsl:call-template name="getdirpart">
-        <xsl:with-param name="dir" select="$restdir" />
-      </xsl:call-template>    
-    </xsl:if>  
-  </xsl:template>
-
   <xsl:param name="ew_context"></xsl:param><!-- The web-application's context -->
   <xsl:param name="ew_path"></xsl:param><!-- The directory in which the editwizards are installed (relative to context root) -->
 
@@ -43,13 +29,18 @@
     
   <xsl:param name="sessionid"></xsl:param>
 
-  <xsl:param name="referrer"></xsl:param>
-  <!-- name of the file that called list.jsp or default.jsp, can be used for back-buttons (relative to context-root) -->
+  <xsl:param name="referrer"></xsl:param><!-- name of the file that called list.jsp or default.jsp, can be used for back-buttons (relative to context-root) --> 
   
   <xsl:variable name="rootreferrer"><xsl:value-of select="$ew_context" /><xsl:value-of select="$referrer" /></xsl:variable><!-- relative to root -->
 
 
   <xsl:variable name="referrerdir"><xsl:call-template name="getdirpart"><xsl:with-param name="dir" select="$rootreferrer" /></xsl:call-template></xsl:variable><!-- the directory of that file, needed to refer to resources there (when you override), like e.g. images -->
+
+
+  <!-- Perhaps you want to refer to stuff not relative to the referrer-page, but to the root of the site where it belongs to. 
+       This must be given to the jsp's then with the paremeter 'templates' 
+       -->
+  <xsl:variable name="templatedir"><xsl:value-of select="$referrerdir" /></xsl:variable>
 
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <xsl:param name="cloudkey">cloud_mmbase</xsl:param><!-- name of variable in session in which is the cloud -->
@@ -71,7 +62,30 @@
        ================================================================================ -->
 
   <xsl:variable name="imagesize">+s(128x128)</xsl:variable>
-  <xsl:template name="extrastyle" />
+
+  <xsl:template name="extrastyle" />        <!-- If you want to add a cascading stylesheet (to change the appearance), the you can overrride this -->
+  <xsl:template name="extrajavascript" />   <!-- If you need extra javascript, then you can override this thing -->
+
+
+
+
+
+  <!-- ================================================================================ -->
+
+    <!-- utitily function. Takes a file and gets the directory part of it -->
+  <xsl:template name="getdirpart">
+    <xsl:param name="dir" />
+    <xsl:variable name="firstdir" select="substring-before($dir, '/') " />
+    <xsl:variable name="restdir" select="substring-after($dir, '/') " />
+    <!-- if still a rest then add firstdir to dir -->
+    <xsl:if test="$restdir">
+      <xsl:value-of select="$firstdir" /><xsl:text>/</xsl:text>
+      <xsl:call-template name="getdirpart">
+        <xsl:with-param name="dir" select="$restdir" />
+      </xsl:call-template>    
+    </xsl:if>  
+  </xsl:template>
+
   
 </xsl:stylesheet>
   
