@@ -29,10 +29,10 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.34 2003-06-06 10:03:10 pierre Exp $ 
+ * @version $Id: WriteTag.java,v 1.35 2003-06-27 12:58:27 michiel Exp $ 
  */
 
-public class WriteTag extends ContextReferrerTag implements Writer {
+public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     public static String COOKIE_PATH    = "/";
@@ -41,6 +41,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     private Attribute sessionvar = Attribute.NULL;
     private Attribute cookie = Attribute.NULL;
     private Attribute value = Attribute.NULL;
+    private Attribute container = Attribute.NULL;
 
     public void setSession(String s) throws JspTagException {
         sessionvar = getAttribute(s);
@@ -51,6 +52,9 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
+    }
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c); // not yet implemented
     }
 
 
