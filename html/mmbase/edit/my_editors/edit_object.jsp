@@ -1,23 +1,25 @@
 <% String title = "Edit node"; %>
 <%@ include file="inc_top.jsp" %>
 <mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
-<% // Twee nieuwe strings 
+<% // Two new strings 
 String ntype = "";			// Type of node
 String node_gui = "";		// GUI variable set in builder
+String path1 = "";
 %>
 
 <mm:context id="change_node">
-<mm:import jspvar="nr" externid="nr" id="nr" required="true" />		<%-- the node we're going to edit --%>
+<mm:import jspvar="nr" externid="nr" id="nr" />		<%-- the node we're going to edit --%>
 
 <mm:import externid="change" />
 <mm:import externid="alias_name" />
 
-<mm:node number="$nr">
+<mm:node number="$nr" notfound="skipbody">
+<mm:import id="nodefound" />
 <%-- Get information about the node: type & GUI name --%>
 <mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% ntype = n_type; %></mm:nodeinfo>
 <mm:nodeinfo type="guinodemanager" jspvar="n_gui" vartype="String" write="false"><% node_gui = n_gui; %></mm:nodeinfo>
 <% 
-String path1 = ntype;		// Eerst stukje van kruimelpad 
+path1 = ntype;		// 1st piece of Hans & Gretchel path
 title = "Edit " + ntype + " node";
 %>
 <%@ include file="inc_head.jsp" %>
@@ -148,6 +150,16 @@ title = "Edit " + ntype + " node";
 <!-- end main table -->
 
 </mm:node>
+<mm:notpresent referid="nodefound">
+<% 
+path1 = null;	// 1st piece of Hans & Gretchel path
+title = "Node not found";
+%>
+<%@ include file="inc_head.jsp" %>
+<p>&nbsp;</p>
+<p class="message">The node you were looking for <mm:present referid="nr">with number <mm:write referid="nr" /></mm:present> could not be found.</p>
+<p>&nbsp;</p>
+</mm:notpresent>
 </mm:context>
 <%@ include file="inc_foot.jsp" %>
 </mm:cloud>

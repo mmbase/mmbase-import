@@ -6,7 +6,7 @@
 <mm:import externid="ntype" jspvar="ntype" required="true" />	<%-- nodetype to relate with --%>
 <mm:import externid="nr" 	jspvar="nr"	required="true" />		<%-- originale node (nr) that wants relation --%>
 <mm:import externid="dir" 	jspvar="dir" />						<%-- direction of relation --%>
-<mm:import externid="kind" 	jspvar="kind" />					<%-- kind of relation --%>
+<mm:import externid="rkind" jspvar="rkind" />					<%-- kind of relation --%>
 <mm:import externid="rnr" />									<%-- node (nr) to relate with --%>
 
 
@@ -36,8 +36,7 @@
 	</tr>
 	</table>
 	<!-- end table back button -->
-	nr = <%= nr %>
-<%--	<%@ include file="inc_relations.jsp" %> --%>
+	<%--	<%@ include file="inc_relations.jsp" %> --%>
 
   </td>
   <td valign="top" width="80%">

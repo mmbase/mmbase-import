@@ -10,14 +10,16 @@ RelationManagerIterator relIterator = nodeNM.getAllowedRelations( (NodeManager) 
 int c= 0;		// Lay-out counter
 while(relIterator.hasNext()) {
 	RelationManager relationManager = relIterator.nextRelationManager();
-	c++;
-
+	
 	NodeManager otherManager;
 	try {
 		otherManager = relationManager.getSourceManager();
 	} catch (NotFoundException e) {
 		continue;
 	}
+
+	c++;
+
 	String role = relationManager.getForwardRole();
 	String otherManagerName = otherManager.getName();
 	
@@ -31,18 +33,44 @@ while(relIterator.hasNext()) {
 	if (c!=1) { %>
 	<tr><td colspan="3" bgcolor="#CCCCCC"><img src="img/spacer.gif" alt="" width="224" height="1" border="0" /></td></tr>
 	<% } // end of c!=1 %>
+<%-- print kind of node to relate to and kind of relation --%>
 	<tr bgcolor="#EFEFEF">	<%-- print kind of node to relate to and kind of relation --%>
-	  <td>&nbsp;</td>
-	  <td nowrap="nowrap">
-  	    <b><%= otherManager.getGUIName()%></b> <%= otherManagerName %><br />
+	  <td nowrap="nowrap">&nbsp;</td>
+	  <td nowrap="nowrap"><b><%= otherManager.getGUIName()%></b> <%= otherManagerName %><br />
   	    <%= role %>
   	    <!-- <%= relationManager.getForwardGUIName() %>/<%= relationManager.getReciprocalGUIName() %> -->
-	  </td>
+  	  </td>
 	  <td nowrap="nowrap" align="right">
-		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;kind=<%= role %>&amp;dir=nwparent" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
-		<a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;kind=<%= role %>&amp;dir=nwparent" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
+		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
+		<a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
 	  </td>
 	</tr>
+<%	// List the related nodes
+	RelationIterator relationsIterator = node.getRelations(role, otherManager).relationIterator();
+	while( relationsIterator.hasNext() ) {
+	
+
+		Relation relation = relationsIterator.nextRelation();
+		Node parentNode = relation.getDestination();
+		Node childNode = relation.getSource();
+
+		String relationNr = Integer.toString(relation.getNumber());
+		String childNodeNr = Integer.toString(childNode.getNumber());
+		
+		// skip when there happens to be a relation between 2 nodes of the same type
+	   if (childNode.equals(node) && !relation.getSource().equals(relation.getDestination())) continue; 
+%>
+	<mm:node number="<%= childNodeNr %>">
+	  <tr valign="bottom" bgcolor="#FFFFFF">	
+		<td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
+		<td nowrap="nowrap"> <mm:field name="gui()" /> </td>
+		<td nowrap="nowrap" align="right"><a href="edit_relation.jsp?nr=<%= relationNr %>&amp;ref=<%= nr %>" title="edit or delete relation"><img src="img/mmbase-relation-right.gif" alt="edit relation" width="21" height="20" border="0" /></a></td>
+	  </tr>
+	</mm:node>
+<%
+   }
+%>	
+<%--
 	<mm:listrelations type="<%= otherManagerName %>" role="<%= role %>">
 		<mm:relatednode>
 		<tr valign="bottom">
@@ -56,6 +84,7 @@ while(relIterator.hasNext()) {
 		  </td>
 		</tr>
 	</mm:listrelations>
+--%>
 <%
 } // End of while
 
@@ -92,10 +121,36 @@ while(relIterator.hasNext()) {
   	    <!-- <%= relationManager.getReciprocalGUIName() %>/<%= relationManager.getForwardGUIName() %> -->
 	  </td>
 	  <td nowrap="nowrap" align="right">
-		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;kind=<%= role %>&amp;dir=nwchild" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
-		<a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;kind=<%= role %>&amp;dir=nwchild" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
+		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
+		<a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
 	  </td>
 	</tr>
+<%	// List the related nodes
+	RelationIterator relationsIterator = node.getRelations(role, otherManager).relationIterator();
+	while( relationsIterator.hasNext() ) {
+	
+
+		Relation relation = relationsIterator.nextRelation();
+		Node parentNode = relation.getDestination();
+		Node childNode = relation.getSource();
+
+		String relationNr = Integer.toString(relation.getNumber());
+		String parentNodeNr = Integer.toString(parentNode.getNumber());
+		
+		// skip when there happens to be a relation between 2 nodes of the same type
+	   if (parentNode.equals(node) && !relation.getSource().equals(relation.getDestination())) continue; 
+%>
+	<mm:node number="<%= parentNodeNr %>">
+	  <tr valign="bottom" bgcolor="#FFFFFF">	
+		<td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
+		<td nowrap="nowrap"> <mm:field name="gui()" /> </td>
+		<td nowrap="nowrap" align="right"><a href="edit_relation.jsp?nr=<%= relationNr %>&amp;ref=<%= nr %>" title="edit or delete relation"><img src="img/mmbase-relation-left.gif" alt="edit relation" width="21" height="20" border="0" /></a></td>
+	  </tr>
+	</mm:node>
+<%
+   }
+%>	
+<%--
 	<mm:listrelations type="<%= otherManagerName %>" role="<%= role %>">
 		<mm:relatednode>
 		<tr valign="bottom">
@@ -109,7 +164,10 @@ while(relIterator.hasNext()) {
 		  </td>
 		</tr>
 	</mm:listrelations>
-<% } %>
+--%>
+<% 
+} 
+%>
 
 </table>
 </mm:context>
