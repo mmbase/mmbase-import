@@ -19,11 +19,12 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * Client's format can be different for every request. So this does
- * not extend Formatorter, but is does something similar.
+ * Client's preferred format can be different for every request. This
+ * Sorter uses the 'info' Map to sort the requested formats to the top
+ * of the urlcomposer list.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatSorter.java,v 1.2 2003-02-05 16:55:27 michiel Exp $
+ * @version $Id: ClientFormatSorter.java,v 1.3 2003-02-10 13:26:55 michiel Exp $ 
  */
 public class ClientFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ClientFormatSorter.class.getName());
@@ -33,8 +34,10 @@ public class ClientFormatSorter extends  PreferenceSorter {
     }
     
     protected int getPreference(URLComposer ri) {
-        log.info("ri: " + ri);
-        log.info("inof: " + ri.getInfo());
+        if (log.isDebugEnabled()) {
+            log.debug("ri: " + ri);
+            log.debug("info: " + ri.getInfo());
+        }
 
         Object format = ri.getInfo().get("format");        
         if (log.isDebugEnabled()) { log.debug("Client's preference " + format); }
