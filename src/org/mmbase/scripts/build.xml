@@ -98,6 +98,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="expand.dir" value="${download.dir}/expanded"/>
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
+  <property name="debug" value="off"/>
   <property name="deprecation" value="off"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="database.name" value="install"/>
@@ -1065,7 +1066,7 @@ Change directory to ${build.dir}/orion and run:
     <available property="jai.expanded"
                file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
-    <property name="log4j.version" value="jakarta-log4j-1.1.1"/>
+    <property name="log4j.version" value="jakarta-log4j-1.1.3"/>
     <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.version}.tar.gz"/>
     <property name="log4j.jar" value="${expand.dir}/${log4j.version}/dist/lib/log4j.jar"/>
     <available property="log4j.present"
