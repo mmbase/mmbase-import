@@ -8,9 +8,15 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.51 2001-06-01 11:55:09 eduard Exp $
+$Id: MMSQL92Node.java,v 1.52 2001-11-19 10:44:02 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.51  2001/06/01 11:55:09  eduard
+eduard: changed commit. It now looks in a dirty way, if there have been made changes to the object table, when so also apply them. Will throw exception in case the field 'number' was changed.
+Furthermore, when it is a relation builder and not insrel, it will apply the changes also to the insrel table.
+I know it is not nice generic code, but atleast the database will stay consistent.
+Please review, since this method is called very often, and i can't test it very well on my system, but i ran a few tests and everything seemed to work.
+
 Revision 1.50  2001/04/20 08:33:25  pierre
 pierre: better support for blobs when changing builders
 
@@ -54,7 +60,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.51 $ $Date: 2001-06-01 11:55:09 $
+* @$Revision: 1.52 $ $Date: 2001-11-19 10:44:02 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -704,7 +710,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	} 
 	else {
 	    log.warn("tried to update a node without any changes,..");
-	    return false;
+	    return true;
 	}
 	
 	// done database update, so clear changed flags..
