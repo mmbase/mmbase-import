@@ -39,8 +39,14 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public EnumHandler(FieldInfoTag context, String enumType) throws JspTagException {
         super(context);
         try {
-            String resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
-            bundle = ResourceBundle.getBundle(resource, context.getCloud().getLocale(), getClass().getClassLoader());
+            String resource;
+            if (enumType.indexOf('.') == -1 ) {
+                resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
+            } else {
+                resource = enumType;
+
+            }
+            bundle    = ResourceBundle.getBundle(resource, context.getCloud().getLocale(), getClass().getClassLoader());
             available = true;
         } catch (java.util.MissingResourceException e) {
             log.warn(e.toString());

@@ -15,6 +15,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
+
 /**
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
@@ -22,12 +23,46 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  */
 public class LongHandler extends AbstractTypeHandler {
 
+    private DateHandler dateHandler;
+
     /**
      * Constructor for LongHandler.
      * @param context
      */
     public LongHandler(FieldInfoTag context) {
         super(context);
+        dateHandler = new DateHandler(context);
     }
+    
+    /**
+     * @see TypeHandler#htmlInput(Node, Field, boolean)
+     */
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {        
+        if (field.getGUIType().equals("eventtime")) {
+            return dateHandler.htmlInput(node, field, search);
+        } 
+        return super.htmlInput(node, field, search);
+    }
+
+    /**
+     * @see TypeHandler#useHtmlInput(Node, Field)
+     */
+    public String useHtmlInput(Node node, Field field) throws JspTagException {               
+        if (field.getGUIType().equals("eventtime")) {
+            return dateHandler.useHtmlInput(node, field);
+        } 
+
+        return super.useHtmlInput(node, field);
+    }
+
+    /**
+     * @see TypeHandler#whereHtmlInput(Field)
+     */
+    public String whereHtmlInput(Field field) throws JspTagException {
+        if (field.getGUIType().equals("eventtime")) {
+            return dateHandler.whereHtmlInput(field);
+        } 
+        return super.whereHtmlInput(field);
+    }       
 
 }
