@@ -119,12 +119,12 @@ the same name as the example.<br />
               <li>info (system info commands)</li>
               <li>mmbase (basic SCAN commands)</li>
               <li>mmedit (for the SCAN editors)</li>
+              <li>mmlanguage (prompts for the SCAN editors)</li>
               <li>scanparser (essential parser)</li>
               <li>session (maintain user info)</li>
             </ul>
             Optionally, you can activate the modules: <br />
             <ul>
-              <li>mmlanguage (internationalization for SCAN)</li>
               <li>scancache (caching of SCAN pages)</li>
               <li>transactionhandler (transactions through xml)</li>
             </ul>
