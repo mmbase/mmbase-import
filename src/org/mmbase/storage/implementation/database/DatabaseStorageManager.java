@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.48 2004-02-09 13:26:32 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.49 2004-02-12 10:23:03 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -479,11 +479,14 @@ public class DatabaseStorageManager implements StorageManager {
             String fieldName = field.getDBName();
             File binaryFile = getBinaryFile(node, fieldName);
             binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
-            byte[] value = node.getByteValue(fieldName);
-            DataOutputStream byteStream = new DataOutputStream(new FileOutputStream(binaryFile));
-            byteStream.write(value);
-            byteStream.flush();
-            byteStream.close();
+            Object value =  node.getValue(fieldName);
+
+            if (value instanceof byte[]) {
+                DataOutputStream byteStream = new DataOutputStream(new FileOutputStream(binaryFile));
+                byteStream.write((byte[]) value);
+                byteStream.flush();
+                byteStream.close();
+            }
         } catch (IOException ie) {
             throw new StorageException(ie);
         }
@@ -504,9 +507,13 @@ public class DatabaseStorageManager implements StorageManager {
                 // try legacy
                 File legacy = getLegacyBinaryFile(node, fieldName);
                 if (legacy == null) {
-                    log.warn("The file '" + binaryFile + "' does not exist, " + desc);
-                    log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '" + factory.getBinaryFileBasePath() + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
+                    if (! binaryFile.getParentFile().exists()) {
+                        log.warn("The file '" + binaryFile + "' does not exist, " + desc);
+                        log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '" + factory.getBinaryFileBasePath() + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
 
+                    } else if (log.isDebugEnabled()) {
+                        log.debug("The file '" + binaryFile + "' does not exist. Probably the blob field is simply 'null'");
+                    }
                 } else {
                     if (! legacyWarned) {
                         log.warn("Using the legacy location '" + legacy + "' rather then '" + binaryFile + "'. You might want to convert this dir.");
