@@ -157,7 +157,6 @@ public class Target {
      */
     public void setCreator(CreatorInterface cr) {
         creator = cr;
-        //log.info("BASEDIR="+basedir+path);
         File file = new File(basedir + path);
         if (file.exists()) {
             reader = new ExtendedDocumentReader(basedir + path, creator.getClass());

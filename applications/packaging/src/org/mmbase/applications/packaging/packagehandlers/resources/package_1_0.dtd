@@ -2,7 +2,7 @@
     package.dtd
 -->
 
-<!ELEMENT package (description*,license*,releasenotes*,installationnotes*,initiators*,supporters*,developers*,contacts*)>
+<!ELEMENT package (description*,license*,releasenotes*,installationnotes*,installreset*,screenshots*,starturls*,initiators*,supporters*,developers*,contacts*)>
 <!ATTLIST package name CDATA #IMPLIED>
 <!ATTLIST package type CDATA #IMPLIED>
 <!ATTLIST package maintainer CDATA #IMPLIED>
@@ -19,6 +19,18 @@
 <!ELEMENT releasenotes (#PCDATA)>
 
 <!ELEMENT installationnotes (#PCDATA)>
+
+<!ELEMENT installreset (#PCDATA)>
+
+<!ELEMENT screenshots (screenshot*)>
+<!ELEMENT screenshot (#PCDATA)>
+<!ATTLIST screenshot name CDATA #IMPLIED>
+<!ATTLIST screenshot file CDATA #IMPLIED>
+
+<!ELEMENT starturls (url*)>
+<!ELEMENT url (#PCDATA)>
+<!ATTLIST url name CDATA #IMPLIED>
+<!ATTLIST url link CDATA #IMPLIED>
 
 <!ELEMENT initiators (initiator*)>
 <!ELEMENT initiator (#PCDATA)>

@@ -418,6 +418,36 @@ public class Controller {
 
 
     /**
+     *  Gets the targetScreenshots attribute of the Controller object
+     *
+     * @param  project  Description of the Parameter
+     * @param  target   Description of the Parameter
+     * @return          The Screenshots value
+     */
+    public List getTargetScreenshots(String project, String target) {
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        Project p = ProjectManager.getProject(project);
+        if (p != null) {
+            Target t = p.getTarget(target);
+            if (t != null) {
+                List screenshots = t.getScreenshots();
+                if (screenshots != null) {
+                    for (Iterator i = screenshots.iterator(); i.hasNext(); ) {
+                        MMObjectNode virtual = builder.getNewNode("admin");
+                        virtual.setValue("name", (String)i.next());
+                        virtual.setValue("link", (String)i.next());
+                        virtual.setValue("description", (String)i.next());
+                        list.add(virtual);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+
+    /**
      *  Description of the Method
      *
      * @param  project     Description of the Parameter
