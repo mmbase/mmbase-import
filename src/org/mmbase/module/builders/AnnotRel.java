@@ -140,7 +140,6 @@ public class AnnotRel extends InsRel {
 	*/
 
 	public boolean setValue(MMObjectNode node,String field) {
-		System.out.println("PRE FIELD="+field);
 		if (field.equals("end")) {
 			int pos=node.getIntValue("pos");
 			int end=node.getIntValue("end");
@@ -154,7 +153,6 @@ public class AnnotRel extends InsRel {
 			int pos=node.getIntValue("pos");
 			int end=node.getIntValue("end");
 			int len=node.getIntValue("length");
-			System.out.println("P="+pos+" E="+end+" L="+len);
 			if ((end-pos)!=len) node.setValue("end",pos+len);
 		}
 		return(true);
