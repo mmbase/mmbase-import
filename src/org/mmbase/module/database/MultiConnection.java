@@ -33,7 +33,6 @@ public class MultiConnection implements Connection
    MultiConnection(MultiPool parent,Connection con) {
 		this.con=con;
 		this.parent=parent;
-		setLockMode(30); // informix only !
    } 
 
    /**
@@ -240,23 +239,6 @@ public class MultiConnection implements Connection
 		return("'"+getLastSQL()+"'@"+hashCode());
 	}
 
-	public void setLockMode(int sec) {
-		/*
-		PreparedStatement statement;
-		try {
-			if (sec>0) {
-				statement=con.prepareStatement("set lock mode to wait "+sec);
-			} else {
-				statement=con.prepareStatement("set lock mode to wait");
-			}
-			statement.executeUpdate();
-	        statement.close();
-		} catch (Exception e) {
-			System.out.println("MultiConnection : failed to set lock mode "+e);
-			e.printStackTrace();
-		}
-		*/
-	}
 
 	public boolean isAlive() {
 		boolean rtn=false;
