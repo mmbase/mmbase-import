@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: EmailQueueProbe.java,v 1.4 2003-03-07 08:50:08 pierre Exp $
+ * @version $Id: EmailQueueProbe.java,v 1.5 2003-05-07 21:06:47 kees Exp $
  */
 public class EmailQueueProbe implements Runnable {
 
@@ -43,6 +43,7 @@ public class EmailQueueProbe implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"emailqueueprobe");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
@@ -52,9 +53,7 @@ public class EmailQueueProbe implements Runnable {
      */
     public void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker.suspend();
-        kicker.stop();
+        kicker.interrupt();
         kicker = null;
     }
 
@@ -62,7 +61,6 @@ public class EmailQueueProbe implements Runnable {
      * Main loop, exception protected
      */
     public void run () {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);
         while (kicker!=null) {
             try {
                 doWork();
