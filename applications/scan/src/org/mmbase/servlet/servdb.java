@@ -91,15 +91,36 @@ public class servdb extends JamesServlet {
      * @param int worker id
      */
     public void init() {
+		log.service("initializing servlet..");
+
         // org.mmbase Roots		= getRoots();
 
         playlists	= (PlaylistsInterface)	getModule("PLAYLISTS");
+		if( playlists == null ) 
+			log.error("Could not find module with name 'PLAYLIST'!");
+
         cache		= (cacheInterface)		getModule("cache");
+		if( cache == null )
+			log.error("Could not find module with name 'cache'!");
+
         //images		= (imagesInterface)		getModule("IMAGES");
+		//if( images == null ) 
+		//	log.error("Could not find module with name 'IMAGES'!");
+
         mmbase		= (MMBase)		getModule("MMBASEROOT");
+		if( mmbase == null ) 
+			log.error("Could not find module with name 'MMBASEROOT'!");
+
         sessions	= (sessionsInterface)	getModule("SESSION");
+		if( sessions == null )
+			log.error("Could not find module with name 'SESSION'!");
+
         // org.mmbase stats		= (StatisticsInterface)	getModule("STATS");
+		// if stats == null 0 
+		// 		log.error("Could not find module with name 'STATS'!");
+
         //org.mmbase start();
+
         lastmod 	= new Date();
     }
 
@@ -440,8 +461,15 @@ public class servdb extends JamesServlet {
                                         // ---
                                         if (req.getRequestURI().indexOf("attachment")!=-1) {
                                             cline.buffer=getAttachment(getParamVector(req));
-					    cline.mimetype=getAttachmentMimeType(getParamVector(req));
+											cline.mimetype=getAttachmentMimeType(getParamVector(req));
                                             //cline.mimetype="application/x-binary";
+                                            mimetype=cline.mimetype;
+                                        }
+									else 
+										// flash
+										if (req.getRequestURI().indexOf("flash")!=-1) {
+                                            cline.buffer=getFlash(getParamVector(req));
+											cline.mimetype="application/x-shockwave-flash";
                                             mimetype=cline.mimetype;
                                         }
 
@@ -834,7 +862,31 @@ public class servdb extends JamesServlet {
             return null;
         }
     }
-
+	
+	
+	/**
+     * Return Flash movie
+     * @return Byte array with Flash movie
+     */
+    public byte[] getFlash(Vector params) {
+		debug("getFlash: param="+params);
+		if (params.size()!=1) {
+			debug("getFlash called with "+params.size()+" arguments, instead of exactly 1");
+            return null;
+		}
+		MMObjectBuilder bul=mmbase.getMMObject("flash");
+        MMObjectNode node=null;
+        try {
+			node=bul.getNode((String)params.elementAt(0));
+		} catch(Exception e) {};
+        if (node!=null) {
+			byte[] data = node.getByteValue("handle");
+			return data;
+        }
+		
+		debug("Failed to get node number "+(String)params.elementAt(0));
+		return null;
+    }
 
     /**
     *
@@ -941,6 +993,9 @@ public class servdb extends JamesServlet {
     *
     */
     public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp, boolean isInternal ) {
+
+		debug("getRAStream("+params+","+sp+","+resp+","+isInternal+")");
+
         byte[]	result		= null;
 
         String	sNumber		= null;
