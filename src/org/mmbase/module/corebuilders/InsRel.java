@@ -389,7 +389,7 @@ public class InsRel extends MMObjectBuilder {
         try {
             int src=Integer.parseInt(sourceNode);
             int otype=mmb.getTypeDef().getIntValue(wtype);
-            int rnumber=mmb.getRelDef().getGuessedNumber(role);
+            int rnumber=mmb.getRelDef().getNumberByName(role);
             return getRelated(src,otype,rnumber);
         } catch(Exception e) {}
         return null;
@@ -404,7 +404,7 @@ public class InsRel extends MMObjectBuilder {
     public Enumeration getRelated(int src,String wtype, String role) {
         try {
             int otype=mmb.getTypeDef().getIntValue(wtype);
-            int rnumber=mmb.getRelDef().getGuessedNumber(role);
+            int rnumber=mmb.getRelDef().getNumberByName(role);
             return getRelated(src,otype,rnumber);
         } catch(Exception e) {}
         return null;
@@ -565,9 +565,9 @@ public class InsRel extends MMObjectBuilder {
     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
     **/
     public int getGuessedNumber(String name) {
-        RelDef bul=(RelDef)mmb.getMMObject("reldef");
-        if (bul!=null) {
-            return bul.getGuessedNumber(name);
+        RelDef reldef=mmb.getRelDef();
+        if (reldef!=null) {
+            return reldef.getNumberByName(name);
         }
         return -1;
     }

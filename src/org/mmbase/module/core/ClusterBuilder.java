@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.4 2002-01-23 10:38:02 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.5 2002-03-04 12:35:15 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -474,7 +474,7 @@ public class ClusterBuilder extends VirtualBuilder {
             if (bul==null) {
                 // check if it is a role name. if so, use the builder of the rolename and
                 // store a filter on rnumber.
-                int rnumber = mmb.getRelDef().getGuessedNumber(curtable);
+                int rnumber = mmb.getRelDef().getNumberByName(curtable);
                 if (rnumber==-1) {
                     log.error("getAllTables() : Specified builder "+curtable+" does not exist.");
                     return null;
@@ -538,7 +538,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     private String getTrueTableName(String table) {
         String tab=getTableName(table);
-        int rnumber = mmb.getRelDef().getGuessedNumber(tab);
+        int rnumber = mmb.getRelDef().getNumberByName(tab);
         if (rnumber!=-1) {
             return mmb.getRelDef().getBuilderName(getNode(rnumber));
         } else {
