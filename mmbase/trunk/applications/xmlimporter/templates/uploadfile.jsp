@@ -1,66 +1,50 @@
-<%@ page language="java" import="com.jspsmart.upload.*,
+<%@ page language="java" import="org.apache.commons.fileupload.*,java.util.*,java.io.File,
  org.mmbase.util.logging.Logger, org.mmbase.util.logging.Logging"%>
-
-<jsp:useBean id="smartUpload" scope="page"
- class="com.jspsmart.upload.SmartUpload" />
-
 <%!  Logger log = Logging.getLoggerInstance(
      "org.mmbase.applications.xmlimporter.jsp.uploadfile.jsp"); %>
 
-<HTML>
+<html>
   <head>
     <title>XML Import</title>
     <link rel="stylesheet" href="css/mmbase.css" type="text/css">
   </head>
-<body>
+  <body>
+    <h1>XML Importer Upload To Server</h1>
+    <hr />
+<%  int count=0;
+    // Initialization
+    DiskFileUpload fu = new DiskFileUpload();
+    try {
+        List fileItems = fu.parseRequest(request);
+        int fileCount = 0;
+        // Save the files with its original names in a virtual path of the web server
+        String importDir = System.getProperty("mmbase.config") + "/import/";
+        for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
+            FileItem fi = (FileItem)i.next();
+            if (!fi.isFormField()) {
+              fi.write(new File(importDir + fi.getName()));
+              %>
+                <p>FilePathName = <%=fi.getName()%><br />
+                   Size = <%=fi.getSize()%><br /></p>
+              <%
+              log.info("Uploaded: "+fi.getName());
+              count ++;
+            }
+        }
+    } catch (FileUploadBase.SizeLimitExceededException e) {
+  %>
+    <p>Uploaded file exceeds maximum file size of <%=fu.getSizeMax()%> bytes.<br />
+  <%
+    } catch (FileUploadException e) {
+  %>
+    <p>An error ocurred while uploading this file (<%=e.toString()%>).<br />
+  <%
+    }
+  %>
+    <p><%=count%> file(s) uploaded</p>
+    <form method="POST" action="./importhome.jsp" enctype="multipart/form-data">
+       <input type="submit" value="Back to import page" />
+    </form>
 
-<H1>XML Importer Upload To Server</H1>
-<HR>
-<% int count=0;        
-   // Initialization
-   smartUpload.initialize(pageContext);
-   // Upload	
-   smartUpload.upload();
-   // Select each file
-   for (int i=0;i<smartUpload.getFiles().getCount();i++){
-      // Retreive the current file
-      com.jspsmart.upload.File selectedFile = smartUpload.getFiles().getFile(i);
-      // Save it only if this file exists
-      if (!selectedFile.isMissing()) {
-         // Save the files with its original names in a virtual path of the web server       
-         String importDir = System.getProperty("mmbase.config") + "/import/";
-	 selectedFile.saveAs(importDir + selectedFile.getFileName());
-	 // selectedFile.saveAs("/upload/" + selectedFile.getFileName(), smartUpload.SAVE_VIRTUAL);
-	 // sample with a physical path
-	 // selectedFile.saveAs("c:\\temp\\" + selectedFile.getFileName(), smartUpload.SAVE_PHYSICAL);
-	 //  Display the properties of the current file
-	 out.println("<p>");
-         String s1 = "FilePathName = " + selectedFile.getFilePathName();
-	 out.println(s1 + "<BR>");
-	 out.println("Size = " + selectedFile.getSize() + "<BR>");
-         log.info("uploaded: " + s1);
-	 //out.println("FieldName = " + selectedFile.getFieldName() + "<BR>");
-	 //out.println("FileName = " + selectedFile.getFileName() + "<BR>");
-	 //out.println("FileExt = " + selectedFile.getFileExt() + "<BR>");
-	 //out.println("ContentType = " + selectedFile.getContentType() + "<BR>");
-	 //out.println("ContentDisp = " + selectedFile.getContentDisp() + "<BR>");
-	 //out.println("TypeMIME = " + selectedFile.getTypeMIME() + "<BR>");
-	 //out.println("SubTypeMIME = " + selectedFile.getSubTypeMIME() + "<BR>");
-	 //out.println("</p>");
-	 count ++;
-      }
-   }
-
-   // Display the number of files which could be uploaded 
-   //out.println("<BR>" + smartUpload.getFiles().getCount() + " files could be uploaded.<BR>");
-
-   // Display the number of files uploaded 
-   out.println(count + " file(s) uploaded.");
-%>
-
-<FORM METHOD="POST" ACTION="./importhome.jsp" ENCTYPE="multipart/form-data">
-   <INPUT TYPE="SUBMIT" VALUE="Back to import page">
-</FORM>
-
-</BODY>
-</HTML>
+  </body>
+</html>
