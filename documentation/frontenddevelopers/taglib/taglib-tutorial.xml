@@ -7,7 +7,7 @@
   <articleinfo>
   	<title>Creating webpages with the MMBase Tag Library</title>
 	<date>2003-07</date>
- 	<edition>$Id: taglib-tutorial.xml,v 1.9 2003-07-27 17:47:52 henk Exp $</edition>
+ 	<edition>$Id: taglib-tutorial.xml,v 1.10 2004-02-17 15:25:05 gerard Exp $</edition>
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
@@ -147,20 +147,20 @@
       releases, currently running projects and their participating members and
       lots of other interesting information. The address of the website is:</para>
 
-      <remark><link>http://www.mmbase.org</link></remark>
+      <remark><ulink url="http://www.mmbase.org/">http://www.mmbase.org</ulink></remark>
     </section>
 
     <section>
       <title>Getting help</title>
 
       <para>If you find a mistake in this tutorial, please inform us about it
-      at <link>documentation@mmbase.org</link>.</para>
+      at <ulink url="mailto:documentation@mmbase.org">documentation@mmbase.org</ulink>.</para>
 
       <para>If you have additional questions please contact one of the
       companies that support MMBase. You will find a complete listing of
       supporting companies on the MMBase website. Point your browser to:</para>
 
-      <remark><link>http://www.mmbase.org</link></remark>
+      <remark><ulink url="http://www.mmbase.org/">http://www.mmbase.org</ulink></remark>
 
       <para>Furthermore, you can subscribe to several mailing lists where
       users and developers exchange information. Good chance you&#39;ll find
@@ -179,6 +179,7 @@
     it will be used throughout this tutorial.</para>
 
     <figure>
+      <title>News Example Cloud</title>
       <mediaobject><imageobject><imagedata fileref="media/cloud.jpg"
       format="JPEG"></imagedata></imageobject></mediaobject>
     </figure>
@@ -308,6 +309,7 @@
       tag.</para>
 
       <example>
+        <title>accessing the cloud example</title>
         <para>When using the &#60;mm:cloud&#62; tag there are several
         attributes that you can use. For now, we only use the &#34;name&#34;
         attribute. By default MMBase uses the &#34;mmbase&#34; value for this
