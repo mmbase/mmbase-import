@@ -162,7 +162,11 @@ public class XMLContextDepthWriter  {
 					// add directionality if used					
 					if (InsRel.usesdir) {
 					    int dir=node.getIntValue("dir");
-					    body+=" dir=\""+dir+"\"";
+			            if (dir==1) {
+        				    body+=" dir=\"unidirectional\"";
+		    	        } else {
+			    	        body+=" dir=\"bidirectional\"";
+	        		    }
 					}
 
 					body+=">\n";
@@ -284,7 +288,8 @@ public class XMLContextDepthWriter  {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+		    log.error(e);
+		    log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
@@ -297,7 +302,8 @@ public class XMLContextDepthWriter  {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+		    log.error(e);
+		    log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
