@@ -74,7 +74,9 @@
       <TD BGCOLOR="#000000" WIDTH="190">
       
       <FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica">$ITEM7
-		<PART /mmeditors/Chooser/showRelation.shtml?$ITEM6+$ITEM3></FONT>	 
+        <LIF $ITEM6^==insEditor>
+            ($ITEM8)
+        </LIF></FONT>
 	  </TD>
       <TD BGCOLOR="#FFFFFF" WIDTH="500">
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">$ITEM5</FONT>
@@ -97,7 +99,10 @@
       <TD BGCOLOR="#E0E0E0" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><FONT COLOR="#EOEOEO">##</FONT></TD>
       <TD BGCOLOR="#E0E0E0" WIDTH="190">
       
-      <FONT COLOR="#B0B0B0" SIZE="2" FACE="arial,helvetica">$ITEM7</FONT>
+      <FONT COLOR="#B0B0B0" SIZE="2" FACE="arial,helvetica">$ITEM7
+        <LIF $ITEM6^==insEditor>
+            ($ITEM8)
+        </LIF></FONT>
       </TD>
       <TD BGCOLOR="#FFFFFF" WIDTH="500">
       <FONT COLOR="#B0B0B0" SIZE="2" FACE="arial,helvetica">$ITEM5</FONT>
