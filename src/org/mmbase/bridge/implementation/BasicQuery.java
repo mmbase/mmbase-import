@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.26 2003-11-10 17:54:32 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.27 2003-11-19 17:25:49 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -201,7 +201,13 @@ public class BasicQuery implements Query  {
         return addRelationStep(otherNodeManager, null, "BOTH"); // would 'DESTINATION' not be better?
     }
 
+
     public RelationStep addRelationStep(NodeManager otherNodeManager, String role, String direction) {
+        return addRelationStep(otherNodeManager, role, direction, true);
+    }
+
+
+    protected RelationStep addRelationStep(NodeManager otherNodeManager, String role, String direction, boolean warnOnImpossibleStep) {
         if (used) throw new BridgeException("Query was used already");
 
         // a bit silly that two lookups are needed
@@ -213,7 +219,9 @@ public class BasicQuery implements Query  {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
             BasicRelationStep step = addRelationStep(insrel, otherNodeManager, relationDir);
             if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, searchDir)) {
-                log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+                if (warnOnImpossibleStep) {
+                    log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+                }
             }
             return step;
         } else {
@@ -230,7 +238,9 @@ public class BasicQuery implements Query  {
                 step.setAlias(createAlias(role));
             }
             if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, searchDir)) {
-                log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+                if (warnOnImpossibleStep) {
+                    log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+                }
             }
             return step;
         }
