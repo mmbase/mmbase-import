@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.13 2003-04-23 09:46:28 kees Exp $
+ * @version  $Id: validator.js,v 1.14 2003-05-26 14:54:35 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -88,7 +88,6 @@ function validateElement_validator(el, silent) {
         el = form[superId];
     }
     var id = el.name;
-    // form.elements["debug"].value = "validating: " + id + "\n" + form.elements["debug"].value;
     var v = getValue_validator(el);
     var err = "";
 
@@ -99,7 +98,7 @@ function validateElement_validator(el, silent) {
 
     // determine datatype
     var dttype = el.getAttribute("dttype");
-    //form.elements["debug"].value = "dttype: " + dttype + "\n" + form.elements["debug"].value;
+
     switch (dttype) {
         case "string":
             minlength=el.getAttribute("dtminlength");
@@ -161,10 +160,8 @@ function validateElement_validator(el, silent) {
 			
             var ms = date.getTime();
 
-            //form.elements["debug"].value = ms + "\n" + form.elements["debug"].value;;
-
             if (date.getDate() != day) {
-			    err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
             } else {
                 // checks min/max. note: should use different way to determine outputformat (month)
                 if ((err.length == 0) && (el.ftype != "time") && (el.dtmin != null) && (ms < 1000*el.dtmin)) {
