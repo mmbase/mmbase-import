@@ -9,12 +9,13 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.45 2002-07-18 09:20:00 michiel Exp $
+  @version $Id: wizard.xsl,v 1.46 2002-07-18 10:49:40 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
 
   <xsl:variable name="defaultsearchage">7</xsl:variable>
+  <xsl:param name="objectnumber"></xsl:param>
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
@@ -403,7 +404,7 @@
                 </a>
            </xsl:if>
            <xsl:if test="not(@inline='true')">
-                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}"
+                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={$objectnumber}"
                    target="_blank">
                 <xsl:call-template name="prompt_edit_wizard" />
                 </a>
@@ -699,7 +700,7 @@
                   </a>
                 </xsl:if>
                 <xsl:if test="not(@inline='true')">
-                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}"
+                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={$objectnumber}"
                     target="_blank">
                     <xsl:call-template name="prompt_add_wizard" />
                   </a>
