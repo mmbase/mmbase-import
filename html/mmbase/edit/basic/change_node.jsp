@@ -1,7 +1,7 @@
 <%@ include file="page_base.jsp"
 %><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
 <mm:write referid="style" />
-<title>Change a node</title>
+<title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
 <mm:context id="change_node">
