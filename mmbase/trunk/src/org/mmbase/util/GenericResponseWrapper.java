@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.10 2004-09-22 07:33:01 keesj Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.11 2004-09-22 15:11:08 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -76,16 +76,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         wrappedResponse = resp; //
     }
 
-    /**
-     * Sets also a value for the characterEncoding which must be supposed.
-     * Normally it would be determined automaticly right, but if for some reason it doesn't you can override it.
-     */
-
-    public GenericResponseWrapper(HttpServletResponse resp, String encoding) {
-        this(resp);
-        characterEncoding = encoding;
-        wrappedResponse = resp; //
-    }
 
     /**
      * Gets the response object which this wrapper is wrapping. You might need this when giving a
@@ -115,49 +105,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     public void setHeader(String header, String value) {
         getHttpServletResponse().setHeader(header,value);
     }
-
-
-    /**
-     * Gets the response object which this wrapper is wrapping. You might need this when giving a
-     * redirect or so.
-     * @since MMBase-1.7.1
-     */
-    public HttpServletResponse getHttpServletResponse() {
-        //return (HttpServletResponse) getResponse(); // shoudl work, I think, but doesn't
-        HttpServletResponse response = wrappedResponse;
-        while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
-            response = ((GenericResponseWrapper) response).wrappedResponse;
-        } 
-        return response;
-    }
-
-
-    public void sendRedirect(String location) throws IOException  {
-        checkWritten();
-        getHttpServletResponse().sendRedirect(location);
-    }
-    public void setStatus(int s) {
-        checkWritten();
-        getHttpServletResponse().setStatus(s);
-    }
-
-    public void addCookie(Cookie c) {
-        checkWritten();
-        getHttpServletResponse().addCookie(c);
-    }
-    public void setHeader(String header, String value) {
-        getHttpServletResponse().setHeader(header,value);
-    }
-
-
-    protected void checkWritten() { 
-        if (writer != null || outputStream != null) {
-            log.error("Allready written headers, perhaps you need to increase the 'buffer' of your JSP (with the @page directive)");
-            log.debug(Logging.stackTrace());
-            //throw new RuntimeException("Allready written");
-        }
-    }
-
 
     /**
      * Return the OutputStream. This is a 'MyServletOutputStream'.
