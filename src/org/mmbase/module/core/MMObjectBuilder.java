@@ -14,6 +14,7 @@ import java.util.*;
 import java.sql.*;
 import java.io.*;
 import java.text.*;
+import java.net.URLEncoder;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.101 $ $Date: 2001-05-14 09:58:24 $
+ * @version $Revision: 1.102 $ $Date: 2001-06-15 12:30:56 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1618,7 +1619,7 @@ public class MMObjectBuilder extends MMTable {
             val=node.getStringValue(field.substring(4));
             val=getWAP(val);
             rtn=val;
-        }
+        } 
         // end old
         return rtn;
     }
@@ -1735,6 +1736,9 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("hostname")) {
             String val=node.getStringValue(field);
             rtn=hostname_function(val);
+        } else if (function.equals("urlencode")) {
+            String val=node.getStringValue(field);
+            rtn=getURLEncode(val);
         } else if (function.startsWith("wrap_")) {
             String val=node.getStringValue(field);
             try {
@@ -2601,6 +2605,21 @@ public class MMObjectBuilder extends MMTable {
             result = obj.toString();
         }
         return result;
+    }
+
+    /**
+     * Returns a URLEncoded-version (MIME x-www-form-urlencoded) of a string.
+	 * This version uses the java.net.URLEncoder class to encode it.
+     * @param body text to convert
+     * @return the URLEncoded text
+     */
+    protected String getURLEncode(String body) {
+        String rtn="";
+        if (body!=null) {
+			rtn = URLEncoder.encode(body);
+        }
+		// log.debug("Returning URLEncoded string: "+rtn);
+        return rtn;
     }
 
     /**
