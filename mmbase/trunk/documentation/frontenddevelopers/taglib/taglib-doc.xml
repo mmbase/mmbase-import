@@ -254,7 +254,7 @@
         <title>Example: the &#60;mm:cloud&#62; tag</title>
 
         <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
-								   // all other mmbase node tags go here...
+   // all other mmbase node tags go here...
 &#60;/mm:cloud&#62;
 </programlisting>
 
@@ -307,7 +307,7 @@
 
         <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
 
-								  &#60;mm:node id=&#34;12&#34;&#62;
+  &#60;mm:node id=&#34;12&#34;&#62;
     //other nodes to access content from the node
   &#60;/mm:node&#62;
 
@@ -334,7 +334,7 @@
 
         <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
 
-								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
     //other nodes to access content from the node
   &#60;/mm:node&#62;
 
@@ -367,7 +367,7 @@
 
         <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
 
-								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
 
     //retrieve all related nodes of type image
     &#60;mm:relatednodes type=&#34;images&#34;&#62;
@@ -413,7 +413,7 @@
 
         <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
 
-								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
 
     //retrieve all related nodes of type image
     &#60;mm:relatednodes type=&#34;images&#34;&#62;
@@ -441,7 +441,7 @@
 
         <programlisting linenumbering="unnumbered">&#60;mm:cloud name=&#34;mmbase&#34;&#62;
 
-								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
 
     //retrieve all related nodes of type image
     &#60;mm:relatednodes type=&#34;images&#34;&#62;
@@ -490,8 +490,8 @@
 
       <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
 
-								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
-													    &#60;mm:field name=&#34;title&#34;/&#62;
+  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+    &#60;mm:field name=&#34;title&#34;/&#62;
     &#60;mm:field name=&#34;body&#34;/&#62;
   &#60;/mm:node&#62;
 
