@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.203 2003-09-23 13:04:37 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.204 2003-09-23 21:10:05 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3498,8 +3498,10 @@ like the parameter list or the session (where ever it is available) --&gt;
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
       Can be used inside a node tag to show the number of relations the node
-      has.
+      has. The same effect can be reached by a relatednodescontainer tag with a 'size' tag in it.
     </info>
+    <see tag="relatednodescontainer" />
+    <see tag="size" />
     <attribute>
       <name>type</name>
       <required>false</required>
