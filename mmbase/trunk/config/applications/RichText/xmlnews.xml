@@ -3,13 +3,12 @@
 	<node number="5673" owner="system" alias="xmltest">
 		<body>&lt;mmxf&gt;
 &lt;section&gt;
-&lt;h&gt;Strange languages and so on&lt;/p&gt;
+&lt;h&gt;Strange languages and so on&lt;/h&gt;
 &lt;p id=&quot;lang&quot;&gt;Strange languages are very interesting. As everybody knows. There are two url's and one image related to this paragraph.&lt;/p&gt;
-&lt;p&gt;Here follows the second paragraph. It has a &lt;a id=&quot;here&quot;&gt;clickable &lt;em&gt;word&lt;/em&gt;
-&lt;/a&gt; in it.&lt;/p&gt;
+&lt;p&gt;Here follows the second paragraph. It has a &lt;a id=&quot;here&quot;&gt;clickable &lt;em&gt;word&lt;/em&gt; &lt;/a&gt; in it.&lt;/p&gt;
 &lt;/section&gt;
 &lt;section&gt;
-&lt;h&gt;Unicode&lt;/p&gt;
+&lt;h&gt;Unicode&lt;/h&gt;
 &lt;p&gt;This is the third paragraph (and the second 'section'). It only shows some unicode: перестоыка, 寛治 カタカナ, Eĥoŝanĝo ĉiuĵaŭde. And now a list:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;abracadabra&lt;/li&gt;
