@@ -21,6 +21,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ *
+ * @javadoc
  */
 
 public class Statistics extends MMObjectBuilder {
@@ -57,7 +59,7 @@ public class Statistics extends MMObjectBuilder {
 
 
 	/**
-	*/
+     */
 	public Hashtable getShadows (String number) {
 		//log.info("=====> ENTER: getShadows (" + number + ")");
 
@@ -78,7 +80,7 @@ public class Statistics extends MMObjectBuilder {
 
 
 	/**
-	*/
+     */
 	public void delShadows (String number) {
 		//log.info("=====> ENTER: delShadows (" + number + ")");
 		Hashtable hh = (Hashtable)(shadowsCache.get (number));
@@ -130,12 +132,12 @@ public class Statistics extends MMObjectBuilder {
 		} else {
 			// get the number from the database by a search
 	
-			alias=Escape.singlequote(alias);
+			alias=Encode.encode("ESCAPE_SINGLE_QUOTE", alias);
 		    Enumeration w=search("WHERE name='"+alias+"'");
 			while (w.hasMoreElements()) {
 				MMObjectNode node=(MMObjectNode)w.nextElement();
 				number=""+node.getIntValue("number");
-			alias2number.put(alias,number);
+                alias2number.put(alias,number);
 				return(number);
 			}
 		}
@@ -144,123 +146,123 @@ public class Statistics extends MMObjectBuilder {
 
 	/**
 	 *
- 	*/
+     */
 	public synchronized String setCount (String number, int incr) {
 		// log.info("Number=" + number + ", increase=" + incr);
 
 		try {
-		MMObjectNode stats = getNode (number);
+            MMObjectNode stats = getNode (number);
 	
-		if (stats != null) {
-			/* ----------------------------------------------------------
-			 * First check if we really have to mess with the shadow-statistics.
-			 * 
-			 * Parameters for all statistics
-			 *  hitTime    = the absolute time of the hit, in seconds.
-			 *  statsBegin = the absolute starttime of the statistics, in seconds.
-			 *  nrOfSlices = number of time-slices
-			 *  interval   = size of a time-interval
-			 * 
-			 * Parameters for 'current' statistics
-			 *  curSliceBegin = the relative starttime of the current statistics (relative w.r.t. statsBegin)
-			 *  hits          = number of hits in last interval
-			 */
-			//int hitTime    = (int)(new java.util.Date().getTime() / 1000); // datefix
-			int hitTime=(int)(DateSupport.currentTimeMillis()/1000);
+            if (stats != null) {
+                /* ----------------------------------------------------------
+                 * First check if we really have to mess with the shadow-statistics.
+                 * 
+                 * Parameters for all statistics
+                 *  hitTime    = the absolute time of the hit, in seconds.
+                 *  statsBegin = the absolute starttime of the statistics, in seconds.
+                 *  nrOfSlices = number of time-slices
+                 *  interval   = size of a time-interval
+                 * 
+                 * Parameters for 'current' statistics
+                 *  curSliceBegin = the relative starttime of the current statistics (relative w.r.t. statsBegin)
+                 *  hits          = number of hits in last interval
+                 */
+                //int hitTime    = (int)(new java.util.Date().getTime() / 1000); // datefix
+                int hitTime=(int)(DateSupport.currentTimeMillis()/1000);
 	
-			int statsStart = stats.getIntValue ("start");
-			int nrOfSlices = stats.getIntValue ("timeslices");
-			int interval   = stats.getIntValue ("timeinterval");
+                int statsStart = stats.getIntValue ("start");
+                int nrOfSlices = stats.getIntValue ("timeslices");
+                int interval   = stats.getIntValue ("timeinterval");
 	
-			int curSliceBegin = stats.getIntValue ("timeslice");
-			int hits          = stats.getIntValue ("count");
+                int curSliceBegin = stats.getIntValue ("timeslice");
+                int hits          = stats.getIntValue ("count");
 	
-			// log.info("Current statistics begin is " + (statsStart + curSliceBegin));
-			// log.info("Hit came on time " + hitTime);
+                // log.info("Current statistics begin is " + (statsStart + curSliceBegin));
+                // log.info("Hit came on time " + hitTime);
 	
-			if ((nrOfSlices < 1) || ((hitTime >= statsStart + curSliceBegin) && (hitTime < (statsStart + curSliceBegin + interval)))) { // This statistics-node has no shadow-statistics OR hit falls in current slice
-				hits += incr;
-				stats.setValue ("count", hits);
-				if (!dirty.contains(stats)) dirty.addElement(stats);
-				// log.info("Increased node " + number + " to " + hits);
-				return ("");
-			}
-			int curSliceNr = (curSliceBegin / interval) % nrOfSlices;
+                if ((nrOfSlices < 1) || ((hitTime >= statsStart + curSliceBegin) && (hitTime < (statsStart + curSliceBegin + interval)))) { // This statistics-node has no shadow-statistics OR hit falls in current slice
+                    hits += incr;
+                    stats.setValue ("count", hits);
+                    if (!dirty.contains(stats)) dirty.addElement(stats);
+                    // log.info("Increased node " + number + " to " + hits);
+                    return ("");
+                }
+                int curSliceNr = (curSliceBegin / interval) % nrOfSlices;
 			
-			/*-------------------------------------------------------------
-			 * Time of the current slice has expired, so if it contains hits we should copy it
-			 * to a shadow.
-			 * 
-			 * curSliceNr = slice number of the current statistics
-			 */
-			if (hits > 0) {
-				MMObjectNode nowSlice = getSlice (number,curSliceNr);
+                /*-------------------------------------------------------------
+                 * Time of the current slice has expired, so if it contains hits we should copy it
+                 * to a shadow.
+                 * 
+                 * curSliceNr = slice number of the current statistics
+                 */
+                if (hits > 0) {
+                    MMObjectNode nowSlice = getSlice (number,curSliceNr);
 	
-				if (nowSlice == null) { // Node doesn't exist, so we have to make it
-					// log.info("Slice " + curSliceNr + " doesn't exist yet... making it");
-					StatisticsShadow ssbuild = ((StatisticsShadow)mmb.getMMObject ("sshadow"));
-					nowSlice = ssbuild.getNewNode ("logger");
-					nowSlice.setValue ("parent", java.lang.Integer.parseInt (number));
-					nowSlice.setValue ("slicenumber", curSliceNr);
-					nowSlice.setValue ("data", stats.getStringValue ("data"));
-					nowSlice.setValue ("start", curSliceBegin);
-					nowSlice.setValue ("stop", curSliceBegin + interval - 1);
-					nowSlice.setValue ("count", hits);
+                    if (nowSlice == null) { // Node doesn't exist, so we have to make it
+                        // log.info("Slice " + curSliceNr + " doesn't exist yet... making it");
+                        StatisticsShadow ssbuild = ((StatisticsShadow)mmb.getMMObject ("sshadow"));
+                        nowSlice = ssbuild.getNewNode ("logger");
+                        nowSlice.setValue ("parent", java.lang.Integer.parseInt (number));
+                        nowSlice.setValue ("slicenumber", curSliceNr);
+                        nowSlice.setValue ("data", stats.getStringValue ("data"));
+                        nowSlice.setValue ("start", curSliceBegin);
+                        nowSlice.setValue ("stop", curSliceBegin + interval - 1);
+                        nowSlice.setValue ("count", hits);
 	
-					int id = ssbuild.insert ("logger", nowSlice); 
-					delShadows(number);
-				} else {
-					// log.info("Changing values of existing slice " + curSliceNr);
-					nowSlice.setValue ("start", curSliceBegin);
-					nowSlice.setValue ("stop", curSliceBegin + interval - 1);
-					nowSlice.setValue ("count", stats.getIntValue ("count"));
-					if (!dirty.contains(nowSlice)) dirty.addElement(nowSlice);
-				}
-			} 
-			// else log.info("Current stats have no hits, so no need to store it");
+                        int id = ssbuild.insert ("logger", nowSlice); 
+                        delShadows(number);
+                    } else {
+                        // log.info("Changing values of existing slice " + curSliceNr);
+                        nowSlice.setValue ("start", curSliceBegin);
+                        nowSlice.setValue ("stop", curSliceBegin + interval - 1);
+                        nowSlice.setValue ("count", stats.getIntValue ("count"));
+                        if (!dirty.contains(nowSlice)) dirty.addElement(nowSlice);
+                    }
+                } 
+                // else log.info("Current stats have no hits, so no need to store it");
 	
-			/*--------------------------------------------------------------
-			 * Update the "current" statistics.
-			 *
-			 *  hitSliceBegin = relative begin-time of the time-slice in which the hit occured
-			 */
-			int hitSliceBegin = ((hitTime - statsStart) / interval) * interval;
-			stats.setValue ("count", incr); // We still have to count the hit that caused all this mess
-			stats.setValue ("timeslice", hitSliceBegin);
+                /*--------------------------------------------------------------
+                 * Update the "current" statistics.
+                 *
+                 *  hitSliceBegin = relative begin-time of the time-slice in which the hit occured
+                 */
+                int hitSliceBegin = ((hitTime - statsStart) / interval) * interval;
+                stats.setValue ("count", incr); // We still have to count the hit that caused all this mess
+                stats.setValue ("timeslice", hitSliceBegin);
 	
 	
-			/*-------------------------------------------------------------------
-			 * Update old existing slices in the database. We do not create slices of which the
-			 * count is 0 anyway. When searching the database we have to consider this.
-			 *
-			 *  fillSliceBegin = relative begin-times of the time-slices "before" the slice with the hit
-			 *  fillSliceNr    = number of the time-slices before the slice with the hit
-			 *  max            = maximum number of time-slices that may be reset
-			 */
-			int fillSliceBegin = hitSliceBegin - interval;
-			int fillSliceNr = (fillSliceBegin / interval) % nrOfSlices;
-			int max = nrOfSlices;
+                /*-------------------------------------------------------------------
+                 * Update old existing slices in the database. We do not create slices of which the
+                 * count is 0 anyway. When searching the database we have to consider this.
+                 *
+                 *  fillSliceBegin = relative begin-times of the time-slices "before" the slice with the hit
+                 *  fillSliceNr    = number of the time-slices before the slice with the hit
+                 *  max            = maximum number of time-slices that may be reset
+                 */
+                int fillSliceBegin = hitSliceBegin - interval;
+                int fillSliceNr = (fillSliceBegin / interval) % nrOfSlices;
+                int max = nrOfSlices;
 	
-			for ( ; fillSliceBegin > curSliceBegin && max > 0
-			      ; fillSliceBegin -= interval, fillSliceNr--, max--
-			    ) {
-				if (fillSliceNr < 0) fillSliceNr = nrOfSlices - 1;
+                for ( ; fillSliceBegin > curSliceBegin && max > 0
+                          ; fillSliceBegin -= interval, fillSliceNr--, max--
+                      ) {
+                    if (fillSliceNr < 0) fillSliceNr = nrOfSlices - 1;
 	
-				MMObjectNode s = getSlice (number,fillSliceNr);
+                    MMObjectNode s = getSlice (number,fillSliceNr);
 	
-				if (s != null) { // Node exists in database, so we have to reset it to new values
-					//log.info("Resetting values of slice " + fillSliceNr + " (new begin = " + fillSliceBegin + ")");
-					resetShadow (s, fillSliceBegin, fillSliceBegin + interval - 1);
-					if (!dirty.contains (s)) dirty.addElement (s);
-				} 
-				// else log.info("Skipping slice " + fillSliceNr + ", begin should have been " + fillSliceBegin);
-			}
+                    if (s != null) { // Node exists in database, so we have to reset it to new values
+                        //log.info("Resetting values of slice " + fillSliceNr + " (new begin = " + fillSliceBegin + ")");
+                        resetShadow (s, fillSliceBegin, fillSliceBegin + interval - 1);
+                        if (!dirty.contains (s)) dirty.addElement (s);
+                    } 
+                    // else log.info("Skipping slice " + fillSliceNr + ", begin should have been " + fillSliceBegin);
+                }
 	
-			return ("");		
-		}
-		/* else */
-		//log.info("No Stats node");
-		return (null);
+                return ("");		
+            }
+            /* else */
+            //log.info("No Stats node");
+            return (null);
 		} catch(Exception re) {
 			re.printStackTrace();
 			return("error");
@@ -269,8 +271,8 @@ public class Statistics extends MMObjectBuilder {
 
  
 	/**
-	* insert a new object, normally not used (only subtables are used)
-	*/
+     * insert a new object, normally not used (only subtables are used)
+     */
 	public void NewStat(String name,String description,int timeslices,int timeinterval, int timeslice, String data, int inc) {
 		MMObjectNode node=getNewNode("system");
 		node.setValue("name",name);		
@@ -287,9 +289,9 @@ public class Statistics extends MMObjectBuilder {
 
 
 	/**
- 	* Given the number of a statistics node and a slice-index number, returns the 
- 	* corresponding shadow-statistics node.
- 	*/
+     * Given the number of a statistics node and a slice-index number, returns the 
+     * corresponding shadow-statistics node.
+     */
 	private MMObjectNode getSlice(String number,int slice) {
 		// Retreive a hashtable with the shadow-nodes belonging to the statistics node
 		Hashtable h = getShadows (number);
