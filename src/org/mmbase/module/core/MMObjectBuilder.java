@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.195 2002-12-05 16:17:28 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.196 2002-12-06 10:09:29 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2350,9 +2350,15 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Parses string containing function parameters.
+     * The parameters must be separated by ',' or ';' and may be functions
+     * themselves (i.e. a functionname, followed by a parameter list between 
+     * parenthesis).
+     * 
+     * @param fields The string, containing function parameters.
+     * @return List of function parameters (may be functions themselves).
      * @deprecated use executeFunction(node, function, list)
      */
-
     protected Vector getFunctionParameters(String fields) {
         int commapos=0;
         int nested  =0;
