@@ -155,7 +155,7 @@ public class XMLApplicationReader  {
 						Hashtable bset=new Hashtable();	
 						Node n5=n3.getFirstChild();
 						bset.put("name",n5.getNodeValue());
-						NamedNodeMap nm=n1.getAttributes();
+						NamedNodeMap nm=n3.getAttributes();
 						if (nm!=null) {
 							Node n4=nm.getNamedItem("maintainer");
 							if (n4!=null) bset.put("maintainer",n4.getNodeValue());
