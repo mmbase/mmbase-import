@@ -516,6 +516,14 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="compile.cust"
           description="Compile a customized set, dependent on the system classpath"
+          depends="compile.local.cust,compile.remote.cust">
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compile a customized set, dependent on the system classpath         -->
+  <!-- =================================================================== -->
+  <target name="compile.local.cust"
+          description="Compile a customized set, dependent on the system classpath (exclude remote)"
           depends="init.compile.cust,check.package.all">
     <mkdir dir="${build.dir}/classes"/>
     <copy todir="${build.dir}/classes">
@@ -531,9 +539,6 @@ Change directory to ${build.dir}/orion and run:
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
       <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
-      <exclude name="**/RemoteMMCI.java"/>
-      <exclude name="org/mmbase/bridge/remote/**" />
-      <exclude name="org/mmbase/bridge/RemoteContext.java"/>
       <exclude name="**/XSLTransformer.java" unless="xalan.in.classpath"/>
       <exclude name="**/jumpersInterceptor.java" unless="tomcat.in.classpath"/>
       <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
@@ -1466,6 +1471,20 @@ Change directory to ${build.dir}/orion and run:
            <include name="org/mmbase/bridge/remote/generator/*.java"/>
     </javac>
   </target>
+
+  <!-- =================================================================== -->
+  <!-- (Step 1 for remote) Compile the remote generator classes            -->
+  <!-- =================================================================== -->
+  <target name="compile.remote.generator.cust" description="Compile the remote generator classes, using the custom classpath" depends="init.compile.cust">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/remote/generator/*.java"/>
+    </javac>
+  </target>
+
   <!-- =================================================================== -->
   <!-- check if MMCI.xml is present                                        -->
   <!-- =================================================================== -->
@@ -1476,24 +1495,42 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <!-- (Step 2 for remote) Generate the source for the remote classes      -->
   <!-- =================================================================== -->
-  <target name="generate.remote" 
-          description="Generate the source for the remote classes" 
-          depends="init,compile.remote.generator,check.mmci.xml.present" 
+  <target name="generate.remote"
+          description="Generate the source for the remote classes"
+          depends="init,compile.remote.generator,check.mmci.xml.present"
           unless="mmci.xml.present">
     <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
-         using the sun jaxp implementation. By forking we do not use the ant classloader -->
-    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="compile">
-	<arg value="${source-src.dir}/MMCI.xml"/>
+       using the sun jaxp implementation. By forking we do not use the ant classloader -->
+    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="compile" >
+	<arg value="${source-src.dir}/MMCI.xml" />
 	<classpath>
-		<pathelement location="${build.dir}/classes"/>
+		<pathelement location="${build.dir}/classes" />
 	</classpath>
     </java>
-    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile">
+    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile" >
        <arg value="${source-src.dir}"/>
        <arg value="${source-src.dir}/MMCI.xml"/>
 	<classpath>
 		<pathelement location="${build.dir}/classes"/>
 	</classpath>
+    </java>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- (Step 2 for remote) Generate the source for the remote classes      -->
+  <!-- =================================================================== -->
+  <target name="generate.remote.cust"
+          description="Generate the source for the remote classes, using the custom classpath"
+          depends="init.compile.cust,compile.remote.generator.cust,check.mmci.xml.present"
+          unless="mmci.xml.present">
+    <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
+       using the sun jaxp implementation. By forking we do not use the ant classloader -->
+    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" >
+	<arg value="${source-src.dir}/MMCI.xml"/>
+    </java>
+    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" >
+       <arg value="${source-src.dir}"/>
+       <arg value="${source-src.dir}/MMCI.xml"/>
     </java>
   </target>
 
@@ -1516,11 +1553,36 @@ Change directory to ${build.dir}/orion and run:
         <classpath>
                 <pathelement location="${build.dir}/classes"/>
         </classpath>
-
     </rmic>
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/RemoteContext.java"/>
+           <include name="org/mmbase/module/RemoteMMCI.java"/>
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- (Step 3 for remote) Compile the remote classes                      -->
+  <!-- =================================================================== -->
+  <target name="compile.remote.cust" description="Compile the remote classes, using the custom classpath" depends="init.compile.cust,generate.remote.cust">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/remote/*.java"/>
+           <include name="org/mmbase/bridge/remote/rmi/*.java"/>
+           <include name="org/mmbase/bridge/remote/implementation/*.java"/>
+    </javac>
+    <rmic base="${build.dir}/classes">
+    	<include name="org/mmbase/bridge/remote/rmi/*.class"/>
+    </rmic>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
