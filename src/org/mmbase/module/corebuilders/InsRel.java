@@ -207,10 +207,9 @@ public class InsRel extends MMObjectBuilder {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-//			debug("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
-			//ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" UNION SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE dnumber="+src+";");
-			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
-//			debug("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
+//			debug("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src);
+			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src);
+//			debug("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src);
 			MMObjectNode node;
 			Vector results=new Vector();
 			while(rs.next()) {
@@ -289,8 +288,7 @@ public class InsRel extends MMObjectBuilder {
 			list=new Vector();
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// informix ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" UNION SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE dnumber="+src+";");
-			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
+			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src);
 			MMObjectNode node,node2;
 			int other;
 			while(rs.next()) {
