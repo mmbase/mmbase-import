@@ -37,6 +37,7 @@ public class ForumConfig {
    private String defaultaccount, defaultpassword;
    private String accountcreationtype,accountremovaltype;
    private String loginmodetype,logoutmodetype;
+   private String guestreadmodetype,guestwritemodetype;
    private String id="unkown";
 
    private int quotamax = 100;
@@ -76,6 +77,8 @@ public class ForumConfig {
                         accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
                         loginmodetype = getAttributeValue(reader,n,"loginmode","type");
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
+                        guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
+                        guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
 
                         for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
                             Element n2 = (Element) ns2.nextElement();
@@ -288,6 +291,14 @@ public class ForumConfig {
 
    public String getLogoutModeType() {
         return logoutmodetype;
+   }
+
+   public String getGuestReadModeType() {
+        return guestreadmodetype;
+   }
+
+   public String getGuestWriteModeType() {
+        return guestwritemodetype;
    }
 
 }

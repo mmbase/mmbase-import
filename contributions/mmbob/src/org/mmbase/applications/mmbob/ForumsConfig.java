@@ -39,6 +39,8 @@ public class ForumsConfig {
    private String accountremovaltype="open";
    private String loginmodetype="open";
    private String logoutmodetype="open";
+   private String guestreadmodetype="open";
+   private String guestwritemodetype="open";
 
    private int quotamax = 100;
    private int quotasoftwarning = 60;
@@ -124,6 +126,8 @@ public class ForumsConfig {
                         accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
                         loginmodetype = getAttributeValue(reader,n,"loginmode","type");
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
+                        guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
+                        guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
                         for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
                                    	Element n2=(Element)ns2.nextElement();
                                         	nm=n2.getAttributes();
@@ -286,6 +290,14 @@ public class ForumsConfig {
 
    public String getLogoutModeType() {
         return logoutmodetype;
+   }
+
+   public String getGuestReadModeType() {
+        return guestreadmodetype;
+   }
+
+   public String getGuestWriteModeType() {
+        return guestwritemodetype;
    }
 
 }
