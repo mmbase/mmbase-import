@@ -72,7 +72,7 @@ public class XMLBuilderWriter  {
 		for (Enumeration e=names.keys();e.hasMoreElements();) {
 			String country=(String)e.nextElement();
 			String name=(String)names.get(country);
-			body+="\t<Plural xml:lang=\""+country+"\">"+name+"</plural>\n";
+			body+="\t<plural xml:lang=\""+country+"\">"+name+"</plural>\n";
 		}
 	} else {
 		body+="\t<plural xml:lang=\"us\">"+bul.getDutchSName()+"</plural>\n";
