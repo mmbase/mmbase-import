@@ -16,7 +16,7 @@ import java.util.List;
 /**
  *
  */
-public interface MediaFilter {
+public interface Filter {
     
     public List filter(List urlcomposers);
     public void configure(XMLBasicReader reader, Element e);

@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top.
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatComparator.java,v 1.2 2003-02-03 18:11:40 michiel Exp $
+ * @version $Id: ServerFormatComparator.java,v 1.3 2003-02-03 22:50:51 michiel Exp $
  */
 public class ServerFormatComparator extends  FormatComparator {
     private static Logger log = Logging.getLoggerInstance(ServerFormatComparator.class.getName());
 
-    public static final String CONFIG_TAG = MediaSourceFilter.FILTERCONFIG_TAG + ".preferredSource";
+    public static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".preferredSource";
     public static final String FORMAT_ATT = "format";
 
     public  ServerFormatComparator() {};

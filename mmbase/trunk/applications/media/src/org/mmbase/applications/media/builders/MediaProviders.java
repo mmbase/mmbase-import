@@ -19,11 +19,11 @@ import java.util.*;
 import java.lang.reflect.Method;
 
 /**
- * A MediaProvider often is a host. One or more 'MediaURLComposers'
+ * A MediaProvider often is a host. One or more 'URLComposers'
  * (or extensions) must be related to it. Those will perform the actual task of creating an URL.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.3 2003-02-03 21:06:26 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.4 2003-02-03 22:50:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers;
-
+import org.mmbase.applications.media.builders.MediaProviders;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.Format;
 import java.util.Map;
@@ -26,17 +26,50 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.1 2003-02-03 17:50:34 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.2 2003-02-03 22:50:55 michiel Exp $
  */
 
-abstract public class URLComposer  {
-    protected MMObjectNode source;
-    protected Map          info;
-    abstract public String       getURL();
-    abstract public boolean      isAvailable();
+public class URLComposer  {
+    protected MMObjectNode  source;
+    protected MMObjectNode  provider;
+    protected Map           info;
+
+    public URLComposer(MMObjectNode provider, MMObjectNode source, Map info) {
+        if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
+        if (provider == null) throw new RuntimeException("Source may not be null in a URLComposer object");
+        this.provider = provider;
+        this.source   = source;
+        this.info     = info;
+        if (this.info == null) info = new java.util.Hashtable();
+    }
+
+
     public MMObjectNode getSource()   { return source;  }
     public Map          getInfo()     { return info; }
     public Format       getFormat()   { return Format.get(source.getIntValue("format")); } 
+
+    /**
+     * Extension will normally create URL's differently. They override this function.
+     */
+
+    protected StringBuffer getURLBuffer() {
+        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://" + provider.getStringValue("host") + provider.getStringValue("rootpath") + source.getStringValue("url"));
+        return buff;            
+    }
+    /**
+     * Returns the URL as a String. To encourage efficient coding,
+     * this method is final. Override getURLBuffer instead.
+     */
+
+    public final String  getURL() {
+        return getURLBuffer().toString();
+    }
+
+    public boolean      isAvailable() { 
+        boolean providerAvailable = (provider.getIntValue("state") == MediaProviders.STATE_ON);
+        return providerAvailable;
+    }
+  
     
     public String toString() {
         if (isAvailable()) {
