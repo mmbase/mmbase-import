@@ -1,14 +1,15 @@
 <!ELEMENT fieldtypedefinitions (fieldtype*) >
-<!ELEMENT fieldtype  (setprocessor*, getprocessor*, specialization*) >
+<!ELEMENT fieldtype  (commitprocessor?, setprocessor*, getprocessor*, specialization*) >
 <!ATTLIST fieldtype  id  NMTOKEN  #REQUIRED > 
 
+<!ELEMENT commitprocessor  (class*) >
 <!ELEMENT setprocessor (class*) >
 <!ELEMENT getprocessor (class*) >
 
 <!ATTLIST setprocessor  type  NMTOKEN  #IMPLIED > 
 <!ATTLIST getprocessor  type  NMTOKEN  #IMPLIED > 
 
-<!ELEMENT specialization (setprocessor*, getprocessor*) >
+<!ELEMENT specialization (commitprocessor?, setprocessor*, getprocessor*) >
 <!ATTLIST specialization  id  NMTOKEN  #REQUIRED > 
 
 

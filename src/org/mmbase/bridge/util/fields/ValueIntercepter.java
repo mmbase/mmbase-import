@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.10 2004-03-08 16:01:41 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.11 2004-09-17 09:29:26 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -53,62 +53,117 @@ public class ValueIntercepter {
     public final static int TYPE_LONG    = 7;
     public final static int TYPE_XML     = 8;
     public final static int TYPE_NODE    = 9;
+    public final static int TYPE_DATETIME    = 10;
+    public final static int TYPE_BOOLEAN    = 11;
     */
 
     private static final Processor[][] defaultSetProcessor = {
-        //set  setString setInteger ... 
-        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                         /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
+        //set  setString setInteger ...                              
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+        null,                                                                     /* 3 not used */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 11=boolean */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
     };
+
+    /**
+     * @since MMBase-1.8
+     */
+    private static final CommitProcessor[] defaultCommitProcessor = {
+        null,  /* 0=not used */
+        null,  /* 1=string */
+        null,  /* 2=integer */
+        null,  /* 3=not used */
+        null,  /* 4=byte */
+        null,  /* 5=float */
+        null,  /* 6=double */
+        null,  /* 7=long */
+        null,  /* 8=xml */
+        null,   /* 9=node */
+        null,   /* 10=datetime */
+        null,   /* 11=boolean */
+        null   /* 12=list */
+    };
+
+
     private static final Map[][] setProcessor = { // maps with guiType -> Processor
-        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                         /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+        null,                                                                     /* 3 not used */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 11=boolean */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
+    };
+
+    /**
+     * @since MMBase-1.8
+     */
+    private static final Map[] commitProcessor = {
+        null,  /* 0=not used */
+        null,  /* 1=string */
+        null,  /* 2=integer */
+        null,  /* 3=not used */
+        null,  /* 4=byte */
+        null,  /* 5=float */
+        null,  /* 6=double */
+        null,  /* 7=long */
+        null,  /* 8=xml */
+        null,   /* 9=node */
+        null,   /* 10=datetime */
+        null,   /* 11=boolean */
+        null   /* 12=boolean */
     };
 
     private static final Processor[][] defaultGetProcessor = {
         //set  setString setInteger ... 
-        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                         /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+        null,                                                                     /* 3 not used */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 11=boolean */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
     };
     private static final Map[][] getProcessor = { // maps with guiType -> Processor
-        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
-        {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
-        {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
-        null,                                                         /* 3 not used */
-        {null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
-        {null, null, null, null, null, null, null, null, null, null}, /* 5=float */
-        {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
-        {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
-        {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 0=object */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 1=string */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
+        null,                                                                     /* 3 not used */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 4=byte */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 5=float */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 6=double */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 7=long */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 9=node */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 10=datetime */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null},  /* 11=boolean */
+        {null, null, null, null, null, null, null, null, null, null, null, null, null}  /* 12=list */
     };
 
     static {
         log = Logging.getLoggerInstance(ValueIntercepter.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_FIELD_TYPE_DEFINITIONS, DTD_FIELD_TYPE_DEFINITIONS, ValueIntercepter.class);
         // read the XML
         try {
             readFieldTypeDefinitions();
@@ -122,22 +177,22 @@ public class ValueIntercepter {
         return org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(s);
     }
 
-    private static Processor createProcessor(XMLBasicReader reader, Element processorElement) {
-        Processor processor = null;
+    private static Object createProcessor(XMLBasicReader reader, Element processorElement) {
+        Object processor = null;
         Enumeration classes = reader.getChildElements(processorElement, "class");
         while(classes.hasMoreElements()) {
             Element clazElement = (Element) classes.nextElement();
             String clazString = reader.getElementValue(reader.getElementByPath(clazElement, "class"));
             try {
                 Class claz = Class.forName(clazString);
-                Processor newProcessor = null;
+                Object newProcessor = null;
                 if (CharTransformer.class.isAssignableFrom(claz)) {
-                    CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueinterceper ", false);
+                    CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueintercepter ", false);
                     if (charTransformer != null) {
                         newProcessor = new CharTransformerProcessor(charTransformer);
                     }
                 } else if (Processor.class.isAssignableFrom(claz)) {
-                    newProcessor = (Processor) claz.newInstance();
+                    newProcessor = claz.newInstance();
                 } else {
                     log.error("Found class " + clazString + " is not a Processor or a CharTransformer");
                 }
@@ -165,16 +220,27 @@ public class ValueIntercepter {
         return processor;
     }
 
+
     /**
-     * Initialize the type handlers default supported by the system.
+     * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
     private static void readFieldTypeDefinitions() {
-        Class thisClass = ValueIntercepter.class;
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_FIELD_TYPE_DEFINITIONS, DTD_FIELD_TYPE_DEFINITIONS, thisClass);
-        InputSource fieldTypes = new InputSource(thisClass.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
+        InputSource fieldTypes = new InputSource(ValueIntercepter.class.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));        
+        readFieldTypeDefinitions(fieldTypes);
+
+    }
+    private static void readFieldTypeDefinitions(String fieldTypes) {
+    }
+
+    /**
+     * Initialize the type handlers default supported by the system.
+     * @since MMBase-1.8
+     */
+    private static void readFieldTypeDefinitions(InputSource fieldTypes) {
+
 
         if (fieldTypes.getSystemId() == null) {
-            String name = thisClass.getName();            
+            String name = ValueIntercepter.class.getName();            
             int dot = name.lastIndexOf('.');
             if (dot > 0) {
                 name = name.substring(0, dot);
@@ -182,7 +248,7 @@ public class ValueIntercepter {
             fieldTypes.setSystemId("resource:" + name + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honestly no idea what it should be, but this is at least fit for humans (in case of errors)
         }
         log.service("Reading fieldtype-definitions from " + fieldTypes.getSystemId());
-        XMLBasicReader reader  = new XMLBasicReader(fieldTypes, thisClass);
+        XMLBasicReader reader  = new XMLBasicReader(fieldTypes, ValueIntercepter.class);
 
         Element fieldtypesElement = reader.getElementByPath("fieldtypedefinitions");
         Enumeration e = reader.getChildElements(fieldtypesElement, "fieldtype");
@@ -191,12 +257,21 @@ public class ValueIntercepter {
             String typeString = typeElement.getAttribute("id");
             int fieldType =  getType(typeString);
 
+
+            // commit processor for no specialization
+            Enumeration f = reader.getChildElements(typeElement, "commitprocessor");
+            while (f.hasMoreElements()) {
+                Element commitProcessorElement = (Element) f.nextElement();
+                CommitProcessor newProcessor = (CommitProcessor) createProcessor(reader, commitProcessorElement);
+                defaultCommitProcessor[fieldType] = newProcessor;
+            }
+
             // fill the set-processor for no, or unknown, guitype
-            Enumeration f = reader.getChildElements(typeElement, "setprocessor");
+            f = reader.getChildElements(typeElement, "setprocessor");
             while (f.hasMoreElements()) {
                 Element setProcessorElement = (Element) f.nextElement();
                 String setTypeString = setProcessorElement.getAttribute("type");
-                Processor newProcessor = createProcessor(reader, setProcessorElement);
+                Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);
                 if (setTypeString.equals("")) {
                     defaultSetProcessor[fieldType][0] = newProcessor;
                 } else {
@@ -210,7 +285,7 @@ public class ValueIntercepter {
             while (f.hasMoreElements()) {
                 Element getProcessorElement = (Element) f.nextElement();
                 String getTypeString = getProcessorElement.getAttribute("type");
-                Processor newProcessor = createProcessor(reader, getProcessorElement);
+                Processor newProcessor = (Processor) createProcessor(reader, getProcessorElement);
                 if (getTypeString.equals("")) {
                     defaultGetProcessor[fieldType][0] = newProcessor;
                 } else {
@@ -221,23 +296,42 @@ public class ValueIntercepter {
             }
 
             // now for known guitypes (specializations)
+
             Enumeration g = reader.getChildElements(typeElement, "specialization");
             while (g.hasMoreElements()) {
                 Element specializationElement = (Element) g.nextElement();
                 String guiType = specializationElement.getAttribute("id");
+
+                // commit processor for this specialization
+                Enumeration h = reader.getChildElements(specializationElement, "commitprocessor");
+                while (h.hasMoreElements()) {
+                    Element commitProcessorElement = (Element) h.nextElement();
+                    CommitProcessor newProcessor = (CommitProcessor) createProcessor(reader, commitProcessorElement);
+
+                    Map commitMap = commitProcessor[fieldType];
+                    if (commitMap == null) {
+                        commitMap = new HashMap();
+                        commitProcessor[fieldType] = commitMap;
+                    }                    
+                    commitMap.put(guiType, newProcessor);
+                }
+                
                 // fill the set-processor for this guitype
-                Enumeration h = reader.getChildElements(specializationElement, "setprocessor");
+                h = reader.getChildElements(specializationElement, "setprocessor");
                 while (h.hasMoreElements()) {
                     Element setProcessorElement = (Element) h.nextElement();
                     String setTypeString = setProcessorElement.getAttribute("type");
-                    Map map;
+
+                    Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);                    
+
+                    Map map = null;
                     if (setTypeString.equals("")) {
                         map = setProcessor[fieldType][0];
                     } else {
                         int setFieldType = getType(setTypeString);
                         map = setProcessor[fieldType][setFieldType];
                     }
-
+                    
                     if (map == null) {
                         map = new HashMap();
                         if (setTypeString.equals("")) {
@@ -247,7 +341,6 @@ public class ValueIntercepter {
                             setProcessor[fieldType][setFieldType] = map;
                         }
                     }
-                    Processor newProcessor = createProcessor(reader, setProcessorElement);
                     map.put(guiType, newProcessor);
                     log.service("Defined for field type " + typeString + "/" + guiType + " setprocessor(" + ("".equals(setTypeString) ? "ALL TYPES" : setTypeString) + ") " + newProcessor);
                 }
@@ -273,7 +366,7 @@ public class ValueIntercepter {
                             getProcessor[fieldType][getFieldType] = map;
                         }
                     }
-                    Processor newProcessor = createProcessor(reader, getProcessorElement);
+                    Processor newProcessor = (Processor) createProcessor(reader, getProcessorElement);
                     map.put(guiType, newProcessor);
                     log.service("Defined for field type " + typeString + "/" + guiType + " getprocessor(" + ("".equals(getTypeString) ? "ALL TYPES" : getTypeString)  + ") " + newProcessor);
                 }
@@ -290,6 +383,7 @@ public class ValueIntercepter {
         return processor;
         //log.info("default " + processor);
     }
+
     protected static final Processor getDefaultGetProcessor(final int setType, final int type) {
         Processor processor = defaultGetProcessor[type][setType];
         if (processor == null) {
@@ -297,6 +391,41 @@ public class ValueIntercepter {
         }
         return processor;
         //log.info("default " + processor);
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static final void  commit(final Node node, final Field field) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("Committing for field " + field.getName() + node.getNumber());
+        }
+        int type = field.getType();
+
+        if (type == Field.TYPE_UNKNOWN) {
+            log.warn("TYPE UNKNOWN commit " + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            return;
+        }
+
+        CommitProcessor processor;
+        Map map = commitProcessor[type];
+                                               
+        if (map == null) { // if that too not configured
+            processor = defaultCommitProcessor[type];
+        } else {
+            String guiType = field.getGUIType();
+            processor = (CommitProcessor) map.get(guiType);
+            if (processor == null) {
+                processor = defaultCommitProcessor[type];
+            } else {
+            }
+        }
+        if (processor != null) {
+            processor.commit(node, field);
+        }
+        
     }
 
     public static final Object processSet(final int setType, final Node node, final Field field, final  Object value) {

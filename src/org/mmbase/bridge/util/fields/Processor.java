@@ -16,12 +16,16 @@ import org.mmbase.bridge.*;
  * Interface for doing field processing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.3 2003-12-23 19:58:19 michiel Exp $
+ * @version $Id: Processor.java,v 1.4 2004-09-17 09:29:26 michiel Exp $
  * @since MMBase-1.7
  */
 
 public interface Processor {
-    
+
+    /**
+     * @param node  The node object for which the field must be transformed.
+     * @param field The field which is set.
+     * @param value The (new) field value.
+     */
     Object process(Node node, Field field, Object value);
-    // void   commit(Node node);
 }
