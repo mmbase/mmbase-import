@@ -3,7 +3,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.8 2002-12-04 16:12:20 pierre Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.9 2002-12-11 13:38:39 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -1984,22 +1984,94 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 		<para>The editwizards can be configured in a number of ways: where you store the xml configuration files, how the stylesheets and the templates of the editwizards and the language of the prompts.</para>
 		<section id="filelocation">
 			<title>Location of files</title>
-			<para>The editwizards xml files have to be in a subdirectory of the directory from where the list.jsp or wizard.jsp is executed. The directory from which wizard.jsp and list.jsp are called is denoted the "referring "-directory.</para>
+			<para>
+        The editwizards xml files have to be in a subdirectory of the
+        directory from where the list.jsp or wizard.jsp is
+        executed. The directory from which wizard.jsp and list.jsp are
+        called is denoted the "referring "-directory.        
+      </para>
+      <para>
+        To make sure the 'referring' directory can always be
+        determined, it is a good idea to supply the 'calling file' it
+        to the editwizard-jsp's as an argument (taglib example):
+        <programlisting format="referrer">
+			<![CDATA[
+<mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
+<mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
+<mm:import id="language">nl/</mm:import>
+ ..
+ ..
+
+<a href="<mm:url referids="referrer,language" page="${jsps}list.jsp">           
+           <mm:param name="wizard">tasks/people</mm:param>
+           <mm:param name="nodepath">people</mm:param>
+           <mm:param name="fields">number,firstname,lastname</mm:param>
+           <mm:param name="orderby">number</mm:param>
+           <mm:param name="directions">down</mm:param>
+           </mm:url>">Person test</a>
+
+]]>
+			</programlisting>
+      </para>
 		</section>
 		<section id="layout">
 			<title>Manipulating the editwizard layout</title>
-			<para>The standard editwizard templates and stylesheets can be overridden to adjust them to your own needs and wishes. See the example below on what is possible.</para>
+			<para>
+        The standard editwizard templates and stylesheets can be
+        overridden to adjust them to your own needs and wishes. See
+        the example below on what is possible.
+      </para>
 			<figure float="0">
 				<title>3 VOOR 12 version of the editwizards</title>
 				<screenshot>
 					<graphic fileref="media/3v12_skin.jpg"/>
 				</screenshot>
 			</figure>
-			<para>To override classes of the default stylesheet in "\mmapps\editwizard\style " place a file style.css in the "referring "-directory and any classes you wish to override to this file. To override the xsl templates in \mmapps\editwizard\data\xsl create files called wizard.xsl, list.xsl and base.xsl and add the templates you wish to override in these files. Create a directory "xsl " in the "referring "-directory and place your own *.xsl files in thsi directory.</para>
+			<para>
+        To override classes of the default stylesheet in
+        "/mmapps/editwizard/style" place a file style.css in the
+        "referrer"-directory and any classes you wish to override to
+        this file. This style must be added as 'extrastyle' to the XSL
+        Transformations. You do that by placing a file xsl/base.xsl in
+        the "referrer"-directory with the following content:
+        <programlisting format="base.xsl">
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
+  <xsl:import href="ew:xsl/base.xsl" /> <!-- extend from standard  editwizard xslt -->
+  
+  <xsl:template name="extrastyle">
+    <link rel="stylesheet" type="text/css" href="{$referrerdir}style.css" ></link>
+    <!-- the $referrerdir variable can be used to to construct the right path to the 'referrer' directory -->
+  </xsl:template>
+   
+</xsl:stylesheet>
+]]>
+			</programlisting>
+      </para>      
+      <para>
+        So, this means that you can override any xsl templates in
+        /mmapps/editwizard/data/xsl.  Create files like wizard.xsl,
+        list.xsl and base.xsl and add the templates you wish to
+        override in these files. Create a directory "xsl " in the
+        "referring "-directory and place your own *.xsl files in this
+        directory.
+      </para>
 		</section>
 		<section id="internationalisation">
 			<title>Internationalisation</title>
-			<para>The language of the prompts of the editwizards are defined in \mmapps\editwizard\data\xsl\prompts.xsl. Based on the language specified in mmbaseroot.xml the default prompts are overriden by the language specific prompts in \mmapps\editwizard\data\i18n (is this true ??)</para>
+			<para>
+        The default (english) prompts of the editwizards are defined in
+        /mmapps/editwizard/data/xsl/prompts.xsl. If the language is not english
+        then the 'prompts.xsl' is first search for in the directory 
+        /mmapps/editwizard/data/i18n/&lgt;language code&lt;/.
+      </para>
+      <para>
+        The language is determined by the mmbaseroot.xml setting, but
+        you can also specify it by supplying a "language" parameter to
+        the editwizard jsp's, then your pages are independent of this
+        setting.
+      </para>
 		</section>
 	</section>
 </article>
