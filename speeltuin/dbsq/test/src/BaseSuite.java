@@ -4,7 +4,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BaseSuite extends TestCase {
     
@@ -12,7 +12,11 @@ public class BaseSuite extends TestCase {
         super(testName);
     }
     
+    // Takes mmbase.config value as arg.
     public static void main(java.lang.String[] args) {
+        if (args.length == 1) {
+           System.setProperty("mmbase.config", args[0]);
+        }
         junit.textui.TestRunner.run(suite());
         System.exit(0);
     }
