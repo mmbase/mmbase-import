@@ -46,8 +46,7 @@
   </xsl:template>
   
   <xsl:template match="extends">
-    <xsl:variable name="e" select="." />
-    <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*|/taglib/tag/name[.=$e]/parent::*" mode="extends" />
+    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extends" />
   </xsl:template>
   
   <xsl:template match="tlibversion|shortname|jspversion|uri|name|tagclass|teiclass|bodycontent|required|rtexprvalue">
