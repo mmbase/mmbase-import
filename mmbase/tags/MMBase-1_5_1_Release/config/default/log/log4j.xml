@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+
+  MMBase logging configuration 
+
+  MMBase can use log4j for logging. See http://jakarta.apache.org/log4j/.
+
+  This is a sample configuration file for it. The name of this file is indicated in
+  <CONFIGDIR>/log/log.xml
+
+  Quick introduction on how to configure log4j.
+
+  In the configuration you find two kind of things: Appenders, and Categories.
+
+  The Appenders are describing the 'logfiles'. There is only one defined in this file, it is writing
+  to the stdout rather then to a file (because this works always).  It is also useful to customize
+  the PatternLayout to your likings.
+
+  There is one special 'Category', namely 'root'. Other categories inherit from this one, but can
+  override for example the priority.
+
+  Currently the categories are simply the complete MMBase class-names, with only one exception,
+  namely 'STDERR'.
+
+  Useful docs from log4j:
+  http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html
+  http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/FileAppender.html
+
+ 
+  Location of the log4j.dtd. 
+
+  Principally, a simple "log4j.dtd" will do, but if this does not work - e.g. in older versions of Orion
+  (because of limitation of Xerces) - you can give the full path to the dtd in the jar, like:
+
+  SYSTEM "jar:file:/home/mmbase/mmbase-app/WEB-INF/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd" 
+  
+   or somewhere on the web: 
+  
+  SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
+   
+  @version $Id: log4j.xml,v 1.10.2.3 2002-04-26 20:21:46 michiel Exp $
+  @since   MMBase-1.4   
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
+   [
+    <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
+    <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+]>
+
+<log4j:configuration>
+
+  <!-- 
+  Logging to Console on default. You perhaps want to change this
+  to 'FileAppender' (see examples).
+  -->
+  <appender name="logfile" class="org.apache.log4j.ConsoleAppender" >   
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} %-7p %c{1}: %m%n" />
+        <!-- param name="ConversionPattern" value="%d{ABSOLUTE} %-7p %c{1}: %m%n" /--> <!-- faster -->      
+    </layout>
+  </appender>
+  
+  <!-- categories -->
+  
+  <!-- 
+  The start of every page is logged on SERVICE. This can become a little messy.
+  -->
+  <category name="org.mmbase.PAGE" class ="&logger;">
+    <priority class="&priority;" value ="info" />
+  </category>
+  
+  
+  <!-- 
+  STDERR is a special Category, to wich stderr will be written
+  (always with priority 'warn' or higher)  
+  -->
+  
+  <category name="STDERR" class ="&logger;">
+    <priority class="&priority;" value ="info" />	
+  </category>
+  
+  <root>
+    <priority class="&priority;" value ="service" />
+    <appender-ref ref="logfile" />
+  </root>
+  
+  
+</log4j:configuration>

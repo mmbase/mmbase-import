@@ -1,0 +1,113 @@
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>DB variables</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Values</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Change</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN="2">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Change</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			dbname	
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbname
+		</TD>
+		<TD BGCOLOR="#00425A">
+				<A HREF="/mmdocs/config/builders.html#dbname" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+				change
+		</TD>
+
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			mmbase type	
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbmmbasetype
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#dbmmbasetype" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<A HREF="builders_setdbmmbasetype.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			state	
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbstate
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#dbstate" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<A HREF="builders_setdbstate.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			notnull	
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbnotnull
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#dbnotnull" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<A HREF="builders_setdbnotnull.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>
+
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			key
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbkey
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#dbkey" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<A HREF="builders_setdbkey.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>
+
+
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			size
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbsize
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#dbsize" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+				<A HREF="builders_setdbsize.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>

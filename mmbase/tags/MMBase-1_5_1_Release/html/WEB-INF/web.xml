@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <!-- Filter for jumpers -->
+  <filter>
+    <filter-name>Jumpers Filter</filter-name>
+    <display-name>Jumpers Filter</display-name>
+    <description>Filter used for jumpers</description>
+    <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Jumpers Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- A servlet for testing purposes -->
+  <servlet>
+    <servlet-name>performance</servlet-name>
+    <display-name>Performance Servlet</display-name>
+    <description>Servlet used for testing purposes</description>
+    <servlet-class>org.mmbase.servlet.performance</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- servscan, needed for parsing scan-pages -->
+  <servlet>
+    <servlet-name>servscan</servlet-name>
+    <display-name>Servscan Servlet</display-name>
+    <description>Needed for parsing scan pages</description>
+    <servlet-class>org.mmbase.servlet.servscan</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <!-- servdb, needed for some binary-stuff, like images -->
+  <servlet>
+    <servlet-name>servdb</servlet-name>
+    <display-name>Serdb Servlet</display-name>
+    <description>needed for some binary-stuff, like images</description>
+    <servlet-class>org.mmbase.servlet.servdb</servlet-class>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+
+  <!-- dove, servlet for Dove protocol, which is used for communication with,
+       and passing commands to, the MMBase system using an xml format -->
+  <servlet>
+    <servlet-name>dove</servlet-name>
+    <display-name>Dove</display-name>
+    <description>
+       adds the Dove protocol, which is used for communication with,
+       and passing commands to, the MMBase system using an xml format 
+    </description>
+    <servlet-class>org.mmbase.applications.dove.servlet.DoveServlet</servlet-class>
+    <load-on-startup>5</load-on-startup>
+  </servlet>
+
+  <!-- mapping for testing purposes -->
+  <servlet-mapping>
+    <servlet-name>performance</servlet-name>
+    <url-pattern>/performance.html</url-pattern>
+  </servlet-mapping>
+
+  <!-- mapping shtml-files to servscan -->
+  <servlet-mapping>
+    <servlet-name>servscan</servlet-name>
+    <url-pattern>*.shtml</url-pattern>
+  </servlet-mapping>
+
+  <!-- mapping for image-requests -->
+  <servlet-mapping>
+    <servlet-name>servdb</servlet-name>
+    <url-pattern>/img.db</url-pattern>
+  </servlet-mapping>
+
+  <!-- mapping for dove-requests -->
+  <servlet-mapping>
+    <servlet-name>dove</servlet-name>
+    <url-pattern>/xml/dove.xml</url-pattern>
+  </servlet-mapping>
+
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- mmbase-taglib-0.8 for backwards-compatibility, not working at the moment
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-0.8</taglib-uri>
+    <taglib-location>/WEB-INF/mmbase-taglib-0.8.tld</taglib-location>
+  </taglib>
+  -->
+
+  <!-- mmbase-taglib-1.0 -->
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
+  </taglib>
+
+  <!-- mmbase-community-taglib, 
+
+  Only works when community-application has been activated, which can
+  be done after activating the needed builders (community, channel, chatter, message,
+  people). To use it you also need the communityprc module to be active.
+  
+  -->
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/mmcommunity-taglib.tld</taglib-location>
+  </taglib>
+
+</web-app>
+
+
+
+
+
+

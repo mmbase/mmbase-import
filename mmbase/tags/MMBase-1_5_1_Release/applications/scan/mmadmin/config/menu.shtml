@@ -1,0 +1,22 @@
+<tr>
+<IF $PARAM1=Ebuilders>
+    <td align=center bgcolor="#DDDDFF">builders</td>
+<ELSE>
+    <td align=center><a href="builderlist.shtml?builders">builders</a></td>
+</IF>
+<IF $PARAM1=Edatabases>
+    <td align=center bgcolor="#DDDDFF">databases</td>
+<ELSE>
+    <td align=center><a href="databaseslist.shtml?databases">databases</a></td>
+</IF>
+<IF $PARAM1=Emodules>
+    <td align=center bgcolor="#DDDDFF">modules</td>
+<ELSE>
+    <td align=center><a href="moduleslist.shtml?modules">modules</a></td>
+</IF>
+<IF $PARAM1=Eapplications>
+    <td align=center bgcolor="#DDDDFF">applications</td>
+<ELSE>
+    <td align=center><a href="applicationslist.shtml?applications">applications</a></td>
+</IF>
+</tr>
