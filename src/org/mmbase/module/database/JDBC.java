@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.29 2002-10-11 10:50:08 michiel Exp $
+ * @version $Id: JDBC.java,v 1.30 2002-11-29 15:31:14 rob Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -122,8 +122,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         if (driver==null) {
-
-            log.fatal("getDriver(): Can't get JDBC driver from DriverManager");
+            log.warn("getDriver(): the jdbc driver specified in jdbc.xml does not match the actual loaded driver ");
         }
     }
 
