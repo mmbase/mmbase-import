@@ -1,4 +1,4 @@
-l/*
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.61 2002-06-17 15:20:23 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.62 2002-06-17 15:30:30 pierre Exp $
  */
 public class BasicNode implements Node {
 
