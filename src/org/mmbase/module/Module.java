@@ -26,12 +26,13 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.10 $ $Date: 2000-05-02 00:26:10 $
+ * @version $Revision: 1.11 $ $Date: 2000-05-02 10:25:56 $
  */
 public abstract class Module {
 
 	static String   classname   = "org.mmbase.module.Module"; // getClass().getName();
-	static void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	private static void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	//private void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Object SecurityObj;
 	String moduleName=null;
