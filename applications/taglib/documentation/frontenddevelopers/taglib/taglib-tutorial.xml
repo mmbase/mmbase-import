@@ -7,7 +7,7 @@
   <articleinfo>
   	<title>Creating webpages with the MMBase Tag Library</title>
 	<date>2003-07</date>
- 	<edition>$Id: taglib-tutorial.xml,v 1.10 2004-02-17 15:25:05 gerard Exp $</edition>
+ 	<edition>$Id: taglib-tutorial.xml,v 1.11 2004-11-01 08:22:39 pierre Exp $</edition>
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
@@ -648,9 +648,8 @@
                 &#60;/td&#62;
                 &#60;td&#62;
                   &#60;a href=&#39;&#60;mm:url referids=&#34;magid&#34; page=&#34;newsitem.jsp&#34;&#62;
-                    &#60;mm:param name=&#34;newsid&#34;&#62;
-                      &#60;mm:field name=&#34;number&#34;/&#62;
-                    &#60;/mm:param&#62;&#60;/mm:url&#62;&#39;&#62;link
+                      &#60;mm:param name=&#34;newsid&#34;&#62;&#60;mm:field name=&#34;number&#34;/&#62;&#60;/mm:param&#62;
+                    &#60;/mm:url&#62;&#39;&#62;link
                   &#60;/a&#62;
               &#60;/tr&#62;
             &#60;/mm:related&#62;
