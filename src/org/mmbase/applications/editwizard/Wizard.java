@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.12 2002-03-04 11:05:33 pierre Exp $
+ * @version $Id: Wizard.java,v 1.13 2002-03-18 16:42:31 eduard Exp $
  *
  */
 public class Wizard {
@@ -112,7 +112,7 @@ public class Wizard {
      *
      * @param apath       the path should point to the data directory of the editwizard. From that dir the wizard schema's and the xsl's will be loaded
      */
-    public Wizard(String apath) {
+    public Wizard(String apath) throws WizardException{
         path = apath;
         uploads = new HashMap();
         uploadnames = new HashMap();
@@ -563,11 +563,7 @@ public class Wizard {
      */
     private void loadSchema() throws WizardException {
         schema = Utils.loadXMLFile(wizardSchemaFilename);
-        if (schema==null) {
-            // could not load schema!
-            throw new WizardException("Could not load and parse schema xml file. Filename:"+wizardSchemaFilename);
-        }
-
+        
         resolveIncludes(schema.getDocumentElement(), path);
 
         resolveShortcuts(schema.getDocumentElement(), true);

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.7 2002-02-27 16:54:22 pierre Exp $
+ * @version $Id: Utils.java,v 1.8 2002-03-18 16:42:31 eduard Exp $
  */
 public class Utils {
 
@@ -70,33 +70,33 @@ public class Utils {
      * This method can load a xml file and returns the resulting document. If something went wrong, null is returned.
      *
      * @param       filename        the filename of the file to be loaded.
-     * @return     The loaded xml Document, or null if there was an exception.
+     * @return     The loaded xml Document
+     * @throws      WizardException if someting wend wrong...
      */
-    public static Document loadXMLFile(String filename) {
+    public static Document loadXMLFile(String filename) throws WizardException {
         try {
             DocumentBuilder b = getDocumentBuilder();
             return b.parse(new FileInputStream(filename));
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+            throw new WizardException("Could not load schema xml file. Filename:"+filename+ "\n" + Logging.stackTrace(e));
         }
-        return null;
     }
 
     /**
      * With this method you can parse a xml string and get the resulting Document.
      *
      * @param       xml     The xml string to be parsed. Note that you should supply xml for a valid document (one root node, etc)
-     * @return     The newly created xml Document. Null if there was an exception.
+     * @return     The newly created xml Document.
+     * @throws      WizardException if someting wend wrong...     
      */
-    public static Document parseXML(String xml) {
+    public static Document parseXML(String xml) throws WizardException {
         try {
             DocumentBuilder b = getDocumentBuilder();
             StringReader reader = new StringReader(xml);
             return b.parse(new InputSource(reader));
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+            throw new WizardException("Could not parse schema xml file. xml:"+xml + "\n" + Logging.stackTrace(e));
         }
-        return null;
     }
 
     /**
