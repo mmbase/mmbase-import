@@ -5,13 +5,12 @@
 <mm:import externid="delete" />
 <%
 String node_type = "";
-String node_gui = "";
 %>
 <mm:present referid="nr">
 <mm:node number="$nr" id="the_node">
 
 	<mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% node_type = n_type; %></mm:nodeinfo>
-	<mm:nodeinfo type="guinodemanager" jspvar="n_gui" vartype="String" write="false"><% node_gui = n_gui; %></mm:nodeinfo>
+	<mm:nodeinfo type="guinodemanager" id="n_gui" write="false" />
 	<% String path1 = node_type;		// Eerst stukje van kruimelpad %>
 	<%@ include file="inc_head.jsp" %> 
 
@@ -19,30 +18,26 @@ String node_gui = "";
 <table border="0" cellspacing="0" cellpadding="3">
 <tr>
   <td valign="top" width="20%">
-
-	<!-- table with back button -->
 	<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">	
 	<tr>
 	  <td width="24" align="right"><a href="index.jsp?ntype=<mm:nodeinfo type="type" />"><img src="img/mmbase-left.gif" alt="overview" width="21" height="20" border="0" /></a></td>
 	  <td>Overview <mm:nodeinfo type="type" /></td>
-	</tr><tr>
+	</tr>
+	<mm:notpresent referid="delete">
+	<tr>
 	  <td width="24" align="right"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit object" width="21" height="20" border="0" /></a></mm:maywrite></td>
 	  <td>Edit the node</td>
 	</tr>
+	</mm:notpresent>
 	</table>
-	<!-- end table back button -->
-
   </td>
   <td valign="top" width="80%">
-
-	<%-- Check: are you sure --%>
 	<mm:notpresent referid="delete">
-
 		<form method="post" action="<mm:url referids="nr" />">
 		<table border="0" cellspacing="0" cellpadding="4" class="table-form">
 		<tr bgcolor="#CCCCCC">
 	  	  <td align="center" class="title-s"># <mm:write referid="nr" /></td>
-		  <td class="title-s">Delete node of type <b><%= node_gui %></b> (<%= node_type %>)</td>
+		  <td class="title-s">Delete node of type <b><mm:write referid="n_gui" /></b> (<%= node_type %>)</td>
 		</tr>
 		<mm:fieldlist type="list">
 			<tr valign="top">
@@ -70,8 +65,7 @@ String node_gui = "";
 		</tr>
 		</table>
 		</form>
-
-	</mm:notpresent>	<%-- end notpresent delete --%>
+	</mm:notpresent>
 </mm:node>
 
 	<%-- Delete the node --%>
@@ -86,7 +80,7 @@ String node_gui = "";
 		<tr>
 		  <td>&nbsp;</td>
 		  <td>
-		  	<p class="message">The node of type <b><%= node_gui %></b> (<%= node_type %>) is deleted.<br />
+		  	<p class="message">The node of type <b><mm:write referid="n_gui" /></b> (<%= node_type %>) is deleted.<br />
 		  	<a href="index.jsp?ntype=<%= node_type %>" title="back to the overview of <%= node_type %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0" /></a>
 		  	Back to the <a href="index.jsp?ntype=<%= node_type %>">overview of <%= node_type %></a>.</p>
 		  </td>
@@ -96,7 +90,8 @@ String node_gui = "";
 	</mm:present>
 
 </td>
-</tr></table>
+</tr>
+</table>
 <!-- end of main table -->
 
 </mm:present>	<%-- end present nr --%>

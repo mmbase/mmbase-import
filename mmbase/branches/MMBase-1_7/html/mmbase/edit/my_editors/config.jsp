@@ -1,46 +1,29 @@
 <% String title = "Configure"; %>
 <%@ include file="inc_top.jsp" %>
 <mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
-<mm:import jspvar="savethis" externid="savethis" />
+<mm:import externid="savethis" />
 <mm:import jspvar="ntype" externid="ntype" />
-<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
+<% String path1 = ntype; %>
 <%@ include file="inc_head.jsp" %>
-<% // Save them
-if (savethis != null && savethis.equals("Save")) {
-	session.setAttribute("conf_max",conf_max);		// Save in session 
-	session.setAttribute("conf_days",conf_days); 
-	session.setAttribute("conf_list",conf_list); 
-}
-%>
 
+<mm:import externid="max_items"><mm:write referid="conf_max" /></mm:import>
+<mm:import externid="max_days"><mm:write referid="conf_days" /></mm:import>
+<mm:import externid="type_list"><mm:write referid="conf_list" /></mm:import>
+<mm:present referid="savethis">
+	<mm:write cookie="my_editors_maxitems" referid="max_items" />
+	<mm:write cookie="my_editors_maxdays"  referid="max_days" />
+	<mm:write cookie="my_editors_typelist" referid="type_list" />
+</mm:present>
 <h2>Configure my_editors</h2>
 
 <p>Here you can configure the following preferences:</p>
 <ul>
-  <li>maximum number of items per page that will be shown after a search;</li>
-  <li>the maximum age in days of the items that will be found; and</li>
-  <li>if you want all the node types to be shown or only the ones you are allowed to edit.</li>
+  <li>the maximum age in days of the items that will be found: <b><mm:write referid="max_days" /></b>;</li>
+  <li>maximum number of items per page that will be shown after a search: <b><mm:write referid="max_items" /></b>; and</li>
+  <li>if you want all the node types to be shown or only the ones you are allowed to edit: <b><mm:write referid="type_list" /></b>.</li>
 </ul>
 
-<%
-if (session.getAttribute("conf_max") != null 
-	&& session.getAttribute("conf_days") != null 
-	&& session.getAttribute("conf_list") != null) {
-%>
-<p class="message">You have saved the following settings<br />
-<%
-	out.println("<br />Maximum age in days: <b>" + session.getAttribute("conf_days").toString() + "</b>");
-	out.println("<br />Maximum number of items shown: <b>" + session.getAttribute("conf_max").toString() + "</b>");
-	out.println("<br />Show me <b>" + session.getAttribute("conf_list").toString() + "</b> node types in the list");
-%>
-</p>
-<%
-}
-%>
-<p>Your configuration will be saved for the duration of your browser session. 
-You can change back to the default settings by choosing <a href="logout.jsp">log out</a>.
-If you want to make permanent changes you will have to edit the file 'inc_head.jsp' of my_editors.
-</p>
+<p>Your preferences are saved in a cookie 'my_editors'. You'll find it in your browsers cookie jar.</p>
 
 <form method="post" action="<mm:url />">
 <table border="0" cellspacing="0" cellpadding="4" class="table-form">
@@ -49,16 +32,16 @@ If you want to make permanent changes you will have to edit the file 'inc_head.j
   <td class="title-s">Configure my_editors</td>
 </tr><tr valign="top">
   <td align="right" class="name">Max days old</td>
-  <td><input type="text" name="conf_days" value="<%= conf_days %>" size="9" maxlength="9" /></td>
+  <td><input type="text" name="max_days" value="<mm:write referid="max_days" />" size="9" maxlength="9" /></td>
 </tr><tr valign="top">
   <td align="right" class="name">Max items per page</td>
-  <td><input type="text" name="conf_max" value="<%= conf_max %>" size="9" maxlength="9" /></td>
+  <td><input type="text" name="max_items" value="<mm:write referid="max_items" />" size="9" maxlength="9" /></td>
 </tr><tr valign="top">
   <td align="right" class="name">Show me</td>
   <td>
-    <select name="conf_list">
-    <option label="all the node types" value="all"<mm:compare referid="conf_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
-    <option label="only the editable node types" value="editable"<mm:compare referid="conf_list" value="editable"> selected="selected"</mm:compare>>only the editable node types</option>
+    <select name="type_list">
+    <option label="all the node types" value="all"<mm:compare referid="type_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
+    <option label="only the editable node types" value="editable"<mm:compare referid="type_list" value="editable"> selected="selected"</mm:compare>>only the editable node types</option>
     </select> in the list
   </td>
 </tr><tr>
