@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 
 import org.mmbase.bridge.search.*;
 import org.mmbase.bridge.implementation.*;
-import org.mmbase.bridge.search.implementation.*;
+//import org.mmbase.bridge.search.implementation.*;
 /**
  * Test class <code>Cloud</code> from the bridge package.
  *
