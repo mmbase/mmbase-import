@@ -29,8 +29,8 @@ import org.mmbase.util.logging.Logging;
 * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
 *             StorageManager implementation.
 * @author Daniel Ockeloen
-* @version $Id: MMOORel2Node.java,v 1.11 2004-01-27 12:04:48 pierre Exp $
-* @version $Id: MMOORel2Node.java,v 1.11 2004-01-27 12:04:48 pierre Exp $
+* @version $Id: MMOORel2Node.java,v 1.12 2004-06-15 21:18:28 robmaris Exp $
+* @version $Id: MMOORel2Node.java,v 1.12 2004-06-15 21:18:28 robmaris Exp $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -315,8 +315,12 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
                 log.debug("SELECT " + fieldname + " FROM " + mmb.baseName + "_" + tableName + " where number=" + number);
             }
                         ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-                        if (rs.next()) {
-                                result=getDBByte(rs,1);
+                        try {
+                            if (rs.next()) {
+                                    result=getDBByte(rs,1);
+                            }
+                        } finally {
+                            rs.close();
                         }
                         stmt.close();
                         con.close();
@@ -338,8 +342,12 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
                         MultiConnection con=mmb.getConnection();
                         Statement stmt=con.createStatement();
                         ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-                        if (rs.next()) {
+                        try {
+                            if (rs.next()) {
                                 result=getDBText(rs,1);
+                            }
+                        } finally {
+                            rs.close();
                         }
                         stmt.close();
                         con.close();
@@ -662,8 +670,12 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
                                 MultiConnection con=mmb.getConnection();
                                 Statement stmt=con.createStatement();
                                 ResultSet rs=stmt.executeQuery("execute function fetchrelkey(10)");
-                                while (rs.next()) {
-                                        number=rs.getInt(1);
+                                try {
+                                    while (rs.next()) {
+                                            number=rs.getInt(1);
+                                    }
+                                } finally {
+                                    rs.close();
                                 }
                                 stmt.close();
                                 con.close();
@@ -715,11 +727,15 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
                         MultiConnection con=mmb.getConnection();
                         Statement stmt=con.createStatement();
                         ResultSet rs=stmt.executeQuery("SELECT tabname FROM systables where tabid>99;");
-                        String s;
-                        while (rs.next()) {
-                                s = rs.getString(1);
-                                if (s!=null) s = s.trim();
-                                results.addElement(s);
+                        try {
+                            String s;
+                            while (rs.next()) {
+                                    s = rs.getString(1);
+                                    if (s!=null) s = s.trim();
+                                    results.addElement(s);
+                            }
+                        } finally {
+                            rs.close();
                         }
                         stmt.close();
                         con.close();

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92WithViews.java,v 1.7 2004-05-06 12:34:43 keesj Exp $
+ * @version $Id: Sql92WithViews.java,v 1.8 2004-06-15 21:24:54 robmaris Exp $
  * @since MMBase-1.7
  */
 public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInterface {
@@ -285,11 +285,15 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             con = mmb.getConnection();
             stmt=con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                number=rs.getInt("NEXTVAL");
-            }
-            else {
-                log.warn("could not retieve the number for new node");
+            try {
+                if (rs.next()) {
+                    number=rs.getInt("NEXTVAL");
+                }
+                else {
+                    log.warn("could not retieve the number for new node");
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();

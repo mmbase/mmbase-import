@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.31 2004-01-06 20:28:03 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.32 2004-06-15 21:01:42 robmaris Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -123,8 +123,12 @@ public class DayMarkers extends MMObjectBuilder {
             con=mmb.getConnection();
             stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select "+mmb.getDatabase().getAllowedField("number")+" from "+mmb.baseName+"_"+tableName+" where daycount="+day);
-            if (rs.next()) {
-                mday=rs.getInt(1);
+            try {
+                if (rs.next()) {
+                    mday=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
@@ -141,8 +145,12 @@ public class DayMarkers extends MMObjectBuilder {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
                 ResultSet rs = stmt.executeQuery("select max("+mmb.getDatabase().getAllowedField("number")+") from "+mmb.baseName+"_object");
-                if (rs.next()) {
-                    max=rs.getInt(1);
+                try {
+                    if (rs.next()) {
+                        max=rs.getInt(1);
+                    }
+                } finally {
+                    rs.close();
                 }
                 mmb.closeConnection(con,stmt);
                 MMObjectNode node=getNewNode("system");
@@ -310,23 +318,27 @@ public class DayMarkers extends MMObjectBuilder {
                 if (con==null) return(-1);
                 Statement stmt=con.createStatement();
                 ResultSet rs=stmt.executeQuery("select mark, daycount from "+mmb.baseName+"_daymarks where daycount >= " + wday + " order by daycount");
-                if (rs.next()) {
-                    int tmp=rs.getInt(1);
-                    int founddaycount = rs.getInt(2);
-                    if (founddaycount != wday) {
-                        log.error("Could not find day " + wday + ", surrogated with " + founddaycount);
+                try {
+                    if (rs.next()) {
+                        int tmp=rs.getInt(1);
+                        int founddaycount = rs.getInt(2);
+                        if (founddaycount != wday) {
+                            log.error("Could not find day " + wday + ", surrogated with " + founddaycount);
+                        } else {
+                            log.debug("Found in db, will be inserted in cache");
+                        }
+                        cachePut(wday, tmp);
+                        stmt.close();
+                        con.close();
+                        return tmp;
                     } else {
-                        log.debug("Found in db, will be inserted in cache");
+                        log.error("Could not find mark of day " + wday);
+                        stmt.close();
+                        con.close();
+                        return 0; // but it must be relativily new.
                     }
-                    cachePut(wday, tmp);
-                    stmt.close();
-                    con.close();
-                    return tmp;
-                } else {
-                    log.error("Could not find mark of day " + wday);
-                    stmt.close();
-                    con.close();
-                    return 0; // but it must be relativily new.
+                } finally {
+                    rs.close();
                 }
             } catch(Exception e) {
                 log.error("Could not find mark of day " + wday);
@@ -474,8 +486,12 @@ public class DayMarkers extends MMObjectBuilder {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select max(daycount) from "+mmb.baseName+"_"+tableName+" where mark<"+number);
-            if (rs.next()) {
-                mday=rs.getInt(1);
+            try {
+                if (rs.next()) {
+                    mday=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();

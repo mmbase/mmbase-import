@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.9 2004-01-27 12:04:46 pierre Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.10 2004-06-15 21:26:24 robmaris Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -105,7 +105,11 @@ public class DatabaseTransaction implements Transaction {
         try {
             DatabaseMetaData metaDeta = con.getMetaData();
             ResultSet res = metaDeta.getTables(null, null, tableName, null);
-            result = res.next();
+            try {
+                result = res.next();
+            } finally {
+                res.close();
+            }
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -123,9 +127,13 @@ public class DatabaseTransaction implements Transaction {
         try {
             DatabaseMetaData metaDeta = con.getMetaData();
             ResultSet res = metaDeta.getTables(null, null, baseName + metaDeta.getSearchStringEscape() + "_%", null);
-            while (res.next()) {
-                String tableName = res.getString("TABLE_NAME");
-                result.add(tableName);
+            try {
+                while (res.next()) {
+                    String tableName = res.getString("TABLE_NAME");
+                    result.add(tableName);
+                }
+            } finally {
+                res.close();
             }
         } catch (Exception e) {
             throw new StorageException(e);

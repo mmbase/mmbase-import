@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.29 2004-01-27 12:04:49 pierre Exp $
+ * @version $Id: PostgreSQL71.java,v 1.30 2004-06-15 21:23:03 robmaris Exp $
  */
 public class PostgreSQL71 extends PostgreSQL {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -88,18 +88,20 @@ public class PostgreSQL71 extends PostgreSQL {
 
             String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
             log.debug("gonna excute the followin query: " + sql);
-            ResultSet rs=stmt.executeQuery(sql);
             java.io.DataInputStream is = null;
-
             byte[] data=null;
-            if(rs.next())
-            {
-                log.debug("found a record, now trying to retieve the stream..with loid #" + rs.getInt(fieldname));
-                Blob b = rs.getBlob(1);
-                data = b.getBytes(0, (int)b.length());
-                log.debug("data was read from the database(#"+data.length+" bytes)");
+            ResultSet rs=stmt.executeQuery(sql);
+            try {
+                if(rs.next())
+                {
+                    log.debug("found a record, now trying to retieve the stream..with loid #" + rs.getInt(fieldname));
+                    Blob b = rs.getBlob(1);
+                    data = b.getBytes(0, (int)b.length());
+                    log.debug("data was read from the database(#"+data.length+" bytes)");
+                }
+            } finally {
+                rs.close();
             }
-            rs.close();
             stmt.close();
             // a get doesnt make changes !!
             con.commit();
