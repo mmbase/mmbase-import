@@ -8,12 +8,9 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.9 2001-02-08 10:20:39 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.8 2001-01-26 15:21:32 install Exp $
 
 	$Log: not supported by cvs2svn $
-	Revision 1.8  2001/01/26 15:21:32  install
-	Rob turned debug off
-	
 	Revision 1.7  2001/01/26 14:58:08  install
 	Rob added some features
 	
@@ -48,7 +45,7 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.9 2001-02-08 10:20:39 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.8 2001-01-26 15:21:32 install Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
@@ -264,43 +261,6 @@ public class ConvertImageMagick implements ImageConvertInterface {
 	}
 	
 	private byte[] ConvertImage(byte[] pict,String cmd, String format) {	
-		InputStream in;
-		Runtime runtime=Runtime.getRuntime();
-		String command="";
-		Process p;
-		ByteArrayOutputStream imagestream;
-		byte[] inputbuffer=new byte[2048],image=null;
-		int size;
-		ProcessWriter pw;
-		
-		if (debug) debug("ConvertImage(): converting img("+cmd+")");
-
-		try {
-			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-			if (debug) debug("Starting convert");
-			p=runtime.exec(command);
-			in=p.getInputStream();
-			pw=new ProcessWriter(new ByteArrayInputStream(pict),p.getOutputStream());
-			if (debug) debug("Starting writer");
-			pw.start();
-
-			imagestream=new ByteArrayOutputStream();
-			size=0;
-			if (debug) debug("Reading image");
-			while((size=in.read(inputbuffer))>0) {
-				if (debug) debug("Reading data size "+size);
-				imagestream.write(inputbuffer,0,size);
-			}
-			if (debug) debug("Done converting"); 
-			image=imagestream.toByteArray();
-		} catch (Exception e) {
-			debug("Failure converting image "+cmd+" "+format);
-			debug("Message : "+e.getMessage());
-		}
-		return(image);
-	}
-/*
-	private byte[] ConvertImage(byte[] pict,String cmd, String format) {	
 		Process p=null;
         String s="",tmp="";
 		DataInputStream dip= null;
@@ -357,6 +317,5 @@ public class ConvertImageMagick implements ImageConvertInterface {
 			return(null);
 		}
 	}
-*/
 
 }
