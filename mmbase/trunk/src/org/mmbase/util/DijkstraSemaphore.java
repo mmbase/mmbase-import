@@ -1,14 +1,16 @@
-/* 
-
+/*
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
-*/
+ 
+ */
 package org.mmbase.util;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 /**
  * Also called counting semaphores, Dijkstra semaphores are used to control access to
  * a set of resources. A Dijkstra semaphore has a count associated with it and each
@@ -27,10 +29,13 @@ package org.mmbase.util;
  * @since  MMBase-1.6
  */
 public class DijkstraSemaphore {
+    
+    private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
+    
     private int count;
     private int maxCount;
     private Object starvationLock = new Object();
-
+    
     /**
      * Creates a Dijkstra semaphore with the specified max count and initial count set
      * to the max count (all resources released)
@@ -39,7 +44,7 @@ public class DijkstraSemaphore {
     public DijkstraSemaphore(int pMaxCount) {
         this(pMaxCount, pMaxCount);
     }
-
+    
     /**
      * Creates a Dijkstra semaphore with the specified max count and an initial count
      * of acquire() operations that are assumed to have already been performed.
@@ -51,7 +56,7 @@ public class DijkstraSemaphore {
         count = pInitialCount;
         maxCount = pMaxCount;
     }
-
+    
     /**
      * If the count is non-zero, acquires a semaphore and decrements the count by 1,
      * otherwise blocks until a release() is executed by some other thread.
@@ -63,7 +68,9 @@ public class DijkstraSemaphore {
         // Using a spin lock to take care of rogue threads that can enter
         // before a thread that has exited the wait state acquires the monitor
         while (count == 0) {
+            long startwait = System.currentTimeMillis();
             wait();
+            log.debug("Waited " + (System.currentTimeMillis() - startwait) + " for a connection");
         }
         count--;
         synchronized (starvationLock) {
@@ -72,7 +79,7 @@ public class DijkstraSemaphore {
             }
         }
     }
-
+    
     /**
      * Non-blocking version of acquire().
      * @return true if semaphore was acquired (count is decremented by 1), false
@@ -92,7 +99,7 @@ public class DijkstraSemaphore {
             return false;
         }
     }
-
+    
     /**
      * Releases a previously acquires semaphore and increments the count by one. Does not
      * check if the thread releasing the semaphore was a thread that acquired the
@@ -108,7 +115,7 @@ public class DijkstraSemaphore {
         }
         notify();
     }
-
+    
     /**
      * Same as release() except that the count is increased by pCount instead of 1. The
      * resulting count is capped at max count specified in the constructor
@@ -116,14 +123,12 @@ public class DijkstraSemaphore {
      * @see #release()
      */
     public synchronized void release(int pCount) {
-        if (count + pCount > maxCount) {
-            count = maxCount;
-        } else {
-            count += pCount;
+        while (count < maxCount && pCount != 0){
+            release();
+            pCount --;
         }
-        notifyAll();
     }
-
+    
     /**
      * Tries to acquire all the semaphores thus bringing the count to zero.
      * @throws InterruptedException if the thread is interrupted when blocked on this call
@@ -131,11 +136,11 @@ public class DijkstraSemaphore {
      * @see #releaseAll()
      */
     public synchronized void acquireAll() throws InterruptedException {
-        for (int index = 0; index < maxCount; index++) {
+        while(count != 0){
             acquire();
         }
     }
-
+    
     /**
      * Releases all semaphores setting the count to max count.
      * Warning: If this method is called by a thread that did not make a corresponding
@@ -144,9 +149,8 @@ public class DijkstraSemaphore {
      */
     public synchronized void releaseAll() {
         release(maxCount);
-        notifyAll();
     }
-
+    
     /**
      * This method blocks the calling thread until the count drops to zero.
      * The method is not stateful and hence a drop to zero will not be recognized
