@@ -288,6 +288,13 @@ public class Model {
                        nb.setSearchAge(n2.getNodeValue());
                     }
                 }
+                n = reader.getElementByPath("builder.classfile");
+                if (n!=null) {
+                    org.w3c.dom.Node n2 = n.getFirstChild();
+                    if (n2 != null) {
+                       nb.setClassName(n2.getNodeValue());
+                    }
+                }
                 for (Enumeration ns = reader.getChildElements("builder.names", "singular"); ns.hasMoreElements(); ) {
             		Element n4 = (Element) ns.nextElement();
             		String name = reader.getElementValue(n4);
@@ -449,7 +456,7 @@ public class Model {
 
   }
 
-  private boolean writeModel() {
+  public boolean writeModel() {
 	String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	body+="<!DOCTYPE cloudmodel PUBLIC \"-//MMBase/DTD cloudmodel 1.0//EN\" \"http://www.mmbase.org/dtd/cloudmodel_1_0.dtd\">\n";
 
@@ -483,7 +490,6 @@ public class Model {
 	body+="\t</allowedrelationlist>\n\n";
 
 	body+="</cloudmodel>\n";
-	log.info("WRITE MODEL TO : "+path);
 
         // check if the dirs are created, if not create them
         String dirsp = path.substring(0, path.lastIndexOf(File.separator));
@@ -512,6 +518,7 @@ public class Model {
 
 	body+="<builder name=\""+nb.getName()+"\" maintainer=\""+nb.getMaintainer()+"\" version=\""+nb.getVersion()+"\" extends=\""+nb.getExtends()+"\">\n";
 	body+="\t<status>"+nb.getStatus()+"</status>\n";
+	body+="\t<classfile>"+nb.getClassName()+"</classfile>\n";
 	body+="\t<searchage>"+nb.getSearchAge()+"</searchage>\n";
 	body+="\t<names>\n";
 	body+="\t\t<!-- singles per language as defined by ISO 639 -->\n";

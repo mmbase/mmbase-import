@@ -104,13 +104,18 @@ public class Controller {
             	virtual.setValue("dbstate",nbf.getDBState());
             	virtual.setValue("dbtype",nbf.getDBType());
             	virtual.setValue("dbsize",nbf.getDBSize());
+            	virtual.setValue("dbkey",nbf.getDBKey());
+            	virtual.setValue("dbnotnull",nbf.getDBNotNull());
+            	virtual.setValue("dbinputpos",nbf.getEditorInputPos());
+            	virtual.setValue("dbsearchpos",nbf.getEditorSearchPos());
+            	virtual.setValue("dblistpos",nbf.getEditorListPos());
             	virtual.setValue("dbpos",pos++);
             	list.add(virtual);
 	    }
 	}
         return list;
     }
-	
+
 
     public MMObjectNode getNeededBuilderInfo(String cloudmodelfile,String buildername,String language) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
@@ -128,7 +133,35 @@ public class Controller {
         virtual.setValue("extends",nb.getExtends());
         virtual.setValue("status",nb.getStatus());
         virtual.setValue("searchage",nb.getSearchAge());
-        virtual.setValue("classname","Dummy");
+        virtual.setValue("classname",nb.getClassName());
+        return virtual;
+    }
+
+
+    public MMObjectNode getNeededBuilderFieldInfo(String cloudmodelfile,String buildername,String language,String field) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+
+	Model model = new Model(cloudmodelfile);
+	if (model != null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb != null) {
+        		NeededBuilderField nbf=nb.getField(field);
+			if (nbf != null) {
+            			virtual.setValue("dbname",nbf.getDBName());
+		            	virtual.setValue("dbstate",nbf.getDBState());
+            			virtual.setValue("dbtype",nbf.getDBType());
+            			virtual.setValue("dbsize",nbf.getDBSize());
+            			virtual.setValue("description",nbf.getDescription(language));
+            			virtual.setValue("dbkey",nbf.getDBKey());
+		            	virtual.setValue("dbnotnull",nbf.getDBNotNull());
+            			virtual.setValue("dbinputpos",nbf.getEditorInputPos());
+            			virtual.setValue("dbsearchpos",nbf.getEditorSearchPos());
+            			virtual.setValue("dblistpos",nbf.getEditorListPos());
+            			virtual.setValue("guiname",nbf.getGuiName(language));
+			}
+		}
+	}
         return virtual;
     }
 
@@ -163,6 +196,20 @@ public class Controller {
 	Model model = new Model(cloudmodelfile);
 	if (model!=null) {
 		model.deleteNeededBuilder(builder,maintainer,version);
+		return true;
+	}
+	return false;
+    }
+
+    public boolean deleteNeededBuilderField(String cloudmodelfile,String builder,String field) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(builder);
+		if (nb!=null) {
+			nb.deleteField(field);
+			model.writeModel();
+			return true;
+		}
 	}
 	return false;
     }
@@ -202,4 +249,224 @@ public class Controller {
 	return false;
     }
 
+
+    public boolean setBuilderDescription(String cloudmodelfile,String buildername,String language,String newdescription) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setDescription(language,newdescription);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderFieldDescription(String cloudmodelfile,String buildername,String field,String language,String newdescription) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+        		NeededBuilderField nbf=nb.getField(field);
+			if (nbf != null) {
+				nbf.setDescription(language,newdescription);
+			}
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean addBuilderField(String cloudmodelfile,String buildername,String newname,String newtype,String newstatus,int newsize) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+        		NeededBuilderField nbf=nb.getField(newname);
+			if (nbf == null && !newname.equals("")) {
+				nb.addField(newname,newtype,newstatus,newsize);
+				model.writeModel();
+			}
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderFieldPositions(String cloudmodelfile,String buildername,String field,int inputpos, int searchpos, int listpos) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+        		NeededBuilderField nbf=nb.getField(field);
+			if (nbf != null) {
+				nbf.setEditorInputPos(inputpos);
+				nbf.setEditorSearchPos(searchpos);
+				nbf.setEditorListPos(listpos);
+			}
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderFieldDBValues(String cloudmodelfile,String buildername,String field,String dbname,String dbtype,String dbstate,int dbsize,String key,String notnull) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+        		NeededBuilderField nbf=nb.getField(field);
+			if (nbf != null) {
+				nbf.setDBName(dbname);
+				nbf.setDBType(dbtype);
+				nbf.setDBState(dbstate);
+				nbf.setDBSize(dbsize);
+				if (key.equals("true")) {
+					nbf.setDBKey(true);
+				} else {
+					nbf.setDBKey(false);
+				}
+				if (notnull.equals("true")) {
+					nbf.setDBNotNull(true);
+				} else {
+					nbf.setDBNotNull(false);
+				}
+			}
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderFieldGuiName(String cloudmodelfile,String buildername,String field,String language,String newguiname) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+        		NeededBuilderField nbf=nb.getField(field);
+			if (nbf != null) {
+				nbf.setGuiName(language,newguiname);
+			}
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderSingularName(String cloudmodelfile,String buildername,String language,String newname) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setSingularName(language,newname);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderPluralName(String cloudmodelfile,String buildername,String language,String newname) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setPluralName(language,newname);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+    public boolean setBuilderStatus(String cloudmodelfile,String buildername,String newstatus) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setStatus(newstatus);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+    public boolean setBuilderSearchAge(String cloudmodelfile,String buildername,String newsearchage) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setSearchAge(newsearchage);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderClassName(String cloudmodelfile,String buildername,String newclassname) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setClassName(newclassname);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderName(String cloudmodelfile,String buildername,String newname) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setName(newname);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+    public boolean setBuilderMaintainer(String cloudmodelfile,String buildername,String newmaintainer) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setMaintainer(newmaintainer);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+
+    public boolean setBuilderVersion(String cloudmodelfile,String buildername,String newversion) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setVersion(newversion);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
+
+    public boolean setBuilderExtends(String cloudmodelfile,String buildername,String newextends) {
+	Model model = new Model(cloudmodelfile);
+	if (model!=null) {
+        	NeededBuilder nb=model.getNeededBuilder(buildername);
+		if (nb!=null) {
+			nb.setExtends(newextends);
+			model.writeModel();
+		}
+	}
+	return false;
+    }
 }
