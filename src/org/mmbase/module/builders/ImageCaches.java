@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.List;
 import java.util.Iterator;
 import org.mmbase.module.core.*;
+import org.mmbase.util.Arguments;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -24,13 +25,13 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.30 2003-05-04 14:24:06 kees Exp $
+ * @version $Id: ImageCaches.java,v 1.31 2003-05-19 09:00:15 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
-    private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ImageCaches.class);
 
-    private static final String GUIIMAGETEMPLATE="s(100x60)";
+    static final String GUI_IMAGETEMPLATE = "s(100x60)";
 
     private CKeyCache handleCache = new CKeyCache(128) {  // a few images are in memory cache.
             public String getName()        { return "ImageHandles"; }
@@ -56,14 +57,14 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
 
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req, String sessionName) {
-        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a) {
+        String servlet    = getServletPath() + (usesBridgeServlet ? a.getString("session") : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
+        HttpServletResponse res = (HttpServletResponse) a.get("response");
         if (origNode != null) {
-            List args = new java.util.Vector();
-            args.add(GUIIMAGETEMPLATE);
-            imageThumb = servlet + origNode.getFunctionValue("cache", args);
+            List cacheArgs =  new Arguments(Images.CACHE_ARGUMENTS).set("template", GUI_IMAGETEMPLATE);
+            imageThumb = servlet + origNode.getFunctionValue("cache", cacheArgs);
             if (res != null) imageThumb = res.encodeURL(imageThumb);
         } else {
             imageThumb = "";
@@ -74,11 +75,9 @@ public class ImageCaches extends AbstractImages {
     }
 
     // javadoc inherited
-    protected String getSGUIIndicator(String session, HttpServletResponse res, 
-                                      //HttpServletRequest req, 
-                                      MMObjectNode node) {
+    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
         MMObjectNode origNode = originalImage(node);
-        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), res, null, session);
+        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
     }
 
 
