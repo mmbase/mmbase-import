@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
+import org.mmbase.security.UserContext;
+import org.mmbase.security.AuthenticationData;
 import org.mmbase.module.core.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -19,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.37 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicCloudContext.java,v 1.38 2005-03-01 14:23:40 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -112,15 +114,28 @@ public class BasicCloudContext implements CloudContext {
         return (localModules.get(moduleName)!=null);
     }
 
+
+    protected void checkExists(String cloudName) throws NotFoundException  {
+        if ( !localClouds.contains(cloudName) ) {
+            throw new NotFoundException("Cloud '" + cloudName + "' does not exist.");
+        }
+        if (mmb == null || ! mmb.getState()) {
+            throw new NotFoundException("MMBase is not yet initialized");
+        }
+    }
     public Cloud getCloud(String cloudName) {
+        checkExists(cloudName);
         return getCloud(cloudName, "anonymous", null);
     }
 
-    public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException  {
-        if ( !localClouds.contains(name) ) {
-            throw new NotFoundException("Cloud '" + name + "' does not exist.");
-        }
-        return new BasicCloud(name, authenticationType, loginInfo, this);
+    public Cloud getCloud(String cloudName, String authenticationType, Map loginInfo) throws NotFoundException  {
+        checkExists(cloudName);
+        return new BasicCloud(cloudName, authenticationType, loginInfo, this);
+    }
+
+    public Cloud getCloud(String cloudName, UserContext user) throws NotFoundException {
+        checkExists(cloudName); 
+       return new BasicCloud(cloudName, user, this);
     }
 
     public StringList getCloudNames() {
@@ -166,4 +181,10 @@ public class BasicCloudContext implements CloudContext {
     public StringList createStringList() {
         return new BasicStringList();
     }
+
+    public AuthenticationData getAuthentication(String cloudName) throws NotFoundException {
+        checkExists(cloudName);
+        return mmb.getMMBaseCop().getAuthentication();
+    }
+
 }
