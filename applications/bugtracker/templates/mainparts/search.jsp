@@ -102,7 +102,6 @@
    <th width="50"> Bug # </th>	<th>Status</th> <th> Type </th> <th> Priority </th> <th> Version </th> <th> Fixed in</th> <th> Area </th> <th> Issue </th> <th> &nbsp; </th>
 </tr>
 <!-- the real searchpart -->
-
 <mm:url id="pagingurl" referids="parameters,$parameters,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer,ssubmitter" write="false" />
 
 <mm:write referid="smaintainer">
@@ -120,7 +119,6 @@
     <mm:import id="root">users,rolerel</mm:import>
   </mm:compare>
 </mm:write>
-
 
 
 <mm:listcontainer path="$root,bugreports,areas">
@@ -188,7 +186,7 @@
   <mm:list fields="bugreports.bugid,bugreports.bstatus,bugreports.btype,bugreports.bpriority,bugreports.version,bugreports.fixedin,areas.name,bugreports.issue">
   <tr>
       <td>#<mm:field name="bugreports.bugid" /></td>
-      <td><%-- silly, need resource-bundle, fieldtypes! --%>
+      <td>
 	<mm:field name="bugreports.bstatus">
 		<mm:compare value="1">Open</mm:compare>
 		<mm:compare value="2">Accepted</mm:compare>
@@ -226,7 +224,7 @@
 			 <mm:field name="bugreports.issue" escape="inline"/>&nbsp;
 		</td>
 		<td>
-		    <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="images/arrow-right.gif" />" border="0" align="right"></a>
+		    <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="images/arrow-right.png" />" border="0" align="right"></a>
 		</td>
 </tr>
  <mm:last><mm:index id="lastindex" write="false" /></mm:last>
@@ -238,10 +236,10 @@
      <mm:write referid="noffset">
        <mm:isgreaterthan value="0">
          <mm:isgreaterthan value="15">
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="images/arrow-left.gif" />" border="0" /></a>
+           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="images/arrow-left.png" />" border="0" /></a>
          </mm:isgreaterthan>
          <mm:write id="previouspage" value="${+ $noffset - 15}" vartype="integer" write="false" />
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="images/arrow-left.gif" />" border="0" /></a>
+         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="images/arrow-left.png" />" border="0" /></a>
        </mm:isgreaterthan>
      </mm:write>
    </td>
@@ -274,10 +272,10 @@
   <td colspan="1" class="listpaging">
      <mm:write value="${+ $noffset + 15}" vartype="integer">
        <mm:islessthan value="$total">
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="images/arrow-right.gif" />" border="0" /></a>
+         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="images/arrow-right.png" />" border="0" /></a>
          <mm:islessthan value="${+ $total - 15}">
            <mm:write id="lastoffset" value="${+ ($lastpage  - 1) * 15}" vartype="integer" write="false" />
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="images/arrow-right.gif" />" border="0" /></a>
+           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="images/arrow-right.png" />" border="0" /></a>
          </mm:islessthan>
        </mm:islessthan>
      </mm:write>

@@ -3,7 +3,7 @@
 
   <tr>
     <td width="25">
-      <a href="<mm:url referids="parameters,$parameters" />"><img border="0" src="<mm:url page="images/arrow-left.gif" />" /></a>
+      <a href="<mm:url referids="parameters,$parameters" />"><img border="0" src="<mm:url page="images/arrow-left.png" />" /></a>
     </td>
 
     <!-- overview flap -->
