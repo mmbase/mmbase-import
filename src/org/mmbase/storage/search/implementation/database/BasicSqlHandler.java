@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.27 2004-03-14 01:04:08 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.28 2004-03-14 21:02:20 robmaris Exp $
  * @since MMBase-1.7
  */
 
@@ -171,20 +171,6 @@ public class BasicSqlHandler implements SqlHandler {
         if (query.getFields().isEmpty()) {
             throw new IllegalStateException(
             "Searchquery has no field (at least 1 field is required).");
-        }
-
-        // Test maxNumber set to default.
-        if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
-            throw new UnsupportedOperationException(
-            "Value of maxNumber other than "
-            + SearchQuery.DEFAULT_MAX_NUMBER + " not supported.");
-        }
-
-        // Test offset set to default (= 0).
-        if (query.getOffset() != SearchQuery.DEFAULT_OFFSET) {
-            throw new UnsupportedOperationException(
-            "Value of offset other than "
-            + SearchQuery.DEFAULT_OFFSET + " not supported.");
         }
 
         // SELECT
