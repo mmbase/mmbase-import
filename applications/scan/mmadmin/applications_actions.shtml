@@ -1,0 +1,118 @@
+<PROCESSOR MMEXAMPLES>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
+<PART /mmadmin/nav.shtml?4>
+<BR>
+<FONT COLOR="#000000">
+<CENTER><B>Application Description</B></CENTER>
+</FONT>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description</B>
+	</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444477">
+			<BR>
+			$MOD-MMEXAMPLES-DESCRIPTION-$PARAM1
+			<BR>
+			<BR>
+		</TD>
+</TR>
+</TABLE>
+</CENTER>
+
+
+<CENTER>
+<BR>
+<FONT COLOR="#000000">
+<CENTER><B>Load Application</B></CENTER>
+</FONT>
+<BR>
+<FORM ACTION="applications_result.shtml" METHOD="POST">
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Confirm</B>
+	</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444477">
+			Install &nbsp;&nbsp; <B>$PARAM1</B> &nbsp;&nbsp; version &nbsp;&nbsp; <B>$MOD-MMEXAMPLES-VERSION-$PARAM1 </B>
+		</TD>
+		<TD BGCOLOR="#444477">
+
+				<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMEXAMPLES">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-LOAD" VALUE="$PARAM1">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+</CENTER>
+
+
+<BR>
+<FONT COLOR="#000000">
+<CENTER><B>Save Application</B></CENTER>
+</FONT>
+<BR>
+<CENTER>
+<FORM ACTION="applications_result.shtml" METHOD="POST">
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Path</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Goal</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Confirm</B>
+	</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444477">
+			Save &nbsp;&nbsp; <B>$PARAM1</B>
+		</TD>
+		<TD BGCOLOR="#444477">
+				<INPUT NAME="PRC-VAR-PATH" VALUE="/tmp" SIZE="20">
+		</TD>
+		<TD BGCOLOR="#444477">
+				<SELECT NAME="PRC-VAR-GOAL">
+					<OPTION>backup
+				</SELECT>
+		</TD>
+		<TD BGCOLOR="#444477">
+				<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMEXAMPLES">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-SAVE" VALUE="$PARAM1">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+</CENTER>
+</BODY>
+</HTML>
