@@ -20,6 +20,9 @@ import sun.misc.BASE64Decoder;
 import org.mmbase.bridge.*;
 import org.mmbase.security.Rank; // hmm.
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * MMCloud
  * Creates a cloud object (pulling it from if session necessary)
@@ -28,43 +31,40 @@ import org.mmbase.security.Rank; // hmm.
  *
  **/
 public class MMCloud extends MMTaglib implements BodyTag{
+    
+    private static Logger log = Logging.getLoggerInstance(MMCloud.class.getName());
 
-    private String cloudName=DEFAULT_CLOUD_NAME;
+    private String cloudName  = DEFAULT_CLOUD_NAME;
 
-    public static boolean debug = true;
     private String authenticate = "name/password"; 
 
     private String method = null; // how to log on, method can only be 'http'.
     private String logon = null;  
     private String pwd = null;
-    String request_line = null;
+
     private HttpSession session;
     private HttpServletRequest  request;
     private HttpServletResponse response;
 
     
-    //simple method to dump debug data into System.err
-    public void debug(String debugdata){
-	System.err.println("MMCloud:" + debugdata);
-    }
-
     /**
-     * implementation of TagExtraInfo return values declared here
-     * should be filled at one point, currently fillVars is responsible for 
-     * that ant gets called before every 
+     * Implementation of TagExtraInfo return values declared here
+     * should be filled at one point, in this case with setPageCloud.
+     *
      **/
-    public VariableInfo[] getVariableInfo(TagData data){
-        VariableInfo[] variableInfo =    null;
-        if (data.getAttribute("name")!= null){
+   
+    public VariableInfo[] getVariableInfo(TagData data){      
+        VariableInfo[] variableInfo = null;
+        if (data.getAttribute("name") != null) {
             cloudName= "" + data.getAttribute("name");
         } else {
-            cloudName=DEFAULT_CLOUD_NAME;
+            cloudName = DEFAULT_CLOUD_NAME;
         }
-	    variableInfo =    new VariableInfo[1];
-	    variableInfo[0] =  new VariableInfo("cloud","org.mmbase.bridge.Cloud",true,VariableInfo.NESTED);
+        variableInfo    =  new VariableInfo[1];
+        variableInfo[0] =  new VariableInfo("cloud", "org.mmbase.bridge.Cloud", true, VariableInfo.NESTED);
     	return variableInfo;
     }
-    
+   
     
     public void setName(String name){
         cloudName = name;
@@ -93,15 +93,16 @@ public class MMCloud extends MMTaglib implements BodyTag{
      */    
     private boolean deny(HttpServletResponse res) {
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        debug("Not logged on.");
+        log.debug("Not logged on.");
         res.setHeader("WWW-Authenticate", "Basic realm=\"www\"");
+        //res.setHeader("Authorization", blabla);   would ne nice...
         return false; 
     }
 
 
     /**
      *  Check name and retrieve cloud
-     **/
+     */
     public int doStartTag() throws JspException{
         session  = (HttpSession)pageContext.getSession();
         request  = (HttpServletRequest)pageContext.getRequest();
@@ -110,7 +111,7 @@ public class MMCloud extends MMTaglib implements BodyTag{
 
         if ("asIs".equals(method)) {
             // this is handy. 'logon' will be ignored, the cloud is as is was in the session
-            debug("requested the cloud 'as is'");
+            log.debug("requested the cloud 'as is'");
             logon = null;   // that means in practice, to ignore the logon name.  
         }              
         
@@ -120,10 +121,10 @@ public class MMCloud extends MMTaglib implements BodyTag{
 
             if ("anonymous".equals(method)) { 
                 // explicity anonymous. 'logon' will be ignored
-                debug("explicityly requested anonymous cloud");
+                log.debug("explicityly requested anonymous cloud");
                 // an anonymous cloud was requested, check if it is.
                 if (cloud.getUser().getRank() != Rank.ANONYMOUS) { 
-                    debug("cloud is not anonymous, throwing it away");
+                    log.debug("cloud is not anonymous, throwing it away");
                     cloud = null;
                     logon = null;
                     session.setAttribute("cloud_" + cloudName, null);
@@ -131,14 +132,14 @@ public class MMCloud extends MMTaglib implements BodyTag{
             } else if (logon == null && method != null) { 
                 // authorisation was requested, but not indicated for whom 
                 if (cloud.getUser().getRank() == Rank.ANONYMOUS) { // so it simply may not be anonymous
-                    debug("there was a cloud, but anonymous. log it on");
+                    log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
                     session.setAttribute("cloud_" + cloudName, null);
                 }
             } else  if (logon != null) { 
                 // a logon name was given, check if logged on as the right one
                 if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
-                    debug("logged on, but as wrong user. log out first.");
+                    log.debug("logged on, but as wrong user. log out first.");
                     cloud = null;
                     session.setAttribute("cloud_" + cloudName, null);
                 }
@@ -146,10 +147,10 @@ public class MMCloud extends MMTaglib implements BodyTag{
         }
 
         if (cloud == null) { // we did't have a cloud, or it was not a good one:
-            debug("logging on the cloud...");
+            log.debug("logging on the cloud...");
             // check how to log on:
             if ("http".equals(method)) {
-                debug("with http");
+                log.debug("with http");
                 // find logon, password with http authentication       
                 String username = null;
                 String password = null;
@@ -165,21 +166,23 @@ public class MMCloud extends MMTaglib implements BodyTag{
                         }
                     }		
                 } catch (Exception e) {			
-                    debug("oooops" + e);
+                    log.error("oooops" + e);
                 }
                 // Authenticate user 
-                debug("u " + username + " p " + password);
+                if (log.isDebugEnabled()) {
+                    log.debug("u " + username + " p " + password);
+                }
                 if (logon != null) { // if there was a username specified as well, it must be the same
-                    debug("http with username");
+                    log.debug("http with username");
                     if (! logon.equals(username)) {
-                        debug("username not correct");
+                        log.debug("username not correct");
                         logon = null;
                         deny(response);
                     }
                 } else {
-                    debug("http without username");
+                    log.debug("http without username");
                     if (username == null) { // there must be at least known a username...
-                        debug("no username known");
+                        log.debug("no username known");
                         deny(response);
                     }
                     logon = username;
@@ -189,7 +192,7 @@ public class MMCloud extends MMTaglib implements BodyTag{
             
             // do the MMCI cloud logging on
             if (logon != null) {
-                debug("Username found. logging in");
+                log.debug("Username found. logging in");
                 User user = getDefaultCloudContext().getNewUser();
                 user.put("username", logon);
                 user.put("password", pwd);
@@ -197,30 +200,29 @@ public class MMCloud extends MMTaglib implements BodyTag{
                     cloud = getDefaultCloudContext().getCloud(cloudName, authenticate, user);
                 } catch (BridgeException e) { 
                     // did not succeed, so problably the password was wrong.
-                    // give a deny, people can retry the password then.
-                    if ( "http".equals(method)) {
+                    if ( "http".equals(method)) { // give a deny, people can retry the password then.
                         deny(response);                    
                         // in case they give up, give an anonymous cloud:
+                        logon = null; 
                         cloud = getDefaultCloudContext().getCloud(cloudName);
-                    } else { // strange, no method given, password wrong (or missing)
-                        throw new JspTagException("Logon of user " + logon + " failed.");
+                    } else { // strange, no method given, password wrong (or missing), that's really wrong.
+                        throw new JspTagException("Logon of user " + logon + " failed." + 
+                                                  (pwd == null ? " (no password given)" : " (wrong password)"));
                     }
                 }
             } else { 
+                // no logon, create an anonymous cloud.
                 cloud = getDefaultCloudContext().getCloud(cloudName);
             }
 
             if (cloud == null) { // stil null, give it up then...
-                debug("Could not create Cloud, denying access");
-                deny(response);
-                return SKIP_BODY;
+                log.debug("Could not create Cloud.");
+                throw new JspTagException("Could not create cloud.");           
     	    } else {
-    	        session.setAttribute("cloud_"+cloudName,cloud);
+    	        session.setAttribute("cloud_"+cloudName, cloud);
     	    }
-        }
-        
+        }        
         setPageCloud(cloud);
-
         return EVAL_BODY_TAG;
     }
 
