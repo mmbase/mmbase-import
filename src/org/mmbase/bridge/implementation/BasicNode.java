@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.77.2.5 2003-02-17 08:59:41 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.77.2.6 2003-03-21 17:50:20 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -227,10 +227,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * Edit this node.
      * Check whether edits are allowed and prepare a node for edits if needed.
-     * The type of edit is determined by the action specified, and one of:<br>
-     * ACTION_CREATE (create a node),<br>
-     * ACTION_EDIT (edit node, or change aliasses),<br>
-     * ACTION_DELETE (delete node),<br>
+     * The type of edit is determined by the action specified, and one of:<br />
+     * ACTION_CREATE (create a node),<br />
+     * ACTION_EDIT (edit node, or change aliasses),<br />
+     * ACTION_DELETE (delete node),<br />
      * ACTION_COMMIT (commit a node after changes)
      *
      * @param action The action to perform.
@@ -535,7 +535,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (noderef == null) {
             return "*deleted node*";
         }
-        Object value=noderef.getFunctionValue("gui",null);
+        Object value = noderef.getFunctionValue("gui", null);
         if (value==null) {
             return "*unknown*";
         } else {
@@ -949,14 +949,22 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
+     * @since MMBase-1.6.2
+     */
+    public int hashCode() {
+        return noderef.hashCode();
+    }
+
+    /**
      * Compares two nodes, and returns true if they are equal.
      * This effectively means that both objects are nodes, and they both have the same number and cloud
      * @param o the object to compare it with
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object o) {        
         return (o instanceof Node) &&
-               getNumber()==((Node)o).getNumber() &&
-               cloud.equals(((Node)o).getCloud());
+            getNumber()==((Node)o).getNumber() &&
+            cloud.equals(((Node)o).getCloud());
+        
     }
 
 }
