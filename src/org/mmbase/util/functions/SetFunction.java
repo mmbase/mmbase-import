@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: SetFunction.java,v 1.5 2004-12-06 16:13:38 michiel Exp $
  * @since MMBase-1.8
  */
 public class SetFunction extends AbstractFunction {
@@ -67,28 +67,22 @@ public class SetFunction extends AbstractFunction {
      * This method should be called after setting the class and method name, and before calling
      * the {@link #getFunctionValue} method.
      */
-    public void initialize() {
+    void initialize() {
         if (className != null) {
             try {
                 functionClass = Class.forName(className);
             } catch(Exception e) {
-                String errormessage = "Can't create an application function class : " + className + " " + e.getMessage();
-                log.error(errormessage);
-                throw new RunTimeException(errormessage,e);
+                throw new RuntimeException("Can't create an application function class : " + className + " " + e.getMessage(), e);
             }
             try {
                 functionInstance = functionClass.newInstance();
             } catch(Exception e) {
-                String errormessage = "Can't create an function instance : " + className;
-                log.error(errormessage);
-                throw new RunTimeException(errormessage,e);
+                throw new RuntimeException("Can't create an function instance : " + className, e);
             }
             try {
                 functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
-            } catch(NoSuchMethodException f) {
-                String errormessage = "Function method  not found : " + className + "." + methodName + "(" + getParameterDefinition()+")";
-                log.error(errormessage);
-                throw new RunTimeException(errormessage,e);
+            } catch(NoSuchMethodException e) {
+                throw new RuntimeException("Function method  not found : " + className + "." + methodName + "(" + getParameterDefinition()+")", e);
             }
         }
     }
