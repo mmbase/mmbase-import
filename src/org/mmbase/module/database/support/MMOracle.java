@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.11 $ $Date: 2002-11-07 23:38:21 $
+* @$Revision: 1.12 $ $Date: 2002-11-12 22:13:10 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -86,11 +86,11 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             case FieldDefs.TYPE_STRING:
                String tmp;
                ResultSetMetaData metaData = rs.getMetaData();
-               if (metaData.getColumnType(i) == Types.BLOB) {
-                  // Retreive from BLOB.
+            if (metaData.getColumnType(i) == Types.CLOB) {
+               // Retrieve from CLOB.
                   tmp = getDBText(rs, i);
                } else {
-                  // Retreive from textfield.
+                  // Retrieve from textfield.
                   tmp = rs.getString(i);
                }
                if (tmp == null) {
