@@ -14,6 +14,7 @@ import javax.naming.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: JMSendMail.java,v 1.9 2004-06-01 13:49:46 michiel Exp $
+ * @version $Id: JMSendMail.java,v 1.10 2004-06-10 09:16:12 pierre Exp $
  */
 public class JMSendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(JMSendMail.class);
@@ -46,8 +47,10 @@ public class JMSendMail extends AbstractSendMail {
      */
     public void init() {
         try {
+            MMBase mmb = MMBase.getMMBase();
+            mailEncoding = mmb.getEncoding();
             String encoding = getInitParameter("encoding");
-            if (encoding == null) mailEncoding = encoding;
+            if (encoding != null && !encoding.equals("")) mailEncoding = encoding;
 
             String smtphost   = getInitParameter("mailhost");
             String context    = getInitParameter("context");

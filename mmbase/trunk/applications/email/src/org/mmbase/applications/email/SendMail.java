@@ -16,7 +16,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
-
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.7 2004-04-23 12:59:46 pierre Exp $
+ * @version $Id: SendMail.java,v 1.8 2004-06-10 09:16:12 pierre Exp $
  */
 public class SendMail extends org.mmbase.module.AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -86,8 +86,10 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
      */
     public void init() {
         try {
+            MMBase mmb = MMBase.getMMBase();
+            mailEncoding = mmb.getEncoding();
             String encoding = getInitParameter("encoding");
-            if (encoding == null) mailEncoding = encoding;
+            if (encoding != null && !encoding.equals("")) mailEncoding = encoding;
 
             String smtphost   = getInitParameter("mailhost");
             String context    = getInitParameter("context");
