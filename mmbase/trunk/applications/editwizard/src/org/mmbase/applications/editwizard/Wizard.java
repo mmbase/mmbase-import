@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.114 2004-01-07 21:59:30 michiel Exp $
+ * @version $Id: Wizard.java,v 1.115 2004-01-09 12:16:30 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1384,9 +1384,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          maxoccurs = Integer.parseInt(maxstr);
       }
 
-      String defaultdisplaymode = Utils.getAttribute(newlist,
-            "defaultdisplaymode", "edit");
-
       String orderby = Utils.getAttribute(fieldlist, "orderby", null);
 
       if ((orderby != null) && (orderby.indexOf("@") == -1)) {
@@ -1442,13 +1439,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       for (int dataindex = 0; dataindex < listsize; dataindex++) {
          Element datacontext = (Element) tempstorage.get(dataindex);
 
-         // Determine the display mode of the current datanode.
-         String displaymode = Utils.getAttribute(datacontext, "displaymode",
-               defaultdisplaymode);
-
-         // Create the form item which has the same display mode as this datanode.
-         Node item = Utils.selectSingleNode(fieldlist,
-               "item[@displaymode='" + displaymode + "']");
+         // Select the form item
+         Node item = Utils.selectSingleNode(fieldlist, "item");
 
          if (item == null) {
             item = Utils.selectSingleNode(fieldlist, "item");
@@ -2201,8 +2193,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             ".//list[@fid='" + listId + "']");
       Node objectdef = null;
 
-      // Get the 'item' from this list, with displaymode='add'
-      // Get (and create a copy of) the object-definition from the action node within that item.
       // action=add is for search command
       if (!isCreate) {
          objectdef = Utils.selectSingleNode(listnode,
@@ -2240,17 +2230,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       // Ask the database to create that object.
       Node newObject = databaseConnector.createObject(data, parent, objectdef,
             variables, createorder);
-
-      // Temporary hack: only images can be shown as summarized.
-      if (Utils.getAttribute(newObject, "type").equals("images")) {
-         Utils.setAttribute(newObject, "displaymode", "summarize");
-      } else {
-         if (isCreate) {
-            Utils.setAttribute(newObject, "displaymode", "add");
-         } else {
-            Utils.setAttribute(newObject, "displaymode", "search");
-         }
-      }
 
       return newObject;
    }
