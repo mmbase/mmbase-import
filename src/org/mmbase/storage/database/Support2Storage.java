@@ -14,6 +14,7 @@ import java.sql.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Support2Storage implements a number of methods that allow a DatabaseStorage class to also implement
@@ -22,9 +23,11 @@ import org.mmbase.module.database.support.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.6 2003-07-02 06:20:46 keesj Exp $
+ * @version $Id: Support2Storage.java,v 1.7 2003-09-02 19:51:47 michiel Exp $
  */
 public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseStorage, MMJdbc2NodeInterface {
+
+    private static Logger log = Logging.getLoggerInstance(Support2Storage.class);
 
     /**
      * Constructs the Support2Storage database layer support class
@@ -114,10 +117,8 @@ public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseS
      * @return the MMObjectNode
      * @see #loadFieldFromTable(MMObjectNode,String, ResultSet,int)
      */
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
-        fieldname=mapToMMBaseFieldName(fieldname);
-        loadFieldFromTable(node,fieldname,rs,i);
-        return node;
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldName, ResultSet rs,int i) {
+        return decodeDBnodeField(node, fieldName, rs, i, "");
     }
 
     /**
@@ -130,9 +131,9 @@ public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseS
      * @param prefix a prefix to use when determining the node's fieldname. used for clusternodes
      * @return the MMObjectNode
      */
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
-        fieldname=prefix+mapToMMBaseFieldName(fieldname);
-        loadFieldFromTable(node,fieldname,rs,i);
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldName, ResultSet rs,int i,String prefix) {
+        fieldName = prefix + mapToMMBaseFieldName(fieldName);
+        loadFieldFromTable(node, fieldName, rs, i);
         return node;
     }
 
