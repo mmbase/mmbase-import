@@ -2481,76 +2481,95 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>formatter</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
     <info>
-	  This tag performs XSL and other transformations.  (EXPERIMENTAL)
+      This tag performs XSL and other transformations.
     </info>
     <attribute>
       <name>xslt</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Path to the XSLT file which must, relative to the current jsp
-		file. If you want to use a default MMBase XSLT's, then you can
-		prefix by 'mmbase:', and searching will begin in
-		&lt;mmbaseconfigdir&gt;/xslt.
-	  </info>
+        Path to the XSLT file which must, relative to the current jsp
+        file. If you want to use default MMBase XSLT's, then you can
+        prefix by 'mm:', and searching will begin in the mmbase
+        configuration directory.
+      </info>
     </attribute>
     <attribute>
       <name>format</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		A few transformations are predefined in MMBase. If they are
-		XSL transformations then you can put your extensions in
-		xslt/2xhtml.xslt. This xslt can be extended from the 'basic'
-		xslt by beginning it with: &lt;xsl:import
-		href=&quot;mm:2xhtml.xslt&quot; /&gt;.
-	  </info>
+        <p>
+          A few transformations are predefined in MMBase. If they are
+          XSL transformations then you can put your extensions in e.g.
+          xslt/2xhtml.xslt. This xslt can be extended from the 'basic'
+          xslt by beginning it with: &lt;xsl:import
+          href=&quot;mm:2xhtml.xslt&quot; /&gt;.
+        </p>
+        <p>
+          So basicly, when you do specify the format attribute there
+          can happen two different things:
+          <ul>
+            <li>
+              It is a shortcut for certain values for the 'xslt'
+              attribute.  E.g. format="xhtml" is shorthand for
+              xslt="xstl/2xhtml.xslt'.
+            </li>
+            <li>
+              It give access to certain java functionality present in
+              the formatter tag's implementation. It is e.g. senseless
+              to escape XML with a XSL stylesheet, when it can be done
+              so easily in Java.
+            </li>
+          </ul>
+        </p>
+      </info>
       <possiblevalue>
-		<value>xhtml</value>
-		<info>An XSLT. Transforms nodes or fields to an XHTML presentation.</info>
-	  </possiblevalue>
-	  <possiblevalue>
-		<value>rich</value>
-		<info>An XSLT. Transforms mmxf fields to simple text only presentation.</info>
-	  </possiblevalue>
-	  <possiblevalue>
-		<value>presentxml</value>
-		<info>An XSLT. Tries to make a nice presentation of XMl in XHTML, with colors and so on.</info>
-	  </possiblevalue>
-	  <possiblevalue>
-		<value>code</value>
-		<info>An XSLT. Doesn't work well. To present taglib code.</info>
-	  </possiblevalue>
-	  <possiblevalue>
-		<value>escapexml</value>
-		<info>Escapes characters which make something XML. This way you can easily present XML in XHTML pages</info>
-	  </possiblevalue>
-	  <possiblevalue>
-		<value>escapexmlpretty</value>
-		<info>Similar to escapexml, but the XML is nicely formatted for human consumption first. This required the XML to be valid, otherwise you get an exception.</info>
-	  </possiblevalue>
-   <!--
-	  <possiblevalue>
-		<value>date</value>
-		<info>
+        <value>xhtml</value>
+        <info>An XSLT. Transforms nodes or fields to an XHTML presentation.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>rich</value>
+        <info>An XSLT. Transforms mmxf fields to simple text only presentation.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>presentxml</value>
+        <info>An XSLT. Tries to make a nice presentation of XMl in XHTML, with colors and so on.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>code</value>
+        <info>An XSLT. Doesn't work well. To present taglib code.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>escapexml</value>
+        <info>Escapes characters which make something XML. This way you can easily present XML in XHTML pages</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>escapexmlpretty</value>
+        <info>Similar to escapexml, but the XML is nicely formatted for human consumption first. This required the XML to be valid, otherwise you get an exception.</info>
+      </possiblevalue>
+      <!-- THERE IS A TIME TAG TO DO THESE KIND OF THINGS
+      <possiblevalue>
+      <value>date</value>
+      <info>
 		  Take a datetime field and formats it like a real date and/or
 		  time. Use the options attribute to specify how this must be
 		  done exactly. It is an argument for
 		  java.text.SimpleDateFormat.applyPattern.
-        </info>
+    </info>
 	  </possiblevalue>
--->
+      -->
     </attribute>
     <attribute>
       <name>options</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		You can give options to the transformation.
-	  </info>
+        You can give options to the transformation.
+      </info>
     </attribute>
-	<extends>contextreferrer</extends>   
-	<extends>writer</extends>   
+    <extends>contextreferrer</extends>   
+    <extends>writer</extends>   
     <see>xslt</see>
   </tag>
   <tag>   
@@ -2568,39 +2587,73 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>contextwriter</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.TimeTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.TimeTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
 	    The time taglib can be used for all kind of manipulations regarding to times.</info>
     <attribute>
-        <name>time</name>
-        <required>false</required>
-    <rtexprvalue>false</rtexprvalue>
-    <info>The time attribute specifies the time to be used, this can be done in multiple ways. 1) When the time attribute is not specified the current time will be taken. 2) Specify the time in seconds from EPOC (this is the way how MMBase handles times). 3) By using keywords, such as: yesterday, tomorrow, today, now. 4) By specifying the time in a human readable way, such as: Friday 10 January 2002. In the last case the attribute inputformat should be used to tell the time taglib how to read the human readable time.</info>
+      <name>time</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        The time attribute specifies the time to be used, this can be
+        done in multiple ways. 1) When the time attribute is not
+        specified the current time will be taken. 2) Specify the time
+        in seconds from EPOC (this is the way how MMBase handles
+        times). 3) By using keywords, such as: yesterday, tomorrow,
+        today, now. 4) By specifying the time in a human readable way,
+        such as: Friday 10 January 2002. In the last case the
+        attribute inputformat should be used to tell the time taglib
+        how to read the human readable time.
+      </info>
     </attribute>
     <attribute>
-        <name>inputformat</name>
-        <required>false</required>
-        <rtexprvalue>false</rtexprvalue>       
-	<info>The inputformat attribute should only be used when the time attribute contains a human readable time. The comprehensive syntax for this attribute can be found at http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html. Notice that if times have the following form they will be parsed automatically, and this attribute can be ommited: yyyy/mm/dd hh:mm:ss, yyyy/mm/dd, and hh:mm:ss.</info>
+      <name>inputformat</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>       
+      <info>
+        The inputformat attribute should only be used when the time
+        attribute contains a human readable time. The comprehensive
+        syntax for this attribute can be found at
+        http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html. Notice
+        that if times have the following form they will be parsed
+        automatically, and this attribute can be ommited: yyyy/mm/dd
+        hh:mm:ss, yyyy/mm/dd, and hh:mm:ss.
+      </info>
     </attribute>
     <attribute>
-        <name>offset</name>
-	<required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>The offset attribute can be used to change the time specified with the time attribute. The offset is expressed in seconds.</info>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The offset attribute can be used to change the time specified
+        with the time attribute. The offset is expressed in seconds.
+      </info>
     </attribute>
     <attribute>
-        <name>format</name>
-	<required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-	<info>The format attribute specifes how to display the time. If the format attribute is not used the time will be displayed in seconds from EPOC. The syntax of the format attribute is identical to the syntax of the inputformat attribute. Instead of using the format attribute you can also use the MMBase formatter taglib.</info>
+      <name>format</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        The format attribute specifes how to display the time. If the
+        format attribute is not used the time will be displayed in
+        seconds from EPOC. The syntax of the format attribute is
+        identical to the syntax of the inputformat attribute. Instead
+        of using the format attribute you can also use the MMBase
+        formatter taglib.
+      </info>
     </attribute>
+    <!--  This should still be discussed.
     <attribute>
-        <name>language</name>
-	<required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-	<info>The language attribute enables you to display the days and months in another language. If this attribute is not used the default system language will be used.</info>
+      <name>language</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        The language attribute enables you to display the days and
+        months in another language. If this attribute is not used the
+        default system language will be used.
+      </info>
     </attribute>
+    -->
   </tag>
 </taglib>
