@@ -10,8 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
- *  This class is somekinda enumeration of the ranks possible within 
- *  the security context
+ * This class is somekinda enumeration of the ranks possible within
+ * the security context
+ * @javadoc
+ * @author Eduard Witteveen
+ * @version $Id: Rank.java,v 1.5 2002-06-07 12:56:55 pierre Exp $
  */
 public final class Rank {
     /** int value for the anonymous Rank*/
@@ -19,25 +22,25 @@ public final class Rank {
 
     /** int value for the basic user Rank*/
     public final static int BASICUSER_INT = 100;
-    
+
     /** int value for the anonymous Rank*/
     public final static int ADMIN_INT = 73059;
 
-    /** Identifier for anonymous rank*/    
+    /** Identifier for anonymous rank*/
     public final static Rank ANONYMOUS = new Rank(ANONYMOUS_INT, "anonymous");
-    
-    /** Identifier for basic user rank*/    
+
+    /** Identifier for basic user rank*/
     public final static Rank BASICUSER = new Rank(BASICUSER_INT, "basic user");
 
-    /** Identifier for admin rank*/    
+    /** Identifier for admin rank*/
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
 
     /**
      *	Private constructor, to prevent creation of new Ranks
      */
     private Rank(int rank, String description) {
-    	this.rank = rank;
-	this.description = description;
+        this.rank = rank;
+    this.description = description;
     }
 
     /**
@@ -46,26 +49,26 @@ public final class Rank {
      *	@return the internal int value
      */
     public int getInt(){
-    	return rank;
+        return rank;
     }
-  
+
     /**
      *	@return a string containing the description of the rank
      */
     public String toString(){
-    	return description;
+        return description;
     }
-  
+
     /** the int value of the instance */
     private int rank;
-    
-    /** the description of this rank */    
+
+    /** the description of this rank */
     private String description;
-    
+
     public static Rank getRank(String rankDesc) {
-    	if(ANONYMOUS.toString().equals(rankDesc)) return ANONYMOUS;
-    	if(BASICUSER.toString().equals(rankDesc)) return BASICUSER;
-    	if(ADMIN.toString().equals(rankDesc)) return ADMIN;
-	return null;		
+        if(ANONYMOUS.toString().equals(rankDesc)) return ANONYMOUS;
+        if(BASICUSER.toString().equals(rankDesc)) return BASICUSER;
+        if(ADMIN.toString().equals(rankDesc)) return ADMIN;
+    return null;
     }
 }

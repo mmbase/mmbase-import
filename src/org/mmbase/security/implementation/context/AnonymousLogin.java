@@ -14,10 +14,11 @@ import java.util.Map;
 
 /**
  * Class AnonymousLogin
- * 
+ *
  * @javadoc
+ * @author Eduard Witteveen
+ * @version $Id: AnonymousLogin.java,v 1.4 2002-06-07 12:56:59 pierre Exp $
  */
-
 public class AnonymousLogin extends ContextLoginModule {
     public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
         return getValidUserContext("anonymous", Rank.ANONYMOUS);

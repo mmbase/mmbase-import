@@ -7,10 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/**
- * Security from within MMBase
- * @author Eduard Witteveen
- */package org.mmbase.security.implementation.cloud;
+package org.mmbase.security.implementation.cloud;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -18,10 +15,16 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Security from within MMBase
+ * @javadoc
+ * @author Eduard Witteveen
+ * @version $Id: UserBuilder.java,v 1.5 2002-06-07 12:56:58 pierre Exp $
+ */
 public class UserBuilder extends MMObjectBuilder {
-    private static Logger log=Logging.getLoggerInstance(UserBuilder.class.getName());    
-    private org.mmbase.util.Encode encoder = null;    
-    
+    private static Logger log=Logging.getLoggerInstance(UserBuilder.class.getName());
+    private org.mmbase.util.Encode encoder = null;
+
     public boolean init() {
         String encoding = (String) getInitParameters().get("encoding");
         if(encoding==null) {
@@ -38,32 +41,32 @@ public class UserBuilder extends MMObjectBuilder {
     public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
         // the field with the name bar may not be changed.....
         if(fieldname.equals("username")) {
-	    Object newValue = node.values.get(fieldname);
-	    if(originalValue!=null && !originalValue.equals(newValue)) {
-		// restore the original value...
+        Object newValue = node.values.get(fieldname);
+        if(originalValue!=null && !originalValue.equals(newValue)) {
+        // restore the original value...
                 node.values.put(fieldname,originalValue);
                 return false;
-	    }
-     	}
+        }
+        }
         else if(fieldname.equals("password")) {
             Object newValue = node.values.get(fieldname);
-	    if(originalValue!=null && !originalValue.equals(newValue)) {
-		// encode the new value...
+        if(originalValue!=null && !originalValue.equals(newValue)) {
+        // encode the new value...
                 node.values.put(fieldname,encode((String)newValue));
             }
-        }		
+        }
         return true;
-    }   
+    }
 
     public void setDefaults(MMObjectNode node) {
-	// set it to '""' so that we know the difference
-	node.setValue("password","");
+    // set it to '""' so that we know the difference
+    node.setValue("password","");
     }
-    
+
     public boolean exists(String username, String password) {
        log.trace("username: '"+username+"' password: '"+password+"'");
         java.util.Enumeration e = searchWithWhere(" username = '"+username+"' ");
-	while(e.hasMoreElements()) {       
+    while(e.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode) e.nextElement();
             if(encode(password).equals(node.getStringValue("password"))) {
                 // found it !
@@ -73,12 +76,12 @@ public class UserBuilder extends MMObjectBuilder {
             else {
                 log.trace("username: '"+username+"' found in node #" + node.getNumber()+" --> PASSWORDS NOT EQUAL");
             }
-        }        
+        }
         log.trace("username: '"+username+"' --> USERNAME NOT CORRECT");
         return false;
     }
-	
+
     public String encode(String value) {
-	return encoder.encode(value);
-    }                
+    return encoder.encode(value);
+    }
 }

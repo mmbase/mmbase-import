@@ -17,16 +17,19 @@ import org.mmbase.util.logging.Logging;
 /**
  *  This class is the main class of the security system. It loads the authentication
  *  and authorization classes if needed, and they can be requested from this manager.
+ * @javadoc
+ * @author Eduard Witteveen
+ * @version $Id: MMBaseCop.java,v 1.12 2002-06-07 12:56:55 pierre Exp $
  */
 public class MMBaseCop extends java.lang.SecurityManager  {
     private static Logger log=Logging.getLoggerInstance(MMBaseCop.class.getName());
- 
+
     /** the configuration used by our system */
     private MMBaseCopConfig config;
-    
+
     /** the file from which the config is loaded..*/
     private File configFile;
-    
+
     /**
      *	The constructor, will load the classes for authorization and authentication
      *	with their config files, as specied in the xml from configUrl
@@ -39,24 +42,24 @@ public class MMBaseCop extends java.lang.SecurityManager  {
         super();
 
         configFile = new File(configPath);
-    	if (! configFile.isAbsolute()) { // so relative to currently
-    	    // being parsed file. make it absolute, 
+        if (! configFile.isAbsolute()) { // so relative to currently
+            // being parsed file. make it absolute,
             log.debug("config file was not absolutely given (" + configPath + ")");
             configFile = new File(configFile.getParent() + File.separator + configPath);
             log.debug("will use: " + configFile.getAbsolutePath());
-	}
-        log.service("using: '" + configFile.getAbsolutePath() + "' as config file for security");	
+    }
+        log.service("using: '" + configFile.getAbsolutePath() + "' as config file for security");
 
-	config = new MMBaseCopConfig(this, configFile);
-	if(config.getActive()) {
-    	    // only start watching the files, when we have a active security system...s
-	    config.startWatching();
-	}
-		
+    config = new MMBaseCopConfig(this, configFile);
+    if(config.getActive()) {
+            // only start watching the files, when we have a active security system...s
+        config.startWatching();
+    }
+
         log.service("done loading security configuration");
     }
 
-    
+
     /**
      *	reload, will load the classes for authorization and authentication
      *	with their config files, as specied in the xml from configUrl
@@ -67,35 +70,35 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      */
     public void reload() throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
         log.info("gonna retrieve a new security configuration...");
-    	MMBaseCopConfig newConfig = new MMBaseCopConfig(this, configFile);
-	
-        log.info("gonna change the security configration now");	
-	synchronized(this) {
-	    // first stop watching the config file change-es
-	    config.stopWatching();
-	    // replace the old with the new one..
-	    config = newConfig;
-	    
-	    if(config.getActive()) {
-	    	// only start watching the files, when we have a active security system...s
-	    	config.startWatching();
-	    }
-	}
+        MMBaseCopConfig newConfig = new MMBaseCopConfig(this, configFile);
+
+        log.info("gonna change the security configration now");
+    synchronized(this) {
+        // first stop watching the config file change-es
+        config.stopWatching();
+        // replace the old with the new one..
+        config = newConfig;
+
+        if(config.getActive()) {
+            // only start watching the files, when we have a active security system...s
+            config.startWatching();
+        }
+    }
         log.info("done changing security configuration");
     }
-    
+
     private MMBaseCopConfig getConfig() {
-	synchronized(this) {
-	    return config;
-	}    	
+    synchronized(this) {
+        return config;
     }
-    
+    }
+
     /**
      *	Returns the authentication class, which should be used.
      *	@return The authentication class which should be used.
      */
     public Authentication getAuthentication() {
-    	return getConfig().getAuthentication();
+        return getConfig().getAuthentication();
     }
 
     /**
@@ -103,7 +106,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      *	@return The authorization class which should be used.
      */
     public Authorization getAuthorization() {
-    	return getConfig().getAuthorization();
+        return getConfig().getAuthorization();
     }
 
     /**
@@ -113,7 +116,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      *	    	<code>false</code>When not.
      */
     public boolean getActive() {
-    	return getConfig().getActive();
+        return getConfig().getActive();
     }
 
     /**
@@ -123,7 +126,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      * @return false if received shared secret not equals your own shared secret
      */
     public boolean checkSharedSecret(String key) {
-    	return getConfig().checkSharedSecret(key);    
+        return getConfig().checkSharedSecret(key);
     }
 
     /**
@@ -131,6 +134,6 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      * @return the shared Secret
      */
     public String getSharedSecret() {
-    	return getConfig().getSharedSecret();
-    }    
+        return getConfig().getSharedSecret();
+    }
 }
