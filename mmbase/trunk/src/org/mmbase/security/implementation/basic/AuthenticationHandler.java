@@ -20,7 +20,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * Authentication based on a config file..
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.4 2002-10-25 13:23:25 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.5 2003-03-04 15:29:36 nico Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static Logger log=Logging.getLoggerInstance(AuthenticationHandler.class.getName());

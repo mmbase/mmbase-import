@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
 import java.io.*;
 
@@ -29,9 +27,16 @@ import org.mmbase.util.logging.Logging;
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
- * $Id: XSLConvert.java,v 1.6 2001-07-16 10:08:08 jaco Exp $
+ * $Id: XSLConvert.java,v 1.7 2003-03-04 15:26:34 nico Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2001/07/16 10:08:08  jaco
+ * jaco: Moved all configuration stuff to MMBaseContext.
+ * If needed params not found or incorrect a ServletException with a description isthrown.
+ * It's now again possible to not redirect System.out and System.err to a file.
+ * Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+ * If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+ *
  * Revision 1.5  2001/07/09 12:30:02  jaco
  * jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
  *

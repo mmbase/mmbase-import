@@ -12,16 +12,10 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 
 import java.util.Map;
-import java.io.FileInputStream;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-
-import org.xml.sax.InputSource;
 
 import org.apache.xpath.XPathAPI;
-import org.apache.xerces.parsers.DOMParser;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.7 2002-10-29 23:19:48 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.8 2003-03-04 15:29:37 nico Exp $
  */
 
 public abstract class ContextLoginModule {

@@ -13,7 +13,6 @@ package org.mmbase.servlet;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import javax.servlet.http.*;
 import java.util.*;
 
 import org.mmbase.util.*;

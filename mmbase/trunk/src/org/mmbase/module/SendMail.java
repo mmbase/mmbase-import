@@ -13,7 +13,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
