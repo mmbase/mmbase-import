@@ -21,12 +21,15 @@
     
     <!-- account is used by the loginmodules, to get the users with their properties  -->
     <accounts>
-    	<!-- the user admin it's new created objects get the default context of context 'admin'  -->    
+    	<!-- what are the create rights of anonymous user, if it has been granted the rights -->
+    	<user name="anonymous" context="default" />
+	
+    	<!-- the user admin it's new created objects get the default context of context 'admin'  -->    	
         <user name="admin" context="admin">
 	    	<!-- this are the properties for the name/password module...  -->
         	<identify type="name/password" rank="administrator">admin2k</identify>
         </user>
-        <user name="foo" context="admin" >
+        <user name="foo" context="default" >
         	<identify type="name/password" rank="basic user">bar</identify>
         </user>    
     </accounts>
