@@ -35,11 +35,14 @@ public class AllTests {
         suite.addTestSuite(CloudContextTest.class);
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
-        suite.addTestSuite(FilledNodeTest.class);
+        suite.addTestSuite(EmptiedNodeTest.class); // are failing
+        suite.addTestSuite(EmptyNotNullNodeTest.class); // are failing
+        suite.addTestSuite(EmptyNotNullNodeTestTransaction.class); // would fail too
+        suite.addTestSuite(FilledNodeTest.class); 
         suite.addTestSuite(FilledNodeTestTransaction.class);
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
-		suite.addTestSuite(RelationTest.class);
+        suite.addTestSuite(RelationTest.class);
         return suite;
     }
 	
