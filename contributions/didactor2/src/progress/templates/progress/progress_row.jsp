@@ -6,14 +6,38 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
-<mm:import id="studentNo" externid="userNoX" required="true"/>
+<mm:import externid="student" required="true"/>
 
-<di:may component="education" action="isSelfOrTeacherOf" arguments="studentNo">
+<di:may component="education" action="isSelfOrTeacherOf" arguments="student">
  
-<mm:node number="$studentNo">
+<mm:node number="$student">
   <tr>
-  <mm:import id="user_string"><mm:field name="html(firstname)"/> <mm:field name="html(lastname)"/></mm:import>
-  <td><mm:write referid="user_string"/></td>
+    <td><mm:field name="firstname"/> <mm:field name="lastname"/></td>
+    <td>
+        <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids">
+            <mm:param name="student"><mm:write referid="student"/></mm:param>
+        </mm:treeinclude></mm:import>
+        <%= (int)(progress.doubleValue()*100.0)%>%
+    </td>
+
+    <mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number=$student and classes.number=$class">
+	<mm:field name="classrel.number" id="classrel" write="false"/>
+    </mm:list>
+    <mm:node referid="classrel">
+
+    <td>
+        <mm:field name="logincount"/>
+    </td>
+    <td>
+        <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
+        <%
+        int hour = onlinetime.intValue() / 3600;
+        int min = (onlinetime.intValue() % 3600) / 60;
+        %>
+        <%=hour%>:<%=min%>
+        </mm:field>
+        </mm:node>
+    </td>
 
   <%-- find copybook --%>
   <mm:import id="copybookNo"/>
@@ -50,31 +74,26 @@
              <mm:compare referid="teststatus" value="toberated">
                  <di:hasrole role="teacher">
             	   <td class="td_test_tbs"><a href="<mm:treefile page="/education/tests/rateopen.jsp" objectlist="$includePath" referids="$referids">
-                        <mm:param name="studentNo"><mm:write referid="studentNo"/></mm:param>
+                        <mm:param name="studentNo"><mm:write referid="student"/></mm:param>
                         <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
-                   </mm:treefile>">?</a></td>
+                   </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?"></a></td>
                  </di:hasrole>
                  <di:hasrole role="teacher" inverse="true">
-                     <td class="td_test_tbs">?</td>
+                     <td class="td_test_tbs"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?"></td>
                  </di:hasrole>
              </mm:compare>
             
              <mm:compare referid="teststatus" value="passed">
-       	             <td class="td_test_tbs">
-                        <mm:compare referid="feedback" value="0">S</mm:compare>
-                        goed: <mm:write referid="goodanswers"/> / fout: <mm:write referid="falseanswers"/>
-                    </td>
+       	             <td class="td_test_tbs"><img src="<mm:treefile page="/progress/gfx/checked.gif" objectlist="$includePath" referids="$referids"/>" alt="Ok"></td>
              </mm:compare>
              
              <mm:compare referid="teststatus" value="failed">
-       	             <td class="td_test_failed">
-                         <mm:compare referid="feedback" value="0">F</mm:compare>
-                         goed: <mm:write referid="goodanswers"/> / fout: <mm:write referid="falseanswers"/></td>
+       	             <td class="td_test_failed"><img src="<mm:treefile page="/progress/gfx/box.gif" objectlist="$includePath" referids="$referids"/>" alt=""></td>
        	     </mm:compare>
             
         </mm:compare>
          <mm:compare referid="teststatus" value="incomplete" >
-           <td class="td_test_not_done">-</td>
+           <td class="td_test_not_done"><img src="<mm:treefile page="/progress/gfx/box.gif" objectlist="$includePath" referids="$referids"/>" alt=""></td>
          </mm:compare>
         <mm:remove referid="madetestscore"/>
          <mm:remove referid="save_madetestscore"/>
@@ -86,7 +105,7 @@
 </mm:node> <%-- education --%>
 </tr>
 <mm:remove referid="copybookNo"/>
-</mm:node> <%-- studentNo --%>
+</mm:node> <%-- student --%>
 </di:may>
 
 </mm:cloud>
