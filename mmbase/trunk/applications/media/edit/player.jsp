@@ -107,10 +107,12 @@
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
+<!--
 preferred player: <mm:write referid="config.player"><mm:write /><mm:isempty>No preference</mm:isempty></mm:write><br />
 used source:      <mm:write referid="source" /> <br />
 used player:      <mm:write referid="player" /><br />
 mimetype:      <mm:field name="mimetype()" /><br />
+-->
 </mm:node>
 </mm:cloud>
 </body>
