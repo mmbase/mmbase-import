@@ -22,12 +22,12 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.7 2003-03-10 11:50:34 pierre Exp $
+ * @version $Id: VirtualBuilder.java,v 1.8 2003-09-02 20:21:43 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
     // logging variable
-    private static Logger log = Logging.getLoggerInstance(VirtualBuilder.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
 
     /**
      * Creates an instance of a Virtual builder.
