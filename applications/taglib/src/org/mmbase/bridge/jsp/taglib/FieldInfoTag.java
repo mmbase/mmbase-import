@@ -454,7 +454,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 log.debug("Setting bytes of");
                 node.setByteValue(fieldName, bytes);
             } else { // not changed
-                log.info("Not setting bytes");
+                log.debug("Not setting bytes");
             }
             break;
         }
