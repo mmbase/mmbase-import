@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.41 2003-12-03 06:57:38 keesj Exp $
+ * @version $Id: ListTag.java,v 1.42 2003-12-03 08:37:51 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -159,9 +159,9 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                     searchString,
                     searchDistinct);
             return setReturnValues(nodes, true);
-        } else { // container found!
+        } else {   // container found!
             if (path != Attribute.NULL || search != Attribute.NULL) {
-                throw new JspTagException("search, path and nodes attributes not supported within a container.");
+                throw new JspTagException("search and path attributes not supported within a container.");
                 // (some of these could be implemented)
             }
 
