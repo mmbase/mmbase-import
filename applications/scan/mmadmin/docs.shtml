@@ -30,5 +30,33 @@
 		</TD>
 </TR>
 </TABLE>
+
+
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Config files</B>
+	</TD>
+	<TD BGCOLOR="42BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description</B>
+	</TD>
+</TR>
+
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A">
+			 <a target="_new" href="/mmdocs/config/builders.html">builders.xml</a>
+		</TD>
+		
+		<TD BGCOLOR="#00425A">
+			Documentation on the builders.xml layout
+		</TD>
+</TR>
+<BR>
+<BR>
+</TABLE>
 </BODY>
 </HTML>
