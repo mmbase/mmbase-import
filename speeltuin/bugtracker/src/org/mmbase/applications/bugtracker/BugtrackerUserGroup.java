@@ -9,6 +9,8 @@ package org.mmbase.applications.bugtracker;
 /**
  *
  * @author  mmbase
+ * @mmbase-nodemanager-name bugusergroup
+ * @mmbase-nodemanager-field name
  */
 public class BugtrackerUserGroup {
     
