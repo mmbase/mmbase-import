@@ -27,10 +27,14 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * If you want to have attributes which obtain the value from a
- * parameter, extend from this.
- * It also contains a few other 'utily' functions, which can be handy when constructing tags.
+ * parameter or other context variable, or if you want to be able to
+ * refer to other tags, then your tag can extend from this one.
  *
- * @author Michiel Meeuwissen
+ * It also contains a few other 'utily' functions, which can be handy
+ * when constructing tags. 
+ *
+ * @author Michiel Meeuwissen 
+ * @see    ContextTag
  */
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
@@ -48,17 +52,20 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
   
     public void setPageContext(PageContext pc) {
-        log.debug("setting page context: " + this.getClass().getName());
+        if (log.isDebugEnabled()) {
+            log.debug("setting page context: " + this.getClass().getName());
+        }
         setPageContextOnly(pc); // make pageContext availabe
         pageContextTag = (ContextTag) pageContext.getAttribute("__context");
 
         if (pageContextTag == null) { // not yet put 
-            log.debug("not found in pagecontext, creating one");
-            log.debug("making the pageContextTag.");
-            pageContextTag = new ContextTag();
+            log.debug("No pageContexTag found in pagecontext, creating..");
 
+            pageContextTag = new ContextTag();
             pageContextTag.setId(null);
-            // page context has no id, this also avoids that it tries registering itself in the parent (which it is itself)
+
+            // page context has no id, this also avoids that it tries
+            // registering itself in the parent (which it is itself)
             // so don't change this!
 
             pageContextTag.setPageContextOnly(pageContext);
@@ -69,7 +76,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageContextTag.createContainer(null);
             pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
             pageContext.setAttribute("__context", pageContextTag);
-
            
             // there is one implicit ContextTag in every page.
             // its id is null, it is registered in the pageContext as __context.
@@ -77,6 +83,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             // it is called pageContext, because it is similar to the pageContext, but not the same.
         }  
     }
+
+    /**
+     * ContextReferrers normally can have the attribute 'referid'. If
+     * a ContextReferrer has the 'id' attribute it registers its
+     * output in the surrounding Context.  With 'referid' you can 'repeat' a
+     * tag which had the 'id' attribute.
+     */
 
     public void setReferid(String r) throws JspTagException {
         referid = getAttributeValue(r);
@@ -100,8 +113,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
 
     /**
-     * Refer to a specific context. This is only for analogy with other attributes like this.
-     *
+     * Refer to a specific context. With this you can refer to, and
+     * write in, another context then the direct parent (but is must
+     * be an ancestor).  This is for analogy with other attributes
+     * like this.
+     * 
      */
 
     public void setContext(String c) {
@@ -113,39 +129,42 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * Call this function in your set-attribute function. It makes it
      * possible for the user of the taglib to include ids of values stored in
      * the context.
+     *
      * The method replaces all occurrences of ${x}, where x is a reference to
-     * a attribute value, possibly prefixed with a context name.
+     * a attribute value, possibly prefixed with context names.
+     *
      */
     protected String getAttributeValue(String attribute) throws JspTagException {
-        String result="";
-        int beginpos = attribute.indexOf("${");
-        int endpos=0;
-        while (beginpos>=0) {
-            result += attribute.substring(endpos,beginpos);
-            endpos = attribute.indexOf("}",beginpos);
+        String result = "";
+        int beginpos  = attribute.indexOf("${");
+        int endpos    = 0;
+        while (beginpos >= 0) {
+            result += attribute.substring(endpos, beginpos);
+            endpos = attribute.indexOf("}", beginpos);
             if (endpos>=0) {
-                String varName=attribute.substring(beginpos + 2, endpos);
+                String varName  = attribute.substring(beginpos + 2, endpos);
                 String varValue = getString(varName);
-                if (varValue == null) {
-                    throw new JspTagException(varName + " could not be found (assert this error could not happen!)");
-                    // I think 
+                if (varValue == null) { 
+                    // This means that the variable was registered, but is not 'present'.
+                    varValue = ""; // don't whine too much.
                 }
-                result+=varValue;
+                result += varValue;
             }
-            endpos+=1;
-            beginpos = attribute.indexOf("${",endpos);
+            endpos += 1;
+            beginpos = attribute.indexOf("${", endpos);
         }
-        result+=attribute.substring(endpos);
+        result += attribute.substring(endpos);
         return result;
     }
 
     /**
-     * Finds a parent tag by class and id.
+     * Finds a parent tag by class and id. This is a base function for
+     * 'getContext', but it is handy in itself, so also available for
+     * extended classes.
      *
      * @param classname the classname of the Tag to find.
      * @param id        the id of the Tag to find.
-     * @param exception if it has to throw an exception if the parent can not be found (default: yes).
-     */
+     * @param exception if it has to throw an exception if the parent can not be found (default: yes).  */
 
     final protected TagSupport findParentTag(String classname, String id, boolean exception) throws JspTagException {
         log.debug("Finding a tag " + classname);
@@ -188,11 +207,17 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /**
      * Finds the parent context tag.
+     *
      */
 
     protected ContextTag getContextTag() throws JspTagException {
         return getContextTag(contextId);
     }
+    /**
+     * Finds a parent context tag using an id. 
+     *
+     */
+
     private ContextTag getContextTag(String contextid) throws JspTagException {
 
         if(log.isDebugEnabled()) {
@@ -218,12 +243,20 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     /**
-     * 
+     * Gets an object from the Context.
+     *
      */
+
     protected Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
         return getContextTag().getContainerObject(key);
     }
+    /**
+     * Gets an object from the Context, and returns it as a
+     * String. This is not always a simple 'toString'. For example a
+     * getString on a Node will return the number, which also uniquely
+     * identifies it.
+     */
 
     protected String getString(String key) throws JspTagException {
         Object o = getObject(key);
