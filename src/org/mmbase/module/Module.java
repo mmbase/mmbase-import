@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.25 $ $Date: 2001-02-04 16:42:24 $
+ * @version $Revision: 1.26 $ $Date: 2001-03-05 21:24:29 $
  */
 public abstract class Module {
 
@@ -47,7 +47,6 @@ public abstract class Module {
 	Hashtable properties;
 	static ModuleProbe mprobe;
 	static boolean debug=false;
-	public static boolean xmlinstalled=false;
 	private String className;
 	String maintainer;
 	int    version;	
@@ -278,70 +277,6 @@ public abstract class Module {
     }
 
 
-	public static synchronized  Hashtable loadModulesFromDisk() {
-			return(loadModulesFromDisk_plain());
-	}
-
-
-
-    public static synchronized Hashtable loadModulesFromDisk_plain() {
-        Class newclass;
-
-        if (debug) debug("loadModulesFromDisk(): mmbase.config="+System.getProperty("mmbase.config"));
-        mmbaseconfig=System.getProperty("mmbase.config");
-        MMBaseContext.setConfigPath(mmbaseconfig);
-
-        // the container for the started modules
-        Hashtable results=new Hashtable();
-
-        // get us a propertie reader
-        ExtendedProperties Reader=new ExtendedProperties();
-
-        // load the properties file of this server
-        String filename=mmbaseconfig+"/modules.properties";
-        filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
-        filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
-
-	// added uri file:/// for windows98/2000 (daniel);
-	filename="file:///"+filename;
-        Hashtable mods = Reader.readProperties(filename);
-
-        // oke try loading all these modules and start em up
-        for (Enumeration e=mods.keys();e.hasMoreElements();) {
-            String key=(String)e.nextElement();
-            String value=(String)mods.get(key);
-            if( debug ) debug("loadModulesFromDisk(): MODULE="+key+" VAL="+value);
-
-            // try starting the module and give it its properties
-            try {
-                newclass=Class.forName(value);
-                if( debug ) debug("loadModulesFromDisk(): Loaded load class : "+newclass);
-                Object mod = newclass.newInstance();
-                if (mod!=null) {
-                    results.put(key,mod);
-                    // try to load the properties that are defined for this module
-                    filename=mmbaseconfig+"/modules/"+key+".properties";
-                    filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
-                    filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
-
-                    // extra check to load propertie files from weird places (security reasons for example)
-                    String tmp=System.getProperty("mmbase.mod_"+key);
-                    if (tmp!=null) {
-                        if (debug) debug("Reading "+key+" mod file from : "+tmp);
-                        filename=tmp;
-                    }
-                    Hashtable modprops = Reader.readProperties(filename);
-                    //debug("loadModulesFromDisk(): MOD "+key+" "+modprops);
-                    if (modprops!=null) {
-                        ((Module)mod).properties=modprops;
-                    }
-                }
-            } catch(Exception f) {
-                f.printStackTrace();
-            }
-        }
-        return(results);
-    }
 
 	public static synchronized final void startModules() {
 		// call the onload to get properties
@@ -376,24 +311,14 @@ public abstract class Module {
 
 
 		if (modules==null) {
-			// temp check for xerces
-			try {
-				Class newclass=Class.forName("org.xml.sax.ContentHandler");
-				Module.xmlinstalled=true;
-				if (debug) debug("xerces.jar installed moving to XML mode");	
-				modules=ModuleXML.loadModulesFromDisk();
-			} catch(Exception e) {
-				System.out.println("***** xerces.jar ERROR not found, put xerces.jar in your classpath (see install guide how to install xerces) ******");
 				modules=loadModulesFromDisk();
-			}
-
 			if (debug) debug("getModule("+name+"): Modules not loaded, loading them..");
 			startModules();
 			// also start the maintaince thread that calls all modules every x seconds
 			mprobe = new ModuleProbe(modules);
 		}
 		String orgname=name;
-		if (xmlinstalled) name=name.toLowerCase();
+		name=name.toLowerCase();
 
 
 		// try to obtain the ref to the wanted module
@@ -403,10 +328,6 @@ public abstract class Module {
 		if (obj!=null) {
 			return(obj);
 		} else {
-			// Ugly and should be removed ROB
- 			if(!name.equals("PLAYLISTS") && !name.equals("playlists")) {
-				debug("getModule("+name+"): ERROR: No module loaded with this name!");
-			}
 			return(null);
 		}
 	}	
@@ -440,6 +361,68 @@ public abstract class Module {
     */
     public String getClassName() {
         return className;
+    }
+
+
+    public static synchronized Hashtable loadModulesFromDisk() {
+        Hashtable results=new Hashtable();
+
+        String dtmp=System.getProperty("mmbase.mode");
+        if (dtmp!=null && dtmp.equals("demo")) {
+            String curdir=System.getProperty("user.dir");
+            if (curdir.endsWith("orion")) {
+                curdir=curdir.substring(0,curdir.length()-6);
+            }
+            mmbaseconfig=curdir+"/config";
+        } else {
+            mmbaseconfig=System.getProperty("mmbase.config");
+            if (mmbaseconfig==null) 
+                debug("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
+        }
+        MMBaseContext.setConfigPath(mmbaseconfig);
+
+	String dirname=(mmbaseconfig+"/modules/");
+	File bdir = new File(dirname);
+        if (bdir.isDirectory()) {
+            String files[] = bdir.list();
+            for (int i=0;i<files.length;i++) {
+                String bname=files[i];
+                if (bname.endsWith(".xml")) {
+                     bname=bname.substring(0,bname.length()-4);
+		     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
+		     if (parser!=null) {		
+			if (parser.getStatus().equals("active")) {
+				String cname=parser.getClassFile();
+            			// try starting the module and give it its properties
+            			try {
+               		 		Class newclass=Class.forName(cname);
+                	 		Object mod = newclass.newInstance();
+                			if (mod!=null) {
+                    				results.put(bname,mod);
+                    				Hashtable modprops = parser.getProperties();
+                    				if (modprops!=null) {
+			                       	 ((Module)mod).properties=modprops;
+                    				}
+                        // set the module name property using the module's filename
+                        // maybe we need a parser.getModuleName() function to improve on this
+ 						((Module)mod).setName(bname);
+						((Module)mod).setMaintainer(parser.getModuleMaintainer());
+						((Module)mod).setVersion(parser.getModuleVersion());
+						((Module)mod).setClassName(parser.getClassFile());
+
+					}
+				} catch (java.lang.ClassNotFoundException cnfe) {
+					System.err.println("[error]["+ModuleXML.class.getName()+"]Could not load class with name '"+cname+"', which was "+
+							"specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		    }
+		}
+	    }
+	}
+	return(results);
     }
 
 }
