@@ -1,10 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%-- @ taglib uri="oscache" prefix="cache"
---%><% response.setContentType("text/html; charset=UTF-8");
-	java.util.Locale utf = new java.util.Locale("nl", "NL");
-	java.util.Locale.setDefault(utf);
- %><html>
+%><%-- @ taglib uri="oscache" prefix="cache" --%><% response.setContentType("text/html; charset=UTF-8"); %><html>
 <head>
  <title>The formatter tag mm:formatter</title>
 <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
@@ -55,17 +51,17 @@ Be aware that this examples assume that the body of your news builder is of type
   the code. And on the right to what it results.
 
 </p>
-<mm:timer>
+<mm:timer name="formatter performance">
 <cache:cache time="30">
 <form>
 <table>
-<!--
+<%--
 <tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/date.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/date.jsp" %></td>
 </tr>
--->
+--%>
 <tr><td colspan="2">Rich text fields. These fields can contain some basic structure information in XML. We can show XML with the formatter tag.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showrichfield.jsp" /></mm:formatter></pre></td>
@@ -121,13 +117,13 @@ Be aware that this examples assume that the body of your news builder is of type
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelationsxml.jsp" /></mm:formatter></pre></td>
   <td width="50%"><textarea class="huge"><%@include file="codesamples/shownoderelationsxml.jsp" %></textarea></td>
 </tr>
-<!--
+<%--
 <tr><td colspan="2">Want to try some XSL yourself?</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/tryyourself.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/tryyourself.jsp" %></td>
 </tr>
--->
+--%>
 </table>
 </form>
 </cache:cache>
