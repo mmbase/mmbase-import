@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.52.2.2 2002-03-15 09:50:26 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.52.2.3 2002-10-03 07:45:42 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -598,6 +598,15 @@ public class BasicCloud implements Cloud, Cloneable {
           pars+=" WHERE='"+constraints.replace(' ','_')+"'";
         }
 
+        if (distinct) {
+            sdistinct="YES";
+            pars+=" DISTINCT='YES'";
+        }
+
+        if (searchDir!=null) {
+          pars+=" SEARCH='"+searchDir+"'";
+        }
+
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
         if (searchDir!=null) {
             searchDir = searchDir.toUpperCase();
@@ -614,7 +623,6 @@ public class BasicCloud implements Cloud, Cloneable {
             }
         }
 
-        if (distinct) sdistinct="YES";
         Vector snodes = tagger.Values("NODES");
         Vector sfields = tagger.Values("FIELDS");
         Vector tables = tagger.Values("TYPES");
