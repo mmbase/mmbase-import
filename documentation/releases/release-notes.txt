@@ -166,6 +166,8 @@ Generic Bug Fixes:
 - #6583 code does not check key == null
 - #6578 does not implement nodeRemoteChanged
 - #6585 Dove: Lack of base64 support in dove. Adding encoding attribute to dove dtd
+- #6583 Builders: users.java: remote change cookies -> users where
+        user not in usercache: nullpointer exception
 - EmailSendProbe: mailtime now may be null. Rewrote deprecated
   search() method to searchQuery and added constraint to match
   null-values.
@@ -294,7 +296,8 @@ Editwizard Bug Fixes:
 - #6580 Can't use quotes in editwizard search
 - #6577 images in editwizard must always be uploaded (also
         attachments?) added fix for attachments 
-
+- #6587 Uploading files. Associated fields (mimetype, size, filename)
+        are not filled by upload of 'handle' fields by mm:fieldinfo
 [1.7.1] 
 - #6420 List in list, subitems are not loaded on add. Also remove, readd doesn't work.
 - #6567 Could not trail path element with digit.    	
@@ -317,6 +320,8 @@ Taglib Bug Fixes:
 -----------------
 [1.7.2]
 - #6569 Using wrong character encoding for post data
+- #6586 Uploading files. Associated fields (mimetype, size, filename)
+        are not filled by upload of 'handle' fields by mm:fieldinfo
 [1.7.1] 
 - #6241 TreeTag: No way to order or constrain steps.   	
 - #6230 Taglib documentation wider than window.  	
