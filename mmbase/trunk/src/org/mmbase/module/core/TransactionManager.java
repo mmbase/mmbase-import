@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.22 2002-02-27 13:33:18 eduard Exp $
+ * @version $Id: TransactionManager.java,v 1.23 2002-03-22 10:05:36 pierre Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -230,7 +230,7 @@ public class TransactionManager implements TransactionManagerInterface {
     boolean performCommits(Object user,Vector nodes,boolean debug) {
         if (nodes==null || nodes.size()==0) {
             log.warn("performCommits: Empty list of nodes");
-            return false;
+            return true;
         }
 
         MMObjectNode node;
