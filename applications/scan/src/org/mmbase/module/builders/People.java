@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Basic [builder]
  * @author Daniel Ockeloen
- * @$Id: People.java,v 1.6 2003-07-09 08:47:15 pierre Exp $
+ * @version $Id: People.java,v 1.7 2003-09-01 13:29:44 pierre Exp $
  */
 public class People extends MMObjectBuilder {
 
@@ -42,9 +42,9 @@ public class People extends MMObjectBuilder {
      *   <li>by SCAN : $MOD-MMBASE-BUILDER-people-[command]</li>
      *   <li>in jsp : cloud.getNodeManager("people").getInfo(command);</li>
      * </lu>
-     * The command recognized by the people builder : 
+     * The command recognized by the people builder :
      * <ul>
-     *   <li>number : Get the object number for the current user's people object, 
+     *   <li>number : Get the object number for the current user's people object,
      *                based on the current user/cookie as defined by the key.
      *                Only works in SCAN, as it uses sessiondata from the scanpage.</li>
      * </lu>

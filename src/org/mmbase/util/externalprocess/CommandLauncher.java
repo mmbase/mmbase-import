@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The command launcher provides a way to comunicate with a external process  
+ * The command launcher provides a way to comunicate with a external process
  *
  * @author Nico Klasens (Finalist IT Group)
  * @version $Id:
@@ -70,8 +70,8 @@ public class CommandLauncher {
      * Creates a new launcher
      * Fills in stderr and stdout output to the given streams.
      * Streams can be set to <code>null</code>, if output not required
-     * 
-     * @para name internal name of the external process
+     *
+     * @param name internal name of the external process
      */
     public CommandLauncher(String name) {
         process = null;
@@ -91,7 +91,7 @@ public class CommandLauncher {
      * Constructs a command array that will be passed to the process
      *
      * @param commandPath path of comand
-     * @param commandArgs arguments after the command 
+     * @param commandArgs arguments after the command
      */
     protected String[] constructCommandArray(String command, String[] commandArgs) {
 
@@ -103,7 +103,7 @@ public class CommandLauncher {
 
     /**
      * Execute a command
-     * 
+     *
      * @param command command
      * @throws IOException if an I/O error occurs
      */
@@ -163,7 +163,7 @@ public class CommandLauncher {
 
     /**
      * Execute a command
-     * 
+     *
      * @param commandArgs command and arguments
      * @param env environment name value pairs
      * @throws IOException if an I/O error occurs
@@ -189,7 +189,7 @@ public class CommandLauncher {
 
     /**
      * Execute a command
-     * 
+     *
      * @param commandPath path of comand
      * @param args arguments after the comand
      * @param env environment name value pairs
@@ -203,7 +203,7 @@ public class CommandLauncher {
 
     /**
      * Execute a command
-     * 
+     *
      * @param commandArgs command and arguments
      * @param env environment name value pairs
      * @param changeToDirectory working directory
@@ -230,7 +230,7 @@ public class CommandLauncher {
 
     /**
      * Execute a command
-     * 
+     *
      * @param commandPath path of comand
      * @param args arguments after the comand
      * @param env environment name value pairs
@@ -264,7 +264,7 @@ public class CommandLauncher {
      * Reads output from the external process to the streams. A progress monitor
      * is polled to test for cancellation. Destroys the process if the monitor
      * becomes cancelled
-     * 
+     *
      * @param output process stdout is written to this stream
      * @param err process stderr is written to this stream
      * @param monitor monitor monitor to receive progress info and to cancel
@@ -299,7 +299,7 @@ public class CommandLauncher {
      * @param in process stdin is read from this stream
      * @param output process stdout is written to this stream
      * @param err process stderr is written to this stream
-     * @throws ProcessException if process not yet executed 
+     * @throws ProcessException if process not yet executed
      */
     public void waitAndWrite(InputStream in, OutputStream out, OutputStream err) throws ProcessException {
         if (process == null) {
@@ -349,14 +349,14 @@ public class CommandLauncher {
     /**
      * process the Streams.while the external process returns bytes. Cancellation
      * is possible by the ProgressMonitor
-     * 
+     *
      * @param closure process closure object which handles the interaction with
      *    the  external process
      * @param output process stdout is written to this stream
      * @param inputPipe piped stream to other thread for the stdout
      * @param err process stderr is written to this stream
      * @param errInPipe piped stream to other thread for the stderr
-     * @param monitor monitor to receive progress info and to cancel 
+     * @param monitor monitor to receive progress info and to cancel
      *    the   external process
      * @throws ProcessException if process cancelled
      */
@@ -441,7 +441,7 @@ public class CommandLauncher {
 
     /**
      * print Command Line.
-     * 
+     *
      * @param commandArgs array of comand and args
      */
     public void printCommandLine(String[] commandArgs) {

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * Regretfully our present internet browsers do not send it
  *
  * The browser generally does the following: it takes user input in national characters
- * <UL>
+ * <ul>
  * <li>
  *   translates it to a byte sequence using the character encoding that the web page that contains
  *   the form is encoded with
@@ -47,7 +47,7 @@ import org.mmbase.util.logging.Logging;
  *   are encoded as those chars, all the rest are converted to the %xy representation, where xy
  *   is the hexademical code of the corresponding byte (like %C1, for example)
  * </li>
- * </UL>
+ * </ul>
  * Then the encoded query (possibly containing %xy codes) is sent to the server. ascii characters,
  * according to the procedure described above are sent to the server as they are, provided that they
  * have the same codes both in ascii character encoding and in the national character encoding that is used.
@@ -55,20 +55,12 @@ import org.mmbase.util.logging.Logging;
  *
  * This filter sets the character encoding before parameters are handled.
  * The filter sets the character encoding by the following information:
- * <UL>
- * <li>
- *    HTTP content-type header
- * </li>
- * <li>
- *    Parameter of filter in the WEB-INF/web.xml
- * </li>
- * <li>
- *    MMbase encoding set in mmbase-config/modules/mmbaseroot.xml
- * </li>
- * <li>
- *    No encoding defined. (default UTF-8)
- * </li>
- * </UL>
+ * <ul>
+ *   <li>HTTP content-type header</li>
+ *   <li>Parameter of filter in the WEB-INF/web.xml</li>
+ *   <li>MMBase encoding set in mmbase-config/modules/mmbaseroot.xml</li>
+ *   <li>No encoding defined. (default UTF-8)</li>
+ * </ul>
  *
  * Get it to work by incorporating the following piece of XML in your web.xml:
  <pre><code>
@@ -90,11 +82,11 @@ import org.mmbase.util.logging.Logging;
  </code></pre>
  *
  *
- * @author: P.S.D.Reitsma (Finalist IT Group)
+ * @author P.S.D.Reitsma (Finalist IT Group)
  * @author Nico Klasens (Finalist IT Group)
  *
  * @since  MMBase-1.6
- * @version $Id: CharacterEncodingFilter.java,v 1.2 2003-07-24 15:48:48 robmaris Exp $
+ * @version $Id: CharacterEncodingFilter.java,v 1.3 2003-09-01 13:29:45 pierre Exp $
  */
 public class CharacterEncodingFilter implements Filter {
 

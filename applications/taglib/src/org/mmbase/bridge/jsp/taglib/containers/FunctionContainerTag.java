@@ -22,11 +22,11 @@ import org.mmbase.util.logging.Logging;
 import java.lang.reflect.*;
 
 /**
-cd a * Function Container can be used around Function (-like) Tags
+ * Function Container can be used around Function (-like) Tags.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.5 2003-08-13 10:36:14 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.6 2003-09-01 13:29:43 pierre Exp $
  */
 public class FunctionContainerTag extends CloudReferrerTag implements FunctionContainer {
     private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
@@ -36,15 +36,15 @@ public class FunctionContainerTag extends CloudReferrerTag implements FunctionCo
 
     private List       parameters;
     protected Attribute argumentsDefinition = Attribute.NULL;
-        
+
 
     /**
-     * Temporary? Using reflection to get the right definition constant in the tag
+     * Using reflection to get the right definition constant in the tag.
+     * @javadoc
      */
     public void setArgumentsdefinition(String a) throws JspTagException {
         argumentsDefinition = getAttribute(a);
     }
-
 
     // javadoc inherited (from ParamHandler)
     public void addParameter(String key, Object value) throws JspTagException {
@@ -62,9 +62,9 @@ public class FunctionContainerTag extends CloudReferrerTag implements FunctionCo
     }
 
 
-    public int doStartTag() throws JspTagException { 
+    public int doStartTag() throws JspTagException {
         if (argumentsDefinition != Attribute.NULL) {
-            Argument[] definition;    
+            Argument[] definition;
             String def = argumentsDefinition.getString(this);
             // find the class it is in.
             int i = def.lastIndexOf('.');
@@ -74,7 +74,7 @@ public class FunctionContainerTag extends CloudReferrerTag implements FunctionCo
             try {
                 Class definingClass = Class.forName(className);
                 Field constant      = definingClass.getField(fieldName);
-                
+
                 definition = (Argument[]) constant.get(null);
             } catch (Exception e) {
                 throw new JspTagException(e.toString());
@@ -107,8 +107,8 @@ public class FunctionContainerTag extends CloudReferrerTag implements FunctionCo
             }
         } catch (java.io.IOException ioe){
             throw new JspTagException(ioe.toString());
-        } 
-        return SKIP_BODY;        
+        }
+        return SKIP_BODY;
     }
 
 

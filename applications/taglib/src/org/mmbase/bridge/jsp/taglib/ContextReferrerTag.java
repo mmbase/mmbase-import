@@ -32,13 +32,13 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.45 2003-08-27 21:33:30 michiel Exp $ 
+ * @version $Id: ContextReferrerTag.java,v 1.46 2003-09-01 13:29:42 pierre Exp $
  * @see ContextTag
  */
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
-    
+
     private static final Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
 
     public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
@@ -61,7 +61,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public PageContext getPageContext() {
         return pageContext;
     }
-  
+
     public void setPageContext(PageContext pc) {
         if (log.isDebugEnabled()) {
             log.debug("setting page context: " + this.getClass().getName());
@@ -70,7 +70,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
 
 
-        if (pageContextTag == null) { // not yet put 
+        if (pageContextTag == null) { // not yet put
             log.debug("No pageContextTag found in pagecontext, creating..");
             if (pageLog.isServiceEnabled()) {
                 thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
@@ -88,16 +88,16 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
             // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
             // register also the tag itself under __context.
-            // _must_ set __context before calling setPageContext otherwise in infinite loop. 
+            // _must_ set __context before calling setPageContext otherwise in infinite loop.
             pageContextTag.createContainer(null);
             pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
             pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
-           
+
             // there is one implicit ContextTag in every page.
             // its id is null, it is registered in the pageContext as __context.
-            // 
+            //
             // it is called pageContext, because it is similar to the pageContext, but not the same.
-        }  
+        }
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     public void setId(String i) {
-        try {            
+        try {
             id = getAttribute(i);
         } catch (JspTagException j) {
             throw new RuntimeException(j.toString());
@@ -133,15 +133,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /*
      * The writerreferrer functionality is here, though not every conterreferrer is a writerreferrer.
-     * So contextreferrer does not implement Writerreferrer. It is enough tough to 'implement WriterReferrer' 
+     * So contextreferrer does not implement Writerreferrer. It is enough tough to 'implement WriterReferrer'
      * for every ContextReferrer to become a real WriterReferrer;
      */
     /**
-     * Which writer to use. 
+     * Which writer to use.
      */
     protected String writerid = null;
-    
-    
+
+
     /**
      * Find the parent writer tag. It also calls haveBody on this
      * parent tag, so that this knows that it has a body. If a
@@ -170,15 +170,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
     public void setWriter(String w) throws JspTagException {
         writerid = getAttributeValue(w);
-        
+
     }
 
-    
+
 
     /**
      * Release all allocated resources.
      */
-    public void release() {        
+    public void release() {
         super.release();
         if (log.isDebugEnabled()) {
             log.debug("releasing context-referrer " + this.getClass().getName());
@@ -199,7 +199,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * write in, another context then the direct parent (but is must
      * be an ancestor).  This is for analogy with other attributes
      * like this.
-     * 
+     *
      */
 
     public void setContext(String c) throws JspTagException {
@@ -222,12 +222,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      * @deprecated Call getAttribute in the set-method and 'toString(tag)' when using
      *             it. This is better for perfomrnace and makes sure the impl. works in all servlet
-     *             containers. 
+     *             containers.
      */
 
-    public String getAttributeValue(String attribute) throws JspTagException {        
+    public String getAttributeValue(String attribute) throws JspTagException {
         if (attribute == null) return null;
-        return getAttribute(attribute).getString(this);        
+        return getAttribute(attribute).getString(this);
     }
     /**
      * @since MMBase-1.6.1
@@ -253,7 +253,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
     /**
      * Like getAttributeValue but converts the result to an Integer,
-     * and throws an exception if this cannot be done. It the incoming string evaluates to an empty string, then 
+     * and throws an exception if this cannot be done. It the incoming string evaluates to an empty string, then
      * it will return 0, unless the second optional parameter specifies another default value;
      **/
 
@@ -275,7 +275,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     /**
-     * @see findParentTag(class, string, boolean)
+     * @see #findParentTag(Class, String, boolean)
      * @deprecated
      */
 
@@ -296,7 +296,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      * @param clazz     the class of the Tag to find.
      * @param id        the id of the Tag to find.
-     * @param exception if it has to throw an exception if the parent can not be found (default: yes).  
+     * @param exception if it has to throw an exception if the parent can not be found (default: yes).
      * @since MMBase-1.7
      */
 
@@ -356,7 +356,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     /**
      * Finds the parent context tag. In MMBase 1.7 and higher,
      * normally you would like to use getContextProvider in stead.
-     * 
+     *
      */
 
     public ContextTag getContextTag() throws JspTagException {
@@ -399,11 +399,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
     public Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("Getting object '" + key + "' from '" + getContextProvider().getId() + "'");
         }
         Object r = getContextProvider().getContextContainer().getObject(key);
-        if (r == null) { 
+        if (r == null) {
             log.debug("Not found, returning empty string");
             return "";
         } else {
@@ -443,7 +443,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             return ct;
         }
     }
-     
+
 
 
     // Writer Implmentation

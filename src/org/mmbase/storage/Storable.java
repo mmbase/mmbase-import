@@ -16,7 +16,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.2 2003-08-29 12:12:29 keesj Exp $
+ * @version $Id: Storable.java,v 1.3 2003-09-01 13:29:45 pierre Exp $
  */
 public interface Storable {
 
@@ -29,15 +29,15 @@ public interface Storable {
      *  <li>For MMObjectNode: the object number as a Integer</li>
      *  <li>For FieldDefs: a storage-compatible field name as a String (if no such name exists a StorageException is thrown)</li>
      * </ul>
-     * A Storable object (except for MMObjectNode) should retrieve its storage identifier using 
-     * {@link StorageMagagerFactory.getStorageIdentifier()} when it is first instantiated.
+     * A Storable object (except for MMObjectNode) should retrieve its storage identifier using
+     * {@link StorageManagerFactory#getStorageIdentifier()} when it is first instantiated.
      * @return the identifier
      */
     public Object getStorageIdentifier() throws StorageException;
 
     /**
      * Returns whether an object is kept in the storage (iow: is persistent).
-     * Virtual fields or builders should return <code>false</code>. 
+     * Virtual fields or builders should return <code>false</code>.
      * @return <code>true</code> if the object is kept in the storage
      */
     public boolean inStorage();

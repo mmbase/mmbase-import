@@ -20,18 +20,19 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.Sql;
 
 /**
- * A TypeHandler for strings. textareas, text-input. Search values are SQL escaped.
+ * A TypeHandler for strings, textareas and text-input.
+ * Search values are SQL escaped.
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.17 2003-08-29 12:12:28 keesj Exp $
+ * @version $Id: StringHandler.java,v 1.18 2003-09-01 13:29:43 pierre Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
-    
+
     /**
      * Constructor for StringHandler.
      */
@@ -43,7 +44,7 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
-            
+
         StringBuffer buffer = new StringBuffer();
         if(! search) {
             if (field.getName().equals("owner")) {
@@ -53,11 +54,11 @@ public class StringHandler extends AbstractTypeHandler {
                 } else if (! node.mayChangeContext()) {
                     buffer.append(node.getContext());
                 } else {
-                    
+
                     String value = node.getContext();
                     buffer.append("<select name=\"" + prefix("owner") + "\">\n");
-                    
-                    
+
+
                     StringList possibleContexts = node.getPossibleContexts();
 
                     if (! possibleContexts.contains(value)) {
@@ -68,7 +69,7 @@ public class StringHandler extends AbstractTypeHandler {
                         String listContext = i.nextString();
                         buffer.append("  <option ");
                         if (value.equals(listContext)){
-                            buffer.append("selected=\"selected\"");                
+                            buffer.append("selected=\"selected\"");
                         }
                         buffer.append("value=\"" + listContext+ "\">");
                         buffer.append(listContext);
@@ -139,10 +140,10 @@ public class StringHandler extends AbstractTypeHandler {
         String search =  findString(field);
         if (search == null) return null;
 
-        Sql sql = new Sql(Sql.ESCAPE_QUOTES);        
+        Sql sql = new Sql(Sql.ESCAPE_QUOTES);
         return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search) + "%')";
     }
-    
+
     protected int getOperator() {
         return FieldCompareConstraint.LIKE;
     }
