@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.24 2004-06-30 17:51:52 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.25 2004-07-19 15:22:42 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -49,11 +49,12 @@ public class ContentTag extends LocaleTag  {
             public String  getEncoding(){ return "ISO-8859-1"; } 
         };
 
-    private static Map defaultEscapers       = new HashMap(); // contenttype -> chartransformer id
-    private static Map defaultPostProcessors = new HashMap(); // contenttype -> chartransformer id
-    private static Map defaultEncodings      = new HashMap(); // contenttype -> charset to be used in content-type header (defaults to UTF-8)
-    private static Map charTransformers      = new HashMap(); // chartransformer id ->
-                                                              // chartransformer instance.
+    private static Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
+    private static Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
+    private static Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
+    private static Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
+
+    private static Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
 
     static {
         try {
@@ -121,10 +122,15 @@ public class ContentTag extends LocaleTag  {
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String type           = element.getAttribute("type");
+            String id             = element.getAttribute("id");
+            if (id.equals("")) {
+                id = type;
+            }
+            contentTypes.put(id, type);
             String defaultEscaper = element.getAttribute("defaultescaper");
             if (! defaultEscaper.equals("")) {
                 if (charTransformers.containsKey(defaultEscaper)) {
-                    defaultEscapers.put(type, defaultEscaper);
+                    defaultEscapers.put(id, defaultEscaper);
                 } else {
                     log.warn("Default escaper '" + defaultEscaper + "' for type + '"+ type + "' is not known");
                 }
@@ -132,14 +138,14 @@ public class ContentTag extends LocaleTag  {
             String defaultPostprocessor = element.getAttribute("defaultpostprocessor");
             if (! defaultPostprocessor.equals("")) {
                 if (charTransformers.containsKey(defaultPostprocessor)) {
-                    defaultPostProcessors.put(type, defaultPostprocessor);
+                    defaultPostProcessors.put(id, defaultPostprocessor);
                 } else {
                     log.warn("Default postprocessor '" + defaultPostprocessor + "' for type + '"+ type + "' is not known");
                 }
             }
             String defaultEncoding = element.getAttribute("defaultencoding");
             if (! defaultEncoding.equals("NOTSPECIFIED")) {
-                defaultEncodings.put(type, defaultEncoding);
+                defaultEncodings.put(id, defaultEncoding);
             }
         }
 
@@ -180,7 +186,10 @@ public class ContentTag extends LocaleTag  {
         if (type == Attribute.NULL) {
             return "text/html"; // implicit
         } else {
-            return type.getString(this);
+            String ct = type.getString(this);
+            String c = (String) contentTypes.get(ct);
+            if (c != null) return c;
+            return ct;
         }
     }
 
@@ -271,7 +280,7 @@ public class ContentTag extends LocaleTag  {
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
             if (enc.equals("")) {
-                response.setContentType(getType());
+                response.setContentType(getType()); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
             } else {
                 response.setContentType(getType() + ";charset=" + enc);
             }
