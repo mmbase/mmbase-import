@@ -9,7 +9,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>getProviderInfo</method>
 			<param name="name" type="String" description="" />
 			<return type="Node">
@@ -21,7 +21,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>makeShareActive</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -34,7 +34,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>makeShareInactive</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -47,7 +47,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.bundlehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.bundlehandlers.gui.Controller</class>
 			<method>getBundles</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -59,7 +59,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.packagehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
 			<method>getPackageHandlers</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -72,7 +72,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>getProviderHandlers</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -84,7 +84,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.packagehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
 			<method>getPackages</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -95,7 +95,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getRemoteSharedPackages</method>
 			<param name="user" type="String" description="" />
 			<param name="password" type="String" description="" />
@@ -112,7 +112,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getSharedPackages</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -123,7 +123,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getNotSharedPackages</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -135,7 +135,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getSharedBundles</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -146,7 +146,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getNotSharedBundles</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -157,7 +157,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.packagehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
 			<method>getPackageVersions</method>
 			<param name="id" type="String" description="" />
 			<return type="NodeList">
@@ -170,7 +170,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.packagehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.packagehandlers.gui.Controller</class>
 			<method>getPackageVersionNumbers</method>
 			<param name="id" type="String" description="" />
 			<return type="NodeList">
@@ -183,7 +183,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.bundlehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.bundlehandlers.gui.Controller</class>
 			<method>getBundleVersions</method>
 			<param name="id" type="String" description="" />
 			<return type="NodeList">
@@ -196,7 +196,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.bundlehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.bundlehandlers.gui.Controller</class>
 			<method>getBundleNeededPackages</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -211,7 +211,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getPackageInfo</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -226,7 +226,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getPackagePeople</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -242,7 +242,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getBundlePeople</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -257,7 +257,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getBundleInfo</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -271,7 +271,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getShareUsers</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -285,7 +285,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getAllUsers</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -297,7 +297,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getGroupUsers</method>
 			<param name="group" type="String" description="" />
 			<return type="NodeList">
@@ -310,7 +310,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>addGroupUser</method>
 			<param name="group" type="String" description="" />
 			<param name="newuser" type="String" description="" />
@@ -323,7 +323,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>createGroup</method>
 			<param name="newgroup" type="String" description="" />
 			<return type="Boolean">
@@ -335,7 +335,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>removeGroup</method>
 			<param name="delgroup" type="String" description="" />
 			<return type="Boolean">
@@ -347,7 +347,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>removeGroupUser</method>
 			<param name="group" type="String" description="" />
 			<param name="deluser" type="String" description="" />
@@ -360,7 +360,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getAllGroups</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -371,7 +371,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>addShareUser</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -386,7 +386,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>addShareGroup</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -401,7 +401,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>createNewUser</method>
 			<param name="newuser" type="String" description="" />
 			<param name="newpassword" type="String" description="" />
@@ -417,7 +417,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>delUser</method>
 			<param name="deluser" type="String" description="" />
 			<return type="Node">
@@ -430,7 +430,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getUserInfo</method>
 			<param name="account" type="String" description="" />
 			<return type="Node">
@@ -442,7 +442,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>addShare</method>
 			<param name="id" type="String" description="" />
 			<return type="Node">
@@ -455,7 +455,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>addBundleShare</method>
 			<param name="id" type="String" description="" />
 			<return type="Node">
@@ -467,7 +467,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>delShare</method>
 			<param name="id" type="String" description="" />
 			<return type="Node">
@@ -480,7 +480,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>delBundleShare</method>
 			<param name="id" type="String" description="" />
 			<return type="Node">
@@ -492,7 +492,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>changeProviderSettings</method>
 			<param name="name" type="String" description="" />
 			<param name="maintainer" type="String" description="" />
@@ -509,7 +509,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>changeProviderSettings</method>
 			<param name="name" type="String" description="" />
 			<param name="maintainer" type="String" description="" />
@@ -525,7 +525,7 @@
 			<description>
 			</description>
                         <type>class</type>
-                        <class>org.mmbase.applications.packages.gui.Controller</class>
+                        <class>org.mmbase.applications.packaging.gui.Controller</class>
                         <method>changeSettings</method>
                         <param name="providername" type="String" description="" />
                         <param name="callbackurl" type="String" description="" />
@@ -539,7 +539,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>changeUserSettings</method>
 			<param name="account" type="String" description="" />
 			<param name="password" type="String" description="" />
@@ -555,7 +555,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>delProvider</method>
 			<param name="id" type="String" description="" />
 			<return type="Node">
@@ -568,7 +568,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>addSubscribeProvider</method>
 			<param name="url" type="String" description="" />
 			<return type="Node">
@@ -580,7 +580,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>addDiskProvider</method>
 			<param name="name" type="String" description="" />
 			<param name="path" type="String" description="" />
@@ -593,7 +593,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>removeShareUser</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -608,7 +608,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>removeShareGroup</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -622,7 +622,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getShareUsersReverse</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -636,7 +636,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getShareGroupsReverse</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -650,7 +650,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getShareGroups</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -663,7 +663,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getShareInfo</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -677,7 +677,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.sharehandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.sharehandlers.gui.Controller</class>
 			<method>getBundleShareInfo</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -690,7 +690,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getPackageInstallSteps</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -706,7 +706,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>havePackageLog</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -720,7 +720,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>haveBundleLog</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -735,7 +735,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getBundleInstallSteps</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -751,7 +751,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.installhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
 			<method>installPackage</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -766,7 +766,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>createPackage</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -781,7 +781,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.installhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
 			<method>installBundle</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -796,7 +796,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>signalRemoteChange</method>
 			<param name="id" type="String" description="" />
 			<return type="None">
@@ -808,7 +808,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.installhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
 			<method>uninstallPackage</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -823,7 +823,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.installhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.installhandlers.gui.Controller</class>
 			<method>uninstallBundle</method>
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
@@ -837,7 +837,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>getPackageManagerSettings</method>
 			<return type="Node">
 				<field name="name" type="String" description="" />
@@ -848,7 +848,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.providerhandlers.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.providerhandlers.gui.Controller</class>
 			<method>getProviders</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />

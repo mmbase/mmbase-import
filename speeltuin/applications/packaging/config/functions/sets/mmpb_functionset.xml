@@ -10,7 +10,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getProjectBundleTargets</method>
 			<param name="name" type="String" description="" />
 			<return type="NodeList">
@@ -24,7 +24,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getProjectPackageTargets</method>
 			<param name="name" type="String" description="" />
 			<return type="NodeList">
@@ -38,7 +38,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getProjectTargets</method>
 			<param name="name" type="String" description="" />
 			<return type="NodeList">
@@ -52,7 +52,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>packageTarget</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -66,7 +66,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getPackageValue</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -80,7 +80,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageValue</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -95,7 +95,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getProjectTargets</method>
 			<param name="name" type="String" description="" />
 			<return type="NodeList">
@@ -109,7 +109,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addBundleTarget</method>
 			<param name="project" type="String" description="" />
 			<param name="newtargetname" type="String" description="" />
@@ -124,7 +124,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageTarget</method>
 			<param name="project" type="String" description="" />
 			<param name="newtargetname" type="String" description="" />
@@ -139,7 +139,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageDepends</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -154,7 +154,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>delPackageDepends</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -170,7 +170,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageDepends</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -188,7 +188,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageDepends</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -202,7 +202,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageLicenseVersion</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -215,7 +215,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageLicenseType</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -228,7 +228,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageLicenseName</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -241,7 +241,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageInitiator</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -258,7 +258,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageInitiator</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -273,7 +273,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>delPackageInitiator</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -288,7 +288,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageDeveloper</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -305,7 +305,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageDeveloper</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -320,7 +320,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>delPackageDeveloper</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -336,7 +336,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageContact</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -355,7 +355,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageContact</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -371,7 +371,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>delPackageContact</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -387,7 +387,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageSupporter</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -402,7 +402,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addPackageSupporter</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -416,7 +416,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>delPackageSupporter</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -429,7 +429,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>delIncludedPackage</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -443,7 +443,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addTargetPackage</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -457,7 +457,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>haveTargetLog</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -471,7 +471,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getProjectTargetInfo</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -485,7 +485,7 @@
                         <description>
                         </description>
                         <type>class</type>
-                        <class>org.mmbase.applications.packages.projects.gui.Controller</class>
+                        <class>org.mmbase.applications.packaging.projects.gui.Controller</class>
                         <method>getTargetPackageDepends</method>
                         <param name="project" type="String" description="" />
                         <param name="target" type="String" description="" />
@@ -498,7 +498,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getTargetPeople</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -513,7 +513,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getTargetIncludedPackages</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -527,7 +527,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getProjects</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -540,7 +540,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setIncludedVersion</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -554,7 +554,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageDescription</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -567,7 +567,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageName</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -582,7 +582,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>setPackageMaintainer</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
@@ -596,7 +596,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>addProject</method>
 			<param name="newprojectname" type="String" description="" />
 			<param name="newprojectpath" type="String" description="" />
@@ -608,7 +608,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getCreators</method>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
@@ -621,7 +621,7 @@
 			<description>
 			</description>
 			<type>class</type>
-			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
 			<method>getTargetPackageSteps</method>
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
