@@ -85,6 +85,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             throw new JspTagException("Unknown field order type " + t);
         }
     }
+    
+    private java.util.List fields = null;
+
+    public void setFields(String f) throws JspTagException {
+        fields = org.mmbase.bridge.jsp.taglib.util.StringSplitter.split(getAttributeValue(f));
+    }
 
     public NodeProvider getNodeProvider() {
         return nodeProvider;
@@ -118,10 +124,21 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             nodeManager = getCloud().getNodeManager(nodeManagerString);
         }
 
-        if (type != NO_TYPE) {
-            returnList = nodeManager.getFields(type);
+        if (type != NO_TYPE) {           
+            returnList = nodeManager.getFields(type);            
+            if (fields != null) {
+                throw new JspTagException ("Cannot specify fields and type attribute both at the same time fiels = " + fields + " type = " + type);
+            }
+
         } else {
             returnList = nodeManager.getFields();
+            if (fields != null) {
+                returnList.clear();
+                java.util.Iterator i = fields.iterator();
+                while (i.hasNext()) {
+                    returnList.add(nodeManager.getField((String) i.next()));
+                }                
+            }
         }
         returnValues = returnList.fieldIterator();
 
