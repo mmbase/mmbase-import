@@ -278,7 +278,7 @@ public class DirectoryLister{
 				System.out.println(buildername+": "+methodname+": Error typefmt="+typefmt+" previewfmt="+previewfmt+" indexsymbol="+indexsymbol+" ->Returning empty vector.");
 			}
 		}
-		System.out.println(buildername+": "+methodname+": NEW VECTOR:"+merged);
+		//System.out.println(buildername+": "+methodname+": NEW VECTOR:"+merged);
 		return merged;
 	}
 
@@ -291,7 +291,8 @@ public class DirectoryLister{
 		int pos = typefmt.indexOf(indexsymbol);
 		String ls_typefmt = typefmt.substring(0,pos);
 		String ls_entry   = entry.substring(0,pos);
-		if(ls_entry.equals(ls_typefmt)){  //Leftside compare			boolean checkHex = indexsymbol.equals("$");
+		if(ls_entry.equals(ls_typefmt)){  //Leftside compare
+			boolean checkHex = indexsymbol.equals("$");
 			while ( ((entry.charAt(pos+digits)>='0')&&(entry.charAt(pos+digits)<='9'))				|| ( checkHex 
 					&& (((entry.charAt(pos+digits)>='a') && (entry.charAt(pos+digits)<='f'))
 						|| ((entry.charAt(pos+digits)>='A') && (entry.charAt(pos+digits)<='F'))))){
