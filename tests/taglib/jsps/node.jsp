@@ -253,6 +253,7 @@ using list tag: <br />
      </mm:relatedcontainer>
      <mm:relatednodescontainer path="posrel232,urls3" searchdirs="destination">
        <mm:sortorder field="posrel232.pos" />
+       <mm:sortorder field="number" />
        relatedcontainer: size  <mm:size /> (should be 1) <br />
        <mm:relatednodes>
           13  related url (relatednodescontainer): <mm:field name="url" /><br />
@@ -308,6 +309,19 @@ using list tag: <br />
    <mm:listnodes>
     1 news: <mm:field name="title" /><br />
    </mm:listnodes>
+</mm:listnodescontainer>
+
+<em>Using mm:distinct</em><br />
+
+<mm:listnodescontainer path="news,urls" element="urls">  
+  <mm:constraint field="url" value="$url" />
+  <mm:distinct />
+  listnodescontainer: size <mm:size /> (should be 1) <br />
+  Should follow the url:
+  <mm:listnodes>
+    <mm:index /> url: <mm:field name="url" /><br />
+  </mm:listnodes>
+
 </mm:listnodescontainer>
 
 
