@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -9,14 +9,20 @@ See http://www.MMBase.org/license
 */
 
 /*
-	$Id: MMContainerCompare.java,v 1.1 2000-05-23 11:47:00 wwwtech Exp $
+	$Id: MMContainerCompare.java,v 1.2 2001-04-10 17:32:05 michiel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/05/23 11:47:00  wwwtech
+	Rico: added a compare container to support multifield sorting
+	
 */
 package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.util.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Class to compare two MMObjectNodes, used by SortedVector.
@@ -24,21 +30,20 @@ import org.mmbase.util.*;
  * @see vpro.james.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.1 2000-05-23 11:47:00 wwwtech Exp $
+ * @version $Id: MMContainerCompare.java,v 1.2 2001-04-10 17:32:05 michiel Exp $
  */
 public class MMContainerCompare implements CompareInterface {
-public final static boolean ASC=true;
-public final static boolean DESC=false;
-private Vector orderfields;
-private Vector orderdirections;
-private Hashtable dataCompare=new Hashtable();
-private StringCompare strcompare=new StringCompare();
-private IntegerCompare intcompare=new IntegerCompare();
 
-private String	_classname = getClass().getName();
-private boolean debug=false;
-private void debug(String msg) { System.out.println( _classname +":"+ msg ); }
-
+    private static Logger log = Logging.getLoggerInstance(MMContainerCompare.class.getName()); 
+    
+    public final static boolean ASC=true;
+    public final static boolean DESC=false;
+    private Vector orderfields;
+    private Vector orderdirections;
+    private Hashtable dataCompare=new Hashtable();
+    private StringCompare strcompare=new StringCompare();
+    private IntegerCompare intcompare=new IntegerCompare();
+    
 	public MMContainerCompare() {
 		orderfields=new Vector();
 		orderdirections=new Vector();
@@ -138,7 +143,7 @@ private void debug(String msg) { System.out.println( _classname +":"+ msg ); }
 						} else if (thisdata instanceof Integer) {
 							comp=intcompare;
 						} else {
-							debug("no handler for field "+field);
+							log.error("no handler for field " + field);
 							comp=null;
 							rtn=0;
 						}
