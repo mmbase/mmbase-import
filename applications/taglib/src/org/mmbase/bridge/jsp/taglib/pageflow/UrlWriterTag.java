@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.4 2005-01-03 18:03:12 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.5 2005-01-03 20:16:49 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -41,7 +41,6 @@ public class UrlWriterTag extends UrlTag  implements Writer {
                             public String toString() {
                                 try {
                                     String string = t.getUrl();
-                                    log.info("Getting value " + string + " because " + Logging.stackTrace(10));
                                     return string;  
                                 } catch (JspTagException e){
                                     throw new RuntimeException(e);
