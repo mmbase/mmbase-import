@@ -59,7 +59,7 @@ public class URLCache extends Cache {
         }
         return toKey.toString();
     }
-        
+    
     /**
      * put an entry in the cache
      * @param key cache key
@@ -129,7 +129,7 @@ public class URLCache extends Cache {
                 keyList = (Vector)objectNumber2Keys.get(objectNumber);
             } else {
                 keyList = new Vector(20);
-                objectNumber2Keys.put(objectNumber,new Vector(20));
+                objectNumber2Keys.put(objectNumber,keyList);
             }
             keyList.add(key);
             observer.put(node);
@@ -140,7 +140,7 @@ public class URLCache extends Cache {
          * @param object the object that changes
          */
         private void remove(String nodeNumber) {
-            if(objectNumber2Keys.contains(nodeNumber)) {
+            if(objectNumber2Keys.containsKey(nodeNumber)) {
                 Vector keyList = (Vector)objectNumber2Keys.get(nodeNumber);
                 for(Iterator items = keyList.iterator(); items.hasNext();) {
                     String key = (String)items.next();
