@@ -10,7 +10,8 @@
 <mm:import externid="backpage_cancel"><mm:url referids="node_number"/>#relations</mm:import>
 <mm:import externid="backpage_ok"><mm:url referids="node_number" />#relations</mm:import>
 
-<mm:node id="this_node" referid="node_number"> 
+<mm:node id="this_node" referid="node_number" notfound="skipbody">
+<mm:import id="found" />
 
 <mm:maywrite>
   <mm:import id="showtype">input</mm:import>
@@ -97,6 +98,9 @@
 <%@ include file="relations.jsp"%>
 
 </mm:node>
+<mm:notpresent referid="found">
+  <%=m.getString("change_node.notexists")%>: <mm:write referid="node_number" />
+</mm:notpresent>
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>
