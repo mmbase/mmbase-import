@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
  */
 /*
-$Id: JDBC.java,v 1.18 2001-06-03 22:22:30 daniel Exp $
+$Id: JDBC.java,v 1.19 2001-06-05 13:55:53 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2001/06/03 22:22:30  daniel
+reinstalled support for jdbc admin tool as it was in james
+
 Revision 1.17  2001/03/27 11:13:30  vpro
 Implemented log4j
 
@@ -69,7 +72,7 @@ import org.mmbase.util.logging.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.18 2001-06-03 22:22:30 daniel Exp $
+ * @version $Id: JDBC.java,v 1.19 2001-06-05 13:55:53 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -329,18 +332,27 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(null);
     }
 
+    // Strips senssitive info (such as password and username) from the
+    // database name
+    private String stripSensistive(String name) {
+        // strip either after the first '?', or the first ',',
+        // whichever comes first
+        int i=name.indexOf('?');
+        int j=name.indexOf(',');
+        if ((i>j) && (j!=-1)) i=j;
+        if (i!=-1) {
+            return name.substring(0,i);
+        } else {
+            return name;
+        }
+    }
+
     public Vector listPools(StringTagger tagger) {
         Vector results=new Vector();
-        int i;
         for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
             String name=(String)e.nextElement();
             MultiPool pool=poolHandler.get(name);
-            i=name.indexOf(',');
-            if (i!=-1) {
-                results.addElement(name.substring(0,i));
-            } else {
-                results.addElement(name);
-            }
+            results.addElement(stripSensistive(name));
             results.addElement(""+pool.getSize());
             results.addElement(""+pool.getTotalConnectionsCreated());
         }
@@ -350,19 +362,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
 
     public Vector listConnections(StringTagger tagger) {
-        int i;
         Vector results=new Vector();
         for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
             String name=(String)e.nextElement();
             MultiPool pool=poolHandler.get(name);
             for (Enumeration f=pool.busyelements();f.hasMoreElements();) {
                 MultiConnection realcon=(MultiConnection)f.nextElement();
-                i=name.indexOf(',');
-                if (i!=-1) {
-                    results.addElement(name.substring(name.lastIndexOf('/')+1,i));
-                } else {
-                    results.addElement(name.substring(name.lastIndexOf('/')+1));
-                }
+                results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
                 results.addElement(""+realcon.getLastSQL());
                 results.addElement(""+realcon.getUsage());
@@ -370,12 +376,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
             for (Enumeration f=pool.elements();f.hasMoreElements();) {
                 MultiConnection realcon=(MultiConnection)f.nextElement();
-                i=name.indexOf(',');
-                if (i!=-1) {
-                    results.addElement(name.substring(name.lastIndexOf('/')+1,i));
-                } else {
-                    results.addElement(name.substring(name.lastIndexOf('/')+1));
-                }
+                results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
                 results.addElement(""+realcon.getLastSQL());
                 results.addElement(""+realcon.getUsage());
