@@ -27,7 +27,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.6 2005-03-02 23:06:49 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.7 2005-03-15 20:33:25 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -144,5 +144,9 @@ public class StandaloneContextContainer extends ContextContainer {
         
         
     } 
+
+    protected boolean checkJspVar(String jspvar, String id) {
+        return true;
+    }
     
 }

@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.48 2005-01-06 20:23:39 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.49 2005-03-15 20:33:25 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -195,8 +195,11 @@ public class ImportTag extends ContextReferrerTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                boolean res = reset.getBoolean(this, false); // should this be more general? Also in other contextwriters?
-                getContextProvider().getContextContainer().register(useId, helper.getValue(), !res);
+                boolean res = reset.getBoolean(this, false);
+                // should this be more general? Also in other contextwriters?
+
+                getContextProvider().getContextContainer().register(useId, helper, !res);
+
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time
