@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.15 2002-04-02 13:40:20 michiel Exp $
+ * @version $Id: Wizard.java,v 1.16 2002-04-12 08:54:32 pierre Exp $
  *
  */
 public class Wizard {
@@ -223,11 +223,11 @@ public class Wizard {
     }
 
     /**
-     * this method processes an incoming request (usually passed on by a jsp code).
+     * Processes an incoming request (usually passed on by a jsp code).
      * First, all given values are stored in the current datatree,
      * Second, all given commands are processed sequentially.
      *
-     * @param       req     the ServletRequest contains the name-value pairs received through the http connection
+     * @param req the ServletRequest contains the name-value pairs received through the http connection
      */
     public void processRequest(ServletRequest req) throws WizardException {
         String curform = req.getParameter("curform");
@@ -238,13 +238,14 @@ public class Wizard {
     }
 
     /**
-     * This method constructs and writes final form-html to the given out writer.
+     * Constructs and writes final form-html to the given out writer.
+     * You can specify an instancename, so that the wizard is able to start another wizard in the
+     * <em>same</em> session. The jsp pages and in the html the instancenames are used to keep track
+     * of one and another.
      *
-     * @param       out     The writer where the output (html) should be written to.
-     * @param       instancename    in the instancename you can specify what instancename the current instance of a wizard has.
-     *                              This instancename is used by the wizard so that it is able to start another wizard in the
-     *                              *same* session. The jsp pages and in the html the instancenames are used to keep track of one and another.
-    */
+     * @param out The writer where the output (html) should be written to.
+     * @param instancename name of the current instance
+     */
     public void writeHtmlForm(Writer out, String instancename) throws WizardException {
         Node datastart = Utils.selectSingleNode(data, "/data/*");
         // Build the preHtml version of the form.
@@ -253,14 +254,15 @@ public class Wizard {
         Map params = new HashMap();
         params.put("ew_path", path);
         params.put("ew_context", context);
-        params.put("ew_imgdb", context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);
+        // juck juck
+        params.put("ew_imgdb", context + org.mmbase.module.builders.AbstractImages.getIMGDB());
         Utils.transformNode(preform, wizardStylesheetFilename, out, params);
     }
 
     /////////////////////////////////////
 
     /**
-     * internal method which is used to store the passed values. this method is called by processRequest.
+     * Internal method which is used to store the passed values. this method is called by processRequest.
      *
      * @see #processRequest
      */
@@ -569,7 +571,7 @@ public class Wizard {
      */
     private void loadSchema() throws WizardException {
         schema = Utils.loadXMLFile(wizardSchemaFilename);
-        
+
         resolveIncludes(schema.getDocumentElement(), path);
 
         resolveShortcuts(schema.getDocumentElement(), true);

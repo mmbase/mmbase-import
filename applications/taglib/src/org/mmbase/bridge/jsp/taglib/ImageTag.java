@@ -20,17 +20,17 @@ import org.mmbase.bridge.Node;
  * Produces a url to 'img.db'. Using this tag makes your pages more
  * portable to other system, and hopefully less sensitive for future
  * changes in how the image servlet works.
- * 
- * @author Michiel Meeuwissen 
+ *
+ * @author Michiel Meeuwissen
  **/
 
 public class ImageTag extends NodeReferrerTag  implements Writer {
 
     private String template = null;
-    protected WriterHelper helper = new WriterHelper(); 
+    protected WriterHelper helper = new WriterHelper();
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setVartype(String t) throws JspTagException { 
+    public void setVartype(String t) throws JspTagException {
         throw new JspTagException("Image tag can only produces Strings");
     }
     public void setJspvar(String j) {
@@ -46,12 +46,12 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     /**
      * The transformation template
      */
-           
+
     public void setTemplate(String t) throws JspTagException {
         template = getAttributeValue(t);
     }
 
-    public int doStartTag() throws JspTagException {  
+    public int doStartTag() throws JspTagException {
         Node node = getNode();
         if (node.getNodeManager().getField("handle") == null) {
             throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be an image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
@@ -69,10 +69,10 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
 
         // how about remote clouds!!!
 
-        String page = req.getContextPath() +"/" +  org.mmbase.module.builders.AbstractImages.IMGDB + number;
+        String page = req.getContextPath() +org.mmbase.module.builders.AbstractImages.getIMGDB() + number;
 
         helper.setValue(page);
-        helper.setJspvar(pageContext);  
+        helper.setJspvar(pageContext);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
