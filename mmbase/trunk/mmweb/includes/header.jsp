@@ -27,7 +27,7 @@
 <body>
 <%@ include file="nav.jsp" %>
 <%-- tables in tables in tables!! Why?! --%>
-<table border="0" cellspacing="0" cellpadding="0" class="content">
+<table border="0" cellspacing="0" cellpadding="0" class="content" style="width: 100%">
   <tr>
    <td>
     <table border="0" cellspacing="0" cellpadding="0" class="layout">
