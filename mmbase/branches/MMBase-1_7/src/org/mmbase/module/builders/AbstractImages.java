@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.24.2.1 2004-08-26 12:18:27 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.24.2.2 2004-10-03 11:10:26 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -64,20 +64,26 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                 remove(key);
             }
         }
+
         void removeCacheNumber(int icacheNumber) {
             Iterator entries  = entrySet().iterator();
             List removed = new ArrayList();
             while (entries.hasNext()) {
                 Map.Entry entry = (Map.Entry) entries.next();                    
                 String key = (String) entry.getKey();
-                ByteFieldContainer bf = (ByteFieldContainer) entry.getValue();
-                
-                if (bf.number == icacheNumber) {
-                    removed.add(key);
-                    if (log.isDebugEnabled()) {
-                        log.debug("removing " + key);
+                Object value = entry.getValue();
+                if (value instanceof ByteFieldContainer) {
+                    ByteFieldContainer bf = (ByteFieldContainer) value;                
+                    if (bf.number == icacheNumber) {
+                        entries.remove();
+                        removed.add(key);
                     }
-                    // cannot use keys.remove(), becaus then cache.remove is not called.
+                } else if (value instanceof Integer) {
+                    Integer i = (Integer) value;
+                    if (i.intValue() == icacheNumber) {
+                        entries.remove();
+                        removed.add(key);
+                    }
                 }
                 
             }
