@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.42 2004-02-04 15:28:07 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.43 2004-02-18 09:49:44 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -95,6 +95,7 @@ function doHelp() {
 }
 
 function doSearch(el, cmd, sessionkey) {
+    doCheckHtml();
     // most of this is probably better to just pass to list.jsp...
     var searchfields = document.forms[0].elements["searchfields_" + cmd].value;
     var searchtype = document.forms[0].elements["searchtype_" + cmd].value;
