@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.18 $ $Date: 2001-05-02 15:30:38 $
+ * @version $Revision: 1.19 $ $Date: 2001-05-02 16:41:01 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -108,7 +108,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		String info=null, user=null;
 		StringTagger infotagger = null;
 		log.info("Searching for the service that was claimed by "+owner);
-		Enumeration e=search("WHERE number>0");
+		Enumeration e=search("WHERE state='claimed' AND number>0");
 		while (e.hasMoreElements()) {
 			node= (MMObjectNode)e.nextElement();
 			info = node.getStringValue("info");
