@@ -15,4 +15,8 @@ public class UserContext {
     public String getIdentifier() {
 	return "anonymous";
     }
+    
+    public Rank getRank() throws org.mmbase.security.SecurityException {
+    	return Rank.ANONYMOUS;
+    }               
 }
