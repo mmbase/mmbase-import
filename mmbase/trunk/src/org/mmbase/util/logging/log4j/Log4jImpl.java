@@ -40,168 +40,171 @@ import java.io.File;
  */
 
 public final class Log4jImpl extends Category  implements Logger { 
-	// class is final, perhaps then its methods can be inlined when compiled with -O?
+    // class is final, perhaps then its methods can be inlined when compiled with -O?
 
 
-	// It's enough to instantiate a factory once and for all.
-	private final static LoggerFactory factory = new LoggerFactory();
+    // It's enough to instantiate a factory once and for all.
+    private final static LoggerFactory factory = new LoggerFactory();
 
-	private final static String classname = Log4jImpl.class.getName();
-
-
-	/** 
-	 * Constructor, like the constructor of {@link Category}.
-	 */
-
-	private Log4jImpl(String name) {
-		super(name);
-		// not needed.
-	}
-
-		
-	/** 
-	 *	As getInstance, but casted to Logger already. And the possible
-	 *	ClassCastException is caught.
-	 */
-	public static Log4jImpl getLoggerInstance(String name) {
-		try {
-			return (Log4jImpl) Category.getInstance(name, factory); 
-		} catch (ClassCastException e) {
-			Log4jImpl root =  (Log4jImpl) getRoot(); // make it log on root, and log a huge error, that something is wrong.
-			root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\""); 
-			return root;
-		}
-	}
+    private final static String classname = Log4jImpl.class.getName();
 
 
-	/**
-	 * Calls the configure method of DOMConfigurator, and redirect standard error
-	 * to STDERR category.
-	 *
-	 * @param s: A string to the xml-configuration file. Can be
-	 * absolute, or relative to the Logging configuration file.
-	 **/
+    /** 
+     * Constructor, like the constructor of {@link Category}.
+     */
 
-	public static void configure(String s) {
-		File f = new File(s); 
-		if (! f.isAbsolute()) { // make it absolute
-			f = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
-		}
-		System.out.println("Parsing " + f.getAbsolutePath());
-		DOMConfigurator.configureAndWatch(f.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
-		System.setErr(new LoggerStream((Log4jImpl) getInstance("STDERR")));
-	}
+    private Log4jImpl(String name) {
+        super(name);
+        // not needed.
+    }
 
-	public void setPriority(Level p) {
-		switch(p.toInt()) {
-		case Level.TRACE_INT:   setPriority(Log4jPriority.TRACE);   break;
-		case Level.DEBUG_INT:   setPriority(Log4jPriority.DEBUG);   break;
-		case Level.SERVICE_INT: setPriority(Log4jPriority.SERVICE); break;
-		case Level.INFO_INT:    setPriority(Log4jPriority.INFO);    break;
-		case Level.WARN_INT:    setPriority(Log4jPriority.WARN);    break;
-		case Level.ERROR_INT:   setPriority(Log4jPriority.ERROR);   break;
-		case Level.FATAL_INT:   setPriority(Log4jPriority.FATAL);
-		}
-		
-	}
-
-	/**
-	 *  This method overrides {@link Category#getInstance} by supplying
-	 *  its own factory type as a parameter.	   
-	 */
-	public static Category getInstance(String name) {
-		return Category.getInstance(name, factory); 
-	}
-
-	 /**
-	  * A new logging method that takes the TRACE priority.
-	 */
-	public final void trace(Object message) {
-		// disable is defined in Category
-		if(disable >=  Log4jPriority.TRACE_INT) {
-			return;
-		}
-		if(Log4jPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-			//callAppenders(new LoggingEvent(classname, this, Log4jPriority.TRACE, message, null));
-		    forcedLog(classname, Log4jPriority.TRACE, message, null);
-	}
-
-	/**
-	 *  A new logging method that takes the SERVICE priority.
-	*/
-	public final void service(Object message) {		
-		// disable is defined in Category
-		if(disable >=  Log4jPriority.SERVICE_INT) {
-			return;
-		}
-		if(Log4jPriority.SERVICE.isGreaterOrEqual(this.getChainedPriority()))
-			//callAppenders(new LoggingEvent(classname, this, Log4jPriority.SERVICE, message, null));
-     		forcedLog(classname, Log4jPriority.SERVICE, message, null);
-	}
+  
+    /** 
+     * As getInstance, but casted to Logger already. And the possible
+     * ClassCastException is caught.
+     */
+    public static Log4jImpl getLoggerInstance(String name) {
+        try {
+            return (Log4jImpl) Category.getInstance(name, factory); 
+        } catch (ClassCastException e) {
+            Log4jImpl root =  (Log4jImpl) getRoot(); // make it log on root, and log a huge error, that something is wrong.
+            root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\""); 
+            return root;
+        }
+    }
 
 
-	// **** SUBCLASSES ****
-	
-	/**
-	 * Any sub-class of Category must also have its own implementation of 
-	 * CategoryFactory.
-	 */
-	private static class LoggerFactory implements CategoryFactory {
+    /**
+     * Calls the configure method of DOMConfigurator, and redirect standard error
+     * to STDERR category.
+     *
+     * @param s: A string to the xml-configuration file. Can be
+     * absolute, or relative to the Logging configuration file.
+     **/
 
-		LoggerFactory() {
-		}
+    public static void configure(String s) {
+        File f = new File(s); 
+        if (! f.isAbsolute()) { // make it absolute
+            f = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
+        }
+        System.out.println("Parsing " + f.getAbsolutePath());
+        DOMConfigurator.configureAndWatch(f.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
+        System.setErr(new LoggerStream((Log4jImpl) getInstance("STDERR")));
+    }
 
-		public Category makeNewCategoryInstance(String name) {
-			return new Log4jImpl(name);
-		}
-	}
+    public void setPriority(Level p) {
+        switch (p.toInt()) {
+        case Level.TRACE_INT:   setPriority(Log4jPriority.TRACE);   break;
+        case Level.DEBUG_INT:   setPriority(Log4jPriority.DEBUG);   break;
+        case Level.SERVICE_INT: setPriority(Log4jPriority.SERVICE); break;
+        case Level.INFO_INT:    setPriority(Log4jPriority.INFO);    break;
+        case Level.WARN_INT:    setPriority(Log4jPriority.WARN);    break;
+        case Level.ERROR_INT:   setPriority(Log4jPriority.ERROR);   break;
+        case Level.FATAL_INT:   setPriority(Log4jPriority.FATAL);
+        }
+  
+    }
 
-	/**
-	 * Catches stderr and sends it also to the log file (with category `stderr').
-	 *  
-	 * In this way, things producing standard output, such as uncatch
-	 * exceptions, will at least appear in the log-file.
-	 *
-	 **/
+    /**
+     *  This method overrides {@link Category#getInstance} by supplying
+     *  its own factory type as a parameter.    
+     */
+    public static Category getInstance(String name) {
+        return Category.getInstance(name, factory); 
+    }
 
-	private static class LoggerStream extends PrintStream {
+    /**
+     * A new logging method that takes the TRACE priority.
+     */
+    public final void trace(Object message) {
+        // disable is defined in Category
+        if (disable >=  Log4jPriority.TRACE_INT) {
+            return;
+        }
+        if (Log4jPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
+            //callAppenders(new LoggingEvent(classname, this, Log4jPriority.TRACE, message, null));
+            forcedLog(classname, Log4jPriority.TRACE, message, null);
+    }
 
-		private Logger log;
+    /**
+     *  A new logging method that takes the SERVICE priority.
+     */
+    public final void service(Object message) {  
+        // disable is defined in Category
+        if (disable >=  Log4jPriority.SERVICE_INT) {
+            return;
+        }
+        if (Log4jPriority.SERVICE.isGreaterOrEqual(this.getChainedPriority()))
+            //callAppenders(new LoggingEvent(classname, this, Log4jPriority.SERVICE, message, null));
+            forcedLog(classname, Log4jPriority.SERVICE, message, null);
+    }
 
-		LoggerStream (Log4jImpl l) throws IllegalArgumentException {
-			super(System.out);
-			if (l == null) {
-				throw new IllegalArgumentException("logger == null");
-			}
-			log = l;
-		}
+    public final boolean isServiceEnabled() {
+        return(disable < Log4jPriority.SERVICE_INT);
+    }
 
-		private LoggerStream () {
-			// do not use.
-			super(System.out);
-		}
-		// simply overriding all methods that possibly could be used (forgotten some still)
-		public void print   (char[] s) { log.trace("2"); log.warn(new String(s)); } 
-		public void print   (String s) { log.trace("3"); log.warn(s); }		
-		public void print   (Object s) { log.trace("4"); log.warn(s.toString()); }
-		public void println (char[] s) { log.trace("5"); log.warn(new String(s)); }
-		public void println (String s) { log.trace("6"); log.warn(s); }		
-		public void println (Object s) { 
-			// it seems that exception are written to log in this way, so we can check 
-			// if s is an exception, in which case we want to log with FATAL.
-			if (log.isDebugEnabled()) { 
-				log.trace("7 " + s.getClass().toString());
-			}
-			if(Exception.class.isAssignableFrom(s.getClass())) {
-				log.fatal(s.toString()); // uncaught exception, that's a fatal error
-			} else {
-				log.warn(s.toString());
-			}
-		}		
-		//public void write(byte[] buf) { }		
-		//public void write(byte[] b, int off, int len) { }
-	
-	}
+    // **** SUBCLASSES ****
+ 
+    /**
+     * Any sub-class of Category must also have its own implementation of 
+     * CategoryFactory.
+     */
+    private static class LoggerFactory implements CategoryFactory {
+
+        LoggerFactory() {
+        }
+
+        public Category makeNewCategoryInstance(String name) {
+            return new Log4jImpl(name);
+        }
+    }
+
+    /**
+     * Catches stderr and sends it also to the log file (with category `stderr').
+     *  
+     * In this way, things producing standard output, such as uncatch
+     * exceptions, will at least appear in the log-file.
+     *
+     **/
+
+    private static class LoggerStream extends PrintStream {
+
+        private Logger log;
+
+        LoggerStream (Log4jImpl l) throws IllegalArgumentException {
+            super(System.out);
+            if (l == null) {
+                throw new IllegalArgumentException("logger == null");
+            }
+            log = l;
+        }
+
+        private LoggerStream () {
+            // do not use.
+            super(System.out);
+        }
+        // simply overriding all methods that possibly could be used (forgotten some still)
+        public void print   (char[] s) { log.trace("2"); log.warn(new String(s)); } 
+        public void print   (String s) { log.trace("3"); log.warn(s); }  
+        public void print   (Object s) { log.trace("4"); log.warn(s.toString()); }
+        public void println (char[] s) { log.trace("5"); log.warn(new String(s)); }
+        public void println (String s) { log.trace("6"); log.warn(s); }  
+        public void println (Object s) { 
+            // it seems that exception are written to log in this way, so we can check 
+            // if s is an exception, in which case we want to log with FATAL.
+            if (log.isDebugEnabled()) { 
+                log.trace("7 " + s.getClass().toString());
+            }
+            if (Exception.class.isAssignableFrom(s.getClass())) {
+                log.fatal(s.toString()); // uncaught exception, that's a fatal error
+            } else {
+                log.warn(s.toString());
+            }
+        }  
+        //public void write(byte[] buf) { }  
+        //public void write(byte[] b, int off, int len) { }
+ 
+    }
 
 }
 

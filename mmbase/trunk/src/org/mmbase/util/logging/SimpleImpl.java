@@ -23,71 +23,74 @@ import java.io.PrintStream;
 public class SimpleImpl implements Logger {
 
 
-	private static SimpleImpl root = new SimpleImpl();
+    private static SimpleImpl root = new SimpleImpl();
 
-	private static PrintStream ps = System.out;
+    private static PrintStream ps = System.out;
 
-	private SimpleImpl() {
-		// a Singleton class.
-	}
+    private SimpleImpl() {
+        // a Singleton class.
+    }
 
-	public static  SimpleImpl getLoggerInstance(String name) {
-		return root;
-	}
-
-   
-	public static  void configure(String c) {
-		if(c == null) {
-			ps = System.out;
-			return;
-		}
-		if(c.equals("stderr")) {
-			ps = System.err;
-			return;
-		}
-		if(c.equals("stdout")) {
-			ps = System.out;
-			return;
-		}
-
-		
-	}
-
-	public void setPriority(Level p) {
-	}
+    public static  SimpleImpl getLoggerInstance(String name) {
+        return root;
+    }
 
    
-	public final void log (String s) {
-		ps.println(s);
-	}
+    public static  void configure(String c) {
+        if(c == null) {
+            ps = System.out;
+            return;
+        }
+        if(c.equals("stderr")) {
+            ps = System.err;
+            return;
+        }
+        if(c.equals("stdout")) {
+            ps = System.out;
+            return;
+        }
 
-	public void trace (Object m) {
-		return;
-		//log("TRACE " + m.toString());
-	}
-	public void debug (Object m) {
-		return;
-		//log("DEBUG " + m.toString());
-	}
+  
+    }
 
-	public void service (Object m) {
-		log("SERVICE " + m.toString());
-	}
-	public void info    (Object m) {
-		log("INFO " + m.toString());
-	}
-	public void warn    (Object m) {
-		log("WARN " + m.toString());
-	}
-	public void error   (Object m) {
-		log("ERROR " + m.toString());
-	}
-	public void fatal   (Object m) {
-		log("FATAL " + m.toString());
-	}
+    public void setPriority(Level p) {
+    }
 
-	public boolean isDebugEnabled() {
-		return true;
-	}
+   
+    public final void log (String s) {
+        ps.println(s);
+    }
+
+    public void trace (Object m) {
+        return;
+        //log("TRACE " + m.toString());
+    }
+    public void debug (Object m) {
+        return;
+        //log("DEBUG " + m.toString());
+    }
+
+    public void service (Object m) {
+        log("SERVICE " + m.toString());
+    }
+    public void info    (Object m) {
+        log("INFO " + m.toString());
+    }
+    public void warn    (Object m) {
+        log("WARN " + m.toString());
+    }
+    public void error   (Object m) {
+        log("ERROR " + m.toString());
+    }
+    public void fatal   (Object m) {
+        log("FATAL " + m.toString());
+    }
+
+    public boolean isDebugEnabled() {
+        return true;
+    }
+    public boolean isServiceEnabled() {
+        return true;
+    }
 
 }
