@@ -11,6 +11,7 @@ package org.mmbase.module;
 
 import java.rmi.*;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.remote.RemoteCloudContext;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.3 2003-07-28 13:38:05 keesj Exp $
+ * @version $Id: RemoteMMCI.java,v 1.4 2004-07-13 09:52:09 keesj Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -144,16 +145,18 @@ public class RemoteMMCI extends ProcessorModule {
      */
     protected void shutdown() {
         if (registry != null) {
-            log.debug("trying to stop the registry");
+            log.info("Stoping the RMI registry");
             try {
                 String[] names = registry.list();
                 for (int x = 0; x < names.length; x++) {
                     try {
+                    	log.info("unbind " + names[x]);
                         registry.unbind(names[x]);
                     } catch (NotBoundException e1) {
                         log.warn(Logging.stackTrace(e1));
                     }
                 }
+                UnicastRemoteObject.unexportObject(registry,true);
             } catch (AccessException e) {
                 log.warn(Logging.stackTrace(e));
             } catch (RemoteException e) {
