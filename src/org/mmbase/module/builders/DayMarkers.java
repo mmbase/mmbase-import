@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.25 2002-10-10 19:55:23 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.26 2002-11-08 10:17:58 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -31,11 +31,11 @@ public class DayMarkers extends MMObjectBuilder {
     private int day = 0; // current day number/count
     //private Hashtable daycache = new Hashtable(); 	// day -> mark
     private TreeMap daycache = new TreeMap();           // day -> mark, but ordered
-    
+
     public static String FIELD_DAYCOUNT =   "daycount";
 
-    private int smallestMark = 0; // will be queried when this builder is started
-    private int smallestDay  = 0; // will be queried when this builder is started
+    private int smallestMark; // will be queried when this builder is started
+    private int smallestDay; // will be queried when this builder is started
 
     /**
      * Put in cache. This function essentially does the casting to
@@ -63,24 +63,28 @@ public class DayMarkers extends MMObjectBuilder {
         log.debug("Init of DayMarkers");
         boolean result;
         result = super.init();
+        smallestMark = 0;
+        smallestDay  = 0;
+        MultiConnection con = null;
+        Statement stmt = null;
         try {
-            MultiConnection con = mmb.getConnection();
-            Statement stmt=con.createStatement();
-
+            con = mmb.getConnection();
+            stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select "+mmb.getDatabase().getAllowedField("number")+", daycount from " + mmb.baseName + "_" + tableName + " order by "+mmb.getDatabase().getAllowedField("number"));
             if (rs.next()) {
                 smallestMark   = rs.getInt(1);
                 smallestDay    = rs.getInt(2);
-            } else {
+            }
+            // close connection here, so createMarker is not held up when connections run low
+            mmb.closeConnection(con,stmt);
+            if (smallestDay == 0) {
                 smallestDay = currentDay();
                 createMarker();
-                //smallestMark = 0;
             }
-            stmt.close();
-            con.close();
         } catch (SQLException e) {
             log.error("SQL Exception " + e + ". Could not find smallestMarker, smallestDay");
             result = false;
+            mmb.closeConnection(con,stmt);
         }
         return result;
     }
@@ -103,36 +107,41 @@ public class DayMarkers extends MMObjectBuilder {
         int max  = -1;
         int mday = -1;
         log.info("Daymarker -> DAY="+day);
+        MultiConnection con=null;
+        Statement stmt=null;
         try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
+            con=mmb.getConnection();
+            stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select "+mmb.getDatabase().getAllowedField("number")+" from "+mmb.baseName+"_"+tableName+" where daycount="+day);
             if (rs.next()) {
                 mday=rs.getInt(1);
             }
-            stmt.close();
-            con.close();
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
+        } finally {
+            mmb.closeConnection(con,stmt);
         }
 
+        //clear connection vars
+        con=null;
+        stmt=null;
         if (mday<0) { // it was not in the database
             log.info("DayMarker inserting new marker " + day);
             try {
-                MultiConnection con=mmb.getConnection();
-                Statement stmt=con.createStatement();
+                con=mmb.getConnection();
+                stmt=con.createStatement();
                 ResultSet rs = stmt.executeQuery("select max("+mmb.getDatabase().getAllowedField("number")+") from "+mmb.baseName+"_object");
                 if (rs.next()) {
                     max=rs.getInt(1);
                 }
-                stmt.close();
-                con.close();
+                mmb.closeConnection(con,stmt);
                 MMObjectNode node=getNewNode("system");
                 node.setValue("daycount",day);
                 node.setValue("mark",max);
                 insert("system",node);
             } catch(Exception e) {
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
+                mmb.closeConnection(con,stmt);
             }
         } else {
             log.info("DayMarker marker already exists " + day);
@@ -428,7 +437,7 @@ public class DayMarkers extends MMObjectBuilder {
             stmt.close();
             con.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
         return mday;
     }
@@ -448,7 +457,7 @@ public class DayMarkers extends MMObjectBuilder {
         return months;
     }
 
-    
+
     /**
      *  Returns the date of a daymarker
      *  @param node The node of which the date is wanted
@@ -456,9 +465,9 @@ public class DayMarkers extends MMObjectBuilder {
      */
     public java.util.Date getDate(MMObjectNode node) {
         int dayCount = node.getIntValue(FIELD_DAYCOUNT);
-         return new java.util.Date(((long)dayCount)*24*3600*1000);        
+         return new java.util.Date(((long)dayCount)*24*3600*1000);
     }
-    
+
     /**
      *  Returns gui information for a specific node. This value is retrieved by retrieving the field 'gui()' of the node (node.getStringValue("gui()") )
      *  @param node The node of which the gui information is wanted
@@ -468,5 +477,5 @@ public class DayMarkers extends MMObjectBuilder {
         return DateFormat.getDateInstance(DateFormat.LONG, locale).format(getDate(node));
 
     }
-    
+
 }
