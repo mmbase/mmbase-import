@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class InformixSqlHandlerTest extends TestCase {
     
@@ -112,14 +112,14 @@ public class InformixSqlHandlerTest extends TestCase {
         // Test use of "FIRST" construct.
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL"));
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL"));
         
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT FIRST 100 images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL"));
+        "SELECT FIRST 100 m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL"));
     }
     
     public static Test suite() {

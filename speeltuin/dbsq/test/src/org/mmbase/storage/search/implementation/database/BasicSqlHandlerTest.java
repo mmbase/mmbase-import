@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -107,7 +107,7 @@ public class BasicSqlHandlerTest extends TestCase {
             fail("Query without step, should throw IllegalStateException.");
         } catch (IllegalStateException e) {};
         
-        BasicStep step1 = query.addStep(images);
+        BasicStep step1 = query.addStep(images).setAlias(null);
         
         // Query without field, should throw IllegalStateException.
         try {
@@ -120,57 +120,59 @@ public class BasicSqlHandlerTest extends TestCase {
         FieldDefs poolsName = pools.getField("name");
         
         // Query with one step (default alias) and one field (default alias).
-        BasicStepField field1a = query.addField(step1, imagesTitle);
+        BasicStepField field1a 
+            = query.addField(step1, imagesTitle).setAlias(null);
         String strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_images.m_title AS 'm_title' "
-        + "FROM " + prefix + "images m_images"));
+        "SELECT m_title "
+        + "FROM " + prefix + "images"));
         
         // Set step alias.
         step1.setAlias("i");
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_title' "
+        "SELECT m_title "
         + "FROM " + prefix + "images m_i"));
         
         // Set field alias.
         field1a.setAlias("imageTitle");
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle' "
+        "SELECT m_title AS m_imageTitle "
         + "FROM " + prefix + "images m_i"));
         
-        // Add second field (default alias).
+        // Add second field (null alias).
         FieldDefs imagesNumber = images.getField("number");
-        BasicStepField field1b = query.addField(step1, imagesNumber);
+        BasicStepField field1b 
+            = query.addField(step1, imagesNumber).setAlias(null);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'm_number' "
+        "SELECT m_title AS m_imageTitle,"
+        + "m_number "
         + "FROM " + prefix + "images m_i"));
         
         // Set alias for second field.
         field1b.setAlias("imageNumber");
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
         
         // Set distinct true.
         query.setDistinct(true);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT DISTINCT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT DISTINCT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
         
         // Add sortorder (default direction).
         BasicSortOrder sortOrder1a = query.addSortOrder(field1a);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT DISTINCT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT DISTINCT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -179,10 +181,10 @@ public class BasicSqlHandlerTest extends TestCase {
         query.setConstraint(constraint1);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT DISTINCT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT DISTINCT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' "
+        + "WHERE m_title='abd' "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set composite constraint.
@@ -195,62 +197,62 @@ public class BasicSqlHandlerTest extends TestCase {
         query.setConstraint(constraint3);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT DISTINCT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT DISTINCT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_DESCENDING);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT DISTINCT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT DISTINCT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle DESC"));
         
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_ASCENDING);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT DISTINCT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT DISTINCT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set distinct false.
         query.setDistinct(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
         // Add node constraint for first step (one node).
         step1.addNode(123);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_number IN (123) "
-        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "WHERE m_number IN (123) "
+        + "AND (m_title='abd' AND m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
         // Add second node to node constraint.
         step1.addNode(456);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_number IN (123,456) "
-        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "WHERE m_number IN (123,456) "
+        + "AND (m_title='abd' AND m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
         // Add relationstep (default directionality).
@@ -258,21 +260,25 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicStep step3 = (BasicStep) step2.getNext();
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
-        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel," + prefix + "pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
+        // Set aliases on step2 and stap3.
+        step2.setAlias("insrel");
+        step3.setAlias("pools");
+        
         // Set role.
         step2.setRole(new Integer(890));
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -285,8 +291,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber "
@@ -298,8 +304,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setCheckedDirectionality(true);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber "
@@ -313,8 +319,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setCheckedDirectionality(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber "
@@ -326,8 +332,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setCheckedDirectionality(true);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber "
@@ -342,8 +348,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setCheckedDirectionality(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -356,8 +362,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setCheckedDirectionality(true);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber "
@@ -372,8 +378,8 @@ public class BasicSqlHandlerTest extends TestCase {
         step2.setCheckedDirectionality(false);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -382,12 +388,12 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_imageTitle ASC"));
         
         // Add field for relationstep.
-        StepField field2a = query.addField(step2, insrelRNumber);
+        StepField field2a = query.addField(step2, insrelRNumber).setAlias(null);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -396,13 +402,13 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_imageTitle ASC"));
         
         // Add field for third step.
-        StepField field3a = query.addField(step3, poolsName);
+        StepField field3a = query.addField(step3, poolsName).setAlias(null);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -414,46 +420,46 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicSortOrder sortOrder3a = query.addSortOrder(field3a);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,name ASC"));
+        + "ORDER BY m_imageTitle ASC,pools.name ASC"));
         
         // Add third sortorder.
         BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,name ASC,rnumber ASC"));
+        + "ORDER BY m_imageTitle ASC,pools.name ASC,insrel.rnumber ASC"));
         
         // Add node constraint for second step (relation step).
         step2.addNode(789);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
-        "SELECT m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "SELECT m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) AND insrel.m_number IN (789) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,name ASC,rnumber ASC"));
+        + "ORDER BY m_imageTitle ASC,pools.name ASC,insrel.rnumber ASC"));
     }
     
     
@@ -465,15 +471,16 @@ public class BasicSqlHandlerTest extends TestCase {
         FieldDefs insrelRNumber = insrel.getField("rnumber");
         FieldDefs poolsName = pools.getField("name");
         StringBuffer sb = new StringBuffer();
-        BasicStep step1 = query.addStep(images);
+        BasicStep step1 = query.addStep(images).setAlias(null);
         
-        // Query with one step (default alias) and one field (default alias).
-        BasicStepField field1a = query.addField(step1, imagesTitle);
+        // Query with one step (null alias) and one field (null alias).
+        BasicStepField field1a 
+            = query.addField(step1, imagesTitle).setAlias(null);
         instance.appendQueryBodyToSql(sb, query, instance);
         String strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_images.m_title AS 'm_title' "
-        + "FROM " + prefix + "images m_images"));
+        "m_title "
+        + "FROM " + prefix + "images"));
         
         // Set step alias.
         step1.setAlias("i");
@@ -481,7 +488,7 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_title' "
+        "m_title "
         + "FROM " + prefix + "images m_i"));
         
         // Set field alias.
@@ -490,18 +497,19 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle' "
+        "m_title AS m_imageTitle "
         + "FROM " + prefix + "images m_i"));
         
         // Add second field (default alias).
         FieldDefs imagesNumber = images.getField("number");
-        BasicStepField field1b = query.addField(step1, imagesNumber);
+        BasicStepField field1b 
+            = query.addField(step1, imagesNumber).setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'm_number' "
+        "m_title AS m_imageTitle,"
+        + "m_number "
         + "FROM " + prefix + "images m_i"));
         
         // Set alias for second field.
@@ -510,8 +518,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
         
         // Set distinct true.
@@ -520,8 +528,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
         
         // Add sortorder (default direction).
@@ -530,8 +538,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -542,10 +550,10 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' "
+        + "WHERE m_title='abd' "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set composite constraint.
@@ -560,10 +568,10 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set sortorder direction.
@@ -572,10 +580,10 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle DESC"));
         
         // Set sortorder direction.
@@ -584,10 +592,10 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set distinct false.
@@ -596,10 +604,10 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
+        + "WHERE m_title='abd' AND m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
         // Add node constraint for first step (one node).
@@ -608,11 +616,11 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_number IN (123) "
-        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "WHERE m_number IN (123) "
+        + "AND (m_title='abd' AND m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
         // Add second node to node constraint.
@@ -621,22 +629,24 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_title AS m_imageTitle,"
+        + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_i.m_number IN (123,456) "
-        + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
+        + "WHERE m_number IN (123,456) "
+        + "AND (m_title='abd' AND m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
         
         // Add relationstep (default directionality).
-        BasicRelationStep step2 = query.addRelationStep(insrel,pools);
+        BasicRelationStep step2 = (BasicRelationStep)
+            query.addRelationStep(insrel,pools).setAlias("insrel");
         BasicStep step3 = (BasicStep) step2.getNext();
+        step3.setAlias("pools");
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -650,8 +660,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber) "
@@ -664,8 +674,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -678,8 +688,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -688,14 +698,14 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_imageTitle ASC"));
         
         // Add field for relationstep.
-        StepField field2a = query.addField(step2, insrelRNumber);
+        StepField field2a = query.addField(step2, insrelRNumber).setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -704,15 +714,15 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_imageTitle ASC"));
         
         // Add field for third step.
-        StepField field3a = query.addField(step3, poolsName);
+        StepField field3a = query.addField(step3, poolsName).setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
@@ -726,16 +736,16 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,name ASC"));
+        + "ORDER BY m_imageTitle ASC,pools.name ASC"));
         
         // Add third sortorder.
         BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
@@ -743,16 +753,16 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,name ASC,rnumber ASC"));
+        + "ORDER BY m_imageTitle ASC,pools.name ASC,insrel.rnumber ASC"));
         
         // Add node constraint for second step (relation step).
         step2.addNode(789);
@@ -760,28 +770,30 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "m_i.m_title AS 'm_imageTitle',"
-        + "m_i.m_number AS 'imageNumber',"
-        + "insrel.rnumber AS 'rnumber',"
-        + "pools.name AS 'name' "
+        "m_i.m_title AS m_imageTitle,"
+        + "m_i.m_number AS imageNumber,"
+        + "insrel.rnumber,"
+        + "pools.name "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) AND insrel.m_number IN (789) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,name ASC,rnumber ASC"));
+        + "ORDER BY m_imageTitle ASC,pools.name ASC,insrel.rnumber ASC"));
         
         // Aggregated query.
         query = new BasicSearchQuery(true);
-        step1 = query.addStep(images);
-        BasicAggregatedField field4a = query.addAggregatedField(
-        step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT);
+        step1 = query.addStep(images).setAlias(null);
+        BasicAggregatedField field4a 
+            = (BasicAggregatedField) query.addAggregatedField(
+                step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
+                    .setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "COUNT(m_images.m_title) AS 'm_title' "
-        + "FROM " + prefix + "images m_images"));
+        "COUNT(m_title) "
+        + "FROM " + prefix + "images"));
         
         field4a.setAggregationType(
         AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
@@ -789,51 +801,53 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "COUNT(DISTINCT m_images.m_title) AS 'm_title' "
-        + "FROM " + prefix + "images m_images"));
+        "COUNT(DISTINCT m_title) "
+        + "FROM " + prefix + "images"));
         
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MIN);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "MIN(m_images.m_title) AS 'm_title' "
-        + "FROM " + prefix + "images m_images"));
+        "MIN(m_title) "
+        + "FROM " + prefix + "images"));
         
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MAX);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "MAX(m_images.m_title) AS 'm_title' "
-        + "FROM " + prefix + "images m_images"));
+        "MAX(m_title) "
+        + "FROM " + prefix + "images"));
         
         field4a.setAlias("maxTitle");
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "MAX(m_images.m_title) AS 'maxTitle' "
-        + "FROM " + prefix + "images m_images"));
+        "MAX(m_title) AS maxTitle "
+        + "FROM " + prefix + "images"));
         
-        BasicAggregatedField field4b = query.addAggregatedField(
-        step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT);
+        BasicAggregatedField field4b 
+            = (BasicAggregatedField) query.addAggregatedField(
+                step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT)
+                    .setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "MAX(m_images.m_title) AS 'maxTitle',"
-        + "COUNT(m_images.m_number) AS 'm_number' "
-        + "FROM " + prefix + "images m_images"));
+        "MAX(m_title) AS maxTitle,"
+        + "COUNT(m_number) "
+        + "FROM " + prefix + "images"));
         
         field4b.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "MAX(m_images.m_title) AS 'maxTitle',"
-        + "m_images.m_number AS 'm_number' "
-        + "FROM " + prefix + "images m_images "
+        "MAX(m_title) AS maxTitle,"
+        + "m_number "
+        + "FROM " + prefix + "images "
         + "GROUP BY m_number"));
 
         field4b.setAlias("imageNumber");
@@ -841,9 +855,9 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
-        "MAX(m_images.m_title) AS 'maxTitle',"
-        + "m_images.m_number AS 'imageNumber' "
-        + "FROM " + prefix + "images m_images "
+        "MAX(m_title) AS maxTitle,"
+        + "m_number AS imageNumber "
+        + "FROM " + prefix + "images "
         + "GROUP BY imageNumber"));
     }
     
@@ -852,12 +866,14 @@ public class BasicSqlHandlerTest extends TestCase {
         
         BasicSearchQuery query = new BasicSearchQuery();
         StringBuffer sb = new StringBuffer();
-        Step step1 = query.addStep(images);
+        BasicStep step1 = (BasicStep) query.addStep(images);
+        step1.setAlias(null);
         FieldDefs imagesTitle = images.getField("title");
         StepField field1 = query.addField(step1, imagesTitle);
         FieldDefs imagesNumber = images.getField("number");
         StepField field2 = query.addField(step1, imagesNumber);
-        Step step2 = query.addStep(pools);
+        BasicStep step2 = (BasicStep) query.addStep(pools);
+        step2.setAlias(null);
         FieldDefs poolsNumber = pools.getField("number");
         StepField field3 = query.addField(step2, poolsNumber);
         FieldDefs poolsName = pools.getField("name");
@@ -1405,10 +1421,10 @@ public class BasicSqlHandlerTest extends TestCase {
     public void testAppendCompositeConstraintToSql() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
         StringBuffer sb = new StringBuffer();
-        Step step1 = query.addStep(images);
+        Step step1 = query.addStep(images).setAlias(null);
         FieldDefs imagesNumber = images.getField("number");
         StepField field1 = query.addField(step1, imagesNumber);
-        Step step2 = query.addStep(pools);
+        Step step2 = query.addStep(pools).setAlias(null);
         FieldDefs poolsNumber = pools.getField("number");
         StepField field2 = query.addField(step2, poolsNumber);
         

@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -50,6 +50,7 @@ public class BasicQueryHandlerTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -87,26 +87,24 @@ public class BasicStepFieldTest extends TestCase {
     
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testSetAlias() {
-        // Default is field name.
-        assertTrue(instance.getAlias().equals(FIELD_NAME1));
-        
-        // Null value, should throw IllegalArgumentException.
-        try {
-            instance.setAlias(null);
-            fail("Null value, should throw IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-        
-        // Blank spaces, should throw IllegalArgumentException.
-        try {
-            instance.setAlias("   ");
-            fail("Null value, should throw IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
+        // Default is null.
+        assertTrue(instance.getAlias() == null);
         
         BasicStepField result = instance.setAlias(TEST_ALIAS);
         String alias = instance.getAlias();
         assertTrue(alias != null);
         assertTrue(alias.equals(TEST_ALIAS));
         assertTrue(result == instance);
+        
+        // Null value, should not throw IllegalArgumentException.
+        instance.setAlias(null);
+        assertTrue(instance.getAlias() == null);
+        
+        // Blank spaces, should throw IllegalArgumentException.
+        try {
+            instance.setAlias("   ");
+            fail("Null value, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
     }
     
     /** Test of getFieldName method, of class org.mmbase.storage.search.implementation.BasicStepField. */
@@ -253,9 +251,9 @@ public class BasicStepFieldTest extends TestCase {
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testToString() {
-        // Default aliases.
+        // Null alias.
         assertTrue(instance.toString(),
-        instance.toString().equals("StepField(step:" + step.getAlias() 
+        instance.toString().equals("StepField(step:" + step.getTableName() 
         + ", fieldname:" + instance.getFieldName() + ", alias:" 
         + instance.getAlias() + ")"));
         

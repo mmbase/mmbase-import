@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ClusterBuilderTest extends TestCase {
     
@@ -419,7 +419,7 @@ public class ClusterBuilderTest extends TestCase {
         StepField stepField = getField(query, "pools", "name");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools.name")));
-        assertTrue(stepField.getAlias().equals("pools.name"));
+        assertTrue(stepField.getAlias() == null);
         assertTrue(query.getFields().size() == 5);
         assertTrue(fieldsByName.size() == 5);
 
@@ -427,7 +427,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "related", "number");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("related.number")));
-        assertTrue(stepField.getAlias().equals("related.number"));
+        assertTrue(stepField.getAlias() == null);
         // Not added twice.
         assertTrue(query.getFields().size() == 5);
         assertTrue(fieldsByName.size() == 5);
@@ -436,7 +436,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "images", "title");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("images.title")));
-        assertTrue(stepField.getAlias().equals("images.title"));
+        assertTrue(stepField.getAlias() == null);
         assertTrue(query.getFields().size() == 6);
         assertTrue(fieldsByName.size() == 6);
 
@@ -444,7 +444,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "pools1", "name");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools1.name")));
-        assertTrue(stepField.getAlias().equals("pools1.name"));
+        assertTrue(stepField.getAlias() == null);
         assertTrue(query.getFields().size() == 7);
         assertTrue(fieldsByName.size() == 7);
         
@@ -482,7 +482,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "pools", "description");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools.description")));
-        assertTrue(stepField.getAlias().equals("pools.description"));
+        assertTrue(stepField.getAlias() == null);
         stepField = getField(query, "pools1", "description");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools1.description")));
@@ -621,7 +621,7 @@ public class ClusterBuilderTest extends TestCase {
         // sorOrder2 is on a field that has not been added.
         SortOrder sortOrder2 = (SortOrder) sortOrders.get(2);
         StepField sortField2 = sortOrder2.getField();
-        assertTrue(sortField2.getAlias().equals("images.title"));
+        assertTrue(sortField2.getAlias() == null);
         assertTrue(sortOrder2.getDirection() == SortOrder.ORDER_DESCENDING);
     }
     

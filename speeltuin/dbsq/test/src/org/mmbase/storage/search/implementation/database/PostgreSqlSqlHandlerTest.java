@@ -14,7 +14,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PostgreSqlSqlHandlerTest extends TestCase {
     
@@ -114,27 +114,27 @@ public class PostgreSqlSqlHandlerTest extends TestCase {
         // Test use of "LIMIT/OFFSET" construct.
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL"));
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL"));
         
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL LIMIT 100"));
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL LIMIT 100"));
         
         query.setOffset(50);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
+        "SELECT m_number FROM " 
         + prefix 
-        + "images images WHERE images.m_number IS NULL LIMIT 100 OFFSET 50"));
+        + "images WHERE m_number IS NULL LIMIT 100 OFFSET 50"));
 
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL LIMIT "
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL LIMIT "
         + Integer.MAX_VALUE + " OFFSET 50"));
     }
     
