@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * Interface for transformations.
@@ -19,6 +18,9 @@ import java.io.Writer;
  */
 
 public interface CharTransformer extends Transformer {
+
+    public Writer transform(Reader r, Writer w); 
+    public Writer transformBack(Reader r, Writer w);
 
     public Writer transform(Reader r); 
     public Writer transformBack(Reader r);

@@ -27,11 +27,15 @@ import sun.misc.BASE64Encoder;
  * @author Michiel Meeuwissen 
  */
 
-public class Base64 extends AbstractTransformer implements ByteToCharTransformer {
+public class Base64 implements ByteToCharTransformer {
     private final static String ENCODING     = "BASE64";    
     private final static int BASE_64         = 1;     
 
     int to = BASE_64;
+
+    public void configure(int t) {
+        to = t;
+    }
 
     /**
      * Used when registering this class as a possible Transformer

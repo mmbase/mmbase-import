@@ -15,8 +15,15 @@ package org.mmbase.util.transformers;
  * @javadoc
  */
 
-public class UnknownCodingException extends Exception {
+public class UnknownCodingException extends RuntimeException {
     public UnknownCodingException (String e) {
         super(e);        
+    }
+
+    public UnknownCodingException (Class c, String reason, int i) {
+        super(c.getName() + ": " + reason + " '" + i + "'");        
+    }
+    public UnknownCodingException (Class c, int i) {
+        super(c.getName() + ": '" + i + "'");        
     }
 }
