@@ -13,6 +13,8 @@ import java.util.*;
 import java.io.File;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.BuilderWriter;
+import org.mmbase.util.xml.ModuleWriter;
 import org.mmbase.module.*;
 import org.mmbase.cache.MultilevelCacheHandler;
 import org.mmbase.cache.MultilevelCacheEntry;
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.41 2002-03-21 10:02:37 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.42 2002-03-26 12:54:00 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -241,9 +243,18 @@ public class MMAdmin extends ProcessorModule {
                     String savepath=(String)vars.get("PATH");
                     Module mod=(Module)getModule(modulename);
                     if (mod!=null) {
-                        XMLModuleWriter.writeXMLFile(savepath,mod);
-                        lastmsg="Writing finished, no problems.<BR><BR>\n";
-                        lastmsg+="A clean copy of "+modulename+".xml can be found at : "+savepath+"<BR><BR>\n";
+                        try {
+                            ModuleWriter moduleOut=new ModuleWriter(mod);
+                            moduleOut.setIncludeComments(true);
+                            moduleOut.writeToFile(savepath);
+                        } catch (Exception e) {
+                            log.error(Logging.stackTrace(e));
+                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
+                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
+                            return false;
+                        }
+                        lastmsg="Writing finished, no problems.<br /><br />\n"+
+                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"<br /><br />\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
@@ -254,9 +265,19 @@ public class MMAdmin extends ProcessorModule {
                     String savepath=(String)vars.get("PATH");
                     MMObjectBuilder bul=getMMObject(buildername);
                     if (bul!=null) {
-                        XMLBuilderWriter.writeXMLFile(savepath,bul);
-                        lastmsg="Writing finished, no problems.<BR><BR>\n";
-                        lastmsg+="A clean copy of "+buildername+".xml can be found at : "+savepath+"<BR><BR>\n";
+                        try {
+                            BuilderWriter builderOut=new BuilderWriter(bul);
+                            builderOut.setIncludeComments(true);
+                            builderOut.setExpandBuilder(true);
+                            builderOut.writeToFile(savepath);
+                        } catch (Exception e) {
+                            log.error(Logging.stackTrace(e));
+                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
+                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
+                            return false;
+                        }
+                        lastmsg="Writing finished, no problems.<br /><br />\n"+
+                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"<br /><br />\n";
                     }
                 }
             }
@@ -1784,7 +1805,14 @@ public class MMAdmin extends ProcessorModule {
      */
     public void syncBuilderXML(MMObjectBuilder bul,String builder) {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator+builder+".xml";
-        XMLBuilderWriter.writeXMLFile(savepath,bul);
+        try {
+            BuilderWriter builderOut=new BuilderWriter(bul);
+            builderOut.setIncludeComments(false);
+            builderOut.setExpandBuilder(false);
+            builderOut.writeToFile(savepath);
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
     }
 
     /**
@@ -1792,7 +1820,13 @@ public class MMAdmin extends ProcessorModule {
      */
     public void syncModuleXML(Module mod,String modname) {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator+modname+".xml";
-        XMLModuleWriter.writeXMLFile(savepath,mod);
+        try {
+            ModuleWriter moduleOut=new ModuleWriter(mod);
+            moduleOut.setIncludeComments(false);
+            moduleOut.writeToFile(savepath);
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
     }
 
     /**
