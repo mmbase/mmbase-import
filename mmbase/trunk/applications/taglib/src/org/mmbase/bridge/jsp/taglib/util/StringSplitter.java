@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 import java.util.Vector;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -27,7 +28,7 @@ public class StringSplitter {
      * @return a Vector containing the elements, the elements are also trimed     
      */
 
-    static public Vector split(String attribute, String delimiter) {
+    static public List split(String attribute, String delimiter) {
         Vector retval = new Vector();
         StringTokenizer st = new StringTokenizer(attribute, delimiter);
         while(st.hasMoreTokens()){
@@ -36,7 +37,7 @@ public class StringSplitter {
         return retval;
     }
 
-    static public Vector split(String string) {
+    static public List split(String string) {
         return split(string, ",");
     }
 

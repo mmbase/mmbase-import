@@ -43,7 +43,7 @@ public class RelatedTag extends ListTag {
         }
         Node node;
         if (nodesString != null && !nodesString.equals("")) {
-            node = getCloud().getNode((String)StringSplitter.split(nodesString, ",").elementAt(0));
+            node = getCloud().getNode((String)StringSplitter.split(nodesString, ",").get(0));
         } else {
             node = getNode();
             searchNodes = node.getStringValue("number");
