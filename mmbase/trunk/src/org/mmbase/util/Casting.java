@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.25 2004-09-20 16:40:13 pierre Exp $
+ * @version $Id: Casting.java,v 1.26 2004-09-22 14:53:03 pierre Exp $
  */
 
 import java.util.*;
@@ -85,7 +85,7 @@ public class Casting {
             boolean hasNext = i.hasNext();
             while (i.hasNext()) {
                 toWriter(writer, i.next());
-                hasNext = i.hasNext();
+                    hasNext = i.hasNext();
                 if (hasNext) {
                     writer.write(",");
                 }
@@ -126,7 +126,7 @@ public class Casting {
      * @since MMBase-1.6
      */
     static public Document toXML(Object o, String documentType, String conversion) {
-        if (o == null || o == MMObjectNode.VALUE_NULL || "".equals(o)) return null;
+        if (o == null || o == MMObjectNode.VALUE_NULL) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on service.
@@ -235,6 +235,10 @@ public class Casting {
             res = ((Node)i).getNumber();
         } else if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
+        } else if (i instanceof Date) {
+            long timeValue = ((Date)i).getTime();
+            if (timeValue!=-1) timeValue = timeValue / 1000;
+            res = (int) timeValue;
         } else if (i instanceof Number) {
             res = ((Number)i).intValue();
         } else if (i != null && i != MMObjectNode.VALUE_NULL) {
@@ -273,6 +277,8 @@ public class Casting {
             return ((Boolean)b).booleanValue();
         } else if (b instanceof Number) {
             return ((Number)b).intValue() > 0;
+        } else if (b instanceof Date) {
+            return ((Date)b).getTime() != -1;
         } else if (b instanceof String) {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
@@ -306,10 +312,9 @@ public class Casting {
     static public Integer toInteger(Object i) {
         if (i instanceof Integer) {
             return (Integer)i;
-        } else if (i instanceof Date) {
-            return new Integer((int) (((Date)i).getTime() / 1000));
+        } else {
+            return new Integer(toInt(i));
         }
-        return new Integer(toInt(i));
     }
 
     /**
@@ -329,7 +334,8 @@ public class Casting {
         } else if (i instanceof Number) {
             res = ((Number)i).longValue();
         } else if (i instanceof Date) {
-            res = ((Date)i).getTime() / 1000;
+            res = ((Date)i).getTime();
+            if (res!=-1) res = res / 1000;
         } else if (i instanceof MMObjectNode) {
             res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
@@ -371,7 +377,8 @@ public class Casting {
         } else if (i instanceof Number) {
             res = ((Number)i).floatValue();
         } else if (i instanceof Date) {
-            res = ((Date)i).getTime() / 1000;
+            res = ((Date)i).getTime();
+            if (res!=-1) res = res / 1000;
         } else if (i instanceof MMObjectNode) {
             res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
@@ -424,7 +431,8 @@ public class Casting {
         } else if (i instanceof Number) {
             res = ((Number)i).doubleValue();
         } else if (i instanceof Date) {
-            res = ((Date)i).getTime() / 1000;
+            res = ((Date)i).getTime();
+            if (res!=-1) res = res / 1000;
         } else if (i instanceof MMObjectNode) {
             res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Node) {
@@ -458,7 +466,7 @@ public class Casting {
                     value = value.substring(stop + 2).trim();
                     log.debug("removed <?xml part");
                 } else {
-                    throw new RuntimeException("no ending ?> found in xml:\n" + value);
+                    throw new IllegalArgumentException("no ending ?> found in xml:\n" + value);
                 }
             } else {
                 log.debug("no <?xml header found");
@@ -473,7 +481,7 @@ public class Casting {
                     value = value.substring(stop + 1).trim();
                     log.debug("removed <!DOCTYPE part");
                 } else {
-                    throw new RuntimeException("no ending > found in xml:\n" + value);
+                    throw new IllegalArgumentException("no ending > found in xml:\n" + value);
                 }
             } else {
                 log.debug("no <!DOCTYPE header found");
@@ -522,21 +530,21 @@ public class Casting {
                 log.trace("parsed: " + convertXmlToString(null, doc));
             }
             if (!errorHandler.foundNothing()) {
-                throw new RuntimeException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
+                throw new IllegalArgumentException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
             }
             return doc;
         } catch (ParserConfigurationException pce) {
             String msg = "[sax parser] not well formed xml: " + pce.toString() + "\n" + Logging.stackTrace(pce);
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new IllegalArgumentException(msg);
         } catch (org.xml.sax.SAXException se) {
             String msg = "[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se);
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new IllegalArgumentException(msg);
         } catch (java.io.IOException ioe) {
             String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new IllegalArgumentException(msg);
         }
     }
 
@@ -581,11 +589,11 @@ public class Casting {
         } catch (TransformerConfigurationException tce) {
             String message = tce.toString() + " " + Logging.stackTrace(tce);
             log.error(message);
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         } catch (TransformerException te) {
             String message = te.toString() + " " + Logging.stackTrace(te);
             log.error(message);
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
