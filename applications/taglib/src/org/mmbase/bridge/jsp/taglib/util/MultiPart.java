@@ -9,19 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import org.mmbase.bridge.jsp.taglib.TaglibException;
-import java.util.Enumeration;
+import java.util.*;
 import java.io.*;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.apache.commons.fileupload.*;
 
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.5 2004-08-31 16:25:08 rob Exp $
+ * @version $Id: MultiPart.java,v 1.6 2004-10-11 11:19:03 pierre Exp $
  **/
 
 public class MultiPart {
@@ -65,10 +66,10 @@ public class MultiPart {
     // oreilly implmenetation:
     /* Doesn't seem to work (yet)
     class MMultipartRequest {
-    
+
         private static final Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
         private MultipartRequest o;
-    
+
         MMultipartRequest(HttpServletRequest req) {
             try {
                 o = new MultipartRequest(req, System.getProperty("java.io.tmpdir"));
@@ -76,17 +77,17 @@ public class MultiPart {
                 log.warn("" + e);
             }
         };
-    
+
         public byte[] getBytes(String param) throws JspTagException {
             try {
                 File f = o.getFile(param);
                 FileInputStream fs = new FileInputStream(f);
-    
+
                 // read the file to a byte[].
                 // little cumbersome, but well...
                 // perhaps it would be littler so if we use MultipartParser
                 // but this is simpler, because oreilly..MultipartRequest is like a request.
-    
+
                 byte[] buf = new byte[1000];
                 Vector bufs = new Vector();
                 int size = 0;
@@ -115,7 +116,7 @@ public class MultiPart {
             catch (IOException e) {
                 throw new JspTagException(e.toString());
             }
-    
+
                 //} catch (org.mmbase.util.PostValueToLargeException e) {
                 //throw new JspTagException("Post value to large (" + e.toString() + ")");
                 //}
@@ -145,12 +146,21 @@ public class MultiPart {
 
     static public class MMultipartRequest {
         private static final Logger log = Logging.getLoggerInstance(MultiPart.class);
-        private org.mmbase.util.HttpPost o = null;
+        private List fileItems = null;
+//        private org.mmbase.util.HttpPost o = null;
         private String coding = null;
 
         MMultipartRequest(HttpServletRequest req, String c) {
+            try {
+                DiskFileUpload fu =  new DiskFileUpload();
+                fileItems = fu.parseRequest(req);
+            } catch (FileUploadException e) {
+                throw new RuntimeException(e);
+            }
+/* old httpPost code
             log.debug("Creating HttpPost instance");
             o = new org.mmbase.util.HttpPost(req);
+*/
             coding = c;
             log.debug("Created with encoding: "+coding);
         }
@@ -163,10 +173,18 @@ public class MultiPart {
         public byte[] getBytes(String param) throws JspTagException {
             try {
                 log.debug("Getting bytes for " + param);
+                for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
+                    FileItem fi = (FileItem)i.next();
+                    if (!fi.isFormField() && param.equals(fi.getFieldName())) {
+                        return fi.get();
+                    }
+                }
+                return null;
+/* old httpPost code
                 if (o.isPostedToFile()) {
                     File file = new File(o.getPostParameterFile(param));
                     if (!file.exists()) {
-                    	log.warn(file.getPath() + "does not exits");
+                        log.warn(file.getPath() + "does not exits");
                     }
                     FileInputStream fis = new FileInputStream(file);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -180,6 +198,7 @@ public class MultiPart {
                 } else {
                     return o.getPostParameterBytes(param);
                 }
+*/
             } catch (Exception e) {
                 log.warn(Logging.stackTrace(e));
                 throw new TaglibException(e);
@@ -195,6 +214,13 @@ public class MultiPart {
          */
         public Object getParameterValues(String param) throws JspTagException {
             // this method will return null, if the parameter is not set...
+            for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
+                FileItem fi = (FileItem)i.next();
+                if (fi.isFormField() && param.equals(fi.getFieldName())) {
+                    return fi.getString();
+                }
+            }
+/* old httpPost code
             if (!o.getPostParameters().containsKey(param)) {
                 return null;
             }
@@ -203,7 +229,7 @@ public class MultiPart {
                 log.debug("This is a multiparameter!");
                 return o.getPostMultiParameter(param, coding);
             }
-
+*/
             // get the info as String...
             byte[] data = getBytes(param);
             if (data == null) {
@@ -244,7 +270,15 @@ public class MultiPart {
         }
 
         public Enumeration getParameterNames() {
+            ArrayList ls =  new ArrayList();
+            for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
+                FileItem fi = (FileItem)i.next();
+                ls.add(fi.getFieldName());
+            }
+            return Collections.enumeration(ls);
+/* old httpPost code
             return o.getPostParameters().keys();
+*/
         }
     }
 
