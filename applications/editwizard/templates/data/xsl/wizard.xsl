@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.94 2003-07-07 13:23:46 michiel Exp $
+  @version $Id: wizard.xsl,v 1.95 2003-07-15 17:41:16 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -341,8 +341,8 @@
          name="{../@fieldname}" 
          value="{$val}" 
          class="input" 
-         onKeyUp="validate_validator(event);"
-         onChange="validate_validator(event);">
+         onkeyup="validate_validator(event);"
+         onchange="validate_validator(event);">
 
          <xsl:apply-templates select="../@*" />
         </input>
@@ -380,7 +380,7 @@
                 dtmaxlength="</xsl:text><xsl:value-of select="@dtmaxlength" /><xsl:text>"
                 class="input" wrap="soft"
                 onkeyup="validate_validator(event);"
-                onblur="validate_validator(event);"</xsl:text>
+                onblur="validate_validator(event);" </xsl:text>
           <xsl:choose>
             <xsl:when test="@cols">
               <xsl:text>cols="</xsl:text><xsl:value-of select="@cols" /><xsl:text>"</xsl:text>
@@ -402,7 +402,7 @@
           </span>
         </xsl:when>
         <xsl:when test="@ftype='relation' or @ftype='enum'">
-          <select name="{@fieldname}" class="input" onchange="validate_validator(event);" onblur="validate_validator(event);">
+          <select name="{@fieldname}" class="input" onchange="validate_validator(event);" onblur="validate_validator(event); ">
             <xsl:apply-templates select="@*" />
             <xsl:choose>
               <xsl:when test="optionlist/option[@selected='true']"></xsl:when>
@@ -453,7 +453,7 @@
                 <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
               </select>
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <select name="internal_{@fieldname}_minutes" super="{@fieldname}" onchange="validate_validator(event);" onblur="validate_validator(event);">
+              <select name="internal_{@fieldname}_minutes" super="{@fieldname}" onchange="validate_validator(event);" onblur="validate_validator(event); ">
                 <option value="0">00</option><option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option>
                 <option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option>
                 <option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option>
@@ -541,7 +541,7 @@
 
   <xsl:template name="realposition">    
   <span style="width:128" >
-    <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
+    <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event); ">
     <xsl:apply-templates select="@*" />
     </input><input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();" /></nobr>
   </span>
