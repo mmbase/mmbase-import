@@ -560,7 +560,7 @@ public class BasicCloud implements Cloud, Cloneable {
         }
 
         if (constraints!=null) {
-          pars+=" WHERE='"+constraints+"'";
+          pars+=" WHERE='"+constraints.replace(' ','_')+"'";
         }
 
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
