@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.76.2.7 2003-03-06 13:52:43 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.76.2.8 2003-03-14 13:26:06 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -301,7 +301,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (set.size() > 0) {
             return new BasicRelationManager((MMObjectNode) set.iterator().next(), this);
         } else {
-            log.error("hmm?");
+            log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist");
             return null; // calling method throws exception
         }
     }
