@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.23.4.1 2003-07-04 13:15:50 vpro Exp $
+ * @version $Id: sessions.java,v 1.23.4.2 2003-07-04 14:34:29 vpro Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -41,24 +41,21 @@ public class sessions extends ProcessorModule implements sessionsInterface {
     private MMBase mmbase;
     MMObjectBuilder props,users;
 
+    /**
+     * sessions Module constructor.
+     */
+    public sessions() {
+    }
+
     public void init() {
-        mmbase=(MMBase)getModule("MMBASEROOT");
-    }
-
-    public void onload() {
-    }
-
-    public void unload() {
-    }
-
-    public void shutdown() {
+        mmbase=MMBase.getMMBase();
     }
 
     public sessionInfo getSession(scanpage sp,String wanted) {
         if (log.isDebugEnabled()) {
             log.debug("getSession(): wanted=" + wanted);
         }
-        if (sessions!=null && wanted!=null) {
+        if (wanted!=null) {
             sessionInfo session=(sessionInfo)sessions.get(wanted);
             if (session==null) {
                 if (sp.req!=null) {
@@ -68,18 +65,13 @@ public class sessions extends ProcessorModule implements sessionsInterface {
                 }
                 sessions.put(wanted,session);
                 // get all the propertie values of this node
-
                 if (mmbase!=null) {
                     try {
-                    loadProperties(session);
+                        loadProperties(session);
                     } catch(Exception r) {}
-                    // set cookie check var
-                    // setVisitInfo(session);
                 }
-
             } else {
                 session.setValue("COOKIETEST","YES");
-                //setVisitInfo(session);
             }
             return session;
         }
@@ -87,14 +79,12 @@ public class sessions extends ProcessorModule implements sessionsInterface {
     }
 
     public void forgetSession(String wanted) {
-        if (sessions!=null) {
-            if(wanted!=null) {
-                if (sessions.containsKey(wanted)) {
-                    sessions.remove(wanted);
-                    log.info("forgetSession(" + wanted + "): Who? Don't know 'm .. sorry!");
-                } else log.warn("forgetSession(" + wanted + "): This key not found in session!");
-            } else log.error("forgetSession(" + wanted + "): wanted to forget a null!");
-        } else log.error("forgetSession(" + wanted + "): sessions is null!");
+        if(wanted!=null) {
+            if (sessions.containsKey(wanted)) {
+                sessions.remove(wanted);
+                log.info("forgetSession(" + wanted + "): Who? Don't know 'm .. sorry!");
+            } else log.warn("forgetSession(" + wanted + "): This key not found in session!");
+        } else log.error("forgetSession(" + wanted + "): wanted to forget a null!");
     }
 
     public String getValue(sessionInfo session,String wanted) {
@@ -114,9 +104,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
     }
 
     /**
-     * Sets or changes a parameter in a <code>sessionInfo</code>.
+     * Sets or changes a parameter in a sessionInfo.
      *
-     * @param session  the <code>sessionInfo</code> wich has to contain
+     * @param session  the sessionInfo wich has to contain
      *                 the parameter.
      * @param key      the name of the parameter to be set.
      * @param value    the value to wich the parameter should be set.
@@ -125,18 +115,18 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         if (session!=null) {
             return session.setValue(key,value);
         } else {
-            log.error("setValue("+key+","+value+"): sessions is null!");
+            log.error("setValue("+key+","+value+"): session is null!");
             return null;
         }
     }
 
     /**
-     * Adds a number of <code>String</code>s to a set.
+     * Adds a number of Strings to a set.
      *
-     * @param session  the <code>sessionInfo</code> containing the set.
+     * @param session  the sessionInfo containing the set.
      * @param key      the name of the set.
-     * @param value    a <code>Vector</code> containing the
-     *                 <code>String</code>s to be added to the set.
+     * @param value    a Vector containing the
+     *                 Strings to be added to the set.
      */
     public void addSetValues(sessionInfo session,String key,Vector values) {
         if (session!=null) {
@@ -146,23 +136,23 @@ public class sessions extends ProcessorModule implements sessionsInterface {
                 session.addSetValue(key,str);
             }
         } else {
-            log.error("addSetValues("+key+","+values+"): sessions is null!");
+            log.error("addSetValues("+key+","+values+"): session is null!");
         }
     }
 
     /**
-     * Adds a <code>String<code> to a set. If the <code>String</code> is
+     * Adds a String to a set. If the String is
      * allready contained by the set nothing happens.
      *
-     * @param session  the <code>sessionInfo</code> containing the set.
+     * @param session  the sessionInfo containing the set.
      * @param key      the name of the set.
-     * @param value    the <code>String</code> to be added to the set.
+     * @param value    the String to be added to the set.
      */
     public void addSetValue(sessionInfo session,String key,String value) {
         if (session!=null) {
             session.addSetValue(key,value);
         } else {
-            log.error("addSetValue("+key+","+value+"): sessions is null!");
+            log.error("addSetValue("+key+","+value+"): session is null!");
         }
     }
 
@@ -217,7 +207,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
                 } else log.error("loadProperties(): mmbase is null!");
             } else log.error("loadProperties(): session is null!");
         } catch (Exception e) {
-            //  e.printStackTrace();
+            //  log.error(Logging.stackTrace(e));
         }
     }
 
@@ -246,7 +236,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
                 } else log.error("loadProperties(): mmbase is null!");
             } else log.error("loadProperties(): session is null!");
         } catch (Exception e) {
-            //  e.printStackTrace();
+            //  log.error(Logging.stackTrace(e));
         }
     }
 
@@ -260,12 +250,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
                 return saveValueNew(session,key);
             }
         }
-
         if (mmbase==null) {
             log.error("saveValue(" + session + "," + key + "): mmbase is null!");
             return null;
         }
-
         if (session!=null) {
             if( key != null ) {
                 int id=-1;
@@ -463,12 +451,6 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         }
     }
 
-    /**
-     * SimpleModule
-     */
-    public sessions() {
-    }
-
     public Vector getList(scanpage sp, StringTagger tagger, String cmd) throws ParseException {
         String val;
         sessionInfo tmps;
@@ -513,8 +495,8 @@ public class sessions extends ProcessorModule implements sessionsInterface {
     }
 
     /**
-    *   Handle a $MOD command
-    */
+     * Handle a $MOD command
+     */
     public String replace(scanpage sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
@@ -683,6 +665,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         return state;
      }
 
+    /**
+     * Stores visiting info (counters) in a session
+     * @deprecated-now remove in 1.7, not used
+     */
     void setVisitInfo(sessionInfo session) {
         String counter=session.getValue("SESSIONCOUNT");
         if (counter==null) {
