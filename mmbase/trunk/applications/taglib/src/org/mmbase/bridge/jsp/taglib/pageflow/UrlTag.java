@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.55 2003-11-19 16:57:43 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.56 2003-12-09 10:20:06 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -144,16 +144,22 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 } else {
                     mayBeMissing = false;
                 }
-                if ((! mayBeMissing) || getContextProvider().getContextContainer().containsKey(key)) {
-                    String value = getString(key);
-                    if (log.isDebugEnabled()) {
-                        log.debug("adding parameter (with referids) " + key + "/" + value);
-                    }
+                if (key.equals("_")) {
+                    if (urlKey.equals("_")) throw new JspTagException("Should use '@' when using '_' in referids");
+                    Object value = findWriter().getWriterValue();
                     show.append(connector).append(urlKey).append("=");
-                    if (value != null) {
-                        paramEscaper.transform(new StringReader(value), w);
-                    }
+                    paramEscaper.transform(new StringReader("" + value), w);
                     connector = amp;
+                } else if ((! mayBeMissing) || getContextProvider().getContextContainer().isPresent(key)) {
+                    Object value = getObject(key);
+                    if (value != null) {                       
+                        if (log.isDebugEnabled()) {
+                            log.debug("adding parameter (with referids) " + key + "/" + value);
+                        }
+                        show.append(connector).append(urlKey).append("=");
+                        paramEscaper.transform(new StringReader(getString(key)), w);
+                        connector = amp;
+                    }
                 } else {
                     log.debug("No key '" + key + "' in context, not adding to referids");
                 }
