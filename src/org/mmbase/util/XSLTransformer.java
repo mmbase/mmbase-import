@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.12 2002-10-28 17:28:19 pierre Exp $
+ * @version $Id: XSLTransformer.java,v 1.13 2002-12-05 17:31:07 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -217,6 +217,8 @@ public class XSLTransformer {
                 if (! files[i].getName().endsWith(".xml")) continue;
                 String fileName = files[i].getName();
                 fileName = fileName.substring(0, fileName.length() - 4);
+                if (params == null) params = new HashMap();                
+                params.put("filename", fileName);        
                 File resultFile = new File(resultDir, fileName  + ".html");
                 if (resultFile.lastModified() > files[i].lastModified()) {
                     log.info("Not transforming " + files[i] + " because " + resultFile + " is up to date");
