@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Johannes Verelst
- * @version $Id: SendMail.java,v 1.13 2003-03-07 08:50:06 pierre Exp $
+ * @version $Id: SendMail.java,v 1.14 2004-07-08 10:06:02 marcel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
@@ -53,7 +53,7 @@ public class SendMail extends AbstractSendMail {
      * Server: 250 servername
      */
     private boolean connect(String host, int port) {
-        log.service("SendMail connected to host=" + host + ", port=" + port + ")");
+        log.debug("SendMail connected to host=" + host + ", port=" + port + ")");
         String result="";
 
         try {
@@ -133,17 +133,40 @@ public class SendMail extends AbstractSendMail {
      * </pre>
      */
     public synchronized boolean sendMail(String from, String to, String data, Map headers) {
+
+        // bugfix #6525 
+        // ------------
+        // marcel: be sure that mailhost is known (dont depend on init) before sending mail
+        //         (checked and verified fix)
+        // 
+        // Also added a subject line to be more descriptive to what mail gets send to
+        // detect more easily a possible abuse of our mailsystem (logfile.service now shows from, to and subject)
+        // This would also log the connect (which is debug more than a service-message)
+        // therefore line 56: 'SendMail connected to host=mailhost, port=25)' is now debug instead of service.
+        //
+        // log.service: prints the mail.from, mail.to, and mail.subject
+        // log.debug:   prints connects, send and status of mail
+
+        if(mailhost==null || mailhost.equals(""))
+             mailhost=getInitParameter("mailhost");
+
+        String subject = "";
+
         if (headers != null) {
             String headerString = "";
             for (Iterator i = headers.entrySet().iterator(); i.hasNext();) {
                 Map.Entry e  = (Map.Entry) i.next();
                 headerString += e.getKey() + ": " + e.getValue() + "\r\n";
+
+                if(e.getKey().equals("Subject"))
+                    subject = (String) e.getValue();
             }
             headerString += "\r\n";
             data = headerString + data;
         }
 
-        log.service("SendMail sending mail to " + to);
+        log.service("SendMail: sending mail from("+from+"), to("+to+"), subject("+subject+")");
+
         String answer="";
 
         // Connect to mail-host
