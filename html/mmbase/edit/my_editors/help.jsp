@@ -80,6 +80,7 @@ Can be configured using <a href="config.jsp">config.jsp</a>.<br />
 Implemented security tags. Buttons giving access to nodes and relation nodes a user is not allowed to edit are hidden.<br />
 Changed breadcrum path of 'edit relation': no longer directs you to the overview with relation nodes.<br /> 
 Changed the lay-out of the search box 'edit node #'.<br />
+21-01-2004 (v.0.7rc1): Edited optionlist in config.jsp.<br />
 </p>
 
 <%@ include file="inc_foot.jsp" %>
