@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>License Information</title>
-<link rel="stylesheet" type="text/css" href="../style/css/mmbase.css" />
+<link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
 </head>
 
 <body class="basic" >
