@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.13 2000-06-07 11:35:54 wwwtech Exp $
+ * @version $Id: servscan.java,v 1.14 2000-07-28 10:00:51 daniel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -193,7 +193,7 @@ public class servscan extends JamesServlet {
 			out.flush();
 			out.close();
 		} catch(NotLoggedInException e) {
-				debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: " + e );
+				if (debug) debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: " + e );
 		} catch(Exception a) {
 				debug( "service(): exception on page: "+getRequestURL(req));
 				a.printStackTrace();
