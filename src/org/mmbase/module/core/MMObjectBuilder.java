@@ -290,6 +290,43 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+    * Retrieves an objects type. If necessary, the type is added to the cache.
+    *
+    * added 28/10/2000
+    */
+    public int getNodeType(int number)
+    {
+      int otype=-1;
+      try {
+      	// first try our mega cache for the convert
+     	if (obj2type!=null) {
+      		Integer tmpv=(Integer)obj2type.get(new Integer(number));
+        	if (tmpv!=null) otype=tmpv.intValue();
+      	}
+	if (otype==-1 || otype==0) {
+                // first get the otype to select the correct builder
+        	MultiConnection con=mmb.getConnection();
+                Statement stmt2=con.createStatement();
+                ResultSet rs=stmt2.executeQuery("SELECT otype FROM "+mmb.baseName+"_object WHERE number="+number);
+                if (rs.next()) {
+                    otype=rs.getInt(1);
+                    // hack hack need a better way
+                    if (otype!=0) {
+                        if (obj2type!=null) obj2type.put(new Integer(number),new Integer(otype));
+                    }
+                }
+                stmt2.close();
+                con.close();
+       	}
+      } catch (SQLException e) {
+            // something went wrong print it to the logs
+            e.printStackTrace();
+            return(-1);
+      };
+      return(otype);
+   }
+
+    /**
     * get ObjectNode
     */
     public synchronized MMObjectNode getNode(String number) {
@@ -320,39 +357,16 @@ public class MMObjectBuilder extends MMTable {
         // do the query on the database
         try {
             String bul="typedef";
-            // first try our mega cache for the convert
-            int cached=-1;
-            if (obj2type!=null) {
-                Integer tmpv=(Integer)obj2type.get(new Integer(number));
-                if (tmpv!=null) cached=tmpv.intValue();
-                if (cached>0) {
-                    bul=mmb.getTypeDef().getValue(cached);
-                }
-            }
-            int bi=0;
-            if (cached==-1 || cached==0) {
-                // first get the otype to select the correct builder
-                con=mmb.getConnection();
-                Statement stmt2=con.createStatement();
-                ResultSet rs=stmt2.executeQuery("SELECT otype FROM "+mmb.baseName+"_object WHERE number="+number);
-                if (rs.next()) {
-                    bi=rs.getInt(1);
-                    // hack hack need a better way
-                    if (bi!=0) {
-                        bul=mmb.getTypeDef().getValue(bi);
-                        if (obj2type!=null) obj2type.put(new Integer(Integer.parseInt(number)),new Integer(bi));
-                    }
-                }
-                stmt2.close();
-                con.close();
-            }
+		
+	    // retrieve node's objecttype
+            int bi=getNodeType(Integer.parseInt(number));		
+            if (bi!=0) {
+            	bul=mmb.getTypeDef().getValue(bi);
+             }
             if (bul==null) {
                 debug("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
                 return(null);
             }
-
-            // weird hack needed on vpro site !
-            if (number.equals("14") || number.equals("13")) bul="reldef";
 
             con=mmb.getConnection();
             Statement stmt=con.createStatement();
