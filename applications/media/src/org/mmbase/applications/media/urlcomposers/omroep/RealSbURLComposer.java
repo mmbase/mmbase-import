@@ -17,14 +17,30 @@ import java.util.Map;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.7 2003-07-15 12:36:13 michiel Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.8 2003-11-26 16:48:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
 
     public boolean canCompose() {
-        return provider.getStringValue("host").equals("cgi.omroep.nl");
+        return provider.getStringValue("host").equals("cgi.omroep.nl") && provider.getStringValue("rootpath").charAt(0) == '%';
     }
+
+
+    /**
+     * Add the url to the buffer, but first remove the sb. or bb. prefix if it is in it already.
+     */
+    static int addURL(StringBuffer buf, String url) {
+        int length    = buf.length();
+        buf.append(url);
+        int lastSlash = length + url.lastIndexOf('/');
+        String existingPrefix = buf.substring(lastSlash + 1, lastSlash + 4);
+        if (existingPrefix.equals("sb.") || existingPrefix.equals("bb.")) { // remove existing prefix, if there is one.
+            buf.delete(lastSlash + 1, lastSlash + 4); 
+        }
+        return lastSlash;
+    }
+
     
     protected String getBandPrefix() {
         return "sb.";
@@ -38,7 +54,7 @@ public class RealSbURLComposer extends RealURLComposer {
 
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = new StringBuffer("rtsp://streams.omroep.nl");
-        int lastSlash = CgiURLComposer.addURL(buff, source.getStringValue("url"));
+        int lastSlash = addURL(buff, source.getStringValue("url"));
         buff.insert(lastSlash + 1, getBandPrefix());
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title, als
         return buff;
