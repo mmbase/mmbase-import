@@ -79,10 +79,27 @@
     </td>
 </tr>
 </table>
+<p>
+<b>Educatie traject:</b>
+</p>
+<table class="Font">
+<mm:node number="$education">
+  <mm:relatednodescontainer type="learnblocks" role="posrel">
+    <mm:sortorder field="posrel.pos" direction="up"/>
+    <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+    <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
+    <tr><% if (depth.intValue() > 2) { %><td colspan="<%= depth.intValue() - 2 %>"></td><% } %><td><mm:field name="name"/></td></tr>
+   </mm:tree>
+  </mm:relatednodescontainer>
+</mm:node>
+</table>
 
+
+    
 <mm:node referid="student">
+<p>
   <b>Toetsen van <mm:field name="firstname"/> <mm:field name="lastname"/></b>
-
+</p>
 
   <table class="listTable">
 
