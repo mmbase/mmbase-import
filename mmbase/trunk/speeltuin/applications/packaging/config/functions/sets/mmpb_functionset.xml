@@ -70,6 +70,8 @@
 			<param name="project" type="String" description="" />
 			<param name="target" type="String" description="" />
 			<param name="newversion" type="int" description="" />
+			<param name="latest" type="String" description="" />
+			<param name="createnew" type="String" description="" />
 			<return type="Boolean">
 			</return>
 		</function>
@@ -680,6 +682,420 @@
 			<param name="logid" type="int" description="">-1</param>
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+		<function name="getNeededBuilders">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>getNeededBuilders</method>
+			<param name="modelfilename" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="getNeededRelDefs">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>getNeededRelDefs</method>
+			<param name="modelfilename" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="getAllowedRelations">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>getAllowedRelations</method>
+			<param name="modelfilename" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="addNeededBuilder">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>addNeededBuilder</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="newbuilder" type="String" description="" />
+			<param name="newmaintainer" type="String" description="" />
+			<param name="newversion" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="deleteNeededBuilder">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>deleteNeededBuilder</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="oldbuilder" type="String" description="" />
+			<param name="oldmaintainer" type="String" description="" />
+			<param name="oldversion" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addNeededRelDef">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>addNeededRelDef</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="newsource" type="String" description="" />
+			<param name="newtarget" type="String" description="" />
+			<param name="newdirection" type="String" description="" />
+			<param name="newguisourcename" type="String" description="" />
+			<param name="newguitargetname" type="String" description="" />
+			<param name="newbuilder" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="deleteNeededRelDef">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>deleteNeededRelDef</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="oldsource" type="String" description="" />
+			<param name="oldtarget" type="String" description="" />
+			<param name="olddirection" type="String" description="" />
+			<param name="oldguisourcename" type="String" description="" />
+			<param name="oldguitargetname" type="String" description="" />
+			<param name="oldbuilder" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addAllowedRelation">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>addAllowedRelation</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="newfrom" type="String" description="" />
+			<param name="newto" type="String" description="" />
+			<param name="newtype" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="deleteAllowedRelation">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>deleteAllowedRelation</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="oldfrom" type="String" description="" />
+			<param name="oldto" type="String" description="" />
+			<param name="oldtype" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="getNeededBuilderInfo">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>getNeededBuilderInfo</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<return type="node">
+			</return>
+		</function>
+
+
+		<function name="getNeededBuilderFields">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>getNeededBuilderFields</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+
+
+		<function name="getNeededBuilderFieldInfo">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>getNeededBuilderFieldInfo</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<param name="field" type="String" description="" />
+			<return type="Node">
+			</return>
+		</function>
+
+		<function name="setBuilderDescription">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderDescription</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<param name="newdescription" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="setBuilderFieldDescription">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderFieldDescription</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="field" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<param name="newdescription" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addBuilderField">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>addBuilderField</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newdbname" type="String" description="" />
+			<param name="newdbtype" type="String" description="" />
+			<param name="newdbstate" type="String" description="" />
+			<param name="newdbsize" type="int" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="deleteNeededBuilderField">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>deleteNeededBuilderField</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="oldfield" type="String" description="" />
+			<return type="boolean">
+			</return>
+		</function>
+
+
+		<function name="setBuilderFieldPositions">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderFieldPositions</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="field" type="String" description="" />
+			<param name="newinputpos" type="int" description="" />
+			<param name="newsearchpos" type="int" description="" />
+			<param name="newlistpos" type="int" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setBuilderFieldDBValues">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderFieldDBValues</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="field" type="String" description="" />
+			<param name="newdbname" type="String" description="" />
+			<param name="newdbtype" type="String" description="" />
+			<param name="newdbstatus" type="String" description="" />
+			<param name="newdbsize" type="int" description="" />
+			<param name="newdbkey" type="String" description="" />
+			<param name="newdbnotnull" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setBuilderFieldGuiName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderFieldGuiName</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="field" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<param name="newguiname" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setBuilderSingularName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderSingularName</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="setBuilderPluralName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderPluralName</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="language" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="setBuilderStatus">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderStatus</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newstatus" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="setBuilderSearchAge">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderSearchAge</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newsearchage" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="setBuilderName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderName</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+		<function name="setBuilderMaintainer">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderMaintainer</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newmaintainer" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+		<function name="setBuilderVersion">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderVersion</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newversion" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+		<function name="setBuilderExtends">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderExtends</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newextends" type="String" description="" />
+			<return type="NodeList">
+			</return>
+		</function>
+
+
+		<function name="setBuilderClassName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.editors.cloudmodel.gui.Controller</class>
+			<method>setBuilderClassName</method>
+			<param name="modelfilename" type="String" description="" />
+			<param name="builder" type="String" description="" />
+			<param name="newclassname" type="String" description="" />
+			<return type="NodeList">
 			</return>
 		</function>
 
