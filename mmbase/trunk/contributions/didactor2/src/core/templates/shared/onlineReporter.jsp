@@ -22,7 +22,6 @@
                             <mm:import id="newOnlineTime" jspvar="newOnlineTime" vartype="Integer"><%=onlinetime.intValue()+Math.min(120,(System.currentTimeMillis()/1000-oldLastActivity.intValue()))%></mm:import>
 					<%
 
-                                            System.err.println("onlinetime: "+onlinetime+"\ncurrenttime: "+(System.currentTimeMillis()/1000)+"\noldlast: "+oldLastActivity.intValue()+"\nnewonlinetime: "+newOnlineTime.intValue());
 						Object oldEduObject = session.getAttribute("educationId");
 						String oldEducationId = null;
 						String educationId = request.getParameter("education") + "-" + username + "-" + session.getId();

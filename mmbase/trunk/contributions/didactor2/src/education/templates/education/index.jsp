@@ -1,5 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@page import="java.util.HashMap"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -12,8 +13,50 @@
   </mm:param>
 </mm:treeinclude>
 
-<mm:import externid="learnobject"/>
-<mm:import externid="learnobjecttype"/>
+<mm:import externid="learnobject" jspvar="learnObject"/>
+<mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
+
+<mm:import jspvar="educationNumber"><mm:write referid="education"/></mm:import>
+<%
+    if (educationNumber != null && educationNumber.length() > 0) {
+        session.setAttribute("lasteducation",educationNumber);
+    }
+    else {
+        educationNumber = (String) session.getAttribute("lasteducation");
+    }
+    if (educationNumber != null && educationNumber.length() > 0) {
+        HashMap bookmarks = (HashMap) session.getAttribute("educationBookmarks");
+        if (bookmarks== null) {
+            bookmarks = new HashMap();
+            session.setAttribute("educationBookmarks",bookmarks);
+        }
+        if (learnObject != null && learnObject.length() > 0) {
+            bookmarks.put(educationNumber+",learnobject",learnObject);
+        }
+        else {
+            learnObject = (String) bookmarks.get(educationNumber+",learnobject");
+            System.err.println("read "+educationNumber+",learnobject="+learnObject+" from session");
+            if (learnObject != null) {
+                %><mm:import id="learnobject" reset="true"><%= learnObject %></mm:import><%
+            }
+        }
+
+
+        if (learnObjectType != null && learnObjectType.length() > 0) {
+            bookmarks.put(educationNumber+",learnobjecttype",learnObjectType);
+        }
+        else  {
+            learnObjectType = (String) bookmarks.get(educationNumber+",learnobjecttype");
+            if (learnObjectType != null) { 
+                %><mm:import id="learnobjecttype" reset="true"><%= learnObjectType %></mm:import><%
+            }       
+        }
+        %><mm:import id="education" reset="true"><%= educationNumber %></mm:import><%
+    }
+%>
+    
+
+
 
 <!-- TODO some learnblocks/learnobjects may not be visible because the are not ready for elearning (start en stop mmevents) -->
 <!-- TODO when refreshing the page (F5) the old iframe content is shown -->
@@ -116,10 +159,44 @@
   function openOnly(div, img) {
     var realdiv = document.getElementById(div);
     var realimg = document.getElementById(img);
+    // alert("openOnly("+div+","+img+"); - "+realdiv);
     if (realdiv != null) {
         realdiv.setAttribute("opened", "1");
         realdiv.style.display = "block";
         realimg.src = ITEM_OPENED;
+        
+        var className = realdiv.className;
+        if (className) {
+            // ignore "lbLevel" in classname to get the level depth
+            var level = className.substring(7,className.length);
+            // alert("level = "+level);
+            var findparent = realdiv;
+            var findparentClass = className;
+            if (level > 1) {
+                // also open parents
+                do {
+                    findparent = findparent.parentNode;
+                    findparentClass = findparent.className || "";
+                } while (findparent && findparentClass.indexOf("lbLevel") != 0);
+                if (findparent) {
+                    var divid = findparent.id;
+                    var imgid = "img"+divid.substring(3,divid.length);
+                    openOnly(divid,imgid);
+                }
+            }
+        }        
+    }
+    else { // find enclosing div
+        var finddiv = realimg;
+        while (finddiv != null && (! finddiv.className || finddiv.className.substring(0,7) != "lbLevel")) {
+            finddiv = finddiv.parentNode;
+            // if (finddiv.className) alert(finddiv.className.substring(0,7));
+        }
+        if (finddiv != null) {
+            var divid = finddiv.id;
+            var imgid = "img"+divid.substring(3,divid.length);
+            openOnly(divid,imgid);
+        }
     }
  }
 

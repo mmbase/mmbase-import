@@ -6,8 +6,17 @@
 
 <mm:import id="testNo" externid="learnobject" required="true"/>
 
+
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
+
+<%-- remember this page --%>
+<mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
+    <mm:param name="learnobjecttype">tests</mm:param>
+</mm:treeinclude>
+
+
 
 <%-- find user's copybook --%>
 <mm:import id="copybookNo"/>

@@ -42,7 +42,6 @@
   </div>
   <div class="contentBody">
 
-
   
 <mm:import externid="rule"/>
 <mm:import externid="type"/>

@@ -22,10 +22,10 @@
     <mm:node number="$mailbox" notfound="skip">
       <table class="listTable">
           <tr>
-            <th><input type="checkbox" onclick="selectAllClicked(this.form,this.checked)"></input></th>
-            <th><fmt:message key="MATCHWHAT"/></th>
-            <th><fmt:message key="SUBSTRING"/></th>
-            <th><fmt:message key="FOLDER"/></th>
+            <th class="listHeader"><input type="checkbox" onclick="selectAllClicked(this.form,this.checked)"></input></th>
+            <th class="listHeader"><fmt:message key="MATCHWHAT"/></th>
+            <th class="listHeader"><fmt:message key="SUBSTRING"/></th>
+            <th class="listHeader"><fmt:message key="FOLDER"/></th>
           </tr>
       <mm:list nodes="$mailbox" path="mailboxes1,mailrule,mailboxes2">
 	<mm:field name="mailboxes2.name" id="destbox" write="false"/>
@@ -33,8 +33,8 @@
 	<mm:field name="mailrule.rule" id="rule" write="false"/>		  <mm:field name="mailrule.rnumber" id="rulereldef" write="false"/>
 	
             <tr>
-              <td><input type="checkbox" name="ids" value="<mm:write referid="mailrule"/>"></input></td>
-              <td>
+              <td class="listItem"><input type="checkbox" name="ids" value="<mm:write referid="mailrule"/>"></input></td>
+              <td class="listItem">
 		<mm:node number="$rulereldef">
 		<mm:field id="ruletype" name="sname" write="false"/>
 		<mm:compare referid="ruletype" value="subjectmailrule">
@@ -45,8 +45,8 @@
 		</mm:compare>
 		</mm:node>
               </td>
-              <td><mm:write referid="rule" /></td>
-              <td>
+              <td class="listItem"><mm:write referid="rule" /></td>
+              <td class="listItem">
 	      <mm:write referid="destbox"/>
 	      </td>
             </tr>

@@ -7,6 +7,14 @@
 
 <%@include file="/shared/setImports.jsp" %>
 
+<%-- remember this page --%>
+<mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>
+    <mm:param name="learnobjecttype">pages</mm:param>
+</mm:treeinclude>
+
+
+
 <mm:node number="$learnobject">
 
 <a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="learnobject"/>" style="align: right">Bekijk als PDF</a>.

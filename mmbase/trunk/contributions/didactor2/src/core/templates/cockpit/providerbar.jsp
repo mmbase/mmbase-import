@@ -60,13 +60,20 @@
             <mm:param name="scope">provider</mm:param>
           </mm:treeinclude>
           </mm:import>
-          <% if (!cpitem.trim().equals("")) { %>
-            <%-- we will only write the <select> box in case there is really something to print --%>        
-            <mm:write referid="extraComponentsHeader" />  
-            <%=cpitem%>
-            <mm:remove referid="extraComponentsHeader" />
-            <mm:import id="extraComponentsHeader" />
-          <% } %>
+          <% if (!cpitem.trim().equals("")) { 
+               if (cpitem.indexOf("<option") > -1) {
+                %>
+                <%-- we will only write the <select> box in case there is really an <option> for it --%>        
+                <mm:write referid="extraComponentsHeader" />  
+                <%=cpitem%>
+                <mm:remove referid="extraComponentsHeader" />
+                <mm:import id="extraComponentsHeader" />
+                <% 
+               } else { %>
+                <%-- otherwise just print the item, some components use this to put other stuff in the header --%>
+                  <%= cpitem %><%
+               }       
+            } %>
         </mm:compare>
         <mm:remove referid="mayshow" />
         <mm:remove referid="name" />
