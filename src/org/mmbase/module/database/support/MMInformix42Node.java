@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.22 $ $Date: 2000-10-18 17:15:11 $
+* @$Revision: 1.23 $ $Date: 2000-10-25 12:34:47 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -319,6 +319,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			return(-1);
 		}
 
+                node.setValue("number",number);
+
 		//bul.signalNewObject(bul.tableName,number);
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
@@ -334,7 +336,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
 			}
 		}
-		node.setValue("number",number);
 		if (debug) debug("INSERTED="+node);
 		return(number);
 	}
@@ -730,6 +731,22 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         */
         public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
 		if (debug) debug("Method: setDBByte()");
+
+		try {
+                        System.out.println("in setDBByte ... just before creating ByteArrayInputStream()");
+
+                        ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
+                        System.out.println("in setDBByte ... right after creating ByteArrayInputStream()");
+                        System.out.println("in setDBByte ... before stmt");
+                        stmt.setBinaryStream(i,stream,bytes.length);
+                        System.out.println("in setDBByte ... after stmt");
+                        stream.close();
+                } catch (Exception e) {
+                        System.out.println("MMObjectBuilder : Can't set byte stream");
+                        e.printStackTrace();
+                }
+
+
                 try {
                         ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
                         stmt.setBinaryStream(i,stream,bytes.length);
