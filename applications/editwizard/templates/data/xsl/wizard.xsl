@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.43 2002-07-15 16:27:32 michiel Exp $
+  @version $Id: wizard.xsl,v 1.44 2002-07-17 14:07:31 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -311,6 +311,8 @@
                 name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>"
                 dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>"
                 ftype="</xsl:text><xsl:value-of select="@ftype" /><xsl:text>"
+                dtminlength="</xsl:text><xsl:value-of select="@dtminlength" /><xsl:text>"
+                dtmaxlength="</xsl:text><xsl:value-of select="@dtmaxlength" /><xsl:text>"
                 class="width400" wrap="soft"
                 onkeyup="validate_validator(event);"
                 onblur="validate_validator(event);"</xsl:text>
