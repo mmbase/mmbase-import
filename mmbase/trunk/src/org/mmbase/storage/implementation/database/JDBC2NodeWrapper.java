@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.4 2003-09-03 07:25:20 michiel Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.5 2003-09-09 14:29:57 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -84,6 +84,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             node.setValue(mmfieldName, value);
         } catch (StorageException se) {
             log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
         }
         return node;
     }
@@ -103,6 +104,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return factory.getStorageManager().getStringValue(bul.getNode(number),bul.getField(fieldname));
         } catch (StorageException se) {
             log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
             return null;
         }
     }
@@ -118,6 +120,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return factory.getStorageManager().getBinaryValue(bul.getNode(number),bul.getField(fieldname));
         } catch (StorageException se) {
             log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
             return null;
         }
     }
@@ -129,9 +132,11 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return sm.getBinaryValue(rs, idx, null);
         } catch (SQLException e) {
             log.error(e.getMessage());
+            log.error(Logging.stackTrace(e));
             return null;
         } catch (StorageException se) {
             log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
             return null;
         }
     }
@@ -143,9 +148,11 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return sm.getStringValue(rs, idx, null);
         } catch (SQLException e) {
             log.error(e.getMessage());
+            log.error(Logging.stackTrace(e));
             return null;
         } catch (StorageException se) {
             log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
             return null;
         }
     }
@@ -200,8 +207,10 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             sm.setBinaryValue(stmt, i, bytes, null);
         } catch (SQLException e) {
             log.error(e.getMessage());
+            log.error(Logging.stackTrace(e));
         } catch (StorageException se) {
             log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
         }
     }
 
