@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.12 2002-01-31 10:05:13 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.13 2002-02-19 10:50:42 eduard Exp $
  */
 public class ModuleHandler implements Module {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -155,7 +155,7 @@ public class ModuleHandler implements Module {
                 return new BasicNodeList(v,cloud,tempNodeManager);
             } catch (Exception e) {
                 String message;
-                message = e.getMessage();
+                message = e.getMessage() + " " + Logging.stackTrace(e);
                 log.error(message);
                 throw new BridgeException(message);
             }
