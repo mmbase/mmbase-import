@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.11 2002-08-21 18:26:32 michiel Exp $
+ * @version $Id: Cache.java,v 1.12 2002-10-11 15:14:42 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
@@ -203,6 +203,9 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
      */
     public void setActive(boolean a) {
         active = a;
+        if (! active) clear(); 
+        // inactive caches cannot contain anything
+        // another option would be to override also the 'contains' methods (which you problable should not use any way)
     }
 
     /**
