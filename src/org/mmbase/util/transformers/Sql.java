@@ -30,6 +30,10 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
         super(ESCAPE_QUOTES);
     }
 
+    public Sql(int conf) {
+        super(conf);
+    }
+
     /**
      * Escapes single quotes in a string.
      * Escaping is done by doubling any quotes encountered.
