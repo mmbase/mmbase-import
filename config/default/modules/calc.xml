@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- DOCTYPE scancache PUBLIC "//MMBase - scancache module//" "http://www.mmbase.org/dtd/scancache.dtd" -->
+<!-- DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd" -->
 <module>
 
   <!-- <status>
@@ -11,15 +11,13 @@
   <!-- <classfile>
 	main classfile that this module is defined in
   -->
-  <classfile>org.mmbase.module.scancache</classfile>
+  <classfile>org.mmbase.module.CALC</classfile>
 
   <!-- <properties>
      you can define properties to be used by the classfile (if used) it uses
      a key/value system. Its a optional tag.
    -->
   <properties>
-	<property name="status">active</property>
-	<property name="cacheroot">/tmp/</property>
   </properties>
 
 </module>
