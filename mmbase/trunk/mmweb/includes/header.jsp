@@ -66,7 +66,8 @@
        <table cellpadding="0" cellspacing="0" border="0" id="hiero" width="100%">
          <tr>
           <mm:node number="$portal" notfound="skipbody">
-           <mm:relatednodes role="posrel" type="images" max="3" orderby="posrel.pos">
+           <mm:relatednodes role="posrel" type="images" max="3" orderby="posrel.pos"
+           	constraints="posrel.pos < 10"> <%-- reserving >= 10 for new lay-out --%>
            <mm:index>
               <td width="33%" <mm:compare value="2" inverse="true"> background="<mm:image/>"</mm:compare> >
               <mm:compare value="2">
