@@ -3,7 +3,7 @@
 <head>
 <title>News error</title>
 </head>
-<body>
+<BODY TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
 
 <table border="0" cellspacing="0" cellpadding="5">
 <tr>
