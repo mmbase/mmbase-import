@@ -47,7 +47,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.4 2003-02-04 12:40:40 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.5 2003-02-04 17:43:32 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -70,8 +70,8 @@ public class MediaSources extends MMObjectBuilder {
     public final static int DIVX_CODEC   = 5;
     
     // Status
-    public final static int    DONE   = 3; // jikes
-    public final static String STATUS_RESOURCE = "org.mmbase.applications.media.builders.resources.states";
+    public final static int    STATE_DONE   = 3; // jikes
+    public final static String STATES_RESOURCE = "org.mmbase.applications.media.builders.resources.states";
     
     public final static int MONO   = 1;
     public final static int STEREO = 2;
@@ -330,9 +330,9 @@ public class MediaSources extends MMObjectBuilder {
                     String val = node.getStringValue("state");
                     ResourceBundle bundle;
                     if (args.size() > 1) {
-                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
+                        bundle = ResourceBundle.getBundle(STATES_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
                     } else {
-                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
+                        bundle = ResourceBundle.getBundle(STATES_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
                     }
                     try {
                         return bundle.getString(val);
@@ -392,10 +392,11 @@ public class MediaSources extends MMObjectBuilder {
     
     protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
         if (urls == null) urls = new ArrayList();
-
+        log.debug("Getting urls for source " + source.getNumber());
         Iterator i = getProviders(source).iterator();
         while (i.hasNext()) {
             MMObjectNode provider = (MMObjectNode) i.next();
+            log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
             MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
             bul.getURLs(provider, source, fragment, info, urls);
         }
