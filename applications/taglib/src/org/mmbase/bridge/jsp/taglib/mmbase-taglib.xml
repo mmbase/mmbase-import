@@ -2191,17 +2191,17 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
-       For use under listrelations tag. With this you can easily find
-       the other node (it uses the 'snumber' and 'dnumber' fields for you.
+	  For use under listrelations tag. With this you can easily find
+	  the other node (it uses the 'snumber' and 'dnumber' fields for you.
     </info>
     <see>listrelations</see>
     <attribute>
-        <name>listrelations</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <refercontext>true</refercontext>
-    <info>
-      To refer to another listrelations tag then the direct parent.
+	  <name>listrelations</name>
+	  <required>false</required>
+	  <rtexprvalue>true</rtexprvalue>
+	  <refercontext>true</refercontext>
+	  <info>
+		To refer to another listrelations tag then the direct parent.
     </info>
     </attribute>
   </tag>
@@ -2417,4 +2417,89 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     </attribute>
   </tag>
+  <tag>   
+    <name>formatter</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
+    <info>
+	  This tag performs XSL and other transformations.  (EXPERIMENTAL)
+    </info>
+    <attribute>
+      <name>xslt</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		Path to the XSLT file which must, relative to the current jsp
+		file. If you want to use a default MMBase XSLT's, then you can
+		prefix by 'mmbase:', and searching will begin in
+		&lt;mmbaseconfigdir&gt;/xslt.
+	  </info>
+    </attribute>
+    <attribute>
+      <name>format</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		A few transformations are predefined in MMBase. If they are
+		XSL transformations then you can put your extensions in
+		xslt/2xhtml.xslt. This xslt can be extended from the 'basic'
+		xslt by beginning it with: &lt;xsl:import
+		href=&quot;mm:2xhtml.xslt&quot; /&gt;.
+	  </info>
+      <possiblevalue>
+		<value>xhtml</value>
+		<info>An XSLT. Transforms nodes or fields to an XHTML presentation.</info>
+	  </possiblevalue>
+	  <possiblevalue>
+		<value>rich</value>
+		<info>An XSLT. Transforms mmxf fields to simple text only presentation.</info>
+	  </possiblevalue>
+	  <possiblevalue>
+		<value>presentxml</value>
+		<info>An XSLT. Tries to make a nice presentation of XMl in XHTML, with colors and so on.</info>
+	  </possiblevalue>
+	  <possiblevalue>
+		<value>code</value>
+		<info>An XSLT. Doesn't work well. To present taglib code.</info>
+	  </possiblevalue>
+	  <possiblevalue>
+		<value>escapexml</value>
+		<info>Escapes characters which make something XML. This way you can easily present XML in XHTML pages</info>
+	  </possiblevalue>
+	  <possiblevalue>
+		<value>escapexmlpretty</value>
+		<info>Similar to escapexml, but the XML is nicely formatted for human consumption first. This required the XML to be valid, otherwise you get an exception.</info>
+	  </possiblevalue>
+   <!--
+	  <possiblevalue>
+		<value>date</value>
+		<info>
+		  Take a datetime field and formats it like a real date and/or
+		  time. Use the options attribute to specify how this must be
+		  done exactly. It is an argument for
+		  java.text.SimpleDateFormat.applyPattern.
+        </info>
+	  </possiblevalue>
+-->
+    </attribute>
+    <attribute>
+      <name>options</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		You can give options to the transformation.
+	  </info>
+    </attribute>
+	<extends>contextreferrer</extends>   
+	<extends>writer</extends>   
+    <see>xslt</see>
+  </tag>
+  <tag>   
+    <name>xslt</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.XsltTag</tagclass>
+    <info>
+      This tag must live as a subtag of Formatter. You can add 'inline' XSL with this. (EXPERIMENTAL)
+    </info>	
+	<extends>contextreader</extends>
+    <see>formatter</see>
+   </tag>
 </taglib>
