@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.82 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.83 2005-01-27 12:44:11 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1326,7 +1326,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @param node The MMObjectNode to be filled
      * @param result the resultset
      * @param builder the builder to use for creating the node
-     * @return void
      * @throws StorageException if the resultset is exhausted or a database error occurred
      */
     protected void fillNode(MMObjectNode node, ResultSet result, MMObjectBuilder builder) throws StorageException {
