@@ -881,7 +881,7 @@ public class Message extends MMObjectBuilder {
                     postfix += closeTag; // end of one ore more sublists
                     previousDepth--;
                 }
-                postfix += closeTag + closeTag;
+                postfix += closeTag;
             }
             items.set(itemNr + listheadItemNr, prefix);
             items.set(itemNr + listtailItemNr, postfix);
