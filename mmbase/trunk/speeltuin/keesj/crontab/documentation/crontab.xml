@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="productsheet">
+  <articleinfo>
+    <title>MMBase Crontab</title>
+
+		<date>2004-09-23</date>
+
+		<edition>$Id: crontab.xml,v 1.1 2004-09-23 12:39:14 michiel Exp $</edition>
+
+		<authorgroup>
+			<author>
+				<firstname>Michiel</firstname>
+				<surname>Meeuwissen</surname>
+			</author>
+		</authorgroup>
+
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified
+			is a certification mark of the Open Source Initiative.</para>
+
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site.
+			See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+	</articleinfo>
+
+	<section id="introduction">
+		<title>Introduction</title>
+		<para>
+      The crontab functionality is of course heavily inspired by UNIX' crontab. This means that you
+      can schedule jobs with it. You specify when it must run by a string like: "*/3 5-23 * * *"
+      which means every three minutes, but not during the night, or "0 7 * * *" which means every
+      day at 7 am.
+    </para>
+	</section>
+
+	<section id="installation">
+		<title>Installation</title>
+		<para>
+      To install the MMBase crondaemon, you have to place mmbase-crontab.jar and either install the
+      module (crontab.xml) or deploy the MMBaseCronTab application (with the cronjobs builder).
+    </para>
+	</section>
+
+	<section id="configuration">
+		<title>Configuration</title>
+		<para>
+      You specify what must be run by the class-name of a class implementing 'Runnable', or optionally,
+      implementing the specialized interface CronJob. The CronJob interface extends Runnable but also
+      alows for code to be run when the con-daemon stops or when it starts (a String can be provided for
+      configuration). You must implement such a class and put the class-file e.g. in WEB-INF/classes.
+    </para>
+    <para>
+      In combination with the 'ClassSecurity' feature you can easily implement CronJobs using the bridge
+      interfaces, so you might want to privilege your class in &lt;mmbase-config&gt;security/classauthentication.xml.
+    </para>
+    <para>
+      You can schedule it in two ways now. Make either a cronjobs object or edit
+      &lt;mmbase-config&gt;modules/crontab.xml.
+    </para>
+    <para>
+      We refer to the <ulink url="http://www.rt.com/man/crontab.5.html">UNIX' manual page</ulink>
+      for the schedule time format.
+    </para>
+	</section>
+
+</article>
