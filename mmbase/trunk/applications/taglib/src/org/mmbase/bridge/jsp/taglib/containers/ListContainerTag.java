@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.9 2004-07-09 17:26:37 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.10 2004-07-10 12:16:45 nico Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -66,7 +66,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         if (path == Attribute.NULL) {
             throw new JspTagException("Path attribute is mandatory");
         }
-        Cloud cloud = getCloud();
+        Cloud cloud = getProviderCloudVar();
         query = cloud.createQuery();
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));

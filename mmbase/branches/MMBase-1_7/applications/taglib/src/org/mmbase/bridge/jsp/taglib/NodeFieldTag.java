@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: NodeFieldTag.java,v 1.9 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: NodeFieldTag.java,v 1.9.2.1 2004-07-10 12:12:58 nico Exp $ 
  */
 
 public class NodeFieldTag extends FieldTag {
@@ -39,6 +39,6 @@ public class NodeFieldTag extends FieldTag {
     }
     
     public Node getNodeVar() throws JspTagException {
-        return getCloud().getNode(number.getString(this));
+        return getProviderCloudVar().getNode(number.getString(this));
     }
 }

@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.6.2.2 2004-07-05 17:20:04 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.6.2.3 2004-07-10 12:12:57 nico Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -208,7 +208,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             NodeQuery query = c.getNodeQuery();
             tree = new GrowingTreeList(query, 
                 new GrowingTreeList.PathElement(
-                        getCloud().getNodeManager(nodeManager.getString(this)), 
+                        getProviderCloudVar().getNodeManager(nodeManager.getString(this)), 
                         role.getString(this), 
                         searchDir.getString(this),
                         orderField.getString(this),

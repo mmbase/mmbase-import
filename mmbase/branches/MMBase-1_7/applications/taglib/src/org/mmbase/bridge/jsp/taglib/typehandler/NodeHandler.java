@@ -31,7 +31,7 @@ import org.mmbase.util.Encode;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.26 2004-01-19 17:22:10 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.26.2.1 2004-07-10 12:12:56 nico Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -58,7 +58,7 @@ public class NodeHandler extends AbstractTypeHandler {
     // (a nodemanager used for creating relations)
     private boolean isRelationBuilder(Node n) throws JspTagException {
         try {
-            NodeManager nm = tag.getCloud().getNodeManager(n.getStringValue("name"));
+            NodeManager nm = tag.getProviderCloudVar().getNodeManager(n.getStringValue("name"));
             // not a really good way to check, but it wil work for now
             // better is to use some property like
             //    NodeManager.getNodeClass()
@@ -75,7 +75,7 @@ public class NodeHandler extends AbstractTypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
-        if(tag.getCloud().hasNodeManager(field.getGUIType())) {
+        if(tag.getProviderCloudVar().hasNodeManager(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
@@ -89,12 +89,12 @@ public class NodeHandler extends AbstractTypeHandler {
             // args for gui function
             List args = new ArrayList();
             args.add("");
-            args.add(tag.getCloud().getLocale().getLanguage());
+            args.add(tag.getProviderCloudVar().getLocale().getLanguage());
             // should actually be added
             //args.add(sessionName);
             //args.add(tag.pageContext.getResponse());
 
-            NodeIterator nodes = tag.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
+            NodeIterator nodes = tag.getProviderCloudVar().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
 
             SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
 
@@ -153,7 +153,7 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        if (tag.getCloud().hasNodeManager(field.getGUIType())) {
+        if (tag.getProviderCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
@@ -164,7 +164,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
-        if (tag.getCloud().hasNodeManager(field.getGUIType())) {
+        if (tag.getProviderCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;

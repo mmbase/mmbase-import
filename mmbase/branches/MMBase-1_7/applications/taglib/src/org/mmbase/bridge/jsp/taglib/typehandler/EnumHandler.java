@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.17 2004-02-17 18:07:03 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.17.2.1 2004-07-10 12:12:57 nico Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -49,7 +49,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                     resource = enumType;
                     
                 }
-                bundle    = ResourceBundle.getBundle(resource, tag.getCloud().getLocale(), getClass().getClassLoader());
+                bundle    = ResourceBundle.getBundle(resource, tag.getProviderCloudVar().getLocale(), getClass().getClassLoader());
                 available = true;
             } catch (java.util.MissingResourceException e) {
                 log.warn(e.toString());

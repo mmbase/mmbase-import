@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.5.2.1 2004-04-26 16:52:51 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.5.2.2 2004-07-10 12:13:04 nico Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -92,7 +92,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (module != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
             }
-            return  FunctionFactory.getFunction(getCloud().getNodeManager(nodeManager.getString(this)), functionName);
+            return  FunctionFactory.getFunction(getProviderCloudVar().getNodeManager(nodeManager.getString(this)), functionName);
         } else if (module != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
@@ -167,10 +167,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
         }
         if (p.hasParameter(Parameter.CLOUD)) {
-            p.set(Parameter.CLOUD, getCloud());
+            p.set(Parameter.CLOUD, getProviderCloudVar());
         }
         if (p.hasParameter(Parameter.USER)) {
-            p.set(Parameter.USER, getCloud().getUser());
+            p.set(Parameter.USER, getProviderCloudVar().getUser());
         }
     }
 

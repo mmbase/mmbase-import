@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.11 2004-01-19 17:22:09 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.11.2.1 2004-07-10 12:12:57 nico Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -47,7 +47,7 @@ public class ByteHandler extends AbstractTypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
         args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-        args.set("language", tag.getCloud().getLocale().getLanguage());
+        args.set("language", tag.getProviderCloudVar().getLocale().getLanguage());
         args.set("session",  tag.getSessionName());
         PageContext pc = tag.getContextTag().getPageContext();
         args.set("response", pc.getResponse());

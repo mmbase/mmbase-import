@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.10.2.1 2004-06-08 12:28:54 johannes Exp $
+ * @version $Id: TreeFileTag.java,v 1.10.2.2 2004-07-10 12:13:01 nico Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -53,7 +53,7 @@ public class TreeFileTag extends UrlTag {
     }
 
     public int doEndTag() throws JspTagException {
-        th.setCloud(getCloud());
+        th.setCloud(getProviderCloudVar());
         // Let UrlTag do the rest
         return super.doEndTag();
     }

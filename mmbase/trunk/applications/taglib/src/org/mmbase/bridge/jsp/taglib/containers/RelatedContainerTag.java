@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.9 2004-06-30 17:51:55 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.10 2004-07-10 12:16:45 nico Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -57,7 +57,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         if (path == Attribute.NULL) {
             throw new JspTagException("Path attribute is mandatory");
         }
-        Cloud cloud = getCloud();
+        Cloud cloud = getProviderCloudVar();
         query = cloud.createQuery();
 
         Node node = getNode();

@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.TagIdentifier;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
+ * @version $Id: QueryContainer.java,v 1.2 2004-07-10 12:16:45 nico Exp $
  */
 public interface QueryContainer extends TagIdentifier, QueryContainerOrListProvider {
 
@@ -31,6 +31,6 @@ public interface QueryContainer extends TagIdentifier, QueryContainerOrListProvi
 
 
 
-    Cloud getCloud() throws JspTagException;
+    Cloud getProviderCloudVar() throws JspTagException;
 
 }
