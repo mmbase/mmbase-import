@@ -12,7 +12,6 @@
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp"%>
 
- <%@include file="actions.jsp" %>
 <%--
  <%@include file="showMessage.jsp" %>
 --%>
@@ -20,6 +19,7 @@
 <mm:import id="parameterspresent" externid="parameters" />
 <mm:import externid="parameters">portal,page</mm:import>
 
+ <%@include file="actions.jsp" %>
 
 <td colspan="2">
 
