@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.4 2003-03-21 13:04:32 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.5 2003-04-29 18:45:22 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -78,12 +78,10 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         typerel.commit();
         createdNodes.add(typerel);
 
-        // now this relation must exist.
-        
-
+        // now this relation must exist.        
         // check if it can be found by cloud
         RelationManagerList rml = cloud.getRelationManagers(newsManager, urlsManager, BIDIR_ROLE);
-        assertTrue(rml.size() > 0);          
+        assertTrue(rml.size() > 0);
         assertTrue(rml.contains(typerel));
     }
 
@@ -341,7 +339,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         createdNodes.add(typerel);
 
         RelationManager rm = newsManager.getAllowedRelations(urlsManager, MULTILEVEL_ROLE, DESTINATION).getRelationManager(0);
-        Relation r = rm.createRelation(url, news);
+        Relation r = rm.createRelation(news, url);
         r.commit();
         createdNodes.add(r);
 
@@ -356,7 +354,8 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
                                     );
        
         assertTrue(nl.size() == 1);
-        //System.out.println("news," + MULTILEVEL_ROLE + ",object");
+        System.out.println(nl);
+        System.out.println(nl.size());
         NodeList nl2 = cloud.getList(null, // startnodes
                                     "news," + MULTILEVEL_ROLE + ",object", // path
                                     "",   // fields
@@ -366,7 +365,7 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
                                     null, // searchDir
                                     false // distinct
                                     );
-        //System.out.println(nl2);
+        System.out.println(nl2);
         assertTrue(nl2.size() == 1);
 
     }
@@ -391,7 +390,8 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     public void setUp() throws Exception {
         if (cloud == null) {            
             startMMBase();
-            cloud = getRemoteCloud();
+            //cloud = getRemoteCloud();
+            cloud = getLocalCloud();
             
             // needed builders for this test.
             try {
