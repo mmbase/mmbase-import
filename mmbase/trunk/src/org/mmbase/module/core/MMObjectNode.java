@@ -548,7 +548,7 @@ public class MMObjectNode {
 			if (properties==null) {
 				properties=new Hashtable();
 				MMObjectBuilder bul=parent.mmb.getMMObject("properties");
-				Enumeration e=bul.search("WHERE parent="+getIntValue("number"));
+				Enumeration e=bul.search("parent=="+getIntValue("number"));
 				while (e.hasMoreElements()) {
 					MMObjectNode pnode=(MMObjectNode)e.nextElement();
 					String key=pnode.getStringValue("key");
