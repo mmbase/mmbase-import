@@ -164,7 +164,6 @@ public class BasicBundle implements BundleInterface {
 
         int pbs = 0; 
         // figure out how many packages we have for the progressbar
-	log.info("BA1");
         Iterator d = getNeededPackages();
         while (d.hasNext()) {
             pbs++;
@@ -176,10 +175,8 @@ public class BasicBundle implements BundleInterface {
         while (changed) {
             Iterator e = getNeededPackages();
             changed = false;
-		log.info("BA2");
             while (e.hasNext()) {
                 HashMap np = (HashMap)e.next();
-		log.info("BA3");
                 pkg = PackageManager.getPackage((String)np.get("id"));
                 if (pkg != null) {
                     String state = pkg.getState();

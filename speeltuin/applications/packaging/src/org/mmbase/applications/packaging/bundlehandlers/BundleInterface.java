@@ -34,8 +34,8 @@ public interface BundleInterface {
 	public boolean uninstall();
 
 	public ProviderInterface getProvider();
-	public Enumeration getInstallSteps();
-	public Enumeration getInstallSteps(int logid);
+	public Iterator getInstallSteps();
+	public Iterator getInstallSteps(int logid);
 	public void clearInstallSteps();
         public String getDescription();
         public String getInstallationNotes();
@@ -51,7 +51,7 @@ public interface BundleInterface {
 
 	public BufferedInputStream getJarStream();
 
-        public Enumeration getNeededPackages();
+        public Iterator getNeededPackages();
 
 	public String getPath();
 
