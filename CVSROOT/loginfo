@@ -30,13 +30,16 @@ speeltuin /home/michiel/cvsmail  /home/michiel/speeltuin.log $USER %{sVv}
 
 tests /home/michiel/cvsmail  /home/michiel/tests.log $USER %{sVv}
 
+applications /home/michiel/cvsmail  /home/michiel/applications.log $USER %{sVv}
+
+documentation /home/michiel/cvsmail  /home/michiel/documentation.log $USER %{sVv}
+
 src /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
 html /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
 config /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
-documentation /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
 #all       /home/michiel/cvsmail  /home/michiel/all.log $USER %{sVv}
 all /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
