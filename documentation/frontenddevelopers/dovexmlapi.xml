@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>2002-07-20</date>
-    <edition>$Id: dovexmlapi.xml,v 1.12 2003-07-27 17:47:51 henk Exp $</edition>
+    <edition>$Id: dovexmlapi.xml,v 1.13 2004-05-27 08:50:18 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -696,9 +696,9 @@
     <title>getlist</title>
     <para>The <sgmltag>getlist</sgmltag>command is used to retrieve lists of nodes using a set of criteria , such as nodetype and field content. The tag contains a set of <sgmltag>query</sgmltag> tags, each specifying the constraints to retrieve nodes with.</para>
     <para>Each query element should have a <sgmltag class="attribute">xpath</sgmltag> attribute to indicate the nodemanager to run the list on, and optionally a <sgmltag class="attribute">where</sgmltag> attribute that contains the field-constraints.</para>
-    <para>The <sgmltag class="attribute">xpath</sgmltag> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". It is possible that in future implementations more versatile xpaths can be used</para>
+    <para>The <sgmltag class="attribute">xpath</sgmltag> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". To do a multilevel query, make a list of nodemanagers seperated by "/" such as "/*@people/roles". It is possible that in future implementations more versatile xpaths can be used</para>
     <para>The <sgmltag class="attribute">where</sgmltag> attribute uses a SQL syntax to check a field, such as "name LIKE '%a%'". It is in all respects the same as the constraints attribute as used in the mm:listnodes tag of the MMBase taglib (described elsewhere).</para>
-    <para>Fields to retrieve can be limited in the same way as with a  <sgmltag>getdata</sgmltag> command: by specifying the fields in an <sgmltag>object</sgmltag> tag.</para>
+    <para>Fields to retrieve can be limited in the same way as with a  <sgmltag>getdata</sgmltag> command: by specifying the fields in an <sgmltag>object</sgmltag> tag. Note that when doing a multilevel query, you must specify an <sgmltag>object</sgmltag> tag with at least one <sgmltag>field</sgmltag>.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getlist (query+) >
 <!ATTLIST getlist id ID #IMPLIED>
@@ -736,7 +736,7 @@
 <request>
 
   <getlist id="7">
-    <query xpath="\*@people" where="gender ='M'">
+    <query xpath="/*@people" where="gender ='M'">
       <object>
         <field name="firstname" />
         <field name="lastname" />
@@ -752,7 +752,7 @@
 <response>
 
   <getlist id="7">
-    <query xpath="\*@people" where="firstname LIKE '%a%'">
+    <query xpath="/*@people" where="firstname LIKE '%a%'">
       <object number="675" type="people">
         <field name="firstname">Harrison</field>
         <field name="lastname">Ford</field>
@@ -774,6 +774,38 @@
 </response>
 ]]></programlisting>
     </example>
+    <example>
+      <title>Example with a multilevel query:</title>
+<programlisting format="linespecific"><![CDATA[
+<request>
+
+  <getlist id="7">
+    <query xpath="/*@people/roles" where="people.gender ='M'">
+      <object>
+        <field name="people.firstname" />
+        <field name="role.description" />
+      </object>
+    </query>
+  </getlist>
+
+</request>
+]]></programlisting>
+      <para>The result of this query could look something like this:</para>
+      <programlisting format="linespecific"><![CDATA[
+<response>
+
+  <getlist id="7">
+    <query xpath="/*@people/roles" where="people.gender ='M' ">
+      <object number="675" type="virtualnodes_1085647783628">
+        <field name="people.firstname">Harrison</field>
+        <field name="role.description">Actor</field>
+      </object>
+    </query>
+  </getlist>
+
+</response>
+]]></programlisting>
+    </example>      
   </section>
   <section>
     <title>put</title>
