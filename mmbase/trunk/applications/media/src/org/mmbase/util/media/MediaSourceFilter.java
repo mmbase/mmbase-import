@@ -206,7 +206,11 @@ public class MediaSourceFilter {
             if(format.equals("ra")) {
                 node = getRealAudio(mediasources, info);
             } else {
-                node = getFormat(mediasources, MediaSources.convertFormatToNumber(format));
+                int formatnumber = MediaSources.convertFormatToNumber(format);
+                if( formatnumber==-1) {
+                    log.error("Check you mediasourcefilter configuration");
+                }
+                node = getFormat(mediasources, formatnumber);
             } 
             if (node!=null) {
                 log.debug("found mediasource format "+format);
