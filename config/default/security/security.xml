@@ -21,8 +21,11 @@
 			class.
 
 	 -->
+	<!-- the following one stores uses the builder mmbaseusers -->
+        <authentication class="org.mmbase.security.implementation.cloud.Authenticate" url="" />
+        
 	<!-- the following one provides a user->group*->context->object structure -->
-	<authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />	 
+	<!--    <authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />	 -->
 	
 	<!-- the following one provides a login, the same as in the standard editors
 	     this means that the login will be looked up inside the account.properties 
@@ -39,8 +42,11 @@
 			be used for configuration of of the authorization
 			class.
 	 -->
+	<!-- the following one stores uses the builder mmbaseusers -->
+        <authorization class="org.mmbase.security.implementation.cloud.Verify" url="" />
+                 
 	<!-- the following one provides a user->group*->context->object structure -->	 
-	<authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />
+	<!--    <authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />  -->
 	
 	<!-- the following one provides the checking, which means that a username from accounts.properties
 	is used inside the owner field
