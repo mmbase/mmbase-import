@@ -36,7 +36,7 @@
 		  </p>
 		  <mm:field name="html(body)" /> 
           <mm:import id="articlefound" /> 
-          <hr />
+          <h1>Image</h1>
           <p>				
           If you have a recent version of ImageMagick
 		  installed, then you can also use this text in an image
@@ -49,6 +49,24 @@
             <img src="<mm:image template="s(600x80!)+f(png)+modulate(200,0)+font(mm:fonts/Arial.ttf)+fill(ff0000)+pointsize(20)+text(20,50,'$_')" />" alt="<mm:field name="title" />" />: <mm:field name="description" />
             </mm:field>
            </mm:listnodes>
+
+    <h1>Included pages</h1>
+    <p><em>With mm:include (utf-8 page):</em></p>
+    <% try { %>
+    <mm:include page="included.jsp?node=$node" />
+    <% } catch (Exception e) { %> 
+      <p>Did not work (<%=e.toString()%>)</p>
+    <% } %>
+    <p><em>With mm:include (iso-8859-1 page):</em></p>
+    <% try { %>
+    <mm:include page="included1.jsp?node=$node" />
+    <% } catch (Exception e) { %> 
+      <p>Did not work (<%=e.toString()%>)</p>
+    <% } %>
+    
+
+
+
           <hr />
           used node: <mm:write referid="node" /> (<mm:field name="number" />)<br />
           <a href="<mm:url page="index.shtml" />">SCAN version of this page</a><br />
@@ -59,6 +77,7 @@
 		<mm:notpresent referid="articlefound">
 		   <h1>The 'Codings' applications was not deployed. Please do so before going to this page.</h1>
 		 </mm:notpresent>
+
      <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 
 	  </body>
