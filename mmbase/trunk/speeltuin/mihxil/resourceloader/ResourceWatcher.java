@@ -29,15 +29,17 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.1 2004-10-02 17:36:08 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.2 2004-10-07 10:57:22 michiel Exp $
  * @see    FileWatcher
  * @see    ResourceLoader
  */
 public abstract class ResourceWatcher implements MMBaseObserver {
     private static final Logger log = Logging.getLoggerInstance(ResourceWatcher.class);
 
+    private long delay = -1;
 
     protected SortedSet resources = new TreeSet();
+
     /**
      * Wrapped FileWatcher for watching the file-resources
      */
@@ -47,12 +49,6 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
     protected ResourceWatcher(ResourceLoader rl) {
         resourceLoader = rl;
-        if (ResourceLoader.resourceBuilder != null) {
-            // TODO what happens if resourceBuilder is still null when this ResourceWatcher is instantiated ?
-            ResourceLoader.resourceBuilder.addLocalObserver(this);
-            ResourceLoader.resourceBuilder.addRemoteObserver(this);
-
-        }
     }
     protected ResourceWatcher() {
         this(ResourceLoader.getRoot());
@@ -80,9 +76,16 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     }
 
 
+    /**
+     * @return unmodifiable set of String of watched resources 
+     */
     public Set getResources() {
         return Collections.unmodifiableSortedSet(resources);
     }
+
+    /**
+     * The associated ResourceLoader
+     */
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
@@ -103,20 +106,48 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         while (i.hasNext()) {
             String resource = (String) i.next();
             FileWatcher fileWatcher = new ResourceFileWatcher(resource);
+            if (delay != -1) {
+                fileWatcher.setDelay(delay);
+            }
             fileWatchers.put(resources, fileWatcher);
         }
-        // TODO: implement MMBaseObserver stuff.
     }
 
 
     public void start() {       
-        log.info("Start to watch resource " + resources);
+        log.info("Start to watch resource " + resources + " : " + fileWatchers);
+        setUp();
         Iterator i = fileWatchers.values().iterator();
         while (i.hasNext()) {
             FileWatcher fw = (FileWatcher) i.next();
             fw.start();
+        }
+        if (ResourceLoader.resourceBuilder != null) {
+            // TODO what happens if resourceBuilder is still null when this ResourceWatcher is instantiated ?
+            ResourceLoader.resourceBuilder.addLocalObserver(this);
+            ResourceLoader.resourceBuilder.addRemoteObserver(this);
+        } else {
+            log.info("No resource-builder to register to");
+        } 
+
+    }
+
+    /**
+     * Stops watching.
+     */
+    public void exit() {
+        Iterator i = fileWatchers.values().iterator();
+        while (i.hasNext()) {
+            FileWatcher fw = (FileWatcher) i.next();
+            fw.exit();
+            i.remove();
+        }
+        if (ResourceLoader.resourceBuilder != null) {
+            ResourceLoader.resourceBuilder.removeLocalObserver(this);
+            ResourceLoader.resourceBuilder.removeRemoteObserver(this);
         }        
     }
+
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
      * @param resourceName The resource that was changed.
@@ -127,6 +158,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      * Set the delay to observe between each check of the file changes.
      */
     public void setDelay(long delay) {
+        this.delay = delay;
         Iterator i = fileWatchers.values().iterator();
         while (i.hasNext()) {
             FileWatcher fw = (FileWatcher) i.next();
@@ -172,13 +204,6 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         return "" + resources;
     }
 
-    public boolean equals(Object o) {
-        if (!(o instanceof ResourceWatcher)) {
-            return false;
-        }
-        ResourceWatcher f = (ResourceWatcher)o;
-        return this.getClass().equals(f.getClass()) && this.resources.equals(f.resources);
-    }
 
     protected class ResourceFileWatcher extends FileWatcher {
         private String resource;
@@ -186,10 +211,8 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             this.resource = resource;
         }
         protected void onChange(File f) {
-            // a file has changed!
-            
+            // a file has changed!            
             // should determine here if this file is not 'shadowed', in which case a warning should be logged.
-
             ResourceWatcher.this.onChange(resource);
         }
     }
