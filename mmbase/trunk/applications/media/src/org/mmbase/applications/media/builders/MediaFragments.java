@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.33 2004-05-08 10:38:28 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.34 2004-05-17 19:43:02 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -327,6 +327,10 @@ public class MediaFragments extends MMObjectBuilder {
                     log.debug("Yes, found parent of " + fragment.getNumber() + " " + relation.getIntValue("snumber"));
                 }
                 MMObjectNode parent = getNode(relation.getIntValue("snumber"));
+                if (fragments.contains(parent)) {
+                    log.warn("Circular fragment nesting detected " + fragments + " breaking infinite loop");
+                    return false;
+                }
                 fragments.push(parent);
                 return true;
             }
@@ -491,4 +495,15 @@ log.info("store value in seconds: "+val);
         }
         return super.setValue(node,fieldname);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Stack.contains is used, so make sure equal node are equal.
+     */
+
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
+        return o1.getNumber() == o2.getNumber();
+    }
+
 }
