@@ -67,18 +67,29 @@ public class MMNode extends MMTaglib implements BodyTag {
 
 	    	// node is the node with which you want to fiddle
 			Node node = getDefaultCloud().getNode(number);
-			if(field!=null) {
-				value = ""+node.getStringValue(field);
-				System.out.println("getField -> field="+field); 
+			if(node==null) {
+				value = "mm:node number="+number+", Cannot find Node with number "+number;
+	    		bodyOut.clearBody();
+	    		bodyOut.print(value);
+	    		bodyOut.writeOut(bodyOut.getEnclosingWriter());
+        		return SKIP_BODY;
 			}
+			
+
+			if(field!=null) {
+				value = node.getStringValue(field);
+				if(value==null) {
+					value = "mm:node number="+number+" hasn't got field "+field;
+				}
+				
+			}
+
 			if(action!=null) {
 				if(action.toLowerCase().equals("countrelations")) {
 					if(type==null) {
 						value = ""+node.countRelations();
-						System.out.println("countRealtions ->"); 
 					} else {
 						value = ""+node.countRelations(type);
-						System.out.println("countRealtions -> type="+type); 
 					}
 				}
 				if(action.toLowerCase().equals("countrelatednodes")) {
