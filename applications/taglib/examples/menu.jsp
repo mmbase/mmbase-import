@@ -18,6 +18,8 @@
   |
   <a href="<mm:url page="variables.jsp" />" >variables</a>
   |
+  <a href="<mm:url page="jstl.jsp" />" >JSTL</a>
+  |
   <a href="<mm:url page="context.jsp?haj=hallo" />" >context</a>
   |
   <a href="<mm:url page="time.jsp" />" >time</a>
