@@ -16,12 +16,8 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainerReferrer.java,v 1.1 2003-07-23 17:46:58 michiel Exp $
+ * @version $Id: NodeListContainerReferrer.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
  */
-public interface NodeListContainerReferrer {
+public interface NodeListContainerReferrer extends ContainerReferrer {
 
-    /**
-     * If it should not use parent container 
-     */
-    void setContainer(String c)  throws JspTagException;
 }
