@@ -55,7 +55,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.292 2005-02-09 08:36:33 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.293 2005-03-07 08:42:18 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2009,11 +2009,16 @@ public class MMObjectBuilder extends MMTable {
     public String getGUIIndicator(String field, MMObjectNode node) {
         FieldDefs fieldDef = getField(field);
         if (fieldDef.getDBType() == FieldDefs.TYPE_NODE && ! field.equals(FIELD_NUMBER)) {
-            MMObjectNode otherNode = node.getNodeValue(field);
-            if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
-                return "NULL";
-            } else {
-                return otherNode.parent.getGUIIndicator(otherNode);
+            try {
+                MMObjectNode otherNode = node.getNodeValue(field);
+                if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
+                    return "";
+                } else {
+                    return otherNode.parent.getGUIIndicator(otherNode);
+                }
+            } catch (RuntimeException rte) {
+                log.warn("Cannot load node from field " + field +" in node " + node.getNumber() + ":" +rte);
+                return "invalid";
             }
         } else {
             return null;
@@ -3718,8 +3723,8 @@ public class MMObjectBuilder extends MMTable {
      * Declared the method final, because the instanceof operator is used. This is the only
      * MMObjectBuilder is frequently extended and subclasses will always break
      * the equals contract.
-     * When subclasses require to implement the equals method then we should use 
-     * getClass() == o.getClass(), but this has its own issues. For more info, search for equality in Java  
+     * When subclasses require to implement the equals method then we should use
+     * getClass() == o.getClass(), but this has its own issues. For more info, search for equality in Java
      *
      * @since MMBase-1.6.2
      */
@@ -3739,7 +3744,7 @@ public class MMObjectBuilder extends MMTable {
     public int hashCode() {
         return tableName == null ? 0 : tableName.hashCode();
     }
-    
+
     /**
      * Implements for MMObjectNode
      * @since MMBase-1.6.2
