@@ -56,6 +56,7 @@ public class Project {
    public Project(String name,String path) {
 	this.name=name;
 	this.path=path;
+	basedir=expandBasedir("."); // set basedir to default
 	readTargets();
    }
 
@@ -134,7 +135,6 @@ public class Project {
 	}
 	// check if the dirs are created, if not create them
 	String dirsp=basedir+path.substring(0,path.lastIndexOf(File.separator));
-	log.info("WOOOT="+dirsp);
 	File dirs=new File(dirsp);
 	if (!dirs.exists()) {
 		dirs.mkdirs();
