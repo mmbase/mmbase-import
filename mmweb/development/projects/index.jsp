@@ -3,6 +3,7 @@
 <mm:cloud>
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
+<mm:import id="template">/development/projects/project.jsp</mm:import>
 <td class="white" colspan="2" valign="top">
   <mm:listnodes type="project" orderby="status,number" directions="down" id="projectlist">
     <mm:changed>
@@ -10,13 +11,13 @@
     </mm:changed>
   </mm:listnodes>
 
-  <mm:list referid="projectlist">
+  <mm:listnodes id="project" referid="projectlist">
     <mm:changed>
       <h1><a name="<mm:field name="number" />"><mm:field name="status"/></a></h1>
     </mm:changed>
-    <h2><a href="/development/projects/project.jsp?project=<mm:field name="number" />&portal=<mm:write referid="portal" />"><mm:field name="title" /></a></h2>
+       <h2><a href="<mm:url referids="portal,page,project,template" />"><mm:field name="title" /></a></h2>
     <mm:field name="intro" />
-  </mm:list>
+  </mm:listnodes>
    <br/><br/>
 </td>
 
