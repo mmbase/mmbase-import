@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.15 2003-08-06 19:43:06 michiel Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.16 2003-08-07 14:34:20 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
@@ -55,15 +55,13 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         } else {
             log.debug("Search the node.");
             Node node = getNode();
-            NodeManager other = type      == Attribute.NULL ? getCloud().getNodeManager("object") : getCloud().getNodeManager(type.getString(this));
-            int search = RelationStep.DIRECTIONS_BOTH;
-            if (searchDir != Attribute.NULL) {
-                String string = searchDir.getString(this).toLowerCase();
-                for (search = 0; search < RelationStep.DIRECTIONALITY_NAMES.length; search ++) {
-                    if (string.equals(RelationStep.DIRECTIONALITY_NAMES[search])) break;
-                }
-            }
-            helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), search)));
+            NodeManager other = 
+                type == Attribute.NULL ? 
+                getCloud().getNodeManager("object") : 
+                getCloud().getNodeManager(type.getString(this));
+            String direction = (String) searchDir.getValue(this);
+            if (direction == null) direction = "BOTH";
+            helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), direction)));
         }
         if (getId() != null) {
             getContextProvider().getContainer().register(getId(), helper.getValue());
