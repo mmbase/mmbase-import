@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.11 2000-05-30 11:32:48 wwwtech Exp $
+ * @version $Id: servscan.java,v 1.12 2000-06-05 16:16:07 wwwtech Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -47,7 +47,6 @@ public class servscan extends JamesServlet {
 	// private static idInterface id=null;
 	// private static StatisticsInterface stats=null;
 
-	private static String loadmode="no-cache";
 	private static String htmlroot;
 
 	//int lastlistitem=0;
@@ -353,12 +352,15 @@ public class servscan extends JamesServlet {
 			// new new new scancache setup, needs to be moved
 			// ----------------------------------------------
 
+			// This depends on the PRAGMA: no-cache header
+			// Which Internet Explorer does not send.
+
 			if (sp.body!=null && sp.body.indexOf("<CACHE HENK>")!=-1) {
 				sp.wantCache="HENK";
 //				debug("handleCache(): CACHE="+parser.scancache);
 				String rst=parser.scancache.get(sp.wantCache,req_line);
 				String pragma = sp.getHeader("Pragma");
-				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
+				if (rst!=null && (pragma==null || !pragma.equals(sp.loadmode))) {
 					setHeaders(sp,res,rst.length());
 					// org.mmbase res.writeHeaders();
 					out.print(rst);
@@ -375,7 +377,7 @@ public class servscan extends JamesServlet {
 				sp.wantCache="PAGE";
 				String pragma = sp.getHeader("Pragma");
 				String rst=parser.scancache.get(sp.wantCache,req_line);
-				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
+				if (rst!=null && (pragma==null || !pragma.equals(sp.loadmode))) {
 					setHeaders(sp,res,rst.length());
 					// org.mmbase res.writeHeaders();
 					out.print(rst);
@@ -437,21 +439,21 @@ public class servscan extends JamesServlet {
 						int then=Integer.parseInt(tmp2);
 						int now=(int)(DateSupport.currentTimeMillis()/1000);
 						if ((now-then)<300) {
-							loadmode="no-cache";
+							sp.loadmode="no-cache";
 						} else {
 							session.setValue("RELOAD","N");
-							loadmode="o-cache";
+							sp.loadmode="cache";
 						}
 					} catch(Exception e) {
 						session.setValue("RELOAD","N");
-						loadmode="o-cache";
+						sp.loadmode="cache";
 					}
 				} else {
 					session.setValue("RELOAD","N");
-					loadmode="o-cache";
+					sp.loadmode="cache";
 				}
 			} else {
-				loadmode="o-cache";
+				sp.loadmode="cache";
 			}
 		}
 	}
