@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.3 2003-05-22 10:06:48 pierre Exp $
+  @version   $Id: wizard.xsl,v 1.4 2003-05-26 15:09:33 pierre Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -53,12 +53,15 @@
  <!-- The first row of the the body's table -->
   <xsl:template name="title">
     <tr>
-      <td colspan="2" class="mysteps_top">        
+      <td class="mysteps_top">        
         <span class="title"><nobr><a href="{$referrer}" class="step">Redactietools</a>: 
         <span class="titleprompt" ><xsl:value-of select="title" /></span>
-	</nobr></span>
+				 </nobr></span>
       </td>
-    </tr>   
+		 <td class="mysteps_top">
+        <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}" target="_blank" class="step">[debug]</a></xsl:if>
+		 </td>
+		</tr>
   </xsl:template>
 
  <xsl:template match="steps-validator">
