@@ -12,13 +12,26 @@ package org.mmbase.service.interfaces;
 import org.mmbase.service.*;
 
 /**
+ * @javadoc
  * @rename CdplayerInterface
-  * @author Daniel Ockeloen
- * @version $Revision: 1.5 $ $Date: 2001-12-14 09:33:51 $
+ * @author Daniel Ockeloen
+ * @version $Id: cdplayerInterface.java,v 1.6 2002-04-29 10:54:18 pierre Exp $
  */
 public interface cdplayerInterface extends serviceInterface {
-	public String getVersion();
-	public int getTrack(int number,String filename);
-	public String getListCD();
-	public String getInfoCDtoString();
+    /**
+     * @javadoc
+     */
+    public String getVersion();
+    /**
+     * @javadoc
+     */
+    public int getTrack(int number,String filename);
+    /**
+     * @javadoc
+     */
+    public String getListCD();
+    /**
+     * @javadoc
+     */
+    public String getInfoCDtoString();
 }

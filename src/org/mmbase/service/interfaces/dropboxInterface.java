@@ -12,13 +12,30 @@ package org.mmbase.service.interfaces;
 import org.mmbase.service.*;
 
 /**
+ * @javadoc
  * @rename DropboxInterface
-  * @author Daniel Ockeloen
+ * @author Daniel Ockeloen
+ * @version $Id: dropboxInterface.java,v 1.5 2002-04-29 10:54:19 pierre Exp $
  */
 public interface dropboxInterface extends serviceInterface {
-	public String getVersion();
-	public void setCmd(String cmd);
-	public void setDir(String dir);
-	public void setWWWPath(String path);
-	public String doDir(String cmds);
+    /**
+     * @javadoc
+     */
+    public String getVersion();
+    /**
+     * @javadoc
+     */
+    public void setCmd(String cmd);
+    /**
+     * @javadoc
+     */
+    public void setDir(String dir);
+    /**
+     * @javadoc
+     */
+    public void setWWWPath(String path);
+    /**
+     * @javadoc
+     */
+    public String doDir(String cmds);
 }
