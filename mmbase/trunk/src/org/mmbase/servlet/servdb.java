@@ -41,7 +41,8 @@ public class servdb extends JamesServlet {
 
 //  ---------------------------------------------------
 	private String 	classname 	= getClass().getName();
-	private	boolean	debug		= false;
+	private	boolean	debug		= true;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 //  ---------------------------------------------------
 
 	private		Date 				lastmod 	= null, tempdate;
@@ -105,11 +106,13 @@ public class servdb extends JamesServlet {
     {
 		scanpage sp = getscanpage( req, res );
 
-		boolean isInternal = isInternal(sp);
+		boolean isInternal = sp.isInternalVPROAddress();
+
+		boolean cacheReq=true;
 
 		// if (debug)
 		{
-			String msg = "["+getAddress(sp);
+			String msg = "["+sp.getAddress();
 
 			if( isInternal )
 				msg = msg + "(*)"; 
@@ -128,6 +131,8 @@ public class servdb extends JamesServlet {
 		String mimetype="image/jpeg";
 
 		String req_line=req.getRequestURI();
+		boolean	audio = (req_line.indexOf("rastream") != -1);
+
 //		debug("REQ_LINE="+req_line);
 		// org.mmbase res.setKeepAlive(true);
 
@@ -169,7 +174,7 @@ public class servdb extends JamesServlet {
 		}
 		templine2 = req.getHeader("Pragma");
 
-		if (cache!=null && cache.get("www"+req.getRequestURI()+req.getQueryString())!=null && (templine2==null || templine2.indexOf("no-cache")==-1)) {
+		if (cache!=null && cache.get("www"+req.getRequestURI()+req.getQueryString())!=null && (templine2==null || templine2.indexOf("no-cache")==-1) && !audio ) {
 //			debug("service(): GRRR1");
 			cline=cache.get("www"+req.getRequestURI()+req.getQueryString());
 			filesize=cline.filesize;
@@ -242,9 +247,10 @@ public class servdb extends JamesServlet {
 
 					if (req.getRequestURI().indexOf("img")!=-1) {
 						Images bul=(Images)mmbase.getMMObject("images");
-						cline.buffer=bul.getImageBytes5(getParamVector(req));
+						cline.buffer=bul.getImageBytes5(sp, getParamVector(req));
 						cline.mimetype=bul.getImageMimeType(getParamVector(req));
 						mimetype=cline.mimetype;
+						// System.out.println("servdb::service(img): The contenttype for this image is: "+mimetype);
 
 						// check point, plugin needed for mirror system
 						checkImgMirror(req);
@@ -278,6 +284,8 @@ public class servdb extends JamesServlet {
 					{
 						debug("service(rastream)");
 
+						boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
+
 						// is it a audiopart or an episode ?
 						// ---------------------------------
 
@@ -292,7 +300,9 @@ public class servdb extends JamesServlet {
 							cline.buffer = playlists.getRAMfile( isInternal, vec );
 						} else {
 							if (debug) debug("service(rastream): rastream found");
-							cline.buffer = getRAStream(vec,sp,res);
+								long time = System.currentTimeMillis();
+								cline.buffer = getRAStream(vec,sp,res,isInternal);
+								debug("service(): getRAStreams(): took "+(System.currentTimeMillis()-time)+" ms.");
 						}
 
 						if (cline.buffer!=null) {
@@ -336,7 +346,7 @@ public class servdb extends JamesServlet {
 						else
 						{
 							if (debug) debug("service(rastream): rastream found");
-							cline.buffer=getRMStream(vec,sp,res);
+							cline.buffer=getRMStream(vec,sp,res,isInternal);
 						}
 
 						if (cline.buffer!=null) {
@@ -389,6 +399,7 @@ public class servdb extends JamesServlet {
 							cline.buffer=playlists.getRAMfile(isInternal, vec);
 							cline.mimetype="audio/x-pn-realaudio";
 							mimetype=cline.mimetype;
+							cacheReq=false;
 						}
 					// ----
 					// jump
@@ -434,11 +445,13 @@ public class servdb extends JamesServlet {
 							out.write(cline.buffer,0,filesize);
 							out.flush();
 							out.close();
-							cache.put("www"+req.getRequestURI()+req.getQueryString(),cline);
+
+							if(len>0 && cacheReq)
+								cache.put("www"+req.getRequestURI()+req.getQueryString(),cline);
 						} catch(Exception e) {
 							debug("Servfile : Error writing to socket");
 							len=-1;
-						}
+						} 
 					}
 			}
 		}
@@ -596,6 +609,9 @@ public class servdb extends JamesServlet {
 		return(params);
 	}
 
+	/**
+	*
+	*/
 	public Vector checkSessionJingle(scanpage sp,Vector params,HttpServletResponse res) {
 		sessionInfo session=sessions.getSession(sp,sp.sname);
 		boolean havesession=false,havesbj=false;
@@ -643,6 +659,9 @@ public class servdb extends JamesServlet {
 		return(params);
 	}
 
+	/**
+	*
+	*/
 	public Vector addRAMSpeed(scanpage sp, Vector params,HttpServletResponse res) {
 		String wspeed=null,wchannels=null;
 		int ispeed=16000;int ichannels=1;
@@ -674,9 +693,9 @@ public class servdb extends JamesServlet {
 		return(params);
 	}
 
-
-
-
+	/**
+	*
+	*/
 	public byte[] getXML(Vector params) {
 		debug("getXML(): param="+params);
 		String result="";
@@ -716,514 +735,15 @@ public class servdb extends JamesServlet {
 		return(data);	
 	}
 
+	/**
+	*
+	*/
 	public byte[] getDTD(Vector params) {
 		String result="Test DTD";
 		byte[] data=new byte[result.length()];
 		result.getBytes(0,result.length(),data,0);	
 		return(data);	
 	}
-
-	public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp) {
-		flipper=!flipper;
-		String wspeed=null,wpart=null,wchannels=null;
-		int ispeed=80000;int ichannels=2;
-		MMObjectBuilder bul=mmbase.getMMObject("rawaudios");
-		// check if we want autoread ?
-		String auto=getParamValue("a",params);
-		if (auto!=null && auto.equals("session")) {
-			// aaaa
-			String nummer=getParamValue("n",params);
-			sessionInfo session=sessions.getSession(sp,sp.sname);
-
-			if (session!=null) {
-				wpart=nummer;
-				wspeed=sessions.getValue(session,"SETTING_RASPEED");
-				if (wspeed!=null) {
-					wchannels=sessions.getValue(session,"SETTING_RACHANNELS");
-				} else {
-					// so no speed set then return to signal a goto
-					wspeed = "16000";
-					wchannels = "1";
-				}
-				try {
-					ispeed=Integer.parseInt(wspeed);
-					ichannels=Integer.parseInt(wchannels);
-				} catch(Exception e) {
-				}
-			}
-		} else {
-		try {
-			try {
-			wpart = (String)params.elementAt(0);
-			int u=Integer.parseInt(wpart);
-			} catch(Exception e) {
-				debug("getRAStream(): ERROR: RAservlet got a string as number value");
-				wpart="1";
-			}
-		} catch(Exception e) {
-			wpart = null;
-		}
-		try {
-			wspeed = (String)params.elementAt(1);
-			// hack hack
-			ispeed=Integer.parseInt(wspeed);
-		} catch(Exception e) {
-			wspeed = null;
-		}
-		try {
-			wchannels = (String)params.elementAt(2);
-			// hack hack
-			ichannels=Integer.parseInt(wchannels);
-		} catch(Exception e) {
-			wchannels = null;
-		}
-		}
-		debug("getRAStream(): Number="+wpart+" speed="+wspeed+" wchannels="+wchannels);
-		// added for statistics
-		//setCount(wspeed,wchannels); 
-
-		String result="",bestresult="";
-		int bestspeed=0,bestchannels=0;
-		if (wpart!=null) 
-		{
-			String where="id=="+wpart;
-			//if (wspeed!=null) where+="+speed=="+wspeed;
-			//if (wchannels!=null) where+="+channels=="+wchannels;
-			//Enumeration res=bul.search(where);
-			Vector tmp=(Vector)numrabuf.get(where);
-			if (tmp==null) {
-				tmp=bul.searchVector(where);
-				if (tmp!=null) {
-					numrabuf.put(where,tmp);
-				} else {
-					numrabuf.put(where,new Vector());
-				}	
-			}
-			Enumeration res=tmp.elements();
-			MMObjectNode node;
-			boolean surestream=false;
-			for (;res.hasMoreElements();) 
-			{
-				node=(MMObjectNode)res.nextElement();
-				//debug("getRAStream(): WOW="+node);
-				int id		= node.getIntValue("id");	
-				int format	= node.getIntValue("format");
-				int speed	= node.getIntValue("speed");
-				int status	= node.getIntValue("status");
-				int channels= node.getIntValue("channels");
-				String url	= node.getStringValue("url");
-
-				// try to obtain the song info for ra window
-				MMObjectBuilder bul2=mmbase.getMMObject("cdtracks");
-				MMObjectNode node2=bul2.getNode( id );
-				String title=node2.getStringValue("title");
-				if (title==null) title="";
-
-				//debug("getRAStream("+id+"): Gettting start/stop time.");
-
-				// ---------
-				// startstop
-				// ---------
-		
-				String	starttime = null;
-				String	stoptime  = null;	
-				// get prop object	
-				// ---------------
-
-				MMObjectBuilder 	bulstartstop 	= mmbase.getMMObject("properties");
-				if (bulstartstop != null)
-				{
-					// get node from props
-					// -------------------
-
-					MMObjectNode		nodestartstop 	= bulstartstop.getNode( id ); // check this
-					if (nodestartstop != null)
-					{
-						//debug("Found node");
-						// get value from prop
-						// -------------------
-
-						MMObjectNode sStartprop = (MMObjectNode) nodestartstop.getProperty("starttime");
-						if (sStartprop != null)
-						{
-							String				sStartkey		= sStartprop.getStringValue( "key") ;
-							String				sStartvalue		= sStartprop.getStringValue( "value" );
-							starttime = sStartvalue;
-							//debug("starttime:"+sStartvalue);
-						}
-						//else
-							//debug("no starttgime defined");
- 
-						MMObjectNode	sStopprop = (MMObjectNode) nodestartstop.getProperty("stoptime");
-						if (sStopprop != null)
-						{
-							String				sStopkey		= sStopprop.getStringValue( "key" ) ;
-							String				sStopvalue		= sStopprop.getStringValue( "value" );
-							stoptime = sStopvalue;
-							//debug("stoptime:"+sStopvalue);
-						}
-						//else
-							//debug("no stoptime defined");
-					}
-					//else
-						//debug("getRAStream("+id+"): ERROR: could not get node for start/stop times.");
-				}
-				//else
-					//debug("getRAStream("+id+"): ERROR: Cannot get properties for this file.");
-
-
-				// try to obtain the group
-				String author=null;
-				Enumeration g=mmbase.getInsRel().getRelated(node2.getIntValue("number"),1573);
-				if (g.hasMoreElements()) {
-					node2=(MMObjectNode)g.nextElement();
-					author=node2.getStringValue("name");
-					//debug("Found related"+author+" "+node2);
-				}
-				if (author==null) author="";
-
-				// end obtain
-				if (surestream==false && format==2 && url!=null && status>1) 
-				{
-
-					// niet duidelijk waar dit voor is, daniel.
-					// detect new url format (multihost)
-
-					String startend = "";
-					if (starttime != null) startend  = "&start=\""+starttime+"\"";
-					if (stoptime  != null) startend += "&end=\""+stoptime+"\"";
-
-					if (url.indexOf("F=")!=-1) {
-						String tmpa=getBestMirrorUrl(sp,url);
-						result+="pnm://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-					} else {
-						if (url.indexOf("http://station.vpro.nl/audio/ra/")==0) {
-							if (flipper) 
-								result+="pnm://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-							else
-								result+="pnm://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-						}
-					}
-					// eind van niet duidelijk.
-					if (wspeed!=null && wchannels!=null) 
-					{
-						if (speed>bestspeed && speed<=ispeed) {
-							bestspeed=speed;
-							bestchannels=channels;
-							// detect new url format (multihost)
-							if (url.indexOf("F=")!=-1) {
-								String tmpa=getBestMirrorUrl(sp,url);
-								bestresult="pnm://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-							} else {
-								if (flipper) 
-									bestresult="pnm://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-								 else 
-									bestresult="pnm://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-							}
-						} else if (speed==bestspeed && channels>bestchannels && channels<=ichannels) {
-							bestspeed=speed;
-							bestchannels=channels;
-							// detect new url format (multihost)
-							if (url.indexOf("F=")!=-1) {
-								String tmpa=getBestMirrorUrl(sp,url);
-								bestresult="pnm://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\"\n";
-							} else {
-								if (flipper) {
-									bestresult="pnm://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-								} else {
-									bestresult="pnm://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-								}
-							}
-						}
-					}
-				} 
-				else 
-				if (format==6 && url!=null && status>1) 
-				{
-					debug("getRAStream("+url+"): surestream detected");
-					surestream=true;
-					// niet duidelijk waar dit voor is, daniel.
-					// detect new url format (multihost)
-
-					String startend = "";
-					if (starttime != null) startend  = "&start=\""+starttime+"\"";
-					if (stoptime  != null) startend += "&end=\""+stoptime+"\"";
-
-					if (url.indexOf("F=")!=-1) {
-						String tmpa=getBestMirrorUrl(sp,url);
-						bestresult="rtsp://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-					} else {
-						if (url.indexOf("rtsp://station.vpro.nl/audio/ra/")==0) {
-							bestresult="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-						}
-					}
-					bestspeed=speed;
-					bestchannels=channels;
-				}
-			}
-		}
-		if (wspeed!=null && wchannels!=null) {
-			// debug("getRAStream(): I have("+bestresult+")");
-
-			byte[] data=new byte[bestresult.length()];
-			bestresult.getBytes(0,bestresult.length(),data,0);	
-			return(data);	
-		} else {
-			// debug("getRAStream(): result: I have("+result+")");
-
-			byte[] data=new byte[result.length()];
-			result.getBytes(0,result.length(),data,0);	
-			return(data);	
-		}
-	}
-
-
-	public byte[] getRMStream(Vector params, scanpage sp,HttpServletResponse resp) {
-		flipper=!flipper;
-		String wspeed=null,wpart=null,wchannels=null;
-		int ispeed=80000;int ichannels=2;
-		MMObjectBuilder bul=mmbase.getMMObject("rawaudios");
-		// check if we want autoread ?
-		String auto=getParamValue("a",params);
-		if (auto!=null && auto.equals("session")) {
-			// aaaa
-			String nummer=getParamValue("n",params);
-			sessionInfo session=sessions.getSession(sp,sp.sname);
-			if (session!=null) {
-				wpart=nummer;
-				wspeed=sessions.getValue(session,"SETTING_RASPEED");
-				if (wspeed!=null) {
-					wchannels=sessions.getValue(session,"SETTING_RACHANNELS");
-				} else {
-					// so no speed set then return to signal a goto
-					return(null);
-				}
-				try {
-					ispeed=Integer.parseInt(wspeed);
-					ichannels=Integer.parseInt(wchannels);
-				} catch(Exception e) {
-				}
-			}
-		} else {
-		try {
-			try {
-			wpart = (String)params.elementAt(0);
-			int u=Integer.parseInt(wpart);
-			} catch(Exception e) {
-				debug("getRMStream(): RAservlet got a string as number value");
-				wpart="1";
-			}
-		} catch(Exception e) {
-			wpart = null;
-		}
-		try {
-			wspeed = (String)params.elementAt(1);
-			// hack hack
-			ispeed=Integer.parseInt(wspeed);
-		} catch(Exception e) {
-			wspeed = null;
-		}
-		try {
-			wchannels = (String)params.elementAt(2);
-			// hack hack
-			ichannels=Integer.parseInt(wchannels);
-		} catch(Exception e) {
-			wchannels = null;
-		}
-		}
-		//debug("Number="+wpart+" speed="+wspeed+" wchannels="+wchannels);
-		// added for statistics
-		//setCount(wspeed,wchannels); 
-
-		String result="",bestresult="";
-		int bestspeed=0,bestchannels=0;
-		if (wpart!=null) 
-		{
-			String where="id=="+wpart;
-			//if (wspeed!=null) where+="+speed=="+wspeed;
-			//if (wchannels!=null) where+="+channels=="+wchannels;
-			//Enumeration res=bul.search(where);
-			Vector tmp=(Vector)numrabuf.get(where);
-			if (tmp==null) {
-				tmp=bul.searchVector(where);
-				if (tmp!=null) {
-					numrabuf.put(where,tmp);
-				} else {
-					numrabuf.put(where,new Vector());
-				}	
-			}
-			Enumeration res=tmp.elements();
-			MMObjectNode node;
-			for (;res.hasMoreElements();) 
-			{
-				node=(MMObjectNode)res.nextElement();
-				int id		= node.getIntValue("id");	
-				int format	= node.getIntValue("format");
-				int speed	= node.getIntValue("speed");
-				int status	= node.getIntValue("status");
-				int channels= node.getIntValue("channels");
-				String url	= node.getStringValue("url");
-
-				// try to obtain the song info for ra window
-				MMObjectBuilder bul2=mmbase.getMMObject("cdtracks");
-				MMObjectNode node2=bul2.getNode( id );
-				String title=node2.getStringValue("title");
-				if (title==null) title="";
-
-				//debug("getRAStream("+id+"): Gettting start/stop time.");
-
-				// ---------
-				// startstop
-				// ---------
-		
-				String	starttime = null;
-				String	stoptime  = null;	
-				// get prop object	
-				// ---------------
-
-				MMObjectBuilder 	bulstartstop 	= mmbase.getMMObject("properties");
-				if (bulstartstop != null)
-				{
-					// get node from props
-					// -------------------
-
-					MMObjectNode		nodestartstop 	= bulstartstop.getNode( id ); // check this
-					if (nodestartstop != null)
-					{
-						//debug("Found node");
-						// get value from prop
-						// -------------------
-
-						MMObjectNode sStartprop = (MMObjectNode) nodestartstop.getProperty("starttime");
-						if (sStartprop != null)
-						{
-							String				sStartkey		= sStartprop.getStringValue( "key") ;
-							String				sStartvalue		= sStartprop.getStringValue( "value" );
-							starttime = sStartvalue;
-							//debug("starttime:"+sStartvalue);
-						}
-						//else
-							//debug("no starttgime defined");
- 
-						MMObjectNode	sStopprop = (MMObjectNode) nodestartstop.getProperty("stoptime");
-						if (sStopprop != null)
-						{
-							String				sStopkey		= sStopprop.getStringValue( "key" ) ;
-							String				sStopvalue		= sStopprop.getStringValue( "value" );
-							stoptime = sStopvalue;
-							//debug("stoptime:"+sStopvalue);
-						}
-						//else
-							//debug("no stoptime defined");
-					}
-					//else
-						//debug("getRAStream("+id+"): ERROR: could not get node for start/stop times.");
-				}
-				//else
-					//debug("getRAStream("+id+"): ERROR: Cannot get properties for this file.");
-
-
-				// try to obtain the group
-				String author=null;
-				Enumeration g=mmbase.getInsRel().getRelated(node2.getIntValue("number"),1573);
-				if (g.hasMoreElements()) {
-					node2=(MMObjectNode)g.nextElement();
-					author=node2.getStringValue("name");
-					//debug("Found related"+author+" "+node2);
-				}
-				if (author==null) author="";
-
-				// end obtain
-				if (format==2 && url!=null && status>1) 
-				{
-
-					// niet duidelijk waar dit voor is, daniel.
-					// detect new url format (multihost)
-
-					String startend = "";
-					if (starttime != null) startend  = "&start=\""+starttime+"\"";
-					if (stoptime  != null) startend += "&end=\""+stoptime+"\"";
-
-					if (url.indexOf("F=")!=-1) {
-						String tmpa=getBestMirrorUrl(sp,url);
-						result+="rtsp://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-
-						// debug("#1_0 : " + result);
-					} else {
-						if (url.indexOf("http://station.vpro.nl/audio/ra/")==0) {
-							if (flipper) 
-							{
-								result+="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-								// debug("#1_1 : " + result);
-							}
-							else
-							{
-								result+="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-								// debug("#1_2 : " + result + ", url("+url+")");
-							}
-						}
-					}
-					// eind van niet duidelijk.
-					if (wspeed!=null && wchannels!=null) 
-					{
-						if (speed>bestspeed && speed<=ispeed) {
-							bestspeed=speed;
-							bestchannels=channels;
-							// detect new url format (multihost)
-							if (url.indexOf("F=")!=-1) {
-								String tmpa=getBestMirrorUrl(sp,url);
-								bestresult="rtsp://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-								// debug("#2_0 : " + bestresult);
-							} else {
-								if (flipper) 
-								{
-									bestresult="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-									// debug("#2_1 : " + bestresult + ", url("+url+")");
-								}
-								else 
-								{
-									bestresult="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-									// debug("#2_2 : " + bestresult);
-								}
-							}
-						} else if (speed==bestspeed && channels>bestchannels && channels<=ichannels) {
-							bestspeed=speed;
-							bestchannels=channels;
-							// detect new url format (multihost)
-							if (url.indexOf("F=")!=-1) {
-								String tmpa=getBestMirrorUrl(sp,url);
-								bestresult="rtsp://"+tmpa+"?title=\""+title+"\"&author=\""+author+"\"\n";
-								// debug("#3_0 : " + bestresult);
-							} else {
-								if (flipper) {
-									bestresult="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-									// debug("#3_1 : " + bestresult);
-								} else {
-									bestresult="rtsp://station.vpro.nl/"+url.substring(32)+"?title=\""+title+"\"&author=\""+author+"\""+startend+"\n";
-									// debug("#3_2 : " + bestresult);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		if (wspeed!=null && wchannels!=null) {
-			// debug("getRAStream(): Bestresult: I have("+bestresult+")");
-
-			byte[] data=new byte[bestresult.length()];
-			bestresult.getBytes(0,bestresult.length(),data,0);	
-			return(data);	
-		} else {
-			// debug("getRAStream(): result: I have("+result+")");
-
-			byte[] data=new byte[result.length()];
-			result.getBytes(0,result.length(),data,0);	
-			return(data);	
-		}
-	}
-
-
 
 	/**
 	* try to obtain a decoded param string from the input Vector
@@ -1247,26 +767,10 @@ public class servdb extends JamesServlet {
 		return(null);
 	}
 
-	/**
-	 * Moved to module RALogger.java
-	 *
-	private void setCount(String wspeed, String wchannels) {
-		if (stats!=null) {
-			if (wspeed.equals("16000") && wchannels.equals("1")) {
-				stats.setCount("64127",1);
-			} else if (wspeed.equals("32000") && wchannels.equals("1")) {
-				stats.setCount("64128",1);
-			} else if (wspeed.equals("40000") && wchannels.equals("1")) {
-				stats.setCount("64130",1);
-			} else if (wspeed.equals("40000") && wchannels.equals("2")) {
-				stats.setCount("64131",1);
-			} else if (wspeed.equals("80000") && wchannels.equals("2")) {
-				stats.setCount("64132",1);
-			}
-		}
-	}
-	*/
 
+	/**
+	*
+	*/
 	Vector checkPostPlaylist(HttpPost poster,scanpage sp, Vector vec) {
 		if (sp.req.getMethod().equals("POST")) {
 			if (poster.checkPostMultiParameter("only")) {
@@ -1285,203 +789,9 @@ public class servdb extends JamesServlet {
 		return(vec);
 	}
 
-/*
-	String getBestMirrorUrl(scanpage sp, String url) {		
-		StringTagger tagger=new StringTagger(url);
-		String file=tagger.Value("F");
-		String besthost="";
-		int bestscore=0;
-		for (int i=1;i<7;i++) {
-			String host=tagger.Value("H"+i);
-			if (host!=null && !host.equals("")) {
-				int tmpscore=0;
-				if (host.indexOf("omroep")!=-1) {
-					tmpscore+=100;
-				} else if (host.indexOf("vpro")!=-1) {
-					tmpscore+=50;
-				}
-			
-				if (tmpscore>bestscore) {
-					bestscore=tmpscore;
-					besthost=host;
-				}
-			}
-		}	
-		// debug("RA FILE="+file+" BEST HOST="+besthost+" BEST SCORE="+bestscore);
-		return(besthost+file);
-	}
+	/**
+	*
 	*/
-
-    private boolean isInternal( scanpage sp )
-    {
-        boolean intern  = false;
-        String  ip      = sp.req.getRemoteAddr();
-
-        // computers within vpro domain, use *.vpro.nl as server, instead *.omroep.nl
-        // do we come from proxy?
-        // ----------------------
-
-        if( ip != null && !ip.equals(""))
-        {
-            if( ip.indexOf("vpro6d.vpro.nl")!= -1  || ip.indexOf("145.58.172.6")!= -1 )
-            {
-                // positive on proxy, get real ip
-                // ------------------------------
-                ip = sp.req.getHeader("X-Forwarded-For");
-                // come from intern?
-                if( ip != null && !ip.equals("") && ip.indexOf("145.58") != -1 )
-                    intern = true;
-            }
-            else
-            if( ip.indexOf("145.58") != -1 )
-                intern = true;
-        }
-        return intern;
-    }
-
-	private String getAddress( scanpage sp )
-	{
-		String 	result 		= null;
-		boolean	fromProxy 	= false;
-
-		// get address 
-		// -----------
-
-		String addr = sp.req.getRemoteHost();
-
-		if( addr != null && !addr.equals("") )
-		{
-			// from proxy ?
-			// ------------
-
-			if( addr.indexOf("vpro6d.vpro.nl") != -1 || addr.indexOf("145.58.172.6") != -1 )
-			{
-				// get real address 
-				// ----------------
-
-				fromProxy = true;
-				addr = sp.req.getHeader("X-Forwarded-For");
-				if( addr != null && !addr.equals("") )
-					result = addr;
-			}
-			else
-				result = addr;
-		}
-
-		result = getHostNames( addr );		
-		if( fromProxy )
-			result = "zen.vpro.nl->" + result;
-	
-		return result;
-	}
-
-	private String getHostNames( String host )
-	{
-		String result 	= null;
-		String hn 		= null;
-
-		if( host.indexOf(",") != -1 )
-		{
-			int pos;
-			while( (pos = host.indexOf(",")) != -1 )
-			{
-				hn = host.substring( 0, pos );
-				host = host.substring( pos + 2 );
-				if( result == null )
-					result  = getHostName( hn );
-				else
-					result += "->" + getHostName( hn );
-			}		
-		}
-		else
-			result = getHostName( host );	
-	
-		return result;
-	}
-		
-	private String getHostName( String hostname )
-	{
-		String hn = null;
-		try
-		{
-			hn = InetAddress.getByName( hostname ).getHostName();
-		}
-		catch( UnknownHostException e )
-		{
-			hn = hostname;
-		}
-		return hn;
-	}	
-
-
-    String getBestMirrorUrl(scanpage sp, String url) {
-        String besthost = null;
-        StringTagger tagger = new StringTagger(url);
-        String       file   = tagger.Value("F");
-
-        if( url != null && !url.equals(""))
-        {
-            boolean found   = false;
-            if( isInternal(sp) )
-            {
-                String  host    = null;
-                for( int i=0; i<7 && !found; i++)
-                {
-                    host=tagger.Value("H"+i);
-                    // get host *.vpro.nl
-                    // ------------------
-                    if( host != null && !host.equals("") && host.indexOf("vpro") != -1 )
-                    {
-                        besthost = host;
-                        found = true;
-                    }
-                }
-                if( besthost == null )
-                {
-                    // no host for this part found in vpro domain, use other
-                    // -----------------------------------------------------
-
-                    debug("getBestMirrorUrl(): ERROR: Could not determine a valid host in vpro-domain, using another!");
-                    found = false;  // extra secure
-                }
-            }
-            //else  // hack hack
-            if( !found )
-            {
-                int bestscore=0;
-                for (int i=1;i<7;i++) {
-                    String host=tagger.Value("H"+i);
-                    if (host!=null && !host.equals("")) {
-                        int tmpscore=0;
-                        if (host.indexOf("omroep")!=-1) {
-                            tmpscore+=100;
-                        } else if (host.indexOf("vpro")!=-1) {
-                            tmpscore+=50;
-                        }
-
-                        if (tmpscore>bestscore) {
-                            bestscore=tmpscore;
-                            besthost=host;
-                        }
-                    }
-                }
-            }
-        }
-            //debug("RA FILE="+file+" BEST HOST="+besthost+" BEST SCORE="+bestscore);
-        if( besthost == null || besthost.equals(""))
-        {
-            debug("getBestMirrorUrl(): ERROR: No host could be found, using station.vpro.nl as default!");
-            besthost = "station.vpro.nl";
-        }
-        return(besthost+file);
-    }
-
-	private void debug( String msg )
-	{
-		if (debug) System.out.println( classname + ":" + msg );
-	}
-
-
 	private void checkImgMirror(HttpServletRequest req) {
 		String host=req.getRemoteHost();
 		if (host!=null && (host.equals("sneezy.omroep.nl") || host.equals("images.vpro.nl")) && mmbase!=null) {
@@ -1524,4 +834,275 @@ public class servdb extends JamesServlet {
 		return(0);
 		*/
 	}
+
+/// -----------------------------------------------------------------------------------------------------
+
+	/**
+	*
+	*/
+	public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp, boolean isInternal ) 
+	{
+		byte[]	result		= null;
+
+		String	sNumber		= null;
+		String	sSpeed		= null;
+		String	sChannels	= null;
+
+		int		number		= -1;
+		int		speed		= -1;
+		int		channels	= -1;
+
+		// number 
+		// ------
+
+		number = getnumber( "getRAStream", "parameter number", getParamValue("n",params), false);
+		if( number == -1 )
+		{
+			number = getnumber("getRAStream", "parameter number", (String)params.elementAt(0), debug);
+			if( number == -1 )
+				debug("getRAStream(): ERROR: no number found!");
+		}
+
+		if( number != -1 )
+		{
+			sessionInfo session=sessions.getSession(sp,sp.sname);
+			String	auto = getParamValue("a",params);
+			if ( auto!=null && auto.equals("session") ) 
+			{
+				// get properties RASPEED and RACHANNELS from user 
+				// -----------------------------------------------
+				if (session!=null) {
+					speed		= getSessionSpeed( session );
+					channels	= getSessionChannels( session );
+				}
+	
+			} else {
+				if( params.size() > 1 )
+					speed = getnumber("getRAStream()", "speed", (String)params.elementAt(1), debug);
+				if( speed == -1 )
+					speed = getSessionSpeed( session );
+				if( params.size() > 2 )
+					channels = getnumber("getRAStream()", "channels", (String)params.elementAt(2), debug );
+
+				if( channels == -1 )
+					channels = getSessionChannels( session );
+			}
+
+		//  -------------------------------------------------------------------------------------------------------------
+			if( debug ) debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
+		//  -------------------------------------------------------------------------------------------------------------
+
+			//String url = AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
+			String url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
+			if( debug ) debug("getRAStream(): result: I have url("+url+") as result ");
+			if( url != null )
+			{
+				result = new byte[url.length()];
+				url.getBytes(0,url.length(),result,0);	
+			}
+		}
+		return result;
+	}
+
+// -----------------------------------------------------------------------------------------------------
+
+	/**
+	*
+	*/
+	public byte[] getRMStream(Vector params,scanpage sp,HttpServletResponse resp, boolean isInternal ) 
+	{
+		byte[]	result		= null;
+
+		String	sNumber		= null;
+		String	sSpeed		= null;
+		String	sChannels	= null;
+
+		int		number		= -1;
+		int		speed		= -1;
+		int		channels	= -1;
+
+		// number 
+		// ------
+
+		number = getnumber( "getRMStream", "parameter number", getParamValue("n",params), false);
+		if( number == -1 )
+		{
+			number = getnumber("getRMStream", "parameter number", (String)params.elementAt(0), debug);
+			if( number == -1 )
+				debug("getRMStream(): ERROR: no number found!");
+		}
+
+		if( number != -1 )
+		{
+			sessionInfo session=sessions.getSession(sp,sp.sname);
+			String	auto = getParamValue("a",params);
+			if ( auto!=null && auto.equals("session") ) 
+			{
+				// get properties RASPEED and RACHANNELS from user 
+				// -----------------------------------------------
+				if (session!=null) {
+					speed		= getSessionSpeed( session );
+					channels	= getSessionChannels( session );
+				}
+	
+			} else {
+				if( params.size() > 1 )
+					speed = getnumber("getRMStream()", "speed", (String)params.elementAt(1), debug);
+				if( speed == -1 )
+				{
+					speed = getSessionSpeed( session );
+					if( speed == -1 )
+					{
+						debug("getRMStream(): ERROR: no speed found!");
+						speed = 16000;
+					}
+				}
+				if( params.size() > 2 )
+					channels = getnumber("getRMStream()", "channels", (String)params.elementAt(2), debug );
+
+				if( channels == -1 )
+				{
+					channels = getSessionChannels( session );
+					if( channels == -1 )
+					{
+						debug("getRMStream(): ERROR: no channels found!");
+						channels = 1;
+					}
+				}
+			}
+
+		//  -------------------------------------------------------------------------------------------------------------
+			if( debug ) debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
+		//  -------------------------------------------------------------------------------------------------------------
+
+			String url = ((VideoParts)mmbase.getMMObject("videoparts")).getVideopartUrl( mmbase, sp, number, speed, channels);
+			if( debug ) debug("getRMStream(): result: I have url("+url+") as result ");
+			if( url != null )
+			{
+				result = new byte[url.length()];
+				url.getBytes(0,url.length(),result,0);	
+			}
+		}
+		return result;
+	}
+
+	/**
+	*
+	*/	
+	private int	getSessionSpeed( sessionInfo session )
+	{
+		int		result 	= -1;
+		String	sSpeed	= null;
+
+		if( session != null )
+		{
+			try
+			{
+				sSpeed		= sessions.getValue(session,"SETTING_RASPEED");
+				if( sSpeed != null && !sSpeed.equals(""))
+					result		= Integer.parseInt( sSpeed );
+			
+				if( result < 16000 )	
+					setSessionSpeed( session , 16000 );
+				if( result > 96000 )	
+					setSessionSpeed( session , 96000 );
+			}
+			catch( NumberFormatException e )
+			{
+				debug("getSessionSpeed(): ERROR: speed("+sSpeed+") is not a valid number!");
+				result = 16000;
+				setSessionSpeed( session , result );
+			}
+		}
+		else
+			debug("getSessionSpeed("+session+"): ERROR: session is null!");
+
+		if( result < 16000 )
+			result = 16000;
+		if( result > 96000 )
+			result = 96000;
+
+		return result;
+	}
+
+	/**
+	*
+	*/
+	private void setSessionSpeed( sessionInfo session, int speed )
+	{
+		sessions.setValue( session,  "SETTING_RASPEED", "" + speed );
+		sessions.saveValue( session, "SETTING_RASPEED" );
+	}
+
+
+	/**
+	*
+	*/
+	private int	getSessionChannels( sessionInfo session )
+	{
+		int		result 		= -1;
+		String	sChannels	=  null;
+
+		if( session != null )
+		{
+			try
+			{
+				sChannels	= sessions.getValue(session,"SETTING_RACHANNELS");
+				if( sChannels != null && !sChannels.equals(""))
+					result		= Integer.parseInt( sChannels );
+
+				if( result < 1 )
+					setSessionChannels( session, 1 );
+				if( result > 2 )
+					setSessionChannels( session, 2 );
+
+			}
+			catch( NumberFormatException e )
+			{
+				debug("getSessionChannels(): ERROR: channels("+sChannels+") is not a valid number!");
+				result = 1;
+				setSessionChannels( session, result );
+			}
+		}
+		else
+			debug("getSessionChannels("+session+"): ERROR: session is null!");
+
+		if( result < 1 )
+			result = 1;
+		if( result > 2 )
+			result = 2;
+
+		return result;
+	}
+
+	/**
+	*
+	*/
+	private void setSessionChannels( sessionInfo session, int channels )
+	{
+		sessions.setValue( session,  "SETTING_RASPEED", "" + channels );
+		sessions.saveValue( session, "SETTING_RASPEED" );
+	}	
+
+
+	/**
+	*
+	*/
+	private int getnumber( String method, String var, String number, boolean print )
+	{
+		int result = -1;
+
+		try
+		{
+			result = Integer.parseInt( number );
+		}
+		catch( NumberFormatException e )
+		{
+			if( print ) 
+				debug( method+"(): ERROR: "+var+"("+number+") is not a real number!");
+			result = -1;
+		}
+	
+		return result;
+	}			
 }
