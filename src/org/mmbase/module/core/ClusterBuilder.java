@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.25 2002-12-27 19:16:32 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.26 2003-01-03 12:39:29 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1083,39 +1083,41 @@ public class ClusterBuilder extends VirtualBuilder {
      * Creates search query that selects all the objects that match the
      * searchkeys.
      *
-     * @param snodes The numbers of the nodes to start the search with. These
-     have to be present in the first table
-     *      listed in the tables parameter.
-     * @param fields The fieldnames to return. This should include the name of
-     the builder. Fieldnames without a builder name are ignored.
-     *      Fieldnames are accessible in the nodes returned in the same format
-     (i.e. with manager indication) as they are specified in this parameter.
-     *      Examples: 'people.lastname'
-     * @param pdistinct 'YES' indicates the records returned need to be
-     distinct. Any other value indicates double values can be returned.
-     * @param tables The builder chain. A list containing builder names.
-     *      The search is formed by following the relations between successive
-     builders in the list. It is possible to explicitly supply
-     *      a relation builder by placing the name of the builder between two
-     builders to search.
-     *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using
-     the NodeManager names from the nodes as tablenames.
-     *      The syntax is either sql (if preceded by "WHERE') or
-     *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and
-     (people.lastname='admin')"
+     * @param snodes The numbers of the nodes to start the search with. 
+     *        These have to be present in the first table listed in the 
+     *        tables parameter.
+     * @param fields The fieldnames to return. 
+     *        These should be formatted as <em>stepalias.field</em>. 
+     *        Examples: 'people.lastname'
+     * @param pdistinct 'YES' indicates the records returned need to be 
+     *        distinct. 
+     *        Any other value indicates double values can be returned.
+     * @param tables The builder chain. 
+     *        A list containing builder names.
+     *        The search is formed by following the relations between 
+     *        successive builders in the list. 
+     *        It is possible to explicitly supply a relation builder by 
+     *        placing the name of the builder between two builders to search.
+     *        Example: company,people or typedef,authrel,people.
+     * @param where The contraint. 
+     *        This is in essence a SQL where clause, using the NodeManager 
+     *        names from the nodes as tablenames.
+     *        The syntax is either sql (if preceded by "WHERE') or
+     *        Examples: "WHERE people.email IS NOT NULL", 
+     *        "(authrel.creat=1) and (people.lastname='admin')"
      * @param sortFields the fieldnames on which you want to sort.
-     * @param directions A list of values containing, for each field in the order
-     parameter, a value indicating whether the sort is
-     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If
-     less values are syupplied then there are fields in order,
-     *      the first value in the list is used for the remaining fields.
-     Default value is <code>'UP'</code>.
+     * @param directions A list of values containing, for each field in the 
+     *        order parameter, a value indicating whether the sort is
+     *        ascending (<code>UP</code>) or descending (<code>DOWN</code>). 
+     *        If less values are supplied then there are fields in order,
+     *        the first value in the list is used for the remaining fields.
+     *        Default value is <code>'UP'</code>.
      * @param searchDir Specifies in which direction relations are to be
-     *      followed, this must be one of the values defined by this class.
-     * @return a <code>Vector</code> containing all matching nodes
+     *        followed, this must be one of the values defined by this class.
+     * @return the resulting search query.
      * @since MMBase-1.7
      */
+    // TODO RvM: update javadoc
     public BasicSearchQuery getMultiLevelSearchQuery (
             List snodes, List fields, String pdistinct,
             List tables, String where, List sortFields, List directions,
@@ -1187,12 +1189,8 @@ public class ClusterBuilder extends VirtualBuilder {
         
         addRelationDirections(query, searchdir, roles);
 
-        // XXX RvM: so far so good
-
-        // create the extra where parts
-        if (where != null && (where = where.trim()).length() != 0) {
-            QueryConvertor.setConstraint(query, where);
-        }
+        // Add constraint for the where part.
+        QueryConvertor.setConstraint(query, where);
 
         return query;
     }
@@ -1324,8 +1322,10 @@ public class ClusterBuilder extends VirtualBuilder {
                 roles.put(tableAlias, new Integer(rnumber));
             }
         }
-        log.info("resolved table alias \"" + tableAlias + "\" to builder \""
-            + bul.getTableName() + "\"");
+        if (log.isDebugEnabled()) {
+            log.debug("Resolved table alias \"" + tableAlias 
+                + "\" to builder \"" + bul.getTableName() + "\"");
+        }
         return bul;
     }
     
@@ -1378,6 +1378,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * query.
      * The expression may be either a fieldname or a a functionname with a 
      * parameterlist between parenthesis.
+     * Fieldnames must be formatted as <em>stepalias.field</em>.
      *
      * @param query The query.
      * @param expression The expression.
@@ -1391,7 +1392,7 @@ public class ClusterBuilder extends VirtualBuilder {
     void addFields(BasicSearchQuery query, 
             String expression, Map stepsByAlias, Map fieldsByAlias) {
         
-        // TODO RvM: stripping functions this (still) necessary?.        
+        // TODO RvM: stripping functions is this (still) necessary?.        
         // Strip function(s).
         int pos1 = expression.indexOf('(');
         int pos2 = expression.indexOf(')');
