@@ -155,7 +155,9 @@ public class Logging {
         }
         // System.out.println("logging to " + getLocations());
         configureClass(configuration);
+        // some classes used logging already.
         XMLBasicReader.reinitLogger();
+        org.mmbase.util.FileWatcher.reinitLogger();
     }
 
     /** 
