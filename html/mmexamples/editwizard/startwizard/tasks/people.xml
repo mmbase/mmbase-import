@@ -9,6 +9,7 @@
     <object type="people" />
   </action>
 
+  <action type="delete" />
   
   <form-schema id="personals">
     <title>Personal information</title>
