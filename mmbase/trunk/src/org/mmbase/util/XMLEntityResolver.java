@@ -68,8 +68,12 @@ public class XMLEntityResolver implements EntityResolver {
      */
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 
+        if (log.isDebugEnabled()) {
+            log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
+        }
         //does systemId contain a mmbase-dtd
-        if ((systemId == null) || (systemId.indexOf("http://www.mmbase.org/") == -1)) {
+        if ((systemId == null) || 
+            (systemId.indexOf("http://www.mmbase.org/") == -1)) {
             if (! validate) {
                 return new InputSource(new StringReader(""));
             }
@@ -100,7 +104,7 @@ public class XMLEntityResolver implements EntityResolver {
                 Class base = resolveBase;
                 if (base != null) {
                     String resource = "resources/" + dtdName;
-                    if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource + " of " + resolveBase.getClass().getName());
+                    if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource + " of " + resolveBase.getName());
                     dtdStream = resolveBase.getResourceAsStream(resource);
                     if (dtdStream == null) {
                         log.warn("Could not find " + resource + " in " + resolveBase.getClass().getName() + ", falling back to " + MMRESOURCES);
@@ -116,6 +120,8 @@ public class XMLEntityResolver implements EntityResolver {
             }
             if (dtdStream == null) {
                 log.error("Could not find MMBase dtd '" + dtdName + "' (did you make a typo?), returning an 'empty' DTD.");
+                // not sure, probably should return 'null' after all, then it will be resolved with internet.
+                // but this can not happen, in fact...
                 return new InputSource(new StringReader(""));
                 //return null;
             }
