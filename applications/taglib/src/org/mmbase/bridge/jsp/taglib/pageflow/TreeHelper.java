@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.8 2004-01-20 23:18:03 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.9 2004-06-08 12:29:59 johannes Exp $
  */
 
 public class TreeHelper {
@@ -217,29 +217,20 @@ public class TreeHelper {
         pathNow = "";
         while (!objectPaths.empty()) {
             String path = (String)objectPaths.pop();
-            // Make sure path always end with a file separator
-            if (!path.endsWith(File.separator)) {
-                path += File.separator;
-            }
 
-            // Make sure that during concatenation of root+path, they are seperated with a File.seperator
-            String extraSep = "";
-            if (!htmlroot.endsWith(File.separator) && !path.startsWith(File.separator) ) {
-                extraSep = File.separator;
-            }
+            String pathTest = concatpath(concatpath(htmlroot, path), nudePage);
 
-            log.debug("Check file: " + htmlroot + extraSep + path + nudePage);
-            if ((new File(htmlroot + extraSep + path + nudePage)).isFile()) {
+            log.debug("Check file: " + pathTest);
+            if ((new File(pathTest)).isFile()) {
                 // Make sure that the path is correctly encoded, if it contains spaces these must be
                 // changed into '%20' etc.
-                return encodedPath(path + includePage);
-             
+                return encodedPath(concatpath(path, includePage));
             }
         }
         
         // Check if the file exists in the 'root'
-        log.debug("Check file: " + htmlroot + File.separator + nudePage);
-        if (new File(htmlroot + nudePage).isFile()) {
+        log.debug("Check file: " + concatpath(htmlroot, nudePage));
+        if (new File(concatpath(htmlroot, nudePage)).isFile()) {
             return includePage;
         } else {
             return null;
