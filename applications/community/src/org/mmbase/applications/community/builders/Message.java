@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.19 2003-08-11 17:06:24 michiel Exp $
+ * @version $Id: Message.java,v 1.20 2003-11-19 17:05:14 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -45,7 +45,7 @@ public class Message extends MMObjectBuilder {
     public final static int POST_ERROR_NO_SUBJECT = -8;
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(Message.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Message.class);
 
     /** Default tag for the <code>listhead</code> message field */
     public static final String LIST_HEAD_TAG = "<ul>";
