@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp" 
-%><mm:content type="text/html" language="$config.lang" expires="0">
+%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
   <mm:import id="userlogon"><%= "" + cloud.getUser().getIdentifier() %> </mm:import>
   <mm:log><%= "" + cloud.getUser().getIdentifier() %> </mm:log>
