@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.99 $ $Date: 2001-05-07 09:11:31 $
+ * @version $Revision: 1.100 $ $Date: 2001-05-07 09:38:48 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -484,15 +484,6 @@ public class MMObjectBuilder extends MMTable {
         // which may - possibly - be very different from the current builder
 
         database.removeNode(this,node);
-        try {
-            Integer i=new Integer(node.getNumber());
-            if (nodeCache.containsKey(i)) {
-                nodeCache.remove(i);
-            }
-        } catch (Exception e) {
-            log.error("nodeRemoteChanged(): Not a number");
-        }
-
     }
 
     /**
