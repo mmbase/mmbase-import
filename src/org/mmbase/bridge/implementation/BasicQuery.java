@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.7 2003-07-25 14:09:14 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.8 2003-07-25 20:44:31 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -35,6 +35,22 @@ public class BasicQuery implements Query  {
     private   int     aliasSequence = 0;
 
     protected BasicSearchQuery query;
+
+
+
+
+    BasicQuery() {
+        query = new BasicSearchQuery();
+    }
+
+    BasicQuery(boolean aggregated) {
+        query = new BasicSearchQuery(aggregated);
+    }
+
+    BasicQuery(BasicSearchQuery q) {
+        query = q;
+    }
+
 
     BasicSearchQuery getQuery() {
         return query;
@@ -65,24 +81,28 @@ public class BasicQuery implements Query  {
     }
 
 
-    BasicQuery() {
-        query = new BasicSearchQuery();
-    }
-
-    BasicQuery(BasicSearchQuery q) {
-        query = q;
-    }
-
     public Object clone() {
         try {
             BasicQuery clone = (BasicQuery) super.clone();
-            clone.query = new BasicSearchQuery(this);
+            clone.query = new BasicSearchQuery(query); 
             clone.used = false;
             return clone;
         } catch (CloneNotSupportedException e) {
             // cannot happen
             throw new InternalError(e.toString());
         }
+    }
+    public Query aggregatedClone() {
+        try {
+            BasicQuery clone = (BasicQuery) super.clone();
+            clone.query = new BasicSearchQuery(query, true); 
+            clone.used = false;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            // cannot happen
+            throw new InternalError(e.toString());
+        }
+        
     }
 
     // bridge.Query impl.:
@@ -126,6 +146,27 @@ public class BasicQuery implements Query  {
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         return query.addField(step, ((BasicField) field).field);
+    }
+
+    public StepField getStepField(Step step, Field field) {
+        return new BasicStepField(step, ((BasicField) field).field);
+    }
+
+    public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
+        if (used) throw new BridgeException("Query was used already");
+        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField) field).field, aggregationType);
+        aggregatedField.setAlias(field.getName()); 
+        
+        if (this instanceof NodeQuery) {
+            NodeQuery nodeQuery = (NodeQuery) this;
+            ((BasicStep) step).setAlias(nodeQuery.getNodeManager().getName()); 
+            // Step needs alias, because otherwise clusterbuilder chokes.
+            // And node-manager.getList is illogical, because a aggregated result is certainly not a 'real' node.
+        }
+
+        // TODO, think of something better. --> a good way to present aggregated results.
+
+        return aggregatedField;
     }
     
     public Query setDistinct(boolean distinct) {

@@ -25,10 +25,10 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.92 2003-07-21 21:04:00 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.93 2003-07-25 20:44:30 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
-    private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
 
     // lastRequestId
     // used to generate a temporary ID number
@@ -872,6 +872,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // javadoc inherited
     public Query createQuery() {
         return new BasicQuery();
+    }
+
+
+    public Query createAggregatedQuery() {
+        return new BasicQuery(true);
     }
 
     /**

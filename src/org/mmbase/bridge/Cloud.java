@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.37 2003-07-21 20:51:34 michiel Exp $
+ * @version $Id: Cloud.java,v 1.38 2003-07-25 20:44:30 michiel Exp $
  */
 public interface Cloud {
 
@@ -480,12 +480,20 @@ public interface Cloud {
     public NodeList getList(Query query);
 
 
+
     /**
      * Create an empty Query, which can be filled, and used in {getList#query}.
      * @since MMBase-1.7
      */
 
     public Query createQuery();
+
+
+    /*
+     * TODO: Why has there to be a difference between aggregated and non-aggregaged queries?
+     * @since MMBase-1.7
+     */
+    public Query createAggregatedQuery();
 
 
     /**

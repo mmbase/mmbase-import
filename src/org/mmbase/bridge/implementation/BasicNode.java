@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import org.mmbase.bridge.util.xml.DocumentConverter;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
@@ -23,19 +24,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
- * @javadoc
+ * Basic implementation of Node. Wraps MMObjectNodes, adds security.
+ *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.98 2003-06-30 11:29:43 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.99 2003-07-25 20:44:31 michiel Exp $
+ * @see org.mmbase.bridge.Node
+ * @see org.mmbase.module.core.MMObjectNode
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public static final int ACTION_CREATE = 1; // create a node
-    public static final int ACTION_EDIT = 2; // edit node, or change aliasses
+    public static final int ACTION_EDIT   = 2; // edit node, or change aliasses
     public static final int ACTION_DELETE = 3; // delete node
     public static final int ACTION_COMMIT = 10; // commit a node after changes
 
-    private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicNode.class);
+
 
     private boolean changed = false;
 
@@ -448,16 +453,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public Element getXMLValue(String fieldName, Document tree) {
         Document doc = getXMLValue(fieldName);
-        if (doc == null)
+        if (doc == null) {
             return null;
+        }
         return (Element)tree.importNode(doc.getDocumentElement(), true);
     }
 
     public void setXMLValue(String fieldName, Document value) {
         // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        org.mmbase.bridge.util.xml.DocumentConverter dc =
-            org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(
-                getNode().getBuilder().getField(fieldName).getDBDocType());
+        DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
         setValue(fieldName, dc.convert(value, cloud));
     }
 
