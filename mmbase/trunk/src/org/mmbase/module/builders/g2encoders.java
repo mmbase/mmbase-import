@@ -1,5 +1,5 @@
 /*
-$Id: g2encoders.java,v 1.2 2000-02-24 15:07:16 wwwtech Exp $
+$Id: g2encoders.java,v 1.3 2000-03-21 15:39:18 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 15:07:16  wwwtech
+Davzev added debug() methods and calls to all methods.
+
 
 */
 
@@ -23,13 +26,13 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @$Revision: 1.2 $ $Date: 2000-02-24 15:07:16 $
+ * @$Revision: 1.3 $ $Date: 2000-03-21 15:39:18 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
-	private void debug(String msg){System.out.println(classname+":"+msg);}
+	//  private void debug(String msg){System.out.println(classname+":"+msg);}
 
 	public g2encoders() {
 		if(debug) debug("setTableName("+tableName+")");

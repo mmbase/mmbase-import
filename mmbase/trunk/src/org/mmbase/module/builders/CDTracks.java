@@ -33,7 +33,7 @@ public class CDTracks extends MMObjectBuilder {
 
 	private String classname = getClass().getName();
 	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	// private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 
 	String diskid;
