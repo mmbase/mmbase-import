@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <news exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
 	<node number="8506" owner="system">
-		<date>-1</date>
 		<body>The XML based MMBase distribution is now available at http://www.mmbase.org/download.
 Significant improvements have been made in the XML project, such as multiple language support. The editors now support English, French, and Dutch.  
 Database specific information was removed from the builder configuration files. This makes it possible to place extra builders on the www.mmbase.org site that can be downloaded when needed and used without any modification.
@@ -13,7 +12,6 @@ Most of the documentation at the MMBase site is adapted to the new XML configura
 	</node>
 
 	<node number="8504" owner="system">
-		<date>-1</date>
 		<body>The Pinkpop site of the VPRO was three days in action, a team of 15 people made 132 articles. Some articles consist of images, audio, and video. The Pinkpop site was visited by three times the amount of people according to previous year. Previous year there were 5.1 million hits per day.
 
 MMBase had an uptime of almost 100%. Technical people of the VPRO had to bring MMBase down for a little adjustment to some code. 10 computer were available for entering information. During the festival 10 broadbox sessions were followed. See for yourself what is created in three days by visiting the Pinkpop site (see link at bottom).
@@ -25,7 +23,6 @@ The webdesign of the Pinkpop site was finished before the start of the festival.
 	</node>
 
 	<node number="8502" owner="system">
-		<date>-1</date>
 		<body>Dutch radio and TV broadcaster EO will be co-user and developer of VPRO's Open Source content management system MMBase (http://www.mmbase.org). After careful comparison with other web publishing systems and extensive testing of the MMBase software, the EO decided to use MMBase to publish her websites. In addition, the broadcaster is planning to publish via WAP in the future.
 
 The EO assigns her team of software developers and web designers to work on MMBase together with the VPRO and other developers. The fast growing group of contributors to the MMBase project consists of, amongst others, Sun Microsystems, broadcaster the NOS, ISP XS4ALL, ISP De Digitale Stad, the University of Twente, Submarine, V2, de Waag, and Mediamatic. In addition, a large number of other broadcasting organizations are investigating MMBase.
@@ -38,7 +35,6 @@ The EO selected MMBase considering the following criteria: the system has to be 
 	</node>
 
 	<node number="8500" owner="system">
-		<date>-1</date>
 		<body>
 The MMBase Community meeting on 11 May was a success. Over 70 people showed up on the roof of the VPRO building. Improvements to MMBase where discussed, newbies were introduced to what can be done with MMBase, and then there was the barbecue.
 
@@ -56,7 +52,6 @@ The MMBase Community meeting on 11 May was a success. Over 70 people showed up o
 	</node>
 
 	<node number="8498" owner="system">
-		<date>-1</date>
 		<body>MMBase, VPRO's web publishing software, available as Open Source
 
 MMBase, the VPRO s web-publishing software, will be available as Open Source beginning on April 3, 2000. The VPRO has been using MMBase for its own website (www.vpro.nl) for more than two years, and produces every year major multimedia projects such as live Internet-reporting from the Pinkpop music festival. The VPRO is now releasing this software after years of development so that every organization with enough technical and conceptual knowledge can make use of it. Over the past nine months, MMBase has been prepared for release as Open Source software in collaboration with Sun, XS4ALL, De Digitale Stad and the NOS.
