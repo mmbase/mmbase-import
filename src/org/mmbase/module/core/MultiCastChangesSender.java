@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesSender.java,v 1.8 2004-02-18 15:03:13 keesj Exp $
+ * @version $Id: MultiCastChangesSender.java,v 1.9 2004-07-16 10:39:03 pierre Exp $
  */
 public class MultiCastChangesSender implements Runnable {
 
@@ -56,10 +56,13 @@ public class MultiCastChangesSender implements Runnable {
      */
     MulticastSocket ms;
     /**
-     * @javadoc
-     * @scope private
+     * Port for sending datapackets send by Multicast
      */
-    int mport;
+    int mport=4243;
+    /**
+     * Time To Live for datapackets send by Multicast
+     */
+    byte mTTL=1;
     /**
      * @javadoc
      * @scope private
@@ -116,6 +119,7 @@ public class MultiCastChangesSender implements Runnable {
             try {
                 mport=parent.mport;
                 dpsize=parent.dpsize;
+                mTTL=parent.mTTL;
                 ia = InetAddress.getByName(parent.multicastaddress);
                 ms = new MulticastSocket();
                 ms.joinGroup(ia);
@@ -145,7 +149,7 @@ public class MultiCastChangesSender implements Runnable {
                 if (log.isDebugEnabled()) {
                     log.debug("SEND=>" + new String(chars));
                 }
-                ms.send(dp, (byte)1);
+                ms.send(dp, mTTL);
             } catch (IOException e) {
                 log.error("can't send message");
                 log.error(Logging.stackTrace(e));

@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.116 2004-07-08 17:25:24 michiel Exp $
+ * @version $Id: MMBase.java,v 1.117 2004-07-16 10:39:03 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -79,17 +79,25 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Defines what 'channel' we are talking to when using multicast.
-     * @scope private, non-static
+     * @rename multicastHost
+     * @todo move this property and configuration to MultiCast class
      */
-    public static String multicasthost = null;
+    String multicasthost = null;
 
     /**
      * Determines on what port does this multicast talking between nodes take place.
      * This can be set to any port but check if something else on
      * your network is allready using multicast when you have problems.
-     * @scope private, non-static
+     * @rename multicastPort
+     * @todo move this property and configuration to MultiCast class
      */
-    public static int multicastport = -1;
+    int multicastport = -1;
+
+    /**
+     * Determines the Time To Live for a multicast datapacket
+     * @todo move this property and configuration to MultiCast class
+     */
+    byte multicastTTL = 1;
 
     /**
      * Time in seconds, when mmbase was started.
@@ -305,12 +313,12 @@ public class MMBase extends ProcessorModule {
      */
     public void init() {
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
-        
+
         // Set the mmbaseroot singleton var
         // This prevents recursion if MMBase.getMMBase() is called while
         // this method is run
         mmbaseroot = this;
-        
+
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");
         if (tmp != null) {
@@ -319,12 +327,12 @@ public class MMBase extends ProcessorModule {
         } else {
             log.info("init(): No name defined for mmbase using default (def1)");
         }
-        
+
         tmp = getInitParameter("AUTHTYPE");
         if (tmp != null && !tmp.equals("")) {
             authtype = tmp;
         }
-        
+
         tmp = getInitParameter("LANGUAGE");
         if (tmp != null && !tmp.equals("")) {
             locale = new Locale(tmp, "");
@@ -363,6 +371,13 @@ public class MMBase extends ProcessorModule {
             multicasthost = tmp;
         }
 
+        tmp = getInitParameter("MULTICASTTTL");
+        if (tmp != null && !tmp.equals("")) {
+            try {
+                multicastTTL = Byte.parseByte(tmp);
+            } catch (Exception e) {}
+        }
+
         tmp = getInitParameter("COOKIEDOMAIN");
         if (tmp != null && !tmp.equals("")) {
             cookieDomain = tmp;
@@ -380,9 +395,9 @@ public class MMBase extends ProcessorModule {
                 log.info("Did get 'null' connection of JDBC module, probably MMBase is shut down. Aborting init.");
                 return;
             }
-            con.close();            
+            con.close();
         } catch (java.sql.SQLException sqe) {
-            log.error(sqe.getMessage() + "Aborting init");            
+            log.error(sqe.getMessage() + "Aborting init");
             return;
         }
 
@@ -408,23 +423,23 @@ public class MMBase extends ProcessorModule {
         loadBuilders();
 
         mmbaseState = STATE_INITIALIZE;
-        
+
         log.service("Initializing  storage:");
         initializeStorage();
-        
+
         log.service("Initializing  builders:");
         initBuilders();
-        
+
         log.debug("Checking MMBase");
-        
+
         if (!checkMMBase()) {
             // there is no base defined yet, create the core objects
             createMMBase();
         }
-        
-        
+
+
         log.debug("Objects started");
-        
+
         // weird place needs to rethink (daniel).
         Vwms bul = (Vwms)getMMObject("vwms");
         if (bul != null) {
@@ -434,7 +449,7 @@ public class MMBase extends ProcessorModule {
         if (bul2 != null) {
             bul2.start();
         }
-        
+
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
             Enumeration t = mmobjs.elements();
@@ -454,7 +469,7 @@ public class MMBase extends ProcessorModule {
                 }
             }
         }
-        
+
         // try to load security...
         try {
             mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
@@ -464,14 +479,14 @@ public class MMBase extends ProcessorModule {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
-        
+
         TypeRel.readCache();
-        
+
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
         checkUserLevel();
-        
+
     }
 
 
@@ -609,7 +624,7 @@ public class MMBase extends ProcessorModule {
      * @return the active MMBase module
      */
     public static MMBase getMMBase() {
-        if (mmbaseroot == null) {            
+        if (mmbaseroot == null) {
             mmbaseroot = (MMBase) getModule("mmbaseroot", true);
         }
         return mmbaseroot;
@@ -771,7 +786,7 @@ public class MMBase extends ProcessorModule {
                 // lock until up. (Init is synchronized on this too)
             }
         }
-    }        
+    }
 
 
     /**
@@ -874,7 +889,7 @@ public class MMBase extends ProcessorModule {
      * the system to start a new thread.
      * @see MMBaseProbe
      */
-    public void maintainance() { 
+    public void maintainance() {
         if (probe == null) {
             probe = new MMBaseProbe(this);
         }
@@ -1525,7 +1540,7 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Retrieves the current locale. 
+     * Retrieves the current locale.
      * @since MMBase-1.8
      */
     public Locale getLocale() {
