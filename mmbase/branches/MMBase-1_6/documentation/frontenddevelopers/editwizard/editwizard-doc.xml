@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.3.2.8 2002-12-20 13:34:08 pierre Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.3.2.9 2003-12-10 10:51:09 vpro Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -510,7 +510,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 						<para>The number of the item in the list where to start listing.
 							This value is used to skip to a certain page when brosing a large list.
 							Default is 0.</para>
-						<programlisting format="linespecific">age=31</programlisting>
+						<programlisting format="linespecific">start=0</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
