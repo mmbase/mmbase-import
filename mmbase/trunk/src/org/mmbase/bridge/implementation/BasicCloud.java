@@ -91,7 +91,7 @@ public class BasicCloud implements Cloud, Cloneable {
         userContext = cloud.userContext;
         account= cloud.account;
 
-	// start multilevel cache	
+        // start multilevel cache	
         MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
         multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
@@ -112,14 +112,14 @@ public class BasicCloud implements Cloud, Cloneable {
             log.error(message);
             throw new BridgeException(message);
         }
-	org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
+        org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if (uc == null) {
             String message;
             message = "Login invalid.";
             log.error(message);
             throw new BridgeException(message);
         }
-	userContext = new BasicUser(mmbaseCop, uc);
+        userContext = new BasicUser(mmbaseCop, uc);
         // end authentication...
 
         // other settings of the cloud...
@@ -135,7 +135,7 @@ public class BasicCloud implements Cloud, Cloneable {
         // generate an unique id for this instance...
         account="U"+uniqueId();
 
-	// start multilevel cache	
+        // start multilevel cache	
         MultilevelCacheHandler.setMMBase(mmb);
         multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
@@ -598,43 +598,41 @@ public class BasicCloud implements Cloud, Cloneable {
             }
         } 
 
-	// start of test for multilevel cache in mmci
-	Integer hash=multilevel_cache.calcHashMultiLevel(tagger); 
-
-	Vector v=null;
-	if (multilevel_cache.isActive()) {
-		Vector vc=(Vector)multilevel_cache.get(hash);
-		if (vc==null) {
-       			v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
-            		multilevel_cache.put(hash,v,tables,tagger);
-		} else {
-			v=(Vector)vc.clone();
-		}
-	} else {
-       		v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
-	} 
-
-        if (v!=null) {
-	    //  store Vector in cache for future use
-
+        Integer hash=null; // result hash for cache
+        Vector resultlist=null; // result vector
+        // check multilevel cache if needed
+        if (multilevel_cache.isActive()) {
+            hash=multilevel_cache.calcHashMultiLevel(tagger);
+            resultlist=(Vector)multilevel_cache.get(hash);
+        }
+        // if unavailable, obtain from database
+        if (resultlist==null) {
+            resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+        }
+        // store result in cache if needed
+        if (multilevel_cache.isActive() && resultlist!=null) {
+            multilevel_cache.put(hash,resultlist,tables,tagger);
+            resultlist=(Vector)resultlist.clone();
+        }
+        if (resultlist!=null) {
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
-            for (int i=v.size()-1; i>=0; i--) {
+            for (int i=resultlist.size()-1; i>=0; i--) {
                 boolean check=true;
-                MMObjectNode node=(MMObjectNode)v.get(i);
+                MMObjectNode node=(MMObjectNode)resultlist.get(i);
                 for (int j=0; check && (j<tables.size()); j++) {
                     int nodenr = node.getIntValue(tables.get(j)+".number");
                     if (nodenr!=-1) {
                         check=auth.check(userContext.getUserContext(),nodenr,Operation.READ);
                     }
                 }
-                if (!check) v.remove(i);
+                if (!check) resultlist.remove(i);
             }
             NodeManager tempNodeManager = null;
-            if (v.size()>0) {
-                tempNodeManager = new VirtualNodeManager((MMObjectNode)v.get(0),this);
+            if (resultlist.size()>0) {
+                tempNodeManager = new VirtualNodeManager((MMObjectNode)resultlist.get(0),this);
             }
-            return new BasicNodeList(v,this,tempNodeManager);
+            return new BasicNodeList(resultlist,this,tempNodeManager);
         } else {
             String message;
             message = "Parameters are invalid :" + pars + " - " + constraints;
