@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.248.2.10 2004-07-09 14:09:42 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.248.2.11 2004-07-09 17:28:12 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1125,6 +1125,13 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.10 2004-07-09 14:09:42 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="listnodescontainer" attribute="searchdirs" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
+		<attribute>
+			<name>nodes</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="list" attribute="nodes" />
       <since>MMBase-1.7.1</since>
 		</attribute>
 		<example>&lt;mm:listnodes type="mags"  &gt;
@@ -4940,6 +4947,13 @@ The 0 is just counter, which starts at 0 on every page.
 				 Id for reference by subtags and reuse.
 			</info>
 		</attribute>
+		<attribute>
+			<name>nodes</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="list" attribute="nodes" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
 		<example>
 			<include base="examples.taglib" href="codesamples/query.jsp" />
 		</example>
@@ -5042,6 +5056,13 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="list" attribute="fields" />
+		</attribute>
+		<attribute>
+			<name>nodes</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="list" attribute="nodes" />
+      <since>MMBase-1.7.1</since>
 		</attribute>
 		<example>
 			<include base="examples.taglib" href="codesamples/query.cluster.jsp" />

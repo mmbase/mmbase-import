@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.10 2004-06-30 17:51:55 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.11 2004-07-09 17:26:37 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
     // nodereferrer because RelatedNodesContainer extension
@@ -36,6 +36,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     protected Attribute   searchDirs  = Attribute.NULL;
     protected Attribute   nodeManager = Attribute.NULL;
     protected  Attribute   element     = Attribute.NULL;
+    protected  Attribute   nodes       = Attribute.NULL;
 
 
     public void setType(String t) throws JspTagException {
@@ -51,6 +52,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
 
     public void setElement(String e) throws JspTagException {
         element = getAttribute(e);
+    }
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setNodes(String n) throws JspTagException {
+        nodes = getAttribute(n);
     }
 
 
@@ -85,6 +93,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                 // default to first step
                 query.setNodeStep((Step) query.getSteps().get(0));
             }
+        }
+        if (nodes != Attribute.NULL) {
+            Queries.addStartNodes(query, nodes.getString(this));
         }
         return EVAL_BODY;
     }
