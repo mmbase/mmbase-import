@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.6 2003-05-26 21:14:18 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.7 2003-06-18 11:12:38 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -308,6 +308,7 @@ public class ContextContainer extends HashMap {
     }
 
     public void registerAll(Map map) throws JspTagException {
+        if (map == null) return;
         Iterator i = map.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
