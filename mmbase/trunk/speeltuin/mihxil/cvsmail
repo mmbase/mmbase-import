@@ -17,7 +17,7 @@ my @files = split(" ", $files);
 my $dir = shift @files;
 
 my $basedir = "/home/michiel/";
-my $toaddress     = "michiel\@mmbase.org";
+my $toaddress     = "cvs\@mmbase.org";
 
 # mail too
 my $child;
