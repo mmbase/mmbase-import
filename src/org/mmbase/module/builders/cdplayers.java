@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.6 2000-11-27 14:18:25 vpro Exp $
+$Id: cdplayers.java,v 1.7 2001-01-11 13:33:29 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/11/27 14:18:25  vpro
+davzev: Added method comments and debug
+
 Revision 1.5  2000/03/31 13:27:52  wwwtech
 Wilbert: Introduction of ParseException for method getList
 
@@ -40,7 +43,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.6 $ $Date: 2000-11-27 14:18:25 $ 
+ * @version $Revision: 1.7 $ $Date: 2001-01-11 13:33:29 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
@@ -89,12 +92,20 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
 
 	// changed need to be handles from data driven to its implementation interface. so for example "record" needs to be mapped to impl.doRecord.
-
+	/**
+	 * Returns the value for a requested node field.
+	 * When the field is 'getdir(info)' the node state is set to 'getdir' and we wait until node is changed.
+	 * If the state has become 'waiting' we return info field value, else we wait again.
+	 * @param node a cdplayers type node
+	 * @param field the field requested
+	 * @return the request field value
+	 */
 	public Object getValue(MMObjectNode node,String field) {
 		if (field.equals("getdir(info)")) {
 			// send the command to get the dir
 			node.setValue("state","getdir");
 			node.commit();
+			if (debug) debug("getValue: State set to getdir, now wait until node is changed sothat dir is available.");
 			boolean changed=false;
 			MMObjectNode newnode=null;
 			while (!changed) {	
@@ -104,13 +115,19 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 				if (state.equals("waiting")) changed=true;
 			}
 			String val=newnode.getStringValue("info");
-			if (debug) {
-				System.out.println("CDROM getdir ->"+val);
-			}
+			if (debug) debug("getValue: "+newnode.getStringValue("name")+" getdir returned: "+val);
 			return(val);
 		} else return super.getValue( node, field );
 	}
-	
+
+	/**
+	 * Generate a list of values depending on the command given.
+	 * This getList returns the tracklisting from the cd that's in the cdplayer.
+	 * @param sp the scanpage
+	 * @param tagger the StringTagger object
+	 * @param tok tokenizer with the listing command.
+	 * @return a Vector with the tracklisting
+	 */
 	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
@@ -119,6 +136,12 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 		return(null);
 	}
 
+	/**
+	 * Requests for the trackslisting and parses it and returns it as a vector (tracknr,title,length).
+	 * @param tagger the StringTagger object with the rest of the list commands.
+	 * @param tok tokenizer object
+	 * @return a vector with the tracklisting
+	 */
 	public Vector getHTMLDir(StringTagger tagger, StringTokenizer tok) {
 		Vector result=new Vector();
 		String id=tagger.Value("NODE");
@@ -145,14 +168,18 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	}
 
 	/**
-	* replace all for frontend code
-	*/
+	 * Replace a command by a string.
+	 * Command implemented is the claim command to claim the cdplayers node.
+	 * @param sp the scanpage
+	 * @param sp the StringTokenizer with the replace command.
+	 * @return an empty String 
+	 */
 	public String replace(scanpage sp, StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
-			System.out.println("cdplayers -> "+cmd);
+			if (debug) debug("replace: Token is "+cmd);
 			if (cmd.equals("claim")) {
-				debug("replace: Command is: 'claim', calling doClaim()");
+				if (debug) debug("replace: Command is 'claim', calling doClaim()");
 				doClaim(tok);
 			}
 		}
