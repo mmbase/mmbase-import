@@ -17,11 +17,11 @@ import org.mmbase.util.logging.*;
 
 /**
  * ClusterNode combines fields of different nodes in a single "virtual" node.<br/>
- * This corresponds to the way that an SQL "join" select statement combines 
+ * This corresponds to the way that an SQL "join" select statement combines
  * fields of different tables in result rows.
  * <p>
- * The individual fields are retrieved from a set of related nodes using a 
- * multilevel query, i.e. a query joining tables using the relations between 
+ * The individual fields are retrieved from a set of related nodes using a
+ * multilevel query, i.e. a query joining tables using the relations between
  * the tables.
  * <p>
  * This class overrides a number of methods, allowing direct access to data in
@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.13 2003-12-01 14:42:41 robmaris Exp $
+ * @version $Id: ClusterNode.java,v 1.14 2004-01-08 15:20:26 pierre Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -129,12 +129,12 @@ public class ClusterNode extends VirtualNode {
      * @param fieldname the name of the field to change
      * @param fieldValue the value to assign
      */
-    protected void storeValue(String fieldName, Object fieldValue) {
+    public void storeValue(String fieldName, Object fieldValue) {
         MMObjectNode node = (MMObjectNode)nodes.get(getBuilderName(fieldName));
         if (node != null) {
-            node.values.put(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
+            node.storeValue(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
         } else {
-            values.put(fieldName, fieldValue);
+            super.storeValue(fieldName, fieldValue);
         }
     }
 

@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.31 2004-01-08 15:03:57 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.32 2004-01-08 15:20:26 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -261,12 +261,12 @@ public class ObjectTypes extends TypeDef {
      *	<code>false</code> if original value was set back into the field.
      */
     public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
-        Object newValue = node.values.get(fieldName);
+        Object newValue = node.retrieveValue(fieldName);
         // the field with the name 'name' may not be changed.....
         if (originalValue != null && !originalValue.equals(newValue)) {
             if (fieldName.equals("name")) {
                 // restore the original value...
-                node.values.put(fieldName, originalValue);
+                node.storeValue(fieldName, originalValue);
                 return false;
             } else if (fieldName.equals("config")) {
                 MMObjectBuilder builder = getBuilder(node);
