@@ -4,7 +4,7 @@
 <%@ include file="/includes/getids.jsp" %>
 <%@ include file="/includes/alterheader.jsp" %>
 <div id="pagecontent">
-<mm:node number="$page">
+<mm:node number="page_search">
 <h2><mm:field name="title" /></h2>
 <mm:include page="search_htdig.jsp" />
 </mm:node>
