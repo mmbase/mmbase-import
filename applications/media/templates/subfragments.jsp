@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@ include file="../config/read.jsp" 
+%><%@ include file="readconfig.jsp" 
 %><mm:import externid="fragment" required="true"  />
 <mm:import externid="format" >rm</mm:import>
 <mm:cloud>
