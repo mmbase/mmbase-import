@@ -12,8 +12,14 @@
      <meta name="copyright" content="NOS Internet" />
      <layout>
         <root-layout width="260" height="200" background-color="#717171" />
-        <region id="filmpje"   left="0" top="10"   z-index="2" width="260" height="200" background-color="#717171"  />
      </layout>
+      <layout type="text/css">
+           [region="filpje"] { 
+                        top: 10px; left: 20px; 
+                        background-color: red;
+             }
+       </layout>
+
   </head>
   <body>    
      <par>

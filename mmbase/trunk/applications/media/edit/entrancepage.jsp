@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.5 2002-11-19 21:49:52 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.6 2002-11-21 17:22:13 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -131,8 +131,23 @@
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" /></a></td></tr>
 
 
-
-
+  <tr><th class="kop" colspan="2"><%=m.getString("demo")%></th></tr>
+  <tr><td colspan="2"><%=m.getString("demoinfo")%></td></tr>
+  <mm:list nodes="$origin" path="pools,mediafragments" max="10" orderby="mediafragments.number" directions="down">
+  <mm:context>
+  <mm:node id="base" element="mediafragments">
+  <tr><td><mm:field name="title" /> </td>
+      <td>
+      <mm:nodeinfo id="type" type="type" write="false" />
+      <img src="<mm:url page="media/${type}.gif" />" alt="" />
+       <mm:relatednodes id="fragment" type="$type">
+          <a href="<mm:url referids="fragment,language" page="demo.smil.jsp" />" target="new"> <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field></a>
+       </mm:relatednodes>
+      </td>
+  </tr>
+  </mm:node>
+  </mm:context>
+  </mm:list>
 
 
   </table>

@@ -13,7 +13,7 @@
    <span class="kop"><mm:nodeinfo nodetype="pools" type="guitype" /></span>
 
     <ul>
-    <mm:list nodes="media.streams"  path="pools,posrel,pools2" orderby="posrel.pos">
+    <mm:list nodes="media.streams"  path="pools,parent,pools2" orderby="pools2.name">
       <mm:context>
        <mm:node id="origin" element="pools2">
          <li><a href="javascript:setContentFrame('<mm:url referids="origin,language" page="entrancepage.jsp" />');"><mm:field name="name" /></a></li>
