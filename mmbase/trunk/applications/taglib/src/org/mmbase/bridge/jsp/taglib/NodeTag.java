@@ -65,7 +65,14 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         node = null;
         try {
             // try to find if already in context.
-            node = getContextTag().getNode(id);
+            Object n = getContextTag().getObject(id);
+            if (n instanceof Node) {
+                node = (Node) n;
+            } else if (n instanceof String) {
+                setNumber((String)n);
+            } else {
+                // like to throw an exception..
+            }
         } catch (JspTagException e) {
             //could not be found. No problem.
         }
