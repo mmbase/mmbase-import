@@ -240,21 +240,6 @@ public class MultiConnection implements Connection
 	}
 
 
-	public boolean isAlive() {
-		boolean rtn=false;
-		Statement statement;
-		try {
-			statement=con.createStatement();
-			statement.executeQuery("select count(*) from systables");
-			statement.close();
-			rtn=true;
-		} catch (Exception e) {
-			rtn=false;
-		}
-		return(rtn);
-	}
-
-
 	// new ones 
 
    // prepareCall create a pre-compiled SQL statement that is
