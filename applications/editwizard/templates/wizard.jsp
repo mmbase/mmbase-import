@@ -19,7 +19,8 @@
         int pos = wizardinstance.indexOf("|");
         if (pos>-1) wizardname = wizardinstance.substring(0, pos);
         wiz = (Wizard)session.getValue("Wizard_"+wizardinstance);
-        objectnumber = request.getParameter("objectnumber");
+        objectnumber = request.getParameter("objectnumber");        
+        
 
         // wizard in session?
         if (wiz!=null && (objectnumber != null && wiz.wizardDataid.equals(objectnumber))) {
@@ -31,7 +32,7 @@
             // TODO: verwijder de reeds aanwezige wizard (indien aanwezig dan, natuurlijk).
             if (objectnumber!=null && !objectnumber.equals("")) {
                 // objectnumber was given. Create new wizard and store it!
-                wiz = new Wizard(settings_basedir, wizardname, objectnumber, cloud);
+                wiz = new Wizard(settings_context, settings_basedir, wizardname, objectnumber, cloud);
                 if (wiz.errors.size()>0) {
                     if (showErrors(wiz, out)) return;
                 }
@@ -49,8 +50,7 @@
     }
 
     if (wiz.mayBeClosed==true) {
-        // wizard is ready, as far as he is concerned. Let's redirect to the list.
-
+        // wizard is ready, as far as it is concerned. Let's redirect to the list.
         // but first, remove the current wizard from the session.
         session.removeValue("Wizard_"+wizardinstance);
 
@@ -59,7 +59,7 @@
         if (popup!=null && popup.equals("true")) {
             // this was a popup-wizard. Close it.
             %>
-                <html><script language="javascript">window.close();</script></html>
+    <html><script language="javascript">window.close();</script></html>
             <%
         } else {
             response.sendRedirect("list.jsp");
@@ -73,14 +73,13 @@
     }
 %><%!
 
-    private boolean showErrors(Wizard wiz, Writer out) {
+    private boolean showErrors(Wizard wiz, Writer out) throws java.io.IOException {
         String str;
         Iterator iter = wiz.errors.iterator();
         while (iter.hasNext()) {
             str = (String)iter.next();
-            try {
-                out.write(str);
-            } catch (Exception e) {}
+            out.write(str);
+
         }
         return true; // stop if any error is found!
     }
