@@ -69,7 +69,7 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         Edit(ACTION_EDIT);
         ((BasicNode)node).Edit(ACTION_LINK);
-	    int source=node.getNumber();
+	    int source=node.getIntValue("number");
         if (source==-1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_snumber",node.getValue("_number"));
@@ -89,7 +89,7 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         Edit(ACTION_EDIT);
         ((BasicNode)node).Edit(ACTION_LINK);
-	    int dest=node.getNumber();
+	    int dest=node.getIntValue("number");
         if (dest==-1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_dnumber",node.getValue("_number"));
