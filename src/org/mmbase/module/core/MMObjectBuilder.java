@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.192 2002-12-04 12:33:14 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.193 2002-12-04 19:03:26 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -549,7 +549,7 @@ public class MMObjectBuilder extends MMTable {
      *
      * @since MMBase-1.6
      */
-    private boolean isInstanceOfBuilder(String builderName) {
+    public boolean isInstanceOfBuilder(String builderName) {
         String bn = builderName; // Only used for logging.
 
         while(!builderName.equals(tableName)) {

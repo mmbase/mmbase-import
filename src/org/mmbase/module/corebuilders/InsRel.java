@@ -258,25 +258,25 @@ public class InsRel extends MMObjectBuilder {
     public Enumeration getRelations(int src,int otype, int rnumber, boolean usedirectionality) {
         Vector re;
         if (usedirectionality) {
-             re=getRelationsVector(src,rnumber);
+             re = getRelationsVector(src,rnumber);
         } else {
-             re=getAllRelationsVector(src,rnumber);
+             re = getAllRelationsVector(src,rnumber);
         }
         if (otype==-1) {
             return re.elements();
         } else {
-            Vector list=new Vector();
-            MMObjectNode node;
-            int nodenr = -1;
-            for(Enumeration e=re.elements(); e.hasMoreElements(); ) {
-                node=(MMObjectNode)e.nextElement();
-                nodenr=node.getIntValue("snumber");
-                if (nodenr==src) {
-                    nodenr=node.getIntValue("dnumber");
+            TypeDef typedef = mmb.getTypeDef();
+            String builder = typedef.getValue(otype); 
+            Vector list = new Vector();
+            for(Enumeration e = re.elements(); e.hasMoreElements(); ) {
+                MMObjectNode node = (MMObjectNode) e.nextElement();
+                int nodenr = node.getIntValue("snumber");
+                if (nodenr == src) {
+                    nodenr = node.getIntValue("dnumber");
                 }
-                if (getNodeType(nodenr)==otype) {
-                    list.addElement(node);
-                }
+                if (mmb.getBuilder(typedef.getValue(getNodeType(nodenr))).isInstanceOfBuilder(builder)) {
+                    list.add(node);
+                }                 
             }
             return list.elements();
         }
