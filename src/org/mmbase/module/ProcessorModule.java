@@ -34,10 +34,8 @@ public class ProcessorModule extends Module implements ProcessorInterface {
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
-	public Vector  getList(scanpage sp,StringTagger tagger, String value) {
-		Vector result = new Vector();
-		result.addElement("This module doesn't implement this processor call");
-		return(result);
+	public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+		throw new ParseException("Module "+classname+" does not implement LIST");
 	}
 
 	/**
