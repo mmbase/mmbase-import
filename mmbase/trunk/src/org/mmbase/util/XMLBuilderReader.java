@@ -217,13 +217,22 @@ public class XMLBuilderReader  {
 		return(def);
 	}
   
-	public String getDBType(Node n1,FieldDefs def) {
+ 
+
+	public int getDBType(Node n1,FieldDefs def) {
 		Node n2=n1.getFirstChild();
 		String val=n2.getNodeValue();
-		if (val.equals("INTEGER")) val="int";
-		if (val.equals("VARCHAR")) val="varchar";
-		if (val.equals("BYTE")) val="byte";
-		def.DBType=val;
+
+		if (val.equals("VARCHAR")) def.DBType=FieldDefs.TYPE_STRING;
+		if (val.equals("STRING")) def.DBType=FieldDefs.TYPE_STRING;
+		if (val.equals("INTEGER")) def.DBType=FieldDefs.TYPE_INTEGER;
+		if (val.equals("TEXT")) def.DBType=FieldDefs.TYPE_TEXT;
+		if (val.equals("BYTE")) def.DBType=FieldDefs.TYPE_BYTE;
+		if (val.equals("FLOAT")) def.DBType=FieldDefs.TYPE_FLOAT;
+		if (val.equals("DOUBLE")) def.DBType=FieldDefs.TYPE_DOUBLE;
+		if (val.equals("LONG")) def.DBType=FieldDefs.TYPE_LONG;
+
+
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
 			int size=-1;
@@ -245,16 +254,6 @@ public class XMLBuilderReader  {
 				}
 			}
 
-
-			n3=nm.getNamedItem("key");
-			if (n3!=null) {
-				if (n3.getNodeValue().equals("true")) {
-					def.isKey=true;
-				} else {
-					def.isKey=false;
-				}
-			}
-
 			n3=nm.getNamedItem("state");
 			if (n3!=null) {
 				String tmp=n3.getNodeValue();
@@ -269,9 +268,9 @@ public class XMLBuilderReader  {
 				}
 			}
 		}
-		return(val);
+		return(def.DBType);
 	}
- 
+
 	public String getGUIType(Node n1) {
 		Node n2=n1.getFirstChild();
 		String val=n2.getNodeValue();
