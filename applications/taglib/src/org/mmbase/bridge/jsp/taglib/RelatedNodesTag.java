@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.32.2.2 2004-07-10 12:12:59 nico Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.32.2.3 2004-07-23 19:27:47 michiel Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -107,6 +107,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
+            query.setAlias(step1, "root0");
             query.addNode(step1, parentNode);
 
 
