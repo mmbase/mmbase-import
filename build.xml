@@ -1253,6 +1253,7 @@ Build-compiler: ${build.compiler}
 
   <!-- =================================================================== -->
   <!--  Create the Builder documentation                                   -->
+  <!-- TODO, should be moved to documentation module                      -->
   <!-- =================================================================== -->
   <target name="documentation.builders"
           depends="doc.resources,xsltransformer"
