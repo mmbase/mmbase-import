@@ -1,4 +1,4 @@
 <PROCESSOR MMBASE>
 	<LIST OBJECTS TYPE="mags" WHERE="title=='MMBase.org'" FIELDS="number">
-	<GOTO /mmdemo/examples/mynews/index.shtml?$ITEM1>
+	<GOTO /mmexamples/mynews/scan/index.shtml?$ITEM1>
 </LIST>
