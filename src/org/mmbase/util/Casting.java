@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.33 2005-01-06 20:18:02 michiel Exp $
+ * @version $Id: Casting.java,v 1.34 2005-01-20 16:52:24 pierre Exp $
  */
 
 import java.util.*;
@@ -186,14 +186,14 @@ public class Casting {
         writer.write(s.toString());
         return writer;
     }
-    
+
     /**
-     * Does not yet really cast the object to String, but only wraps it in an object with a toString as we desire. Casting can now be done with 
+     * Does not yet really cast the object to String, but only wraps it in an object with a toString as we desire. Casting can now be done with
      * toString() on the resulting object.
-     * 
+     *
      * This is used to make JSTL en EL behave similarly as mmbase taglib when writing objects to the page (taglib calls Casting, but they of course don't).
      *
-     * @todo  Not everything is wrapped (and can be unwrapped) already. 
+     * @todo  Not everything is wrapped (and can be unwrapped) already.
      * @since MMBase-1.8
      */
 
@@ -224,10 +224,16 @@ public class Casting {
             return convertXmlToString(null, (Document)o);
         } else if (o instanceof List) {
             return new ListWrapper((List) o);
+        } else if (o instanceof byte[]) {
+            try {
+                return new String((byte[])o, MMBase.getMMBase().getEncoding());
+            } catch (java.io.UnsupportedEncodingException uee) {
+                throw new UnsupportedOperationException(uee);
+            }
         } else {
             return o;
         }
-        
+
     }
     /**
      * When you want to undo the wrapping, this method can be used.
@@ -816,7 +822,7 @@ public class Casting {
     }
 
 
-    public static class ListWrapper extends AbstractList{ 
+    public static class ListWrapper extends AbstractList{
         private final List list;
         ListWrapper (List l) {
             list = l;
