@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.12 2004-01-21 10:17:29 michiel Exp $
+ * @version $Id: CommunityPrc.java,v 1.13 2004-02-13 10:45:20 gerard Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -83,7 +83,7 @@ public class CommunityPrc extends ProcessorModule {
         if (!active) {
             messageBuilder = (Message) mmb.getMMObject("message");
             if (messageBuilder == null  || !messageBuilder.activate()) {
-                log.error("Community module could not be activated because message builder missing or could not be activated");
+                log.warn("Community module could not be activated because message builder missing or could not be activated");
                 return false;
             }
             communityBuilder = (Community)mmb.getMMObject("community");
