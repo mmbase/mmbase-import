@@ -23,6 +23,8 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Selects a MMBase database configuration based on a java.sql.Connection
+ * @author Eduard Witteveen
+ * @deprecated Not used by 'new' storage layer {@see org.mmbase.storage.implementation.database.DatabaseStorageLookup}
  */
 public class DatabaseLookup {  
     /** the logger logs */
