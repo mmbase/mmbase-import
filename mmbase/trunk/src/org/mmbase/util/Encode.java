@@ -231,7 +231,7 @@ public class Encode {
 		    continue;
 		}
 		String entity = data.substring(i+1,end);
-		System.out.println(entity);
+//		System.out.println(entity);
 		i+= entity.length()  + 1;
 		if (entity.equals("amp")){
 		    sb.append('&');
@@ -326,7 +326,7 @@ public class Encode {
         }
         // make sure that the list is closed:
         while (inList > 0) {
-            obj.insert(obj.length(), "</ul>\r"); inList--;
+            obj.insert(obj.length(), "</li></ul>\r"); inList--;
         }            
         
         // to do _-escaping
