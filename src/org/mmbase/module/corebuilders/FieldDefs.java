@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.9 2000-06-20 09:28:25 wwwtech Exp $
+$Id: FieldDefs.java,v 1.10 2000-06-28 14:44:58 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/06/20 09:28:25  wwwtech
+new fielddefs for xml config
+
 Revision 1.8  2000/06/06 20:23:20  wwwtech
 multi lang support
 
@@ -44,7 +47,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.9 $ $Date: 2000-06-20 09:28:25 $
+ * @$Revision: 1.10 $ $Date: 2000-06-28 14:44:58 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -100,6 +103,11 @@ public class FieldDefs  {
 		tmp=(String)GUINames.get("us");
 		if (tmp!=null) return(tmp);
 		return (GUIName);
+	}
+
+
+	public Hashtable getGUINames() {
+		return (GUINames);
 	}
 
 	public String getGUIName() {
