@@ -1189,7 +1189,7 @@ public class scanparser extends ProcessorModule {
 		// Process commands to list if any parse them but they can be overiden
 		// by the processor
 		if (cmds.size()>1) {
-			tagger=new StringTagger(cmd,' ','=',',','\'');	
+			tagger=new StringTagger(cmd,' ','=',',','"');	
 
 			/*
 			str=tagger.Value("ITEMS");
@@ -1252,7 +1252,7 @@ public class scanparser extends ProcessorModule {
 			}
 
 		} else {
-			tagger=new StringTagger("",' ','=',',','\'');	
+			tagger=new StringTagger("",' ','=',',','"');	
 		}
 
 		if (sessions!=null && session!=null && key!=null) {
