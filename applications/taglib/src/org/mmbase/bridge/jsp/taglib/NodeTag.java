@@ -25,6 +25,7 @@ import org.mmbase.util.logging.Logging;
 * NodeTag provides the fields of a node 
 *
 * @author Rob Vermeulen
+* @author Michiel Meeuwissen
 */
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
@@ -70,8 +71,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         setNodeVar(node);        
         log.debug("found node " + node.getValue("gui()"));
         
-        //System.out.println("doStartTag");
-        return EVAL_BODY_TAG; // should perhaps give a SKIP_BODY if 'field' is given.
+        return EVAL_BODY_TAG; 
     }
     
     public void doInitBody() throws JspTagException {       
