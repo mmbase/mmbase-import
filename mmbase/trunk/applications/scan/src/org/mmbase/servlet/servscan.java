@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.14 2000-07-28 10:00:51 daniel Exp $
+ * @version $Id: servscan.java,v 1.15 2000-09-01 15:10:06 wwwtech Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -141,8 +141,12 @@ public class servscan extends JamesServlet {
 				sp.body=parser.getfile(sp.req_line);
 				doSecure(sp,res); // name=doSecure(sp,res); but name not used here
 				long stime=handleTime(sp);
-	
-				if (handleCache(sp,res,out)) return;
+
+				try {	
+					if (handleCache(sp,res,out)) return;
+				} catch (Exception e) {
+					System.out.println("servscan - something is wrong with scancache");	
+				}
 	
 				if (sp.body!=null && !sp.body.equals("")) {
 					long oldtime = System.currentTimeMillis();
@@ -338,7 +342,11 @@ public class servscan extends JamesServlet {
 		if (sp.wantCache!=null) {
 			 String req_line=sp.req_line;
 			 if (sp.querystring!=null) req_line+="?"+sp.querystring;
-			 parser.scancache.newput(sp.wantCache,res,req_line,sp.body, sp.mimetype);
+			 try {
+			 	parser.scancache.newput(sp.wantCache,res,req_line,sp.body, sp.mimetype);
+			 } catch (Exception e) {
+				System.out.println("servscan - something is wrong with scancache");	
+			 }
 		}
 		return(true);
 	}
