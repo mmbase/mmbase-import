@@ -123,8 +123,6 @@
 	</mm:booleanfunction>
 </mm:compare>
 
-
-
 <mm:compare value="true" referid="adminmode">
 <mm:compare value="newpostarea" referid="action">
 	<mm:import externid="name" />
@@ -178,13 +176,24 @@
 	</mm:booleanfunction>
 </mm:compare>
 
-<mm:compare value="removepost" referid="action">
-	<mm:import externid="postareaid" />
-	<mm:import externid="postthreadid" />
-	<mm:import externid="postingid" />
-	<mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid">
-	</mm:booleanfunction>
+<mm:compare value="removeposter" referid="action">
+ 	 <mm:import externid="removeposterid" />
+         <mm:booleanfunction set="mmbob" name="removePoster" referids="forumid,removeposterid,posterid">
+        </mm:booleanfunction>
 </mm:compare>
+
+<mm:compare value="disableposter" referid="action">
+         <mm:import externid="disableposterid" />
+         <mm:booleanfunction set="mmbob" name="disablePoster" referids="forumid,disableposterid,posterid">
+        </mm:booleanfunction>
+</mm:compare>
+
+<mm:compare value="enableposter" referid="action">
+         <mm:import externid="enableposterid" />
+         <mm:booleanfunction set="mmbob" name="enablePoster" referids="forumid,enableposterid,posterid">
+        </mm:booleanfunction>
+</mm:compare>
+
 </mm:compare>
 
 <mm:compare value="true" referid="moderatormode">
@@ -196,8 +205,6 @@
         </mm:booleanfunction>
 </mm:compare>
 </mm:compare>
-
-
 
 <mm:compare value="newforum" referid="action">
 	<mm:import externid="name" />

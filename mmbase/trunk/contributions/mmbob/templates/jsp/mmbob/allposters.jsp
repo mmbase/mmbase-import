@@ -35,13 +35,42 @@
                                                                                               
 <div class="bodypart">
 
+<mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+    <mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
+</mm:nodefunction>
+
 <mm:include page="path.jsp?type=$pathtype" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
+
 <mm:node referid="forumid">
-<tr><th><mm:write referid="mlg_Account" /></th><th><mm:write referid="mlg_Location" /></th><th><mm:write referid="mlg_Last_seen" /></th></tr>
+  <tr>
+    <th><mm:write referid="mlg_Account" /></th>
+    <th><mm:write referid="mlg_Location" /></th>
+    <th><mm:write referid="mlg_Last_seen" /></th>
+    <mm:compare referid="isadministrator" value="true">
+      <th><mm:write referid="mlg_Admin_tasks"/></th>
+    </mm:compare>
+  </tr>
+
 	<mm:related path="forposrel,posters">
 	<mm:node element="posters">
-	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+  <tr>
+    <td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td>
+    <td><mm:field name="location" /></td>
+    <td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td>
+    <mm:compare referid="isadministrator" value="true">
+      <td><a href="removeposter.jsp?forumid=<mm:write referid="forumid" />&removeposterid=<mm:field name="number" />"/><mm:write referid="mlg_Delete"/></a> / 
+      <mm:field name="state">
+        <mm:compare value="1" inverse="true"> 
+          <a href="disableposter.jsp?forumid=<mm:write referid="forumid" />&disableposterid=<mm:field name="number" />"/><mm:write referid="mlg_Disable"/></a>
+        </mm:compare>
+        <mm:compare value="1">
+          <a href="enableposter.jsp?forumid=<mm:write referid="forumid" />&enableposterid=<mm:field name="number" />"/><mm:write referid="mlg_Enable"/></a>
+        </mm:compare>
+      </mm:field> 
+      </td>
+    </mm:compare>
+  </tr>
 	</mm:node>
 	</mm:related>
 </table>
