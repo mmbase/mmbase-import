@@ -76,9 +76,9 @@ public class ListConditionTag extends BodyTagSupport {
         } else if ("last".equalsIgnoreCase(value))  {  
             result = (nodeListItemInfo.getIndex() == nodeListItemInfo.size()-1 )  != inverse;
         } else if ("even".equalsIgnoreCase(value)) {
-            result = (nodeListItemInfo.getIndex() % 2 == 0) != inverse;
+            result = ((nodeListItemInfo.getIndex() + 1) % 2 == 0) != inverse;
         } else if ("odd".equalsIgnoreCase(value)) {
-            result = (nodeListItemInfo.getIndex() % 2 != 0) != inverse;
+            result = ((nodeListItemInfo.getIndex() + 1) % 2 != 0) != inverse;
         } else if ("changed".equalsIgnoreCase(value)) {
             result = nodeListItemInfo.isChanged() != inverse;
         } else {
