@@ -38,7 +38,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
@@ -163,9 +163,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
+        helper.setTag(this);
         helper.setValue(value);
-        helper.setPageContext(pageContext);
-        helper.setJspvar();
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -175,8 +174,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
 
     public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
        
     /**

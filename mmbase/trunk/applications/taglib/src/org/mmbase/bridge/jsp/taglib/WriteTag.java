@@ -47,7 +47,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
@@ -96,8 +96,9 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         if (log.isDebugEnabled()) {
             log.debug("start writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
+        helper.setTag(this);
         helper.setValue(getObject());
-        helper.setJspvar(pageContext);
+
 
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
@@ -157,8 +158,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
 
     public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
 
 

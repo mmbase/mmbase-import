@@ -54,6 +54,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         // the 'page' Context
     }
 
+    public PageContext getPageContext() {
+        return pageContext;
+    }
   
     public void setPageContext(PageContext pc) {
         if (log.isDebugEnabled()) {

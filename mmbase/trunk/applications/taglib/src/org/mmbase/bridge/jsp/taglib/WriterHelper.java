@@ -8,12 +8,13 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +30,9 @@ import org.mmbase.util.Casting; // not used enough
  * @author Michiel Meeuwissen 
  */
 
-public class WriterHelper  {
+public class WriterHelper extends BodyTagSupport {
+    // extending from it, becase we need access to protected vars.
+    // this tag is not acutally used as a tag
 
     private static Logger log = Logging.getLoggerInstance(WriterHelper.class.getName());
     public static boolean NOIMPLICITLIST = true;
@@ -88,17 +91,22 @@ public class WriterHelper  {
     private   Object  value             = null;
 
     private   String  jspvar           = null;
-    private   Boolean write            = null;
+    private   Attribute write          = Attribute.NULL;
     private   Boolean overridewrite    = null;
     private   int     vartype          = TYPE_UNSET;
-    private   BodyContent  bodyContent;
-    private   PageContext  pageContext;
+
+    private   ContextReferrerTag thisTag  = null;
+    
     private   boolean hasBody          = false;
+
+
+    public WriterHelper() {
+    }
 
     /**
      * For implementation of the write attribute.
      */
-    public void setWrite(Boolean w) {
+    public void setWrite(Attribute w) {
         if (log.isDebugEnabled()) {
             log.debug("Setting write to " + w);
         }
@@ -113,16 +121,18 @@ public class WriterHelper  {
         overridewrite = w ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    public boolean  isWrite() {
-        if (write == null) {
+    public boolean  isWrite() throws JspTagException {
+        if (write == Attribute.NULL) {
             if (log.isDebugEnabled()) {
                 log.debug("write is unset, using default " + overridewrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
             }
             if (overridewrite != null) return overridewrite.booleanValue();            
             return "".equals(getString()) && (! hasBody);
         } else {
-            log.debug("Write: " + write);
-            return write.booleanValue();        
+            if (log.isDebugEnabled()) {
+                log.debug("Write: " + write);
+            }
+            return write.getBoolean(thisTag, true);
         }
     }
     
@@ -235,32 +245,26 @@ public class WriterHelper  {
             break;
         }
         value = v;
+        setJspvar();
     }
     
 
-    public void setBodyContent(BodyContent b) {
-        bodyContent = b;
-    }
 
-    public void setPageContext(PageContext p) {
-        pageContext = p;
+    public void setTag(ContextReferrerTag b) {
+        thisTag     = b;
+        pageContext = b.getPageContext();
     }
 
     public Object getValue() {
         return value;
     }
 
-    public void setJspvar(PageContext p) throws JspTagException {
-        setPageContext(p);
-        setJspvar();
-    }
     
     /**
      * Don't forget to call 'setValue' first!
      */
     
-    public void setJspvar() throws JspTagException {
-      
+    private void setJspvar() throws JspTagException {      
         if (jspvar == null) return;
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
@@ -317,13 +321,18 @@ public class WriterHelper  {
         }
     }
 
+    public int doAfterBody() throws JspException {
+        bodyContent = thisTag.getBodyContent();
+        return super.doAfterBody();
+    }
+
     /**
      * A basic doEndTag for Writers.
      *
      * It decides if to write or not.
      */
     public int doEndTag() throws JspTagException {
-        log.debug("doEndTag of WriterHelper");
+        log.debug("doEndTag of WriterHelper");    
         try {
             String body = getString();
             if (isWrite()) {
@@ -352,19 +361,9 @@ public class WriterHelper  {
         pageContext   = null;
         value         = null;
         jspvar        = null;
-        write         = null;
+        write         = Attribute.NULL;
         vartype       = TYPE_UNSET;
     }
 
-    /**
-     * @deprecated Use doEndTag
-     */
-    /*
-    public int doAfterBody() throws JspTagException {
-        doEndTag();
-        return javax.servlet.jsp.tagext.BodyTagSupport.SKIP_BODY;
-        
-    }
-    */
 
 }

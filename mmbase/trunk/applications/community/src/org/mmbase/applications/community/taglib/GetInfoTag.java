@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.community;
 
+import  org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
+
 
 import org.mmbase.bridge.Node;
 
@@ -37,16 +40,16 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
     }
     public void haveBody() { helper.haveBody(); }
 
-    private String key=null;
+    private Attribute key = Attribute.NULL;
     public void setKey(String k) throws JspTagException {
-        key = getAttributeValue(k);
+        key = getAttribute(k);
     }
 
 
@@ -54,12 +57,17 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
         // firstly, search the node:
         Node node = getNode();
 
+        String k;
         // found the node now. Now we can decide what must be shown:
-        if (key == null) key = "name";
-        String value=node.getStringValue("getinfovalue("+key+")");
+        if (key == Attribute.NULL) { 
+            k = "name";
+        } else {
+            k = key.getString(this);
+        }
+        String value = node.getStringValue("getinfovalue(" + k + ")");
         if (value == null) value="";
         helper.setValue(value);
-        helper.setJspvar(pageContext);
+        helper.setTag(this);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -71,7 +79,6 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
      * write the value of the field.
      **/
     public int doEndTag() throws JspTagException {
-        helper.setBodyContent(bodyContent);
         return helper.doEndTag();
     }
 }

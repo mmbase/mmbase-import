@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.58 2003-03-28 10:39:46 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.59 2003-04-07 19:25:13 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -53,7 +53,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
@@ -299,8 +299,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = field.getDescription();
             break;
         }
+        helper.setTag(this);
         helper.setValue(show);
-        helper.setJspvar(pageContext);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -351,16 +351,15 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
 
 
-    public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
-    }
-
     /**
      * Write the value of the fieldinfo.
      */
     public int doEndTag() throws JspTagException {
         return helper.doEndTag();
+    }
+
+    public int doAfterBody() throws JspException {
+        return helper.doAfterBody();
     }
 
 
