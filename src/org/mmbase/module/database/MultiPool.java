@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.33 2003-09-01 13:29:44 pierre Exp $
+ * @version $Id: MultiPool.java,v 1.34 2003-12-10 10:02:51 michiel Exp $
  */
 public class MultiPool {
 
-    private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MultiPool.class);
 
     private List              pool     = new ArrayList();
     private List              busyPool = new ArrayList();
@@ -44,7 +44,7 @@ public class MultiPool {
      * @javadoc
      */
     MultiPool(DatabaseSupport databaseSupport, String url, String name, String password,int conMax) throws SQLException {
-        this(databaseSupport,url,name,password,conMax,500);
+        this(databaseSupport, url, name, password, conMax, 500);
 
     }
     /**
@@ -53,17 +53,38 @@ public class MultiPool {
     MultiPool(DatabaseSupport databaseSupport,String url, String name, String password, int conMax,int maxQueries) throws SQLException {
 
         log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries");
-        this.conMax=conMax;
-        this.url=url;
-        this.name=name;
-        this.password=password;
-        this.maxQueries=maxQueries;
-        this.databaseSupport=databaseSupport;
+        this.conMax          = conMax;
+        this.url             = url;
+        this.name            = name;
+        this.password        = password;
+        this.maxQueries      = maxQueries;
+        this.databaseSupport = databaseSupport;
 
+        int errors = 0;
+        SQLException firstError = null;
         // put connections on the pool
         for (int i = 0; i < conMax ; i++) {
-            pool.add(getMultiConnection());
+            try {
+                pool.add(getMultiConnection());
+            } catch (SQLException se) {               
+                errors++;
+                if (log.isDebugEnabled()) {
+                    log.debug("i: " + "error " + errors + ": " + se.getMessage());
+                }
+                if (firstError == null) firstError = se;
+            }
         }
+        if (errors > 0) {
+            if (pool.size() < 2) { // that is fatal.
+                throw firstError;
+            }
+            log.error("Could not get all connections (" + errors + " failures). First error: " + firstError.getMessage() + Logging.stackTrace(firstError));
+            log.info("Multipools size is now " + pool.size() + " rather then " + conMax);
+            conMax = pool.size();
+        }
+
+
+        
 
         semaphore = new DijkstraSemaphore(pool.size());
 
@@ -75,7 +96,7 @@ public class MultiPool {
      *
      * @since MMBase-1.7
      */
-    protected MultiConnection getMultiConnection() throws java.sql.SQLException {
+    protected MultiConnection getMultiConnection() throws SQLException {
        Connection con;
        if (name.equals("url") && password.equals("url")) {
            con = DriverManager.getConnection(url);
