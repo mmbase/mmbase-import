@@ -62,7 +62,8 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and creating nodes is not allowed.
      */
     public Node createNode() {
-        throw new BasicBridgeException("Cannot create a node from a virtual node type");
+        throw new BridgeException("Cannot create a node from a virtual node "
+                                  + "type");
     }
 
 	/**
@@ -70,6 +71,7 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and searching is not allowed.
      */
     public NodeList getList(String where, String sorted, boolean direction) {
-        throw new BasicBridgeException("Cannot perform search on a virtual node type");
+        throw new BridgeException("Cannot perform search on a virtual node "
+                                  + "type");
     }
 }

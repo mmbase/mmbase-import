@@ -205,7 +205,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
             }
             return new BasicNodeList(res,cloud,tempNodeManager);
         } catch (Exception e) {
-            throw new BasicBridgeException(e);
+            throw new BridgeException(e.getMessage());
         }
     }
 
