@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.10 2004-03-16 13:52:04 pierre Exp $
+ * @version $Id: Attributes.java,v 1.11 2004-03-16 14:08:40 pierre Exp $
  */
 public final class Attributes {
 
@@ -107,7 +107,10 @@ public final class Attributes {
 
     /**
      * Option: <code>sequence-buffer-size</code>.
-     * @javadoc
+     * The sequence buffer size is the numebr of keys that MMBase caches in the storage layer.
+     * You can use this to minimize the nr of times MMBase accesses the database to generate a new
+     * object number.
+     * When nto set, the value is assumed to be 1.
      */
     public static final String SEQUENCE_BUFFER_SIZE = "sequence-buffer-size";
 

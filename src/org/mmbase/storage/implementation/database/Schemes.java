@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.10 2004-02-16 12:12:28 keesj Exp $
+ * @version $Id: Schemes.java,v 1.11 2004-03-16 14:08:41 pierre Exp $
  */
 public final class Schemes {
 
@@ -395,6 +395,7 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the (suggested) name of the primary key field ('number') </li>
+     *    <li>{2} the sequence buffer size (nr of keys that MMBase caches in the storage layer). </li>
      *  </ul>
      */
     public static final String UPDATE_SEQUENCE = "update-sequence-scheme";
@@ -402,7 +403,7 @@ public final class Schemes {
     /**
      *  The default scheme for updating a sequence table.
      */
-    public static final String UPDATE_SEQUENCE_DEFAULT = "UPDATE {0}_numberTable SET {1} = {1} + 1";
+    public static final String UPDATE_SEQUENCE_DEFAULT = "UPDATE {0}_numberTable SET {1} = {1} + {2}";
 
     /**
      *  Name of the scheme for retrieving the key from sequence or number table
@@ -410,6 +411,7 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the (suggested) name of the primary key field ('number') </li>
+     *    <li>{2} the sequence buffer size (nr of keys that MMBase caches in the storage layer). </li>
      *  </ul>
      */
     public static final String READ_SEQUENCE = "read-sequence-scheme";
