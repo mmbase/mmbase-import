@@ -294,6 +294,8 @@ public class MMAdmin extends ProcessorModule {
                 return(""+(MMObjectBuilder.nodeCache.getRatio()*100));
             } else if (cmd.equals("NODECACHESIZE")) {
                 return(""+(MMObjectBuilder.nodeCache.getSize()));
+            } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
+                return(""+(MMObjectBuilder.TemporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
                 return(""+MMObjectNode.getRelationCacheHits());
             } else if (cmd.equals("RELATIONCACHEMISSES")) {
@@ -500,7 +502,8 @@ public class MMAdmin extends ProcessorModule {
 
             MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
             if (syncbul!=null) {
-                for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
+                Vector importednodes= new Vector();
+                for (Enumeration n = nodereader.getNodes(mmb).elements();n.hasMoreElements();) {
                     MMObjectNode newnode=(MMObjectNode)n.nextElement();
                     int exportnumber=newnode.getIntValue("number");
                     String query="exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'";
@@ -519,8 +522,25 @@ public class MMAdmin extends ProcessorModule {
                             syncnode.setValue("timestamp",timestamp);
                             syncnode.setValue("localnumber",localnumber);
                             syncnode.insert("import");
+                            if ((localnumber==newnode.getNumber()) &&
+                                (newnode.parent instanceof Message)) {
+                                importednodes.add(newnode);
+                            }
                         }
                     }
+                }
+                for (Enumeration n = importednodes.elements();n.hasMoreElements();) {
+                    MMObjectNode importnode=(MMObjectNode)n.nextElement();
+                    log.info(importnode.toString());
+                    int exportnumber=importnode.getIntValue("thread");
+                    int localnumber=-1;
+                    Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
+                    if (b.hasMoreElements()) {
+                        MMObjectNode n2=(MMObjectNode)b.nextElement();
+                        localnumber=n2.getIntValue("localnumber");
+                    }
+                    importnode.setValue("thread",localnumber);
+                    importnode.commit();
                 }
             } else {
                 log.warn("Application installer : can't reach syncnodes builder");
@@ -976,7 +996,7 @@ public class MMAdmin extends ProcessorModule {
                 subpath=subpath+File.separator;
             }
             String files[] = bdir.list();
-            if (files == null) return results;        
+            if (files == null) return results;
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
