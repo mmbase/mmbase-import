@@ -33,7 +33,6 @@
     <mkdir dir="${tests.work.dir}"/>
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
-    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci.jar" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci-server.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
@@ -79,7 +78,7 @@
   <target name="init.get">
     <!-- JUnit -->
     <property name="junit.version" value="junit3.8.1"/>
-    <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
+    <property name="junit.url" value="http://prdownloads.sourceforge.net/junit/${junit.version}.zip"/>
     <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
     <available property="junit.present" 
       file="${download.dir}/${junit.version}.zip"/>
