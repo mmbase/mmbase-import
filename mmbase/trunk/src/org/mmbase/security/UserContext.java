@@ -10,36 +10,42 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
- * This UserContext class provides a storage for the authentication
- * and authorization, so that information can be shared.
- * This class is NOT a container class for client related stuff, altrough
- * this is possible.
- * @javadoc
+ * The UserContext class is the result of an authentication, on wich the authorization can be
+ * based. Normally your authorization/authentication implementation will also provide an extension
+ * to this class.
+ *
+ * This default implementation is the most simple one, actually implementing 'no authorization'.
+ *
+ * This class is <em>not</em> necessarily also the container class for the client's credentials,
+ * although this is possible.
+ *
  * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.12 2002-06-07 12:56:56 pierre Exp $
+ * @version $Id: UserContext.java,v 1.13 2003-07-09 07:16:16 michiel Exp $
  */
 public class UserContext {
 
     /**
      * Get the unique identifier for this user. This should be unique
      * for every different user on the system.
-     * @return a unique identifier for this user.
+     *
+     * @return A unique identifier for this user.
      */
     public String getIdentifier() {
         return "anonymous";
     }
 
     /**
-     * Get the identifier to be used as the owner field value of
-     * objects created by this user.
-     * @return an identifier for the owner field
+     * Get the owner field value of new objects created by this user. The default implementation
+     * returns the user's identifier. This can be changed if the authorization implementation does
+     * not attribute rights to users directly ('context' implementations).
+     * @return A possible value for the owner field
      */
     public String getOwnerField() {
         return getIdentifier();
     }
 
     /**
-     * Get the rank of this user.
+     * Gets the rank of this user.
      * @return the user rank
      */
     public Rank getRank() throws org.mmbase.security.SecurityException {
@@ -48,7 +54,7 @@ public class UserContext {
     }
 
     /**
-     * Get the string respresnetation of the user context.
+     * Get a string respresentation of this user context (for debugging)
      * @return a string describing the usercontext
      */
     public String toString() {
