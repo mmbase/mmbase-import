@@ -1,28 +1,29 @@
 <%@ include file="settings.jsp"
 %><mm:cloud name="mmbase" method="http" jspvar="cloud"><%@ page errorPage="exception.jsp"
-%><mm:log jspvar="log"><%@ page import="org.mmbase.applications.editwizard.*, java.util.*, java.io.*"%><%
+%><mm:log jspvar="log"><%
     /**
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.2 2002-04-22 14:37:34 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.3 2002-05-07 13:37:57 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
 
-    Config.WizardConfig wizardConfig = null;
+Config.WizardConfig wizardConfig = null;
 if (ewconfig.subObjects.size() > 0) {
     if (ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
         log.debug("checking configuration");
         wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
         Config.WizardConfig checkConfig = new Config.WizardConfig();
+        log.trace("checkConfig" + configurator);
         configurator.config(checkConfig);
-        if (wizardConfig.objectNumber != null && wizardConfig.objectNumber.equals(checkConfig.objectNumber)) {
+        if (checkConfig.objectNumber != null && (!checkConfig.objectNumber.equals(wizardConfig.objectNumber))) {
+            log.debug("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
+            wizardConfig = null;
+        } else {
             log.debug("processing request");
             wizardConfig.wiz.processRequest(request);
-        } else {
-            log.debug("found wizard is for other other object");
-            wizardConfig = null;
         }
     }
 } 
@@ -36,7 +37,7 @@ if (wizardConfig == null) {
 
 if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
-    response.sendRedirect(response.encodeURL("wizard.jsp?remove=true"));
+    response.sendRedirect(response.encodeURL("wizard.jsp?proceed=yes&remove=true"));
 } else {
     log.trace("Send html back");
     wizardConfig.wiz.writeHtmlForm(out, ewconfig.wizard);
