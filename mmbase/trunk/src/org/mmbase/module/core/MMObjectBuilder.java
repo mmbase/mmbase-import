@@ -1593,7 +1593,7 @@ public class MMObjectBuilder extends MMTable {
             rtn=DateStrings.longmonths[DateSupport.getMonthInt(v)];
         } else if (function.equals("monthnumber")) {		
             int v=node.getIntValue(field);
-            rtn=""+DateSupport.getWeekDayInt(v);
+            rtn=""+(DateSupport.getMonthInt(v)+1);
         } else if (function.equals("month")) {			// month Sep
             int v=node.getIntValue(field);
             rtn=DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
