@@ -182,7 +182,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      */
 
-    public String getAttributeValue(String attribute) throws JspTagException {
+    public String getAttributeValue(String attribute) throws JspTagException {        
+        if (attribute == null) return null;
         StringBuffer result = new StringBuffer();
 
         // search all occurences of $
