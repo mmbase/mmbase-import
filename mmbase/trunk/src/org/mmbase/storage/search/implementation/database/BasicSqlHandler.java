@@ -14,13 +14,15 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.text.FieldPosition;
 
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.37 2004-09-07 12:55:46 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.38 2004-09-17 09:58:27 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -91,6 +93,13 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+    private static final FieldPosition dontcareFieldPosition = new FieldPosition(SimpleDateFormat.YEAR_FIELD);
+
+    protected void appendDateValue(StringBuffer sb, Date value) {
+        dateFormat.format(value, sb, dontcareFieldPosition);
+    }
+
     /**
      * Represents field value as a string, appending the result to a
      * stringbuffer.
@@ -121,6 +130,10 @@ public class BasicSqlHandler implements SqlHandler {
             sb.append("'").
             append(stringValue).
             append("'");
+        } else if (fieldType == FieldDefs.TYPE_DATETIME) {
+            sb.append("'");
+            appendDateValue(sb, (Date) value);
+            sb.append("'");
         } else {
             // Numerical field:
             // represent integeral Number values as integer, other
@@ -254,8 +267,7 @@ public class BasicSqlHandler implements SqlHandler {
                     if (fieldAlias != null) {
                         sbGroups.append(getAllowedValue(fieldAlias));
                     } else {
-                        appendField(sbGroups, step,
-                            fieldName, multipleSteps);
+                        appendField(sbGroups, step, fieldName, multipleSteps);
                     }
                 } else {
 
@@ -871,16 +883,14 @@ public class BasicSqlHandler implements SqlHandler {
             throw new IllegalStateException(
             "Invalid logical operator: " + compositeConstraint.getLogicalOperator()
             + ", must be either "
-            + CompositeConstraint.LOGICAL_AND + " or "
-            + CompositeConstraint.LOGICAL_OR);
+            + CompositeConstraint.LOGICAL_AND + " or " + CompositeConstraint.LOGICAL_OR);
         }
         List childs = compositeConstraint.getChilds();
 
         // Test for at least 1 child.
         if (childs.isEmpty()) {
             throw new IllegalStateException(
-            "Composite constraint has no child "
-            + "(at least 1 child is required).");
+            "Composite constraint has no child (at least 1 child is required).");
         }
 
         boolean hasMultipleChilds = childs.size() > 1;
