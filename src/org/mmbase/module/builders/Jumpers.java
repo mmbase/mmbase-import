@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.25 2004-06-02 17:02:57 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.26 2004-10-03 11:01:26 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -97,11 +97,15 @@ public class Jumpers extends MMObjectBuilder {
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
                 link = url;
             } else if (! url.startsWith("/")) { // requested relative to context path
-                link = res.encodeURL(req.getContextPath() + "/" + url);
+                String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
+                String u = context + "/" + url;
+                link = res == null ? u : res.encodeURL(u);
             } else {
+                String context = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath();
                 // request relative to host's root
-                if (url.startsWith(req.getContextPath() + "/")) { // in this context! 
-                    link = res.encodeURL(url.substring(req.getContextPath().length() + 1));
+                if (url.startsWith(context + "/")) { // in this context! 
+                    String u = url.substring(context.length() + 1);
+                    link = res == null ? u : res.encodeURL(u);
                 } else { // in other context
                     link = url;
                 }
