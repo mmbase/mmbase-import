@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.8 2000-06-05 10:56:55 wwwtech Exp $
+$Id: EncodeCop.java,v 1.9 2000-08-01 08:53:32 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/06/05 10:56:55  wwwtech
+Rico: added support for new 3voor12
+
 Revision 1.7  2000/03/30 13:11:36  wwwtech
 Rico: added license
 
@@ -39,7 +42,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.8 $ $Date: 2000-06-05 10:56:55 $
+ * @version $Revision: 1.9 $ $Date: 2000-08-01 08:53:32 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -129,6 +132,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	}
 
 
+	/*
 	public boolean cdtracksChanged(String number,String ctype) {
 		if( debug ) debug("cdtracksChanged("+number+","+ctype+")");
 		if (ctype.equals("n")) {
@@ -142,6 +146,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		}
 		return(true);
 	}
+	*/
 
 	public boolean audiopartsChanged(String number,String ctype) {
 		if( debug ) debug("audiopartsChanged("+number+","+ctype+")");
