@@ -1,8 +1,8 @@
-<mm:import externid="max_str" jspvar="max_str" vartype="String">10</mm:import>
+<mm:import externid="conf_max" jspvar="conf_max" vartype="String">10</mm:import>
 <mm:import externid="o" jspvar="ofs_str" vartype="String">0</mm:import>
-<mm:import externid="dayofs" jspvar="dayofs" vartype="String">9</mm:import>
+<mm:import externid="conf_days" jspvar="conf_days" vartype="String">20</mm:import>
 <% // Set and get some values
-int max = Integer.parseInt(max_str);
+int max = Integer.parseInt(conf_max);
 int ofs = Integer.parseInt(ofs_str);
 %>
 
@@ -11,7 +11,6 @@ int ofs = Integer.parseInt(ofs_str);
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 	<link rel="stylesheet" href="my_editors.css" type="text/css" />
 	<title>my_editors - <%= title %></title>
 </head>
@@ -30,7 +29,7 @@ int ofs = Integer.parseInt(ofs_str);
   </tr><tr bgcolor="#CCCCCC"> 
     <td colspan="2"><div class="top-links">
 	  my_editors 
-	  <% if (path1 != null) { %>&gt; <a class="top-links" href="index.jsp?type=<%= path1 %>">overview <%= path1 %></a> <% } %>
+	  <% if (path1 != null) { %>&gt; <a class="top-links" href="index.jsp?ntype=<%= path1 %>">overview <%= path1 %></a> <% } %>
 	</div></td>
   </tr>
 </table>

@@ -1,8 +1,8 @@
 <% String title = "Help"; %>
 <%@ include file="inc_top.jsp" %>
 <mm:cloud name="mmbase" jspvar="wolk" method="http" rank="basic user">
-<mm:import jspvar="type" externid="type" />
-<% String path1 = type;		// Eerst stukje van kruimelpad %>
+<mm:import jspvar="ntype" externid="ntype" />
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
 <h2>Help</h2>
@@ -42,8 +42,15 @@
 </p>
 
 
-<p>You can reach some of the my_editors pages by node id. You can put for example the small edit 
-icon near editable nodes in your web pages to give people a quick way to edit a web page.</p>
+<p><b>Quick way to access my_editors from within your MMBase site</b><br>
+You can reach some of the my_editors pages - like edit node and delete node - by node id. 
+You could put for example the small edit icon near editable nodes in your web pages 
+to give people a quick way to edit a web page. Of course you would need to hide the 
+icons for people who are not logged in into your editor environment.</p>
+
+<p><b>Version history</b><br>
+27-11-2002: Fixed a bug with content-type in 'inc_top.jsp' and 'inc_head.jsp'. Default now is UTF-8.
+</p>
 
 <%@ include file="inc_foot.jsp" %>
 </mm:cloud>
