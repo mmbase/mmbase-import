@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: configuration.xml,v 1.7 2002-08-28 06:23:13 michiel Exp $</date>
+    <date>$Id: configuration.xml,v 1.8 2002-09-17 06:35:11 michiel Exp $</date>
     <title>MMBase configuration documentation</title>
   </articleinfo>
   <section>
@@ -24,7 +24,7 @@
     </para>
     <section id="contextparameters">
       <title>Context parameters</title>
-      <para>
+        <para>
         The parameter `mmbase.htmlrooturlpath' indicates the context root. It must be specified if
         MMBase does not succeed to determine it automaticly, otherwise some url's to some servlets
         will be generated incorrectly. Hopefully this option will be deprecated when the servlet
@@ -40,7 +40,7 @@
       <title>Servlets</title>
       <para>
         For MMBase to start up, at least one `MMBaseServlet' must be
-        turned on in your web.xml. The following of those servlets are available.      
+	turned on in your web.xml. The following of those servlets are available.
         <variablelist>
           <varlistentry>
             <term><classname>org.mmbase.servlet.MMBaseServlet</classname></term>
@@ -58,7 +58,7 @@
               <para>
                 This servlet serves MMBase nodes as images (so also
                 icaches). Those nodes must contain an 'handle' field. It
-                has an 'expire' property, which can be set to set the
+                has an 'expire' property, which can be set to specify the
                 'Expires' header (for the node-type 'icaches' this is
                 ignored) in seconds after now. A servlet-mapping could be
                 e.g. /images/* or /img.db.
@@ -73,7 +73,7 @@
                 focussed on 'attachments' nodes, which besides a 'handle'
                 also store a 'mimetype' field and a 'filename' field. It
                 has the 'expire' property just like ImageServlet. Map it
-                e.g. to /attachments/* or /attachment
+                e.g. to /attachments/* or /attachment.db.
               </para>
             </listitem>
           </varlistentry>
@@ -256,9 +256,10 @@
       logging system.
     </para>
     <para>
-      In older MMBase versions it was required to use this JVM option even when you did run it as a
-      (set of) servlet(s), but this is not any longer the case (since MMBase 1.4), and use of `-Dmmbase.config'
-      other then in debugging or other `stand-alone' situations is discouraged.
+      In older MMBase versions it was required to use this JVM option even when you did
+      run it as a (set of) servlet(s), but this is not any longer the case (since MMBase
+      1.4), and use of `-Dmmbase.config' other then in debugging or other `stand-alone'
+      situations is discouraged.
     </para>
     <para>
       In these older versions of MMBase also the `mmbase.htmlroot' command line option was
@@ -317,12 +318,11 @@
   <section id="logging">
     <title>Configuring logging</title>
     <para>
-      <!-- 
       TODO
       Logging implementation will change soon a litte
       We will go to the 'log4j 1.2' manner of doing things, which involves some new code, and
       use of 'loggers' and 'level' rather then 'categories' and 'priorities'.
-      -->
+
       This section describes how the logging facilities of MMBase can be
       configured. It will focus on the default configuration, which is based
       on log4j.
@@ -600,4 +600,3 @@ applications responsible for them (application server and log4j in these cases).
     </section>
   </appendix>
 </article>
-      
