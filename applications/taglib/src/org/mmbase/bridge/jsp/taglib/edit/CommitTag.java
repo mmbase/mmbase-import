@@ -11,10 +11,8 @@ package org.mmbase.bridge.jsp.taglib.edit;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
 
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
-import org.mmbase.bridge.jsp.taglib.CloudProvider;
 import org.mmbase.bridge.Transaction;
 
 import org.mmbase.util.logging.Logger;

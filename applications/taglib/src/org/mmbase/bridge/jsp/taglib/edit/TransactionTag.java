@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Transaction;
-import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.CloudProvider;

@@ -13,8 +13,6 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 
-import java.util.Vector; 
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

@@ -11,7 +11,6 @@ package org.mmbase.cache;
 
 import java.util.*;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.util.LRUHashtable;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.10 2002-11-26 22:23:58 kees Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.11 2003-03-04 13:49:17 nico Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 

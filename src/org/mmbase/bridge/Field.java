@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import org.mmbase.module.core.*;
 
 /**
  * This interface represents a node's field type information object.
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.11 2002-10-24 12:56:06 pierre Exp $
+ * @version $Id: Field.java,v 1.12 2003-03-04 13:44:42 nico Exp $
  */
 public interface Field {
 

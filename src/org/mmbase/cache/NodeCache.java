@@ -9,15 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-
 /**
  * A cache for MMObjectNodes. 
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeCache.java,v 1.1 2002-05-15 17:27:53 michiel Exp $
+ * @version $Id: NodeCache.java,v 1.2 2003-03-04 13:49:17 nico Exp $
  */
 public class NodeCache extends Cache {
     private static int cacheSize = 4 * 1024;    // Max size of the node cache

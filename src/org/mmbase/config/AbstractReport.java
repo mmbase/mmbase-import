@@ -9,14 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.config;
 
-import java.lang.*;
 import java.util.*;
 import java.io.*;
 
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
@@ -26,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Case Roole, cjr@dds.nl
  * 
- * $Id: AbstractReport.java,v 1.6 2002-12-03 22:05:58 michiel Exp $
+ * $Id: AbstractReport.java,v 1.7 2003-03-04 13:50:53 nico Exp $
  *
  *
  */

@@ -14,14 +14,13 @@ import java.io.IOException;
 import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.BodyContent;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 /**
  * NodeTag provides the fields of a node
  *

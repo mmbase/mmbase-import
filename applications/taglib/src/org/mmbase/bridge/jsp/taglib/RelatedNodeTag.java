@@ -12,10 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
-
 import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.BodyContent;
 
 import org.mmbase.bridge.Node;
 

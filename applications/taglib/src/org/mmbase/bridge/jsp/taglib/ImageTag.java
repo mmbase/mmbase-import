@@ -15,8 +15,6 @@ import javax.servlet.jsp.JspTagException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-import org.mmbase.bridge.Node;
 
 /**
  * Produces a url to 'img.db'. Using this tag makes your pages more

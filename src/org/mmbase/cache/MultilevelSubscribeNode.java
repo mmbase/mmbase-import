@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.util.List;
 import java.util.Vector;
 import java.util.Enumeration;
 import org.mmbase.module.core.MMBase;
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.9 2003-02-03 18:18:31 pierre Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.10 2003-03-04 13:49:16 nico Exp $
  */
 class MultilevelSubscribeNode implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(MultilevelSubscribeNode.class.getName());

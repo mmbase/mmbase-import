@@ -10,13 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.List;
-
 /**
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerList.java,v 1.5 2002-10-18 08:30:09 pierre Exp $
+ * @version $Id: NodeManagerList.java,v 1.6 2003-03-04 13:44:40 nico Exp $
  */
 public interface NodeManagerList extends NodeList {
 

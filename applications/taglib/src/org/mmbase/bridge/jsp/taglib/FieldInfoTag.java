@@ -9,13 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,7 +19,6 @@ import java.util.Enumeration;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 
-import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -41,7 +36,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.53 2002-10-25 15:07:23 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.54 2003-03-04 13:44:33 nico Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {

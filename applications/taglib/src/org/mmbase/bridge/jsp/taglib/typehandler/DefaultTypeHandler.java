@@ -10,10 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
-import javax.servlet.jsp.JspTagException;
-
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**

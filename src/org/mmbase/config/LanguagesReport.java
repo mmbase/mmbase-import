@@ -11,15 +11,15 @@ package org.mmbase.config;
 
 import java.util.*;
 import java.io.*;
-import java.sql.*;
-
-import org.mmbase.util.*;
 
 /**
  * @author Case Roole, cjr@dds.nl
- * @version $Id: LanguagesReport.java,v 1.2 2000-10-07 17:06:07 case Exp $
+ * @version $Id: LanguagesReport.java,v 1.3 2003-03-04 13:50:53 nico Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/07 17:06:07  case
+ * cjr: Added checking of mmbase JVM options and some minor bugfixes
+ *
  * Revision 1.1  2000/09/11 20:26:53  case
  * cjr: Code to generate reports on mmbase configuration:
  *      - JVM and classpath

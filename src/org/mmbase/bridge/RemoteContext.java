@@ -11,19 +11,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.rmi.*;
-import java.rmi.registry.*;
 import java.lang.reflect.*;
 
-
-
 // import org.mmbase.bridge.remote.RemoteCloudContext;
-
-import org.mmbase.bridge.*;
 
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.3 2002-03-14 10:47:04 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.4 2003-03-04 13:44:42 nico Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {

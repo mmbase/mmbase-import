@@ -11,9 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.security.*;
 import java.util.*;
-import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.*;
@@ -24,7 +22,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.29 2003-01-24 08:40:04 kees Exp $
+ * @version $Id: BasicCloudContext.java,v 1.30 2003-03-04 13:44:37 nico Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
