@@ -36,7 +36,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.34 2004-02-25 21:57:53 michiel Exp $
+ * @version $Id: Contexts.java,v 1.35 2004-02-25 23:43:30 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -339,7 +339,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
-
+        
         Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
         if (checkOwnRights) {
@@ -1003,9 +1003,9 @@ public class Contexts extends MMObjectBuilder {
                 }
 
             }
-            MMObjectNode contextNode = getContextNode(node);
+            // MMObjectNode contextNode = getContextNode(node);
 
-            if (mayDo(userToCheck, contextNode, Operation.getOperation(a.getString(PARAMETER_OPERATION)), true)) {
+            if (mayDo(userToCheck, node, Operation.getOperation(a.getString(PARAMETER_OPERATION)), true)) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
