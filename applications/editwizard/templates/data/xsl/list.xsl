@@ -5,10 +5,10 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.16 2002-07-18 09:16:50 michiel Exp $
+  @version $Id: list.xsl,v 1.17 2002-07-18 11:37:40 michiel Exp $
   -->
 
-  <xsl:import href="baselist.xsl" />
+  <xsl:import href="xsl/baselist.xsl" />
 
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
