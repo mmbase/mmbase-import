@@ -39,11 +39,15 @@ public class RemoteGenerator{
         }
         file = new File(targetDir + "/org/mmbase/bridge/remote/rmi");
         if (!file.exists()){
-            file.mkdir();
+            file.mkdirs();
         }
         file = new File(targetDir + "/org/mmbase/bridge/remote/implementation");
         if (!file.exists()){
-            file.mkdir();
+            file.mkdirs();
+        }
+        file = new File(targetDir + "/org/mmbase/bridge/remote/util");
+        if (!file.exists()){
+            file.mkdirs();
         }
         mmci =  MMCI.getDefaultMMCI(mmciFile);
         this.targetDir = targetDir;
@@ -118,7 +122,11 @@ public class RemoteGenerator{
                         if (parameter.isArray){
                             sb.append(parameter.getOriginalName() + "[] param"  + counter);
                         } else {
-                            sb.append(parameter.getOriginalName() + " param"  + counter);
+                            if (parameter.getOriginalName().indexOf("mmbase") != -1){
+                                sb.append("Remote" + parameter.getShortName() + " param"  + counter);
+                            } else {
+                                sb.append(parameter.getOriginalName() + " param"  + counter);
+                            }
                         }
                     } else {
                         System.err.println("Class " + xmlMethod.getName() +" Parameter == null");
@@ -130,6 +138,8 @@ public class RemoteGenerator{
                 sb.append(") throws RemoteException;\n");
             }
         }
+        sb.append("\n");
+        sb.append("   public String getMapperCode() throws RemoteException;\n");
         sb.append("}\n");
         try {
             File file = new File(targetDir +"/org/mmbase/bridge/remote/" + className+  ".java");
@@ -157,6 +167,7 @@ public class RemoteGenerator{
         sb.append("import java.rmi.*;\n");
         sb.append("import java.rmi.server.*;\n");
         sb.append("import org.mmbase.bridge.remote.*;\n\n");
+        sb.append("import org.mmbase.bridge.remote.util.StubToLocalMapper;\n\n");
         
         sb.append("/**\n");
         sb.append(" * " +className + " in a generated implementation of Remote"+ xmlClass.getShortName() +"<BR>\n");
@@ -169,6 +180,8 @@ public class RemoteGenerator{
         
         sb.append("   //original object\n");
         sb.append("   " + xmlClass.getShortName() + " originalObject;\n\n");
+        sb.append("   //mapper code\n");
+        sb.append("   String mapperCode = null;\n\n");
         
         sb.append("   //logger object\n");
         sb.append("   private static Logger log = Logging.getLoggerInstance(" + className+ ".class.getName());");
@@ -178,6 +191,7 @@ public class RemoteGenerator{
         sb.append("      super();\n");
         sb.append("      log.debug(\"new "+className +"\");\n");
         sb.append("      this.originalObject = originalObject;\n");
+        sb.append("      mapperCode = StubToLocalMapper.add(this.originalObject);\n");
         sb.append("   }\n");
         
         Enumeration methodsEnum = xmlClass.getMethods().elements();
@@ -207,7 +221,11 @@ public class RemoteGenerator{
                     if (parameter.isArray){
                         sb.append(parameter.getOriginalName() + "[] param"  + counter);
                     } else {
-                        sb.append(parameter.getOriginalName() + " param"  + counter);
+                        if (parameter.getOriginalName().indexOf("mmbase") != -1){
+                            sb.append("Remote" + parameter.getShortName() + " param"  + counter);
+                        } else {
+                            sb.append(parameter.getOriginalName() + " param"  + counter);
+                        }
                     }
                     if (iter.hasNext()){
                         sb.append(" ,");
@@ -233,9 +251,14 @@ public class RemoteGenerator{
                 int paramCounter =0;
                 Iterator paramIter = xmlMethod.getParameterList().iterator();
                 while(paramIter.hasNext()){
-                    paramIter.next();
+                    XMLClass parameter = (XMLClass)paramIter.next();
+                    
                     paramCounter ++;
-                    sb.append("param" + paramCounter);
+                    if (parameter.getOriginalName().indexOf("mmbase") != -1){
+                        sb.append("("+parameter.getShortName() +")StubToLocalMapper.get(param"  + paramCounter +".getMapperCode())");
+                    } else {
+                        sb.append(" param"  + paramCounter);
+                    }
                     if (paramIter.hasNext()){
                         sb.append(" ,");
                     }
@@ -253,6 +276,14 @@ public class RemoteGenerator{
                 sb.append("\n");
             }
         }
+        sb.append("\n");
+        sb.append("   public String getMapperCode() throws RemoteException{\n");
+        sb.append("      return mapperCode;\n");
+        sb.append("   }\n");
+        sb.append("\n");
+        sb.append("   public void destroy() throws RemoteException {\n");
+        sb.append("      StubToLocalMapper.remove(getMapperCode());\n");
+        sb.append("   }\n");
         sb.append("}\n");
         try {
             File file = new File(targetDir + "/org/mmbase/bridge/remote/rmi/" + className+  ".java");
@@ -284,6 +315,7 @@ public class RemoteGenerator{
         sb.append(" */\n");
         sb.append(" //DO NOT EDIT THIS FILE. IT IS GENERATED by remote.remote.remoteGenerator\n");
         String impl = xmlClass.getShortName();
+        //impl += ",java.io.Serializable";
         if (!xmlClass.getImplements().equals("")){
             impl += ",";
         }
@@ -353,9 +385,13 @@ public class RemoteGenerator{
                 int paramCounter =0;
                 Iterator paramIter = xmlMethod.getParameterList().iterator();
                 while(paramIter.hasNext()){
-                    paramIter.next();
+                    XMLClass parameter =(XMLClass) paramIter.next();
                     paramCounter ++;
-                    sb.append("param" + paramCounter);
+                    if (parameter.getOriginalName().indexOf("mmbase") != -1){
+                        sb.append("((Remote" + parameter.getShortName() + "_Impl)param"+paramCounter +").originalObject");
+                    } else {
+                        sb.append("param" + paramCounter);
+                    }
                     if (paramIter.hasNext()){
                         sb.append(" ,");
                     }
@@ -368,7 +404,8 @@ public class RemoteGenerator{
                 }
                 sb.append(");\n");
                 
-                sb.append("      } catch (Exception e){throw new RuntimeException(e.getMessage());}\n");
+                //FIXME
+                sb.append("      } catch (Exception e){ throw new BridgeException(e.getMessage());}\n");
                 
                 sb.append("   }\n");
                 sb.append("\n");
