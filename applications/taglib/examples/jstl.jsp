@@ -9,7 +9,6 @@
 <body>
 <%@ include file="menu.jsp"%>
 
-
 <h1><a href="http://java.sun.com/products/jsp/jstl">JSTL</a> and variables</h1>
 
 <p>
@@ -28,25 +27,25 @@
 <table>
   <tr><th colspan="2">You can also use JSTL tags to define variables, because these variables are equivalent.</th></tr>
   <tr valign="top">
-    <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/jstl.set.jsp" /></mm:formatter></pre></td>
+    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.set.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.set.jsp" %></td>
   </tr>
 
   <tr><th colspan="2">foreach, choose</th></tr>
   <tr valign="top">
-    <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/jstl.foreachchoose.jsp" /></mm:formatter></pre></td>
+    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.foreachchoose.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.foreachchoose.jsp" %></td>
   </tr>
 
   <tr><th colspan="2">MMBase 'contexts' are also supported inside JSTL tags.</th></tr>
   <tr valign="top">
-    <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/jstl.context.jsp" /></mm:formatter></pre></td>
+    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.context.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.context.jsp" %></td>
   </tr>
 
   <tr><th colspan="2">lists</th></tr>
   <tr valign="top">
-    <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/jstl.list.jsp" /></mm:formatter></pre></td>
+    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.list.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.list.jsp" %></td>
   </tr>
 
@@ -63,7 +62,7 @@
   </p>
   </th></tr>
   <tr valign="top">
-    <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/jstl.el.jsp" /></mm:formatter></pre></td>
+    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.el.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.el.jsp" %></td>
   </tr>
 
