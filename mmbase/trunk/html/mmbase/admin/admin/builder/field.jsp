@@ -2,7 +2,7 @@
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <%@include file="../../settings.jsp" %>
-<mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
 %>
