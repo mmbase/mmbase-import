@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.4 2004-07-13 09:52:09 keesj Exp $
+ * @version $Id: RemoteMMCI.java,v 1.5 2005-03-01 14:32:07 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -127,13 +127,13 @@ public class RemoteMMCI extends ProcessorModule {
             //interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
             RemoteCloudContext remoteCloudContext = new RemoteCloudContext_Rmi(LocalContext.getCloudContext());
 
-            log.debug("bind RemoteCloudContext in the registry using (name)=(" + bindName + ")");
+            log.debug("bind RemoteCloudContext in the registry using (tcp port, name)=(" + registryPort + ", " + bindName + ")");
 
             //bind it to the registry.
             reg.rebind(bindName, remoteCloudContext);
             log.info("Module RemoteMMCI Running on (tcp port,name)=(" + registryPort + "," + bindName + ")");
-        } catch (java.rmi.RemoteException rex) {
-            log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + "}");
+        } catch (RemoteException rex) {
+            log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + Logging.stackTrace(rex) + "}");
 
         }
         return reg;
