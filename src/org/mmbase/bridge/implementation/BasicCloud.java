@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.66 2002-09-20 08:58:25 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.67 2002-09-20 09:18:17 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -188,11 +188,33 @@ public class BasicCloud implements Cloud, Cloneable {
         }
     }
 
+    public Node getNode(int nodenumber) {
+        return getNode(""+nodenumber);
+    }
+
+    public Node getNodeByAlias(String aliasname) {
+        return getNode(aliasname);
+    }
+
+    public Relation getRelation(int nodenumber) {
+        return getRelation(""+nodenumber);
+    }
+
+    public Relation getRelation(String nodenumber) {
+        return (Relation)getNode(nodenumber);
+    }
+
     public boolean hasNode(int nodenumber) {
-        return hasNode(""+nodenumber);
+        return hasNode(""+nodenumber, false);
     }
 
     public boolean hasNode(String nodenumber) {
+        return hasNode(nodenumber, false);
+    }
+
+    // check if anode exists.
+    // if isrelation is true, the method returns false if the node is not a realtion
+    private boolean hasNode(String nodenumber, boolean isrelation) {
         MMObjectNode node;
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
@@ -202,6 +224,9 @@ public class BasicCloud implements Cloud, Cloneable {
         if (node==null) {
             return false; // node does not exist
         } else {
+            if (isrelation && !(node.parent instanceof InsRel)) {
+                return false;
+            }
             int nodenr=node.getNumber();
             if (nodenr==-1) { 
                return true;  // temporary node
@@ -211,12 +236,12 @@ public class BasicCloud implements Cloud, Cloneable {
         }
     }
 
-    public Node getNode(int nodenumber) {
-        return getNode(""+nodenumber);
+    public boolean hasRelation(int nodenumber) {
+        return hasNode(""+nodenumber, true);
     }
 
-    public Node getNodeByAlias(String aliasname) {
-        return getNode(aliasname);
+    public boolean hasRelation(String nodenumber) {
+        return hasNode(nodenumber, true);
     }
 
     public NodeManagerList getNodeManagers() {
