@@ -88,4 +88,8 @@
       <arg value="${test.class}" />
     </java>
   </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${project.build.dir}"/>
+  </target>
 </project>
