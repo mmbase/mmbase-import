@@ -1,3 +1,10 @@
+/*
+ This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ */
 package org.mmbase.applications.crontab;
 
 /**
@@ -8,15 +15,15 @@ package org.mmbase.applications.crontab;
  */
 
 
-public abstract class BasicCronJob implements JCronJob {
+public abstract class AbstractCronJob implements CronJob {
 
-    protected JCronEntry jCronEntry;
+    protected CronEntry jCronEntry;
 
     /**
      * {@inheritDoc}
      * Only stores the JCronEntry in protected member jCronEntry
      */
-    public void init(JCronEntry j) {
+    public void init(CronEntry j) {
         jCronEntry = j;
         init();
     }
