@@ -72,13 +72,20 @@ public class MMNode extends MMTaglib implements BodyTag {
 				System.out.println("getField -> field="+field); 
 			}
 			if(action!=null) {
-				if(action.equals("countrelations")) {
+				if(action.toLowerCase().equals("countrelations")) {
 					if(type==null) {
 						value = ""+node.countRelations();
 						System.out.println("countRealtions ->"); 
 					} else {
 						value = ""+node.countRelations(type);
 						System.out.println("countRealtions -> type="+type); 
+					}
+				}
+				if(action.toLowerCase().equals("countrelatednodes")) {
+					if(type==null) {
+						value = ""+node.countRelations();
+					} else {
+						value = ""+node.getRelatedNodes(type).size();
 					}
 				}
 			}
