@@ -2,37 +2,38 @@
  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm" 
  %><?xml version="1.0"?>
 <mm:cloud jspvar="wolk" method="asis"><
-  mm:import externid="realpath" jspvar="realpath" vartype="String"/><
-  mm:import externid="expanded" jspvar="expanded" vartype="String" >0</mm:import><
-  mm:import externid="node" jspvar="currentDir" vartype="String" >0</mm:import
+  mm:import externid="realpath" /><
+  mm:import externid="expanded" jspvar="expanded" vartype="String">0</mm:import><
+  mm:import externid="node" jspvar="currentDir" vartype="String">0</mm:import
   
   ><treeview title="Kbase category structure">
 	<custom-parameters>
 		<param name="deploy-treeview" value="true"/>
 		<param name="shift-width" value="15"/>
-		<param name="img-directory" value="<%=getRealPath(request)%>/img/"/>
+		<param name="img-directory" value="/wieditleestisgek/img/"/>
 	</custom-parameters>
   <mm:node number="kbase.root" jspvar="root">
   <mm:field name="number" jspvar="rootnumber" vartype="String" id="nn">
     <%
       //eerst checken of folder expanded is
       //als de parameter 'expanded' de waarde 'all' meekrijgt zijn alle folders expanded
-      String thisExpanded="expanded =\"true\" ";
+      String thisExpanded=" expanded=\"true\" ";
       //als de boolean editor 'true' is, moeten de folders en vragen waarvan de visibility op 'false'
       //staat wel getoond worden, maar dan met aangepaste icoontjes.
       //als editor 'false' is, moeten deze categorien, vragen en antwoorden niet getoond worden
-      boolean editor=false;
+      boolean editor=true;
       if(root.mayWrite()){
         editor=true;
+      }else{
+        editor=false;
       }
       if (!"all".equals(expanded))
         thisExpanded=(expanded.indexOf(","+rootnumber+",")>-1?" expanded=\"true\" ":" expanded=\"false\" ");
-        String thisImg=(rootnumber.equals(currentDir)?"currentFolder.gif":"folder.gif");
+      String thisImg=(rootnumber.equals(currentDir)?"currentFolder.gif":"folder.gif");
       
     %>
     <folder title="root" <%=thisExpanded%> img="<%=thisImg%>" code="<mm:write referid="nn"/>">
     <% showChildCategories(wolk,out,root,0,expanded,currentDir,editor); %>
-    <% showQuestions(wolk,out,root,0, editor); %>
     </folder>
     </mm:field>
     </mm:node>
@@ -45,14 +46,14 @@
     //eerst alle child categorien ophalen
     //alleen doen als huidige node zichtbaar is of editor='true'
 
-      NodeIterator childCategories=wolk.getList(category.getStringValue("number"),"kb_category,kb_category1","kb_category1.number,kb_category1.name", null,"kb_category1.name","up","destination",false).nodeIterator(); 
+      NodeIterator childCategories=category.getRelatedNodes("kb_category",null,"destination").nodeIterator();
       //en nu aan de xml toevoegen
       Node child;
       boolean visible;
       String thisExpanded, thisImg="", thisImgPrefix="";
       indent++;
       while(childCategories.hasNext()){
-        child=childCategories.nextNode().getNodeValue("kb_category1");
+        child=childCategories.nextNode();
         visible=child.getBooleanValue("visible");
         if(visible==true || editor==true){
           //en nu de childNodes van deze node
@@ -87,13 +88,13 @@
   }
   
   void showQuestions(Cloud wolk, JspWriter out, Node category,int indent, boolean editor) throws java.io.IOException{
-    NodeIterator questions=wolk.getList(category.getStringValue("number"),"kb_category,kb_question","kb_question.number,kb_question.name", null,"kb_question.question","up",null,false).nodeIterator();
+    NodeIterator questions=category.getRelatedNodes("kb_question").nodeIterator();
     Node question;
     boolean visible;
     String thisImgPrefix;
     while (questions.hasNext()){
       thisImgPrefix="";
-      question=questions.nextNode().getNodeValue("kb_question");
+      question=questions.nextNode();
       visible=question.getBooleanValue("visible");
       if(visible==true ||editor==true){
         
@@ -117,4 +118,4 @@
   }
 %>
 <%@
-include file="parts/basics.jsp"%>
+include file="basics.jsp"%>

@@ -1,20 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@include file="basics.jsp"%>
+<mm:cloud jspvar="wolk" method="asis" >
+<mm:import id="realpath"><%=getRealPath(request)%></mm:import>
+<mm:import externid="qnode"/>
+
 <script language="javascript">
-//some general stuff
-var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/></mm:present>";
+  //some general stuff
+  var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/></mm:present>";
+  var realpath="<mm:write referid="realpath"/>";
+  <mm:present referid="portal">
+    var portalpage="portal=<mm:write referid="portal"/>&page=<mm:write referid="page"/>";
+  </mm:present>
+  <mm:notpresent referid="portal">var portalpage=""</mm:notpresent>
 
-//***********************************************
-// desc   :   this function generates the link to the editpage with all the right params for adding an aswer
-//***********************************************
+  //function goThere(path){
+  //  document.location=path;
+  //}
+  //***********************************************
+  // desc   :   this function generates the link to the editpage with all the right params for adding an aswer
+  //***********************************************
   function goNewAnswer(){
-    document.location="edit.jsp?action=add&type=answer&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
+    path=realpath+"/index.jsp?action=add&type=answer&"+extraParamsUrl+"&node="+currentFolder.getAttribute('node')+"&expanded="+getExpandedFolders()+possibleQnode;
+    goThere(path);
   }
 
-//***********************************************
-// desc   :   this function generates the link to the editpage with all the right params for editing an answer
-//***********************************************  
+  //***********************************************
+  // desc   :   this function generates the link to the editpage with all the right params for editing an answer
+  //***********************************************  
   function goEditAnswer(whichAnswer){
-    document.location="edit.jsp?action=edit&type=answer&node="+currentFolder.getAttribute('node')+"&anode="+whichAnswer+"&expanded="+getExpandedFolders()+possibleQnode;
+    path=realpath+"/index.jsp?action=edit&type=answer&"+extraParamsUrl+"&node="+currentFolder.getAttribute('node')+"&anode="+whichAnswer+"&expanded="+getExpandedFolders()+possibleQnode;
+    goThere(path);
   }
+  
 </script>
 <div style="overflow:auto">
 <mm:node number="$qnode">
@@ -30,7 +48,7 @@ var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/
   <mm:relatednodes type="kb_answer" orderby="number" directions="up">
     <div style="max-height:600px;overflow:auto;margin-top:10px;">
       <a href="javascript:goEditAnswer(<mm:field name="number"/>)">
-        <img src="img/smallpen.gif" border="0"/>
+        <img src="<mm:write referid="realpath"/>/img/smallpen.gif" border="0"/>
       </a>
       <mm:field name="answer" jspvar="answer" vartype="String"><%=formatCodeBody(answer)%></mm:field>
     </div>
@@ -41,5 +59,6 @@ var possibleQnode="<mm:present referid="qnode">&qnode=<mm:write referid="qnode"/
   </table>    
   </mm:relatednodes>
 </mm:node>
-  <a href="javascript:goNewAnswer()"><h5><img src="img/create.gif" border="0"/>add an answer to this question</h5></a>
+  <a href="javascript:goNewAnswer()"><h5><img src="<mm:write referid="realpath"/>/img/create.gif" border="0"/>add an answer to this question</h5></a>
   </div>
+  </mm:cloud>

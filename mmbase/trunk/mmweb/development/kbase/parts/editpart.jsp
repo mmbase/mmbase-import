@@ -1,15 +1,28 @@
+	<%@ include file="basics.jsp"%>
+	<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+  <mm:cloud jspvar="wolk" method="asis" >
+  	
+  <mm:import externid="kb_submit" />
+  <mm:import externid="expanded" jspvar="expanded" vartype="String"/>
+  <mm:import externid="node" jspvar="node" vartype="String"/>
+  <mm:import externid="qnode" jspvar="qnode" vartype="String"/>
+  <mm:import externid="anode" jspvar="anode" vartype="String"/>
+  <mm:import externid="action" jspvar="action" vartype="String" />
+  <mm:import externid="type" jspvar="type" vartype="String" />
+	<mm:import externid="newparent" jspvar="newParent" vartype="String" />
 	<mm:present referid="node">
-	<mm:notpresent referid="submit">
-	<!-- the title of the form. some options must be covered -->
-	<div class="form">
-	<h3>Edit a <%=type%></h3>
-      <%-- formbody --%>
- 
+	  <mm:notpresent referid="kb_submit">
+    <!-- the title of the form. some options must be covered -->
+    <div class="form">
+    <h3>Edit a <%=type%></h3>
+        <%-- formbody --%>
+   
       <mm:node number="<%=getEditNode(request)%>" notfound="skipbody" jspvar="editNode">
 			
       
-      <form method="post" action="edit.jsp">
+      <form method="post" action="index.jsp">
 					<%-- first the reference params --%>
+          <%=getParamsFormatted(request,"form",getExtraParams(request))%>
           <input type="hidden" name="node" value="<mm:write referid="node"/>">
           <input type="hidden" name="type" value="<mm:write referid="type"/>">
           <input type="hidden" name="action" value="<mm:write referid="action"/>">
@@ -76,7 +89,7 @@
               </tr>
             </mm:node>
             <tr>
-              <td  colspan="2"><input type="submit" name="submit" value="submit" style="margin: 5px;"/><input style="margin: 5px;" type="button" name="cancel" value="cancel" onClick="history.back(1)"</td>
+              <td  colspan="2"><input type="submit" name="kb_submit" value="submit" style="margin: 5px;"/><input style="margin: 5px;" type="button" name="cancel" value="cancel" onClick="history.back(1)"</td>
             </tr>
             </form>
             </table>
@@ -89,27 +102,29 @@
 		
 		
 		
-	<mm:present referid="submit">
-    
+	<mm:present referid="kb_submit">
+		  
     <%
         
         //te editen node openen. dit is of een 'question' of een 'category'
         String editNodeNumber=getEditNode(request);
         String parent=getParent(editNodeNumber,wolk);
         Node editNode=wolk.getNode(editNodeNumber);
+        boolean parentHasChanged=false;
         
         //kijken of parent moet worden veranderd. Alleen als type niet 'answer' is
         if(!"answer".equals(type)){
           if(!parent.equals(newParent)){
             //relatie tussen node en parent weggooien
+            parentHasChanged=true;
             Node newParentNode=wolk.getNode(newParent);
             String whatPath="", whatConstraints="";
             if(type.equals("question")){
-              whatPath="category,related,question";
-              whatConstraints="category.number='"+parent+"' AND question.number='"+editNodeNumber+"'";
+              whatPath="kb_category,related,kb_question";
+              whatConstraints="kb_category.number='"+parent+"' AND kb_question.number='"+editNodeNumber+"'";
             }else{
-              whatPath="category,related,category1";
-              whatConstraints="category.number='"+parent+"' AND category1.number='"+editNodeNumber+"'";
+              whatPath="kb_category,related,kb_category1";
+              whatConstraints="kb_category.number='"+parent+"' AND kb_category1.number='"+editNodeNumber+"'";
             }
   
             //oude relatie weggooien
@@ -131,16 +146,36 @@
         editNode.setStringValue("visible",request.getParameter("visible"));
         
         //en nu velden invoeren
-	updateNode(editNode, request);
+				updateNode(editNode, request);
         editNode.commit();
         
+        //als de parent is veranderd dan moet het pad ook worden aangepast
+        if(parentHasChanged){
+          if(type.equals("question")){
+            node=newParent;
+            expanded=mergePaths(expanded,getPath(newParent,wolk));
+          }else if(type.equals("category")){
+            //'node' blijft hetzelfde, want zelfde categrie blijft geselecteerd.
+            //alleen het pad is veranderd.
+            //TODO: filter pad naar oude locatie uit 'expanded'
+            expanded=mergePaths(expanded,getPath(node,wolk));
+          }
+        }
+        
         //en nu terug naar hoofdpagina
-        String qnodeParam=(request.getParameter("qnode")!=null?"&qnode="+request.getParameter("qnode"):"");
-        String expanded=(request.getParameter("expanded")!=null?"&expanded="+request.getParameter("expanded"):"");
-        response.sendRedirect("index.jsp?node="+node+qnodeParam+expanded);
+				String qnodeParam=(request.getParameter("qnode")!=null?"&qnode="+request.getParameter("qnode"):"");
+        String extraParamsUrl=(getExtraParams(request)!=null?"&":"")+getParamsFormatted(request, "url", getExtraParams(request));
+        String expandedParam=(expanded!=null?"&expanded="+expanded:"");
+        String redirect="index.jsp?node="+node+extraParamsUrl+qnodeParam+expandedParam;
+%>
+      <script language="javascript" >
+        document.location="<%=redirect%>";
+      </script>
+<%
     
 
     %>
 		</mm:present>
 	
     </mm:present>
+		</mm:cloud>
