@@ -26,7 +26,7 @@
         mmAdmin.process(cmd,app,params,request,response);
         msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
     } catch (Exception e ) {
-        msg="<p> Error: "+e.getMessage()+"</p>";
+        msg="<p> Error: "+e+"</p>";
     }
    }
 %>
@@ -42,7 +42,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr>
-<td class="navigate"><a href="actions.jsp?application=<%=app%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data">Return to Application Administration</td>
 </tr>
 

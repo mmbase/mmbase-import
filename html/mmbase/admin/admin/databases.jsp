@@ -45,7 +45,7 @@
   <td class="data"><%=database.getStringValue("item3")%></td>
   <td class="data"><%=database.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="database/actions.jsp?database=<%=database.getStringValue("item1")%>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
+    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
@@ -69,17 +69,17 @@
   <td class="data"><%=pool.getStringValue("item2")%></td>
   <td class="data"><%=pool.getStringValue("item3")%></td>
   <td class="navigate">
-    <a href="database/connections.jsp?pool=<%=pool.getStringValue("item1")%>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
+    <a href="<mm:url page="<%="database/connections.jsp?pool="+pool.getStringValue("item1")%>"/>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
-<td class="data" colspan="4">Return to home page</td>
-</tr>
+  <tr>
+    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+    <td class="data" colspan="4">Return to home page</td>
+  </tr>
 </table>
 </body></html>
 </mm:cloud>

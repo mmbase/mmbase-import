@@ -29,6 +29,7 @@
     <th class="header">&nbsp;</th>
 </tr>
 <mm:listnodes type="mmservers" >
+<mm:context>
 <tr>
     <td class="data">
     <mm:field name="name" />
@@ -49,14 +50,17 @@
     <mm:field name="os" />
     </td>
     <td class="navigate" width="14">
-        <a href="server/actions.jsp?server=<mm:field name="name" />"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+        <mm:field name="name" id="server">
+        <a href="<mm:url page="server/actions.jsp?server=$server" />"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+        </mm:field>
     </td>
 </tr>
+</mm:context>
 </mm:listnodes>
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="6">Return to home page</td>
 </tr>
 </table>

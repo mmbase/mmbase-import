@@ -45,16 +45,16 @@
   <td class="data"><%=app.getStringValue("item4")%></td>
   <td class="data"><%=app.getStringValue("item5")%></td>
   <td class="navigate">
-    <a href="application/actions.jsp?application=<%=app.getStringValue("item1")%>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="<%="application/actions.jsp?application="+app.getStringValue("item1")%>" />"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 <% } %>
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
-<td class="data" colspan="5">Return to home page</td>
-</tr>
+  <tr>
+    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+    <td class="data" colspan="5">Return to home page</td>
+  </tr>
 </table>
 </body></html>
 </mm:cloud>

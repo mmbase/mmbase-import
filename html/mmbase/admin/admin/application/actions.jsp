@@ -26,7 +26,6 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<form action="result.jsp" method="POST">
 <tr align="left">
 <th class="header" colspan="2">Action</th>
   <th class="header" >&nbsp;</th>
@@ -36,16 +35,17 @@
  <td class="data" colspan="2">Install <%=app%></td>
  <td class="data" >Version: <%=mmAdmin.getInfo("VERSION-"+app,request,response)%> </td>
  <td class="linkdata" >
+  <form action="<mm:url page="result.jsp" />" method="POST">
    <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="LOAD" />
    <input type="submit" value="YES" />
+  </form>
  </td>
 </tr>
-</form>
 
 <tr><td>&nbsp;</td></tr>
 
-<form action="result.jsp" method="POST">
+<form action="<mm:url page="result.jsp" />" method="POST">
 <tr align="left">
 <th class="header">Action</th>
   <th class="header">Path</th>
@@ -54,7 +54,7 @@
 </tr>
 <tr>
  <td class="data" >Save <%=app%></td>
- <td class="data" ><input type="text" name="path" value="/tmp"/></td>
+ <td class="data" ><input type="text" name="path" value="/tmp" size="80" /></td>
  <td class="data" ><select name="goal">
         <option selected="selected">backup</option>
     </select>
@@ -79,11 +79,11 @@
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-applications-"+app);
 %>
-<form action="../config/details.jsp" method="POST" target="_xml">
 <tr>
  <td class="data">XML-check</td>
  <td class="data" colspan="2"><%=check%></td>
  <td class="linkdata" >
+  <form action="<mm:url page="../config/details.jsp" />" method="POST" target="_xml">
 <%    if (check.equals("Checked ok")) { %>
         <input type="hidden" name="todo" value="show" />
 <%  } else { %>
@@ -92,31 +92,30 @@
     <input type="hidden" name="config" value="applications" />
     <input type="hidden" name="target" value="<%=app%>" />
     <input type="submit" value="YES" />
+  </form>
  </td>
 </tr>
-</form>
 <% } %>
 
-<form action="result.jsp" method="POST">
 <tr>
  <td class="data">Application Tool</td>
  <td class="data" colspan="2">
-     <p>Warning this will only work if you run MMBase on the same
+     Warning: This will only work if you run MMBase on the same
      machine as your display unit or have redirected it.<br />
      If this is not the case, use the AppTool as an application.
-     </p>
  </td>
  <td class="linkdata">
+  <form action="<mm:url page="result.jsp" />" method="POST">
     <input type="hidden" name="cmd" value="APPTOOL" />
     <input type="hidden" name="application" value="<%=app%>" />
     <input type="hidden" name="APPTOOL" value="<%=app%>" />
     <input type="submit" value="YES" />
+  </form>
  </td>
 </tr>
-</form>
 
 <tr>
-<td class="navigate"><a href="../applications.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../applications.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Application Overview</td>
 </tr>
 </table>

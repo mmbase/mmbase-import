@@ -37,7 +37,7 @@
   <th class="header">Explain</th>
 </tr>
 
-<form action="actions.jsp" method="POST">
+<form action="<mm:url page="actions.jsp"/>" method="POST">
 <tr>
     <td class="data">Name</td>
     <td class="data"><input type="text" name="dbname" value="" /></td>
@@ -109,7 +109,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="actions.jsp?builder=<%=builder%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>
