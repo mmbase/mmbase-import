@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.43 2003-12-17 14:19:36 mmweb Exp $</edition>
+    <edition>$Id: index.xml,v 1.44 2004-01-12 22:13:01 nico Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -218,6 +218,15 @@
         <para>Editwizard Syntax Reference (<ulink id="editwizardreference"
         url="frontenddevelopers/editwizard/editwizard-reference.html">HTML</ulink>)<!--
           <ulink url="frontenddevelopers/editwizard/editwizard-reference.pdf" id="editwizardreference.pdf">
+           (pdf)
+          </ulink>
+          --></para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizard Front end (<ulink id="editwizardfrontend"
+        url="frontenddevelopers/editwizard/editwizard-frontend.html">HTML</ulink>)<!--
+          <ulink url="frontenddevelopers/editwizard/editwizard-frontend.pdf" id="editwizardfrontend.pdf">
            (pdf)
           </ulink>
           --></para>
