@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.20 2000-06-26 14:10:10 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.21 2000-06-26 19:25:40 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2000/06/26 14:10:10  wwwtech
+Daniel.. small fix in convertor
+
 Revision 1.19  2000/06/26 11:50:35  wwwtech
 Daniel.. added methods for disallowed/allowed conversion
 
@@ -110,7 +113,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.20 $ $Date: 2000-06-26 14:10:10 $
+* @$Revision: 1.21 $ $Date: 2000-06-26 19:25:40 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -933,7 +936,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
-		System.out.println("XMLCREATE="+result);
+		// System.out.println("XMLCREATE="+result);
 
 		try {
 			MultiConnection con=mmb.getConnection();
