@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.22 2003-12-09 21:18:19 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.23 2003-12-18 09:03:49 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -66,17 +66,18 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public String useHtmlInput(Node node, Field field) throws JspTagException {
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
         String fieldValue = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
-
+            
         } else {
             if (! fieldValue.equals(node.getValue(fieldName))) {
                 node.setValue(fieldName,  fieldValue);
+                return false;
             }
         }
-        return "";
+        return true;
     }
 
 

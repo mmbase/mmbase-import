@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Constraint;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.5 2003-11-07 14:11:25 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.6 2003-12-18 09:03:49 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -51,7 +51,7 @@ public class LongHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public String useHtmlInput(Node node, Field field) throws JspTagException {               
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {               
         if (field.getGUIType().equals("eventtime")) {
             return dateHandler.useHtmlInput(node, field);
         } 
