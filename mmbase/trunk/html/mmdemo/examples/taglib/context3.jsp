@@ -2,6 +2,7 @@
 %><html>
 <body>
 <h1>context 3</h1>
+<mm:import externid="alias" required="true" />
 <mm:cloud>
 <p>
 Selecting a news node:
@@ -20,7 +21,7 @@ Reusing it in the same page.
    <mm:field name="title" />
 </mm:node>
 <hr />
-<a href='<mm:url page="context4\.jsp" referids="news_node" />'>next page</a>
+<a href='<mm:url page="context4\.jsp" referids="alias,news_node" />'>next page</a>
 </mm:cloud>
 </body>
 </html>
