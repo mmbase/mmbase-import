@@ -292,6 +292,10 @@ public class BasicPackage implements PackageInterface {
             return "installed";
         }
 
+        if (PackageManager.upgradeAvailable(this)) {
+            return "upgrade available";
+        }
+
         if (state == null) {
             return "";
         }
