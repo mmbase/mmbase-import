@@ -117,8 +117,8 @@ public class NodeWriter{
                 write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
             }
         }
-	MMObjectBuilder bul=node.parent;
-	Enumeration nd=bul.getFields().elements();
+    MMObjectBuilder bul=node.parent;
+    Enumeration nd=bul.getFields().elements();
         while (nd.hasMoreElements()) {
             FieldDefs def=(FieldDefs)nd.nextElement();
             String key=def.getDBName();
@@ -127,7 +127,7 @@ public class NodeWriter{
                 // fields in a relation node cannot contain binary blobs
                 //
                 if (!key.equals("number") && !key.equals("owner")
-                        && !key.equals("otype") && !key.equals("CacheCount")
+                        && !key.equals("otype")
                         && !key.equals("snumber") && !key.equals("dnumber")
                         && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
                     write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
@@ -178,7 +178,7 @@ public class NodeWriter{
     *  Creates a description string of a field in a node for use in a datasource file.
     *  Binary data (such as images) are stored as seperate binary files, the string then contains
     *  a reference in lieu of the actual value.
-    *  A number of 'special purpose' fields (number, owner, otype, CacheCount) are skipped and not written.
+    *  A number of 'special purpose' fields (number, owner, otype) are skipped and not written.
     *  Other fields are added 'in line'.
     *  @param key the fieldname to store
     *  @param node The node wose field to store
@@ -187,7 +187,7 @@ public class NodeWriter{
     *  @return A <code>String</code> descriving in xml-format the field's content (or a reference to that content)
     */
     private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
-        if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
+        if (!key.equals("number") && !key.equals("owner") && !key.equals("otype")) {
             // this is a bad way of doing it imho
             int type=node.getDBType(key);
             String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
