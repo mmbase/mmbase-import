@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>Images and Attachments</title>
-    <date>20 april 2003</date>
-    <edition>$Id: images-and-attachments.xml,v 1.2 2003-05-14 10:43:42 michiel Exp $</edition>
+    <date>20 April 2003</date>
+    <edition>$Id: images-and-attachments.xml,v 1.3 2003-06-30 13:29:13 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -70,7 +70,7 @@
       this is not generally true).
     </para>
     <para>
-      Well, you know that you do not need to know explicitely the hostname of your server when you
+      Well, you know that you do not need to know explicitly the hostname of your server when you
       make your html page, because you can refer to the image relatively in the 'img' tag. It is
       also not very convenient to use an url like &lt;img src="/context/images/123" /&gt; because
       'context' can change (you can move the page to another mmbase instance in another context),
@@ -78,7 +78,7 @@
       to which URL the image-servlet is mapped by the application server.
     </para>
     <para>
-      That's why in MMBase there are functions to retrieve this information for you automaticly.
+      That's why in MMBase there are functions to retrieve this information for you automatically.
       If you use the MMBase Taglib there is the 'image' tag for this:
       <programlisting><![CDATA[
 <mm:relatednodes type="images">
@@ -107,14 +107,14 @@ while(i.hasNext()) {
       <para>
         The taglib example is really a bit more advanced. For example it tries to add user information to
         the URL if necessary, and it tries to put a file name in the URL if that is possible for the
-        serlvet (which helps some browsers). I advice to use the image-tag if you can.
+        servlet (which helps some browsers). I advice to use the image-tag if you can.
       </para>
     </note>
     <section>
       <title>Image conversion</title>
       <para>
         As mentioned, images can be converted to other images. This is a very useful feature, because you
-        often need smaller versions of an image, or perhaps a version of the image which is restyled in
+        often need smaller versions of an image, or perhaps a version of the image which is re-styled in
         another way to fit in the look and feel of your web site. These things can be automated by MMBase
         to a large extend, which makes the life for content editors easier, because for images it
         suffices to provide one (high quality) image, and MMBase can handle the conversion of this image
@@ -122,7 +122,7 @@ while(i.hasNext()) {
       </para>
       <para>
         Converted images are stored in a special builder named 'icaches' (cached images), so they are
-        much the same as the source images, the only difference being that they are automaticly
+        much the same as the source images, the only difference being that they are automatically
         generated.
       </para>
       <para>
@@ -147,7 +147,7 @@ while(i.hasNext()) {
       </para>
       <para>
         The 'conversion commands' are passed in a string referred to as 'template'. This string contains
-        the commands seperated by the + character. The syntax of the individual commands is very similar
+        the commands separated by the + character. The syntax of the individual commands is very similar
         to the command line options of the 'convert' command of ImageMagick, because that program is
         commonly plugged in to perform the actual conversion. 
       </para>
@@ -199,7 +199,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         TODO: overview of MMBase specific commands. Fonts and Texts. JAI implementation. 
       </para>
       <para>
-        We refer to the documentation of imagemagick for a complete description of all commands. Also in
+        We refer to the documentation of ImageMagick for a complete description of all commands. Also in
         the image tag entry of the MMBase taglib reference guide there are given some examples.
       </para>
     </section>
@@ -214,9 +214,9 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         attachments-servlet.
       </para>
       <para>
-        It works excactly the same as for images. You could even use the image-tag to create urls to the
+        It works exactly the same as for images. You could even use the image-tag to create urls to the
         attachment-servlet. That would be a bit silly though, so there is also an 'attachment' tag. It
-        does excactly the same (the only difference being that the 'template' attribute of the next
+        does exactly the same (the only difference being that the 'template' attribute of the next
         section may not be used).
       </para>
       <para>
@@ -234,22 +234,22 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
     <para>
       It has become clear that the images and attachments builders are more than simple dumb MMBase
       builders ('Dummy). They do provide extra functionality like 'servletpath' and 'cache' functions.
-      In the builder xml of Images and Attchments you can see this because another class is configured
+      In the builder xml of Images and Attachments you can see this because another class is configured
       (by the 'classfile' tag)
     </para>
     <note>
       <para>
         I do not know why this tag in builder xml's is named 'classfile' and not simply 'class'. It is
-        not a file, it is a class. I think it is silly, so I would not be suprised if this will be
+        not a file, it is a class. I think it is silly, so I would not be surprised if this will be
         changed in a future version of MMBase.
       </para>
     </note>
     <para>
       The general feature of images and attachments nodes is that they need to be associated with a
       Servlet. Therefore the abstract builder 'ServletBuilder' was introduced which provides the
-      general functionality for these kind of things. It provides the mechanism to determin the right
+      general functionality for these kind of things. It provides the mechanism to determine the right
       URL to the right Servlet for a certain 'function' (ImageServlet provides the function 'images',
-      AttachmentSerlvet provided 'attachments').
+      AttachmentServlet provided 'attachments').
     </para>
     <para>
       The images, icaches and attachments servlets are all extensions of this abstract servlet
@@ -263,7 +263,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       <title>Introduction, servdb</title>
       <para>
         Before MMBase 1.6 the function of the Image Servlet was performed by the generic MMBase
-        servlet 'servdb'. 'Servdb' also accepts the 'template' as an argument next to the orginal image
+        servlet 'servdb'. 'Servdb' also accepts the 'template' as an argument next to the original image
         node number. In that way it could serve a converted image. An URL to servdb could therefore
         look like:
         <programlisting><![CDATA[
@@ -286,7 +286,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
     <section>
       <title>Bridge servlet, handle servlet, image servlet</title>
       <para>
-        Protecting read rights has nothing do with images. When you want to honour mmbase security, the
+        Protecting read rights has nothing do with images. When you want to honor mmbase security, the
         only thing you have to do is implement your stuff using the bridge. Therefore the
         'BridgeServlet' was created. It provides the functionality to get the Cloud (perhaps using the
         session, if needed). It can be used to implement any MMBase servlet which actually serves
