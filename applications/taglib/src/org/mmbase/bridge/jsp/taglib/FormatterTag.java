@@ -24,7 +24,7 @@ import javax.xml.transform.TransformerFactory;
 
 import org.mmbase.bridge.util.xml.Generator;
 
-import java.io.File;
+import java.net.URL;
 import java.util.*;
 import javax.servlet.jsp.PageContext;
 
@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.40 2004-06-30 17:51:53 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.41 2004-11-11 17:24:04 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -56,8 +56,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     protected Source   xsltSource = null;
 
-    private static javax.xml.parsers.DocumentBuilder        documentBuilder;
-    private File cwd;
+    private static javax.xml.parsers.DocumentBuilder documentBuilder;
+    private URL cwd;
 
     private static final class Counter {
         private int i = 0;
@@ -67,7 +67,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
     }
     private Counter  counter; // times that formatter was called in this page, can be usefull for some transformations to know.
-
 
     // formats that needs XML input, when setting these 'wantXML' will be true, and a DOM Document will be created.
 
@@ -216,7 +215,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-        cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile();        
+        try {
+            cwd  = pageContext.getServletContext().getResource(org.mmbase.util.ResourceLoader.getDirectory(request.getServletPath()) + "/");
+        } catch (Exception e) {
+        }
     }
 
 
@@ -310,7 +312,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         // useXsl is the pathless name.
         // First it is searced for in <current directory>/xslt
         // if it cannot be found there, then the default in mmbase.config/xslt will be used.
-        File useXslt;
+        //        File useXslt;
 
         if (format != Attribute.NULL) {
             if (xslt != Attribute.NULL) {
