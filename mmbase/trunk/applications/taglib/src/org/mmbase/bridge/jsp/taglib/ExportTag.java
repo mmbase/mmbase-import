@@ -31,6 +31,7 @@ public class ExportTag extends CloudReferrerTag {
     private String jspvar = null;
     private String key = null;
     private boolean declare = true;
+    private String extraBodyContent = null;
     
     public void setType(String t) {
         // nothing to do, the type property is only used in the TEI.
@@ -46,22 +47,36 @@ public class ExportTag extends CloudReferrerTag {
 
     
     public int doStartTag() throws JspTagException {
+
         if (log.isDebugEnabled()) {
             log.debug("getting object " + key + "-> " + getContextTag().getObject(key));
         }    
         Object value = getContextTag().getObject(key);
+    
         if (value != null) {
-            pageContext.setAttribute(jspvar, value);
+            if (jspvar != null) {
+                pageContext.setAttribute(jspvar, value);         
+            } else {
+                extraBodyContent = value.toString();
+            }
         }
         return EVAL_BODY_TAG;
+
     }
     public int doAfterBody() throws JspTagException {
         try {
+            if (extraBodyContent != null) {
+                log.debug("extra body content" + extraBodyContent);
+                String body = bodyContent.getString();
+                bodyContent.clearBody();
+                bodyContent.print(extraBodyContent + body);
+            }
             bodyContent.writeOut(bodyContent.getEnclosingWriter());            
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
+
     }
 
 }
