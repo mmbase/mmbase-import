@@ -70,13 +70,6 @@ public interface CloudInterface {
     public NodeInterface createNode(int nodeTypeId);
  
 	/**
-	 * Creates a node of a specific type
-     * @param nodeType the node type defining the node structure
-     * @return the newly created (but not yet committed) node
-     */
-    public NodeInterface createNode(NodeTypeInterface nodeType);
-
-	/**
      * Retrieves the context for this cloud
      * @return the cloud's context
      */
