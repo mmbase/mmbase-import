@@ -39,7 +39,6 @@ public class RawVideos extends MMObjectBuilder {
 		init();
 		m.mmobjs.put(tableName,this);
 		if (getMachineName().equals("station") || getMachineName().equals("noise") || getMachineName().equals("beep") || getMachineName().equals("sjouw")) {
-			new RawVideosProbe(this);
 		} else {
 			System.out.println("RawVideos -> Probe NOT started for rawvideos");
 		}
