@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.43 2004-02-18 16:06:15 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.44 2004-02-18 20:33:28 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -292,6 +292,10 @@ public class WriterHelper extends BodyTagSupport {
 
         // types which cannot accept null;
         switch (vartype) {
+        case TYPE_UNSET:
+            value = v; // leave it as it was.
+            setJspvar();
+            return;
         case TYPE_INTEGER:
             if (! (v instanceof Integer)) {
                 value = Casting.toInteger((v.toString()));
@@ -454,7 +458,6 @@ public class WriterHelper extends BodyTagSupport {
             String body = getString();
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
-                log.debug("writing to page");
                 if (pageContext == null) throw new JspTagException("PageContext is null. No value set?");
                 getPageString(pageContext.getOut()).write(body);
             } else {
