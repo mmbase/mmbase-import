@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.137 2004-12-14 08:52:47 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.138 2005-01-10 17:28:09 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -453,9 +453,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setStringValue(String fieldName, String value) {
-log.info("setString on node " + getNumber() +" for "+fieldName+" : "+value);
         value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
-log.info("setString :" + value);
         setValueWithoutProcess(fieldName, value);
     }
 
@@ -1243,7 +1241,7 @@ log.info("setString :" + value);
         Set functionSet = new HashSet();
         for (Iterator i = functions.iterator(); i.hasNext(); ) {
             Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this,fun));
+            functionSet.add(new BasicFunction(this, fun));
         }
         return functionSet;
     }
@@ -1251,7 +1249,7 @@ log.info("setString :" + value);
     public Function getFunction(String functionName) {
         Function function = getNode().getFunction(functionName);
         if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
         }
         return new BasicFunction(this, function);
     }
