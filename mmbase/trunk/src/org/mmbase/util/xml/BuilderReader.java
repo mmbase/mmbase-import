@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.4 2003-05-22 17:29:20 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.5 2003-06-27 08:51:31 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
@@ -93,10 +93,12 @@ public class BuilderReader extends XMLBasicReader {
 
 
     /**
+     * searchPositions and inputPositions are used to adminstrate 'occupied' positions (from
+     * editor/positions), which is used to find defaults if not specified.
      * @since MMBase-1.7
      */
-    private int maxSearchPos = -1;
-    private int maxInputPos = -1;
+    private SortedSet searchPositions = new TreeSet();
+    private SortedSet inputPositions  = new TreeSet();
 
 
     /**
@@ -148,16 +150,16 @@ public class BuilderReader extends XMLBasicReader {
             if (mmbase != null) {
                 parentBuilder = mmbase.getBuilder(buildername);
                 inheritanceResolved = (parentBuilder != null);
-                if (inheritanceResolved) { // determin maxInputPos, maxSearchPos
+                if (inheritanceResolved) { // fill inputPositions, searchPositions
                     Iterator fields = parentBuilder.getFields(FieldDefs.ORDER_EDIT).iterator();
                     while (fields.hasNext()) {
                         FieldDefs def = (FieldDefs) fields.next();
-                        if (def.getGUIPos() > maxInputPos) maxInputPos = def.getGUIPos();
+                        inputPositions.add(new Integer(def.getGUIPos()));
                     }
                     fields = parentBuilder.getFields(FieldDefs.ORDER_SEARCH).iterator();
                     while (fields.hasNext()) {
                         FieldDefs def = (FieldDefs) fields.next();
-                        if (def.getGUISearch() > maxSearchPos) maxSearchPos = def.getGUISearch();
+                        searchPositions.add(new Integer(def.getGUISearch()));
                     }
                 }
             }
@@ -339,7 +341,7 @@ public class BuilderReader extends XMLBasicReader {
         }
 
         Element gui = getElementByPath(field,"field.gui");
-        if (gui!=null) {
+        if (gui != null) {
             for (enum = getChildElements(gui,"guiname"); enum.hasMoreElements(); ) {
                 tmp = (Element)enum.nextElement();
                 lang = getElementAttributeValue(tmp,"xml:lang");
@@ -367,22 +369,36 @@ public class BuilderReader extends XMLBasicReader {
         Element editorpos = getElementByPath(field,"field.editor.positions.input");
         if (editorpos != null) {
             int inputPos = getEditorPos(editorpos);
-            if (inputPos > -1 && inputPos > maxInputPos) maxInputPos = inputPos;
+            if (inputPos > -1) inputPositions.add(new Integer(inputPos));
             def.setGUIPos(inputPos);
         } else {
-            def.setGUIPos(++maxInputPos);
+            // if not specified, use lowest 'free' position.
+            int i = 1;
+            while (inputPositions.contains(new Integer(i))) {
+                ++i;
+            }
+            inputPositions.add(new Integer(i));
+            def.setGUIPos(i);
+
         }
         editorpos = getElementByPath(field,"field.editor.positions.list");
-        if (editorpos!=null) {
+        if (editorpos != null) {
             def.setGUIList( getEditorPos(editorpos));
         }
         editorpos = getElementByPath(field,"field.editor.positions.search");
         if (editorpos != null) {
             int searchPos = getEditorPos(editorpos);
-            if (searchPos > -1 && searchPos > maxSearchPos) maxSearchPos = searchPos;
+            if (searchPos > -1) searchPositions.add(new Integer(searchPos));
             def.setGUISearch(searchPos);
-        } else {
-            def.setGUISearch(++maxSearchPos);
+        } else {       
+            // if not specified, use lowest 'free' position.
+            int i = 1;
+            while (searchPositions.contains(new Integer(i))) {
+                ++i;
+            }
+            searchPositions.add(new Integer(i));
+            def.setGUISearch(i);
+            
         }
     }
 
