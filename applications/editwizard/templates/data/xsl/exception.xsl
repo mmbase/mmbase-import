@@ -3,12 +3,11 @@
   xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform"
 >
   <!--
-  exception.xls
+  exception.xsl
 
-  @since  MMBase-1.6
-  @author Kars Veling
-  @author Michiel Meeuwissen
-  @version $Id: exception.xsl,v 1.3 2003-06-03 12:18:25 michiel Exp $
+  @since  MMBase-1.6.4
+  @author Pierre van Rooden
+  @version $Id: exception.xsl,v 1.4 2003-06-03 12:23:31 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />   
@@ -20,9 +19,14 @@
   <xsl:template name="errormessage">
     <h2>DON'T PANIC!</h2>
     <h3>But Something Went Wrong</h3>
-    <p>An error occurred in the editwizards. This may be caused because you have insufficient rigths to make changes,
-    because your edit-session expired, or because the editwizard definition has a bug.</p>
-    <p>When reporting the error, pass the error message (in red, below) and if so requested the expanded message to the responsible party.</p>
+    <p>
+      An error occurred in the editwizards. This may be caused because you have insufficient rigths to make changes,
+      because your edit-session expired, or because the editwizard definition has a bug.
+    </p>
+    <p>
+      When reporting the error, pass the error message (in red, below) and if so requested the expanded message to the
+      responsible party.
+    </p>
   </xsl:template>
   
   <xsl:template match="error">
