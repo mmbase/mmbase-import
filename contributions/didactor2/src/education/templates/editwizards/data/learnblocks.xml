@@ -159,6 +159,28 @@
            
         </list>
 
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
+            <title>Zoeken op datum (YYYY-MM-DD HH:MM:SS)</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="posrel" destinationtype="learnobjects">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+
+
+             <command name="search" nodepath="metadate,metadata,learnobjects" fields="learnobjects.name,metadate.value" age="7" orderby="learnobjects.number" directions="down" >
+                <prompt>Zoeken naar leerobjecten op metadata</prompt>
+                <search-filter>
+                    <name>Metadata datum bevat</name>
+                    <search-fields>FROM_UNIXTIME(metadate.value)</search-fields>
+                </search-filter>
+           </command>
+           
+        </list>
+
 
 
         <list role="related" extends="list/online.xml" />
