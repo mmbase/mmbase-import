@@ -21,8 +21,7 @@ import java.util.NoSuchElementException;
  */
 public class BasicNodeManagerList extends BasicList implements NodeManagerList {
 
-    private Cloud cloud;
-    NodeManager nodemanager=null;
+    protected Cloud cloud;
 
     /**
     * ...
@@ -35,7 +34,7 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     /**
 	*
 	*/
-	public NodeManager get(int index) {
+	public Object get(int index) {
         Object o=getObject(index);
         if (o instanceof NodeManager) {
     	    return (NodeManager)o;
@@ -45,33 +44,28 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     	return nm;
 	}
 
+    /**
+	*
+	*/
+	public NodeManager getNodeManager(int index) {
+	    return (NodeManager)get(index);
+	}
+	
 	/**
 	*
 	*/
-//	public NodeManagerIterator iterator() {
-//	    return new BasicNodeManagerIterator(this);
-//	};
+	public NodeManagerIterator nodeManagerIterator() {
+	    return new BasicNodeManagerIterator(this);
+	};
 	
-	public class BasicNodeManagerIterator { // implements NodeManagerIterator {
-	    NodeManagerList list;
-	    int index=-1;
+	public class BasicNodeManagerIterator extends BasicIterator implements NodeManagerIterator {
 	
-	    BasicNodeManagerIterator(NodeManagerList list) {
-	        this.list = list;
+	    BasicNodeManagerIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
-	    }
-	
-	    public NodeManager next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index = list.size()+1;
-	            throw new NoSuchElementException("NodeManager does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
+	    public NodeManager nextNodeManager() {
+	        return (NodeManager)nextObject();
 	    }
 	
 	}

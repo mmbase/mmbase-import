@@ -19,24 +19,19 @@ import java.util.NoSuchElementException;
  *
  * @author Pierre van Rooden
  */
-public class BasicRelationList extends BasicList implements RelationList {
-
-    private Cloud cloud;
-    NodeManager nodemanager=null;
+public class BasicRelationList extends BasicNodeList implements RelationList {
 
     /**
     * ...
     */
     BasicRelationList(Collection c, Cloud cloud, NodeManager nodemanager) {
-        super(c);
-        this.cloud=cloud;
-        this.nodemanager=nodemanager;
+        super(c,cloud,nodemanager);
     }
 
     /**
 	*
 	*/
-	public Relation get(int index) {
+	public Object get(int index) {
 	    Object o=getObject(index);
     	if (o instanceof Relation) {
     	    return (Relation)o;
@@ -46,33 +41,35 @@ public class BasicRelationList extends BasicList implements RelationList {
     	return r;
 	}
 
+    /**
+	*
+	*/
+	public Relation getRelation(int index) {
+    	return (Relation)get(index);
+	}
+	
+    /**
+	*
+	*/
+	public RelationList subRelationList(int fromIndex, int toIndex) {
+	    return new BasicRelationList(subList(fromIndex, toIndex),cloud,nodemanager);
+	}
+	
 	/**
 	*
 	*/
-//	public RelationIterator iterator() {
-//	    return new BasicRelationIterator(this);
-//	};
+	public RelationIterator relationIterator() {
+	    return new BasicRelationIterator(this);
+	};
 
-	public class BasicRelationIterator { // implements RelationIterator {
-	    RelationList list;
-	    int index=-1;
+	public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
 	
-	    BasicRelationIterator(RelationList list) {
-	        this.list = list;
+	    BasicRelationIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
-	    }
-	
-	    public Relation next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index = list.size()+1;
-	            throw new NoSuchElementException("Node does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
+	    public Relation nextRelation() {
+	        return (Relation)nextObject();
 	    }
 	
 	}

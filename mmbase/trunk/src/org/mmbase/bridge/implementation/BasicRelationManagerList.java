@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import java.util.Collection;
+import java.util.*;
 import java.util.NoSuchElementException;
 
 /**
@@ -19,23 +19,19 @@ import java.util.NoSuchElementException;
  *
  * @author Pierre van Rooden
  */
-public class BasicRelationManagerList extends BasicList implements RelationManagerList {
-
-    private Cloud cloud;
-    RelationManager relationManager=null;
+public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
 
     /**
     * ...
     */
     BasicRelationManagerList(Collection c, Cloud cloud) {
-        super(c);
-        this.cloud=cloud;
+        super(c,cloud);
     }
 
     /**
 	*
 	*/
-	public RelationManager get(int index) {
+	public Object get(int index) {
 	    Object o=getObject(index);
     	if (o instanceof RelationManager) {
     	    return (RelationManager)o;
@@ -44,34 +40,29 @@ public class BasicRelationManagerList extends BasicList implements RelationManag
     	objects[index]=rm;
     	return rm;
 	}
+	
+    /**
+	*
+	*/
+	public RelationManager getRelationManager(int index) {
+	    return (RelationManager) getObject(index);
+	}
 
 	/**
 	*
 	*/
-//	public RelationManagerIterator iterator() {
-//	    return new BasicRelationManagerIterator(this);
-//	};
+	public RelationManagerIterator relationManagerIterator() {
+	    return new BasicRelationManagerIterator(this);
+	};
 	
-	public class BasicRelationManagerIterator { // implements RelationManagerIterator {
-	    RelationManagerList list;
-	    int index=-1;
+	public class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
 	
-	    BasicRelationManagerIterator(RelationManagerList list) {
-	        this.list = list;
+	    BasicRelationManagerIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
-	    }
-	
-	    public RelationManager next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index = list.size()+1;
-	            throw new NoSuchElementException("RelationManager does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
+	    public RelationManager nextRelationManager() {
+    	    return (RelationManager)nextObject();
 	    }
 	
 	}
