@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.52 2002-03-21 10:02:35 pierre Exp $
+ * @version $Id: MMBase.java,v 1.53 2002-03-21 17:17:11 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -450,7 +450,13 @@ public class MMBase extends ProcessorModule  {
         log.debug(" creating new multimedia base : "+baseName);
         Vector v;
         database=getDatabase();
-        MMObjectBuilder objekt=loadBuilder("object","");
+        MMObjectBuilder objekt=null;
+        try {
+            objekt=loadBuilder("object");
+        } catch (BuilderConfigurationException e) {
+            // object builder was not defined -
+            // builde ris optional, so this is not an error
+        }
         if (objekt!=null) {
             objekt.init();
         } else {
@@ -489,7 +495,7 @@ public class MMBase extends ProcessorModule  {
             if (builderLoading(name)) {
                 throw new CircularReferenceException("Circular reference to builder with name "+name);
             }
-            builder=loadBuilder(name,"");
+            builder=loadBuilder(name);
         }
         return builder;
     }
@@ -860,11 +866,12 @@ public class MMBase extends ProcessorModule  {
      * @since MMBase-1.6
      * @param name the name of the builder to load
      * @return the builder
+     * @throws BuilderConfigurationException if the builder config file does not exist or is inactive
      */
     private MMObjectBuilder loadCoreBuilder(String name) {
         MMObjectBuilder builder=loadBuilder(name);
         if (builder==null) {
-            throw new RuntimeException("The core builder "+name+" is mandatory but not defined.");
+            throw new BuilderConfigurationException("The core builder "+name+" is mandatory but inactive.");
         } else {
             return builder;
         }
@@ -888,7 +895,12 @@ public class MMBase extends ProcessorModule  {
         InsRel=(InsRel)loadCoreBuilder("insrel");
         InsRel.init();
 
-        OAlias=(OAlias)loadBuilder("oalias");
+        try {
+            OAlias=(OAlias)loadBuilder("oalias");
+        } catch (BuilderConfigurationException e) {
+            // OALias  builder was not defined -
+            // builder is optional, so this is not an error
+        }
 
         // new code checks all the *.xml files in builder dir, recursively
         String path = "";
@@ -950,9 +962,11 @@ public class MMBase extends ProcessorModule  {
     /**
      * Locate one specific builder withing the main builder config path, including sub-paths.
      * If the builder already exists, the existing object is returned instead.
+     * If the builder cannot be found in this path, a BuilderConfigurationException is thrown.
      * @since MMBase-1.6
      * @param builder name of the builder to initialize
      * @return the initialized builder object, or null if no builder could be created..
+     * @throws BuilderConfigurationException if the builder config file does not exist
      */
     MMObjectBuilder loadBuilder(String builder) {
         return loadBuilder(builder,"");
@@ -960,38 +974,54 @@ public class MMBase extends ProcessorModule  {
 
     /**
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
-     * If the builder already exists, the existing object is returned instead.
-     * @param builder name of the builder to initialize
+     * Return the actual path.
+     * @param builder name of the builder to find
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
-     * @return the initialized builder object, or null if no builder could be created..
+     * @return the file path to the builder xml, or null if no builder could be found.
+     * @throws BuilderConfigurationException if the builder config file does not exist
      */
+    private String getBuilderPath(String builder, String path) {
+        if ((new File(builderpath+path+builder+".xml")).exists()) {
+            return path;
+        } else {
+            // not in the builders path, so we need to search recursively
+            File dirList = new File(builderpath + path);
+            String[] files = dirList.list();
+            if (files!=null) {
+                for (int i=0; i<files.length;i++) {
+                    String lPath = path + files[i] + File.separator;
+                    if ((new File(builderpath + lPath)).isDirectory()) {
+                        String resultpath = getBuilderPath(builder, lPath);
+                        if (resultpath!=null) {
+                            return resultpath;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+     /**
+      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
+      * If the builder already exists, the existing object is returned instead.
+      * @param builder name of the builder to initialize
+      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
+      * @return the initialized builder object, or null if no builder could be created..
+      * @throws BuilderConfigurationException if the builder config file does not exist
+      */
     MMObjectBuilder loadBuilder(String builder, String ipath) {
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null) {
             log.info("Builder '"+builder+"' is already loaded");
             return bul;
         }
-        String path = builderpath + ipath;
-        if ((new File(path+builder+".xml")).exists()) {
-            return loadBuilderFromXML(builder,ipath);
+        String path = getBuilderPath(builder,ipath);
+        if (path!=null) {
+            return loadBuilderFromXML(builder,path);
         } else {
-            // not in the builders path, so we need to search recursively
-            File dirList = new File(path);
-            String[] files = dirList.list();
-            if (files!=null) {
-                for (int i=0; i<files.length;i++) {
-                    String lPath = ipath + files[i] + File.separator;
-                    if ((new File(builderpath + lPath)).isDirectory()) {
-                        bul = loadBuilder(builder, lPath);
-                        if (bul!=null) {
-                            return bul;
-                        }
-                    }
-                }
-            } else {
-                log.error("Cannot find builder files in "+path);
-            }
-            return null;
+            log.error("Cannot find specified builder "+builder);
+            throw new BuilderConfigurationException("Cannot find specified builder "+builder);
         }
     }
 

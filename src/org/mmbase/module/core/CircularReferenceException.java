@@ -16,9 +16,9 @@ package org.mmbase.module.core;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: CircularReferenceException.java,v 1.1 2002-03-21 10:06:02 pierre Exp $
+ * @version $Id: CircularReferenceException.java,v 1.2 2002-03-21 17:17:11 pierre Exp $
  */
-public class CircularReferenceException extends RuntimeException {
+public class CircularReferenceException extends BuilderConfigurationException {
 
     public CircularReferenceException(String s) {
         super(s);
