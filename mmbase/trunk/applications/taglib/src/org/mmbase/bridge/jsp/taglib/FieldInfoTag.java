@@ -19,6 +19,7 @@ import java.util.Date;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 
+import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -85,11 +86,11 @@ public class FieldInfoTag extends NodeReferrerTag {
         return EVAL_BODY_TAG;
     }
 
-    protected String decode (String value) throws JspTagException {
+    protected String decode (String value, Node n) throws JspTagException {
         return value;
     }
 
-    protected String encode(String value) throws JspTagException {
+    protected String encode(String value, Field f) throws JspTagException {
         return value;
     }
 
@@ -119,19 +120,24 @@ public class FieldInfoTag extends NodeReferrerTag {
         String show;
         int type = field.getType();
         if (log.isDebugEnabled()) {
-            log.debug("field " + field.getName() + " gui type: " + field.getGUIType());
+            String value = "<search>";
+            if (! search) {
+                value = node.getStringValue(field.getName());
+            }              
+            log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
+                      "value: " + value);
         }
         switch(type) {
         case Field.TYPE_BYTE:
-            show = "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
+            show = node.getStringValue("gui()") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
-        case Field.TYPE_STRING:
+        case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
                     // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                     show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
                     if (node != null) {
-                        show += decode(node.getStringValue(field.getName()));
+                        show += Encode.XMLEscape(decode(node.getStringValue(field.getName()), node));
                     }                    
                     show += "</textarea>";                
                     break;                    
@@ -139,14 +145,14 @@ public class FieldInfoTag extends NodeReferrerTag {
                 if(field.getMaxLength() > 255 )  {                
                     show = "<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
                     if (node != null) {
-                        show += decode(node.getStringValue(field.getName()));
+                        show += Encode.XMLEscape(decode(node.getStringValue(field.getName()), node));
                     }                    
                     show += "</textarea>";
                     break;
                 }
                 show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
     	    	if (node != null) {
-		    show += decode(node.getStringValue(field.getName()));
+		    show += Encode.XMLAttributeEscape(decode(node.getStringValue(field.getName()), node));
 		}
 		show += "\" />";
     	    	break;
@@ -341,7 +347,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         case Field.TYPE_STRING: {
             // do the xml decoding thing...
             String fieldValue = getContextTag().getStringFindAndRegister(prefix(fieldName));
-	    fieldValue = encode(fieldValue);
+	    fieldValue = encode(fieldValue, field);
             log.debug("got it");
             if (fieldValue == null) {
                 log.debug("Field " + fieldName + " is null!");
@@ -534,13 +540,14 @@ public class FieldInfoTag extends NodeReferrerTag {
         case TYPE_GUINAME:
             show = field.getGUIName();
             break;
-        case TYPE_VALUE:
-            show = node.getStringValue(field.getName());
+        case TYPE_VALUE:           
+            show = decode(node.getStringValue(field.getName()), node);
             break;
         case TYPE_GUIVALUE:
-            show = node.getStringValue("gui("+field.getName()+")");
+            log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
+            show = decode(node.getStringValue("gui("+field.getName()+")"), node);
             if (show.trim().equals("")) {
-                show = node.getStringValue(field.getName());
+                show = decode(node.getStringValue(field.getName()), node);
             }
             break;
         case TYPE_INPUT:
