@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.26 2004-01-20 18:37:56 michiel Exp $
+    @version $Id: base.xsl,v 1.27 2004-03-19 11:08:44 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -55,7 +55,7 @@
   <!-- Perhaps you want to refer to stuff not relative to the referrer-page, but to the root of the site where it belongs to. 
     This must be given to the jsp's then with the paremeter 'templates' 
   -->
-  <xsl:variable name="templatedir"><xsl:value-of select="$referrerdir" /></xsl:variable>
+  <xsl:param name="templatedir"><xsl:value-of select="$referrerdir" /></xsl:param>
 
   <!-- ================================================================================
     Directory and page settings
