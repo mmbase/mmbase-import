@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.20 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Encode.java,v 1.21 2005-02-11 23:24:20 keesj Exp $
  **/
 public class Encode {
 
@@ -98,7 +98,7 @@ public class Encode {
                 ((ConfigurableTransformer) trans).configure(e.config);
             }
         } else {
-            throw new IllegalArgumentException("encoding: '" + encoding + "' unknown");
+            throw new IllegalArgumentException("encoding: '" + encoding + "' unknown" + encodings.keySet());
         }
 
     }
@@ -237,12 +237,13 @@ public class Encode {
     /**
      * All the currently known encodings.
      *
-     * @return Set of Strings.
+     * @return Set of Strings containing the names of the registered encodings.
      */
 
     public static Set possibleEncodings() {
         return encodings.keySet();
     }
+    
     /**
      * Checks if a certain string represents a known transformation.
      *
