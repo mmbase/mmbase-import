@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.60 $ $Date: 2003-01-14 16:05:44 $
+ * @$Revision: 1.61 $ $Date: 2003-01-23 10:06:51 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -42,6 +42,7 @@ public class scanparser extends ProcessorModule {
 
 	private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
 
+	private CounterInterface counter = null;
     public static scancacheInterface scancache=null;
     private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
@@ -416,6 +417,9 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(body,"<PART ",'>',20,session,sp);
 		body=part;
 
+		// Counter tag
+		part=finddocmd(body,"<COUNTER",'>',21,session,sp); 
+		body=part;
 
 		// <TREEPART, TREEFILE
 		part=finddocmd(body,"<TREE",'>',22,session,sp);
@@ -555,6 +559,9 @@ public class scanparser extends ProcessorModule {
 						};
 						newbody.append(partbody);
 						break;
+					case 21: // '<COUNTER'
+						newbody.append(do_counter(body.substring(prepostcmd,postcmd),session,sp));
+					        break;
 					case 22: // '<TREEPART, TREEFILE'
 					case 23: // '<LEAFPART, LEAFFILE'
 						partbody=do_smart(body.substring(prepostcmd,postcmd),session,sp, docmd==23);
@@ -582,6 +589,46 @@ public class scanparser extends ProcessorModule {
 		return(newbody.toString());
 	}
 
+
+ 	/**
+	 * The <COUNTER x y> tag is only used by the VPRO, it returns information in regard to nedstat.
+ 	 *
+ 	 * @param part A string containing the remaining COUNTER part.
+ 	 * @param session The sessionInfo object.
+ 	 * @param sp The current scanpage object.
+ 	 * @return A String containing the counter value.
+ 	 **/
+ 	private String do_counter(String part, sessionInfo session, scanpage sp ) throws ParseException {
+		String result = null;
+
+		if(counter==null) {
+			 counter=(CounterInterface)getModule("COUNTER");
+			 if(counter==null) {
+				log.error("<COUNTER tag is used but counter module is not loaded.");
+				return "";
+			 }
+		}
+
+		// Scan & Parse all $ attributes used in the tag.
+		part = dodollar(part,session,sp);
+
+		long time = System.currentTimeMillis();
+		part = part.trim();
+		log.debug("Using part ["+part+"]");
+		int i=part.indexOf(' ');
+		String params=null;
+		if (i!=-1) {
+			params=part.substring(i+1);
+	        } else {
+			log.error("["+part +"] syntax wrong for COUNTER tag.");
+		}
+
+	        result = counter.getTag(params, session, sp);
+
+	        log.debug("processing counter took "+ (System.currentTimeMillis() - time ) + " ms.");
+            	return result;
+	}
+		
 	private final String do_part(String part2,sessionInfo session,scanpage sp,int markPart) throws ParseException {
 
 		String part="",filename,paramline=null;;
