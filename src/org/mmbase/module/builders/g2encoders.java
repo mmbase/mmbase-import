@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.6 2000-11-09 12:03:57 vpro Exp $
+$Id: g2encoders.java,v 1.7 2001-02-15 13:35:10 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/11/09 12:03:57  vpro
+Rico: removed setTableName() as its function is superseded by init() in servicebuilder
+
 Revision 1.5  2000/03/30 13:11:35  wwwtech
 Rico: added license
 
@@ -38,7 +41,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @$Revision: 1.6 $ $Date: 2000-11-09 12:03:57 $
+ * @$Revision: 1.7 $ $Date: 2001-02-15 13:35:10 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 
@@ -46,34 +49,31 @@ public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 	private boolean debug = true;
 	//  private void debug(String msg){System.out.println(classname+":"+msg);}
 
-	public g2encoders() {
-	}
-
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
 		boolean result = false;
-		if( debug ) debug("nodeRemoteChanged("+number+","+builder+","+ctype+")");
+		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super");
 
 		super.nodeRemoteChanged(number,builder,ctype);
 		result = nodeChanged(number,builder,ctype);
 
-		if( debug ) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): return("+result+")");
+		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): return("+result+")");
 		return result;
 	}
 
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
 		boolean result = false;
-		if( debug ) debug("nodeLocalChanged("+number+","+builder+","+ctype+")");
+		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super");
 
 		super.nodeLocalChanged(number,builder,ctype);
 		result = nodeChanged(number,builder,ctype);
 
-		if( debug ) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): returning("+result+")");
+		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): returning("+result+")");
 		return result;
 	}
 
 	public boolean nodeChanged(String number,String builder,String ctype) {
 		boolean result = true;
-		if( debug ) debug("nodeLocalChanged("+number+","+builder+","+ctype+"), do nothing, return("+result+")");
-		return(result);
+		if (debug) debug("nodeChanged("+number+","+builder+","+ctype+"), do nothing, return("+result+")");
+		return result;
 	}
 }
