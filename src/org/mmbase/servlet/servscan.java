@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.22 2001-10-23 11:44:22 vpro Exp $
+ * @version $Id: servscan.java,v 1.23 2001-11-25 16:21:36 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -353,7 +353,7 @@ public class servscan extends JamesServlet {
 					int end = sp.body.indexOf(">", start);
 					sp.wantCache="HENK";
 //					debug("handleCache(): CACHE="+parser.scancache);
-					String rst=parser.scancache.get(sp.wantCache,req_line, sp.body.substring(start,end+1));
+					String rst=parser.scancache.get(sp.wantCache,req_line, sp.body.substring(start,end+1),sp);
 					if (log.isDebugEnabled()) log.debug("handleCache: sp.reload: "+sp.reload);
 					if (rst!=null && !sp.reload) {
 						setHeaders(sp,res,rst.length());
@@ -371,7 +371,7 @@ public class servscan extends JamesServlet {
 
 			if (sp.body!=null && sp.body.indexOf("<CACHE PAGE>")!=-1) {
 				sp.wantCache="PAGE";
-				String rst=parser.scancache.get(sp.wantCache,req_line);
+				String rst=parser.scancache.get(sp.wantCache,req_line,sp);
 				if (log.isDebugEnabled()) log.debug("handleCache: sp.reload: "+sp.reload);
 				if (rst!=null && !sp.reload) {
 					setHeaders(sp,res,rst.length());
