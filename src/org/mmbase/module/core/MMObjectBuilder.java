@@ -344,6 +344,7 @@ public class MMObjectBuilder extends MMTable {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
+				stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where snumber="+number+" or dnumber="+number);
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
