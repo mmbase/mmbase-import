@@ -15,7 +15,7 @@
 <title>Forum Demo: Post Message</title>
 </head>
 <body>
-<mm:cloud>
+<mm:cloud jspvar="cloud">
 <blockquote>
 <%
     String thread = request.getParameter("thread");
