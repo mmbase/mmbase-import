@@ -68,6 +68,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="share.dir"    location="../share" />
 
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
+  <property name="mail.jar" value="${build.dir}/lib/mail.jar"/>
+  <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
@@ -105,8 +107,19 @@ Create a build.xml with a DOCTYPE like this:
 
 
     <condition property="do.documentation">
-       <equals arg1="${build.documentation}" arg2="true" />
+      <and>
+        <equals arg1="${build.documentation}" arg2="true" />
+        <equals arg1="${documentation.available}" arg2="true" />
+      </and>
     </condition>
+
+    <condition property="do.javadoc">
+      <and>
+        <equals arg1="${build.documentation}" arg2="true" />
+        <equals arg1="${src.available}" arg2="true" />
+      </and>
+    </condition>
+
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
     <property name="name" value="${project.name}"/>
@@ -265,6 +278,8 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
       </classpath>
@@ -282,7 +297,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
   </target>
 
-  <target name="documentation.rawhtml" depends="init" if="documentation.available">
+  <target name="documentation.rawhtml" depends="init" if="do.documentation">
     <copy todir="${project.build.dir}/documentation" includeEmptyDirs="false" >
       <fileset dir="${project.source.dir}/documentation">
         <include name="**/*.html"/>
@@ -291,14 +306,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="documentation.html" depends="init" if="documentation.available">
+  <target name="documentation.html" depends="init" if="do.documentation">
     <ant dir="${documentation.home}" target="documentation.html">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
     </ant>
   </target>
 
-  <target name="documentation.pdf" depends="init" if="documentation.available">
+  <target name="documentation.pdf" depends="init" if="do.documentation">
     <ant dir="${documentation.home}" target="documentation.pdf">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.temp.dir"       value="${project.build.dir}/temp" />
@@ -306,7 +321,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </ant>
   </target>
 
-  <target name="javadocs" description="Documentation" depends="init" if="src.available">
+  <target name="javadocs" description="Documentation" depends="init" if="do.javadoc">
   <javadoc packagenames="${project.javadoc.packages}"
     sourcepath="${project.source.dir}/src"
     destdir="${project.build.dir}/api"
