@@ -24,11 +24,11 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.3 2003-06-18 14:15:38 michiel Exp $
+ * @version $Id: User.java,v 1.4 2003-07-14 21:17:19 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users; 
  */
 public class User extends UserContext implements MMBaseObserver {
-    private static Logger log = Logging.getLoggerInstance(User.class.getName());
+    private static Logger log = Logging.getLoggerInstance(User.class);
     private MMObjectNode node;
     private long key;
 

@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.6 2003-06-18 14:15:39 michiel Exp $
+ * @version $Id: Contexts.java,v 1.7 2003-07-14 21:17:20 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
 public class Contexts extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(Contexts.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Contexts.class);
     private boolean readall = true;
 
     protected static Cache contextCache = new Cache(30) {
