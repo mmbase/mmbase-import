@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMRemoteProbe.java,v 1.8 2001-01-24 14:10:26 vpro Exp $
+$Id: MMRemoteProbe.java,v 1.9 2001-03-15 14:40:39 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/01/24 14:10:26  vpro
+Davzev: Small debug change in doWork() and printStackTrace() added in toXML() catch.
+
 Revision 1.7  2000/12/19 17:10:54  vpro
 Davzev: Still managed to add some debug and comment
 
@@ -27,7 +30,7 @@ import java.io.*;
 
 /**
  * 
- * @version $Revision: 1.8 $ $Date: 2001-01-24 14:10:26 $
+ * @version $Revision: 1.9 $ $Date: 2001-03-15 14:40:39 $
  * @author Daniel Ockeloen
  */
 public class MMRemoteProbe implements Runnable {
@@ -124,7 +127,7 @@ public class MMRemoteProbe implements Runnable {
 		String body="<?xml version=\"1.0\"?>\n";
 		body+="<!DOCTYPE mmnode.mmservers SYSTEM \"http://openbox.vpro.nl/mmnode/mmservers.dtd\">\n";
 		body+="<mmservers>\n";
-		body+="<number>"+servicenr+"</number>\n";
+		body+="<name>"+servicenr+"</name>\n";
 		body+="<state>1</state>\n";
 		body+="<atime>"+(int)(System.currentTimeMillis()/1000)+"</atime>\n";
 		body+="<host>"+con.getProtocol()+"://"+con.getLocalHost()+":"+con.getLocalPort()+"</host>\n";
