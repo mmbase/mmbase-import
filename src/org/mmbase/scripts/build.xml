@@ -207,20 +207,6 @@ NetComponents can be found at:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <!-- Community-builders -->
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/Community/builders">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    <!-- Community-module -->
-    <!-- isn't in cvs at the moment, so don't try to copy it. Maybe I'll add it
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/Community/modules">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    -->
     <!-- MyNews -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
