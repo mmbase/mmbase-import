@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Scanparser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.66 2004-03-15 14:30:08 rob Exp $
+ * @version $Id: scanparser.java,v 1.66.2.1 2005-01-24 13:11:14 marcel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -955,7 +955,7 @@ public class scanparser extends ProcessorModule {
             rtn = "File " + where + " not found";
             // perhaps better do not show, since it looks ugly in the editors, of which the help files normally are missing...
             // but at least log:
-            log.error("file not found: getfile("+where+"): error getfile servscan : "+scanfile.getName());
+            log.error("file not found: "+where);
         } catch(IOException e) {
             log.error("IOException: " + Logging.stackTrace(e));
         }
