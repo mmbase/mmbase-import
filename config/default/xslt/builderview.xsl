@@ -70,12 +70,12 @@
 
 <!-- singular -->
 <xsl:template match="singular">
-<i><xsl:value-of select="@lang"/>=</i> <b><xsl:value-of select="."/></b><br/> 
+<i><xsl:value-of select="@xml:lang"/></i>=<b><xsl:value-of select="."/></b><br/> 
 </xsl:template>
 
 <!-- plural -->
 <xsl:template match="plural">
-<i><xsl:value-of select="@lang"/>=</i> <b><xsl:value-of select="."/></b><br/>
+<i><xsl:value-of select="@xml:lang"/></i>=<b><xsl:value-of select="."/></b><br/>
 </xsl:template>
 
 
@@ -91,7 +91,7 @@
 
 <!-- description -->
 <xsl:template match="description">
-<i><xsl:value-of select="@lang"/>=</i> <b><xsl:value-of select="."/></b><br/> 
+<i><xsl:value-of select="@xml:lang"/></i>=<b><xsl:value-of select="."/></b><br/> 
 </xsl:template>
 
 
@@ -133,11 +133,11 @@
 
 <!-- gui/name or guiname -->
 <xsl:template match="gui/name">
-<i>name[<xsl:value-of select="@lang"/>]</i>=<b><xsl:value-of select="."/></b>; 
+<i>name[<xsl:value-of select="@xml:lang"/>]</i>=<b><xsl:value-of select="."/></b>; 
 </xsl:template>
 
 <xsl:template match="guiname">
-<i>name[<xsl:value-of select="@lang"/>]</i>=<b><xsl:value-of select="."/></b>; 
+<i>name[<xsl:value-of select="@xml:lang"/>]</i>=<b><xsl:value-of select="."/></b>; 
 </xsl:template>
 
 
