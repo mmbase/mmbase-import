@@ -108,6 +108,11 @@ notfound="skip"<br />
 <mm:node referid="node">
   countrelations (not specified type): <mm:countrelations /> (should be 1)<br />
   countrelations (specified type): <mm:countrelations type="urls" /> (should be 1)<br />
+   ountrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="destination" /> (should be 1)<br />
+   countrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="source" /> (should be 0)<br />
+   countrelations (specified searchdir): <mm:countrelations  searchdir="source" /> (should be 0)<br />
+   countrelations (specified role): <mm:countrelations  role="posrel" /> (should be 1)<br />
+   countrelations (specified role): <mm:countrelations  role="related" /> (should be 0)<br />
   gui of the relation node (with listrelations),
   should see a number: 
   <mm:listrelations id="listrelations">
