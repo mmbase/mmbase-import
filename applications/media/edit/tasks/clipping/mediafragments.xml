@@ -23,10 +23,13 @@
     <title xml:lang="nl">Meta info + Geldigheid</title>
 
     <list searchdir="source" role="posrel" destination="&type;fragments" maxoccurs="1" >
-      <title xml:lang="en">Base stream</title>
-      <title xml:lang="nl">Basis stream</title>
+      <title xml:lang="en">Base (source) stream</title>
+      <title xml:lang="nl">Basis (bron) stream</title>
       <item>
+       <fieldset>
         <field ftype="data" name="title" />
+        <field ftype="startwizard" inline="true" wizardname="tasks/base/&type;fragments" />
+       </fieldset>
       </item>
       <command name="search" nodepath="pools,&type;fragments" fields="pools.name,&type;fragments.title" orderby="&type;fragments.title" age="-1" >
         <search-filter>
@@ -89,7 +92,8 @@
   </form-schema>
 
   <form-schema id="itemize">  
-    <field ftype="data" name="title" />
+    <field ftype="data" name="title">
+    </field>
     <title xml:lang="en">Itemization</title>
     <title xml:lang="nl">Opknippen</title>
     &items;      
