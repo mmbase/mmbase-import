@@ -288,8 +288,8 @@ public class CDTracks extends MMObjectBuilder {
 		node.setValue("body","");
 	}
 
-    public String getCdtracksUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
+    public String getCdtracksUrl(MMBase mmbase, int number, scanpage sp, int speed, int channels)
     {
-        return AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
+        return AudioUtils.getCdtrackUrl( mmbase, number, sp, speed, channels);
     }
 }
