@@ -42,6 +42,25 @@
       <arg value="-XSL"/>
       <arg value="${share.dir}/xslt/xml2tld.xslt" />
     </java>
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-taglib.xml}"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="http://www.mmbase.org/mmbase-taglib-2.0" />
+      <arg value="-PARAM"/>
+      <arg value="version"/>
+      <arg value="2.0" />
+      <arg value="-OUT"/>
+      <arg value="${project.metainf.dir}/taglib-2.0.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2tld.xslt" />
+    </java>
   </target>
 
 
