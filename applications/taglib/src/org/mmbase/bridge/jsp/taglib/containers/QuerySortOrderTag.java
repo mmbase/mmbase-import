@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Query;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -22,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.1 2003-12-18 09:05:48 michiel Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.2 2004-07-22 13:58:42 michiel Exp $
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -49,24 +50,8 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
         
         String dir = direction.getString(this).toUpperCase();
         
-        Query query = c.getQuery();
-        
-        int order;
-        
-        if (dir.equals("")) {
-            order = SortOrder.ORDER_ASCENDING;
-        } else if (dir.equals("UP")) {
-            order = SortOrder.ORDER_ASCENDING;
-        } else if (dir.equals("DOWN")) {
-            order = SortOrder.ORDER_DESCENDING;
-        } else if (dir.equals("ASCENDING")) {
-            order = SortOrder.ORDER_ASCENDING;
-        } else if (dir.equals("DESCENDING")) {
-            order = SortOrder.ORDER_DESCENDING;
-        } else {
-            throw new JspTagException("Unknown sort-order '" + dir + "'");
-        }
-        
+        Query query = c.getQuery();        
+        int order = Queries.getSortOrder(direction.getString(this));
         StepField stepField = query.createStepField(field.getString(this));
                    
         query.addSortOrder(stepField, order);
