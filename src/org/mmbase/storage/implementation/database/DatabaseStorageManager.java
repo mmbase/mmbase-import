@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.38 2004-01-13 09:59:00 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.39 2004-01-14 11:03:03 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -119,7 +119,7 @@ public class DatabaseStorageManager implements StorageManager {
      * If a transaction has been started, the connection is not closed.
      */
     protected void releaseActiveConnection() {
-        if (!(inTransaction && factory.supportsTransactions()) && 
+        if (!(inTransaction && factory.supportsTransactions()) &&
             activeConnection != null) {
             try {
                 activeConnection.close();
@@ -608,7 +608,7 @@ public class DatabaseStorageManager implements StorageManager {
                 break;
                 // Store nodes
             case FieldDefs.TYPE_NODE :
-                setNodeValue(statement, index, node.getNodeValue(fieldName), field);
+                setNodeValue(statement, index, node.getIntValue(fieldName), field);
                 break;
                 // Store strings
             case FieldDefs.TYPE_STRING :
@@ -699,13 +699,13 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param value the node value to store
+     * @param nodeNumber the number of the node to store
      * @param field the MMBase field, containing meta-information
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setNodeValue(PreparedStatement statement, int index, MMObjectNode value, FieldDefs field) throws StorageException, SQLException {
-        if (value == MMObjectNode.VALUE_NULL || value == null) {
+    protected void setNodeValue(PreparedStatement statement, int index, int nodeNumber, FieldDefs field) throws StorageException, SQLException {
+        if (nodeNumber < 0 ) {
             if (field.getDBNotNull()) {
                 throw new StorageException("The NODE field with name " + field.getDBName() + " can not be NULL.");
             } else {
@@ -713,7 +713,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         } else {
             // retrieve node as a numeric value
-            statement.setInt(index, value.getNumber());
+            statement.setInt(index, nodeNumber);
         }
     }
 
