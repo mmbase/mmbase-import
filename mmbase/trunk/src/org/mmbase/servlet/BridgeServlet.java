@@ -36,15 +36,17 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.14 2003-12-10 18:38:53 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.15 2004-01-16 12:55:03 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public abstract class BridgeServlet extends  MMBaseServlet {
 
 
-    private static final Pattern FILE_PATTERN = Pattern.compile(".*\\D((?:session=.*\\+)?\\d+)(?:/.*)?");
+    private static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*\\+)?\\d+)(?:/.*)?"); // may not be digits in servlet mapping itself!
     private static Logger log;
+
+    private static int contextPathLength = -1;
 
     /**
      */
@@ -62,10 +64,13 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         String query;
         if (q == null) { 
             // also possible to use /attachments/[session=abc+]<number>/filename.pdf
-            //query = new StringBuffer(req.getRequestURI());
-            Matcher m = FILE_PATTERN.matcher(req.getRequestURI());
+            if (contextPathLength == -1) {
+                contextPathLength = req.getContextPath().length(); 
+            }
+            String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
+            Matcher m = FILE_PATTERN.matcher(reqString);
             if (! m.matches()) {
-                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL");
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
                 return null;
            }
             query = m.group(1);
@@ -82,7 +87,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             
             int plus = query.indexOf("+", 8);
             if (plus == -1) {
-                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL");
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: No node number found after session.");
                 return null;
             }
             sessionName = query.substring(8, plus);
