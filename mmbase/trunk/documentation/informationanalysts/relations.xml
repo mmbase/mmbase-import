@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Relations in MMBase</title>
     <date>2003-05-14</date>
-    <edition>$Id: relations.xml,v 1.7 2004-01-18 18:03:30 michiel Exp $</edition>
+    <edition>$Id: relations.xml,v 1.8 2004-01-22 13:48:43 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -129,7 +129,7 @@
           <para>Object number of this relation's source object</para>
         </listitem>
         <listitem>
-          <para>&lt;field&gt;'dnumber</para>
+          <para>&lt;field&gt; dnumber</para>
           <para>Object number of this relation's destination object</para>
         </listitem>
         <listitem>
@@ -277,7 +277,7 @@
       (typerel)
     </title>    
     <para>
-      In the previous section we saw who we can define relation roles in MMBase. Principally you could be
+      In the previous section we saw how we can define relation roles in MMBase. Principally you could be
       ready now to create actual relation instances. You could take two object and connect them by a
       `role'. The role defines also the relation builder, and therefore the extra fields which can be
       filled in the relation object itself.
