@@ -177,7 +177,7 @@ Create a build.xml with a DOCTYPE like this:
     <echo message="${project.zip} is up-to-date" />
   </target>
 
-  <target name="package.documentation"  if="do.documentation" unless="package.uptodate">
+  <target name="package.documentation"  unless="package.uptodate">
     <antcall target="documentation" />
   </target>
 
@@ -205,7 +205,10 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF" />
     <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="documentation" />
     <zipfileset dir="${project.build.dir}"  includes="documentation/**" />
-    <zipfileset dir="${project.source.dir}" includes="documentation/**" prefix="src" />
+    <zipfileset dir="${project.source.dir}" prefix="src">
+      <include name="documentation/**"/>
+      <exclude name="documentation/**.html" />
+    </zipfileset>
     <fileset dir="${project.build.dir}"     includes="README-PACKAGE.txt"/>
     <fileset dir="${project.source.dir}">
       <patternset id="readmes">
@@ -274,9 +277,19 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <delete dir="${project.build.dir}" />
   </target>
 
+  
 
-  <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf">
+  <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
   </target>
+
+  <target name="documentation.rawhtml" depends="init" if="documentation.available">
+    <copy todir="${project.build.dir}/documentation" includeEmptyDirs="false" >
+      <fileset dir="${project.source.dir}/documentation">
+        <include name="**/*.html"/>
+      </fileset>
+    </copy>
+  </target>
+
 
   <target name="documentation.html" depends="init" if="documentation.available">
     <ant dir="${documentation.home}" target="documentation.html">
