@@ -16,7 +16,7 @@
     $MOD-communityprc-CHANNEL-$PARAM1-$PARAM2
 </IF>
 
-<LIST OBJECTS TYPE="community" FIELDS="number,name,kind">
+<LIST OBJECTS TYPE="community" FIELDS="number,title,kind">
 <LIF $ITEM3=EFORUM>
 <tr align="left">
   <th class="header" colspan="2">$ITEM2</th>
