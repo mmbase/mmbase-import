@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.10 2002-04-12 08:53:00 pierre Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.10.2.1 2003-09-08 11:50:22 vpro Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 
@@ -99,7 +99,7 @@ public class ImageRequestProcessor implements Runnable {
 
         if (inputpicture == null || inputpicture.length == 0) {
             if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + id);
-            picture = new byte[0];
+            picture = null;
         } else {
             if (log.isDebugEnabled()) log.debug("processRequest : Converting : " + id);
             picture=convert.convertImage(inputpicture, params);
@@ -115,7 +115,7 @@ public class ImageRequestProcessor implements Runnable {
                 }
             } else {
                 log.warn("processRequest(): Convert problem params : " + params);
-                picture = new byte[0];
+                picture = null;
             }
             if (log.isDebugEnabled()) log.debug("processRequest : converting done : " + id);
         }
