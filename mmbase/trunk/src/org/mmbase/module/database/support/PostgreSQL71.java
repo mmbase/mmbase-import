@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.17 2002-10-03 09:12:23 eduard Exp $
+ * @version $Id: PostgreSQL71.java,v 1.18 2002-10-08 19:04:35 michiel Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -296,7 +296,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         log.debug("create");
 
 
-        Vector sfields = bul.sortedDBLayout;
+        Vector sfields = (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
         if(sfields == null) {
             log.error("sfield was null for builder with name :" + bul);
             return false;
@@ -597,7 +597,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
     private int insertRecord(MMObjectBuilder bul,String owner, MMObjectNode node) {
         String tableName = bul.getTableName();
-        String sql = insertPreSQL(tableName, bul.sortedDBLayout.elements(), node);
+        String sql = insertPreSQL(tableName, ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements(), node);
         MultiConnection con=null;
         PreparedStatement preStmt=null;
 
@@ -631,9 +631,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         try {
             preStmt.setEscapeProcessing(false);
 
-            // First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
-            int j=1;
-            for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
+            int j=0;
+            for (Enumeration e= ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
                 String key = (String)e.nextElement();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) )  {
