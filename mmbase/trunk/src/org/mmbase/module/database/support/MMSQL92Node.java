@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.30 2000-07-15 19:18:38 daniel Exp $
+$Id: MMSQL92Node.java,v 1.31 2000-07-18 12:27:49 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.30  2000/07/15 19:18:38  daniel
+Fixed a bug with new DBType
+
 Revision 1.29  2000/07/15 13:06:21  daniel
 removed some debug
 
@@ -131,7 +134,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.30 $ $Date: 2000-07-15 19:18:38 $
+* @$Revision: 1.31 $ $Date: 2000-07-18 12:27:49 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -683,8 +686,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	*/
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		int number=node.getIntValue("number");
-		System.out.println("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
-		System.out.println("SAVECOPY "+node.toString());
+		if(debug) {
+			System.out.println("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+			System.out.println("SAVECOPY "+node.toString());
+		}
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
 			System.out.println("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
