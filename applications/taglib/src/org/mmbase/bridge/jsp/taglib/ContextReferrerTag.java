@@ -39,6 +39,9 @@ import org.mmbase.util.logging.Logging;
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
+    public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
+    private static Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
+ 
 
     protected ContextTag pageContextTag = null;
 
@@ -61,8 +64,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContexTag found in pagecontext, creating..");
-            thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
-            log.service("Parsing JSP page: " + thisPage); 
+            thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();            
+            pageLog.service("Parsing JSP page: " + thisPage);
 
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
@@ -109,7 +112,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         super.release();
         log.debug("releasing context-referrer " + this.getClass().getName());
         if (thisPage != null) {
-            log.service("END Parsing JSP page: " + thisPage);
+            pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
         id = null;
