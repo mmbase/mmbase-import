@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.4 2003-06-30 17:17:09 michiel Exp $
+# $Id: build.properties.default,v 1.5 2003-08-21 08:49:47 gerard Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -38,13 +38,11 @@ docbook-xsl.file=${docbook-xsl.version}.tar.gz
 docbook-xsl.home=${download.dir}/${docbook-xsl.version}
 docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
 
-# ---- Fop, version 0.20.5rc3a ---- 
-# (I know it's not an official package, but the previous release
-# was along time ago)
-fop.version=fop-0.20.5rc3a
+# ---- Fop, version 0.20.5 ---- 
+fop.version=fop-0.20.5
 fop.file=${fop.version}-bin.tar.gz
 fop.home=${download.dir}/${fop.version}
-fop.loc=http://xml.apache.org/dist/fop/${fop.file}
+fop.loc=http://www.apache.org/dist/xml/fop/${fop.file}
 fop.jar=${download.dir}/${fop.version}/build/fop.jar
 fop.batik.jar=${download.dir}/${fop.version}/lib/batik.jar
 fop.avalon.jar=${download.dir}/${fop.version}/lib/avalon-framework-cvs-20020806.jar
