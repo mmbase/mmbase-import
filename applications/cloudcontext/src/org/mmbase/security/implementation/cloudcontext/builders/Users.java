@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.26 2004-02-25 13:45:05 pierre Exp $
+ * @version $Id: Users.java,v 1.27 2004-02-25 19:39:23 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -163,14 +163,6 @@ public class Users extends MMObjectBuilder {
                 }
             }
         }
-        /*
-        else if(field.equals(FIELD_PASSWORD)) {
-            Object value = node.values.get(field);
-            if (originalValue != null && ! originalValue.equals(value)) {
-                node.values.put(field, encode((String) value));
-            }
-        }
-        */
         return true;
     }
 

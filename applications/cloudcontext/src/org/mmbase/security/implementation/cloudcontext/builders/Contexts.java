@@ -36,7 +36,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.32 2004-02-23 18:59:34 pierre Exp $
+ * @version $Id: Contexts.java,v 1.33 2004-02-25 19:39:23 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -549,50 +549,65 @@ public class Contexts extends MMObjectBuilder {
 
     }
 
+
+
+
     /**
-     * @return a  Set of all groups/users which allow the given operation (not recursively).
+     * 
+     * @return A Collection of groups or users which are allowed for the given operation (not recursively)
+     */
+
+    protected Collection getGroupsOrUsers(MMObjectNode contextNode, Operation operation, MMObjectBuilder groupsOrUsers) {
+        InsRel rights = RightsRel.getBuilder();
+        
+        BasicSearchQuery query = new BasicSearchQuery();
+        Step step = query.addStep(this);
+        BasicStepField numberStepField = new BasicStepField(step, getField("number"));
+        BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(contextNode.getNumber()));
+        
+        BasicRelationStep relationStep = query.addRelationStep(rights, groupsOrUsers);
+        relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+        
+        BasicStepField  operationStepField = new BasicStepField(relationStep, rights.getField("operation"));
+        BasicFieldValueConstraint operationConstraint =  new BasicFieldValueConstraint(operationStepField, operation.toString());
+        
+        BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+        constraint.addChild(numberConstraint);
+        constraint.addChild(operationConstraint);
+
+        query.setConstraint(constraint);
+
+        query.addFields(relationStep.getNext());
+
+        try {
+            List resultList = mmb.getDatabase().getNodes(query, groupsOrUsers); // not cached, but no need
+            groupsOrUsers.processSearchResults(resultList);
+            return resultList;
+        } catch (SearchQueryException sqe) {
+            log.error(sqe.getMessage());
+            return new ArrayList();
+        }
+
+     
+    }
+
+    /**
+     * @return a  Set of all groups and users which are allowed for the given operation (not recursively).
      */
     protected  Set getGroupsAndUsers(MMObjectNode contextNode, Operation operation) {
         Set found = operationsCache.get(contextNode, operation);
         if (found == null) {
             found = new HashSet();
-            for(Enumeration enumeration = contextNode.getRelations(); enumeration.hasMoreElements();) {
-                MMObjectNode originalRelation = null;
-                try {
-                    originalRelation = (MMObjectNode) enumeration.nextElement();
-                    // needed to get the correct type of builder!!
-                    MMObjectNode relation = getNode(originalRelation.getNumber());
-                    if (relation.parent instanceof RightsRel) {
-                        String nodeOperation = relation.getStringValue(RightsRel.OPERATION_FIELD);
-                        if (nodeOperation.equals(operation.toString()) || nodeOperation.equals("all")) {
-                            int source      = relation.getIntValue("snumber");
-                            MMObjectNode destination = relation.getNodeValue("dnumber");
-                            if (source == contextNode.getNumber()) {
-                                found.add(destination);
-                            } else {
-                                /*
-                                  log.warn("source of " + relation + " was not the same as contextNode " + contextNode + " but " + relation.getNodeValue("snumber"));
-                                  log.warn(Logging.stackTrace());
-                                */
-                            }
-                        }
-                    }
-                } catch (RuntimeException rte) {
-                    // ignore the cited excedption
-                    log.warn("Error with " + originalRelation +  Logging.stackTrace(rte, 5));
-                }
-            }
+
+            found.addAll(getGroupsOrUsers(contextNode, operation, Users.getBuilder()));
+            found.addAll(getGroupsOrUsers(contextNode, operation, Groups.getBuilder()));
             operationsCache.put(contextNode, operation, found);
         }
 
         return found;
     }
 
-    /*
-    protected  Set getGroups(String context, Operation operation) {
-        return getGroups(getContextNode(context), operation);
-    }
-    */
+
 
     protected final MMObjectNode getContextNode(String context) {
         MMObjectNode contextNode = (MMObjectNode) contextCache.get(context);
