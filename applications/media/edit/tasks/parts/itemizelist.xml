@@ -1,4 +1,5 @@
-<!-- List with posrelated fragments 
+<!-- 
+List with posrelated fragments 
 -->
 
 <list role="posrel" destination="&fragments;" orderby="field[@name='pos']">
@@ -6,7 +7,7 @@
   <item>          
     <field name="title" />
 
-    <field inline="true" ftype="startwizard" wizardname="tasks/mediafragments">
+    <field inline="true" ftype="startwizard" wizardname="tasks/item&fragments;">
       <prompt xml:lang="en">Other fields</prompt>
       <prompt xml:lang="nl">Andere velden</prompt>
     </field>
@@ -15,6 +16,8 @@
     <field name="stop"   ftype="realposition" />
   </item>
 
+  <command name="startwizard" inline="true" wizardname="tasks/item&fragments;" objectnumber="new" origin="{$origin}">
+  </command>
 	<action type="create">
      <relation role="posrel" destinationtype="&fragments;" >
         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
