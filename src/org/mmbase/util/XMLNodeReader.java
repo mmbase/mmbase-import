@@ -19,7 +19,7 @@ import org.w3c.dom.*;
 
 /**
  * This class reads a node from an exported application
- * @version $Id: XMLNodeReader.java,v 1.25 2003-05-23 15:44:15 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.26 2004-01-08 23:49:58 michiel Exp $
  * @author ?
  * @author Michiel Meeuwissen
  */
@@ -134,9 +134,13 @@ public class XMLNodeReader extends XMLBasicReader {
                                     int type = bul.getDBType(key);
                                     if (type != -1) {
                                         if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
-                                            if (value == null)
-                                                value = "";
+                                            if (value == null) {
+                                                value = ""; 
+                                            }
                                             newnode.setValue(key, value);
+                                            if (log.isDebugEnabled()) {
+                                                log.debug("After value " + Casting.toString(newnode.getValue(key)));
+                                            }
                                         } else if (type == FieldDefs.TYPE_NODE) {                                            
                                             // do not really set it, because we need syncnodes later for this.
                                             newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
