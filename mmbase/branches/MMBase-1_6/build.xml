@@ -1465,7 +1465,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-mx150m" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
@@ -1528,7 +1528,7 @@ Build-compiler: ${build.compiler}
           fork="yes"
           failonerror="no"
           output="${mmdocs.dir}/templaters/builders/allbuilders-total.xml">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-mx100m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
@@ -1561,7 +1561,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-mx100m" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
@@ -1577,7 +1577,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-mx100m" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
