@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.41 2005-01-19 09:42:51 marcel Exp $
+ * @version $Id: servscan.java,v 1.42 2005-02-10 09:48:12 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -43,18 +43,20 @@ public class servscan extends JamesServlet {
     private static sessionsInterface sessions=null;
     private scanparser parser;
 
-    // Davzev added on 27-10-1999: Defining constants
     public static final String SHTML_CONTENTTYPE = "text/html";
-    public static final String DEFAULT_CHARSET = "iso-8859-1";
+    public static final String DEFAULT_CHARSET = "UTF-8"; // can be overriden by parameter 'encoding' (in web.xml)
+
+    protected String charSet = DEFAULT_CHARSET;    
 
     /**
      * Initialize this servlet
      */
     public void init() throws ServletException {
         super.init();
-
-        // log.debug("init is called");
-        // log = Logging.getLoggerInstance(servscan.class);
+        String encodingParameter = getInitParameter("encoding");
+        if (encodingParameter != null) {
+            charSet = encodingParameter;
+        }    
     }
     
 
@@ -84,13 +86,15 @@ public class servscan extends JamesServlet {
     }
 
     /**
-     * Adds DEFAULT_CHARSET to mimetype given by SHTML_CONTENTTYPE for handling
+     * Adds charSet to mimetype given by SHTML_CONTENTTYPE for handling
      * of the charset used by the database
      */
     private String addCharSet(String mimetype) {
-        if (mimetype.equals(SHTML_CONTENTTYPE))
-            return mimetype + "; charset=\"" + DEFAULT_CHARSET + "\"";
-        return mimetype;
+        if (mimetype.equals(SHTML_CONTENTTYPE)) {            
+            return mimetype + "; charset=\"" + charSet + "\"";
+        } else {            
+            return mimetype;
+        }        
     }
 
     /**
@@ -129,7 +133,7 @@ public class servscan extends JamesServlet {
             }
 
             // Generate page
-            PrintWriter out = res.getWriter();
+            PrintWriter out  = null;
 
             do {
                 sp.rstatus = 0;
@@ -161,12 +165,18 @@ public class servscan extends JamesServlet {
                     if (sp.body != null) {
                         if (sp.rstatus == 0) {
                             sp.mimetype = addCharSet(sp.mimetype);
-                            res.setContentType(sp.mimetype);
+                            res.setContentType(addCharSet(sp.mimetype));
+                            if (out == null) {
+                                out = res.getWriter();                            
+                            }                            
                             out.print(sp.body);
                             handleCacheSave(sp, res);
                         } else if (sp.rstatus == 1) {
                             res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType(addCharSet(sp.mimetype));
+                            if (out == null) {
+                                out = res.getWriter();
+                            }                            
                             res.setHeader("Location", sp.body);
                         } else if (sp.rstatus == 2) {
                             sp.req_line = sp.body;
@@ -178,9 +188,15 @@ public class servscan extends JamesServlet {
                             if (tmp != null && sp.processor != null) {
                                 res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
                                 res.setContentType(addCharSet(sp.mimetype));
+                                if (out == null) {
+                                    out = res.getWriter();
+                                }                                
                             } else {
                             	// last-modification date and expire will be set to default
                                 setHeaders(sp, res, sp.body.length(),0,0);
+                                if (out == null) {
+                                    out = res.getWriter();
+                                }                                
                                 out.print(sp.body);
                             }
                         }
@@ -188,12 +204,19 @@ public class servscan extends JamesServlet {
                         sp.body = "<TITLE>Servscan</TITLE>handle_line returned null<BR>";
                     	// last-modification date and expire will be set to default
                         setHeaders(sp, res, sp.body.length(),0,0);
+                        if (out == null) {
+                            out = res.getWriter();
+                        }                        
                         out.print(sp.body);
                     }
                 } else {
                     break;
                 }
 
+                if (out == null) {
+                    out = res.getWriter();
+                }
+                
                 if (stime != -1) {
                     stime = System.currentTimeMillis()-stime;
                     if (log.isDebugEnabled()) {
