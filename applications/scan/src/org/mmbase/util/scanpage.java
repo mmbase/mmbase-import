@@ -87,6 +87,10 @@ public class scanpage {
 	}
 
 	public Vector getParamsVector() {
+		if (params==null) params=buildparams();
+
+		if (params.size()==0) return(null);
+
 		return(params);
 	}
 
