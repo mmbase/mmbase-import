@@ -3,7 +3,7 @@
 <module maintainer="mmbase.org" version="0">
   <status>active</status>
 
-  <classfile>org.mmbase.applications.crontab.modules.JCrontabModule</classfile>
+  <classfile>org.mmbase.applications.crontab.modules.CrontabModule</classfile>
   <properties>  
     <!-- 
     Properties of cronjobs.
