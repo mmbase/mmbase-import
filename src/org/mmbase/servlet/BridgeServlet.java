@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.9 2003-03-04 15:32:14 nico Exp $
+ * @version $Id: BridgeServlet.java,v 1.10 2003-05-08 06:09:23 kees Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -65,7 +65,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             
             int plus = query.indexOf("+", 8);
             if (plus == -1) {
-                res.sendError(res.SC_NOT_FOUND, "Malformed URL");
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Malformed URL");
                 return null;
             }
             sessionName = query.toString().substring(8, plus);
@@ -130,13 +130,13 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 if (c.hasNode(qs)) {
                     node = c.getNode(qs);
                 } else {                    
-                    res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist" );
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node " + query + " does not exist" );
                 }
             }
         } catch (org.mmbase.security.SecurityException e) {
-            res.sendError(res.SC_FORBIDDEN, "Permission denied: " + e.toString());
+            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied: " + e.toString());
         } catch (Exception e) {
-            res.sendError(res.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
+            res.sendError(HttpServletResponse.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
         }
         return node;
     }

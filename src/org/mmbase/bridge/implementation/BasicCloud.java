@@ -26,7 +26,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.87 2003-05-02 21:11:03 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.88 2003-05-08 06:09:20 kees Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -114,7 +114,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     BasicCloud(String name, String application, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext=(BasicCloudContext)cloudContext;
-        MMBase mmb = this.cloudContext.mmb;
+        MMBase mmb = BasicCloudContext.mmb;
 
         // do authentication.....
         mmbaseCop = mmb.getMMBaseCop();
@@ -244,7 +244,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     public NodeManagerList getNodeManagers() {
         Vector nodeManagers = new Vector();
-        for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
+        for(Enumeration builders = BasicCloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
             if(!bul.isVirtual() && check(Operation.READ, bul.oType)) {
                 nodeManagers.add(bul.getTableName());
@@ -254,7 +254,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public NodeManager getNodeManager(String nodeManagerName) throws NotFoundException {
-        MMObjectBuilder bul = cloudContext.mmb.getMMObject(nodeManagerName);
+        MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
         // always look if builder exists, since otherwise
         if (bul == null) {
             throw new NotFoundException("Node manager with name " + nodeManagerName + " does not exist.");
@@ -275,7 +275,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public boolean hasNodeManager(String nodeManagerName) {
-        return cloudContext.mmb.getMMObject(nodeManagerName) != null;
+        return BasicCloudContext.mmb.getMMObject(nodeManagerName) != null;
     }
 
     /**
@@ -296,7 +296,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
-        Set set = cloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId);
+        Set set = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId);
         if (set.size() > 0) {
             return new BasicRelationManager((MMObjectNode) set.iterator().next(), this);
         } else {
@@ -306,7 +306,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public RelationManager getRelationManager(int number) throws NotFoundException {
-        MMObjectNode n = cloudContext.mmb.getTypeDef().getNode(number);
+        MMObjectNode n = BasicCloudContext.mmb.getTypeDef().getNode(number);
         if (n==null) {
             throw new NotFoundException("Relation manager with number "+number+" does not exist.");
         }
@@ -318,13 +318,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public RelationManagerList getRelationManagers() {
-        Vector v= cloudContext.mmb.getTypeRel().searchVector("");
+        Vector v= BasicCloudContext.mmb.getTypeRel().searchVector("");
         return new BasicRelationManagerList(v,this);
     }
 
     public RelationManager getRelationManager(String sourceManagerName,
         String destinationManagerName, String roleName) throws NotFoundException {
-        int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
+        int r=BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             throw new NotFoundException("Role '" + roleName + "' does not exist.");
         }
@@ -346,7 +346,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
-        int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
+        int r=BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1)  return false;
         int n1=typedef.getIntValue(sourceManagerName);
         if (n1==-1)  return false;
@@ -356,7 +356,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public RelationManager getRelationManager(String roleName) throws NotFoundException {
-        int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
+        int r=BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             throw new NotFoundException("Role '" + roleName + "' does not exist.");
         }
@@ -379,11 +379,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         } else if (destinationManager!=null) {
             return destinationManager.getAllowedRelations(sourceManager,roleName,null);
         } else if (roleName!=null) {
-            int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
+            int r=BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
             if (r==-1) {
                 throw new NotFoundException("Role '" + roleName + "' does not exist.");
             }
-            Vector v= cloudContext.mmb.getTypeRel().searchVector("rnumber=="+r);
+            Vector v= BasicCloudContext.mmb.getTypeRel().searchVector("rnumber=="+r);
             return new BasicRelationManagerList(v,this);
         } else {
             return getRelationManagers();
@@ -391,7 +391,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public boolean hasRelationManager(String roleName) {
-        return cloudContext.mmb.getRelDef().getNumberByName(roleName)!=-1;
+        return BasicCloudContext.mmb.getRelDef().getNumberByName(roleName)!=-1;
     }
 
     /**
@@ -554,7 +554,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     private String convertClausePartToDBS(String constraints) {
         // obtain dbs for fieldname checks
-        MMJdbc2NodeInterface dbs=cloudContext.mmb.getDatabase();
+        MMJdbc2NodeInterface dbs=BasicCloudContext.mmb.getDatabase();
         String result="";
         int posa=constraints.indexOf('[');
         while (posa>-1) {
@@ -612,7 +612,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         { // fill resultList with core objects
 
-            ClusterBuilder clusterBuilder = cloudContext.mmb.getClusterBuilder();
+            ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
             // check multilevel cache if needed
             resultList = (List) multilevelCache.get(query);
             
@@ -713,10 +713,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         // create query object
         SearchQuery query;
         {  
-            ClusterBuilder clusterBuilder = cloudContext.mmb.getClusterBuilder();
+            ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
             int search = -1;
             if (searchDir != null) {
-                search = clusterBuilder.getSearchDir(searchDir);
+                search = ClusterBuilder.getSearchDir(searchDir);
             }
 
             List snodes   = StringSplitter.split(startNodes);
@@ -758,7 +758,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     public void setLocale(Locale l) {
         if (l == null) {
-            locale = new Locale(cloudContext.mmb.getLanguage(), "");
+            locale = new Locale(BasicCloudContext.mmb.getLanguage(), "");
         } else {
             locale = l;
         }

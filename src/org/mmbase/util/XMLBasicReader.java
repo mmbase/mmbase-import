@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.34 2003-04-11 10:11:29 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.35 2003-05-08 06:09:29 kees Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -295,8 +295,8 @@ public class XMLBasicReader  {
             StringBuffer res = new StringBuffer();
             for (int i=0;i<nl.getLength();i++) {
                 Node n = nl.item(i);
-                if ((n.getNodeType() == n.TEXT_NODE) ||
-                    (n.getNodeType() == n.CDATA_SECTION_NODE)) {
+                if ((n.getNodeType() == Node.TEXT_NODE) ||
+                    (n.getNodeType() == Node.CDATA_SECTION_NODE)) {
                     res.append(n.getNodeValue().trim());
                 }
             }
@@ -371,7 +371,7 @@ public class XMLBasicReader  {
             NodeList nl = e.getChildNodes();
             for (int i=0;i<nl.getLength();i++) {
                 Node n = nl.item(i);
-                if (n.getNodeType() == n.ELEMENT_NODE &&
+                if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
                      ((Element)n).getTagName().equalsIgnoreCase(tag))) {
                     v.addElement(n);

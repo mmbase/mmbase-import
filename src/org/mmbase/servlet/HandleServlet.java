@@ -29,7 +29,7 @@ import java.util.*;
  * As AttachmentServlet, but the mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.6 2002-12-02 17:41:26 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.7 2003-05-08 06:09:24 kees Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -119,7 +119,7 @@ public class HandleServlet extends BridgeServlet {
             return;
         }
         if (! node.getNodeManager().hasField("handle")) {
-            res.sendError(res.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
+            res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
             return;
         }
         byte[] bytes = node.getByteValue("handle"); 

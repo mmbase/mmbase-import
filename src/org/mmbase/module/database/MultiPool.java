@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.database;
 
 import java.sql.*;
-import java.net.*;
-import java.io.*;
 import java.util.*;
 import org.mmbase.util.DijkstraSemaphore;
 
@@ -22,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.30 2003-05-02 07:30:14 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.31 2003-05-08 06:09:18 kees Exp $
  */
 public class MultiPool {
     

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.29 2003-04-08 14:35:42 pierre Exp $
+ * @version $Id: BasicRelation.java,v 1.30 2003-05-08 06:09:21 kees Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());

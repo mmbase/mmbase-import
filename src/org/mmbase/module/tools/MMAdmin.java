@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.68 2003-05-01 14:07:26 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.69 2003-05-08 06:09:18 kees Exp $
  */
 public class MMAdmin extends ProcessorModule {
     
@@ -1968,7 +1968,7 @@ public class MMAdmin extends ProcessorModule {
         
         boolean error(String message) {
             success=false;
-            adminModule.log.error(message);
+            log.error(message);
             if (!resultMessage.equals("")) resultMessage += "\n";
             resultMessage += message;
             return false;
@@ -1976,7 +1976,7 @@ public class MMAdmin extends ProcessorModule {
         
         boolean warn(String message) {
             success=false;
-            adminModule.log.warn(message);
+            log.warn(message);
             if (!resultMessage.equals("")) resultMessage += "\n";
             resultMessage += message;
             return false;

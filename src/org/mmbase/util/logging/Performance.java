@@ -92,7 +92,7 @@ public class Performance {
             log.info("warming up.");
             if(++j == burstLen) {
                 j = 0;                               
-                currentThread.sleep(delaytime);                
+                Thread.sleep(delaytime);                
             }
         }
         long before = System.currentTimeMillis();        
@@ -100,13 +100,13 @@ public class Performance {
             log.info("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");            
             if(++j == burstLen) {
                 j = 0;                               
-                currentThread.sleep(delaytime);                
+                Thread.sleep(delaytime);                
             }
         }
         long after = System.currentTimeMillis();
         j = 0;
         // sleep a little in between.
-        currentThread.sleep(3000);
+        Thread.sleep(3000);
 
         long before_ref = System.currentTimeMillis();
         // do the same but without logging (trace will not be logged, and we've seen that it's time is neglectable).
