@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  authorization, you have to extend this class.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.12 2002-06-10 12:41:54 eduard Exp $
+ * @version $Id: Authorization.java,v 1.13 2002-07-26 08:47:33 vpro Exp $
  */
 public abstract class Authorization {
     private static Logger log=Logging.getLoggerInstance(Authorization.class.getName());
@@ -123,7 +123,7 @@ public abstract class Authorization {
      *	@exception org.mmbase.SecurityException
      *	    If the assertion fails
      */
-    public void assert(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (!check(user, nodeid, operation)) {
             throw new org.mmbase.security.SecurityException("Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier());
         }
@@ -162,7 +162,7 @@ public abstract class Authorization {
      *                  are changed).
      * @exception org.mmbase.SecurityException  If the assertion fails
      */
-    public void assert(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (!check(user, nodeid, srcnodeid, dstnodeid, operation)) {
             throw new org.mmbase.security.SecurityException(
                 "Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier());

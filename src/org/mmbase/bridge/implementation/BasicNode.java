@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.65 2002-07-25 15:16:46 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.66 2002-07-26 08:47:33 vpro Exp $
  */
 public class BasicNode implements Node {
 
@@ -182,10 +182,10 @@ public class BasicNode implements Node {
         int realnumber=noderef.getNumber();
         if (realnumber!=-1) {
             if (action==ACTION_DELETE) {
-                cloud.assert(Operation.DELETE,realnumber);
+                cloud.verify(Operation.DELETE,realnumber);
             }
             if ((action==ACTION_EDIT) && (temporaryNodeId==-1)) {
-                cloud.assert(Operation.WRITE,realnumber);
+                cloud.verify(Operation.WRITE,realnumber);
             }
         }
 
@@ -359,7 +359,7 @@ public class BasicNode implements Node {
 
     public void commit() {
         if (isnew) {
-            cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
+            cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
@@ -482,7 +482,7 @@ public class BasicNode implements Node {
             // check first
             for (Iterator i = relations.iterator(); i.hasNext(); ) {
                 MMObjectNode node = (MMObjectNode)i.next();
-                cloud.assert(Operation.DELETE,node.getNumber());
+                cloud.verify(Operation.DELETE,node.getNumber());
             }
             // then delete
             for (Iterator i = relations.iterator(); i.hasNext(); ) {

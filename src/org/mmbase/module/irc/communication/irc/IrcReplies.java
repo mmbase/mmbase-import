@@ -31,7 +31,7 @@ public class IrcReplies
 {
     private static Logger log = Logging.getLoggerInstance(IrcReplies.class.getName());
 	private String 		classname 	= getClass().getName();
-	private boolean 	assert 		= true; 
+	private boolean 	verify 		= true; 
 	private Hashtable 	intReplies;
 	private Hashtable	stringReplies;
 	private int 		maxReplies;
@@ -346,7 +346,7 @@ public class IrcReplies
 	 */
 	public boolean checkReply( int number, String reply )
 	{
-		if (assert)
+		if (verify)
 		{
 			if (number < 0 )
 				log.debug( "checkReply("+number+"): Number is negative!"); 
@@ -394,7 +394,7 @@ public class IrcReplies
 
 	public String getStringReply( int number )
 	{
-		if (assert)
+		if (verify)
 		{
 			if (number < 0 )
 				log.debug( "getStringReply("+number+"): Number is negative!"); 
@@ -415,7 +415,7 @@ public class IrcReplies
 
 	private boolean hasMoreStringReplies( int number )
 	{
-		if (assert)
+		if (verify)
 		{
 			if (number < 0 )
 				log.debug( "hasMoreStringReplies("+number+"): Number is negative!"); 
@@ -452,7 +452,7 @@ public class IrcReplies
 	{
 		String[] result = new String[2];
 
-		if (assert)
+		if (verify)
 		{
 			if (number < 0 )
 				log.debug( "getMoreStringReplies("+number+"): Number is negative!"); 
@@ -582,7 +582,7 @@ public class IrcReplies
 	{
 		reply = reply.trim();
 
-		if (assert)
+		if (verify)
 		{
 			if (reply == null)
 				log.debug( "getIntReply("+reply+"): Parameter reply is null!" );
