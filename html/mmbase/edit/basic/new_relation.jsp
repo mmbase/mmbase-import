@@ -122,9 +122,7 @@
     <h1>Redirecting</h1>
     <a href="<mm:url page="$redirectTo" />"><%=m.getString("new_relation.redirect")%></a>
     <%-- never mind .. --%>
-    <mm:write referid="redirectTo" jspvar="redirect" vartype="string">
-      <% response.sendRedirect(redirect); %>
-    </mm:write>
+    <mm:redirect referid="redirectTo" />
 
   </mm:present>
 

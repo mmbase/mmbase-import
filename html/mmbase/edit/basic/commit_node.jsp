@@ -94,9 +94,8 @@
 <a href="<mm:url page="$redirectTo" />">
 <%= m.getString("commit_node.redirect")%></a>
 
-<mm:write referid="redirectTo" jspvar="redirect" vartype="string">
-<% response.sendRedirect(redirect); %>
-</mm:write>
+
+<mm:redirect referid="redirectTo" />
 
 </mm:context>
 <%@ include file="foot.jsp"  %>
