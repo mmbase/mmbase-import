@@ -191,8 +191,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * the name attribute of form elements.
      * 
      */
-    private String prefix(String s) {
-        String id = getId();
+    private String prefix(String s) throws JspTagException {
+        String id = findFieldProvider().getId();
         if (id == null) id = "";
         if (id.equals("") ) {
             return s;
@@ -227,10 +227,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
         case Field.TYPE_XML:
-            if(search) {
-                show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"\" />";
-                break;
-            }
+            if(! search) {
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
             if (node != null) {
@@ -266,6 +263,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }                    
             show += "</textarea>";     
             break;
+            }
         case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
@@ -422,10 +420,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG:
+
             show =  "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" " + 
                 "value=\"";
             if (node != null) {
                 show +=  node.getStringValue(field.getName());
+            } else if (search) {
+                String searchParam = getContextTag().findAndRegisterString(prefix(field.getName()));
+                show += (searchParam == null ? "" : searchParam);
             }
             show += "\" />";
             break;
