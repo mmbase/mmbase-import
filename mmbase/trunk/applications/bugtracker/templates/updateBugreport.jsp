@@ -14,8 +14,8 @@
 <mm:node number="$bugreport">
 <tr>
   <th>Type</th>
-	<th>Priority</th>
-	<th>Status</th>
+  <th>Priority</th>
+  <th>Status</th>
 </tr>
 <tr>
   <td>
@@ -23,63 +23,63 @@
       <select name="newbtype">
         <!-- sigh, we need a field-type here -->
         <option value="1" <mm:compare value="1">selected="selected"</mm:compare>>bug</option>
-				<option VALUE="2" <mm:compare value="2">selected="selected"</mm:compare>>wish</option>
-				<option VALUE="3" <mm:compare value="3">selected="selected"</mm:compare>>docbug</option>
-				<option VALUE="4" <mm:compare value="4">selected="selected"</mm:compare>>docwish</option>
-			</select>
-	   </mm:field>
-	</td>
+        <option VALUE="2" <mm:compare value="2">selected="selected"</mm:compare>>wish</option>
+        <option VALUE="3" <mm:compare value="3">selected="selected"</mm:compare>>docbug</option>
+        <option VALUE="4" <mm:compare value="4">selected="selected"</mm:compare>>docwish</option>
+      </select>
+     </mm:field>
+  </td>
   <td>
     <mm:field name="bpriority">
       <select name="newbpriority">
-				<option value="1" <mm:compare value="1">selected="selected"</mm:compare>>high</option>
-				<option value="2" <mm:compare value="2">selected="selected"</mm:compare>>medium</option>
-				<option value="3" <mm:compare value="3">selected="selected"</mm:compare>>low</option>
-			</select>
-		 </mm:field>
-	</td>
+        <option value="1" <mm:compare value="1">selected="selected"</mm:compare>>high</option>
+        <option value="2" <mm:compare value="2">selected="selected"</mm:compare>>medium</option>
+        <option value="3" <mm:compare value="3">selected="selected"</mm:compare>>low</option>
+      </select>
+     </mm:field>
+  </td>
   <td>
     <mm:field name="bstatus">
-			<select name="newbstatus">
-				<option value="1" <mm:compare value="1">selected="selected"</mm:compare>>open</option>
-				<option value="2" <mm:compare value="2">selected="selected"</mm:compare>>accepted</option>
-				<option value="3" <mm:compare value="3">selected="selected"</mm:compare>>rejected</option>
-				<option value="4" <mm:compare value="4">selected="selected"</mm:compare>>pending</option>
-				<option value="5" <mm:compare value="5">selected="selected"</mm:compare>>integrated</option>
-				<option VALUE="6" <mm:compare value="6">selected="selected"</mm:compare>>closed</option>
-			</select>
-		 </mm:field>
-	</td>
+      <select name="newbstatus">
+        <option value="1" <mm:compare value="1">selected="selected"</mm:compare>>open</option>
+        <option value="2" <mm:compare value="2">selected="selected"</mm:compare>>accepted</option>
+        <option value="3" <mm:compare value="3">selected="selected"</mm:compare>>rejected</option>
+        <option value="4" <mm:compare value="4">selected="selected"</mm:compare>>pending</option>
+        <option value="5" <mm:compare value="5">selected="selected"</mm:compare>>integrated</option>
+        <option VALUE="6" <mm:compare value="6">selected="selected"</mm:compare>>closed</option>
+      </select>
+     </mm:field>
+  </td>
 </tr>
 </table>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
 <tr>
-	<th>Version</th>
-	<th>Area</th>
-	<th>Expected fixed in</th>
-	<th>Fixed in</th>
+  <th>Version</th>
+  <th>Area</th>
+  <th>Expected fixed in</th>
+  <th>Fixed in</th>
 </tr>
 <tr>
   <td>
     <input name="newversion" value="<mm:field name="version" />" SIZE="10" />
-	</td>
+  </td>
   <td>
   <select name="newarea">
     <mm:relatednodes type="areas" max="1">
       <option value="<mm:field name="number" />"><mm:field name="substring(name,15,.)" /></option>
-		</mm:relatednodes>
+    </mm:relatednodes>
     <mm:listnodes type="areas" orderby="name" >
       <option value="<mm:field name="number" />"><mm:field name="substring(name,15,.)" /></option>
-		</mm:listnodes>
-	</select>
-	</td>
+    </mm:listnodes>
+  </select>
+  </td>
   <td>
     <input name="newefixedin" value="<mm:field name="efixedin" />" size="10" />
-	</td>
+  </td>
   <td>
     <input name="newfixedin" value="<mm:field name="fixedin" />" size="10" />
-	</td>
+  </td>
 </tr>
 </table>
 
@@ -88,7 +88,7 @@
 <tr>
   <td colspan="5">
     &nbsp;&nbsp;<input size="70" name="newissue" value="<mm:field name="issue" escape="text/html/attribute"/>"  />
-	</td>
+  </td>
 </tr>
 </table>
 
@@ -111,15 +111,15 @@
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
 <tr>
-	<th colspan="2">Submitter</th>
-	<th colspan="2">&nbsp;</th>
+  <th colspan="2">Submitter</th>
+  <th colspan="2">&nbsp;</th>
 </tr>
 <tr>
   <td colspan="2">
     <mm:related path="insrel,areas" max="1">
       <input name="oldarea" type="hidden" value="<mm:field name="number.areas" />" />
       <input name="oldarearel" type="hidden" VALUE="<mm:field name="insrel.number" />" />
-		</mm:related>
+    </mm:related>
 </mm:node>
 
 <mm:node referid="user">
@@ -131,11 +131,11 @@
   <mm:field name="lastname" />
   ( <mm:field name="email" /> )
 </mm:node>
-		</td>
-		<td colspan="2">
+    </td>
+    <td colspan="2">
       <input type="hidden" name="action" value="updatebug" />
-			<input type="submit" value="submit update" />
-		</td>
+      <input type="submit" value="submit update" />
+    </td>
 </tr>
 </table>
 
