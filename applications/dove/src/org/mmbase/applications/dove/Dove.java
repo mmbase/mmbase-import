@@ -12,10 +12,9 @@ package org.mmbase.applications.dove;
 
 import java.util.*;
 import org.w3c.dom.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.ClusterBuilder;
-
+import org.mmbase.util.logging.*;
 
 /**
  * This class handles Remote Procedure Calls described using a DOM model.
@@ -48,7 +47,7 @@ import org.mmbase.module.core.ClusterBuilder;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.35 2003-04-24 09:08:44 pierre Exp $
+ * @version $Id: Dove.java,v 1.36 2003-06-02 12:21:59 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -126,6 +125,8 @@ public class Dove extends AbstractDove {
     public void getDataNode(Element in, Element out, org.mmbase.bridge.Node nd) {
         NodeManager nm=nd.getNodeManager();
         out.setAttribute(ELM_TYPE,nm.getName());
+        out.setAttribute(ELM_MAYWRITE,""+nd.mayWrite());
+        out.setAttribute(ELM_MAYDELETE,""+nd.mayDelete());
         // load fields
         Element field=getFirstElement(in,FIELD);
         if (field==null) {
@@ -441,11 +442,11 @@ public class Dove extends AbstractDove {
                     int number=java.lang.Math.abs(n.getNumber());
                     data.setAttribute(ELM_NUMBER, "n"+number);
                     if (createDir == ClusterBuilder.SEARCH_SOURCE) {
-                        log.info("Creating relatin in the INVERSE direction");
+                        log.info("Creating relation in the INVERSE direction");
                         data.setAttribute(ELM_DESTINATION, source);
                         data.setAttribute(ELM_SOURCE, destination);
                     } else {
-                        log.info("Creating relatin in the NORMAL direction");
+                        log.info("Creating relation in the NORMAL direction");
                         data.setAttribute(ELM_DESTINATION, destination);
                         data.setAttribute(ELM_SOURCE, source);
                     }
