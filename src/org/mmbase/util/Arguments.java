@@ -33,7 +33,8 @@ public class Arguments extends AbstractList implements List  {
     private Map backing = new HashMap();
 
     /**
-     * This array maps integers to map keys, making it possible to implement List.
+     * This array maps integers (position in array) to map keys, making it possible to implement
+     * List.
      */
     private   Argument[] definition;
 
@@ -58,7 +59,7 @@ public class Arguments extends AbstractList implements List  {
      */
     public Arguments(Argument [] def, List values) {
         this(def);
-        if (values.size() > def.length) throw new IllegalArgumentException("Given too many values");
+        if (values.size() > definition.length) throw new IllegalArgumentException("Given too many values. " + values + " does not match " + Arrays.asList(definition).toString());
         for (int i = 0; i < values.size(); i++) {
             set(i, values.get(i));
         }
