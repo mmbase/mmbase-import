@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.12 2000-06-26 14:12:36 wwwtech Exp $
+ $Id: sessions.java,v 1.13 2000-10-09 12:12:46 vpro Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.12  2000/06/26 14:12:36  wwwtech
+ Daniel.. fixed direct queries for properties
+
  Revision 1.11  2000/06/21 14:28:19  wwwtech
  rob
 
@@ -54,10 +57,18 @@ import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
 /**
+ * CLEARSET-NAME : This command clears the session variable called NAME
+ * ADDSET-NAME-VALUE : This command adds VALUE to the SESSION variable set called NAME, no duplicates are allowed
+ * PUTSET-NAME-VALUE : This command adds VALUE to the SESSION variable set called NAME, duplicates are allowed
+ * DELSET-NAME-VALUE : This command deletes VALUE form the SESSION variable set called NAME.
+ * CONTAINSSET-NAME-VALUE : returns "YES" if the session variable NAME contains the VALUE, otherwise returns "NO"
+ * SETSTRING-NAME : This command gives all values of the session variable NAME, comma separated.
+ * SETCOUNT-NAME : This command gives the number of values contained by the session variable NAME.
+ * AVGSET-NAME : This command returns the average of a set numbers.
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.12 2000-06-26 14:12:36 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.13 2000-10-09 12:12:46 vpro Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -404,6 +415,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		return( classname +"replace(): ERROR: No command defined");
 	}
 
+
+	/**
+	 * Adds a sessionvariable with specified value
+	 */
 	public String doAddSet(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
 		if (session!=null) {
@@ -433,6 +448,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		return("");
 	} 
 
+	/**
+	 * This methode clears a SESSION variable
+	 */
 	public String doClearSet(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
 		if (session!=null) {
@@ -471,6 +489,12 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	} 
 
 
+	/**
+	 * Checks if a Session variable contains a certain value.
+	 * 
+	 * @returns "YES" if the session variable contains the specified value
+	 * @returns "NO" if the session variable doesn't contains the specified value
+	 */
 	public String getContainsSet(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
 		if (session!=null) {
@@ -499,6 +523,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 
 
+	/**
+	 * returns the values of a session variable comma separated
+	 */
 	public String getSetString(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
 		if (session!=null) {
@@ -512,6 +539,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		return("");
 	} 
 
+	/**
+	 * gives the number of values contained by a certain session variable
+	 * @returns the number of values contained by the session variable
+	 */
 	public String getSetCount(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
 		if (session!=null) {
