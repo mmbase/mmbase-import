@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.57 2002-07-19 18:52:37 michiel Exp $
+  @version $Id: wizard.xsl,v 1.58 2002-07-23 14:50:05 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -443,12 +443,12 @@
         <xsl:when test="@ftype='startwizard'">
           <nobr>
            <xsl:if test="@inline='true'">
-                <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
+                <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
                 <xsl:call-template name="prompt_edit_wizard" />
                 </a>
            </xsl:if>
            <xsl:if test="not(@inline='true')">
-                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={$objectnumber}"
+                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
                    target="_blank">
                 <xsl:call-template name="prompt_edit_wizard" />
                 </a>
@@ -744,12 +744,12 @@
             <td>
               <nobr>
                 <xsl:if test="@inline='true'">
-                  <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
+                  <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
                     <xsl:call-template name="prompt_add_wizard" />
                   </a>
                 </xsl:if>
                 <xsl:if test="not(@inline='true')">
-                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={$objectnumber}"
+                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
                     target="_blank">
                     <xsl:call-template name="prompt_add_wizard" />
                   </a>
