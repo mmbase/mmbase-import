@@ -31,10 +31,10 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.80 $ $Date: 2002-08-21 18:26:33 $
+ * @version $Revision: 1.81 $ $Date: 2002-08-21 18:52:28 $
  */
 
-public class MMObjectNode implements org.mmbase.util.SizeMeasureable {
+public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Logger routine
      */
