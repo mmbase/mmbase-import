@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.6 2000-03-31 16:15:37 wwwtech Exp $
+$Id: FieldDefs.java,v 1.7 2000-05-07 20:20:07 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/31 16:15:37  wwwtech
+davzev: Added DBSTATE_UNKNOWN=-1 constant.
+
 Revision 1.5  2000/03/30 13:11:41  wwwtech
 Rico: added license
 
@@ -35,7 +38,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.6 $ $Date: 2000-03-31 16:15:37 $
+ * @$Revision: 1.7 $ $Date: 2000-05-07 20:20:07 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -50,8 +53,13 @@ public class FieldDefs  {
 	public String DBName;
 	public String DBType;
 	public int	  GUIPos;
-	public int	  DBState;
+	public int	  DBState=-1;
+	public boolean	  DBNotNull=false;
 	public int    DBPos;
+	public int    DBSize=-1;
+
+	public FieldDefs() {
+	}
 
 	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, String DBType) {
 		this.GUIName=GUIName;
@@ -104,5 +112,9 @@ public class FieldDefs  {
 
 	public int getGUIList() {
 		return (GUIList);
+	}
+
+	public String toString() {
+		return("DEF Name="+GUIName+" Type="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize);
 	}
 }
