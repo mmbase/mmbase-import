@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.23 2002-03-22 14:06:01 daniel Exp $
+ * @version $Id: FieldDefs.java,v 1.24 2002-03-22 14:12:42 daniel Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -178,9 +178,7 @@ public class FieldDefs implements Comparable {
      */
     public static int getDBStateId(String state) {
         if (state == null) return DBSTATE_UNKNOWN;
-        if (state.equals("persistent"))  return DBSTATE_PERSISTENT;
-        if (state.equals("virtual")) return DBSTATE_VIRTUAL;
-        if (state.equals("system")) return DBSTATE_SYSTEM;
+	state=state.toUpperCase();
         if (state.equals("PERSISTENT"))  return DBSTATE_PERSISTENT;
         if (state.equals("VIRTUAL")) return DBSTATE_VIRTUAL;
         if (state.equals("SYSTEM")) return DBSTATE_SYSTEM;
