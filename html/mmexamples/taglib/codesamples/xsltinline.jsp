@@ -1,7 +1,7 @@
 <mm:formatter>
   <mm:node />
   <mm:xslt>
-    <xsl:import href="xslt/2xhtml.xslt" />
+    <xsl:import href="file:xslt/2xhtml.xslt" />
     <xsl:template match="field[@name='title']" >
       <h1><font color="blue">
         <xsl:value-of select="." />
