@@ -117,6 +117,7 @@
 </mm:nodelistfunction>
 	</select></td>
 <td><input type="submit" value="add"></td><td></td>
+</form>
 </table>
 </mm:compare>
 
@@ -175,6 +176,23 @@
 	<td align="middle" height="35"><input type="hidden" name="action" value="deleteneededbuilder" /><input type="submit" value="Yes, Delete" /></td>
    </form></td>
    <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+    </form>
+</table>
+</mm:compare>
+
+<mm:compare referid="editor" value="confirmdeleteneededbuilderfield">
+<mm:import externid="builder" />
+<mm:import externid="oldfield" />
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 130px;" width="35%">
+<tr><th colspan="2">Delete NeededBuilder Field : <mm:write referid="oldfield" /></ht></tr>
+<tr>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,builder,oldfield" />" method="post">
+	<input type="hidden" name="editor" value="builderedit" />
+	<td align="middle" height="35"><input type="hidden" name="action" value="deleteneededbuilderfield" /><input type="submit" value="Yes, Delete" /></td>
+   </form></td>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,builder,prefix@modelfilename" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+	<input type="hidden" name="editor" value="builderedit" />
+    </form>
 </table>
 </mm:compare>
 
@@ -194,6 +212,7 @@
 	<td align="middle" height="35"><input type="hidden" name="action" value="deleteneededreldef" /><input type="submit" value="Yes, Delete" /></td>
    </form></td>
    <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+    </form>
 </table>
 </mm:compare>
 
@@ -211,6 +230,7 @@
 	<td align="middle" height="35"><input type="hidden" name="action" value="deleteallowedrelation" /><input type="submit" value="Yes, Delete" /></td>
    </form></td>
    <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+   </form>
 </table>
 </mm:compare>
 
@@ -218,13 +238,14 @@
 <mm:compare referid="editor" value="builderedit">
 <mm:import externid="builder" />
 <mm:import externid="language">en</mm:import>
-<form action="" method="post">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder" />" method="post">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="70%">
+<input type="hidden" name="action" value="setbuildernmve" />
 <tr><th colspan="4">Builder edit</ht></tr>
 <mm:nodefunction set="mmpb" name="getNeededBuilderInfo" referids="modelfilename,builder,language">
 <tr><th>name</th><th>maintainer</th><th>version</th><th>extends</th></tr>
 <tr>
-	<td><input name="newbuilder" value="<mm:field name="name" />" size="20"></td>
+	<td><input name="newname" value="<mm:field name="name" />" size="20"></td>
 	<td><input name="newmaintainer" value="<mm:field name="maintainer" />" size="20"></td>
 	<td><input name="newversion" value="<mm:field name="version" />" size="3"></td>
 	<td><input name="newextends" value="<mm:field name="extends" />" size="20"></td>
@@ -236,11 +257,17 @@
 </form>
 
 
-<form action="" method="post">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,language" />" method="post">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 15px;" width="70%">
 <tr><th>status</th><th>searchage</th><th>classname</th></tr>
+	<input type="hidden" name="action" value="setbuilderssc" />
 <tr>
-	<td><input name="newstatus" value="<mm:field name="status" />" size="10"></td>
+	<td><select name="newstatus">
+	  <mm:field name="status">
+	  <option <mm:compare value="active">selected</mm:compare>>active
+	  <option <mm:compare value="inactive">selected</mm:compare>>inactive
+	  </mm:field>
+	</td>
 	<td><input name="newsearchage" value="<mm:field name="searchage" />" size="4"></td>
 	<td><input name="newclassname" value="<mm:field name="classname" />" size="45"></td>
 </tr>
@@ -262,7 +289,8 @@
 		<option>eo
 	</select></td>
 </form>
-<form action="" method="post">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,language" />" method="post">
+	<input type="hidden" name="action" value="setbuildernames" />
 	<td><input name="newsingularname" value="<mm:field name="singularname" />" size="30"></td>
 	<td><input name="newpluralname" value="<mm:field name="pluralname" />" size="30"></td>
 </tr>
@@ -284,7 +312,8 @@
 		<option>eo
 	</select></td>
 </form>
-<form action="" method="post">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,language" />" method="post">
+<input type="hidden" name="action" value="setbuilderdescription" />
 <td><textarea name="newdescription" rows="5" cols="60"><mm:field name="description" /></textarea></td>
 </tr>
 <tr>
@@ -292,41 +321,168 @@
 </tr>
 </table>
 </form>
-
-<form action="" method="post">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 15px;" width="70%">
 <tr><th>pos</th><th>field</th><th>type</th><th>status</th><th>size</th><th></th><th></th></tr>
 <mm:nodelistfunction set="mmpb" name="getNeededBuilderFields" referids="modelfilename,builder,language">
 <mm:context>
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,builder,mode" />" method="post">
+<input type="hidden" name="editor" value="builderfieldedit" />
 <tr>
+	<input type="hidden" name="field" value="<mm:field name="dbname" />" />
 	<td><mm:field name="dbpos" /></td>
-	<td><mm:field name="dbname" /></td>
+	<td><mm:field name="dbname" id="oldfield" /></td>
 	<td><mm:field name="dbtype" id="dbtype"/></td>
 	<td><mm:field name="dbstate" /></td>
 	<td><mm:field name="dbsize"><mm:compare value="-1" inverse="true"><mm:field name="dbsize" /></mm:compare></mm:field></td>
 	<td><input type="submit" value="edit" /></td>
+</form>
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,builder,language,oldfield" />" method="post">
+	<input type="hidden" name="editor" value="confirmdeleteneededbuilderfield" />
 	<td><input type="submit" value="delete" /></td>
 </tr>
+</form>
 </mm:context>
 </mm:nodelistfunction>
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder" />" method="post">
 <tr>
+<input type="hidden" name="action" value="addbuilderfield" />
 	<td></td>
-	<td><input name="newbuilder" size="20" /></td>
-	<td><select name="newtype">
-		<option>STRING
-		<option>INTEGER
-		<option>LONG
-		<option>BYTES
+	<td><input name="newdbname" size="20" /></td>
+	<td><select name="newdbtype">
+  		<mm:field name="newdbtype">
+  		<option <mm:compare value="STRING">selected</mm:compare>>STRING
+  		<option <mm:compare value="INTEGER">selected</mm:compare>>INTEGER
+  		<option <mm:compare value="LONG">selected</mm:compare>>LONG
+  		<option <mm:compare value="BYTES">selected</mm:compare>>BYTES
+		</mm:field>
 	<select>
 	</td>
-	<td><input name="newsize" size="7" /></td>
+	<td><select name="newdbstate">
+		<option>persistent
+		<option>virtual
+	<select>
+	</td>
+	<td><input name="newdbsize" size="7" /></td>
 	<td><input type="submit" value="add" /></td>
 	<td></td>
 </tr>
 </mm:nodefunction>
 </table>
 </form>
+</mm:compare>
 
+<mm:compare referid="editor" value="builderfieldedit">
+<mm:import externid="builder" />
+<mm:import externid="language">en</mm:import>
+<mm:import externid="field" />
+<mm:nodefunction set="mmpb" name="getNeededBuilderFieldInfo" referids="modelfilename,builder,language,field">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,field" />" method="post">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="70%">
+<tr><th colspan="4">Builder Field <mm:field name="dbname" /></ht></tr>
+<tr><th>Description</th><th>language</th></tr>
+<tr>
+	<td><select name="language" onchange="submit()">
+		<option><mm:write referid="language" />
+		<option>en
+		<option>nl
+		<option>fr
+		<option>eo
+	</select></td>
+</form>
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,language,field" />" method="post">
+<input type="hidden" name="action" value="setbuilderfielddescription" />
+<td><textarea name="newdescription" rows="5" cols="60"><mm:field name="description" /></textarea></td>
+</tr>
+<tr>
+	<td colspan="2" align="middle" ><input type="submit" value="save" /></td>
+</tr>
+</form>
+</table>
+
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="50%">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,field" />" method="post">
+<tr><th>Gui Name</th><th>language</th></tr>
+<tr>
+	<td><select name="language" onchange="submit()">
+		<option><mm:write referid="language" />
+		<option>en
+		<option>nl
+		<option>fr
+		<option>eo
+	</select></td>
+</form>
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,language,field" />" method="post">
+<input type="hidden" name="action" value="setbuilderfieldguiname" />
+<td><input name="newguiname" size="25" value="<mm:field name="guiname" />" /></td>
+</tr>
+<tr>
+	<td colspan="2" align="middle" ><input type="submit" value="save" /></td>
+</tr>
+</table>
+
+
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="50%">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,field" />" method="post">
+<tr><th colspan="6">Editor positions</th></tr>
+<tr>
+<input type="hidden" name="action" value="setbuilderfieldpositions" />
+<th>input</th><td><input name="newinputpos" size="3" value="<mm:field name="dbinputpos" />" /></td>
+<th>search</th><td><input name="newsearchpos" size="3" value="<mm:field name="dbsearchpos" />" /></td>
+<th>list</th><td><input name="newlistpos" size="3" value="<mm:field name="dblistpos" />" /></td>
+</tr>
+<tr>
+	<td colspan="6" align="middle" ><input type="submit" value="save" /></td>
+</tr>
+</table>
+
+
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="60%">
+<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,builder,field" />" method="post">
+<tr><th>DBName</th><th>DBType</th><th>DBStatus</th><th>DBSize</th><th>DBKey</th><th>DBNotNull</th></tr>
+<input type="hidden" name="action" value="setbuilderfielddbvalues" />
+<tr>
+<td><input name="newdbname" size="20" value="<mm:field name="dbname" />" /></td>
+<td><select name="newdbtype">
+ 	<mm:field name="dbtype">
+  	<option <mm:compare value="STRING">selected</mm:compare>>STRING
+  	<option <mm:compare value="INTEGER">selected</mm:compare>>INTEGER
+  	<option <mm:compare value="LONG">selected</mm:compare>>LONG
+  	<option <mm:compare value="BYTES">selected</mm:compare>>BYTES
+	</mm:field>
+</td>
+<td><select name="newdbstatus">
+  <mm:field name="dbstate">
+  <option <mm:compare value="persistent">selected</mm:compare>>persistent
+  <option <mm:compare value="virtual">selected</mm:compare>>virtual
+   </select>
+  </mm:field>
+</td>
+<td><input name="newdbsize" size="8" value="<mm:field name="dbsize" />" /></td>
+<td><select name="newdbkey">
+  <mm:field name="dbkey">
+  <option <mm:compare value="true">selected</mm:compare>>true
+  <option <mm:compare value="false">selected</mm:compare>>false
+   </select>
+  </mm:field>
+</td>
+<td><select name="newdbnotnull">
+  <mm:field name="dbnotnull">
+  <option <mm:compare value="true">selected</mm:compare>>true
+  <option <mm:compare value="false">selected</mm:compare>>false
+   </select>
+  </mm:field>
+</td>
+
+</tr>
+<tr>
+	<td colspan="6" align="middle" ><input type="submit" value="save" /></td>
+</tr>
+</form>
+</table>
+
+
+
+</mm:nodefunction>
 </mm:compare>
 
 </mm:cloud>
