@@ -214,6 +214,38 @@ public class MultiLanguageGui {
     }
 
 
+    public List getKeywordPerLanguage(String setname,String language) {
+       if (languageguisets == null) readSets();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        // create a result list
+        List list = new ArrayList();
+
+
+	Hashtable set=(Hashtable)languageguisets.get(setname);
+	if (set!=null) { 
+		Enumeration e=set.keys();
+		while (e.hasMoreElements()) {
+			String keyword=(String)e.nextElement();
+         		MMObjectNode virtual = builder.getNewNode("admin");
+                	virtual.setValue("keyword",keyword);
+			Hashtable keywordset=(Hashtable)set.get(keyword);
+			if (keywordset != null) {
+				String value = (String)keywordset.get(language);
+				if (value == null) {
+					value = (String)keywordset.get("df");
+				}
+                		virtual.setValue("translation",value);
+			} else {
+                		virtual.setValue("translation","*missing mlg keyword ("+setname+"/"+keyword+"/"+language+")*");
+			}
+			list.add(virtual);
+		}
+	}
+	return list;
+    }
+
+
     public String getTranslation(String setname,String keyword,String language) {
        if (languageguisets == null) readSets();
 	Hashtable set=(Hashtable)languageguisets.get(setname);
@@ -226,7 +258,7 @@ public class MultiLanguageGui {
 			}
 			return value;
 		} else {
-			return "*missing mlg keyword*";
+			return "*missing mlg keyword ("+setname+"/"+keyword+"/"+language+")*";
 		}
 	} else {
 		return "*missing mlg set*";
