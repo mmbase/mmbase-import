@@ -19,10 +19,10 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.3 2002-02-11 08:12:51 pierre Exp $
+ * @version $Id: JumpersFilter.java,v 1.4 2004-01-08 11:59:17 keesj Exp $
  */
 public class JumpersFilter implements Filter {
-    private static Logger log;
+    private static Logger log = Logging.getLoggerInstance(JumpersFilter.class);
     private static MMBase mmb;
     private static Jumpers bul;
     private static String name;
@@ -48,20 +48,17 @@ public class JumpersFilter implements Filter {
     /**
      * @javadoc
      */
-    public void init(javax.servlet.FilterConfig filterConfig)
-            throws ServletException {
+    public void init(javax.servlet.FilterConfig filterConfig) throws ServletException {
         name = filterConfig.getFilterName();
         MMBaseContext.init(filterConfig.getServletContext());
         MMBaseContext.initHtmlRoot();
-        // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(JumpersFilter.class.getName());
-        log.info("Init of " + name + ".");
-        mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
+        mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT", true);
         if (mmb == null) {
             String message = "Could not start MMBase.";
             log.error(message);
             throw new ServletException(message);
         }
+
         bul = (Jumpers)mmb.getMMObject("jumpers");
         if (bul == null) {
             String message = "Could not find jumpers builder.";
@@ -74,18 +71,32 @@ public class JumpersFilter implements Filter {
     /**
      * @javadoc
      */
-    public void doFilter(ServletRequest servletRequest,
-            ServletResponse servletResponse, FilterChain filterChain)
-            throws java.io.IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest)servletRequest;
         HttpServletResponse res = (HttpServletResponse)servletResponse;
-        String key = req.getRequestURI().substring(1);
+        /**
+         * getContextPath()
+         * Returns the portion of the request URI that indicates the context of the request.
+         *  The context path always comes first in a request URI. 
+         * The path starts with a "/" character but does not end with a "/" character. 
+         * For servlets in the default (root) context, this method returns "". The container does not decode this string.
+         * 
+         * (+1 is to remove the /)
+         */
+        String key = req.getRequestURI().substring(req.getContextPath().length() + 1);
         if (key.indexOf('.') == -1 && !key.endsWith("/")) {
             String url = bul.getJump(key);
             if (url != null) {
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                res.setContentType("text/html");
-                res.setHeader("Location",url);
+                /*
+                 * Sends a temporary redirect response to the client using the specified redirect location URL. 
+                 * This method can accept relative URLs; the servlet container must convert the relative URL 
+                 * to an absolute URL before sending the response to the client. If the location is relative without a leading '/' the 
+                 * container interprets it as relative to the current request URI. If the location is relative with a leading '/' the container
+                 *  interprets it as relative to the servlet container root. 
+                 * If the response has already been committed, this method throws an IllegalStateException.
+                 *  After using this method, the response should be considered to be committed and should not be written to.
+                 */
+                res.sendRedirect(url);
                 return;
             }
         }
@@ -100,5 +111,3 @@ public class JumpersFilter implements Filter {
     }
 
 }
-
-
