@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.50 2002-10-29 15:29:01 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.51 2002-10-31 10:22:24 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -98,7 +98,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 	    TypeDef typedef = (TypeDef) noderef.getBuilder();
             builder = typedef.getBuilder(noderef);
 	    if(builder == null) {
-		String msg = "could not find nodenmanager for node #" + noderef.getNumber() + "("+noderef.getStringValue("gui()")+")";
+		String msg = "could not find nodemanager for node #" + noderef.getNumber() + "("+noderef.getStringValue("gui()")+")";
 		log.error(msg);
 		throw new BridgeException(msg);
 	    }
