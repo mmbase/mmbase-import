@@ -167,7 +167,7 @@ one or more examplevalue tags is you want to give some example values.
     <name>clusternodeprovider</name>
     <extends>nodeprovider</extends>
     <info>
-      A node provider makes an MMBase Cluster Node available to its
+      A clusternode provider makes an MMBase Cluster Node available to its
       body. A cluster nodes is in fact a combination of nodes. You can
       get a real node with a sub node tag with the 'element'
       attribute.
@@ -184,7 +184,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	If the tag is living in more than one fieldprovider, and you you don't need the direct parent.
+	If the tag is living in more than one fieldprovider, and you don't need the direct parent.
       </info>
     </attribute>
   </taginterface>
