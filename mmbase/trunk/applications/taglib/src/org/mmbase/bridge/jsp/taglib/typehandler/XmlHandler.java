@@ -29,7 +29,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.5 2004-01-05 17:35:03 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.6 2004-01-05 17:46:42 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -75,7 +75,7 @@ public class XmlHandler extends StringHandler {
                         Xml x = new Xml();
                         x.configure(Xml.ESCAPE);
                         ct.add(x);
-                        Writer w = new TransformingWriter(str, new TabToSpacesTransformer(3));
+                        Writer w = new TransformingWriter(str, ct);
                         // there is a <field> tag placed around it,... we hate it :)
                         // change this in the bridge?
                         serializer.transform(new DOMSource(xml),  new StreamResult(w));
