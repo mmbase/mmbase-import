@@ -330,7 +330,7 @@
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 		<tr><td colspan="2">
 		<input type="hidden" name="action" value="addpackagesupporter" />
-		<input name="newcompany" value=""> <input type="submit" value="add"><br />
+		<input name="newcompany" value=""> <input type="submit" value="add"><img src="<mm:write referid="image_help" />"  valign="middle" title="the companies who supported the development" /><br />
 		</tr></td>
 		</form>
 		</table>
