@@ -35,7 +35,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private String type      = null;
     private String element   = null;
     private String contextid = null;
-
     private Node   node      = null;
 
     
@@ -43,21 +42,21 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * Release all allocated resources.
      */
     public void release() {   
-        log.info("releasing");
-        super.release();
-        initPrivates();
-    }
-
-    private void initPrivates() {      
+        log.debug("releasing");
+        super.release();       
         number = null;
 	type = null ;
 	element = null;
 	contextid = null;
         node = null;
+
     }
     
     public void setNumber(String number) throws JspTagException {
-        log.fatal("setting number to " + number);
+        if (log.isDebugEnabled()) {
+            log.debug("setting number to " + number);
+        }
+        node = null;
         this.number = getAttributeValue(number);
     }
     
@@ -82,6 +81,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * clusternodes. 
      */
     public void setElement(String e) {
+        node = null;
         element = e;
     }
     
@@ -121,7 +121,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
 
         setNodeVar(node);        
-        log.debug("found node " + node.getValue("gui()"));        
+        //log.debug("found node " + node.getValue("gui()"));        
         return EVAL_BODY_TAG; 
     }
     
@@ -141,7 +141,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
-        initPrivates();
         return SKIP_BODY;
     }
 }
