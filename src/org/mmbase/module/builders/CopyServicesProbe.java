@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -20,10 +20,15 @@ import org.mmbase.module.builders.vwms.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Rico Jansen
  */
 public class CopyServicesProbe implements Runnable {
+
+    private static Logger log = Logging.getLoggerInstance(CopyServicesProbe.class.getName()); 
 
 	Thread kicker = null;
 	CopyServices parent=null;
@@ -102,8 +107,8 @@ public class CopyServicesProbe implements Runnable {
 			} catch (Exception e) {
 				node.setValue("state","error");
 				node.commit();
-				System.out.println("CopyServicesProbe "+e);
-				e.printStackTrace();
+				log.error("CopyServicesProbe " + e);
+				log.error(Logging.stackTrace(e));
 			}
 		} else if (state.equals("remove")) {
 			try {   
@@ -113,15 +118,14 @@ public class CopyServicesProbe implements Runnable {
 				if (s!=null) src=parent.getNode(s);
 				filename=src.getStringValue("filename");
 				String srcpath=getProperty(from+":path"); // hoe komen we hierachter ?
-				System.out.println("CopyServicesProbe remove -> "+srcpath+" "+filename);
+				log.info("remove -> " + srcpath + " " + filename);
 				removeFile(srcpath,filename);
 				node.setValue("state","waiting"); // either copy result or so
 				node.commit();
 			} catch (Exception e) {
 				node.setValue("state","error");
 				node.commit();
-				System.out.println("CopyServicesProbe "+e);
-				e.printStackTrace();
+				log.error(Logging.stackTrace(e));
 			}
 		}
 	}
@@ -147,12 +151,12 @@ public class CopyServicesProbe implements Runnable {
 		if (f.isDirectory()) {
 			System.out.println("Removing dir "+f.getPath());
 			if (!f.delete()) {
-				System.out.println("Can't delete directory "+f.getPath());
+				log.error("Can't delete directory " + f.getPath());
 			}
 		} else {
 			System.out.println("Removing file "+f.getPath());
 			if (!f.delete()) {
-				System.out.println("Can't delete file "+f.getPath());
+				log.error("Can't delete file " + f.getPath());
 			}
 		}
 	}

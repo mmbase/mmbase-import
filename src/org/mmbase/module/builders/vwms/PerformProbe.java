@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -19,13 +19,19 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Rico Jansen
  */
 public class PerformProbe implements Runnable {
-private VwmProbeInterface vwm;
-private MMObjectNode node;
-private int status;
+
+    private static Logger log = Logging.getLoggerInstance(PerformProbe.class.getName()); 
+
+    private VwmProbeInterface vwm;
+    private MMObjectNode node;
+    private int status;
 
 	Thread kicker = null;
 
@@ -72,8 +78,8 @@ private int status;
 			vwm.performTask(node);
 			status=3;
 		} catch (Exception e) {
-			System.out.println("PerformProbe : performTask failed"+e);
-			e.printStackTrace();
+			log.error("performTask failed" + e);
+			log.error(Logging.stackTrace(e));
 			status=5;
 		}
 	}

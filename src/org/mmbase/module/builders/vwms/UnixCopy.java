@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -11,12 +11,16 @@ package org.mmbase.module.builders.vwms;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class UnixCopy {
-Execute exec=new Execute();
-String thisserver;
-String dstpath,dstuser,dsthost;
-String binpath;
-private static final boolean debug=true;
+
+    private static Logger log = Logging.getLoggerInstance(UnixCopy.class.getName()); 
+    Execute exec=new Execute();
+    String thisserver;
+    String dstpath,dstuser,dsthost;
+    String binpath;
 
 	public UnixCopy() {
 		setBinpath("/usr/local/bin");
@@ -79,7 +83,10 @@ private static final boolean debug=true;
 		String res;
 
 		res=exec.execute(binpath+"/mkdir "+path+"");
-		if (debug) System.out.println("Unixcopy -> mkdir "+path+" : "+res);
+		if (log.isDebugEnabled()) {
+                    log.debug("mkdir " + path + " : " + res);
+                }
+
 		rtn=res.length()<=0;
 		return(rtn);
 	}
@@ -89,7 +96,9 @@ private static final boolean debug=true;
 		boolean rtn=true;
 
 		res=exec.execute(binpath+"/mkdir -p "+path+"");
-		if (debug) System.out.println("Unixcopy -> mkdirs "+path+" : "+res);
+		if (log.isDebugEnabled()) {
+            log.debug("mkdirs " + path + " : " + res);
+        }
 		rtn=res.length()<=0;
 		return(rtn);
 	}
@@ -105,7 +114,9 @@ private static final boolean debug=true;
 			res=exec.execute(binpath+"/mv \""+src+"\" \""+dst+"\"");
 		}
 
-		if (debug) System.out.println("UnixCopy -> rename "+src+"->"+dst+" : "+res);
+		if (log.isDebugEnabled()) {
+            log.debug("rename " + src + "->" + dst + " : " + res);
+        }
 		rtn=res.length()<=0;
 		return(rtn);
 	}
@@ -114,7 +125,9 @@ private static final boolean debug=true;
 		String res;
 		boolean rtn=true;
 		res=exec.execute(binpath+"/cp "+src+" "+dst);
-		System.out.println("UnixCopy -> copy "+src+"->"+dst+" : "+res);
+		if (log.isDebugEnabled()) {
+            log.debug("copy " + src + "->" + dst + " : " + res);
+        }
 		rtn=res.length()<=0;
 		return (rtn);
 	}
@@ -125,7 +138,9 @@ private static final boolean debug=true;
 
 		res=exec.execute(binpath+"/rm -f "+path);
 
-		if (debug) System.out.println("UnixCopy -> remove "+path+" : "+res);
+		if (log.isDebugEnabled()) {
+            log.debug("remove " + path + " : " + res);
+        }
 		rtn=res.length()<=0;
 		return (rtn);
 	}
@@ -136,7 +151,9 @@ private static final boolean debug=true;
 
 		res=exec.execute(binpath+"/rmdir "+path);
 
-		if (debug) System.out.println("UnixCopy -> removedir "+path+" : "+res);
+		if (log.isDebugEnabled()) {
+            log.debug("removedir " + path + " : " + res);
+        }
 		rtn=res.length()<=0;
 		return (rtn);
 	}
