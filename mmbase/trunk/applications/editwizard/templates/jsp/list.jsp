@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.30 2003-04-24 11:36:08 pierre Exp $
+     * @version  $Id: list.jsp,v 1.31 2003-05-01 13:05:31 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -314,6 +314,42 @@ if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
 if (title != null) params.put("wizardtitle", title);
 if (listConfig.title != null) params.put("title", listConfig.title);
+
+params.put("age", listConfig.age+"");
+
+String searchtype=request.getParameter("searchtype");
+if (searchtype!=null) params.put("searchtype", searchtype);
+
+String searchfields=request.getParameter("searchfields");
+if (searchfields!=null) params.put("searchfields", searchfields);
+
+String searchvalue=request.getParameter("searchvalue");
+if (searchvalue!=null) params.put("searchvalue", searchvalue);
+
+String startnodes=request.getParameter("startnodes");
+if (startnodes!=null) params.put("startnodes", startnodes);
+
+String nodepath=request.getParameter("nodepath");
+if (nodepath!=null) params.put("nodepath", nodepath);
+
+String fields=request.getParameter("fields");
+if (fields!=null) params.put("fields", fields);
+
+String orderby=request.getParameter("orderby");
+if (orderby!=null) params.put("orderby", orderby);
+
+String directions=request.getParameter("directions");
+if (directions!=null) params.put("directions", directions);
+
+String searchdir=request.getParameter("searchdir");
+if (searchdir!=null) params.put("searchdir", searchdir);
+
+String constraints=request.getParameter("constraints");
+if (constraints!=null) params.put("constraints", constraints);
+
+String distinct=request.getParameter("distinct");
+if (distinct!=null) params.put("distinct", distinct);
+
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
