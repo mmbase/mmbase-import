@@ -173,6 +173,7 @@
       <src path="${tests.source.dir}/convertimage"/>
       <src path="${tests.source.dir}/dbsq"/>
       <src path="${tests.source.dir}/common"/>
+      <src path="${tests.source.dir}/util"/>
       <include name="**/*.java"/>
     </javac>
   </target>
@@ -281,7 +282,16 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-
+  <target name="run.util" depends="jar,init">
+    <java 
+    	classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath">
+      <arg value="org.mmbase.util.UtilTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+    </java>
+  </target>
   <!-- ================================================================== -->
 
   <target name="standalone" depends="jar,init">
@@ -300,7 +310,7 @@ Build-compiler: ${build.compiler}
   <!-- Run the tests -->
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci">
+          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util">
 
   </target>
 
