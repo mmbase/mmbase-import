@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <videofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="124" owner="admin">
+	<node number="124" owner="default">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -11,7 +11,7 @@
 		<intro></intro>
 	</node>
 
-	<node number="122" owner="admin">
+	<node number="122" owner="default">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -22,7 +22,7 @@
 		<intro></intro>
 	</node>
 
-	<node number="120" owner="michiel">
+	<node number="120" owner="default">
 		<start>0</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -33,7 +33,7 @@
 		<intro>Een leuk programma dat Noordrelicht.</intro>
 	</node>
 
-	<node number="118" owner="michiel">
+	<node number="118" owner="default">
 		<start>46892</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -44,7 +44,7 @@
 		<intro></intro>
 	</node>
 
-	<node number="116" owner="michiel">
+	<node number="116" owner="default">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -55,7 +55,7 @@
 		<intro></intro>
 	</node>
 
-	<node number="114" owner="michiel">
+	<node number="114" owner="default">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -66,7 +66,7 @@
 		<intro></intro>
 	</node>
 
-	<node number="112" owner="admin">
+	<node number="112" owner="default">
 		<start>37515</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -77,7 +77,7 @@
 		<intro>sdfsafasfdasfd</intro>
 	</node>
 
-	<node number="110" owner="admin">
+	<node number="110" owner="default">
 		<start>51481</start>
 		<length>-1</length>
 		<class>-1</class>
