@@ -8,10 +8,11 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.35 2003-05-27 12:49:09 pierre Exp $
+ * @version  $Id: settings.jsp,v 1.36 2003-07-03 10:57:27 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
+ * @author   Vincent van der Locht
  */
 
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
@@ -205,4 +206,4 @@ if (!done) {
 %></mm:log><%
     if (done) return;
 %><mm:import externid="loginmethod" from="parameters">loginpage</mm:import>
-
+<mm:import externid="loginsessionname" from="parameters" ></mm:import>
