@@ -59,9 +59,9 @@ for the MMBase node --%>
 <hr />
 <mm:import externid="magid">default.mags</mm:import>
 <div class="link">
- <a href="<mm:url referids="magid" page="index.jsp" /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /></a><br />
+ <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /></a><br />
 </div>
-<a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+<a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
 </mm:node>

@@ -17,9 +17,9 @@
     <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
  <body>
-  <table width="90%" align="center">
+  <table>
    <tr>
-    <th width="30" />
+    <th width="30" /> <%-- using table in stead of margins, why? --%>
     <th align="center">
       <h1><mm:field  name="title"/></h1>
       <h2><mm:field  name="subtitle"/></h2>
@@ -55,11 +55,8 @@
   <div class="link">
    <a href="<mm:url referids="magid" page="ordered.jsp" /> ">Ordered news <img src="<mm:url page="/mmbase/style/images/next.gif" />"></a><br />
   </div> 
-  <hr /> 
-  Search MyYahoo: 
-  
   <hr />
-  <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+  <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
 </mm:node>
