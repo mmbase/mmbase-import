@@ -11,6 +11,12 @@
 		  	<mm:import externid="builder" id="b" />
 		 	<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,mode,name,m@modelfilename,b@builder" />"><img src="<mm:write referid="image_arrowleft" />" border="0"/></a> <mm:write referid="name" />
 		  </mm:compare>
+		  <mm:compare value="builderfieldedit">	
+		  	<mm:import externid="modelfilename" id="m" />
+		  	<mm:import externid="builder" id="b" />
+		  	<mm:import id="e">builderedit</mm:import>
+		 	<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,mode,name,m@modelfilename,b@builder,e@editor" />"><img src="<mm:write referid="image_arrowleft" />" border="0"/></a> <mm:write referid="name" />
+		  </mm:compare>
 		</mm:write>
 		</B></FONT>
 		</TD>
