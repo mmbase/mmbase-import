@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
+import org.mmbase.applications.dove.Dove;
 import org.w3c.dom.*;
 
 /**
@@ -16,13 +17,13 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetRelations.java,v 1.5 2003-03-04 13:27:09 nico Exp $
+ * @version $Id: ConnectorCommandGetRelations.java,v 1.6 2003-03-31 10:53:16 michiel Exp $
  */
 
 public class ConnectorCommandGetRelations extends ConnectorCommand {
 
     public ConnectorCommandGetRelations(String aobjectnumber, NodeList queryrelations) throws WizardException {
-        super("getrelations");
+        super(Dove.GETRELATIONS);
         addObject(aobjectnumber, queryrelations);
     }
 

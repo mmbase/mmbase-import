@@ -39,7 +39,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.27 2003-03-28 17:51:47 michiel Exp $
+ * @version $Id: Utils.java,v 1.28 2003-03-31 10:53:16 michiel Exp $
  */
 public class Utils {
 
@@ -453,7 +453,9 @@ public class Utils {
             StreamResult streamResult = new StreamResult(result);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer serializer = tf.newTransformer();
-            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes"); 
+            // Indenting not very nice int all xslt-engines, but well, its better then depending 
+            // on a real xslt or lots of code.
             serializer.transform(domSource, streamResult); 
             return result.toString();
         } catch (Exception e) {

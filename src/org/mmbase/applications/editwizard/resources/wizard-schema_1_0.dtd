@@ -48,6 +48,7 @@
 <!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST relation role NMTOKEN #IMPLIED >
 <!ATTLIST relation searchdir (source | destination | both | all | either) #IMPLIED >
+<!ATTLIST relation createdir (source | destination | either) #IMPLIED >
 
 <!ELEMENT list ( title | description | action | command | item )* >
 <!ATTLIST list maxoccurs CDATA #IMPLIED >
