@@ -21,8 +21,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @javadoc
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.8 2002-02-12 19:30:42 michiel Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.9 2002-03-05 15:34:14 michiel Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 
