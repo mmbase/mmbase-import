@@ -183,7 +183,37 @@
 		</db>
 	</field>
 
-	<!-- POS 6 : <field> 'pos'  -->
+	<!-- POS 6 : <field> 'dir'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="fr">Direction</guiname>
+			<guiname xml:lang="nl">Richting</guiname>
+			<guiname xml:lang="en">Direction</guiname>
+			<guiname xml:lang="us">Direction</guiname>
+			<guitype>integer</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>-1</input>
+				<!-- position in list area of the editor -->
+				<list>-1</list>
+				<!-- position in search area of the editor -->
+				<search>-1</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>dir</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
+		</db>
+	</field>
+	
+	<!-- POS 7 : <field> 'pos'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
@@ -210,7 +240,7 @@
 		</db>
 	</field>
 
-	<!-- POS 7 : <field> 'length'  -->
+	<!-- POS 8 : <field> 'length'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
@@ -237,7 +267,7 @@
 		</db>
 	</field>
 
-	<!-- POS 8 : <field> 'type'  -->
+	<!-- POS 9 : <field> 'type'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
