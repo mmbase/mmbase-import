@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.23 2003-07-28 08:36:42 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.24 2003-07-28 08:43:36 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -233,8 +233,8 @@ public class MediaFragments extends MMObjectBuilder {
 
       
     /** 
-     * Retrieves the url. (e.g. pnm://www.mmbase.org/music/test.ra) of the 
-     * mediasource that matches best.
+     * Retrieves the url of the mediasource that matches best.
+     * (e.g. pnm://www.mmbase.org/music/test.ra) 
      *
      * @param mediaFragment the media fragment
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
