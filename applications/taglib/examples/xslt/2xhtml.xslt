@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.10 2004-03-02 18:53:02 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.11 2005-04-05 20:04:16 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -13,7 +13,7 @@
   xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
   version = "1.0" 
   xmlns:mmxf="http://www.mmbase.org/mmxf"
-  exclude-result-prefixes="mmxf node" 
+  exclude-result-prefixes="mmxf" 
 >
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
   <xsl:output method="xml" omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
