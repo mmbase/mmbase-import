@@ -26,6 +26,7 @@ import org.mmbase.util.logging.*;
 
 import org.mmbase.cache.xslt.*;
 import org.mmbase.util.xml.URIResolver;
+import org.mmbase.util.XMLErrorHandler;
 
 /**
  * This class contains static utility methods used by the editwizard.
@@ -37,7 +38,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.21 2002-10-02 17:17:50 michiel Exp $
+ * @version $Id: Utils.java,v 1.22 2002-10-04 22:17:44 michiel Exp $
  */
 public class Utils {
 
@@ -47,12 +48,8 @@ public class Utils {
      *
      * @return     a DocumentBuilder.
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validate) throws Exception {
-	//        javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        // Use the DocumentBuilderFactory to provide access to a DocumentBuilder.
-	//        javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
-	//        return dBuilder;
-	return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate);
+    public static DocumentBuilder getDocumentBuilder(boolean validate) {
+	return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate, new XMLErrorHandler(validate, XMLErrorHandler.ERROR));
     }
 
     /**
@@ -79,11 +76,25 @@ public class Utils {
      * @throws     WizardException if someting wend wrong...
      */
     public static Document loadXMLFile(File file) throws WizardException {
-        try {	  
-            DocumentBuilder b = getDocumentBuilder(true);
-            return b.parse(new FileInputStream(file));
-        } catch (Exception e) {
-            throw new WizardException("Could not load schema xml file '"+file + "'\n" + Logging.stackTrace(e));
+        try {
+            try {	  
+                DocumentBuilder b = getDocumentBuilder(true);
+                return b.parse(file);
+            } catch (SAXParseException ex) {
+                // try without validating, perhaps no doc-type was specified
+                DocumentBuilder b = getDocumentBuilder(false);
+                Document d = b.parse(file);
+                if (d.getDoctype() == null) {
+                    log.warn("No DocumentType speficied in " + file);
+                    return d;
+                } else {
+                    throw new WizardException("Error on line " + ex.getLineNumber() + " (column " + ex.getColumnNumber() + ") of schema xml file " + ex.getSystemId() + ": " + ex.getMessage());
+                }
+            }        
+        } catch (SAXException e) {
+            throw new WizardException("Could not load schema xml file '"+file + "' (SAX)\n" + Logging.stackTrace(e));
+        } catch (IOException ioe) {
+            throw new WizardException("Could not load schema xml file '"+file + "' (IO)\n" + Logging.stackTrace(ioe));
         }
     }
 
