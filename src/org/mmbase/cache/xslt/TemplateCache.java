@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.5 2002-05-28 15:26:20 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.6 2002-05-30 11:59:16 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -58,7 +58,7 @@ public class TemplateCache extends Cache {
                         if (log.isDebugEnabled()) log.debug("Removed " + removed + " entries from cache");
                     }
                 }
-                remove(file);
+                this.remove(file); // should call remove of FileWatcher, not of TemplateCache again.
             }
         };
 
