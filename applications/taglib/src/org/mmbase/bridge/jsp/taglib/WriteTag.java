@@ -20,44 +20,45 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* The exporttag can take a variable from the context and put it in a jsp variable.
+* The writetag can take a variable from the context and put it in a
+* jsp variable, or write it to the page.
 *
-* @author Michiel Meeuwissen
+* @author Michiel Meeuwissen 
 */
-public class ExportTag extends CloudReferrerTag {
 
-    private static Logger log = Logging.getLoggerInstance(ExportTag.class.getName());
+public class WriteTag extends ContextReferrerTag {
 
-    private String jspvar = null;
-    private String key = null;
-    private boolean declare = true;
-    private String extraBodyContent = null;
+    private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
+
+    protected String  jspvar = null;
+    private String  extraBodyContent = null;
+    protected String  type = null;
 
     public void setType(String t) {
         // nothing to do, the type property is only used in the TEI.
+        type = t;
     }
 
     public void setJspvar(String j) {
         jspvar = j;
     }
 
-    public void setKey(String k) {
-        key = k;
-    }
-
 
     public int doStartTag() throws JspTagException {
 
         if (log.isDebugEnabled()) {
-            log.debug("getting object " + key + "-> " + getContextTag().getObject(key));
+            log.debug("getting object " + getReferid() + "-> " + getContextTag().getObject(getReferid()));
         }
-        Object value = getContextTag().getObject(key);
+        Object value = getContextTag().getObject(getReferid());
 
         extraBodyContent = null;
         if (value != null) {
-            if (jspvar != null) {
+            if (jspvar != null) {                
                 pageContext.setAttribute(jspvar, value);
             } else {
+                if (type != null) {
+                    throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute");
+                }
                 extraBodyContent = value.toString();
             }
         }
