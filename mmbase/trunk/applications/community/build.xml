@@ -6,11 +6,15 @@
 <project name="community" default="dependent.jar" basedir=".">
   <property name="project.name"   value="community" />
   <property name="source-community.xml" value="org/mmbase/applications/community/taglib/mmcommunity-taglib.xml" />
+	<property name="project.extra.path" location="../taglib/build/mmbase-taglib.jar" />
   &base;
 
 
 
-  <target name="dependent.jar" depends="community.tld,jar" />
+  <target name="dependent.jar" depends="community.tld,jar">
+    <ant dir="../taglib">
+    </ant>
+  </target>
   <target name="dependent.package" depends="dependent.jar,community.doc,package" />
 	<target name="dependent.install" depends="dependent.jar,install" />
 
@@ -48,7 +52,7 @@
 
 
   <target name="community.doc" description="Make the MMBase community taglib documentation"
-          depends="compile,community.doc.check" unless="community.doc.uptodate">
+          depends="compile,community.doc.check" unless="community.doc.uptodate" if="build.documentation">
     <mkdir dir="${project.build.dir}/documentation/taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
