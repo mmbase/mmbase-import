@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 
 /*
-$Id: ImageMaster.java,v 1.11 2000-06-05 10:56:56 wwwtech Exp $
+$Id: ImageMaster.java,v 1.12 2000-06-05 15:36:39 wwwtech Exp $
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/06/05 10:56:56  wwwtech
+Rico: added support for new 3voor12
+
 */
 
 package org.mmbase.module.builders.vwms;
@@ -35,11 +38,11 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 	Hashtable properties;
 	boolean first=true;
-	private boolean debug=false;
+	private boolean debug=true;
 	Object syncobj=new Object();
-	Queue files2copy=new Queue(128);
-	FileCopier filecopier=new FileCopier(files2copy);
 	private int maxSweep=16;
+	Vector files=new Vector();
+	ImagePusher pusher;
 
 	public ImageMaster() {
 		debug("ready for action");
@@ -49,6 +52,10 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	public boolean probeCall() {
 		if (first) {
 			first=false;
+			if (pusher==null) {
+				pusher=new ImagePusher(this);
+				System.out.println("ImageMaster -> Starting Image pusher");
+			}
 		} else {
 			try {
 				Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
@@ -122,16 +129,30 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 	public boolean handleMirror(MMObjectNode filenode,int status,String ctype) {
+		if (filenode==null) {
+			debug("ERROR: handleMirror filenode null!");
+			return true;
+		}
+		
 		switch(status) {
 			case 1:  // Verzoek
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
 				String filename=filenode.getStringValue("filename");
+				if ((filename==null) || filename.equals("")) {
+					debug("ERROR handleMirror: filename null");
+					return true;
+				}
+				if (debug) debug("handleMirror"+filename);
 				String dstserver=filenode.getStringValue("mmserver");
 				
 				// save the image to disk
-				ImageCaches bul=(ImageCaches)Vwms.mmb.getMMObject("icaches");		
+				ImageCaches bul=(ImageCaches)Vwms.mmb.getMMObject("icaches");
+				if (bul==null) {
+					debug("ERROR: ImageCaches builder is null");
+					return true;
+				}
 			
 				String mimetype = "image/jpeg"; // When not overwritten, it will stay on 'jpeg'.
 
@@ -147,7 +168,11 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					while (st.hasMoreTokens()) {
 						ckeyVec.addElement(st.nextElement());
 					}
-					Images imagesBuilder = (Images)Vwms.mmb.getMMObject("images");		
+					Images imagesBuilder = (Images)Vwms.mmb.getMMObject("images");
+					if (imagesBuilder==null) {
+						debug("ERROR handleMirror images builder not found");
+						return true;
+					}
 					mimetype = imagesBuilder.getImageMimeType(ckeyVec);
 					// debug("handleMirror: ckey "+ckey+" has mimetype: "+mimetype);
 					ckey=path2ckey(ckey, imagesBuilder);
@@ -173,7 +198,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					scpcopy.copy(srcpath,filename);
 				}
 */
-				files2copy.append(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename));
+				files.addElement(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename));
 
 				// remove the tmp image file
 
@@ -308,7 +333,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	private String path2ckey(String path, Images imageBuilder) {
 		StringTokenizer tok = new StringTokenizer(path,"+\n\r");
 		String ckey=tok.nextToken();
-		ckey = imageBuilder.convertAlias(ckey);
+		ckey = ""+imageBuilder.convertAlias(ckey);
 		while (tok.hasMoreTokens()) {
 			String key=tok.nextToken();
 			ckey+=key;
