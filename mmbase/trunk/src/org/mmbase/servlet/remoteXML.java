@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.13  2001/03/30 09:50:40  install
+Rob
+
 Revision 1.12  2001/03/22 17:30:49  vpro
 Davzev: First off added some better docs for this servlet.
 Second, when a new RemoteBuilder node is send through either a GET or POST,
@@ -18,7 +21,7 @@ they will be ignored and request will be cancelled.
 All other node requests that can be find in mmbase will be handled correctly.
 Finally, I removed some weird vpro specific code.
 
-$Id: remoteXML.java,v 1.13 2001-03-30 09:50:40 install Exp $
+$Id: remoteXML.java,v 1.14 2001-04-03 15:09:54 install Exp $
 */
 package org.mmbase.servlet;
  
@@ -43,7 +46,7 @@ import org.mmbase.module.core.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.13 $ $Date: 2001-03-30 09:50:40 $
+ * @version $Revision: 1.14 $ $Date: 2001-04-03 15:09:54 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
@@ -67,8 +70,14 @@ public class remoteXML extends JamesServlet {
 		incRefCount(req);
 		try {
 			String sharedsecret = req.getHeader("sharedSecret");
-			debug("Sharedsecret = "+sharedsecret);
-			// Check secret here
+			//debug("Sharedsecret = "+sharedsecret);
+
+			// Check if the remote machine knows the same shared secret. 
+			if(org.mmbase.security.SecurityManager.checkSharedSecret(sharedsecret)==true) {
+				debug("warning - sharedsecret is correct, system is authenticated"); 
+			} else {
+				debug("warning - sharedsecret is NOT correct, system is NOT authenticated"); 
+			}
 			
 			if (req.getMethod().equals("POST")) {
 				if (debug) debug("service: Incoming request: POST");
@@ -78,6 +87,9 @@ public class remoteXML extends JamesServlet {
 				if (debug) debug("service: Incoming request: GET");
 				handleGet(req,res);
 			}
+		} catch (Exception e)  {
+			debug("error "+e);
+			e.printStackTrace();
 		} finally { decRefCount(req); }
 	}
 
