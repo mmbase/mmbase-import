@@ -815,6 +815,7 @@ public class Forum {
                 } else {
                     log.error("Forum can't load relation nodemanager forummessagebox/forumprivatemessage/related");
                 }
+		mailbox.signalMailboxChange();
             } else {
                 log.error("Forum can't load forumprivatemessage nodemanager");
             }

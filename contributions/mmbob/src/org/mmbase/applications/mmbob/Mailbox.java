@@ -33,6 +33,9 @@ public class Mailbox {
     private Node node;
     private Poster parent;
     private int id;
+    private int messagecount=0;
+    private int messagenewcount=0;
+    private int messageunreadcount=0;
 
     /**
      * Constructor
@@ -43,6 +46,7 @@ public class Mailbox {
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
+	readStats();
     }
 
     /**
@@ -51,6 +55,33 @@ public class Mailbox {
      */
     public String getName() {
         return node.getStringValue("name");
+    }
+
+
+    /**
+     * get message count of this mailbox
+     * @return number of messages in this mailbox
+     */
+    public int getMessageCount() {
+        return messagecount;
+    }
+
+
+    /**
+     * get message count unread of this mailbox
+     * @return number of unread messages in this mailbox
+     */
+    public int getMessageUnreadCount() {
+        return messageunreadcount;
+    }
+
+
+    /**
+     * get message count unread of this mailbox
+     * @return number of unread messages in this mailbox
+     */
+    public int getMessageNewCount() {
+        return messagenewcount;
     }
 
     /**
@@ -81,4 +112,29 @@ public class Mailbox {
     public Node getNode() {
         return node;
     }
+
+  public void signalMailboxChange() {
+	log.info("MAILBOX CHANGED");
+	readStats();
+  }
+
+
+   public void readStats() {
+	messagecount = 0;
+	messagenewcount = 0;
+	messageunreadcount = 0;
+	if (node!=null) {
+		NodeIterator i=node.getRelatedNodes("forumprivatemessage").nodeIterator();
+		while (i.hasNext()) {
+			Node node=i.nextNode();
+			messagecount = messagecount + 1;
+			int viewstate =  node.getIntValue("viewstate");
+			if ( viewstate == 0 ) {
+				messageunreadcount = messageunreadcount + 1;
+			}
+			log.info ("p="+parent.getLastSessionEnd()+" c="+node.getIntValue("createtime"));
+			if (parent.getLastSessionEnd() < node.getIntValue("createtime")) messagenewcount =  messagenewcount + 1;
+		}
+	}
+   }
 }
