@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import java.io.IOException;
+import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 import java.util.*;
@@ -30,52 +30,45 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.1 2003-05-06 20:32:08 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.2 2003-05-07 21:30:52 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
     private static Logger log;
 
 
-    private static final Escaper NO = new Escaper(new EmptyCharTransformer(), "", false);
+    private static final Escaper COPY = new Escaper(new CopyCharTransformer(), "");
 
     static final ContentTag DEFAULT = new ContentTag() {
-            public Escaper getEscaper() { return NO; } 
-            public String          getType()    { return "text/html"; } 
-            public String          getEncoding(){ return "iso-8859-1"; } 
+            public Escaper getEscaper() { return COPY; } 
+            public String  getType()    { return "text/html"; } 
+            public String  getEncoding(){ return "iso-8859-1"; } 
         };
 
-    private static Map escapers     = new HashMap();
+    private static Map escapers       = new HashMap();
+    private static Map postProcessors = new HashMap();
 
     static {
         try {
             log = Logging.getLoggerInstance(ContentTag.class.getName());
-            initializeEscapers();
+            initializeEscapersAndPostProcessors();
         } catch (Exception e) {
             log.error(e.toString());
         }
     }
 
-    /**
-     * Initialize the write-escapers for MMBase taglib.
-     */
-    private static void initializeEscapers() {
-        log.service("Reading taglib write-escapers");
 
-        Class thisClass = ContentTag.class;
-        InputSource escapersSource = new InputSource(thisClass.getResourceAsStream("resources/escapers.xml"));
-        XMLBasicReader reader  = new XMLBasicReader(escapersSource, thisClass);
-        Element fieldtypesElement = reader.getElementByPath("escapers");
-        Enumeration e = reader.getChildElements(fieldtypesElement, "escaper");
+    private static CharTransformer getCharTransformer(XMLBasicReader reader, Element parentElement, String id) {
+        List result = new ArrayList();
+        Enumeration e = reader.getChildElements(parentElement, "class");
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
-            String id   = element.getAttribute("id");
-            String claz = reader.getElementValue(reader.getElementByPath(element, "escaper.class"));
+            String claz = reader.getElementValue(element);
             Class clazz;
-            try {
+             try {
                 clazz = Class.forName(claz);
             } catch (ClassNotFoundException ex) {
-                log.error("Class " + claz + " could not be found for id " + id);
+                log.error("Class " + claz + " for '" + id + "' could not be found");
                 continue;
             }
             if (! CharTransformer.class.isAssignableFrom(clazz)) {
@@ -89,21 +82,80 @@ public class ContentTag extends LocaleTag  {
                 log.error("Error instantiating a " + clazz + ": " + ex.toString());
                 continue;
             }
-            String config = reader.getElementValue(reader.getElementByPath(element, "escaper.config"));
-            if (! "".equals(config)) {
-                try {
-                    int conf = Integer.parseInt(config);
-                    ct.configure(conf);
-                } catch (NumberFormatException nfe) {
-                    log.error("Type " + id + " is not well configured : " + nfe);
-                    continue;
-                }                
+
+            String config = element.getAttribute("config");
+            if (ct instanceof ConfigurableCharTransformer) {
+                log.debug("Trying to configure with '" + config + "'");
+                if (! config.equals("")) {
+                    int conf;
+                    try {
+                        log.debug("With int");
+                        conf = Integer.parseInt(config);
+                    } catch (NumberFormatException nfe) {
+                        try {
+                            log.debug("With static field");
+                            conf = clazz.getDeclaredField(config).getInt(null);
+                        } catch (Exception nsfe) {
+                            log.error("Type " + id + " is not well configured : " + nfe.toString() + " and " + nsfe.toString());
+                            continue;
+                        }                
+                    }
+                    ((ConfigurableTransformer) ct).configure(conf);
+                }
+            } else {
+                if (! config.equals("")) {
+                    log.warn("Tried to configure non-configurable transformer " + claz);
+                }
             }
-            String type   = element.getAttribute("type");
-            if ("".equals(type)) type = id;
-            log.service("Found an escaper '" + id + "' for type " + type + ": " + ct);
-            String back= reader.getElementValue(reader.getElementByPath(element, "escaper.backTransform"));
-            escapers.put(id, new Escaper(ct, type, back.equalsIgnoreCase("true")));
+            boolean back = "true".equalsIgnoreCase(element.getAttribute("back"));
+            if (back) {
+                result.add(new InverseCharTransformer(ct));
+            } else {
+                result.add(ct);
+            }            
+        }
+        if (result.size() ==0 ) {
+            return COPY.charTransformer;
+        } else if (result.size() == 1) {
+            return (CharTransformer) result.get(0);
+        } else {
+            ChainedCharTransformer cct = new ChainedCharTransformer();
+            cct.addAll(result);
+            return cct;
+        }
+    }
+    /**
+     * Initialize the write-escapers for MMBase taglib.
+     */
+    private static void initializeEscapersAndPostProcessors() {
+        log.service("Reading taglib write-escapers");
+
+        Class thisClass = ContentTag.class;
+        InputSource escapersSource = new InputSource(thisClass.getResourceAsStream("resources/taglibcontent.xml"));
+        XMLBasicReader reader  = new XMLBasicReader(escapersSource, thisClass);
+        Element root = reader.getElementByPath("taglibcontent");
+        Enumeration e = reader.getChildElements(root, "escaper");
+        while (e.hasMoreElements()) {
+            Element element = (Element) e.nextElement();
+            String id   = element.getAttribute("id");
+            try { 
+                CharTransformer ct = getCharTransformer(reader, element, id);
+                String type   = element.getAttribute("type");
+                if ("".equals(type)) type = id;
+                log.service("Found an escaper '" + id + "' for type " + type + ": " + ct);
+                escapers.put(id, new Escaper(ct, type));
+            } catch (Exception nfe) {
+                log.error("Exception in escaper '" + id + "': " + nfe.toString());
+            }
+        }
+        log.service("Reading content tag post-processors");
+        e = reader.getChildElements(root, "postprocessor");
+        while (e.hasMoreElements()) {
+            Element element = (Element) e.nextElement();
+            String id   = element.getAttribute("id");
+            CharTransformer ct = getCharTransformer(reader, element, id);
+            log.service("Found an postprocessor '" + id + "' : " + ct);
+            postProcessors.put(id, ct);
         }
     }
     
@@ -112,7 +164,7 @@ public class ContentTag extends LocaleTag  {
      */
     public static Escaper getEscaper(String type) {
         Escaper esc = (Escaper) escapers.get(type);
-        if (esc == null) return NO;
+        if (esc == null) return COPY;
         return esc;
     }
     
@@ -176,23 +228,21 @@ public class ContentTag extends LocaleTag  {
         return SKIP_BODY;
     }
 
+    /**
+     * Wraps a CharTranformer together with content-type in one
+     * object. Just to subtain easy storage in a Map.
+     */
     public static class Escaper {
         private CharTransformer charTransformer;
         private String contentType;
-        private boolean backTransform;
+
         
-        Escaper(CharTransformer c, String ct, boolean b) {
+        Escaper(CharTransformer c, String ct) {
             charTransformer = c;
             contentType = ct;
-            backTransform = b;
         }
-        public String transform(String string) {
-            if (backTransform) {
-                return charTransformer.transformBack(string);
-            } else {
-                return charTransformer.transform(string);
-            }
-            
+        public java.io.Writer transform(String string, java.io.Writer w) {
+            return charTransformer.transform(new StringReader(string), w);            
         }
     }
 
