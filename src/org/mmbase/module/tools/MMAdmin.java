@@ -135,6 +135,10 @@ public class MMAdmin extends ProcessorModule {
 			} else if (token.equals("MODULE")) {
 				doModulePosts(tok.nextToken(),cmds,vars);
 			} else if (token.equals("MODULESAVE")) {
+				if (kioskmode) {
+					System.out.println("MMAdmin> refused to write module , im in kiosk mode");
+					return;
+				}
 				String modulename=(String)cmds.get(cmdline);
 				String savepath=(String)vars.get("PATH");
 				Module mod=(Module)getModule(modulename);
@@ -144,6 +148,10 @@ public class MMAdmin extends ProcessorModule {
 					lastmsg+="A clean copy of "+modulename+".xml can be found at : "+savepath+"<BR><BR>\n";
 				}
 			} else if (token.equals("BUILDERSAVE")) {
+				if (kioskmode) {
+					System.out.println("MMAdmin> refused to write builder , im in kiosk mode");
+					return;
+				}
 				String buildername=(String)cmds.get(cmdline);
 				String savepath=(String)vars.get("PATH");
 				MMObjectBuilder bul=mmb.getMMObject(buildername);
@@ -311,6 +319,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	public void doRestart(String user) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused to reset the server , im in kiosk mode");
+			return;
+		}
 		lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<BR><BR>\n";
 		System.out.println("Server Reset requested by '"+user+"' Restart in 3 seconds");
 		restartwanted=true;
@@ -719,6 +731,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	private boolean	writeApplication(String appname,String targetpath,String goal) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused to write application , im in kiosk mode");
+			return;
+		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
 		Vector savestats=XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
