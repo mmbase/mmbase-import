@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<TITLE>MMRunner index page</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+
+<TABLE width=97% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>MMRunner version</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			Welcome to Runner the quick unzip & go version of the MMBase Content management system.<BR><BR>
+			This is a full working MMBase setup that comes with several simple applications auto-deployed. Its goal is allow people to use MMBase within minutes of downloading the system and see what its all about. Its also handy to test applications without using your production machines/setups. This version is for people who are oke with the bundled server and database for the ohther setups download the source version of MMBase.<BR><BR>
+			The MMbase Team.
+			<BR><BR>
+		</TD>
+</TR>
+<TR>
+	<TD>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>License info & Thanks to </B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			MMBase itself is released as OpenSource product (see main website). But to allow us to create this MMRunner version we needed to include a application server and a database. Since we wanted a simple and 100% java solution we used orion and hypersonic but MMBase itself supports many more both commercial and opensource products.<BR><BR>
+			About Orion :<BR><BR>
+			Orion is a great j2ee application server that is 100% java based, easy to install and follows all the new and hip specs. Its not free but at $1500 its very cheap indeed and it is free for development and non-profit use. Many thanks to the orion people for allowing us to include it in the demo version. More info on orion at www.orionserver.com.
+			<BR><BR>
+			About Hypersonic :<BR><BR>
+			Hypersonic is a small 100% java based JDBC database, its opensource, fast very small (about 100kb). It also supports a memory only mode what we use in the demo meaning that its empty once you stop the server. For more info on Hypersonic at http://hsql.oron.ch.<BR><BR>
+
+		<CENTER>
+			<INPUT TYPE="hidden" VALUE="" NAME="dummy">
+			<INPUT TYPE="SUBMIT" VALUE="OK">
+		</CENTER>
+		</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
