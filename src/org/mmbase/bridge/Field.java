@@ -80,9 +80,10 @@ public interface Field {
      * Returns the maximum length of data this field can contain.
      * For example if a field contains characters the size indicates the
      * maximum number of characters it can contain.
+     * If the field is a numeric field (such as an integer), the result is -1.
      *
      * @return  the maximum length of data this field can contain
      */
-	public int getSize();
+	public int getMaxLength();
 	
 }

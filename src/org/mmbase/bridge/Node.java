@@ -26,19 +26,14 @@ public interface Node {
     public Cloud getCloud();
 
 	/**
-     * Returns the node manager for this node.
+     * Returns the node manager of this node.
      */
     public NodeManager getNodeManager();
 	
 	/**
-     * Returns the unique number for this node. Every node has a unique number
-     * wich can be used to refer to it. In addition to this number a node can
-     * have one or more aliases.
-     *
-     * @return the unique number for this node
-     * @see    #addAlias(String alias)
+     * Returns the node number
      */
-    public int getNodeNumber();
+    public int getNumber();
 	
 	/** 
      * Sets the value of the specified field using an object.
@@ -198,126 +193,90 @@ public interface Node {
 	 public String toString();
 
 	/**
-	 * Checks whether this node has any relations.
-     *
+	 * Checks whether the Node has any relations
 	 * @return <code>true</code> if the node has relations
 	 */
 	public boolean hasRelations();
 		
 	/**
-	 * Removes all relation nodes attached to this node.
+	 * Removes all relations of the node
 	 */
 	public void removeRelations();
 
 	/**
- 	 * Removes all relation nodes with a certain relation manager that are
-     * attached to this node.
-     *
-	 * @param relationManager  the name of the relation manager the removed
-     *                         relation nodes should have
+ 	 * Removes all relations of certain type of this node
+	 * @param type of relation
 	 */
-	public void removeRelations(String relationManager);
+	public void removeRelations(String type);
 
 	/**
-     * Returns all relation nodes attached to this node.
-     *
-	 * @return a list of relation nodes
+	 * Retrieve all relations of this node
+	 * @return a <code>List</code> of all relations of Node
 	 */
 	public RelationList getRelations();
 
 	/**
-     * Returns all relation nodes attached to this node that have a specific
-     * relation manager.
-     *
-	 * @param relationManager  the name of the relation manager the returned
-     *                         relation nodes should have
-	 * @return                 a list of relation nodes
+	 * Gets all relations of a certain type
+	 * @param type of relation
+	 * @return a <code>List</code> of all relations of the Node of a certain type
 	 */
-	public RelationList getRelations(String relationManager);
+	public RelationList getRelations(String type);
 	
 	/**
-	 * Returns the number of relations this node has with other nodes.
-     *
-	 * @return the number of relations this node has with other nodes
+	 * Count the relations attached to the Node
+	 * @return number of relations
 	 */
 	public int countRelations();
 
 	/**
-     * Returns the number of relation nodes attached to this node that have a
-     * specific relation manager.
-     *
-	 * @return the number of relation nodes attached to this node that have a
-     *         specific relation manager
+	 * Count the relations of a specific type attached to the Node 
+	 * @return number of relations of a specific type
 	 */
-	public int countRelations(String relationManager);
+	public int countRelations(String type);
 
 	/**
-     * Returns all related nodes.
-     * The returned nodes are not the nodes directly attached to this node (the
-     * relation nodes) but the nodes attached to the relation nodes of this
-     * node.
-     *
-	 * @return a list of all related nodes
+	 * Retrieve all related Nodes
+	 * @return a <code>List</code> of all related Nodes
 	 */
 	public NodeList getRelatedNodes();
 
 	/**
-     * Returns all related nodes that have a specific node manager.
-     * The returned nodes are not the nodes directly attached to this node (the
-     * relation nodes) but the nodes attached to the relation nodes of this
-     * node.
-     *
-	 * @param nodeManager  the name of the node manager the returned nodes
-     *                     should have
-	 * @return             a list of related nodes
+	 * Retrieve all related nodes maintained by a given NodeManager
+	 * @param type name of the NodeManager of the related nodes
+	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
-	public NodeList getRelatedNodes(String nodeManager);
+	public NodeList getRelatedNodes(String type);
 
 	/**
-     * Returns the number of related nodes that have a specific node manager.
-     * The counted nodes are not the nodes directly attached to this node (the
-     * relation nodes) but the nodes attached to the relation nodes of this
-     * node.
-     *
-	 * @param nodeManager  the name of the node manager the counted nodes
-     *                     should have
-	 * @return             the number of related nodes that have a specific node
-     *                     manager
+	 * Count all related nodes maintained by a given NodeManager
+	 * @param type name of the NodeManager of the related nodes
+	 * @return number of related nodes of a specific type
 	 */
 	public int countRelatedNodes(String type);
 	
 	/**
-     * Returns all aliases for this node.
-     *
-     * @return a list of alias names for this node
+     * Retrieves the aliases of this node
+     * @return a <code>List</code> with the alias anmes
      */
     public List getAliases();
 
 	/**
-     * Adds an alias for this node. An alias can be used to refer to a node in
-     * addition to his number.
-     *
-     * @param alias             the alias to be created for this node
-     * @throws BridgeException  if the alias allready exists
+     * Add an alias for this node
+     * @param aliasName the name of the alias (need to be unique)
      */
-    public void addAlias(String alias);
+    public void addAlias(String aliasName);
 
     /**
-     * Remove an alias for this node.
-     *
-     * @param alias  the alias to be removed for this node
+     * Remove an alias of this node
+     * @param aliasName the name of the alias
      */
-    public void removeAlias(String alias);
+    public void removeAlias(String aliasName);
 
     /**
-     * Adds a relation between this node and a specified node to the cloud.
-     *
-     * @param destinationNode   the node to which you want to relate this node
-	 * @param relationManager   the relation manager you want to use
-	 * @return                  the added relation
-     * @throws BridgeException  if the relation manager is not the right one
-     *                          for this type of relation
+     * Adds a relation to this node
+     * @param destinationNode the node to which you want to relate this node
+	 * @param relationManager The relation manager you want to use
+	 * @return the added relation
      */
-    public Relation createRelation(Node destinationNode,
-                                   RelationManager relationManager);
+    public Relation createRelation(Node destinationNode, RelationManager relationManager);
 }

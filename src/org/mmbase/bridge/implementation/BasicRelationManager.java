@@ -54,7 +54,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     * @return a node of type <code>Relation</code>
     */
     public Node createNode() {
-//        cloud.assert(Operation.CREATE,typeRelNode.getIntValue("number"));
+//        cloud.assert(Operation.CREATE,typeRelNode.getNumber());
         // create object as a temporary node
         int id = cloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
@@ -119,13 +119,51 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 	 * @return the added relation
      */
     public Relation createRelation(Node sourceNode, Node destinationNode) {
-        // check on insert : cannot craete relation is not committed
+        //
+        // checks whether all components are part of the same cloud/transaction
+        // maybe should be amde more flexible?
+        //
+        if (sourceNode.getCloud() != cloud) {
+            throw new BasicBridgeException("Relationmanager and source node are not in the same transaction or in different clouds");
+        }
+        if (destinationNode.getCloud() != cloud) {
+            throw new BasicBridgeException("Relationmanager type and destination node are not in the same transaction or in different clouds");
+        }
+        if (!(cloud instanceof Transaction)  &&
+             (((BasicNode)sourceNode).isNew()) || (((BasicNode)destinationNode).isNew())) {
+            throw new BasicBridgeException("Cannot add a relation to a new node that has not been committed.");
+	    }
+
+	    // check types of source and destination	
+	    if (!sourceNode.getNodeManager().equals(getSourceManager())) {
+            throw new BasicBridgeException("Source node is not of the correct type.");
+	    }
+	    if (!destinationNode.getNodeManager().equals(getDestinationManager())) {
+            throw new BasicBridgeException("Destination node is not of the correct type.");
+	    }
+	
        Relation relation = (Relation)createNode();
        relation.setSource(sourceNode);
        relation.setDestination(destinationNode);
        relation.setIntValue("rnumber",roleID);
        relation.commit();
        return relation;
-    };
+    }
 	
+    /**
+    * Compares two relationmanagers, and returns true if they are equal.
+    * This effectively means that both objects are relationmanagers, and they both use to the same builder type
+    * @param o the object to compare it with
+    */
+    public boolean equals(Object o) {
+        return (o instanceof RelationManager) && (o.hashCode()==hashCode());
+    }
+
+    /**
+    * Returns the relationmanager's hashCode.
+    * This effectively returns the object number of the typerel record
+    */
+    public int hashCode() {
+        return  typeRelNode.getNumber();
+    }
 }

@@ -111,7 +111,7 @@ public class ModuleHandler implements Module {
 	    if (mmbase_module instanceof ProcessorInterface) {
 	        return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
 	    } else {
-	        throw new BridgeException("getInfo() is not supported by this module.");
+	        throw new BasicBridgeException("getInfo() is not supported by this module.");
 	    }
 	}
 	
@@ -182,11 +182,26 @@ public class ModuleHandler implements Module {
       		    }
       		    return new BasicNodeList(res,cloud,tempNodeManager);
     	    } catch (Exception e) {
-    	        throw new BridgeException(""+e);
+    	        throw new BasicBridgeException(""+e);
     	    }
 	
 	    } else {
-	        throw new BridgeException("getInfo() is not supported by this module.");
+ 	        throw new BasicBridgeException("getInfo() is not supported by this module.");
 	    }
 	}
+
+    /**
+    * Compares two modules, and returns true if they are equal.
+    * @param o the object to compare it with
+    */
+    public boolean equals(Object o) {
+        return (o instanceof Module) && (o.hashCode()==hashCode());
+    };
+
+    /**
+    * Returns the module's hashCode.
+    */
+    public int hashCode() {
+        return mmbase_module.hashCode();
+    };
 }

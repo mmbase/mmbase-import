@@ -78,7 +78,7 @@ public class BasicNode implements Node {
   	    // check whether the node is currently in transaction
   	    // and intialize temporaryNodeId if that is the case
   	    if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(noderef))) {
-  	        temporaryNodeId=noderef.getIntValue("number") ;
+  	        temporaryNodeId=noderef.getNumber();
   	    }
   	}
 
@@ -97,7 +97,7 @@ public class BasicNode implements Node {
   	
   	protected MMObjectNode getNode() {
   	    if (noderef==null) {
-	        throw new BridgeException("Node is invalidated or removed.");
+	        throw new BasicBridgeException("Node is invalidated or removed.");
 	    }
 	    return noderef;
   	}
@@ -117,10 +117,10 @@ public class BasicNode implements Node {
     }
 	
 	/**
-     * Retrieves the node ID
+     * Retrieves the node number
      */
-    public int getNodeNumber() {
-        int i=getIntValue("number");
+    public int getNumber() {
+        int i=getNode().getNumber();
         // new node, thus return temp id.
         // note that temp id is equal to "number" if the node is edited
         if (i==-1) {
@@ -128,7 +128,14 @@ public class BasicNode implements Node {
         }
         return i;
     }
-	
+
+    /**
+    * Returns whether this is a new (not yet committed) node.
+    */
+    boolean isNew() {
+        return isnew;
+    }
+    	
     /**
     * Edit this node.
     * Check whether edits are allowed and prepare a node for edits if needed.
@@ -144,13 +151,13 @@ public class BasicNode implements Node {
         if (account==null) {
             account = cloud.getAccount();
         } else if (account != cloud.getAccount()) {
-            throw new BridgeException("User context changed. Cannot proceed to edit this node .");
+            throw new BasicBridgeException("User context changed. Cannot proceed to edit this node .");
         }
 	    if (nodeManager instanceof VirtualNodeManager) {
-            throw new BridgeException("Cannot make edits to a virtual node.");
+            throw new BasicBridgeException("Cannot make edits to a virtual node.");
 	    }
 	
-	    int realnumber=noderef.getIntValue("number");
+	    int realnumber=noderef.getNumber();
 	    if (realnumber!=-1) {
 	        if (action==ACTION_REMOVE) {
 //	            cloud.assert(Operation.REMOVE,realnumber);
@@ -167,12 +174,12 @@ public class BasicNode implements Node {
 	    if (temporaryNodeId==-1) {
             // when committing a temporary node id must exist (otherwise fail).
 	        if (action == ACTION_COMMIT) {
-                throw new BridgeException("This node cannot be comitted (not changed).");
+                throw new BasicBridgeException("This node cannot be comitted (not changed).");
     	    }	
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
 	        if (action == ACTION_ADD) {
-                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
+                throw new BasicBridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
 	        }	
 
             // when editing a temporary node id must exist (otherwise create one)
@@ -182,7 +189,7 @@ public class BasicNode implements Node {
             // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
 	        if ((action == ACTION_EDIT) ||
      	        ((action == ACTION_REMOVE) && (nodeManager instanceof BasicTransaction))) {
-     	        int id = getNodeNumber();
+     	        int id = getNumber();
 	            String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
 	            if (cloud instanceof BasicTransaction) {
     	            // store new temporary node in transaction
@@ -202,6 +209,9 @@ public class BasicNode implements Node {
 	 */
 	public void setValue(String attribute, Object value) {
 	    Edit(ACTION_EDIT);
+	    if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)) {
+	        throw new BasicBridgeException("Not allowed to change field "+attribute);
+	    }
 	    BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
 	}
 
@@ -341,7 +351,7 @@ public class BasicNode implements Node {
 	        if (isnew) {
 //	            node.insert(cloud.getUserName());
                 node.insert("bridge");
-	            cloud.createSecurityInfo(getNodeNumber());
+	            cloud.createSecurityInfo(getNumber());
 	            isnew=false;
 	        } else {
 	            node.commit();
@@ -403,7 +413,7 @@ public class BasicNode implements Node {
                 // option unset, fail if any relations exit
 	            int relations = getNode().getRelationCount();
 	            if(relations!=0) {
-	                throw new BridgeException("This node cannot be removed. It has "+relations+" relations attached to it.");
+	                throw new BasicBridgeException("This node cannot be removed. It has "+relations+" relations attached to it.");
 	            }
             }
             // remove aliases
@@ -476,7 +486,7 @@ public class BasicNode implements Node {
 	    RelDef reldef=mmb.getRelDef();
     	int rType=reldef.getGuessedNumber(type);
     	if (rType==-1) {
-    	    throw new BridgeException("Cannot find relation type.");
+    	    throw new BasicBridgeException("Cannot find relation type.");
     	} else {
     	    deleteRelations(rType);
     	}
@@ -495,7 +505,7 @@ public class BasicNode implements Node {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
 	            if ((type==-1) || (mmnode.getIntValue("rnumber")==type)) {
-//	                if (cloud.check(Operation.READ, mmnode.getIntValue("number"))) {
+//	                if (cloud.check(Operation.READ, mmnode.getNumber())) {
 	                    relvector.add(mmnode);
 //	                }
 	            }
@@ -521,7 +531,7 @@ public class BasicNode implements Node {
 	    Vector relvector=new Vector();
 	    int rType=mmb.getRelDef().getGuessedNumber(type);
     	if (rType==-1) {
-    	    throw new BridgeException("Relation type "+type+" does not exist.");
+    	    throw new BasicBridgeException("Relation type "+type+" does not exist.");
     	} else {
     	    return getRelations(rType);
     	}
@@ -562,7 +572,7 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-//	            if (cloud.check(Operation.READ, mmnode.getIntValue("number"))) {
+//	            if (cloud.check(Operation.READ, mmnode.getNumber())) {
 	                relvector.add(mmnode);
 //	            }
 	        }
@@ -581,7 +591,7 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-//	            if (cloud.check(Operation.READ, mmnode.getIntValue("number"))) {
+//	            if (cloud.check(Operation.READ, mmnode.getNumber())) {
 	                relvector.add(mmnode);
 //	            }
 	        }
@@ -606,7 +616,7 @@ public class BasicNode implements Node {
 	    Vector aliasvector=new Vector();
 	    OAlias alias=mmb.OAlias;
 	    if (alias!=null) {
-	        for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNodeNumber()); e.hasMoreElements();) {
+	        for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNumber()); e.hasMoreElements();) {
 	            MMObjectNode node=(MMObjectNode)e.nextElement();
 	            aliasvector.add(node.getStringValue("name"));
 	        }
@@ -628,9 +638,9 @@ public class BasicNode implements Node {
 	        // this will be resolved by the transaction manager
 	        aliasNode.setValue("_destination", getValue("_number"));
 	    } else if (isnew) {
-            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
+            throw new BasicBridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
-            getNode().parent.createAlias(getNodeNumber(),aliasName);
+            getNode().parent.createAlias(getNumber(),aliasName);
         }
     }
 
@@ -646,7 +656,7 @@ public class BasicNode implements Node {
 	    // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
 	    // Live with it.
 	    if (!isnew) {
-	        String sql = "WHERE (destination"+"="+getNodeNumber()+")";
+	        String sql = "WHERE (destination"+"="+getNumber()+")";
 	        if (aliasName!=null) {
 	            sql += " AND (name='"+aliasName+"')";
 	        }
@@ -685,15 +695,6 @@ public class BasicNode implements Node {
      */
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         Edit(ACTION_LINK);
-        if (relationManager.getCloud() != cloud) {
-            throw new BridgeException("Relation type and node are not in the same transaction or in different clouds");
-        }
-        if (destinationNode.getCloud() != cloud) {
-            throw new BridgeException("Destination and node are not in the same transaction or in different clouds");
-        }
-        if (!(cloud instanceof Transaction)  && isnew) {
-            throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
-	    }
 	    Relation relation = relationManager.createRelation(this,destinationNode);
         return relation;
     };
@@ -713,6 +714,6 @@ public class BasicNode implements Node {
     * This effectively returns th objectnode's number
     */
     public int hashCode() {
-        return getNodeNumber();
+        return getNumber();
     };
 }

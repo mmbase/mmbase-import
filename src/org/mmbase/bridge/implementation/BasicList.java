@@ -38,7 +38,7 @@ public class BasicList extends AbstractList implements List {
 	    try {
     	    return objects[index];
     	} catch (Exception e) {
-    	    throw new BridgeException("List : Invalid list index");
+    	    throw new BasicBridgeException("List : Invalid list index");
     	}
     }
 

@@ -275,8 +275,25 @@ public class BasicNodeManager implements NodeManager {
             }
             return new BasicNodeList(res,cloud,tempNodeManager);
     	} catch (Exception e) {
-    	    throw new BridgeException(""+e);
+    	    throw new BasicBridgeException(""+e);
     	}
 	}
 
+
+    /**
+    * Compares two nodemanagers, and returns true if they are equal.
+    * This effectively means that both objects are nodemanagers, and they both use to the same builder type
+    * @param o the object to compare it with
+    */
+    public boolean equals(Object o) {
+        return (o instanceof NodeManager) && (o.hashCode()==hashCode());
+    };
+
+    /**
+    * Returns the nodemanager's hashCode.
+    * This effectively returns the buidlers's object type number
+    */
+    public int hashCode() {
+        return builder.oType;
+    };
 }

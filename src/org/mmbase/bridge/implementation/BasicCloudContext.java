@@ -68,7 +68,7 @@ public class BasicCloudContext implements CloudContext {
 
             localClouds.put(cloud.getName(),cloud);
         } else {
-            throw new BridgeException("MMBase has not been started, and cannot be started by this Class");
+            throw new BasicBridgeException("MMBase has not been started, and cannot be started by this Class");
         }
     }
 
@@ -90,7 +90,7 @@ public class BasicCloudContext implements CloudContext {
 	public Module getModule(String moduleName) {
 	    Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
-            throw new BridgeException("Module "+moduleName+" does not exist.");
+            throw new BasicBridgeException("Module "+moduleName+" does not exist.");
         }
         return mod;
 	}
@@ -127,7 +127,7 @@ public class BasicCloudContext implements CloudContext {
 	public Cloud getCloud(String cloudName, boolean readonly) {
         Cloud cloud = (Cloud)localClouds.get(cloudName);
         if (cloud==null) {
-            throw new BridgeException("Cloud "+cloudName+" does not exist.");
+            throw new BasicBridgeException("Cloud "+cloudName+" does not exist.");
         }
 	    if (!readonly) {
             cloud = ((BasicCloud)cloud).getCopy();
