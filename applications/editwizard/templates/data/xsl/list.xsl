@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.32 2003-06-05 14:48:31 michiel Exp $
+  @version $Id: list.xsl,v 1.33 2003-11-12 13:57:07 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -41,7 +41,7 @@
        ================================================================================ -->
 
   <xsl:template name="style"> <!-- It can be usefull to add a style, change the title -->
-    <title><xsl:value-of select="$wizardtitle" /> - <xsl:value-of select="$title" /></title>
+    <title><xsl:value-of select="$wizardtitle" /> - <xsl:value-of disable-output-escaping="yes" select="$title" /></title>
     <link rel="stylesheet" type="text/css" href="../style/list.css" />
     <xsl:call-template name="extrastyle" /> <!-- override base.xsl for this -->
   </xsl:template>
@@ -77,7 +77,7 @@
               <xsl:if test="$creatable='true'">
                 <td width="250" valign="top">
                   <span class="header">
-                    <xsl:value-of select="$title"/> :
+                    <xsl:value-of disable-output-escaping="yes" select="$title"/> :
                   </span>
                   <br/>
                   <a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
@@ -87,7 +87,7 @@
               </xsl:if>
               <td valign="top">
                 <form>
-                  <span class="header"><xsl:call-template name="prompt_search_list" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:value-of select="$title"/>:</span>
+                  <span class="header"><xsl:call-template name="prompt_search_list" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text> <xsl:value-of disable-output-escaping="yes" select="$title"/>:</span>
                   <br />
                       
                   <xsl:choose>
