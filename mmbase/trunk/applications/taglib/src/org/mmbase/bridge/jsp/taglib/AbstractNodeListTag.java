@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
@@ -90,7 +91,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     /**
      * A handle necessary when using the Time Tag;
      */
-    protected int timerHandle;
+    protected int timerHandle = -1;
 
     private String previousValue = null; // static voor doInitBody
 
@@ -162,10 +163,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
-        javax.servlet.jsp.tagext.TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
+
+        // serve parent timer tag:
+        TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
             timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         }
+
+
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof NodeList)) {
@@ -234,6 +239,12 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
        
         } 
         returnList   = nodes;
+
+        // returnList is know, now we can serve parent formatter tag
+        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+        if (f != null && f.wantXML()) {            
+            returnList.toXML(f.getDocument());
+        }
 
         returnValues = returnList.nodeIterator();        
         currentItemIndex= -1;

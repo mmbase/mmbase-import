@@ -99,46 +99,53 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     public int doStartTag() throws JspTagException{
         Node node = null;
-        if (referid != null) {
-            // try to find if already in context.
-            if (log.isDebugEnabled()) {
-                log.debug("looking up Node with " + referid + " in context");
-            }            
-            node = getNode(referid);
-            if(referid.equals(id)) {
-                getContextTag().unRegister(referid); 
-                // register it again, but as node
-                // (often referid would have been a string).
-                
-            }
-        }
 
-        if (node == null) {
-            log.debug("node is null");
-            if (number != null) {
-                // explicity indicated which node (by number or alias)
-                try {
-                    node = getCloud().getNode(number);
-                } catch (org.mmbase.bridge.NotFoundException e) {
-                    log.warn(e.toString());
-                    switch(notfound) {
-                    case NOT_FOUND_SKIP:  return SKIP_BODY;
-                    default: throw e;
-                    }                        
+        try {
+            if (referid != null) {
+                // try to find if already in context.
+                if (log.isDebugEnabled()) {
+                    log.debug("looking up Node with " + referid + " in context");
+                }            
+                node = getNode(referid);
+                if(referid.equals(id)) {
+                    getContextTag().unRegister(referid); 
+                    // register it again, but as node
+                    // (often referid would have been a string).
+                    
                 }
-            } else {
-                // get the node from a parent element.
-                NodeProvider nodeProvider = (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", null);
-                if (element != null) {
-                    node = nodeProvider.getNodeVar().getNodeValue(element);
+            }
+            
+            if (node == null) {
+                log.debug("node is null");
+                if (number != null) {
+                    // explicity indicated which node (by number or alias)
+                    node = getCloud().getNode(number);             
                 } else {
-                    node = nodeProvider.getNodeVar();
+                    // get the node from a parent element.
+                    NodeProvider nodeProvider = (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", null);
+                    if (element != null) {
+                        node = nodeProvider.getNodeVar().getNodeValue(element);
+                    } else {
+                        node = nodeProvider.getNodeVar();
+                    }
+                    
                 }
-
             }
+        } catch (org.mmbase.bridge.NotFoundException e) {
+            log.warn(e.toString());
+            switch(notfound) {
+            case NOT_FOUND_SKIP:  return SKIP_BODY;
+            default: throw e;
+            }                        
         }
+
         setNodeVar(node);        
 
+        // if direct parent is a Formatter Tag, then communicate 
+        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+        if (f!= null && f.wantXML()) {
+            node.toXML(f.getDocument());
+        }
         //log.debug("found node " + node.getValue("gui()"));
         return EVAL_BODY_TAG;
     }

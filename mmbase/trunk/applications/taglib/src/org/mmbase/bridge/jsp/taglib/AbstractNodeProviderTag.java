@@ -121,7 +121,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
     
     public int doEndTag() throws JspTagException {
-        id = null;
+        id = null; // setting attriubtes to null is perhaps not that prudent.
         node = null;
         modified = false;
         return EVAL_PAGE;
