@@ -28,6 +28,10 @@
 
 <mm:node number="$currentfolder" id="mycurrentfolder"/>
 
+<mm:import externid="contact">-1</mm:import>
+<mm:compare referid="contact" value="-1" inverse="true">
+  <mm:import id="user" reset="true"><mm:write referid="contact"/></mm:import>
+</mm:compare>
 
 <%-- Check if the move button is pressed --%>
 <mm:present referid="action1">
@@ -122,7 +126,7 @@
 	          %>
 	  </mm:node>
 
-    <mm:redirect referids="$referids,currentfolder,typeof" page="$callerpage"/>
+    <mm:redirect referids="$referids,currentfolder,typeof,contact?" page="$callerpage"/>
 
   </mm:compare>
 </mm:present>
@@ -132,7 +136,7 @@
 <mm:present referid="action2">
   <mm:import id="action2text"><fmt:message key="BACK" /></mm:import>
   <mm:compare referid="action2" referid2="action2text">
-    <mm:redirect referids="$referids,currentfolder,typeof" page="$callerpage"/>
+    <mm:redirect referids="$referids,currentfolder,typeof,contact?" page="$callerpage"/>
   </mm:compare>
 </mm:present>
 
@@ -165,7 +169,7 @@
   </div>
   <div class="contentBodywit">
     <%-- Show the form --%>
-    <form name="moveitems" method="post" action="<mm:treefile page="/workspace/moveitems.jsp" objectlist="$includePath" referids="$referids"/>">
+    <form name="moveitems" method="post" action="<mm:treefile page="/portfolio/moveitems.jsp" objectlist="$includePath" referids="$referids"/>">
       <table class="Font">
 
       <tr>
@@ -177,16 +181,18 @@
       <tr>
       <td>
       <select name="foldernumber">
-        <mm:node number="$user">
-          <mm:relatednodes type="workspaces">
-            <mm:relatednodescontainer type="folders">
-              <mm:relatednodes>
-                <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                <option value="<mm:field name="number"/>"><fmt:message key="MYDOCUMENTS" /> &gt; <mm:field name="name"/></option>
-              </mm:relatednodes>
-            </mm:relatednodescontainer>
-          </mm:relatednodes>
-        </mm:node>
+        <mm:compare referid="contact" value="-1">
+          <mm:node number="$user">
+            <mm:relatednodes type="workspaces">
+              <mm:relatednodescontainer type="folders">
+                <mm:relatednodes>
+                  <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
+                  <option value="<mm:field name="number"/>"><fmt:message key="MYDOCUMENTS" /> &gt; <mm:field name="name"/></option>
+                </mm:relatednodes>
+              </mm:relatednodescontainer>
+            </mm:relatednodes>
+          </mm:node>
+        </mm:compare>
         <mm:present referid="class">
           <mm:node number="$class">
             <mm:relatednodes type="workspaces">
@@ -236,6 +242,9 @@
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
       <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>"/>
       <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
+      <mm:compare referid="contact" value="-1" inverse="true">
+        <input type="hidden" name="contact" value="<mm:write referid="contact"/>"/>
+      </mm:compare>
       <input class="formbutton" type="submit" name="action1" value="<fmt:message key="MOVE" />" />
       <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
     </form>

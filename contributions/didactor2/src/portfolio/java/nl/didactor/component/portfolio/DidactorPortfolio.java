@@ -58,14 +58,164 @@ public class DidactorPortfolio extends Component {
 		}
 	}
 
-	/**
-	 * This method is called when a new object is added to Didactor. If the component
-	 * needs to insert objects for this object, it can do so. 
-	 */
-	public boolean notifyCreate(MMObjectNode node) {
-		if (node.getBuilder().getTableName().equals("people"))
-			return true;
-		return true;
-	}
+    /**
+     * This method is called when a new object is added to Didactor. If the component
+     * needs to insert objects for this object, it can do so. 
+     */
+    public boolean notifyCreate(MMObjectNode node) {
+        if (node.getBuilder().getTableName().equals("people"))
+            return createUser(node);
+        if (node.getBuilder().getTableName().equals("classes"))
+            return createClass(node);
+        return true;
+    }
 
+    /**
+     * Create a personal portfolio's for the user.
+     */
+    private boolean createUser(MMObjectNode user) {
+        MMBase mmb = user.getBuilder().getMMBase();
+        String username = user.getStringValue("username");
+        MMObjectBuilder portfolios = mmb.getBuilder("portfolios");
+        MMObjectBuilder folders = mmb.getBuilder("folders");
+        MMObjectBuilder posrelBuilder = mmb.getBuilder("posrel");
+        InsRel insrel = mmb.getInsRel();
+        int related = mmb.getRelDef().getNumberByName("related");
+        int posrel = mmb.getRelDef().getNumberByName("posrel");
+
+        MMObjectNode portfolio = portfolios.getNewNode(username);
+        portfolio.setValue("type", 0);
+        portfolio.setValue("name", "Development portfolio");
+        portfolios.insert(username, portfolio);
+        MMObjectNode relation = insrel.getNewNode(username);
+        relation.setValue("snumber", user.getNumber());
+        relation.setValue("dnumber", portfolio.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+
+        portfolio = portfolios.getNewNode(username);
+        portfolio.setValue("type", 1);
+        portfolio.setValue("name", "Assessment portfolio");
+        portfolios.insert(username, portfolio);
+        relation = insrel.getNewNode(username);
+        relation.setValue("snumber", user.getNumber());
+        relation.setValue("dnumber", portfolio.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+        int assessment = portfolio.getNumber();
+
+        portfolio = portfolios.getNewNode(username);
+        portfolio.setValue("type", 2);
+        portfolio.setValue("name", "Showcase portfolio");
+        portfolios.insert(username, portfolio);
+        relation = insrel.getNewNode(username);
+        relation.setValue("snumber", user.getNumber());
+        relation.setValue("dnumber", portfolio.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+
+        MMObjectNode folder = folders.getNewNode(username);
+        folder.setValue("name", "OER PTA");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 0);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "EVC");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 1);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "Studiewijzers");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 2);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "Cijferlijst");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 3);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "Bijlagen");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 4);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "Beroepshouding");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 5);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "BPV");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 6);
+        posrelBuilder.insert(username, relation);
+
+        folder = folders.getNewNode(username);
+        folder.setValue("name", "Intake");
+        folders.insert(username, folder);
+        relation = posrelBuilder.getNewNode(username);
+        relation.setValue("snumber", assessment);
+        relation.setValue("dnumber", folder.getNumber());
+        relation.setValue("rnumber", posrel);
+        relation.setValue("pos", 7);
+        posrelBuilder.insert(username, relation);
+
+        return true;
+    }
+
+    /**
+     * Create a class portfolio.
+     */
+    private boolean createClass(MMObjectNode cls) {
+        MMBase mmb = cls.getBuilder().getMMBase();
+        String username = "system";
+        MMObjectBuilder portfolios = mmb.getBuilder("portfolio");
+        InsRel insrel = mmb.getInsRel();
+        int related = mmb.getRelDef().getNumberByName("related");
+
+        MMObjectNode portfolio = portfolios.getNewNode(username);
+        portfolio.setValue("name", "Portfolio van klas '" + cls.getStringValue("name") + "'");
+        portfolios.insert(username, portfolio);
+        MMObjectNode relation = insrel.getNewNode(username);
+        relation.setValue("snumber", cls.getNumber());
+        relation.setValue("dnumber", portfolio.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+
+        return true;
+    }
 }
