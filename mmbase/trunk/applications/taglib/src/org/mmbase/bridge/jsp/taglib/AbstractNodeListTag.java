@@ -234,10 +234,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
        
         } 
         returnList   = nodes;
-        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null,false);
-        if (f!= null) {
-            returnList.toXML(f.getDocument());
-        }
 
         returnValues = returnList.nodeIterator();        
         currentItemIndex= -1;
