@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.6 2003-03-07 11:49:19 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.7 2003-04-18 13:06:35 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -134,7 +134,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return the applied scheme
      */
     protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName) {
-        String scheme=super.applyCreateScheme(tableName,fieldDefinitions,parentTableName);
+        String scheme = super.applyCreateScheme(tableName,fieldDefinitions,parentTableName);
         if (scheme==null) {
             // maybe we should throw an exception instead?
             if (supportsExtendedTables() && (parentTableName!=null)) {
@@ -702,41 +702,41 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @throws StorageException if an error occurred during create
      */
     public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException {
-        log.debug("Creating a table for " + builder);
+        if (log.isDebugEnabled()) {
+            log.debug("Creating a table for " + builder);
+        }
         // use the builder to get the fields and create a
         // valid create SQL string
-        List fields=getFieldsOrderCreate(builder);
-        String createfields=null;
-        String parentfields=null;
-        for (Iterator f=fields.iterator(); f.hasNext();) {
-            FieldDefs field=(FieldDefs)f.next();
-            if ((field.getDBState()==FieldDefs.DBSTATE_PERSISTENT) ||
-                (field.getDBState()==FieldDefs.DBSTATE_SYSTEM)) {
+        List fields = getFieldsOrderCreate(builder);
+        StringBuffer createFields = new StringBuffer();
+        StringBuffer parentFields = new StringBuffer();
+        for (Iterator f = fields.iterator(); f.hasNext();) {
+            FieldDefs field = (FieldDefs) f.next();
+            if ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
+                (field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 // skip bytefields when values are written to file
-                if (getStoreBinaryAsFile() && (field.getDBType()==FieldDefs.TYPE_BYTE)) continue;
+                if (getStoreBinaryAsFile() && (field.getDBType() == FieldDefs.TYPE_BYTE)) continue;
                 // convert a fielddef to a field SQL createdefinition
-                String part=constructFieldDefinition(builder,field);
-                if (isParentField(builder,field.getDBName())) {
-                    if (parentfields==null) {
-                        parentfields=part;
-                    } else {
-                        parentfields+=", "+part;
+                String part = constructFieldDefinition(builder,field);
+                if (isParentField(builder, field.getDBName())) {
+                    if (parentFields.length() > 0) {
+                        parentFields.append(", ");
                     }
+                    parentFields.append(part);
                 } else {
-                    if (createfields==null) {
-                        createfields=part;
-                    } else {
-                        createfields+=", "+part;
+                    if (createFields.length() > 0) {
+                        createFields.append(", ");
                     }
+                    createFields.append(part);
                 }
             }
         }
-        String tableName=builder.getFullTableName();
+        String tableName = builder.getFullTableName();
         log.debug("table " + tableName);
-        String parentTableName=getParentTableName(builder);
-        if (parentTableName!=null) parentTableName=getFullTableName(parentTableName);
-        String sqlcreate= createSQL(tableName,createfields,parentTableName,parentfields);
-        boolean exists=((DatabaseTransaction)trans).executeUpdate(sqlcreate);
+        String parentTableName = getParentTableName(builder);
+        if (parentTableName!=null) parentTableName = getFullTableName(parentTableName);
+        String sqlcreate = createSQL(tableName, createFields.toString(), parentTableName, parentFields.toString());
+        boolean exists = ((DatabaseTransaction)trans).executeUpdate(sqlcreate);
         if (exists) existingTables.add(tableName);
         return exists;
     }
