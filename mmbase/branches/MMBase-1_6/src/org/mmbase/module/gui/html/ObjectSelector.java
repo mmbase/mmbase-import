@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.12.2.1 2003-07-03 13:13:18 vpro Exp $
+ * @version $Id: ObjectSelector.java,v 1.12.2.2 2003-07-03 14:28:11 vpro Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -388,7 +388,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * Sets the selection query for this user in this editor.
      */
     boolean setObjectSelectionConditions(String user, Hashtable vars) {
-        EditState state = stateMngr.getState(user);
+        EditState state = stateMngr.getEditState(user);
 
         // Waardes uit de values lezen en met setQueryString() aan
         // de userstate geven
