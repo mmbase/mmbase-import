@@ -24,7 +24,7 @@ import org.mmbase.util.StringTagger;
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.7 2002-03-30 16:32:43 michiel Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.8 2002-07-17 16:39:14 michiel Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 
@@ -65,8 +65,9 @@ public class MultilevelCacheHandler extends Cache {
      * @todo tagger passed should be the Key, hash should be calculated by entry
      *       types should be a List
      */
-    public Object put(Object hash,Object o,Vector types,StringTagger tagger) {
-        MultilevelCacheEntry n=new MultilevelCacheEntry(this,hash,o,tagger);
+    public Object put(Object hash, Object o, Vector types,StringTagger tagger) {
+        if (! isActive()) return null;
+        MultilevelCacheEntry n = new MultilevelCacheEntry(this, hash, o, tagger);
         addListeners(types,n);
         return put(hash,n);
     }
@@ -96,7 +97,7 @@ public class MultilevelCacheHandler extends Cache {
     public synchronized Object get(Object key) {
         // get the wrapper but return the
         // object
-        MultilevelCacheEntry n=(MultilevelCacheEntry)super.get(key);
+        MultilevelCacheEntry n = (MultilevelCacheEntry)super.get(key);
         if (n==null) {
             return null;
         } else {
