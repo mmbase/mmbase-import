@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.26 2003-01-22 16:30:46 rob Exp $
+ * @version $Id: MediaSources.java,v 1.27 2003-01-22 22:17:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -404,6 +404,7 @@ public class MediaSources extends MMObjectBuilder {
         return result;
     }
     /**
+     * Returns all URLs for this source, but filtered, with the best ones on top.
      * @author mm
      */
     protected List getSortedURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
@@ -417,6 +418,9 @@ public class MediaSources extends MMObjectBuilder {
      * @param source the media source.
      * @param providername the name of the provider that is going to be related.
      */
+
+    /* MM: commented out because does not compile against MMBase 1.6. It was not tested any way.
+
     public void addProvider(MMObjectNode source, String providername) {
         MMObjectBuilder providers = (MMObjectBuilder) mmb.getMMObject("mediaproviders");
         
@@ -454,7 +458,8 @@ public class MediaSources extends MMObjectBuilder {
             log.debug("relation created "+insrel);
         }
     }
-    
+    */    
+
     /**
      * get all mediaproviders belonging to this mediasource
      * @param mediasource the mediasource
