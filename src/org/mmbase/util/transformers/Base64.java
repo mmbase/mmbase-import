@@ -64,7 +64,8 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
             BASE64Decoder dec = new BASE64Decoder();
             return dec.decodeBuffer(r);
         } catch (Exception e) {
-            throw new IllegalArgumentException("the entered string to decode properly was wrong: ", e);
+            e.printStackTrace();
+            throw new IllegalArgumentException("the entered string to decode properly was wrong: " + e);
         }
     }
 
