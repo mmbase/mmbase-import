@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+ ]>
+<article>
+  <articleinfo>
+    <title>Documentation Overview</title>
+
+    <date>2002-07-28</date>
+
+    <edition>$Id: index.xml,v 1.47 2004-02-27 13:08:01 gerard Exp $</edition>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>About MMBase Documentation (<ulink id="aboutmmbasedocumentation"
+        url="documentation.html">HTML</ulink>, <ulink
+        id="aboutmmbasedocumenation.pdf" url="documentation.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>How To Use XML (<ulink id="howtousexml" url="xml-how-to.html">HTML</ulink>,
+        <ulink id="howtousexml.pdf" url="xml-how-to.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Glossary (<ulink id="glossary" url="glossary.html">HTML</ulink>,
+        <ulink id="glossary.pdf" url="glossary.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>General Documentation</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>MMBase Architectural Overview (<ulink id="architecturaloverview"
+        url="general/architecture.html">HTML</ulink>, <ulink
+        id="architecturaloverview.pdf" url="general/architecture.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Administrators</title>
+
+    <subtitle>Installation and Configuration</subtitle>
+
+    <itemizedlist>
+      <listitem>
+        <para>Read This First<ulink id="readthisfirst"
+        url="releases/readme.txt">(TXT)</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Release Notes MMBase Version<ulink id="releasenotes"
+        url="releases/release-notes.txt">(TXT)</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Installation Notes<ulink id="installation"
+        url="releases/installation.txt">(TXT)</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Building from Source<ulink id="building"
+        url="releases/building.txt">(TXT)</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Installation instructions for Tomcat (<ulink id="installtomcat"
+        url="administrators/install-tomcat.html">HTML</ulink>, <ulink
+        id="installtomcat.pdf" url="administrators/install-tomcat.pdf">PDF</ulink>)</para>
+      </listitem>
+
+	  <listitem>
+        <!-- external documentation -->
+        <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
+        id="installationredhatlinux" url="http://tldp.org/HOWTO/MMBase-Inst-HOWTO/index.html">HTML</ulink>)</para>
+      </listitem>
+
+	  <listitem>
+        <!-- external documentation -->
+        <para>Installation instructions for 1.5.x under Debian GNU / Linux "woody" + Tomcat + MySQL (<ulink
+        id="installationdebiangnulinux" url="http://tldp.org/HOWTO/MMBase.html">HTML</ulink>)</para>
+      </listitem>
+	  
+      <listitem>
+        <para>MMBase configuration documentation (<ulink id="configuration"
+        url="administrators/configuration.html">HTML</ulink>, <ulink
+        id="configuration.pdf" url="administrators/configuration.pdf">PDF</ulink>)</para>
+      </listitem>
+	  
+	   <listitem>
+		  <para>The MMBase Security Framework (<ulink id="securityframework"
+		  url="administrators/security-framework.html">HTML</ulink>, <ulink
+		  id="securityframework.pdf" url="administrators/security-framework.pdf">PDF</ulink>)</para>
+		</listitem>
+
+		<listitem>
+		  <para>Installing and using Context Security (<ulink
+		  id="securitycontext" url="administrators/context-security.html">HTML</ulink>,
+		  <ulink id="securitycontext.pdf"
+		  url="administrators/context-security.pdf">PDF</ulink>)</para>
+		</listitem>
+
+		<listitem>
+		  <para>Installing and using Cloud Security(<ulink
+		  id="securitycloud" url="administrators/cloud-security.html">HTML</ulink>,
+		  <ulink id="securitycloud.pdf"
+		  url="administrators/cloud-security.pdf">PDF</ulink>)</para>
+      </listitem>
+	  
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Information analysts</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Builder configuration file (<ulink id="builders"
+        url="informationanalysts/builders.html">HTML</ulink>, <ulink
+        id="builders.pdf" url="informationanalysts/builders.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase relations (<ulink id="relations"
+        url="informationanalysts/relations.html">HTML</ulink>, <ulink
+        id="relations.pdf" url="informationanalysts/relations.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Applications documentation (<ulink id="applications"
+        url="informationanalysts/applications.html">HTML</ulink>, <ulink
+        id="applications.pdf" url="informationanalysts/applications.pdf">PDF</ulink>)</para>
+      </listitem>
+
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Backend Developers</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>MMBase Coding Standards (<ulink id="codingstandards"
+        url="backenddevelopers/codingstandards.html">HTML</ulink>, <ulink
+        id="codingstandards.pdf" url="backenddevelopers/codingstandards.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Remote MMBase Cloud Interface (<ulink id="rmmci"
+        url="backenddevelopers/rmmci.html">HTML</ulink>, <ulink id="rmmci.pdf"
+        url="backenddevelopers/rmmci.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Storage (<ulink id="storage"
+        url="backenddevelopers/storage/index.html">HTML</ulink>, <ulink
+        id="storage.pdf" url="backenddevelopers/storage/index.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>SearchQuery introduction (<ulink id="dbsqintro"
+        url="backenddevelopers/dbsq.html">HTML</ulink>, <ulink
+        id="dbsqintro.pdf" url="backenddevelopers/dbsq.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Frontend developers</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Taglib Tutorial (<ulink id="taglibtutorial"
+        url="frontenddevelopers/taglib/taglib-tutorial.html">HTML</ulink>,
+        <ulink id="taglibtutorial.pdf"
+        url="frontenddevelopers/taglib/taglib-tutorial.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Include / TreeInclude / LeafInclude (<ulink
+        id="includedocs" url="frontenddevelopers/taglib/include.html">HTML</ulink>,
+        <ulink id="includedocs.pdf"
+        url="frontenddevelopers/taglib/include.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizards (<ulink id="editwizarddoc"
+        url="frontenddevelopers/editwizard/editwizard-doc.html">HTML</ulink>,
+        <ulink id="editwizarddoc.pdf"
+        url="frontenddevelopers/editwizard/editwizard-doc.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizard Syntax Reference (<ulink id="editwizardreference"
+        url="frontenddevelopers/editwizard/editwizard-reference.html">HTML</ulink>)<!--
+          <ulink url="frontenddevelopers/editwizard/editwizard-reference.pdf" id="editwizardreference.pdf">
+           (pdf)
+          </ulink>
+          --></para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizard Front end (<ulink id="editwizardfrontend"
+        url="frontenddevelopers/editwizard/editwizard-frontend.html">HTML</ulink>)<!--
+          <ulink url="frontenddevelopers/editwizard/editwizard-frontend.pdf" id="editwizardfrontend.pdf">
+           (pdf)
+          </ulink>
+          --></para>
+      </listitem>
+
+      <listitem>
+        <para>Dove XML API (<ulink id="dovexmlapi"
+        url="frontenddevelopers/dovexmlapi.html">HTML</ulink>, <ulink
+        id="dovexmlapi.pdf" url="frontendevelopers/dovexmlapi.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase taglib reference (<ulink id="taglibreferencejsp"
+        url="reference/taglib/toc.html">JSP</ulink>, <ulink
+        id="taglibreferencehtml" url="reference/mmbase-taglib.html">HTML</ulink>)</para>
+      </listitem>
+
+      <!--
+      <listitem>
+        <para>MMBase community taglib reference (<ulink
+        id="taglibcommunityjsp" url="../mmdocs/reference/community-taglib/toc.html">JSP</ulink>
+        <ulink id="taglibcommunityhtml"
+        url="../mmdocs/reference/mmcommunity-taglib.html">HTML</ulink>)</para>
+      </listitem>
+      -->
+      <listitem>
+        <para>MMBase standard builders (<ulink id="standardbuilders"
+        url="frontenddevelopers/builders/index.html">HTML</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Bridge (MMCI) API documentation (<ulink id="bridgeapi"
+        url="mmci/api/index.html">HTML</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>XML Importer (TCP 2.0)</para>
+
+        <para>Overview (<ulink id="xmlimporteroverview"
+        url="frontenddevelopers/xmlimporter/overview.html">HTML</ulink>,
+        <ulink id="xmlimporteroverview.pdf"
+        url="frontenddevelopers/xmlimporter/overview.pdf">PDF</ulink>)</para>
+
+        <para>Quick start (<ulink id="xmlimporterquickstart"
+        url="developers/xmlimporter/quickstart.html">HTML</ulink>, 
+        PDF version not available)</para>
+
+        <para>Cook Book (<ulink id="xmlimportercookbook"
+        url="developers/xmlimporter/cookbook.html">HTML</ulink>, 
+        PDF version not available)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Managers</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Running MMBase in your organization (<ulink id="mmbase4managers"
+        url="managers/mmbase4managers.html">HTML</ulink>, <ulink
+        id="mmbase4managers.pdf" url="managers/mmbase4managers.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Modules</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Images and Attachments (<ulink id="imagesandattachments"
+        url="modules/images-and-attachments.html">HTML</ulink>, <ulink
+        id="imagesandattachments.pdf" url="modules/images-and-attachments.pdf">PDF</ulink>)
+        Everything (?) about these kind of things in MMBase.</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Internationalization and Localization (<ulink id="i18n"
+        url="modules/i18n.html">HTML</ulink>, <ulink id="i18n.pdf"
+        url="modules/i18n.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Email (<ulink id="email" url="modules/email.html">HTML</ulink>,
+        <ulink id="email.pdf" url="modules/email.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>MMBase.org</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>MMC Mission Statement Document (<ulink id="mmcmissionstatement"
+        url="mmbase.org/mmcmissionstatement.html">HTML</ulink>, <ulink
+        id="mmcmissionstatement.pdf" url="mmbase.org/mmcmissionstatement.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</article>

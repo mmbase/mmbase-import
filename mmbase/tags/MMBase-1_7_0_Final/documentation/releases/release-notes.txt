@@ -1,0 +1,363 @@
+===================================================================
+                     MMBase 1.7.0 - Release Notes
+===================================================================
+
+============
+INTRODUCTION:
+============
+
+This document describes the changes that have been made in the final
+release of MMBase 1.7.0, relative to the previous release of MMBase (1.6).
+
+Bug reports should be entered at the bug reporting system for MMBase
+at:
+
+<http://www.mmbase.org/bug>
+
+
+============
+NEW FEATURES:
+============
+
+--------------------
+General New Features:
+--------------------
+[1.7.0]
+- Storing blobs (e.g. images) on disk has changed. 
+  Blobs are now stored as follows:
+  The number of the object containing the blob is broken up in
+  parts. The 3 least significant digits are ignored.
+  The remaining digits are divided by powers of hundred (pairs of
+  digits of 2). 
+  These are then broken up in nested directories.
+  For instance, the field 'handle' of node with number 5447637 is
+  stored as: 
+    data/databasename/basename_buildername/54/47/5447637.handle
+  while the same field of node number 1205 is stopped as:
+    data/databasename/basename_buildername/01/1205.handle
+
+  where 'databasename', 'basename' and 'buildername' are depending on
+  configuration and type of the node. 
+
+  This improves performance on systems when you get a large number of
+  binary fields. 
+
+  Note: if you are upgrading from 1.7.0 RC1 you need to convert,
+  because this 'breaking up' into directories did not yet exist then.
+
+  Note: if you are upgrading from 1.6 or early 1.7 builds and used to
+  store blobs on disk using the 'old' storage implementation or the
+  'support' implementation (from < 1.6), then too you need to convert
+  if you want to use the 'new' storage now (which you want). Note that
+  the 'databasename' and 'basename' parts are new in the path (these
+  make it easier to toggle between configurations). 
+
+  Make sure the old 'blobdatadir' dir is now WEB-INF/data (use e.g. a
+  symlink) 
+
+  You can convert the blobs via the admin pages /mmbase/admin
+  admin->BLOBS (which can also be used to migrate from
+  blobs-in-database to blobs-on-disk). 
+
+- Query-object, which allows for several new taglib and MMCI
+  features. 
+
+- New storage layer, which allows for real transactions! 
+
+- Some 'applications' (like editwizards) have been split up to
+  separate jars. This will allow for easier partial upgrades of
+  installations. 
+
+- Added functionality to the jsp editors: better paging mechanism. 
+
+- Added functionality to the jsp admin pages: add/change field
+  descriptions 
+
+--------------------------
+MMCI (bridge) New Features:
+-------------------------
+[1.7.0]
+- All interfaces of the new org.mmbase.storage.search package are part
+  of the 'bridge' now.  There is also a new 'Query' object in
+  org.mmbase.bridge, which allows for query creation and modification
+  in a generic way. 
+
+- The new Query frame work allows for easy execution of 'aggregating
+  queries' (e.g. counts) through the bridge.
+
+- The bridge implementation now also lets security modify its queries
+  to exclude read-protected nodes. Depending on the security
+  implementation and configuration this should speed up things. 
+
+- Several small additions (like Cloud.getRelationManager(NodeManager,
+  NodeManager, String)); 
+
+-------------------
+Taglib New Features:
+-------------------
+[1.7.0]
+- Content-Tag, which provides default escaping behaviour,
+  postprocessing functionality, and content-type information. 
+
+- Container tags.
+
+  - Function Container tag. Allows for more complicated arguments to
+    functions on e.g. Nodes. 
+  - List Container Tags. Allow for easier generic queries (using new
+    Query frame work). The Query object can be changed with a
+    'constraint' tag, an 'ageconstraint' tag, a maxnumber tag and an
+    'offset' tag. The query can be executed by the already existing
+    nodelist tags. Also the size tag, can optionally be used outside a
+    list tag now (but inside a list container tag), and will then be
+    calculated by the database (and not progamaticly). 
+
+- 'previousbatches' and 'nextbatches' tags. A way to easily make a
+  paging mechanism for big search results.
+
+- unrelatednodes tag. A tag to list all nodes (of a certain type)
+  which are _not_ related to a node. 
+
+- compare tag: valueSet attribute
+
+- List-tags now provide a kind of 'temporary' context for taglib
+  variables. In practice this means that inner context tags (or
+  'remove' tags) will not be needed any more. 
+
+
+==========================
+BUG FIXES AND IMPROVEMENTS:
+==========================
+
+-------------------
+Generic Improvement:
+-------------------
+[1.7.0]
+- Several tags in builder xmls are no longer mandatory, and sensible
+  defaults will be used instead  (for example in the editor section)
+- jspsmartupload has been replaced with jakarta's commons FileUpload
+  component. 
+
+------------------
+Generic Bug Fixes:
+------------------
+[1.7.0]
+- jaxp compliance. MMBase does not longer depend on an old version of
+  xerces/xalan/xml-apis when running under java 1.4 you can remove
+  those files 
+
+- The HandleServlet now removes additional information left in jpeg
+  files by PhotoShop 7. This extra information crashes the image Thread
+  of Internet Exploder. While this was not a bug, this fix is very 
+  convenient.
+
+- Caching of Query results is done better. It is possible to cache
+  everything. In 1.6 some queries accidentally where not cached. This
+  fix is based on the new Query framework. 
+
+- When exporting builder xmls, the state property of a field is now in
+  lowercase (as defined by the dtd).
+
+- More robust in case Database not up yet if MMBase starts, or if
+  database restart when MMBase remains up.
+
+------------------
+Security Bug Fixes:
+------------------
+[1.7.0]
+- It is for a security implementation possible to define new ranks
+  now. 
+- Queries are checked by all 'official' security implementations. If
+  there are read-restrictions on defined on your installation, you
+  need to create an index on the owner fields.
+
+
+-----------------
+Taglib Bug Fixes:
+-----------------
+[1.7.0]
+ - Working with resin now.
+
+ - The fields parameter of the list tags (related, list, etc) now no
+   longer accepts fields that do not exist. Note that this means that
+   some pages may give errors now if they specified wrong fieldnames. 
+
+ - Lots of small attributes-related things, like emulating complete
+   absence of the the attribute when its value is empty. Some
+   attributes (like the 'id' attribute) did not yet accept taglib
+   variables ($-variables), which also has been fixed on several
+   places. 
+
+ - URL-tag not a Writer any more.
+
+
+========================
+Know Issues and Problems:
+========================
+
+- If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new'
+  web.xml or resin 3), then the new EL (Expression Language) syntax
+  collides with the Expression language of mmbase taglib. 
+
+  MMBase Taglib JSP's using the ${} syntax might not work then. Often
+  the {} can be avoided, otherwise the only option is to add <%@page
+  isELIgnored="true" %> to the page. 
+
+  The generic JSP-editors in /mmbase/edit/basic could not be fixed to
+  work with and without EL. When you want to use these editors in a EL
+  environment isELIgnored must manually be added to
+  /mmbase/edit/basic/page_base_functionality.jsp (Unfortunately it
+  cannot always be present, because this setting can cause errors in a
+  JSP1 environment). 
+
+  The EL and MMBase Taglib expressions languages are actually very
+  similar to each other. We will try to make MMBase Taglib compatible
+  (perhaps optionally so) with EL in a next release. 
+
+- The old database support classes are still in this release, but are
+  not fully tested. These are deprecated please DO NOT use them
+  anymore, but switch to the new database storage classes.
+
+- Orion version < 2.x doesn't support the final servlet api 2.3,
+  because of this the jumpersFilter will not work. You will need to
+  remove the following lines from <WEB-INF/web.xml>:
+
+    <!-- Filter for jumpers -->
+    <filter>
+      <filter-name>Jumpers Filter</filter-name>
+      <display-name>Jumpers Filter</display-name>
+      <description>Filter used for jumpers</description>
+      <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>Jumpers Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+  And replace them with:
+
+    <servlet>
+      <servlet-name>servjumpers</servlet-name>
+      <display-name>servjumpers</display-name>
+      <servlet-class>org.mmbase.servlet.servjumpers</servlet-class>
+    </servlet>
+
+    <servlet-filter url-pattern="/*" servlet-name="servjumpers" />
+
+  (I'm not sure where the last line has to be: web.xml or orion-web.xml).
+
+
+- Length of email field inside Users and People builder isn't
+  rfc-compliant, but with 255 it stays beyond a limit some databases
+  use before switching to a bigger string-type (eg clob).
+
+- Not all HTML is html4 or xhtml valid
+
+- Sometimes it is needed to copy xml-apis.jar to
+  <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing
+  xslt-transformation or if you're using the editwizards. 
+
+- Imagemagick does work with Windows 98/ME, but MMBase is not able to
+  use it. You have to use Jai (Java Advanced Imaging API). You can do
+  this by changing the properties in
+
+   <mmbase-webapp>/WEB-INF/config/builders/applications/images.xml (after installation of 'Resource')
+   or
+   <mmbase-webapp>/WEB-INF/config/applications/Resources/builders/images.xml (before installation of 'Resource')
+
+   into:
+
+  <properties>
+    <property name="ImageConvertClass">
+      org.mmbase.module.builders.ConvertJAI
+    </property>
+    <property name="MaxConcurrentRequests">20</property>
+  </properties>
+
+  Please keep in mind that the image builder is less powerful when
+  using JAI instead of Imagemagick.
+
+- Jumpers jump to /index.html by default, which can e.g. shield the
+  image servlet (if 'dotlessly' mapped). Remove the setting from
+  jumpers.xml if you prefer nice 404's (this is like this on default)
+
+- Hsqldb uses the current dir for writing the database-files. This can
+  be the bin dir from where you're starting the servlet-engine. You
+  can change this to a dir you want, by changing the database-property
+  in jdbc.xml.
+
+- Resin provides its own XSL-transformation implementation, on this
+  area are some known problems.
+
+- Resin cannot swallow some of the larger jsp/taglib pages.
+
+
+============
+Requirements:
+============
+
+MMBase needs an servlet engine which supports the servlet api 2.3 and
+jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
+
+The 'bin' distro does include a hsqldb database and driver.
+
+
+=========
+Tested on:
+=========
+
+The applications listed here are known to be tested with MMBase, but
+the list is probably a lot bigger :-)
+
+-------------
+Java versions
+-------------
+- J2SE 1.4.1_02
+
+- J2SE 1.4.2
+
+- J2SE Blackdown-1.4.2-rc1
+
+- J2SE 1.5.0-beta  (could not get editwizards working because of xalan/xerces troubles)
+
+
+-------------
+Java compilers
+-------------
+
+- sun jdk 1.4.2 (javac)
+
+- sun jdk 1.5.0-beta (javac, jikes does not work then?)
+
+- jikes version 1.18
+
+  using 1.15 jsp-editwizards don't work (when using jikes for jsp-compilation)
+  using 1.16 mmbase does compile, but give VerifyExceptions on running. See:
+  http://www-124.ibm.com/developerworks/bugs/?func=detailbug&bug_id=206&group_id=10
+
+------------------
+Servlet engines /
+Application servers
+------------------
+
+These are the applications servers on which MMBase was tested.
+
+- Tomcat 4.1.29
+- Tomcat 5.0.19
+- Orion 1.5.2, 1.5.4, 1.6.0, 2.0.3
+- Jetty 4.0.0
+- Resin 2.1.0, 2.1.8, 3.0.6
+
+---------
+Databases
+---------
+- IBM Informix Dynamic Server 9.40.FC1
+- Hsqldb 1.7.0RC2
+- Mysql Ver 11.12 Distrib 3.23.32,
+        Ver 11.16 Distrib 3.23.49,
+        Ver 11.15 Distrib 3.23.41
+  for pc-linux-gnu (i686)
+- Postgresql
+- Informix
+
+
