@@ -186,41 +186,53 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         return null;
     }
-    private void setRealmCookie(String r) {
-        Cookie c = searchCookie();
-        if (c == null) {
-            c = new Cookie(REALM + getSessionName(), r);
-            c.setMaxAge(-1); // a day
+    private void setRealm(String r) {
+        if (session == null) {
+            Cookie c = searchCookie();
+            if (c == null) {
+                c = new Cookie(REALM + getSessionName(), r);
+                c.setMaxAge(-1); // a day
+            } else {
+                c.setValue(r);            
+            }
+            if (cookies.length == 0 ){
+                cookies = new Cookie[1];
+            }
+            cookies[0] = c;
+            response.addCookie(c); 
         } else {
-            c.setValue(r);            
+            session.setAttribute(REALM + getSessionName(), r);
         }
-        if (cookies.length == 0 ){
-            cookies = new Cookie[1];
-        }
-        cookies[0] = c;
-        response.addCookie(c); 
     }
-    private void removeRealmCookie() {
-        String cookie = REALM + getSessionName(); 
-        log.debug("removing cookie");
-        if (cookies != null) {
-            for (int i=0; i< cookies.length; i++) {
-                if (cookies[i].getName().equals(cookie)) {
-                    log.debug("removing cookie with value " + cookies[i]);
-                    cookies[i].setValue("");
-                    cookies[i].setMaxAge(0); // remove                
-                    response.addCookie(cookies[i]);
+    private void removeRealm() {
+        if (session == null) {
+            String cookie = REALM + getSessionName(); 
+            log.debug("removing cookie");
+            if (cookies != null) {
+                for (int i=0; i< cookies.length; i++) {
+                    if (cookies[i].getName().equals(cookie)) {
+                        log.debug("removing cookie with value " + cookies[i]);
+                        cookies[i].setValue("");
+                        cookies[i].setMaxAge(0); // remove                
+                        response.addCookie(cookies[i]);
+                    }
                 }
             }
+        } else {
+            session.removeAttribute(REALM + getSessionName());
         }
     }
-    private  String  getRealmCookie() {
-        Cookie c = searchCookie();
-        if (c != null) {
-            log.debug("found cookie on path = " + c);
-            return c.getValue();
+    private  String  getRealm() {
+        if (session == null) { // try with cookie
+            Cookie c = searchCookie();
+            if (c != null) {
+                log.debug("found cookie on path = " + c);
+                return c.getValue();
+            }
+            return null;
+        } else {
+            return (String) session.getAttribute(REALM + getSessionName());
         }
-        return null;
     }
 
     /**
@@ -237,17 +249,17 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         
 
-        if (getRealmCookie() == null) {
+        if (getRealm() == null) {
             // in the Realm is the time, this makes it unique, and is used by browser to 
             // store the name password.
             // if you throw away the realm name from the session, then the browser does 
             // not know the password anymore. 
             // this is how 'logout' works.
-            setRealmCookie("MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime());
+            setRealm("MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime());
         } 
         
-        log.debug("setting header: " + getRealmCookie());
-        response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealmCookie() + "\"");
+        log.debug("setting header: " + getRealm());
+        response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealm() + "\"");
 
         //res.setHeader("Authorization", logon);   would ne nice...
         //keesj:look at the php3 tutorial for an example
@@ -267,7 +279,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     private void logout() {
-        removeRealmCookie();
+        removeRealm();
     }
     
     private void setAnonymousCloud(String name) {
@@ -430,11 +442,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (method == METHOD_HTTP) {
                 log.debug("with http");
 
-                if (getRealmCookie() == null) {
+                if (getRealm() == null) {
                     log.debug("no realm found, need to log on again");
                     return deny("<h2>Need to log in again</h2> You logged out");
                 }
-                log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealmCookie());
+                log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
                 // find logon, password with http authentication       
                 String username = null;
                 String password = null;
