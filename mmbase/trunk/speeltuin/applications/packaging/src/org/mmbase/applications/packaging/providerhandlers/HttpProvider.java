@@ -132,9 +132,10 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
     public void getPackages() {
        signalUpdate();
 
-	String url=path+"?account="+account+"&password="+password;
+	String url=path+"?user="+account+"&password="+password;
 	if (ShareManager.getCallbackUrl()!=null) url+="&callbackurl="+URLParamEscape.escapeurl(ShareManager.getCallbackUrl());
 	try {
+		log.info("LOGIN URL="+url);
         	URL includeURL = new URL(url);
         	HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 		BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
