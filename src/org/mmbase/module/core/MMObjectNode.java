@@ -856,7 +856,7 @@ public class MMObjectNode {
 
 
     /**
-     * Get the related nodes of a certain type. The returned nodes are not the
+     * Get all related nodes. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
      *
