@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.34 2003-11-19 13:34:28 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.35 2003-11-28 12:23:55 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -703,7 +703,7 @@ public class WizardDatabaseConnector {
                     if (!different) {
                         // remove both objects
                         node.getParentNode().removeChild(node);
-                        orignode.getParentNode().removeChild(orignode);
+                        Utils.setAttribute(orignode, "repository", "true");
                     } else {
                         // check if fields are different?
                         NodeList fields=Utils.selectNodeList(node,"field");
@@ -717,6 +717,7 @@ public class WizardDatabaseConnector {
                                 }
                             }
                         }
+                        Utils.setAttribute(orignode, "repository", "false");
                     }
                 }
             } else {
@@ -735,11 +736,17 @@ public class WizardDatabaseConnector {
             }
         }
 
+        // remove all repository nodes
+        NodeList repnodes = Utils.selectNodeList(reqorig, ".//relation[@repository='true']|.//object[@repository='true']");
+        for (int i=0; i<repnodes.getLength(); i++) {
+            Node repnode = repnodes.item(i);
+            repnode.getParentNode().removeChild(repnode);
+        }
+
         // find all deleted relations and objects
         NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
         for (int i=0; i<orignodes.getLength(); i++) {
             Node orignode = orignodes.item(i);
-
             String nodenumber = Utils.getAttribute(orignode, "number", "");
             Node node = Utils.selectSingleNode(reqnew, ".//*[@number='"+nodenumber+"']");
             if (node==null) {
