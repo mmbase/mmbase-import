@@ -23,12 +23,12 @@ import org.mmbase.util.logging.Logging;
  * given).
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderTEI.java,v 1.10 2003-06-17 22:05:53 kees Exp $ 
+ * @version $Id: NodeProviderTEI.java,v 1.11 2003-08-27 21:33:35 michiel Exp $ 
  */
 
 public class NodeProviderTEI extends TagExtraInfo {
     
-    private static Logger log = Logging.getLoggerInstance(NodeProviderTEI.class.getName());    
+    private static final Logger log = Logging.getLoggerInstance(NodeProviderTEI.class.getName());    
 
     public NodeProviderTEI() { 
         super(); 

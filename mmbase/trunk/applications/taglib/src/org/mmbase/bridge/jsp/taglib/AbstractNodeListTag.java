@@ -37,11 +37,11 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.51 2003-08-11 15:27:13 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.52 2003-08-27 21:33:28 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
-    private static Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
 
     /**
      * Holds the list of fields to sort the list on.

@@ -23,12 +23,12 @@ import org.mmbase.util.logging.Logging;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.11 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.12 2003-08-27 21:33:36 michiel Exp $ 
  */
 
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static Logger log = Logging.getLoggerInstance(RelatedNodeTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(RelatedNodeTag.class.getName());
 
     private Attribute listRelationsId = Attribute.NULL;
 

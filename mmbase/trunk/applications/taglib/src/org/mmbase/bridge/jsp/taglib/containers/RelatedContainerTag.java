@@ -25,11 +25,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.1 2003-08-18 12:44:07 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.2 2003-08-27 21:33:39 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements NodeListContainer {
 
-    private static Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
+    private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
 
     private Query   query     = null;
     private Attribute path = Attribute.NULL;

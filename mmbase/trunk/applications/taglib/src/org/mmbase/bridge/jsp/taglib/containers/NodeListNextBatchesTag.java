@@ -24,10 +24,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListNextBatchesTag.java,v 1.3 2003-08-08 09:22:55 michiel Exp $
+ * @version $Id: NodeListNextBatchesTag.java,v 1.4 2003-08-27 21:33:38 michiel Exp $
  */
 public class NodeListNextBatchesTag extends StringListTag implements NodeListContainerReferrer {
-    private static Logger log = Logging.getLoggerInstance(NodeListNextBatchesTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeListNextBatchesTag.class);
 
     protected Attribute container  = Attribute.NULL;
 

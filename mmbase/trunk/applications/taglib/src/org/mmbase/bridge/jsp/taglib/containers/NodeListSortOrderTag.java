@@ -25,11 +25,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListSortOrderTag.java,v 1.1 2003-08-18 12:44:07 michiel Exp $
+ * @version $Id: NodeListSortOrderTag.java,v 1.2 2003-08-27 21:33:39 michiel Exp $
  */
 public class NodeListSortOrderTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(NodeListSortOrderTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeListSortOrderTag.class);
 
     protected Attribute container  = Attribute.NULL;
     protected Attribute direction  = Attribute.NULL;

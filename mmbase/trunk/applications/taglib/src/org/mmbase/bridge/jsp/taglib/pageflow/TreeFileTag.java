@@ -23,12 +23,12 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.6 2003-06-06 10:03:27 pierre Exp $
+ * @version $Id: TreeFileTag.java,v 1.7 2003-08-27 21:33:41 michiel Exp $
  */
 
 public class TreeFileTag extends UrlTag {
     
-    private static Logger log = Logging.getLoggerInstance(TreeFileTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TreeFileTag.class.getName());
     protected Attribute objectList = Attribute.NULL;
     protected TreeHelper th = new TreeHelper();
     

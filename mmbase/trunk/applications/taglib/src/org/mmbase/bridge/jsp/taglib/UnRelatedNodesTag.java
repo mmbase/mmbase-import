@@ -21,12 +21,12 @@ import org.mmbase.util.logging.Logging;
  * Like listnodes tag, but is is also a node-referrer, and substracts the related nodes of the referred node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnRelatedNodesTag.java,v 1.3 2003-08-15 15:42:03 michiel Exp $ 
+ * @version $Id: UnRelatedNodesTag.java,v 1.4 2003-08-27 21:33:37 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class UnRelatedNodesTag extends ListNodesTag {
-    private static Logger log = Logging.getLoggerInstance(UnRelatedNodesTag.class);
+    private static final Logger log = Logging.getLoggerInstance(UnRelatedNodesTag.class);
 
     protected Attribute role        = Attribute.NULL;
     protected Attribute searchDir   = Attribute.NULL;

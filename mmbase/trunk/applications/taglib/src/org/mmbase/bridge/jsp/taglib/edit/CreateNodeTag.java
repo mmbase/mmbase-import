@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.15 2003-08-07 17:20:09 michiel Exp $
+ * @version $Id: CreateNodeTag.java,v 1.16 2003-08-27 21:33:40 michiel Exp $
  */
 
 public class CreateNodeTag extends NodeTag {
 
-    private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class);
+    private static final Logger log = Logging.getLoggerInstance(CreateNodeTag.class);
 
     private Attribute nodeManager = Attribute.NULL;
     private Attribute makeUniques = Attribute.NULL;
@@ -46,7 +46,8 @@ public class CreateNodeTag extends NodeTag {
 
 
     public int doStartTag() throws JspTagException{
-        NodeManager nm = getCloud().getNodeManager(nodeManager.getString(this));
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager(nodeManager.getString(this));
         if (nm == null) {
             throw new JspTagException("Could not find nodemanager " + nodeManager.getString(this));
         }
@@ -74,7 +75,7 @@ public class CreateNodeTag extends NodeTag {
                     }
                     boolean found = false;
                     while (! found) {
-                        NodeQuery query = nm.createQuery();                        
+                        NodeQuery query = nm.createQuery();
                         Constraint cons;
                         if (field.getType() == Field.TYPE_STRING) {
                             cons = query.createConstraint(query.getStepField(field), (String) baseValue + seq);
@@ -82,7 +83,7 @@ public class CreateNodeTag extends NodeTag {
                             cons = query.createConstraint(query.getStepField(field), new Integer(seq));
                         }
                         query.setConstraint(cons);
-                        if (nm.getList(query).size() == 0) {
+                        if (cloud.getList(query).size() == 0) {
                             found = true;
                             break;
                         }

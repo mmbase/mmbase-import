@@ -22,12 +22,12 @@ import org.mmbase.util.logging.Logging;
  * more.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RemoveItemTag.java,v 1.1 2003-08-07 17:23:29 michiel Exp $ 
+ * @version $Id: RemoveItemTag.java,v 1.2 2003-08-27 21:33:36 michiel Exp $ 
  */
 
 public class RemoveItemTag extends ListReferrerTag {
 
-    private static Logger log = Logging.getLoggerInstance(RemoveItemTag.class);
+    private static final Logger log = Logging.getLoggerInstance(RemoveItemTag.class);
 
     public int doStartTag() throws JspTagException{
         ListProvider list = getList();

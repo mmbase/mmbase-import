@@ -21,11 +21,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.34 2003-08-11 15:27:18 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.35 2003-08-27 21:33:33 michiel Exp $
  */
 
 public class ImportTag extends WriteTag {
-    private static Logger log = Logging.getLoggerInstance(ImportTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ImportTag.class);
 
     protected Attribute required = Attribute.NULL;
     protected Attribute from     = Attribute.NULL; 

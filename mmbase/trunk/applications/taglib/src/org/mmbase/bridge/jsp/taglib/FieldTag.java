@@ -24,11 +24,11 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.39 2003-08-11 15:27:17 michiel Exp $ 
+ * @version $Id: FieldTag.java,v 1.40 2003-08-27 21:33:32 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class);
+    private static final Logger log = Logging.getLoggerInstance(FieldTag.class);
 
     protected Node   node;
     protected NodeProvider nodeProvider;

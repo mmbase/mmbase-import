@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.16 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.17 2003-08-27 21:33:42 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
 
-    private static Logger log = Logging.getLoggerInstance(IntegerHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(IntegerHandler.class);
 
 
     private DateHandler dateHandler;

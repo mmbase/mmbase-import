@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.46 2003-08-11 15:27:19 michiel Exp $ 
+ * @version $Id: NodeTag.java,v 1.47 2003-08-27 21:33:36 michiel Exp $ 
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static Logger log = Logging.getLoggerInstance(NodeTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeTag.class);
 
     private Attribute number    = Attribute.NULL;
     private Attribute element   = Attribute.NULL;
@@ -165,6 +165,9 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
+                    if (node == null) {
+                        log.info(nodeProvider.getNodeVar());
+                    }
                 } else {
                     node = nodeProvider.getNodeVar();
                 }

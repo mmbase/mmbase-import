@@ -22,11 +22,11 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.31 2003-08-18 14:12:15 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.32 2003-08-27 21:33:37 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
-    private static Logger log = Logging.getLoggerInstance(TimeTag.class);
+    private static final Logger log = Logging.getLoggerInstance(TimeTag.class);
     
     private static final int DAY = 1000 * 60 * 60 * 24;
     

@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logging;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.1 2003-05-26 15:17:38 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.2 2003-08-27 21:33:42 michiel Exp $
  **/
 
 public class MultiPart {
-    private static Logger log = Logging.getLoggerInstance(MultiPart.class);
+    private static final Logger log = Logging.getLoggerInstance(MultiPart.class);
 
     static String MULTIPARTREQUEST_KEY = "__multipart";
 
@@ -67,7 +67,7 @@ public class MultiPart {
 /* Doesn't seem to work (yet)
 class MMultipartRequest {
 
-    private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
     private MultipartRequest o;
 
     MMultipartRequest(HttpServletRequest req) {
@@ -148,7 +148,7 @@ class MMultipartRequest {
 
 
 static public class MMultipartRequest {
-    private static Logger log = Logging.getLoggerInstance(MultiPart.class);
+    private static final Logger log = Logging.getLoggerInstance(MultiPart.class);
     private org.mmbase.util.HttpPost o = null;
     private String coding = null;
 

@@ -24,12 +24,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.1 2003-07-29 17:08:09 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.2 2003-08-27 21:33:38 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements NodeListContainer {
 
 
-    private static Logger log = Logging.getLoggerInstance(ListContainerTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ListContainerTag.class);
 
     private Query   query     = null;
     private Attribute path = Attribute.NULL;

@@ -36,12 +36,12 @@ class LongContainer {
  * times' overview.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TimerTag.java,v 1.6 2003-06-06 10:03:18 pierre Exp $ 
+ * @version $Id: TimerTag.java,v 1.7 2003-08-27 21:33:39 michiel Exp $ 
  */
 
 public class TimerTag extends ContextReferrerTag {
 
-    private static Logger log = Logging.getLoggerInstance(TimerTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TimerTag.class.getName());
 
     private Vector timers;
     private Vector timerIds;

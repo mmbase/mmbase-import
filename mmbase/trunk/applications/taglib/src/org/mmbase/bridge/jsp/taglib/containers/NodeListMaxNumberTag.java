@@ -25,11 +25,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListMaxNumberTag.java,v 1.1 2003-08-01 11:03:28 michiel Exp $
+ * @version $Id: NodeListMaxNumberTag.java,v 1.2 2003-08-27 21:33:38 michiel Exp $
  */
 public class NodeListMaxNumberTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(NodeListMaxNumberTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeListMaxNumberTag.class);
 
     protected Attribute container  = Attribute.NULL;
 

@@ -32,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.39 2003-08-11 15:27:17 michiel Exp $ 
+ * @version $Id: ImageTag.java,v 1.40 2003-08-27 21:33:33 michiel Exp $ 
  */
 
 public class ImageTag extends FieldTag {
 
-    private static Logger log = Logging.getLoggerInstance(ImageTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
     private Attribute template = Attribute.NULL;
 
     /**

@@ -30,11 +30,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.11 2003-08-11 15:27:14 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.12 2003-08-27 21:33:30 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
-    private static Logger log;
+    private static  Logger log;
 
 
     private static final CharTransformer COPY = new CopyCharTransformer();
