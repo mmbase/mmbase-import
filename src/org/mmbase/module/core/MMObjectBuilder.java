@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.213 2003-03-06 17:26:04 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.214 2003-03-06 17:32:14 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1841,8 +1841,7 @@ public class MMObjectBuilder extends MMTable {
      * Enumerate all the objects that match the where clause
      * This method is slightly faster than search(), since it does not try to 'parse'
      * the where clause.
-     * @param where where clause (SQL-syntax) that the objects need to fulfill,
-     *        i.e. the SQL WHERE-clause without the trailing "WHERE ".
+     * @param where SQL WHERE-clause without the leading "WHERE ".
      * @return an <code>Enumeration</code> containing all the objects that apply.
      * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
