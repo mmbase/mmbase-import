@@ -27,7 +27,7 @@ public class InfoTag extends  CloudReferrerTag {
     private String nodeManager = null;
     private String module      = null;
     
-    public void setNodeManager(String nm){
+    public void setNodemanager(String nm){
         nodeManager = nm;
     }
     public void setModule(String nm){
