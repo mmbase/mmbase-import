@@ -3,7 +3,12 @@
 
 Generic project build file.
 
-Generates a jar.
+Generates a jar for your project. 
+
+You can also do a test. (specify test.class).
+This makes sure you use the right class-path and so on.
+
+@author Michiel Meeuwissen.
 
 ============================================================================ -->
 
@@ -21,9 +26,14 @@ Generates a jar.
   <property name="project.source.dir" location="." />
   <property name="project.build.dir"  location="./build" />
   <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
-  <property name="mmbase.jar"  value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="project.name" value="a-mmbase-project" />
+
+  <property name="test.class"   value="org.mmbase.Version" />
+
   <property name="project.jar" value="${project.build.dir}/${project.name}.jar"/>
 
   <target name="init" depends="">
@@ -101,6 +111,27 @@ Build-compiler: ${build.compiler}
     <delete dir="${project.build.dir}" />
   </target>
 
+
+  <target name="test" depends="jar">   
+    <java classname="${test.class}"
+      classpathref="run.classpath"
+      fork="true"
+      failonerror="yes">
+      <jvmarg value="-Dmmbase.config=${mmbase.config}" />
+      <classpath id="run.classpath">
+        <fileset dir="${build.dir}/lib">
+          <include name="servlet.jar"/>
+        </fileset>
+        <fileset dir="${project.build.dir}">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+      </classpath>
+    </java>
+  </target>
 
 </project>
 
