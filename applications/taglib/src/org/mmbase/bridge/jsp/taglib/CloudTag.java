@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.81 2003-11-14 11:57:21 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.82 2003-11-16 14:07:32 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -562,10 +562,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         session = (HttpSession)pageContext.getSession();
         if (session != null) { // some people like to disable their session
-            cloud = (Cloud)session.getAttribute(getSessionName());
+            cloud = (Cloud) session.getAttribute(getSessionName());
             if (log.isDebugEnabled()) {
                 if (cloud != null) {
-                    log.debug("Created/found a session. Cloud in it is of: " + cloud.getUser().getIdentifier());
+                    if (cloud.getUser().isValid()) {
+                        log.debug("Created/found a session. Cloud in it is of: " + cloud.getUser());
+                    } else {
+                        log.debug("Found invalid cloud in session of '" + cloud.getUser() + "'. Discarding.");
+                        cloud = null;
+                    }
                 } else {
                     log.debug("No cloud found");
                 }
@@ -646,7 +651,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             log.debug("found cloud in session m: " + method + " l: " + logon + ". Checking it");
         }
 
-        if (!cloud.getUser().isValid()) {            
+        if (! cloud.getUser().isValid()) {            
             // Makes the cloud variable null (may not be null already) if it
             // is 'expired'. This means normally that the security
             // configuration has been changed, or MMBase restarted or
@@ -675,7 +680,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             
         }  else  if (logon != null && cloud != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Explicitily requested non-anonymous cloud (by logon). Current user: " + cloud.getUser().getIdentifier());
+                log.debug("Explicitily requested non-anonymous cloud (by logon = '" + logon + "'). Current user: " + cloud.getUser().getIdentifier());
             }
             // a logon name was given, check if logged on as the right one
             if (! logon.contains(cloud.getUser().getIdentifier())) { // no!
@@ -688,7 +693,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } 
         if (! rankAnonymous()) {
             if (log.isDebugEnabled()) {
-                log.debug("Explicitily requested non-anonymous cloud (by rank). Current user: " + cloud.getUser().getIdentifier() + " rank: " + cloud.getUser().getRank());
+                log.debug("Explicitily requested non-anonymous cloud (by rank). Current user: " + cloud.getUser());
             }
             Rank curRank = Rank.getRank(cloud.getUser().getRank());
             if (curRank.getInt() < getRank().getInt()) {
@@ -729,7 +734,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (log.isDebugEnabled())
             log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
         // find logon, password with http authentication
-        String username = null;
+        String userName = null;
         String password = null;
         try {
             String mime_line = request.getHeader("Authorization");
@@ -737,7 +742,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 String user_password = org.mmbase.util.Encode.decode("BASE64", mime_line.substring(6));
                 StringTokenizer t = new StringTokenizer(user_password, ":");
                 if (t.countTokens() == 2) {
-                    username = t.nextToken();
+                    userName = t.nextToken();
                     password = t.nextToken();
                 }
             }
@@ -746,26 +751,26 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         // Authenticate user
         if (log.isDebugEnabled()) {
-            log.debug("u " + username + " p " + password);
+            log.debug("u " + userName + " p " + password);
         }
 
         if (logon != null) { // if there was a username specified as well, it must be the same
             log.debug("http with username");
-            if (!logon.contains(username)) {
+            if (!logon.contains(userName)) {
                 log.debug("username not correct");
                 return denyHTTP("<h2>Wrong username</h2> must be " + logon + "");
             } else {
-                logon = new Vector();
-                logon.add(username);
+                logon = new ArrayList();
+                logon.add(userName);
             }
         } else { // logon == null
             log.debug("http without username");
-            if (username == null) { // there must be at least known a username...
+            if (userName == null) { // there must be at least known a username...
                 log.debug("no username known");
                 return denyHTTP("<h2>No username given</h2>");
             }
-            logon = new Vector();
-            logon.add(username);
+            logon = new ArrayList();
+            logon.add(userName);
         }
         user.put("username", logon.get(0));
         user.put("password", password);
