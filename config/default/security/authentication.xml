@@ -10,7 +10,7 @@
 			class="org.mmbase.security.implementation.FileLoginModule" 
 			rank="basic user">
 		<property 
-		    	name="file">/usr/local/mmbase/config/accounts.properties</property>
+		    	name="file">../accounts.properties</property>
 	</loginmodule>
 
         <loginmodule    name="admin"
