@@ -21,7 +21,7 @@ import org.mmbase.bridge.Cloud;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.5 2005-03-01 14:58:40 michiel Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.6 2005-03-14 10:30:55 michiel Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -31,6 +31,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
     private static final int TYPE_USER                  = 1;
     private static final int TYPE_RANK                  = 2;
     private static final int TYPE_RANK_INT              = 3;
+    private static final int TYPE_AUTHENTICATE          = 4;
     private static final int TYPE_MMBASEVERSION         = 100;
 
 
@@ -52,6 +53,8 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             return TYPE_RANK;
         } else if ("rankint".equals(t)) { 
             return TYPE_RANK_INT;
+        } else if ("authenticate".equals(t)) { 
+            return TYPE_AUTHENTICATE;
         } else if ("mmbaseversion".equals(t)) { 
             return TYPE_MMBASEVERSION;
         } else {
@@ -78,6 +81,9 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             break;
         case TYPE_RANK_INT:
             show = "" + cloud.getUser().getRank().getInt();
+            break;
+        case TYPE_AUTHENTICATE:
+            show = "" + cloud.getUser().getAuthenticationType();
             break;
         case TYPE_MMBASEVERSION:
             show = org.mmbase.Version.get();
