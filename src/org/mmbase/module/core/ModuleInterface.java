@@ -21,9 +21,9 @@ import java.util.Iterator;
 public interface ModuleInterface {
 
  	/**
-     * Retrieves the Cloud to which this node type belongs
+     * Retrieves the CloudContext to which this module belongs
      */
-    public CloudInterface getCloud();
+    public CloudContextInterface getCloudContext();
 
  	/**
 	 * Retrieve the name of the nodetype
