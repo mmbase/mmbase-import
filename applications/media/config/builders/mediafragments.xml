@@ -220,5 +220,34 @@
 			<type state="persistent" notnull="false" key="false">LONG</type>
 		</db>
 	</field>
+	
+	<!-- POS 10 : <field> 'class'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="us">Classification</guiname>
+			<guiname xml:lang="nl">Classificatie</guiname>
+			<guitype>integer</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>8</input>
+				<!-- position in list area of the editor -->
+				<list>8</list>
+				<!-- position in search area of the editor -->
+				<search>-1</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>class</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
+		</db>
+	</field>
+
 </fieldlist>
 </builder>
