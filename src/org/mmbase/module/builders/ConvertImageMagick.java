@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.14 2001-06-18 15:06:01 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.15 2001-06-25 14:33:03 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.14  2001/06/18 15:06:01  vpro
+	Davzev: Added convert cmd colorizehex(rrggbb) in hex.
+	
 	Revision 1.13  2001/04/26 12:45:46  vpro
 	Rico: major bug fix in Images, minor stuff in the rest
 	
@@ -64,7 +67,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.14 2001-06-18 15:06:01 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.15 2001-06-25 14:33:03 vpro Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -256,6 +259,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     cmds.addElement("-interlace "+cmd);
                 } else if (type.equals("q")) {
 					cmds.addElement("-quality "+cmd);
+				} else if (type.equals("filter")) {
+					cmds.addElement("-filter "+cmd);
 				}
 			} else {
 				if (key.equals("mono")) {
