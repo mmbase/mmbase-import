@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.113 2003-12-22 10:28:46 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.114 2003-12-23 20:00:32 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -376,6 +376,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         changed = true;
     }
 
+    public void setObjectValue(String fieldName, Object value) {
+        value = (Node) ValueIntercepter.processSet(0, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
+    }
+
+
     public void setBooleanValue(String fieldName, boolean value) {
         Boolean booleanValue = new Boolean(value);
         setValue(fieldName, booleanValue);
@@ -459,6 +465,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         return getNode().getValue(fieldName);
     }
+
+    public Object getObjectValue(String fieldName) {
+        Object result = getNode().getValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (String) ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
+    }
+
 
     public boolean getBooleanValue(String fieldName) {
         return getNode().getBooleanValue(fieldName);
