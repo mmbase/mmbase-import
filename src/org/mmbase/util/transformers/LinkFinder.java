@@ -39,7 +39,6 @@ public class LinkFinder extends ReaderTransformer implements CharTransformer {
         urlPatterns.put(Pattern.compile("http://.+"),  AHREF); 
         urlPatterns.put(Pattern.compile("https://.+"), AHREF); 
         urlPatterns.put(Pattern.compile("ftp://.+"),   AHREF); 
-        urlPatterns.put(Pattern.compile("www\\..+"),   AHREF + "http://");
     }
     
     /**

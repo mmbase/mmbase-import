@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.125 2004-04-07 12:36:00 pierre Exp $
+    @version $Id: wizard.xsl,v 1.123 2004-03-11 15:11:21 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -43,7 +43,7 @@
     <script type="text/javascript" src="{$javascriptdir}validator.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;referrer={$referrer_encoded}">
+    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}&amp;language={$language}">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
@@ -107,7 +107,7 @@
           var htmlAreas = new Array();
         ]]></xsl:text>
 
-      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/descendant::*[@ftype=&apos;html&apos;]">
+      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/*[@ftype=&apos;html&apos;]">
         htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
       </xsl:for-each>
 

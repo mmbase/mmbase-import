@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
@@ -67,11 +67,6 @@ public class BasicSearchQueryTest extends TestCase {
         BasicSearchQuery result = instance1.setDistinct(true);
         assertTrue(instance1.isDistinct());
         assertTrue(result == instance1);
-    }
-    
-    public void testIsAggregating() {
-        assertTrue(!instance1.isAggregating());
-        assertTrue(instance2.isAggregating());
     }
     
     /** Test of setMaxNumber method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */

@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.3 2004-04-05 23:25:01 gerard Exp $</edition>
+    <edition>$Id: email.xml,v 1.2 2003-07-27 21:01:39 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -25,11 +25,7 @@
   </section>
   <section>
     <title>Basic Concepts</title>
-<para>Email within mmbase is not created as a separate extension but
-gains its power by using several of the core mmbase concepts :
-objects/relations and separation between content and layout. In
-practice this means email is and uses objects and relations just like
-all the other content stored in mmbase allow very for very powerful scripted email systems using all the already accepted tools to create their layout for most that means using the taglib system provided with mmbase.</para>
+<para>Email within mmbase is not created as a separate extension but gains its power by using several of the core mmbase concepts : objects/relations and separation between content and layout. In practice this means email is and uses objects and relations just like all the other content stored in mmbase allow very for very powerful scripted email systems using all the already accepted tools to create their layout for most that means using the taglib system provided with mmbase.</para>
     </section>
 
  
@@ -123,7 +119,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
 			]]>
 			</programlisting>
-			<para>If you are new to mmbase this seems a lot of lines but if you are already a user of the mmbase taglibs you will notice that the code is just based taglibs and if you are working with groups in your application you probably already have created it and you can add some lines. The example first creates a email object then gets the group that is defined by the mmbase alias "groups.testgroep" then a relation is created between the email object and the group. Lastly the mail(oneshot) command is given again. Since mmbase can't find a "to" field it will try to find if any users or groups with users are related to this email node and mails all the users it finds. The above example only finds a attached group with users but attached users work in the same way.
+			<para>If you are new to mmbase this seems a lot of lines but if you are already a user of the mmbase taglibs you will notice that the code is just based taglibs and if you are working with groups in your application you probably already have created it and you can add some lines. The example first creates a email object then gets the group that is defined by the mmbase alias "groups.testgroep" then a relation is created between the email object and the group. Lastly the mail(oneshot) command is given again. Since mmbase can’t find a "to" field it will try to find if any users or groups with users are related to this email node and mails all the users it finds. The above example only finds a attached group with users but attached users work in the same way.
 
 </para>
 	</section>
@@ -147,7 +143,7 @@ Now the oneshot will mail and tag itself to be deleted by mmbase, but in the abo
 
 </section>
 <section><title>Emailing dynamic content</title>
-<para>Mailing from inside a cms only makes sense if you can either work dynamically with the list of people you mail (see above) or that you can use content from within the cms. MMBase can do both and makes it very easy to allow very complex and powerful personalized email to users and groups of users. There are 2 ways to generate dynamic content and depend on if each person getting a copy of the email needs is different or they all get the same copy of the email. If everybody gets the same copy just add taglibs inside the above examples while building the email object. If every user needs a different mail then you can enter urls instead of the subject and body. MMBase will automatically see the url and call that on each user it will mail. It will also add a parameter to the url with the usernumber so you can create email based on it.</para>
+<para>Mailing from inside a cms only makes sense if you can either work dynamically with the list of people you mail (see above) or that you can use content from within the cms. MMBase can do both and makes it very easy to allow very complex and powerful personalized email to users and groups of users. There are 2 ways to generate dynamic content and depend on if each person getting a copy of the email needs is different or they all get the same copy of the email. If everybody gets the same copy just add taglibs inside the above examples while building the email object. If every user needs a different mail then you can enter url’s instead of the subject and body. MMBase will automatically see the url and call that on each user it will mail. It will also add a parameter to the url with the usernumber so you can create email based on it.</para>
 <programlisting format="linespecific">
 <![CDATA[(from example5.jsp)
 

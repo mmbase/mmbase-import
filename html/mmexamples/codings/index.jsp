@@ -43,7 +43,7 @@
   </ul>  
   <hr />
 </mm:content>
-<address><a href="mailto:Michiel.Meeuwissen@omroep.nl">miĥil'</a></address>
+<address><a href="mailto:Michiel.Meeuwissesn@omroep.nl">miĥil'</a></address>
 </body>
 </html>
 

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.16 2004-04-02 10:38:33 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.15 2004-03-26 15:48:26 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -114,11 +114,14 @@ public class MMBaseCopConfig {
         if(sActive.equalsIgnoreCase("true")) {
             log.debug("SecurityManager will be active");
             active = true;
-        } else if(sActive.equalsIgnoreCase("false")) {
+        }
+        else if(sActive.equalsIgnoreCase("false")) {
             log.debug("SecurityManager will NOT be active");
             active = false;
-        } else {
-            throw new SecurityException("security attibute active must have the value 'true' or 'false'");
+        }
+        else {
+            log.error("security attibure active must have value of true or false("+configPath+")");
+            throw new SecurityException("security attibure active must have value of true or false");
         }
 
         // load the sharedSecret

@@ -17,6 +17,19 @@
 		</td>
 	</mm:compare>
 
+	<!-- comments flap -->
+	<mm:compare referid="flap" value="comments" inverse="true">
+		<td>
+		<a href="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=comments&bugreport=<mm:write referid="bugreport" />">
+		Comments
+		</a>
+		</td>
+	</mm:compare>
+	<mm:compare referid="flap" value="comments">
+		<td class="selected">
+		Comments
+		</td>
+	</mm:compare>
 
 
 	<!-- history flap -->

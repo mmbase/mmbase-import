@@ -23,10 +23,9 @@
 				<mm:related path="rolerel,comments">
 				<tr>
 				<td valign="top" width="200">
+				type : <mm:field name="rolerel.role" />
 				<mm:node element="comments">
-					<mm:relatednodes type="users" >
-					  <mm:field name="firstname" /> <mm:field name="lastname" />
-					</mm:relatednodes>
+				name : <mm:relatednodes type="users" ><mm:field name="firstname" /> <mm:field name="lastname" /> </mm:relatednodes>
 				</mm:node>
 				</td>
 				<td valign="top" width="430">

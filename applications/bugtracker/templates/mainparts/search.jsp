@@ -7,49 +7,32 @@
 	<INPUT NAME="sbugid" SIZE="4">
 	</td>
 	<td width="50">
-        <mm:context>
-        <mm:import id="sstatus_list" vartype="list">open,accepted,rejected,pending,integrated,closed</mm:import>
-        <mm:import id="sstatustest" externid="sstatus"/>
-	<select name="sstatus">
-              <option value="">any</option>
-              <mm:stringlist id="sstatusitem" referid="sstatus_list">
-             <mm:index id="index">
-              <mm:compare referid2="sstatustest"><option value="<mm:write/>" selected="true"><mm:write referid="sstatusitem"/></option></mm:compare>
-              <mm:compare referid2="sstatustest" inverse="true"><option value="<mm:write/>"><mm:write referid="sstatusitem"/></option></mm:compare>
-             </mm:index>
-        </mm:stringlist>
-	</select>
-        </mm:context>
+	<SELECT NAME="sstatus">
+		<OPTION VALUE="">
+		<OPTION VALUE="1">open
+		<OPTION VALUE="2">accepted
+		<OPTION VALUE="3">rejected
+		<OPTION VALUE="4">pending
+		<OPTION VALUE="5">integrated
+		<OPTION VALUE="6">closed
+	</SELECT>
 	</td>
 	<td width="50">
-        <mm:context>
-        <mm:import id="stype_list" vartype="list">bug,wish,doc,docwish</mm:import>
-        <mm:import id="stypetest" externid="stype"/>
-	<select name="stype">
-              <option value="">any</option>
-              <mm:stringlist id="stypeitem" referid="stype_list">
-             <mm:index id="index">
-              <mm:compare referid2="stypetest"><option value="<mm:write/>" selected="true"><mm:write referid="stypeitem"/></option></mm:compare>
-              <mm:compare referid2="stypetest" inverse="true"><option value="<mm:write/>"><mm:write referid="stypeitem"/></option></mm:compare>
-             </mm:index>
-        </mm:stringlist>
-	</select>
-        </mm:context>
+	<SELECT NAME="stype">
+		<OPTION VALUE="">
+		<OPTION VALUE="1">bug
+		<OPTION VALUE="2">wish
+		<OPTION VALUE="3">doc
+		<OPTION VALUE="4">docwish
+	</SELECT>
 	</td>
 	<td width="50">
-        <mm:context>
-        <mm:import id="spriority_list" vartype="list">high,medium,low</mm:import>
-        <mm:import id="sprioritytest" externid="spriority"/>
-	<select name="spriority">
-              <option value="">any</option>
-              <mm:stringlist id="spriorityitem" referid="spriority_list">
-             <mm:index id="index">
-              <mm:compare referid2="sprioritytest"><option value="<mm:write/>" selected="true"><mm:write referid="spriorityitem"/></option></mm:compare>
-              <mm:compare referid2="sprioritytest" inverse="true"><option value="<mm:write/>"><mm:write referid="spriorityitem"/></option></mm:compare>
-             </mm:index>
-        </mm:stringlist>
-	</select>
-        </mm:context>
+	<SELECT NAME="spriority">
+		<OPTION VALUE="">
+		<OPTION VALUE="1">high
+		<OPTION VALUE="2">medium
+		<OPTION VALUE="3">low
+	</SELECT>
 	</td>
 	<td width="50">
 	<INPUT NAME="sversion" SIZE="3">
@@ -110,11 +93,13 @@
 	if (spriority!=null && !spriority.equals("")) { if (!where.equals("")) where+=" and ";where+="bugreports.bpriority="+spriority; }
 %>
 </mm:present>
+<%--
 <mm:list path="pools,bugreports,areas" nodes="BugTracker.Start" orderby="bugreports.bugid" directions="down" constraints="<%=where%>">
 	<mm:last>
 		<mm:import id="total"><mm:index/></mm:import>
 	</mm:last>
 </mm:list>
+--%>
 <% String total="0"; %>
 <mm:present referid="total">
   <mm:write referid="total" jspvar="tmp" vartype="integer">

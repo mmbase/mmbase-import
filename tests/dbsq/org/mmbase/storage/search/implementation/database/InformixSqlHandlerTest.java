@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class InformixSqlHandlerTest extends TestCase {
     
@@ -120,20 +120,6 @@ public class InformixSqlHandlerTest extends TestCase {
         instance.toSql(query, instance).equals(
         "SELECT FIRST 100 m_number FROM " 
         + prefix + "images images WHERE m_number IS NULL"));
-        
-        // Distinct keyword avoided in aggregating query.
-        query = new BasicSearchQuery(true);
-        BasicStep step1 = query.addStep(images).setAlias(null);
-        FieldDefs imagesTitle = images.getField("title");
-        BasicAggregatedField field1 
-            = (BasicAggregatedField) query.addAggregatedField(
-                step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
-                    .setAlias(null);
-        query.setDistinct(true);
-        String strSql = instance.toSql(query, instance);
-        assertTrue(strSql, strSql.equals(
-        "SELECT COUNT(title) "
-        + "FROM " + prefix + "images images"));
     }
     
     public static Test suite() {

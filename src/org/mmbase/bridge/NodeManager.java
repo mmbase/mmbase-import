@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.32 2004-04-07 15:10:55 keesj Exp $
+ * @version $Id: NodeManager.java,v 1.31 2003-12-17 20:51:43 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -215,7 +215,7 @@ public interface NodeManager extends Node {
      * </pre>
      *
      * For more info consult a SQL tutorial like
-     * <a href="http://hea-www.harvard.edu/MST/simul/software/docs/pkg/pgsql/sqltut/sqltut.htm">Jim Hoffman's introduction to Structured Query Language</a>.
+     * <a href="http://w3.one.net/~jhoffman/sqltut.htm">this one</a>.
      *
      * @param constraints   Constraints to prevent nodes from being
      *                      included in the resulting list which would normally

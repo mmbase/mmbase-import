@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.2 $
  */
 public class ModifiableQueryTest extends TestCase {
     
@@ -208,20 +208,6 @@ public class ModifiableQueryTest extends TestCase {
     public void testIsDistinct() {
         //  Same as:
         testSetDistinct();
-    }
-    
-    public void testSetAggregating() {
-        assertTrue(!instance.isAggregating());
-        instance.setAggregating(Boolean.TRUE);
-        assertTrue(instance.isAggregating());
-        ModifiableQuery result = instance.setAggregating(null);
-        assertTrue(!instance.isAggregating());
-        assertTrue(result == instance);
-    }
-    
-    public void testIsAggregating() {
-        // Same as:
-        testSetAggregating();
     }
     
     public static Test suite() {

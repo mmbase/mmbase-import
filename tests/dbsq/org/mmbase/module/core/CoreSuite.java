@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class CoreSuite extends TestCase {
     
@@ -32,6 +32,7 @@ public class CoreSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite("ImplementationSuite");
         suite.addTest(org.mmbase.module.core.ClusterBuilderTest.suite());
+        suite.addTest(org.mmbase.module.core.MMObjectBuilderTest.suite());
         return suite;
     }
     

@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.3 $
  */
 public class ConstraintParserTest extends TestCase {
     
@@ -57,41 +57,20 @@ public class ConstraintParserTest extends TestCase {
     
     /** Test of parseValue method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testParseValue() {
-        Step step1 = query.addStep(news);
-        StepField numericalField = instance.getField("number");
-        StepField stringField = instance.getField("title");
         Iterator iTokens = Arrays.asList(new String[] {
-            "12345.6", 
-            "NotANumber", 
-            "'", "12345.6", "'", 
-            "'", "NotANumber", "'", 
-            "'", "value1", "'", 
-            "-10", 
-            "'", "value2", "'", 
-            "'", "value3", "123"}).iterator();
-        Object value = ConstraintParser.parseValue(iTokens, numericalField);
+            "12345.6", "'", "value1", "'", "-10", 
+            "'", "value2", "'", "'", "value3", "123"}).iterator();
+        Object value = ConstraintParser.parseValue(iTokens);
         assertTrue(value.toString(), value.equals(new Double("12345.6")));
-        try {
-            // Invalid value for numerical field, must throw NumberFormatException.
-            value = ConstraintParser.parseValue(iTokens, numericalField);
-            fail("Invalid value for numerical field, must throw NumberFormatException.");
-        } catch (NumberFormatException e) {}
-        value = ConstraintParser.parseValue(iTokens, numericalField);
-        assertTrue(value.toString(), value.equals(new Double("12345.6")));
-        try {
-            // Invalid value for numerical field, must throw NumberFormatException.
-            value = ConstraintParser.parseValue(iTokens, numericalField);
-            fail("Invalid value for numerical field, must throw NumberFormatException.");
-        } catch (NumberFormatException e) {}
-        value = ConstraintParser.parseValue(iTokens, stringField);
+        value = ConstraintParser.parseValue(iTokens);
         assertTrue(value.toString(), value.equals("value1"));
-        value = ConstraintParser.parseValue(iTokens, numericalField);
+        value = ConstraintParser.parseValue(iTokens);
         assertTrue(value.toString(), value.equals(new Double("-10")));
-        value = ConstraintParser.parseValue(iTokens, stringField);
+        value = ConstraintParser.parseValue(iTokens);
         assertTrue(value.toString(), value.equals("value2"));
         try {
             // Missing end delimiter, must throw IllegalArgumentException.
-            ConstraintParser.parseValue(iTokens, stringField);
+            ConstraintParser.parseValue(iTokens);
             fail("Missing end delimiter, must throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
     }
@@ -196,7 +175,6 @@ public class ConstraintParserTest extends TestCase {
         Step step3 = step2.getNext();
         StepField field1 = instance.getField("step1.title");
         StepField field2 = instance.getField("step1.description");
-        StepField field3 = instance.getField("step1.number");
 
         // LIKE
         BasicFieldValueConstraint constraint1 
@@ -412,20 +390,10 @@ public class ConstraintParserTest extends TestCase {
         constraint = instance.parseSimpleCondition(
             ConstraintParser.tokenize("step1.title<=step1.description").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint8a));
-        
-        // Comparing numerical field with string representing a numerical value:
-        // step1.number <= '123'
-        BasicFieldValueConstraint constraint8b
-            = (BasicFieldValueConstraint)
-                new BasicFieldValueConstraint(field3, new Double("123"))
-                    .setOperator(FieldCompareConstraint.LESS_EQUAL);
-        constraint = instance.parseSimpleCondition(
-            ConstraintParser.tokenize("step1.number<='123'").listIterator());
-        assertTrue(constraint.toString(), constraint.equals(constraint8b));
 
         try {
-            // Comparing numerical field with string (not representing a numerical value), 
-            // should throw IllegalArgumentException.
+            // Comparing numerical field with string, should throw 
+            // IllegalArgumentException.
             instance.parseSimpleCondition(
                 ConstraintParser.tokenize("step1.number<='abc def'").listIterator());
             fail("Comparing numerical field with string, should throw "

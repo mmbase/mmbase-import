@@ -37,7 +37,7 @@
 			<mm:write referid="commenttype" />
 			<p />
 			<mm:compare referid="commenttype" value="regular">
-			<form action="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=overview&bugreport=<mm:write referid="bugreport" />&newuser=<mm:write referid="user" />" method="post">
+			<form action="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=comments&bugreport=<mm:write referid="bugreport" />&newuser=<mm:write referid="user" />" method="post">
 			Title<br /> <input name="newtitle" style="width: 100%" /><br />
 			Text<br /> <textarea name="newtext" rows="25" style="width: 100%"></textarea>
 			<input type="hidden" name="action" value="addcomment" />

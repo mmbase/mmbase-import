@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.18 2004-04-01 20:57:48 robmaris Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.17 2003-12-17 17:00:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -478,11 +478,6 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     // javadoc is inherited
     public boolean isDistinct() {
         return distinct;
-    }
-    
-    // javadoc is inherited
-    public boolean isAggregating() {
-        return aggregating;
     }
     
     // javadoc is inherited

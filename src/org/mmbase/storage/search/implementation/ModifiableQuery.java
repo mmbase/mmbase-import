@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Id: ModifiableQuery.java,v 1.4 2004-04-01 20:57:48 robmaris Exp $
+ * @version $Id: ModifiableQuery.java,v 1.3 2003-03-10 11:50:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {
@@ -77,12 +77,6 @@ public class ModifiableQuery implements SearchQuery {
      * <code>query.isDistinct()</code>.
      */
     private Boolean distinct = null;
-    
-    /**
-     * The value of the aggregating property, <code>null</code> means: use
-     * <code>query.isAggregating()</code>.
-     */
-    private Boolean aggregating = null;
     
     /** Creates a new instance of ModifiedQuery */
     public ModifiableQuery(SearchQuery query) {
@@ -173,18 +167,6 @@ public class ModifiableQuery implements SearchQuery {
         return this;
     }
     
-    /**
-     * Sets the aggregating property.
-     *
-     * @param aggregating The value of the aggregating property, 
-     *        <code>null</code> means: use <code>query.isAggregating()</code>.
-     * @return This <code>ModifiableQuery</code> instance.
-     */
-    public ModifiableQuery setAggregating(Boolean aggregating) {
-        this.aggregating = aggregating;
-        return this;
-    }
-    
     // javadoc is inherited
     public int getMaxNumber() {
         if (maxNumber != -1) {
@@ -245,15 +227,6 @@ public class ModifiableQuery implements SearchQuery {
             return distinct.booleanValue();
         } else {
             return query.isDistinct();
-        }
-    }
-    
-    // javadoc is inherited
-    public boolean isAggregating() {
-        if (aggregating != null) {
-            return aggregating.booleanValue();
-        } else {
-            return query.isAggregating();
         }
     }
     

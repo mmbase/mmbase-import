@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @javadoc
  * @move org.mmbase.util.xml
- * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
- * @version $Id: XMLApplicationWriter.java,v 1.25 2004-04-05 19:38:06 michiel Exp $
+ * @deprecation-used Can use Xerces functionality to write an XML, isn't it?
+ * @version $Id: XMLApplicationWriter.java,v 1.24 2003-11-19 13:20:10 pierre Exp $
  */
 public class XMLApplicationWriter  {
 
-    private static final Logger log = Logging.getLoggerInstance(XMLApplicationWriter.class);
+    private static Logger log = Logging.getLoggerInstance(XMLApplicationWriter.class.getName());
 
     public static Vector writeXMLFile(XMLApplicationReader app, String targetpath, String goal, MMBase mmb) {
         Vector resultmsgs=new Vector();
@@ -40,55 +40,52 @@ public class XMLApplicationWriter  {
         // again this is a stupid class generating the xml file
         // the second part called the extractor is kind of neat
         // but very in early beta
-        String name       = app.getApplicationName();
+        String name = app.getApplicationName();
         String maintainer = app.getApplicationMaintainer();
-        int version       = app.getApplicationVersion();
-        boolean deploy    = app.getApplicationAutoDeploy();
-
-
-        // sigh, should we not use the original XML to write out? This is a bit silly.
+        int version = app.getApplicationVersion();
+        boolean deploy = app.getApplicationAutoDeploy();
 
         String body =
             "<?xml version=\"1.0\"?>\n" +
-            "<!DOCTYPE application PUBLIC \"" + XMLApplicationReader.PUBLIC_ID_APPLICATION + "\" \"http://www.mmbase.org/dtd/" + XMLApplicationReader.DTD_APPLICATION + "\">\n" +
+            "<!DOCTYPE application PUBLIC \"-//MMBase/DTD application config 1.0//EN\" \"http://www.mmbase.org/dtd/application_1_0.dtd\">\n" +
             "<application name=\"" + name +
               "\" maintainer=\"" + maintainer +
               "\" version=\"" + version +
               "\" auto-deploy=\"" + deploy + "\">\n";
 
         // write the needed builders
-        body += getRequirements(app);
+        body+=getRequirements(app);
 
         // write the needed builders
-        body += getNeededBuilders(app);
+        body+=getNeededBuilders(app);
 
         // write the needed reldefs
-        body += getNeededRelDefs(app);
+        body+=getNeededRelDefs(app);
 
         // write the allowed relations
-        body += getAllowedRelations(app);
+        body+=getAllowedRelations(app);
 
         // write the datasources
-        body += getDataSources(app);
+        body+=getDataSources(app);
 
         // write the relationsources
-        body += getRelationSources(app);
+        body+=getRelationSources(app);
 
         // write the contextsources
-        body += getContextSources(app);
+        body+=getContextSources(app);
 
         // write the description
-        body += getDescription(app);
+        body+=getDescription(app);
 
         // write the install-notice
-        body += getInstallNotice(app);
+        body+=getInstallNotice(app);
 
         // close the application file
-        body += "</application>\n";
+        body+="</application>\n";
         saveFile(targetpath+"/"+app.getApplicationName()+".xml",body);
 
         // now the tricky part starts figure out what nodes to write
-        writeDateSources(app, targetpath, mmb,resultmsgs);
+        writeDateSources(app,targetpath,mmb,resultmsgs);
 
         // now write the context files itself
         writeContextSources(app,targetpath);
@@ -171,11 +168,11 @@ public class XMLApplicationWriter  {
 
 
     static String getDataSources(XMLApplicationReader app) {
-        String body = "\t<datasourcelist>\n";
-        Vector builders = app.getDataSources();
-        for (Enumeration e = builders.elements();e.hasMoreElements();) {
-            Hashtable bset = (Hashtable)e.nextElement();
-            String path = (String)bset.get("path");
+        String body="\t<datasourcelist>\n";
+        Vector builders=app.getDataSources();
+        for (Enumeration e=builders.elements();e.hasMoreElements();) {
+            Hashtable bset=(Hashtable)e.nextElement();
+            String path=(String)bset.get("path");
             String builder=(String)bset.get("builder");
             body+="\t\t<datasource builder=\""+builder+"\" path=\""+path+"\" />\n";
         }
@@ -242,7 +239,7 @@ public class XMLApplicationWriter  {
         return(true);
     }
 
-    private static void writeDateSources(XMLApplicationReader app, String targetpath, MMBase mmb, Vector resultmsgs) {
+    private static void writeDateSources(XMLApplicationReader app,String targetpath,MMBase mmb,Vector resultmsgs) {
 
         Vector builders=app.getContextSources();
         for (Enumeration e=builders.elements();e.hasMoreElements();) {
@@ -256,7 +253,7 @@ public class XMLApplicationWriter  {
             resultmsgs.addElement("save goal : "+goal);
 
             if (type.equals("depth")) {
-                XMLContextDepthReader capp = new XMLContextDepthReader(path);
+                XMLContextDepthReader capp=new XMLContextDepthReader(path);
                 XMLContextDepthWriterII.writeContext(app,capp,targetpath,mmb,resultmsgs);
             } else if (type.equals("full")) {
                 XMLFullBackupWriter.writeContext(app, targetpath, mmb, resultmsgs);
@@ -286,7 +283,7 @@ public class XMLApplicationWriter  {
 
     private static void writeBuilders(XMLApplicationReader app,String targetpath,MMBase mmb) {
         // create the dir for the Data & resource files
-        File file = new File(targetpath + "/" + app.getApplicationName()+"/builders");
+        File file = new File(targetpath+"/"+app.getApplicationName()+"/builders");
         try {
             file.mkdirs();
         } catch(Exception e) {

@@ -32,8 +32,8 @@
 
 <%@ include file="parts/flaps.jsp" %>
 
-		<mm:compare referid="flap" value="overview"><%@ include file="parts/overview.jsp" %> 
-		<%@ include file="parts/comments.jsp" %> </mm:compare>
+		<mm:compare referid="flap" value="overview"><%@ include file="parts/overview.jsp" %> </mm:compare>
+		<mm:compare referid="flap" value="comments"><%@ include file="parts/comments.jsp" %> </mm:compare>
 		<mm:compare referid="flap" value="history"><%@ include file="parts/history.jsp" %> </mm:compare>
 		<mm:compare referid="flap" value="change"><%@ include file="parts/change.jsp" %> </mm:compare>
 		<mm:compare referid="flap" value="mybug"><%@ include file="parts/mybug.jsp" %> </mm:compare>

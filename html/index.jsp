@@ -13,7 +13,7 @@
 <body >
 <table>
   <tr>
-    <th class="main" colspan="3">Welcome to MMBase</th> 
+    <th class="main" colspan="3">Welcome to MMBase</th>
   </tr>
   <tr>
     <td colspan="3">
@@ -24,7 +24,7 @@
         This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
       </p>
       <p>
-        MMBase has been build under the <a href="<mm:url page="mmbase/mpl-1.0.jsp" />">Mozilla Public License, Version 1.0</a>
+        MMBase has been build under the <a href="mmbase/mpl-1.0.jsp">Mozilla Public License, Version 1.0</a>
       </p>
       <p>
         <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a username and password. <br />
@@ -35,16 +35,16 @@
       </p>  
       <p>
         Consicely, for further upgrading this demo-installation of MMBase to a producation environment we advice to do the following
+        <ul>
+          <li>Evaluate all builder xmls from config/builders (and below). Remove all which you don't
+          need (the builders in 'core' should remain). You need to start with empty database then.</li>
+          <li>Evaluate all applications from config/applications. Remove all which you don't need.</li>
+          <li>Configure another database (hsql is not really fit for production), e.g. mysql or postgresql</li>
+          <li>Remove /mmexamples (it is a bit dangerous, and superfluous in production)</li>
+          <li>Remove /index.jsp (this file), you want to put the index.jsp of your site here of course.</li>
+          <li>Remove /mmdocs</li>
+        </ul>
       </p>
-      <ul>
-        <li>Evaluate all builder xmls from config/builders (and below). Remove all which you don't
-        need (the builders in 'core' should remain). You need to start with empty database then.</li>
-        <li>Evaluate all applications from config/applications. Remove all which you don't need.</li>
-        <li>Configure another database (hsql is not really fit for production), e.g. mysql or postgresql</li>
-        <li>Remove /mmexamples (it is a bit dangerous, and superfluous in production)</li>
-        <li>Remove /index.jsp (this file), you want to put the index.jsp of your site here of course.</li>
-        <li>Remove /mmdocs</li>
-      </ul>
     </td>
   </tr>
   <tr>

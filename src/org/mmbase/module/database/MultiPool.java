@@ -12,7 +12,7 @@ package org.mmbase.module.database;
 import java.sql.*;
 import java.util.*;
 import org.mmbase.util.DijkstraSemaphore;
-import org.mmbase.module.core.MMBase;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.51 2004-04-05 17:30:17 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.50 2004-03-22 10:53:57 michiel Exp $
  */
 public class MultiPool {
 
@@ -68,7 +68,7 @@ public class MultiPool {
     */
     protected void createPool() {
         pool = new ArrayList();
-        MMBase mmb = MMBase.getMMBase();
+        org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
         boolean logStack = true;
         try {
             while (!fillPool(logStack)) {
@@ -391,13 +391,7 @@ public class MultiPool {
             }
 
             if (! busyPool.contains(con)) {
-                MMBase mmb = MMBase.getMMBase();
-                if (! mmb.isShutdown()) {
-                    log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
-                } else {
-                    log.service("Connection " + con.lastSql + " was put back, but MMBase is shut down, so it was ignored.");
-                    return;
-                }
+                log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
             }
 
 

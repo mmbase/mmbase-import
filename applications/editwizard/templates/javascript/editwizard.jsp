@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.47 2004-04-07 12:36:01 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.46 2004-03-19 15:29:24 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -383,13 +383,13 @@ function saveScroll() {
     var wizardinstance = document.forms[0].getAttribute("wizardinstance");
     var id = document.forms[0].getAttribute("id");
     var scrollTop = document.getElementById("editform").scrollTop;
-        writeCookie_general(wizardinstance, id, scrollTop);
+		writeCookie_general(wizardinstance, id, scrollTop);
 }
 
 function clearScroll() {
     var wizardinstance = document.forms[0].getAttribute("wizardinstance");
     var id = document.forms[0].getAttribute("id");
-        clearCookie_general(wizardinstance, id);
+		clearCookie_general(wizardinstance, id);
 }
 
 function setFocusOnFirstInput() {

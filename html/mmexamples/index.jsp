@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page session="false" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html">
-<mm:cloud>
+<%@page session="false" %>
+<mm:cloud jspvar="cloud">
 <html>
 <head>
   <title>MMBase Demos</title>
