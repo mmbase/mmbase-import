@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.19 2003-05-13 08:30:09 pierre Exp $</edition>
+    <edition>$Id: index.xml,v 1.20 2003-05-26 22:08:15 gerard Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -15,10 +15,13 @@
     <title>Introduction</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="documentation.html">About MMBase Documentation</ulink></para>
+        <para>
+          <ulink url="documentation.html" id="aboutmmbasedocumentation">
+            About MMBase Documentation</ulink>
+        </para>
       </listitem>
       <listitem>
-        <para><ulink url="xml-how-to.html">How To Use XML</ulink></para>
+        <para><ulink url="xml-how-to.html" id="howtousexml">How To Use XML</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -26,23 +29,23 @@
     <title>Release Information</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="releases/readme.txt">Read This First (text)</ulink></para>
+        <para><ulink url="releases/readme.txt" id="readthisfirst">Read This First (text)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/release-notes.txt">Release Notes MMBase Version (text)</ulink></para>
+        <para><ulink url="releases/release-notes.txt" id="releasenotes">Release Notes MMBase Version (text)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/installation.txt">Installation Notes (text)</ulink></para>
+        <para><ulink url="releases/installation.txt" id="installation">Installation Notes (text)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/building.txt">Building from Source (text)</ulink></para>
+        <para><ulink url="releases/building.txt" id="building">Building from Source (text)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="administrators/install-tomcat.html">Installation instructions for Tomcat</ulink></para>
+        <para><ulink url="administrators/install-tomcat.html" id="installtomcat">Installation instructions for Tomcat</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="install/orion-1.x.html">Installation instructions for Orion</ulink></para>
+        <para><ulink url="install/orion-1.x.html" id="installationorion">Installation instructions for Orion</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -50,10 +53,10 @@
     <title>General Documentation</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="general/architecture.html">MMBase Architectural Overview</ulink></para>
+        <para><ulink url="general/architecture.html" id="architecturaloverview">MMBase Architectural Overview</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="general/images-and-attachments.html">Images and Attachments</ulink>
+        <para><ulink url="general/images-and-attachments.html" id="imagesandattachments">Images and Attachments</ulink>
 	Everything (?)  about these kind of things in MMBase.</para>
       </listitem>
     </itemizedlist>
@@ -62,32 +65,32 @@
     <title>Administrators</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="administrators/configuration.html">MMBase configuration documentation</ulink></para>
+        <para><ulink url="administrators/configuration.html" id="configuration">MMBase configuration documentation</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="administrators/builders.html">Builder configuration file</ulink></para>
+        <para><ulink url="administrators/builders.html" id="builders">Builder configuration file</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="administrators/relations.html">MMBase relations</ulink></para>
+        <para><ulink url="administrators/relations.html" id="relations">MMBase relations</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="administrators/applications.html">Applications documentation</ulink></para>
-      </listitem>
-      <listitem>
-        <!-- old format (mmdocs) documentation -->
-        <para><ulink url="administrators/remoteservices.html">MMBase Remote Services</ulink></para>
-      </listitem>
-      <listitem>
-        <para><ulink url="administrators/security-framework.html">The MMBase Security Framework</ulink></para>
-      </listitem>
-      <listitem>
-        <para><ulink url="administrators/context-security.html">Installing and using Context Security</ulink></para>
+        <para><ulink url="administrators/applications.html" id="applications">Applications documentation</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="security/cloud-security.html">Installing and using Cloud Security</ulink></para>
+        <para><ulink url="administrators/remoteservices.html" id="remoteservices">MMBase Remote Services</ulink></para>
+      </listitem>
+      <listitem>
+        <para><ulink url="administrators/security-framework.html" id="securityframework">The MMBase Security Framework</ulink></para>
+      </listitem>
+      <listitem>
+        <para><ulink url="administrators/context-security.html" id="securitycontext">Installing and using Context Security</ulink></para>
+      </listitem>
+      <listitem>
+        <!-- old format (mmdocs) documentation -->
+        <para><ulink url="security/cloud-security.html" id="securitycloud">Installing and using Cloud Security</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -95,29 +98,29 @@
     <title>Developers</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="developers/codingstandards.html">MMBase Coding Standards</ulink></para>
+        <para><ulink url="developers/codingstandards.html" id="codingstandards">MMBase Coding Standards</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="developers/rmmci.html">Remote MMBase Cloud Interface</ulink></para>
+        <para><ulink url="developers/rmmci.html" id="rmmci">Remote MMBase Cloud Interface</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="developers/dovexmlapi.html">Dove XML API</ulink></para>
+        <para><ulink url="developers/dovexmlapi.html" id="dovexmlapi">Dove XML API</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="developers/i18n.html">MMBase Internationalisation and Localisation</ulink></para>
+        <para><ulink url="developers/i18n.html" id="i18n">MMBase Internationalisation and Localisation</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="developers/TCP2_4_8.html">TCP and the Transaction Handler</ulink></para>
+        <para><ulink url="developers/TCP2_4_8.html" id="tcp">TCP and the Transaction Handler</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="developers/dbsq.html">SearchQuery introduction</ulink></para>
+        <para><ulink url="developers/dbsq.html" id="dbsqintro">SearchQuery introduction</ulink></para>
       </listitem>
       <listitem>
         <para>XML Importer (TCP 2.0)</para>
-        <para><ulink url="developers/xmlimporter/overview.html">Overview</ulink></para>
-        <para><ulink url="developers/xmlimporter/quickstart.html">Quick start</ulink></para>
-        <para><ulink url="developers/xmlimporter/cookbook.html">Cook Book</ulink></para>
+        <para><ulink url="developers/xmlimporter/overview.html" id="xmlimporteroverview">Overview</ulink></para>
+        <para><ulink url="developers/xmlimporter/quickstart.html" id="xmlimporterquickstart">Quick start</ulink></para>
+        <para><ulink url="developers/xmlimporter/cookbook.html" id="xmlimportercookbook">Cook Book</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -125,29 +128,29 @@
     <title>Templaters and Designers</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="templaters/taglib/taglib-tutorial.html">Taglib Tutorial</ulink></para>
+        <para><ulink url="templaters/taglib/taglib-tutorial.html" id="taglibtutorial">Taglib Tutorial</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="templaters/editwizard/editwizard-doc.html">Editwizards</ulink></para>
+        <para><ulink url="templaters/editwizard/editwizard-doc.html" id="editwizarddoc">Editwizards</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="templaters/editwizard/editwizard-reference.html">Editwizard Syntax Reference</ulink></para>
+        <para><ulink url="templaters/editwizard/editwizard-reference.html" id="editwizardreference">Editwizard Syntax Reference</ulink></para>
       </listitem>
       <listitem>
-        <para>MMBase taglib reference (<ulink url="reference/taglib/toc.html">JSP</ulink> <ulink url="reference/mmbase-taglib.html">HTML</ulink>)</para>
+        <para>MMBase taglib reference (<ulink url="reference/taglib/toc.html" id="taglibreferencejsp">JSP</ulink> <ulink url="reference/mmbase-taglib.html" id="taglibreferencehtml">HTML</ulink>)</para>
       </listitem>
       <listitem>
-        <para>MMBase community taglib reference (<ulink url="reference/community-taglib/toc.html">JSP</ulink> <ulink url="reference/mmcommunity-taglib.html">HTML</ulink>)</para>
+        <para>MMBase community taglib reference (<ulink url="reference/community-taglib/toc.html" id="taglibcommunityjsp">JSP</ulink> <ulink url="reference/mmcommunity-taglib.html" id="taglibcommunityhtml">HTML</ulink>)</para>
       </listitem>
       <listitem>
-        <para><ulink url="templaters/builders/index.html">MMBase standard builders</ulink></para>
+        <para><ulink url="templaters/builders/index.html" id="standardbuilders">MMBase standard builders</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="mmci/api/index.html">Bridge (MMCI) API documentation</ulink></para>
+        <para><ulink url="mmci/api/index.html" id="bridgeapi">Bridge (MMCI) API documentation</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="templaters/SCAN1_0.html">SCAN</ulink></para>
+        <para><ulink url="templaters/SCAN1_0.html" id="veryoldanddeprecatedscan">SCAN</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -155,7 +158,7 @@
     <title>Managers</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="managers/mmbase4managers.html">Running MMBase in your organization</ulink></para>
+        <para><ulink url="managers/mmbase4managers.html" id="mmbase4managers">Running MMBase in your organization</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
