@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.160 2002-10-08 18:10:00 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.161 2002-10-08 18:36:31 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1454,6 +1454,9 @@ public class MMObjectBuilder extends MMTable {
 		if(node.getNumber() <= 0) {
 		    // never happend to me, and never should!
 		    log.error("invalid node found, node number was invalid:" + node.getNumber()+", database invalid?");
+		    // dont know what to do with this node,... 
+		    // continue to the next one!
+		    continue;
 		}
 
 		Integer number = new Integer(node.getNumber());
@@ -1534,31 +1537,39 @@ public class MMObjectBuilder extends MMTable {
 		int otype = ((Integer)typeEntry.getKey()).intValue();
 		Set nodes = (Set) typeEntry.getValue();
 		MMObjectNode typedefNode = getNode(otype);
-		if(typedefNode != null) {
-		    MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
-		    if(builder != null) {
-			Iterator i = nodes.iterator();
-			String numbers = null;
-			// TODO: is there an upper limit for a sql query?
-			while(i.hasNext()) {
-			    MMObjectNode current = (MMObjectNode)i.next();
-			    if(numbers == null) numbers = "" + current.getNumber();
-			    else numbers +=  ", " + current.getNumber();
-			}
-			if(numbers != null) {
-			    if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
-			    // now query the correct builder  for the missing nodes...
-			    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
-			    while(enum.hasMoreElements()) {
-				MMObjectNode current = (MMObjectNode)enum.nextElement();
-				convertedNodes.put(new Integer(current.getNumber()), current);	    
-			    }		       
-			}
-			else throw new RuntimeException("how can the numbers string be null?");
-		    }
-		    else log.warn("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber());
+		if(typedefNode == null) {
+		    // builder not known in typedef?
+		    // skip this builder and process to next one..
+		    // TODO: add incorrect node to node's cache?
+		    log.error("Could not find typdef node #"+otype);
+		    continue;
 		}
-		else log.warn("Could not find typdef node #"+otype);
+		MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
+		if(builder == null) {
+		    // could not find the builder that was in typedef..
+		    // maybe it is not active?
+		    // TODO: add incorrect node's to node cache?
+		    log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
+		    continue;
+		}		
+		Iterator i = nodes.iterator();
+		String numbers = null;
+		// TODO: is there an upper limit for a sql query?
+		while(i.hasNext()) {
+		    MMObjectNode current = (MMObjectNode)i.next();
+		    if(numbers == null) numbers = "" + current.getNumber();
+		    else numbers +=  ", " + current.getNumber();
+		}
+		if(numbers != null) {
+		    if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
+		    // now query the correct builder  for the missing nodes...
+		    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
+		    while(enum.hasMoreElements()) {
+			MMObjectNode current = (MMObjectNode)enum.nextElement();
+			convertedNodes.put(new Integer(current.getNumber()), current);	    
+		    }		       
+		}
+		else throw new RuntimeException("how can the numbers string be null?");
 	    }	
     
 	    // insert all the corrected nodes that were found into the list..
