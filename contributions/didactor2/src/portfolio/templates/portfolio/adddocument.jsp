@@ -72,13 +72,32 @@
         </mm:node>
         
         <table class="Font">
-          <mm:fieldlist nodetype="attachments" fields="title,description,handle">
+          <mm:fieldlist nodetype="attachments" fields="title,handle,description">
             <tr>
               <td><mm:fieldinfo type="guiname"/></td>
               <td><mm:fieldinfo type="input"/></td>
             </tr>
           </mm:fieldlist>
-        </table>
+        <tr>
+            <td>Leesrechten</td>
+            <td><select name="_readrights">
+                <option value="0" >Niet zichtbaar</option>
+                <option value="1" >Zichtbaar voor studenten uit mijn klassen</option>
+                <option value="2" >Zichtbaar voor mijn docenten</option>
+                <option value="3" >Zichtbaar voor iedereen.</option>
+                <option value="4" >Zichtbaar voor niet-ingelogde (anonieme) gebruikers.</option>
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Reacties</td>
+            <td><select name="_allowreactions">
+                <option value="0" >Geen reacties toestaan</option>
+                <option value="1" >Reacties toestaan</option>
+                </select>
+            </td>
+        </tr>
+       </table>
 
         <%-- a few hidden fields which are used in the next page --%>
         <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
@@ -149,6 +168,17 @@
       <mm:setfield name="date"><%=currentDate%></mm:setfield>
     </mm:createnode>
 
+    <%-- create permissions --%>
+    <mm:createnode type="portfoliopermissions" id="permissions">
+         <mm:fieldlist fields="readrights,allowreactions">
+            <mm:fieldinfo type="useinput" />
+        </mm:fieldlist>
+    </mm:createnode>
+
+    <mm:createrelation source="myattachements" destination="permissions" role="related"/>
+
+
+    
     <%-- related uploaded attachment to the current folder --%>
     <mm:createrelation role="related" source="mycurrentfolder" destination="myattachements"/>
 
