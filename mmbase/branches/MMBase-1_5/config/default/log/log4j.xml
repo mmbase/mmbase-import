@@ -13,14 +13,13 @@
    [
     <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
     <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
-    <!ENTITY logdir   "/tmp/" >
 ]>
 
 <!-- 
   MMBase logging configuration 
 
   MMBase can use log4j for logging. See
-  http://jakarta.apache.org. This is a sample configuration file for
+  http://jakarta.apache.org/log4j. This is a sample configuration file for
   it. The name of this file is indicated in <CONFIGDIR>/log/log.xml
 
   Quick introduction on how to configure log4j.
@@ -42,40 +41,39 @@
 
 <log4j:configuration>
 
-<appender name="logfile" class="org.apache.log4j.FileAppender" >
-    <param name="File"   value="&logdir;mmbase.log" />
-    <param name="Append" value="true" />
+  <!-- 
+  Logging to Console on default. You perhaps want to change this
+  to 'FileAppender' (see examples).
+  -->
+  <appender name="logfile" class="org.apache.log4j.ConsoleAppender" >   
     <layout class="org.apache.log4j.PatternLayout">
         <param name="ConversionPattern" value="%d{ABSOLUTE} %-7p - %c{1}: %m%n" />
     </layout>
-</appender>
-
-<!-- categories -->
-
-<!-- examples: different priority for a few subtrees -->
-<category name="org.mmbase.bridge" class ="&logger;">
+  </appender>
+  
+  <!-- categories -->
+  
+  <!-- examples: different priority for a few subtrees -->
+  <category name="org.mmbase.PAGE" class ="&logger;">
     <priority class="&priority;" value ="info" />
-</category>
-<category name="org.mmbase.security" class ="&logger;">
-    <priority class="&priority;" value ="info" />
-</category>
-
-<!-- perhaps you use your own extensions to MMBase -->
-<category name="nl.omroep" class ="&logger;">
+  </category>
+  
+  <!-- perhaps you use your own extensions to MMBase -->
+  <category name="nl.omroep" class ="&logger;">
     <priority class="&priority;" value ="trace" />
-</category>
-
-<!-- STDERR is a special Category, to wich stderr will be written
-     (always with priority 'warn' or higher)  -->
-
-<category name="STDERR" class ="&logger;">
+  </category>
+  
+  <!-- STDERR is a special Category, to wich stderr will be written
+  (always with priority 'warn' or higher)  -->
+  
+  <category name="STDERR" class ="&logger;">
     <priority class="&priority;" value ="info" />	
-</category>
-
-<root>
+  </category>
+  
+  <root>
     <priority class="&priority;" value ="service" />
     <appender-ref ref="logfile" />
-</root>
-
-
+  </root>
+  
+  
 </log4j:configuration>
