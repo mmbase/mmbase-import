@@ -902,11 +902,13 @@ public class servdb extends JamesServlet {
             if( n != null ) {
                 if( n.getName().equals("audioparts")) {
                     // url = getAudiopartUrl( mmbase, number, sp, speed, channels );
+					if( debug ) debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found audiopart");
                     url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
                 } else {
                     if( n.getName().equals("cdtracks"))
                     {
                         // url = getCdtracksUrl( mmbase, number, sp, speed, channels );
+						if( debug ) debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found cdtrack");
                         url = ((CDTracks)mmbase.getMMObject("cdtracks")).getCdtracksUrl( mmbase, number, sp, speed, channels);
                     } else
                         debug("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not cdtrack or audiopart!");
