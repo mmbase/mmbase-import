@@ -21,11 +21,16 @@ import org.mmbase.util.logging.*;
  *
  * @rename     Performance
  * @author     vpro
- * @version    $Id: performance.java,v 1.9 2002-06-28 07:49:24 pierre Exp $
+ * @version    $Id: performance.java,v 1.10 2002-06-28 08:38:05 pierre Exp $
  */
-public class performance extends JamesServlet {
+public class performance extends BridgeServlet {
     // logging
     private static Logger log;
+
+    public static long INT_LOOP = 20000000;
+    public static long STRING_LOOP = 2500000;
+    public static long METHOD_LOOP = 10000000;
+    public static String TEST_STRING = "test";
 
     /**
      * @javadoc
@@ -41,7 +46,7 @@ public class performance extends JamesServlet {
      * Called by the server when a request is done.
      * @javadoc
      */
-    public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public synchronized void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         // Open	a output stream so you can write to the client
         PrintStream out = new PrintStream(res.getOutputStream());
 
@@ -52,19 +57,24 @@ public class performance extends JamesServlet {
         //res.writeHeaders();
 
         // WRITE MESSAGE TO CLIENT
-        out.println("<HTML>");
-        out.println("<HEAD><TITLE>NWO</TITLE></HEAD>");
-        out.println("<BODY BACKGROUND=\"/jamesdoc/images/" + getInitParameter("bg") + "\" BGCOLOR=\"#000000\"" +
-                " TEXT=\"#FFFFFF\" LINK=\"#00FFFF\" VLINK=\"#00FFFF\">");
-        out.println("me (servlet load test) = " + this + "<BR>");
+        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\" >");
+        out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">");
+        out.println("<head><title>Performance</title></head>");
+        out.println("<body>");
+        out.println("<h1>Performance Servlet</h1>");
+        out.println("<p>" + getServletInfo() + "</p>");
         long time = intloop();
-        out.println("intloop = " + time + "<BR>");
+        out.println("<p><strong>Performance Test (simple loop "+INT_LOOP+" times) </strong><br />");
+        out.println("takes "+time+"ms, "+(((double)time)/INT_LOOP)+" ms/loop </p>");
         time = string();
-        out.println("stringloop = " + time + "<BR>");
-        out.println("methodloop = " + method() + "<BR>");
-        out.println("</BODY>");
-        out.println("</HTML>");
-        log.debug("performance servlet - Perftime = " + time);
+        out.println("<p><strong>Performance Test (compare '"+TEST_STRING+"' "+STRING_LOOP+" times) </strong><br />");
+        out.println("takes "+time+"ms, "+(((double)time)/STRING_LOOP)+" ms/loop </p>");
+
+        out.println("<p><strong>Performance Test (loop through the provided stub method "+METHOD_LOOP+" times) </strong><br />");
+        out.println("takes "+time+"ms, "+(((double)time)/METHOD_LOOP)+" ms/loop </p>");
+        out.println("</body>");
+        out.println("</html>");
     }
 
     /**
@@ -84,9 +94,9 @@ public class performance extends JamesServlet {
      */
     private long string() {
         long begin = new Date().getTime();
-        String test = "test";
+        String test = TEST_STRING;
         for (int i = 0; i < 2500000; i++) {
-            test.equals("test");
+            test.equals(TEST_STRING);
         }
         long end = new Date().getTime();
         return end - begin;
@@ -97,18 +107,17 @@ public class performance extends JamesServlet {
      */
     private long method() {
         long begin = new Date().getTime();
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < METHOD_LOOP; i++) {
             stub();
         }
         long end = new Date().getTime();
         return end - begin;
     }
 
-
     /**
      * @javadoc
      */
-    private void stub() {
+    protected void stub() {
     }
 
     /**
@@ -116,7 +125,7 @@ public class performance extends JamesServlet {
      * @return a descriptive text
      */
     public String getServletInfo() {
-        return ("Performance tester, for jit and other things - Rob Vermeulen");
+        return ("Performance tester, for JIT and other things");
     }
 }
 
