@@ -53,7 +53,7 @@ public class NoAuthorization extends Authorization {
     /** 
      * This method does nothing, except from giving a specified string back
      */        
-    public String setContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
     	return EVERYBODY;
     }
 
