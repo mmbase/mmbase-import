@@ -18,8 +18,9 @@ import org.mmbase.util.logging.*;
 /**
  * Redirects request based on information supplied by the jumpers builder.
  *
+ * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.9 2004-02-24 11:53:19 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.10 2004-10-08 12:18:58 pierre Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -67,7 +68,6 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
         initThread = new MMBaseStartThread(this);
         initThread.start();
-
     }
 
     /**
@@ -77,7 +77,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         if (bul == null) {
             if (mmbase != null) {
                 bul = (Jumpers)mmbase.getBuilder("jumpers");
-            } 
+            }
             if (bul == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return; // nothing to be done
@@ -85,9 +85,8 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         }
         HttpServletRequest req = (HttpServletRequest)servletRequest;
         HttpServletResponse res = (HttpServletResponse)servletResponse;
-        /**
-         * getContextPath()
-         * Returns the portion of the request URI that indicates the context of the request.
+        /*
+         * getContextPath() returns the portion of the request URI that indicates the context of the request.
          * The context path always comes first in a request URI.
          * The path starts with a "/" character but does not end with a "/" character.
          * For servlets in the default (root) context, this method returns "". The container does not decode this string.
