@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.15 2000-06-02 10:57:48 wwwtech Exp $
+	$Id: Images.java,v 1.16 2000-06-02 11:20:45 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.15  2000/06/02 10:57:48  wwwtech
+	Rico: seperated conversion from the builder
+	
 	Revision 1.10  2000/04/05 11:52:16  wwwtech
 	Rico: added debug, so you can see you need to load icaches as well
 	
@@ -56,7 +59,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.15 2000-06-02 10:57:48 wwwtech Exp $
+ * @version $Id: Images.java,v 1.16 2000-06-02 11:20:45 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -171,19 +174,21 @@ public class Images extends MMObjectBuilder {
 		return ConvertImage(sp,params);
 	}
 
-	public String convertAlias(String num) {
+	public int convertAlias(String num) {
 		// check if its a number if not check for name
 		int number=-1;
 		try {
 			number=Integer.parseInt(num);
 		} catch(NumberFormatException e) {
-			Enumeration g=search("WHERE title='"+num+"'");
-			while (g.hasMoreElements()) {
-				MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-				number=imgnode.getIntValue("number");
+			if (num!=null && !num.equals("")) {
+				Enumeration g=search("WHERE title='"+num+"'");
+				while (g.hasMoreElements()) {
+					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
+					number=imgnode.getIntValue("number");
+				}
 			}
 		}	
-		return(""+number);
+		return(number);
 	}
 
 	public byte[] ConvertImage(scanpage sp,Vector params) {
@@ -191,12 +196,11 @@ public class Images extends MMObjectBuilder {
 		byte[] picture=null;
 		int number=-1;
 
-		if (params!=null && params.size()==0) {
+		if (params!=null && params.size()>0) {
 	
 			String num=(String)params.elementAt(0);
 
-			num=convertAlias(num);
-			number=Integer.parseInt(num);
+			number=convertAlias(num);
 				
 			if (number>=0) {
 				// flatten parameters as a 'hashed' key;
