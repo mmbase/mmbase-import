@@ -67,9 +67,11 @@ public class Casting {
    
     static public Document toXML(Object o, String documentType, String conversion) {
         if (!(o instanceof Document)) {
-            //do conversion from string to Document thing...
+            //do conversion from String to Document...
+            // This is a laborous action, so we log it on service. 
+            // It will happen often if the nodes are not cached and so on.
             if (log.isServiceEnabled()) {
-                log.service("Object " + o.getClass().getName() + " is not a Document, but a " + o.getClass().getName());
+                log.service("Object " + o.toString().substring(0,20) + "... is not a Document, but a " + o.getClass().getName());
             }
             return convertStringToXML(toString(o), documentType, conversion);
         }
