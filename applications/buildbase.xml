@@ -176,16 +176,16 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <echo message="copying to ${project.build.dir}" />
 
     <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
-      <fileset dir="${project.source.dir}">
-        <include name="src/**/*.properties"/>
-        <include name="src/**/*.dtd"/>
-        <include name="src/**/*.xml"/>
+      <fileset dir="${project.source.dir}/src">
+        <include name="**/*.properties"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
       </fileset>
     </copy>
 
     <echo message="compiling" />
 
-    <javac srcdir ="${project.source.dir}"
+    <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
            optimize="${optimize}"
