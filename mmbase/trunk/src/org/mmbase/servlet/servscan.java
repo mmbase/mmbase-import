@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.21 2001-07-16 10:08:13 jaco Exp $
+ * @version $Id: servscan.java,v 1.22 2001-10-23 11:44:22 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -101,26 +101,7 @@ public class servscan extends JamesServlet {
 			
 			log.service("Scan page: " + req.getRequestURI());
 
-			scanpage sp=new scanpage();
-			sp.req_line=req.getRequestURI();
-			sp.querystring=req.getQueryString();
-	
-			// needs to be replaced (get the context ones)		
-			ServletConfig sc=getServletConfig();
-			ServletContext sx=sc.getServletContext();
-			String mimetype=sx.getMimeType(sp.req_line);
-			if (mimetype==null) mimetype="text/html";
-			sp.mimetype=mimetype;
-			sp.setReq(req);
-			sp.setRes(res);
-	
-
-			String sname=getCookie(sp.req,res);
-			sp.sname=sname;
-			sessionInfo session=sessions.getSession(sp,sname);
-			sp.session=session;
-	
-			doEditorReload(sp,res);
+			scanpage sp=new scanpage(this, req, res, sessions);
 	
 			// POST
 			if (req.getMethod().equals("POST")) {
@@ -150,17 +131,17 @@ public class servscan extends JamesServlet {
 				if (sp.body != null && !sp.body.equals("")) {
 					long oldtime = System.currentTimeMillis();
 					// Process HTML
-					sp.body = handle_line(sp.body, session, sp);
+					sp.body = handle_line(sp.body, sp.session, sp);
 					// Send data back
 					if (sp.body!=null) {
 						if (sp.rstatus==0) {
-							sp.mimetype = addCharSet(mimetype);
-							res.setContentType( sp.mimetype ); 
+							sp.mimetype = addCharSet(sp.mimetype);
+							res.setContentType(sp.mimetype); 
 							out.print(sp.body);
 							handleCacheSave(sp,res);
 						} else if (sp.rstatus==1) {
 							res.setStatus(302,"OK");
-							res.setContentType( addCharSet( mimetype ) ); 
+							res.setContentType( addCharSet( sp.mimetype ) ); 
 							res.setHeader("Location",sp.body);
 						} else if (sp.rstatus==2) {
 							sp.req_line=sp.body;	
@@ -171,7 +152,7 @@ public class servscan extends JamesServlet {
 							String tmp = req.getHeader("If-Modified-Since:");
 							if (tmp!=null && sp.processor!=null) {
 								res.setStatus(304,"Not Modified");
-								res.setContentType( addCharSet(mimetype) ); 
+								res.setContentType( addCharSet(sp.mimetype) ); 
 							} else {
 								setHeaders(sp,res,sp.body.length());
 								out.print(sp.body);
@@ -226,7 +207,7 @@ public class servscan extends JamesServlet {
 			res.setHeader("Pragma","no-cache");
 		} else {
 			Date d=new Date(0);
-	//		Date d=new Date(DateSupport.currentTimeMillis()-(1000*24*3600)); // probably this one
+//			Date d=new Date(DateSupport.currentTimeMillis()-(1000*24*3600)); // probably this one
 //			debug("setHeaders(): "+ac+" time="+dt);
 			String dt=RFC1123.makeDate(d);
 //			res.setHeader("Expires",dt);
@@ -466,52 +447,4 @@ public class servscan extends JamesServlet {
 		return(name);
 	}
 
-	void doEditorReload(scanpage sp,HttpServletResponse res) {
-		int EXPIRE = 120;
-		if (log.isDebugEnabled()) log.debug("doEditorReload called, sp.reload:" + sp.reload);
-		
-		if (sessions!=null) {
-			String sname=getCookie(sp.req,res);
-			sessionInfo session=sessions.getSession(sp,sname);
-
-			// try to obtain and set the reload mode.
-			String tmp=session.getValue("RELOAD");
-			if (tmp!=null && tmp.equals("R")) {
-				// oke check if it still valid
-				String tmp2=session.getValue("RELOADTIME");
-				if (tmp2!=null) {
-					try {
-						int then=Integer.parseInt(tmp2);
-						int now= (int)(DateSupport.currentTimeMillis()/1000);
-						//debug("doEditorReload: then:"+then);
-						//debug("doEditorReload: now :"+now);
-						if ((now-then)<EXPIRE) {
-							//sp.loadmode="no-cache";
-							sp.reload=true;
-							if (log.isDebugEnabled()) {
-								log.debug("doEditorReload: sp.reload:"+sp.reload+", remote user:"+HttpAuth.getRemoteUser(sp.req));
-								log.debug("doEditorReload: sp.reload:"+sp.reload+", expire time not reached: "+(now-then)+"<"+EXPIRE+" sec");
-							}
-						} else {
-							session.setValue("RELOAD","N");
-							//sp.loadmode="cache";
-							sp.reload=false;
-							if (log.isDebugEnabled()) log.debug("doEditorReload: Reload expired "+(now-then)+">="+EXPIRE+" , sp.reload:"+sp.reload);
-						}
-					} catch(Exception e) {
-						session.setValue("RELOAD","N");
-						//sp.loadmode="cache";
-						sp.reload=false;
-					}
-				} else {
-					session.setValue("RELOAD","N");
-					//sp.loadmode="cache";
-					sp.reload=false;
-				}
-			} else {
-				//sp.loadmode="cache";
-				sp.reload=false;
-			}
-		}
-	}
 }
