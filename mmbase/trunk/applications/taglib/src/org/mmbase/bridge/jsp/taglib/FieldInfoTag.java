@@ -78,8 +78,8 @@ public class FieldInfoTag extends NodeReferrerTag {
         }
     }
 
-    public void setField(String f) {
-        whichField = f;
+    public void setField(String f) throws JspTagException  {
+        whichField = getAttributeValue(f);
     }
     
     public int doStartTag() throws JspTagException{
@@ -123,7 +123,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             String value = "<search>";
             if (! search) {
                 if (node == null) {
-                    value = "<create";
+                    value = "<create>";
                 } else {
                     value = node.getStringValue(field.getName());
                 }
@@ -156,7 +156,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                 }
                 show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
     	    	if (node != null) {
-    	    	    show += Encode.encode("ESCAPE_HTML_ATTRIBUTE", decode(node.getStringValue(field.getName()), node));	
+    	    	    show += Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", decode(node.getStringValue(field.getName()), node));	
 		}
 		show += "\" />";
     	    	break;
@@ -507,7 +507,9 @@ public class FieldInfoTag extends NodeReferrerTag {
 
             field = fieldListTag.getField();
         } else { // not in List, get it from a parent Node            
-            node = getNode();
+            np = findNodeProvider();
+            node = np.getNodeVar();
+             
             field = node.getNodeManager().getField(whichField);
             if (field == null) {
                 throw new JspTagException("Unknown field '" + whichField + "' for nodemanager " + node.getNodeManager().getName());
@@ -528,7 +530,8 @@ public class FieldInfoTag extends NodeReferrerTag {
             break;
         case TYPE_USEINPUT:
             if (node == null) { 
-                node = getNode();
+                np = findNodeProvider();
+                node = np.getNodeVar();
             }
             np.setModified();
             break;
