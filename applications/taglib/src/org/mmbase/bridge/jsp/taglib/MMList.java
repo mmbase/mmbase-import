@@ -226,14 +226,11 @@ public class MMList extends MMTaglib
 		    	action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
 			Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
 			nodes.addAll(node.getRelatedNodes(typeString));
-		    } else { //no search and no node it must be objectlist
-			//second hack, the MMCI does not provide a way to list all objects
-			// of a certain Type so de do a dummy search where node number not equals 2
-			// let's hope the node number 2 is not of the type we are searching
-		    	action = "list all objects of type("+ typeString + " )";
+		    } else { 
+		    	action = "list all objects of type("+ typeString + ")";
 			NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 			boolean direction = ("UP".equals(searchDirection))? true: false;
-			List list = nodeManager.search("number =N 2",null,direction);
+			List list = nodeManager.search(null,null,direction);
 			nodes.addAll(list);
 		    }
 		}
