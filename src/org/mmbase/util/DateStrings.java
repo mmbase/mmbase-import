@@ -29,7 +29,7 @@ public class DateStrings {
     /**
      *  English long month names
      */
-    public static String longmonths[]={ "January","February","March","April","May","June","July","Augustus","September","October","November","December" };
+    public static String longmonths[]={ "January","February","March","April","May","June","July","August","September","October","November","December" };
 
     /**
      *  Dutch short week day names
