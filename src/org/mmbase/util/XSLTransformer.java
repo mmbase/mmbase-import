@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.10 2002-09-18 18:24:18 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.11 2002-10-07 16:42:30 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -71,7 +71,7 @@ public class XSLTransformer {
     public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
             StringWriter res = new StringWriter();
-            transform(new File(xmlPath), new File(xslPath), new StreamResult(res), null);
+            transform(new File(xmlPath), new File(xslPath), new StreamResult(res), null, true);
 	    String s = res.toString();
 	    int n = s.indexOf("\n");
 	    if (cutXML && s.length() > n) {
@@ -94,10 +94,30 @@ public class XSLTransformer {
      **/
 
     public void transform(DOMSource xml, File xslFile, StreamResult result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+        transform(xml, xslFile, result, params, true);
+    }
+    public void transform(DOMSource xml, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+
+        if (log.isDebugEnabled()) {
+            Runtime rt = Runtime.getRuntime();
+            rt.gc();
+            log.debug("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte   free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
+        }
+
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
-        URIResolver uri = new URIResolver(xslFile.getParentFile());
+        URIResolver uri;
+        if (considerDir) {
+            uri = new URIResolver(xslFile.getParentFile());
+        } else {
+            uri = new URIResolver();
+        }
         Templates cachedXslt = cache.getTemplates(xsl, uri);
+        if (log.isDebugEnabled()) {
+            // log.debug("Size of cached XSLT " + SizeOf.getByteSize(cachedXslt) + " bytes");
+            log.debug("Size of URIResolver " + SizeOf.getByteSize(uri) + " bytes");
+            log.debug("template cache size " + cache.size() + " entries");
+        }
         if (cachedXslt == null) {
             cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
             cache.put(xsl, cachedXslt, uri);
@@ -105,6 +125,10 @@ public class XSLTransformer {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
         }
         Transformer transformer = cachedXslt.newTransformer();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Size of transformer " + SizeOf.getByteSize(transformer) + " bytes");
+        }
         if (params != null) {
             Iterator i = params.entrySet().iterator();
             while (i.hasNext()){
@@ -122,15 +146,13 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public void transform(File xmlFile, File xslFile, StreamResult result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlFile, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
         
         // turn validating on
         XMLEntityResolver resolver = new XMLEntityResolver(true);
-        boolean validate =  resolver.canResolve();
-        dfactory.setValidating(validate);
-        dfactory.setValidating(validate);
+        dfactory.setValidating(true);
         DocumentBuilder db = dfactory.newDocumentBuilder();
         
         XMLErrorHandler handler = new XMLErrorHandler();
@@ -138,7 +160,7 @@ public class XSLTransformer {
         db.setEntityResolver(resolver);
         org.w3c.dom.Document xmlDoc = db.parse(xmlFile);
 
-        transform(new DOMSource(xmlDoc), xslFile, result, params);
+        transform(new DOMSource(xmlDoc), xslFile, result, params, considerDir);
     }
 
 
@@ -153,7 +175,7 @@ public class XSLTransformer {
      * @since MMBase-1.6
      */
 
-    public void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         if (! xmlDir.isDirectory()) {
             throw  new TransformerException("" + xmlDir + " is not a directory");            
         }
@@ -186,7 +208,7 @@ public class XSLTransformer {
                     }
                 }
                 log.info("Transforming directory " + files[i] + " (root is " + myParams.get("root") + ")");
-                transform(files[i], xslFile, resultSubDir, recurse, myParams);
+                transform(files[i], xslFile, resultSubDir, recurse, myParams, considerDir);
             } else {
                 if (! files[i].getName().endsWith(".xml")) continue;
                 String fileName = files[i].getName();
@@ -197,7 +219,7 @@ public class XSLTransformer {
                 } else {
                     log.info("Transforming file " + files[i] + " to " + resultFile);
                     try {
-                        transform(files[i], xslFile, new StreamResult(resultFile), params); 
+                        transform(files[i], xslFile, new StreamResult(resultFile), params, considerDir); 
                     } catch (Exception e) {
                         log.error(e.toString());
                     }
@@ -211,7 +233,7 @@ public class XSLTransformer {
      */
     public static void main(String[] argv) {
         XSLTransformer t = new XSLTransformer();
-        // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
+        /// log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
             log.info("Use with two arguments: xslt-file xml-inputfile");
             log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir");
@@ -221,7 +243,7 @@ public class XSLTransformer {
                 log.info("Transforming directory " + in);
                 long start = System.currentTimeMillis();
                 try {                    
-                    t.transform(in, new File(argv[0]), new File(argv[2]), true, null);
+                    t.transform(in, new File(argv[0]), new File(argv[2]), true, null, true);
                 } catch (Exception e) {
                     log.error("Error: " + e.toString());
                 }
