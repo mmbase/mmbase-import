@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.76 $ $Date: 2002-06-18 06:55:43 $
+ * @version $Revision: 1.77 $ $Date: 2002-06-18 09:19:29 $
  */
 
 public class MMObjectNode {
@@ -1312,7 +1312,7 @@ public class MMObjectNode {
             }
 
             // remove all the <!DOCTYPE stuff from beginning if there....
-            // <!DOCTYPE builder PUBLIC "-//MMBase/builder config 1.0 //EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+            // <!DOCTYPE builder PUBLIC "-//MMBase/builder config 1.0 //EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
             if(value.startsWith("<!DOCTYPE")) {
                 // strip till next >
                 int stop = value.indexOf(">");
