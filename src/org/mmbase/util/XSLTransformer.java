@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.25 2005-03-03 17:14:43 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.26 2005-03-16 10:44:55 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -108,12 +108,6 @@ public class XSLTransformer {
      * @since MMBase-1.6
      */
     public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException {
-
-        if (log.isDebugEnabled()) {
-            Runtime rt = Runtime.getRuntime();
-            rt.gc();
-            log.debug("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte   free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
-        }
 
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
