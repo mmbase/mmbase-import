@@ -13,19 +13,23 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.NodeTag;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 /**
-* As NodeTag, but the node will be removed after the body.
-*
-* @author Michiel Meeuwissen
-*/
+ *
+ * As NodeTag, but the node will be removed after the body.
+ *
+ * @author Michiel Meeuwissen
+ */
 public class DeleteNodeTag extends NodeTag {
     
-    private static Logger log = Logging.getLoggerInstance(DeleteNodeTag.class.getName());
+    private boolean deleteRelations = false;
+
+    public void setDeleterelations(boolean r) {
+        deleteRelations = r;
+    }
         
     public int doAfterBody() throws JspTagException {    
-        getNodeVar().remove();
+        //getNodeVar().delete(deleteRelations);
+        getNodeVar().delete();
         return super.doAfterBody();
     }
 }
