@@ -1653,6 +1653,7 @@ public class MMObjectBuilder extends MMTable {
 			StringObject obj=new StringObject(body);
 			obj.replace("<","&lt;");
 			obj.replace(">","&gt;");
+			obj.replace("$","&#36;");
 
 			obj.replace("\r\n\r\n","<P>");
 			obj.replace("\n\n","<P>");
