@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.47 2005-03-14 19:02:35 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.48 2005-03-16 14:52:20 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -395,9 +395,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         if (timerHandle != -1) {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
-        super.doEndTag();
         xsltSource = null;
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     } // doEndTag
 
 
