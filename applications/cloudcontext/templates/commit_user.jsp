@@ -7,9 +7,12 @@
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
 
+<%  
+  try {
+%> 
 <mm:compare referid="user" value="new">
   <mm:remove referid="user" />
-  <mm:import id="wasnew" />
+  <mm:import id="wasnew" />  
   <mm:createnode id="user" type="mmbaseusers" />
 </mm:compare>
 
@@ -60,6 +63,19 @@
 <h1><mm:field name="gui()" /> (commited)</h1>
 <%@include file="edit_user.form.jsp" %>
 </mm:node>
+
+
+<% } catch (org.mmbase.storage.StorageException se) { %>
+<p>
+  Error. Perhap you tried to create a user with known user name?
+</p>
+<p>
+   Storage error <%= se.getMessage() %>.
+</p>
+<p>
+  <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_users.jsp</mm:param></mm:url>">back</a>
+</p>
+<% } %>
 
 </mm:cloud>
 </mm:content>
