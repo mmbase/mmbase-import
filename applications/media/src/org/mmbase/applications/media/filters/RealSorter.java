@@ -24,19 +24,26 @@ import java.util.*;
  * can request a certain speed/channels, but it can be forced to be
  * between two values (configured in mediasourcefilter.xml).
  *
+ * This ia 'chainsorter' meaning that it is a combination of severa;
+ * other sorters, which are implemented as inner classes. This is
+ * because several criteria are to be distinguished.
+ *
  * @author  Michiel Meeuwissen
- * @version $Id: RealSorter.java,v 1.1 2003-02-05 16:31:38 michiel Exp $
+ * @author  Rob Vermeulen
+ * @version $Id: RealSorter.java,v 1.2 2003-02-18 17:08:57 michiel Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class.getName());
 
+    // XML subtag
     public static final String CONFIG_TAG          = "config.realAudio";
+
     /**
      * Prefer real a little if this filter is used?
      * Other possibility: Impelmeent it that if one of both URLComposer are no reals, that they are equal then.
      */
 
-    class RealFormatSorter extends PreferenceSorter {        
+    protected class RealFormatSorter extends PreferenceSorter {        
         protected int getPreference(URLComposer ri) {           
             if (ri.getFormat() != Format.RM) return 0; 
             return 1;
@@ -47,7 +54,7 @@ public class RealSorter extends  ChainSorter {
      * Sort with speed
      */
 
-    class SpeedSorter extends PreferenceSorter {
+    protected class SpeedSorter extends PreferenceSorter {
 
         private int minSpeed        = -1;
         private int maxSpeed        = -1;    
@@ -102,7 +109,7 @@ public class RealSorter extends  ChainSorter {
      * Sort with channels 
      */
 
-    class ChannelsSorter extends PreferenceSorter {
+    protected class ChannelsSorter extends PreferenceSorter {
         private int minChannels     = -1;
         private int maxChannels     = -1;
 
@@ -152,7 +159,7 @@ public class RealSorter extends  ChainSorter {
     }
 
     
-    public  RealSorter() {
+    public  RealSorter() {        
         add(new RealFormatSorter()); // Prefer real?
         add(new SpeedSorter());
         add(new ChannelsSorter());

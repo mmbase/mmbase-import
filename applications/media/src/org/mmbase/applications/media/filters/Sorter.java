@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 /**
  * Implements a Filter as a Comparator. That means that it only sorts,
  * and the implementation is done by calling Collections.sort. You can
- * be sure that no URLs are removed during the filter process.
+ * be sure that no URLComposers are removed during the filter process.
  *
  * @author  Michiel Meeuwissen
  */
