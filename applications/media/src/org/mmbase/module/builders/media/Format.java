@@ -17,7 +17,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.1 2003-01-08 22:23:06 michiel Exp $
+ * @version $Id: Format.java,v 1.2 2003-01-08 22:42:56 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -63,10 +63,12 @@ public final class Format {   // final class!!
     public static final Format OGG  = new Format(15, "ocg");
     public static final Format OGM  = new Format(16, "ogm");
     public static final Format RAM  = new Format(17, "ram");
+    public static final Format WMP  = new Format(18, "wmp");
     public int toInt()    { return number; }
     public String toString() { return id;     }
     public static Format get(int i) {
         return (Format) formats.get(i);
+
     }
     public static Format get(String id) {
         id = id.toLowerCase();
@@ -81,6 +83,9 @@ public final class Format {   // final class!!
     public boolean isReal() {
         return this == RA || this == RM || this == RAM;
     }
+    public boolean isWindowsMedia() {
+        return this == ASF || this == WMP;
+    }
     public List getSimilar() {
         if (isReal()) {
             if (this == RM) {
@@ -89,6 +94,12 @@ public final class Format {   // final class!!
                 return Arrays.asList(new Format[]{this, RM, RAM});
             } else if (this == RAM) {
                 return Arrays.asList(new Format[]{this, RM, RA});
+            }
+        } else if (isWindowsMedia()) {
+            if (this == ASF) {
+                return Arrays.asList(new Format[]{this, WMP});
+            } else if (this == WMP) {
+                return Arrays.asList(new Format[]{this, ASF});
             }
         }
         return Arrays.asList(new Format[]{this});
