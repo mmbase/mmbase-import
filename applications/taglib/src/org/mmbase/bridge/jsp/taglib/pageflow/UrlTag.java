@@ -53,6 +53,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     private   List  referids = null;
     protected HashMap extraParameters = null;
     protected String  page;
+    private   boolean escapeAmps = true;
 
     public void setReferids(String r) throws JspTagException {
         referids = StringSplitter.split(getAttributeValue(r));
@@ -60,6 +61,10 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
 
     public void setPage(String p) throws JspTagException {
         page = getAttributeValue(p);
+    }
+
+    public void setEscapeamps(String e) throws JspTagException {
+        escapeAmps = getAttributeValue(e).equalsIgnoreCase("true");
     }
 
     protected void addParameter(String key, Object value) throws JspTagException {
@@ -116,7 +121,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
 
     }
     protected String getUrl() throws JspTagException {
-        return getUrl(true);
+        return getUrl(escapeAmps);
     }
 
     protected void doAfterBodySetValue() throws JspTagException {
