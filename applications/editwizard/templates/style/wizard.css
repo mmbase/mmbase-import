@@ -6,7 +6,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.3 2002-07-18 13:50:57 michiel Exp $
+  @version  $Id: wizard.css,v 1.4 2002-07-18 15:53:19 michiel Exp $
   
 */
 
@@ -49,7 +49,7 @@ div.searchframe {
   color:#CC0000;
 }
 
-.step		{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#999999; cursor:hand; }
+
 .divider	{ background-color:#CCCCCC; }
 .listmeta	{ font-size:11px; color:#999999; }
 
@@ -66,16 +66,28 @@ div.searchframe {
 		}
 		
 
-.currentstepicon-valid, .currentstepicon, .stepicon-valid, .stepicon, .step, .step-disabled
-					{ cursor:pointer; cursor:hand; background-color:#FFFFFF; border-width:0; cursor:hand; font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#18248C; }
+.currentstepicon-valid, 
+.currentstepicon, 
+.stepicon-valid, 
+.stepicon, 
+.step, 
+.step-disabled {
+   font-weight: 900;
+   font-size: 16px; 
+   cursor:hand; 
+   color:#18248C; 
+   text-decoration: none;
+}
 
+.step-info a {
+   padding-right: 10;
+}
 
 .currentstepicon-valid		{ color:#009900; text-decoration:underline; } 
 .currentstepicon			{ color:#CC0000; text-decoration:underline; }
-.stepicon-valid			{ color:#009900; }
-.stepicon				{ color:#CC0000; }
-.step					{ font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C; }
-.step-disabled			{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default;}
+.stepicon-valid			{  color:#009900; }
+.stepicon				{  color:#CC0000; }
+.step-disabled			{  font-size:16px; color:#CCCCCC; cursor:default;}
 
 .bottombutton				{ font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C;  }
 .bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
