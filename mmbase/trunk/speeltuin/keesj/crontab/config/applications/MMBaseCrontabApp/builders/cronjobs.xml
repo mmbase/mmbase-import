@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<!-- crontab -->
-<builder version="1" name="crontab" maintainer="mmbase.org" extends="object">
-    <classfile>org.mmbase.applications.crontab.builders.JCrontabBuilder</classfile>
+<!-- cronjobs -->
+<builder version="1" name="cronjobs" maintainer="mmbase.org" extends="object">
+    <classfile>org.mmbase.applications.crontab.builders.CronJobs</classfile>
     <searchage>360</searchage>
     <names/>
     <descriptions/>
