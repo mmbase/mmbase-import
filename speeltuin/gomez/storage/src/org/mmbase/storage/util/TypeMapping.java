@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.util;
 
+import java.text.MessageFormat;
 import org.mmbase.storage.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -16,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The TypeMapping class helps translating MMBase types to storage-specific type descriptions.
  * Examples of type mappings are mappings that convert to database field types.
- * I.e., a STRING with size 0-255 could be configured to translate to 'varchar(${0})', '{0}, in this case,.
+ * I.e., a STRING with size 0-255 could be configured to translate to 'varchar({0})', '{0}, in this case,.
  * being the size of the actual field.
  * <br />
  * TypeMapping is a comparable class, which allows it to be used in a sorted map, set or list.
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.2 2003-07-24 10:11:04 pierre Exp $
+ * @version $Id: TypeMapping.java,v 1.3 2003-07-31 11:49:36 pierre Exp $
  */
 public class TypeMapping implements Comparable {
 
@@ -98,6 +99,10 @@ public class TypeMapping implements Comparable {
                   (maxSize <= ((TypeMapping)o).maxSize || (((TypeMapping)o).maxSize == -1)) ) ||
                 ( ((TypeMapping)o).minSize >= minSize &&
                   (((TypeMapping)o).maxSize <= maxSize || (maxSize == -1)) ));
+    }
+    
+    public String getType(int size) {
+        return MessageFormat.format(type,new Object[]{ new Integer(size) });
     }
 
 }

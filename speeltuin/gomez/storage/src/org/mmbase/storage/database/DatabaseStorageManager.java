@@ -19,6 +19,7 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.Scheme;
+import org.mmbase.storage.util.TypeMapping;
 
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.9 2003-07-31 10:46:09 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.10 2003-07-31 11:49:36 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -1004,17 +1005,23 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @javadoc
      */
     protected String getFieldDefinition(MMObjectBuilder builder, FieldDefs field) throws StorageException {
-        // determine MMBase type
-        int type = field.getDBType();
-        // determine field name
-        String name = field.getDBName();
-        // determine size
+        // create the type maopping to search for
+        String typeName = field.getDBTypeDescription();
         int size = field.getDBSize();
-        //String name = mapToTableFieldName(fieldname);
-        //String result = matchType(type,size);
-        return null;
+        
+        TypeMapping mapping = new TypeMapping();
+        mapping.name = typeName;
+        mapping.setFixedSize(size);
+        // search type mapping
+        List typeMappings = factory.getTypeMappings();
+        int found = typeMappings.indexOf(mapping);
+        if (found > -1) {
+            return ((TypeMapping)typeMappings.get(found)).getType(size);
+        } else {
+            throw new StorageException("Type for field "+field.getDBName()+": "+typeName+" ("+size+") undefined.");
+        }
     }
-    
+
     /**
      * @javadoc
      */
