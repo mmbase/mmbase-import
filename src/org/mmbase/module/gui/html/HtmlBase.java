@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.27 2000-07-15 23:58:32 daniel Exp $
+	$Id: HtmlBase.java,v 1.28 2000-07-22 10:48:45 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.27  2000/07/15 23:58:32  daniel
+	added option to turn html caching off
+	
 	Revision 1.26  2000/07/15 14:10:13  daniel
 	Removed from debug
 	
@@ -110,7 +113,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.27 2000-07-15 23:58:32 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.28 2000-07-22 10:48:45 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -153,7 +156,6 @@ public class HtmlBase extends ProcessorModule {
 		if (tmp!=null && tmp.getStatus()) scancache=true;
 
 		mmb=(MMBase)getModule("MMBASEROOT");		
-		debug("init(): mmbase="+mmb);
 		// is there a basename defined in MMBASE.properties ?
 		sessions=(sessionsInterface)getModule("SESSION");		
 
@@ -165,7 +167,6 @@ public class HtmlBase extends ProcessorModule {
 	/**
 	 */
 	public HtmlBase() {
-		debug("HtmlBase(): constructed");
 	}
 
 
@@ -267,7 +268,6 @@ public class HtmlBase extends ProcessorModule {
 			snode=Integer.parseInt(tagger.Value("NODE"));
 			int otype=mmb.TypeDef.getIntValue(type);
 			bul=mmb.getMMObject(type);
-//			debug("2="+type+" "+bul);
 			Enumeration e=null;
 
 
@@ -360,12 +360,10 @@ public class HtmlBase extends ProcessorModule {
 		//obtain field name
 		if (tok.hasMoreTokens()) {
 			String fieldname=tok.nextToken();
-			debug("S="+snumber+" D="+dnumber+" F="+fieldname);
 			MMObjectNode snode=bul.getNode(""+snumber);
 			if (snode!=null) {
 				for (Enumeration e=snode.getRelations();e.hasMoreElements();) {
 					MMObjectNode inode=(MMObjectNode)e.nextElement();
-					debug("I="+inode);
 					int s=inode.getIntValue("snumber");
 					int d=inode.getIntValue("dnumber");
 					if (d==dnumber || s==dnumber) {
@@ -474,12 +472,10 @@ public class HtmlBase extends ProcessorModule {
 		//obtain field name
 		if (tok.hasMoreTokens()) {
 			String fieldname=tok.nextToken();
-			debug("S="+snumber+" D="+dnumber+" F="+fieldname);
 			MMObjectNode snode=bul.getNode(""+snumber);
 			if (snode!=null) {
 				for (Enumeration e=snode.getRelations();e.hasMoreElements();) {
 					MMObjectNode inode=(MMObjectNode)e.nextElement();
-					debug("I="+inode);
 					int s=inode.getIntValue("snumber");
 					int d=inode.getIntValue("dnumber");
 					if (d==dnumber || s==dnumber) {
@@ -580,7 +576,7 @@ public class HtmlBase extends ProcessorModule {
 			StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
 			token = tok.nextToken();
 			if (token.equals("CACHEDELETE")) {
-				debug("process(): DELETE ON CACHES");
+				if (debug) debug("process(): DELETE ON CACHES");
 				InsRel.deleteNodeCache();
 				InsRel.deleteRelationCache();
 
@@ -787,7 +783,6 @@ public class HtmlBase extends ProcessorModule {
         Date lastmod;
         String rtn=null;
 
-		//debug("MMBase -> Opening file:"+file); 
         scanfile = new File(file);
         filesize = (int)scanfile.length();
         lastmod=new Date(scanfile.lastModified());
