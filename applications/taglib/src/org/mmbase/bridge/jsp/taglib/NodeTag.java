@@ -37,25 +37,31 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private String contextid = null;
 
     private Node   node      = null;
-    
-    public void setNumber(String number) {
-        this.number=number;    
-    }
-    
-    public void setParameter(String param) throws JspTagException {  
-        CloudProvider cp = findCloudProvider();
-        number = cp.getString(param);
-        if (number == null) { 
-            throw new JspTagException("No parameter "  + param);            
-        }
-    }
 
+    
+    /**
+     * Release all allocated resources.
+     */
+    public void release() {
+        log.info("releasing");
+        super.release();
+        number = null;
+	type = null ;
+	element = null;
+	contextid = null;
+        node = null;
+    }
+    
+    public void setNumber(String number) throws JspTagException {
+        this.number = getAttributeValue(number);
+    }
+    
     public void setId(String id) {
         super.setId(id);
         node = null;
         try {
             // try to find if already in context.
-            CloudProvider cp = findCloudProvider();
+            ContextTag cp = findContext();
             node = cp.getNode(id);
         } catch (JspTagException e) {
             //could not be found. No problem.

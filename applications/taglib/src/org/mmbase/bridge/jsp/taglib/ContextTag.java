@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -41,7 +42,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Michiel Meeuwissen
 */
-public class ContextTag extends CloudReferrerTag implements CloudProvider {
+public class ContextTag extends ContextReferrerTag {
 
     private static final int TYPE_PARENT         = -10; // uses parent Contex, if there is one.
     private static final int TYPE_HASHMAP        = 0;
@@ -56,11 +57,12 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
     private int type = TYPE_PARENT;
 
-    private CloudProvider parent = null;
+    private ContextTag parent = null;
     private boolean searchedParent = false;
 
     private HttpPost poster = null;
     private HttpServletRequest httpRequest = null;
+    private HttpSession        httpSession = null;
 
     // avoid casting
     private HttpServletRequest getHttpRequest() {
@@ -70,11 +72,14 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         return httpRequest;
     }
 
-    /*
-    private getSession() {
-        
+    
+    private HttpSession getSession() {
+        if (httpSession == null) {
+            httpSession = getHttpRequest().getSession();
+        }
+        return httpSession;        
     }
-    */
+    
 
     private HttpPost getPoster() {
         if (poster == null) {
@@ -83,12 +88,12 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         return poster;
     }
 
-    private CloudProvider getParentCloudProvider() {
+    private ContextTag getParentContext() {
         if (! searchedParent) {
             try {
-                parent = findCloudProvider();
+                parent = findContext();
             } catch (JspTagException e) {
-                // ok. No parent CloudProvider. No problem.
+                // ok. No parent Context. No problem.
                 // use the hashmap.
                 parent = null;
             }
@@ -135,12 +140,12 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         }
         switch (type) {
         case TYPE_SESSION:
-            getHttpRequest().getSession().setAttribute(key, n);
+            getSession().setAttribute(key, n);
             break;
         case TYPE_PARAMETERS:
         case TYPE_POSTPARAMETERS:
         case TYPE_PARENT:
-            if (getParentCloudProvider() != null) {
+            if (getParentContext() != null) {
                 parent.register(key, n);
                 break;
             }
@@ -153,10 +158,10 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
     public void unRegister(String key) {
         switch(type) {
         case TYPE_SESSION:            
-            getHttpRequest().getSession().removeAttribute(key);
+            getSession().removeAttribute(key);
             break;
         case TYPE_PARENT:
-            if (getParentCloudProvider() != null) {
+            if (getParentContext() != null) {
                 parent.unRegister(key);
                 break;
             }
@@ -166,9 +171,11 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         }
     }
 
+    /*
     public Cloud getCloudVar() throws JspTagException {
         return getCloudProviderVar();
     }
+    */
     
     public Object getObject(String key) throws JspTagException {
         if (log.isDebugEnabled()) {
@@ -177,7 +184,7 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         Object result;
         switch (type) {
         case TYPE_SESSION:
-            result = getHttpRequest().getSession().getAttribute(key);
+            result = getSession().getAttribute(key);
             if (result != null) break;
         case TYPE_POSTPARAMETERS:
             result = getPoster().getPostParameter(key);
@@ -186,7 +193,7 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
             result = pageContext.getRequest().getParameter(key);
             if (result != null) break;
         case TYPE_PARENT:
-            if (getParentCloudProvider() != null) {
+            if (getParentContext() != null) {
                 result = parent.getObject(key);
                 break;
             }
@@ -205,7 +212,7 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
     public byte[] getBytes(String key) throws JspTagException {
         switch (type) {
         case TYPE_PARENT:
-            if (getParentCloudProvider() != null) {
+            if (getParentContext() != null) {
                 return parent.getBytes(key);
             }
         case TYPE_SESSION:
@@ -221,34 +228,7 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
     }
 
     public Node getNode(String key) throws JspTagException {
-        Node n;
-        String paramValue = null;
-        switch (type) {
-        case TYPE_SESSION: // node can be in session
-            n = (Node) getHttpRequest().getSession().getAttribute(key);
-            break;          
-        case TYPE_POSTPARAMETERS: // in parameters can only be a nodenumber...
-            paramValue = getPoster().getPostParameter(key);
-        case TYPE_PARAMETERS:
-            if (paramValue == null) { // not found as postparameter
-                paramValue = pageContext.getRequest().getParameter(key);
-            }
-            if (paramValue != null ) { // found in paramlist
-                n = getCloudProviderVar().getNode(pageContext.getRequest().getParameter(key));
-                break;
-            } // else also try with hashmap:
-        case TYPE_PARENT:
-            if (getParentCloudProvider() != null) {
-                return parent.getNode(key);
-            }
-        case TYPE_HASHMAP:
-        default:
-            n = (Node) hashMap.get(key);
-        }
-        if (n == null) {
-            throw new JspTagException("No node with key " + key + " was registered");
-        }
-        return n; 
+        return (Node) getObject(key);
     }
 
     public int doAfterBody() throws JspTagException {
