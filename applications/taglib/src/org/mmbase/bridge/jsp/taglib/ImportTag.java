@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.32 2003-06-17 18:07:38 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.33 2003-07-07 14:50:38 michiel Exp $
  */
 
 public class ImportTag extends WriteTag {
@@ -123,7 +124,7 @@ public class ImportTag extends WriteTag {
         if (found) {
             helper.setValue(value, WriterHelper.NOIMPLICITLIST); 
             if (useId != null) {
-                getContextProvider().getContainer().reregister(useId, helper.getValue());
+                getContextProvider().getContainer().reregister(useId, getValue());
             }
             return SKIP_BODY;
         } else {
@@ -131,6 +132,19 @@ public class ImportTag extends WriteTag {
             return EVAL_BODY_BUFFERED;
         }
 
+    }
+
+    /**
+     * Retrieves the value from the writer-helper, but escapes if necessary (using 'escape' attribute)
+     * @since MMBase-1.7
+     */
+    protected Object getValue() throws JspTagException {
+        Object value = helper.getValue();
+        if (helper.getEscape() != null) {
+            CharTransformer escaper  = ContentTag.getCharTransformer(helper.getEscape());
+            value = escaper.transform((String) value);
+        }
+        return value;
     }
 
     public int doEndTag() throws JspTagException {
@@ -144,8 +158,8 @@ public class ImportTag extends WriteTag {
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    helper.setValue(body);
-                    getContextProvider().getContainer().reregister(useId, helper.getValue());
+                    helper.setValue(body);       
+                    getContextProvider().getContainer().reregister(useId, getValue());
                 }
             }
         } else { // get value from the body of the tag.
@@ -154,7 +168,7 @@ public class ImportTag extends WriteTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                getContextProvider().getContainer().register(useId, helper.getValue());
+                getContextProvider().getContainer().register(useId, getValue());
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time
