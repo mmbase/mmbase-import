@@ -18,31 +18,30 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author  $Author: michiel $
- * @version $Id: MMServers.java,v 1.24 2004-02-03 08:57:11 michiel Exp $
+ * @version $Id: MMServers.java,v 1.25 2004-02-23 14:56:12 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(MMServers.class);
-    private int serviceTimeout=60*15; // 15 minutes
+    private int serviceTimeout = 60 * 15; // 15 minutes
     private int intervalTime = 60 * 1000;
+
+    private boolean checkedSystem = false;
     private String javastr;
     private String osstr;
     private String host;
-    private Vector possibleServices=new Vector();
-
-    private int starttime;
+    private Vector possibleServices = new Vector();
 
     /**
      * @javadoc
      */
     public MMServers() {
-        javastr=System.getProperty("java.version")+"/"+System.getProperty("java.vm.name");
-        osstr=System.getProperty("os.name")+"/"+System.getProperty("os.version");
-        starttime=(int)(System.currentTimeMillis()/1000);
+        javastr = System.getProperty("java.version")+"/"+System.getProperty("java.vm.name");
+        osstr   = System.getProperty("os.name")+"/"+System.getProperty("os.version");
 
         String tmp = getInitParameter("ProbeInterval");
         if (tmp != null) {
-            if (log.isDebugEnabled()) log.debug("ProbeInterval was configured to be " + tmp + " seconds");
+            log.service("ProbeInterval was configured to be " + tmp + " seconds");
             intervalTime = Integer.parseInt(tmp) * 1000;
         }
 	start();
@@ -74,9 +73,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 default: return "Unknown";
             }
         } else if (field.equals("atime")) {
-            int now=(int)(System.currentTimeMillis()/1000);
-            int then=node.getIntValue("atime");
-            String tmp=""+(now-then)+"sec";
+            int now = (int)(System.currentTimeMillis()/1000);
+            int then = node.getIntValue("atime");
+            String tmp = ""+(now-then)+"sec";
             return tmp;
         }
         return null;
@@ -87,12 +86,14 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public Object getValue(MMObjectNode node, String field) {
         if (field.equals("showstate")) {
-            return getGUIIndicator("state",node);
+            return getGUIIndicator("state", node);
         } else if (field.equals("showatime")) {
-            return getGUIIndicator("atime",node);
+            return getGUIIndicator("atime", node);
         } else if (field.equals("uptime")) {
-            int now=(int)(System.currentTimeMillis()/1000);
-            int uptime=now-starttime;
+            // The 'node' object is not used, so this info makes only sense for _this_ server.
+
+            int now= (int)(System.currentTimeMillis()/1000);
+            int uptime = now - (int) mmb.startTime;
             return getUptimeString(uptime);
         }
         return super.getValue(node,field);
@@ -102,24 +103,24 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private String getUptimeString(int uptime) {
-        String result="";
-        if (uptime>=(24*3600)) {
-            int d=uptime/(24*3600);
-            result+=""+d+" d ";
-            uptime=uptime-(d*24*3600);
+        StringBuffer result = new StringBuffer();
+        if (uptime >= (24 * 3600)) {
+            int d = uptime/(24 * 3600);
+            result.append(d).append(" d ");
+            uptime -= d * 24 * 3600;
         }
-        if (uptime>=(3600)) {
-            int h=uptime/(3600);
-            result+=""+h+" h ";
-            uptime=uptime-(h*3600);
+        if (uptime >= 3600) {
+            int h = uptime/3600;
+            result.append(h).append(" h ");
+            uptime -= h*3600;
         }
         if (uptime>=60) {
-            int m=uptime/(60);
-            result+=""+m+" m ";
-            uptime=uptime-(m*60);
+            int m = uptime/(60);
+            result.append(m).append(" m ");
+            uptime -= m * 60;
         }
-        result+=""+uptime+" s";
-        return result;
+        result.append(uptime).append(" s");
+        return result.toString();
     }
 
 
@@ -153,15 +154,15 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private void doCheckUp() {
 	try {
             boolean imoke=false;
-  	    String machineName=mmb.getMachineName();
-      	    host=mmb.getHost();
+  	    String machineName = mmb.getMachineName();
+      	    host = mmb.getHost();
             log.debug("doCheckUp(): machine="+machineName);
             Enumeration e=search("");
             while (e.hasMoreElements()) {
                 MMObjectNode node=(MMObjectNode)e.nextElement();
                 String tmpname=node.getStringValue("name");
                 if (tmpname.equals(machineName)) {
-                    imoke=checkMySelf(node);
+                    imoke = checkMySelf(node);
                 } else {
                     checkOther(node);
                 }
@@ -170,8 +171,8 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 createMySelf(machineName);
             }
 	} catch(Exception e) {
-		log.error("Something went wrong in MMServers Checkup Thread");
-		e.printStackTrace();
+            log.error("Something went wrong in MMServers Checkup Thread");
+            e.printStackTrace();
 	}
     }
 
@@ -179,16 +180,22 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private boolean checkMySelf(MMObjectNode node) {
-        boolean state=true;
-        String tmphost=node.getStringValue("host");
+        boolean state = true;
+        String tmphost = node.getStringValue("host");
         /* Why ?
         if (!tmphost.equals(host)) {
             log.warning("MMServers-> Running on a new HOST possible problem");
         }
         */
         log.debug("checkMySelf() updating timestamp");
-        node.setValue("state",1);
-        node.setValue("atime",(int)(System.currentTimeMillis()/1000));
+        node.setValue("state", 1);
+        node.setValue("atime", (int)(System.currentTimeMillis()/1000));
+        if (! checkedSystem) {
+            node.setValue("os", osstr);
+            node.setValue("host", host);
+            node.setValue("jdk", javastr);
+            checkedSystem = true;
+        }
         node.commit();
         log.debug("checkMySelf() updating timestamp done");
         return state;
@@ -216,10 +223,10 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private void createMySelf(String machineName) {
-        MMObjectNode node=getNewNode("system");
+        MMObjectNode node = getNewNode("system");
         node.setValue("name",machineName);
         node.setValue("state",1);
-        node.setValue("atime",(int)(System.currentTimeMillis()/1000));
+        node.setValue("atime", (int)(System.currentTimeMillis()/1000));
         node.setValue("os",osstr);
         node.setValue("host",host);
         node.setValue("jdk",javastr);
