@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.198 2003-09-08 14:01:10 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.199 2003-09-10 11:16:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4132,7 +4132,39 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <possiblevalue>
         <value>years</value>
       </possiblevalue>
+      <since>MMBase-1.7</since>
     </attribute>
+    <attribute>
+      <name>relevance</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        <p>
+        This is more or less the inverse of 'precision'.  If a relevance is set, then parts of the
+        date bigger (rather then smaller as in 'precision') will be set to zero. For example, when
+        calculating a birth date from a birth time, then the precision is 'days' and the relevance
+        is 'months', because the birth year is not relevant.
+        </p>
+        <p>
+         If you set the relevance to the same value as the precision then you will obtain the
+         corresponding field of the underlying date object (you could of course also obtain that
+         with the 'format' attribute).
+        </p>
+      </info>
+      <possiblevalue>
+        <value>years</value>
+        <info>
+          This is the default. Nothing happens.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>months</value>
+        <info>Year-field is set to 0</info>
+      </possiblevalue>
+      <see tag="time" attribute="precision" />
+      <since>MMBase-1.7</since>
+    </attribute>
+
     <example>
       &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
     </example>

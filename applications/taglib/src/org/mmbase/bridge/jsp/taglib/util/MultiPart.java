@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import java.util.Enumeration;
 import java.io.*;
 import javax.servlet.jsp.PageContext;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.2 2003-08-27 21:33:42 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.3 2003-09-10 11:16:10 michiel Exp $
  **/
 
 public class MultiPart {
@@ -45,9 +46,9 @@ public class MultiPart {
            if (log.isDebugEnabled()) {
                if (multipartRequest != null) {
                    Enumeration e = multipartRequest.getParameterNames();
-                   String params = "";
+                   StringBuffer params = new StringBuffer();
                    while (e.hasMoreElements()) {
-                       params += e.nextElement() + ",";
+                       params.append(e.nextElement()).append(",");
                    }
                    log.debug("multipart parameters: " + params);
                } else {
@@ -185,7 +186,7 @@ static public class MMultipartRequest {
 	    }
         } catch (Exception e) {
             log.warn(Logging.stackTrace(e));
-            throw new JspTagException(Logging.stackTrace(e));
+            throw new TaglibException(e);
         }
     }
 
@@ -241,7 +242,7 @@ static public class MMultipartRequest {
             return new String(data, encoding);
         } catch(java.io.UnsupportedEncodingException e) {
             log.warn(Logging.stackTrace(e));
-            throw new JspTagException(Logging.stackTrace(e));
+            throw new TaglibException(e);
         }
     }
 
