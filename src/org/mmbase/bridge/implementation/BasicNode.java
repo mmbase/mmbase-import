@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.64 2002-07-25 13:51:38 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.65 2002-07-25 15:16:46 pierre Exp $
  */
 public class BasicNode implements Node {
 
@@ -472,26 +472,21 @@ public class BasicNode implements Node {
      */
     private void deleteRelations(int type) {
         RelDef reldef=mmb.getRelDef();
-        Enumeration e = null;
+        List relations=null;
         if (type==-1) {
-            e = getNode().getAllRelations();
+            relations = mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
         } else {
-            e = getNode().getRelations();
+            relations = mmb.getInsRel().getRelationsVector(getNode().getNumber());
         }
-        if (e!=null) {
-            while (e.hasMoreElements()) {
-                MMObjectNode node = (MMObjectNode)e.nextElement();
+        if (relations!=null) {
+            // check first
+            for (Iterator i = relations.iterator(); i.hasNext(); ) {
+                MMObjectNode node = (MMObjectNode)i.next();
                 cloud.assert(Operation.DELETE,node.getNumber());
             }
-            // obtain again
-            // bit ugly but I don't really know how this would work better...
-            if (type==-1) {
-                e = getNode().getAllRelations();
-            } else {
-                e = getNode().getRelations();
-            }
-            while (e.hasMoreElements()) {
-                MMObjectNode node = (MMObjectNode)e.nextElement();
+            // then delete
+            for (Iterator i = relations.iterator(); i.hasNext(); ) {
+                MMObjectNode node = (MMObjectNode)i.next();
                 if ((type==-1) || (node.getIntValue("rnumber")==type)) {
                     if (cloud instanceof Transaction) {
                         String oMmbaseId = ""+node.getValue("number");
