@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.30 2004-01-06 13:05:10 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.31 2004-01-13 12:23:46 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -57,6 +57,13 @@ public class MultiConnection implements Connection {
     private long startTimeMillis=0;
     private int usage=0;
     public int state=0;
+
+    /**
+     * If a connection will be forced to close (which will happen , then it is 'marked closed' first 
+     * Used by MultiPool only (therefore is is package)
+     * @since MMBase-1.7
+     */
+    boolean markedClosed = false;
     
     /**
      * protected constructor for extending classes, so they can use
@@ -70,16 +77,16 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public MultiConnection(MultiPool parent,Connection con) {
-        this.con=con;
-        this.parent=parent;
-        state=CON_UNUSED;
+        this.con = con;
+        this.parent = parent;
+        state = CON_UNUSED;
     }
     
     /**
      * @javadoc
      */
     public String getStateString() {
-        if (state==CON_FINISHED) {
+        if (state == CON_FINISHED) {
             return "Finished";
         } else if (state==CON_BUSY) {
             return "Busy";
@@ -95,8 +102,8 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public void setLastSQL(String sql) {
-        lastSql=sql;
-        state=CON_BUSY;
+        lastSql = sql;
+        state = CON_BUSY;
     }
     
     /**
@@ -187,7 +194,7 @@ public class MultiConnection implements Connection {
             mes.append(" ms: ").append(getLastSQL());
             log.debug(mes.toString());
         }
-        state=CON_FINISHED;
+        state = CON_FINISHED;
         // If there is a parent object, this connection belongs to a pool and should not be closed,
         // but placed back in the pool
         // If there is no parent, the connection belongs to a datasource (thus pooling is done by the appserver)
@@ -198,6 +205,7 @@ public class MultiConnection implements Connection {
             realclose();
         }
     }
+    
     
     /**
      * Close connections
