@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -1089,6 +1089,47 @@ public class BasicSqlHandlerTest extends TestCase {
             instance.appendConstraintToSql(sb, constraint10, query, false, false);
             fail("Composite constraint, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
+        
+        // Test for LegacyConstraint.
+        BasicLegacyConstraint constraint11 
+            = new BasicLegacyConstraint("a=b AND c=d");
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "a=b AND c=d"));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, true, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "NOT (a=b AND c=d)"));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, false, true);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "(a=b AND c=d)"));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, true, true);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "NOT (a=b AND c=d)"));
+        
+        // Empty LegacyConstraint.
+        sb.setLength(0);
+        constraint11.setConstraint("   ");
+        instance.appendConstraintToSql(sb, constraint11, query, true, true);
+        assertTrue(sb.toString(), sb.toString().equals(""));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, true, false);
+        assertTrue(sb.toString(), sb.toString().equals(""));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, false, true);
+        assertTrue(sb.toString(), sb.toString().equals(""));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint11, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(""));
     }
     
     /** Test of getSupportLevel(int,SearchQuery), of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
