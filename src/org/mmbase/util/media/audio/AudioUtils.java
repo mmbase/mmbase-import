@@ -17,6 +17,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media.audio;
 
 import java.util.*;
+import java.net.URLEncoder;
 
 import org.mmbase.util.*;
 import org.mmbase.util.media.MediaUtils;
@@ -249,6 +250,8 @@ public class AudioUtils extends MediaUtils
 				debug2("getAudioUrl("+number+","+speed+","+channels+"): for audiopart: found author("+author+").");
 				//url += "&author=\""+author+"\"";
 				//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
+				//url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
+				//Our Real server can't handle urlencoded strings, aargh.
 				url += "&author="+author;
 			}
 		} else
@@ -283,6 +286,8 @@ public class AudioUtils extends MediaUtils
 				if( debug )debug2("getAudioUrl("+number+","+speed+","+channels+"): for cdtrack: found author("+author+") for this cdtrack.");
 				//url += "&author=\""+author+"\"";
 				//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
+				//url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
+				//Our Real server can't handle urlencoded strings, aargh.
 				url += "&author="+author;
 			}
 		}
