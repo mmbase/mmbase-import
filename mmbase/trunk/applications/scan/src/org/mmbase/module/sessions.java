@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.13 2000-10-09 12:12:46 vpro Exp $
+ $Id: sessions.java,v 1.14 2000-10-15 22:37:23 gerard Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.13  2000/10/09 12:12:46  vpro
+ Rico: added comments
+
  Revision 1.12  2000/06/26 14:12:36  wwwtech
  Daniel.. fixed direct queries for properties
 
@@ -68,7 +71,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.13 2000-10-09 12:12:46 vpro Exp $
+ * @version $Id: sessions.java,v 1.14 2000-10-15 22:37:23 gerard Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -141,6 +144,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		}
 	}
 
+    /**
+     * Sets or changes a parameter in a <code>sessionInfo</code>.
+     *
+     * @param session  the <code>sessionInfo</code> wich has to contain
+     *                 the parameter.
+     * @param key      the name of the parameter to be set.
+     * @param value    the value to wich the parameter should be set.
+     */
 	public String setValue(sessionInfo session,String key,String value) {
 		if (session!=null) {
 			return(session.setValue(key,value));
@@ -150,6 +161,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		}
 	}
 
+    /**
+     * Adds a number of <code>String</code>s to a set.
+     *
+     * @param session  the <code>sessionInfo</code> containing the set.
+     * @param key      the name of the set.
+     * @param value    a <code>Vector</code> containing the
+     *                 <code>String</code>s to be added to the set.
+     */
 	public void addSetValues(sessionInfo session,String key,Vector values) {
 		if (session!=null) {
 			String str;
@@ -162,6 +181,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			debug("addSetValues("+key+","+values+"): ERROR: sessions is null!");
 	}
 
+    /**
+     * Adds a <code>String<code> to a set. If the <code>String</code> is
+     * allready contained by the set nothing happens.
+     *
+     * @param session  the <code>sessionInfo</code> containing the set.
+     * @param key      the name of the set.
+     * @param value    the <code>String</code> to be added to the set.
+     */
 	public void addSetValue(sessionInfo session,String key,String value) {
 		if (session!=null) {
 			session.addSetValue(key,value);
