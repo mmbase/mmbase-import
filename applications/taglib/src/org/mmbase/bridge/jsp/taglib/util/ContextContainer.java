@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.3 2002-10-23 17:41:06 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.4 2003-02-18 10:58:15 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -45,7 +45,6 @@ public class ContextContainer extends HashMap {
 
     /**
      * Keys must be Strings, so put(Object, ..) is forbidden in this HashMap!
-     *
      */
 
     public Object put(Object key, Object value) {
@@ -62,12 +61,11 @@ public class ContextContainer extends HashMap {
         
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
-     *
      */
 
     public Object put(String key, Object value) throws JspTagException {
         if (key.indexOf('.') != -1) {
-            throw new JspTagException("Key may not contain dots");
+            throw new JspTagException("Key may not contain dots (" + key + ")");
         }
         return super.put(key, value);
     }
@@ -165,6 +163,10 @@ public class ContextContainer extends HashMap {
             return p.context.get(p.restKey, ! p.wentDown);
         }
     }
+
+    /**
+     *
+     */
 
     public Object get(String key) throws JspTagException {
         return get(key, true);
