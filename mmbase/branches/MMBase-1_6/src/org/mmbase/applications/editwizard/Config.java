@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26.2.7 2003-05-27 12:48:05 vpro Exp $
+ * @version $Id: Config.java,v 1.26.2.8 2003-06-02 12:37:52 vpro Exp $
  */
 
 public class Config {
@@ -151,6 +151,7 @@ public class Config {
         public String searchDir;
 
         public String searchFields;
+        public String realSearchField;
         public String searchValue="";
         public String searchType="like";
         public String baseConstraints;
@@ -239,16 +240,18 @@ public class Config {
             searchDir=configurator.getParam("searchdir",searchDir);
             baseConstraints=configurator.getParam("constraints", baseConstraints);
             forceSearch=configurator.getParam("forcesearch", forceSearch);
+            realSearchField=configurator.getParam("realsearchfield", realSearchField);
             
             if (searchFields==null) {
                 constraints = baseConstraints;
             } else {
                 // search type: default
                 String sType=searchType;
-                // get the actual field to serach on.
+                // get the actual field to search on.
                 // this can be 'owner' or 'number' instead of the original list of searchfields,
-                // in which case serachtype may change 
-                String sFields=configurator.getParam("realsearchfield", searchFields);
+                // in which case searchtype may change
+                String sFields=realSearchField;
+                if (sFields==null) sFields=searchFields;
                 if (sFields.equals("owner") || sFields.endsWith(".owner")) {
                     sType="string";
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
@@ -377,6 +380,7 @@ public class Config {
             // search attributes
             if (searchType!=null) attributeMap.put("searchtype", searchType);
             if (searchFields!=null) attributeMap.put("searchfields", searchFields);
+            if (realSearchField!=null) attributeMap.put("realsearchfield", realSearchField);            
             if (searchValue!=null) attributeMap.put("searchvalue", searchValue);
             
             return attributeMap;   
