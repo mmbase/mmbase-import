@@ -260,7 +260,6 @@ public class MimeBodyTag {
 		MimeBodyPart mmbp=new MimeBodyPart();
 		try {
 		DataHandler d=null;
-		log.info("LOGGGGGG="+number);
 		if (number!=null && !number.equals("")) {
 			if (field!=null) {
 				d=getMMBaseObject(number,field);
