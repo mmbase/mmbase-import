@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.16.2.1 2003-03-16 17:47:04 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.16.2.2 2003-03-18 13:22:58 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -177,11 +177,15 @@ public class MMBaseServlet extends  HttpServlet {
      * Gets all the mappings for a given servlet. So, this is a method to obtain info from web.xml.
      *
      * @param servletName the name of the servlet
-     * @return the list of servlet mappings for this servlet, or null if there are none
+     * @return an unmodifiable list of servlet mappings for this servlet
      */
     public static List getServletMappings(String servletName) {
         List ls = (List) servletMappings.get(servletName);
-        return ls;
+        if (ls==null) {
+            return Collections.EMPTY_LIST;
+        } else {
+            return Collections.unmodifiableList(ls);
+        }
     }
 
     /**
@@ -192,14 +196,14 @@ public class MMBaseServlet extends  HttpServlet {
      *
      *
      * @param topic the topic that deidentifies the type of association
-     * @return the list of servlet mappings associated with the topic, or null if there are none
+     * @return an unmodifiable list of servlet mappings associated with the topic
      */
     public static List getServletMappingsByAssociation(String topic) {
         String name = getServletByAssociation(topic);
         if (name != null) {
             return getServletMappings(name);
         } else {
-            return null;
+            return Collections.EMPTY_LIST;
         }
     }
 
