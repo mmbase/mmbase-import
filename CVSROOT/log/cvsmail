@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.1 2003-07-01 15:32:49 michiel Exp $
+#  $Id: cvsmail,v 1.2 2003-07-01 15:44:25 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -12,7 +12,7 @@ use FileHandle;
 my ($log_filename, $user, $files) = @ARGV;
 
 # configuration
-my $basedir     = "/home/michiel/";
+my $basedir     = "/usr/local/cvs/CVSROOT/log";
 my $toaddress   = "cvs\@mmbase.org";
 my $cvs         = "/usr/local/bin/cvs";
 
@@ -74,7 +74,7 @@ if ($child = fork()) {
 	print $mail $message."\n";
 	
 	unless ($files =~ /New directory/) {
-	    chdir($basedir.$dir);
+	    #chdir($basedir.$dir); # why is this necessary?
 	    for my $file (@files) {
 		my ($fil, $oldversion, $newversion) = split(",", $file);
 		print $mail "\n\n";
