@@ -17,74 +17,74 @@ import javax.servlet.jsp.tagext.*;
 import org.mmbase.bridge.*;
 
 /**
- * Calls 'doInfo' from NodeManager.
- * @author Michiel Meeuwissen
- */
-public class InfoTag extends MMTaglib implements BodyTag {
-    
-    public static boolean debug = true;
-    private String nodeManager = null;
-    private String module      = null;
-
-    public void setNodeManager(String nm){
-	nodeManager = nm;
-    }
-    public void setModule(String nm){
-	module = nm;
-    }
-
-    public int doStartTag() throws JspException{
-	return EVAL_BODY_TAG;
-    }
-
-       /**
-     * implementation of TagExtraInfo return values declared here
-     * should be filled at one point, currently fillVars is responsible for
-     * that ant gets called before every
-     **/
-    public VariableInfo[] getVariableInfo(TagData data){
-	VariableInfo[] variableInfo = new VariableInfo[1];;
-
-	String id = "";
-	if (data.getAttribute("id") != null){
-            id = "" + data.getAttribute("id");
+* Calls 'doInfo' from NodeManager.
+* @author Michiel Meeuwissen
+*/
+public class InfoTag extends BaseTag implements BodyTag {
+	
+	public static boolean debug = true;
+	private String nodeManager = null;
+	private String module      = null;
+	
+	public void setNodeManager(String nm){
+		nodeManager = nm;
 	}
-
-        variableInfo[0] = new VariableInfo(id,
-                                           "java.lang.String",
-                                           true,
-                                           VariableInfo.AT_END);
-	return variableInfo;
-    }
-    
-     /**
-      *
-      **/
-    public int doAfterBody() throws JspException {
-       
-        //command is in the body of the tag
-        String command = bodyOut.getString();
-        String result;
-        
-        if (nodeManager != null) {
-            if (module != null) {
-                throw new JspTagException("Cannot give both module and nodemanager");
-            }
-            result = getDefaultCloud().getNodeManager(nodeManager).getInfo(command,
-                                                                           pageContext.getRequest(),
-                                                                           pageContext.getResponse());
-        } else if (module != null) {
-            result = getDefaultCloudContext().getModule(module).getInfo(command,
-                                                                        pageContext.getRequest(),
-                                                                        pageContext.getResponse());
-        } else {
-            throw new JspTagException("Must give module or nodemanager");
-        }
-        
-        //pageContext.getOut().print(retval);
-        pageContext.setAttribute(getId(), result);
-        return SKIP_BODY;        
-    }
+	public void setModule(String nm){
+		module = nm;
+	}
+	
+	public int doStartTag() throws JspException{
+		return EVAL_BODY_TAG;
+	}
+	
+	/**
+	* implementation of TagExtraInfo return values declared here
+	* should be filled at one point, currently fillVars is responsible for
+	* that ant gets called before every
+	**/
+	public VariableInfo[] getVariableInfo(TagData data){
+		VariableInfo[] variableInfo = new VariableInfo[1];;
+		
+		String id = "";
+		if (data.getAttribute("id") != null){
+			id = "" + data.getAttribute("id");
+		}
+		
+		variableInfo[0] = new VariableInfo(id,
+			"java.lang.String",
+			true,
+			VariableInfo.AT_END);
+		return variableInfo;
+	}
+	
+	/**
+	*
+	**/
+	public int doAfterBody() throws JspException {
+		
+		//command is in the body of the tag
+		String command = bodyOut.getString();
+		String result;
+		
+		if (nodeManager != null) {
+			if (module != null) {
+				throw new JspTagException("Cannot give both module and nodemanager");
+			}
+			result = getDefaultCloud().getNodeManager(nodeManager).getInfo(command,
+				pageContext.getRequest(),
+				pageContext.getResponse());
+		} else if (module != null) {
+			result = getDefaultCloudContext().getModule(module).getInfo(command,
+				pageContext.getRequest(),
+				pageContext.getResponse());
+		} else {
+			throw new JspTagException("Must give module or nodemanager");
+		}
+		
+		//pageContext.getOut().print(retval);
+		pageContext.setAttribute(getId(), result);
+		return SKIP_BODY;        
+	}
 
 
 
