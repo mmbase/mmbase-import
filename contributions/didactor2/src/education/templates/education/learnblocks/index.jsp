@@ -7,6 +7,15 @@
 <!-- TODO Need this page? -->
 
 <%@include file="/shared/setImports.jsp" %>
+
+<%-- remember this page --%>
+<mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>
+    <mm:param name="learnobjecttype">learnblocks</mm:param>
+</mm:treeinclude>
+
+
+
 <html>
 <head>
    <title>Learnblock content</title>

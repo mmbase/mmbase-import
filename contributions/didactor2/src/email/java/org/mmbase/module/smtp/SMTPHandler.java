@@ -420,7 +420,8 @@ public class SMTPHandler extends Thread {
         } else if (p.isMimeType("message/rfc822")) {
             log.debug("Found attachments with type: message/rfc822");
             attachments = extractPart((Part)p.getContent(), attachments, mail);
-        } else if (p.isMimeType("text/plain") || p.isMimeType("text/html")) {
+        } else if (p.isMimeType("text/plain")) {
+            // only adding text/plain - text/html will be stored as attachment!
             log.debug("Found attachments with type: some text/plain tomething");
             Object content = null;
             try {
