@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.16 2001-03-06 12:30:25 install Exp $
+	$Id: MultiRelations.java,v 1.17 2001-03-07 13:56:05 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.16  2001/03/06 12:30:25  install
+	Rico: added patch from Remco van 't Veer for allowed fields in orderstring
+	
 	Revision 1.15  2000/12/02 17:46:52  daniel
 	updated it to handle illegal field mappings
 	
@@ -67,7 +70,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.16 2001-03-06 12:30:25 install Exp $
+ * @version $Id: MultiRelations.java,v 1.17 2001-03-07 13:56:05 install Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -505,6 +508,14 @@ public class MultiRelations extends MMObjectBuilder {
 				if (!isTableNameChar(ch)) {
 					pre=result2.substring(0,cx);
 					post=result2.substring(cx+atable.length());
+					// make sure field has allowed name
+					int j;
+					StringBuffer b = new StringBuffer();
+					for (j = 1; j < post.length() && (Character.isLetterOrDigit(post.charAt(j)) || post.charAt(j) == '_') ; j++) {
+						b.append(post.charAt(j));
+					}
+					post = "."+ mmb.getDatabase().getAllowedField(b.toString()) + post.substring(j);
+
 					result2=pre+idx2char(idx)+post;
 				}
 				cx=result2.indexOf(atable+".",cx+1);
