@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.14 2002-05-13 09:37:03 eduard Exp $
+ * @version $Id: PostgreSQL71.java,v 1.15 2002-07-01 13:02:36 eduard Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -146,7 +146,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         log.warn("create object table is depricated!");
         
         // first create the auto update thingie...
-        if(!createSequence()) return false;
+        if(!createSequence()) return false;        
 
         MultiConnection con = null;
         Statement stmt = null;
@@ -154,7 +154,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         // now update create the object table, with the auto update thignie
         String sql = "CREATE TABLE "+objectTableName()+" (";
         // primary key will mean that and unique and not null...
-        // TODO : create this one also in a generic way !
+        // create this one also in a generic way ! --> is now done, this method should be tagged depricated...
         sql += getNumberString()+" INTEGER PRIMARY KEY, \t-- the unique identifier for objects\n";
         sql += getOTypeString()+" INTEGER NOT NULL REFERENCES " + objectTableName() + " ON DELETE CASCADE, \t-- describes the type of object this is\n";
         //is text the right type of field? the size can be broken down to 12 chars
@@ -167,7 +167,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             stmt.executeUpdate(sql);
             stmt.close();
             con.close();
-            return true;
+            return createNumberCheck();
         } catch (SQLException sqle) {
             log.error("error, could not create object table.."+sql);
             for(SQLException e = sqle;e != null; e = e.getNextException()){
@@ -213,6 +213,43 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         return true;
     }
 
+    private boolean createNumberCheck() {
+        // TODO: has to be generated, when isnt there...
+        // CREATE FUNCTION ${BASENAME}_check_number (integer)
+        //    RETURNS boolean AS 
+        //        'SELECT CASE WHEN (( SELECT COUNT(*) 
+        //         FROM ${BASENAME}_object
+        //         WHERE ${BASENAME}_object.number = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean 
+        //         END;'
+        // LANGUAGE 'sql';
+        MultiConnection con = null;
+        Statement stmt = null;
+        String sql =  "CREATE FUNCTION " + numberCheckNameName() +  " (integer) \n\tRETURNS boolean AS \n\t\t'SELECT CASE WHEN (( SELECT COUNT(*)\n\t\tFROM "+objectTableName()+"\n\t\tWHERE " + objectTableName() + "." + getNumberString()+ " = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean\n\t\tEND;'\nLANGUAGE 'sql';";
+        try {
+            log.debug("gonna execute the following sql statement: " + sql);
+            con = mmb.getConnection();
+            stmt=con.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            con.close();
+        } catch (SQLException sqle) {
+            log.error("error, create number check.."+sql);
+            for(SQLException e = sqle;e != null; e = e.getNextException()){
+                log.error("\tSQLState : " + e.getSQLState());
+                log.error("\tErrorCode : " + e.getErrorCode());
+                log.error("\tMessage : " + e.getMessage());
+            }
+            try {
+                if(stmt!=null) stmt.close();
+                // con.rollback();
+                con.close();
+            } catch(Exception other) {}
+            return false;
+        }
+        return true;
+    }
+
+
     public String getDisallowedField(String allowedfield) {
         log.trace(allowedfield);
         if (allowed2disallowed.containsKey(allowedfield)) {
@@ -243,6 +280,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
     private String sequenceTableName() {
         return mmb.baseName + "_autoincrement";
+    }
+
+    private String numberCheckNameName() {
+        return mmb.baseName + "_check_number";
     }
 
     private String objectTableName() {
@@ -314,7 +355,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             stmt.executeUpdate(sql);
             stmt.close();
             con.close();
-            return true;
+            if(getInheritTableName(bul) != null) return true;
+            // when we created the numbertable, we also need to create the numbercheck
+            log.info("we created the object table, also creating number check");
+            return createNumberCheck();
         } catch (SQLException sqle) {
             log.error("error, could not create table for builder " + bul.getTableName());
             for(SQLException e = sqle;e != null; e = e.getNextException()){
@@ -433,14 +477,13 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             // due to bug in postgreslq
             if(getInheritTableName(bul) == null) {
                 // we dont inherit anything, save to create a foreign key... for more info see else part
-                result += " REFERENCES " + mmb.baseName + "_object" + " ON DELETE CASCADE ";
+                result += " REFERENCES " + objectTableName() + " ON DELETE CASCADE ";
             }
             else {
                 /**
-                    TODO: research if this code is better...
-                    http://www.postgresql.org/idocs/index.php?inherit.html :
-                         A limitation of the inheritance feature is that indexes (including unique constraints) and foreign key constraints only apply to single tables, not to their inheritance children. Thus, in the above example, specifying that another table's column REFERENCES cities(name)  would allow the other table to contain city names but not capital names. This deficiency will probably be fixed in some future release. 
-                    Workaround (i still need more time ;))
+                       http://www.postgresql.org/idocs/index.php?inherit.html :
+                       A limitation of the inheritance feature is that indexes (including unique constraints) and foreign key constraints only apply to single tables, not to their inheritance children. Thus, in the above example, specifying that another table's column REFERENCES cities(name)  would allow the other table to contain city names but not capital names. This deficiency will probably be fixed in some future release. 
+                       Workaround (i still need more time ;))
                        Jon Obuchowski <jon_obuchowski@terc.edu>
                        2001-11-05 15:03:25-05 Here's a manual method for implementing a foreign key constraint across inherited tables - instead of using the "references" syntax within the dependent table's "CREATE TABLE" statement, specify a custom "CHECK" constraint - this "CHECK" constraint can use the result of a stored procedure/function to verify the existence of a given value for a specific field of a specific table.
                        note 1: I have performed no benchmarking on this approach, so YMMV.
@@ -459,6 +502,9 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                        That's it!
                        A useful (if potentially slowly-performing) expansion of this approach would be to use a function able to dynamically perform an existence check for any value on any field in any table, using the field and table names, and the given value. This would ease maintenance by allowing any foreign-key using table to use a single function, instead of creating a custom function for each foreign key referenced.
                 */
+                // Still not fixed in postgresql, using this workaround...
+                // TODO: triggers for cascading stuff?
+                result += " CONSTRAINT " + mmb.baseName + "_" + bul.getTableName() + "_" + fieldName + "_references CHECK ("+numberCheckNameName()+"("+ mmb.baseName + "_" + bul.getTableName()+"."+fieldName+"))";
             }
         }
         // add in comment the gui stuff... nicer when reviewing database..
@@ -472,7 +518,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             log.error(msg);
             throw new RuntimeException(msg);
         }
-        dTypeInfos  typs=(dTypeInfos)typeMapping.get(new Integer(fieldDef.getDBType()));
+        dTypeInfos typs=(dTypeInfos)typeMapping.get(new Integer(fieldDef.getDBType()));
         if (typs==null) {
             String msg = "Could not find the typ mapping for the field with the value: " + fieldDef.getDBType();
             log.error(msg);
@@ -1194,7 +1240,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     }
 
     /**
-     * Retrieves a new unique number, which can be used to inside _object table
+     * Retrieves a new unique number, which can be used to inside objectTableName() table
      * @return a new unique number for new nodes or -1 on failure
      */
     public int getDBKey() {
