@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="mediaproviders" extends="object">
   
-  <classfile>org.mmbase.module.builders.media.MediaProviders</classfile>
+  <classfile>org.mmbase.applications.media.builders.MediaProviders</classfile>
 
   <names>
     <singular xml:lang="en">Media provider</singular>
@@ -16,6 +16,9 @@
     <description xml:lang="nl">Beschrijft het systeem dat mediabestanden beschikbaar stelt.</description>
   </descriptions>
 
+  <properties>
+    <property name="URLComposerFactory">org.mmbase.applications.media.urlcomposer.URLComposerFactory</property>
+  </properties>
   <fieldlist>
     <field>
       <descriptions>
@@ -82,7 +85,7 @@
       <gui>
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Toestand</guiname>
-        <guitype>org.mmbase.module.builders.media.resources.providerstates</guitype>
+        <guitype>org.mmbase.applications.media.builders.resources.providerstates</guitype>
       </gui>
       <editor>
         <positions>

@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="myurlcomposers" extends="mediaurlcomposers">
 
-  <classfile>org.mmbase.module.builders.media.MyURLComposers</classfile>
+  <classfile>org.mmbase.applications.media.builders.MyURLComposers</classfile>
 
   <names>
     <singular xml:lang="en">Example alternative URL Composer</singular>

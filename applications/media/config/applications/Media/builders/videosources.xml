@@ -3,7 +3,7 @@
 <builder name="videosources" extends="mediasources">
   <status>active</status>
 
-  <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
+  <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
 
   <names>
     <singular xml:lang="en">Video source</singular>
