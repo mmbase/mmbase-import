@@ -62,12 +62,12 @@
 						</listitem>
 						<listitem>
 							<para>for dummies: 
-								a tool by which you can build intelligent websites
+								a tool by which you can build intelligent web sites
 							</para>
 						</listitem>
 						<listitem>
 							<para>for techies: 
-								java based webapplication, which acts as an object oriented
+								java based web-application, which acts as an object oriented
 								interface to relational databases
 							</para>
 						</listitem>
@@ -270,7 +270,7 @@
         <glossdef>
 					<para>
 						Typerel is the MMBase builder which defines the allowed relations. If for example you
-						want to create a certain relation from news node to an url node, then a corresponding
+						want to create a certain relation from news node to an URL node, then a corresponding
 						typerel record, which allows that must exist.					
 					</para>
 					<para>
@@ -337,7 +337,7 @@
 						</listitem>
 						<listitem>
 							<para>
-								General term for 'node'.
+								More general term for 'node'.
 							</para>
 						</listitem>
 						<listitem>
@@ -346,6 +346,9 @@
 							</para>
 						</listitem>
 					</orderedlist>
+					<glossseealso otherterm="node" />
+					<glossseealso otherterm="builder" />
+          <glossseealso otherterm="inheritance" />
 				</glossdef>
       </glossentry>
 
@@ -371,9 +374,14 @@
 						MMBase node corresponds to one record in the database (in the table(s) associated with
 						the builder). We recognize also 'cluster nodes' and 'virtual nodes'.
 					</para>
+          <para>
+            Every Node is uniquely (inside the MMBase instance) identified by a node number. In
+            editors this number field is sometimes even be indicated with 'Object'.
+          </para>
 					<glossseealso otherterm="clusternode" />
 					<glossseealso otherterm="virtualnode" />
 					<glossseealso otherterm="bridge" />
+					<glossseealso otherterm="object" />
 				</glossdef>
       </glossentry>
 
@@ -432,7 +440,7 @@
 					<orderedlist>
 						<listitem>
 							<para>
-								An geeky synonym for 'I agree'.
+								A geeky synonym for 'I agree'.
 							</para>
 						</listitem>
 						<listitem>
@@ -621,7 +629,7 @@
 					</para>
 					<para>
 						Because the long history of SCAN, SCAN-specific legacy code can still be found on a lot
-						of place in the MMBase core code. Even the bridge way to handle with 'MMBase modules' is
+						of places in the MMBase core code. Even the bridge way to handle with 'MMBase modules' is
 						influenced by SCAN.
 					</para>						
 					<glossseealso otherterm="mmbasetaglib" />
@@ -725,7 +733,7 @@
         <glossdef>
 					<para>
 						A value for the 'dir' attribute of reldef and insrel nodes. It only says something about
-						the visibility of the relation. A unidirection relation is not visible from the
+						the visibility of the relation. A unidirectional relation is not visible from the
 						destination node.
           </para>
 					<glossseealso otherterm="bidir" />
