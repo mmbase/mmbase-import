@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.19 2001-08-24 07:31:34 pierre Exp $
+ * @version $Id: TransactionManager.java,v 1.20 2001-09-10 08:24:38 pierre Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -158,11 +158,16 @@ public class TransactionManager implements TransactionManagerInterface {
     }
 
     public String cancel(Object user,String transactionname)
-        throws TransactionManagerException {
-        Vector v;
-
-        v=(Vector)transactions.get(transactionname);
+            throws TransactionManagerException {
+        Vector v=(Vector)transactions.get(transactionname);
         if (v!=null) {
+            MMObjectNode node;
+            // remove nodes from the temporary node cache
+            MMObjectBuilder bul=mmbase.getTypeDef();
+            for (int i=0;i<v.size();i++) {
+                node=(MMObjectNode)v.elementAt(i);
+                bul.removeTmpNode(node.getStringValue("_number"));
+            }
             transactions.remove(transactionname);
             if (log.isDebugEnabled()) {
                 log.debug("Removed transaction "+transactionname+ "\n   "+v);
@@ -180,30 +185,38 @@ public class TransactionManager implements TransactionManagerInterface {
     }
 
     protected String commit(Object user,String transactionname,boolean debug)
-        throws TransactionManagerException {
-        Vector v;
-        String s;
-
-        v=(Vector)transactions.get(transactionname);
+            throws TransactionManagerException {
+        Vector v=(Vector)transactions.get(transactionname);
         if (v!=null) {
-            boolean resolved;
-            resolved=transactionResolver.resolve(v,debug);
-            if (!resolved) {
-                log.warn("Can't resolve transaction "+transactionname);
-                log.warn("Nodes \n"+v);
-            } else {
-                resolved=performCommits(user,v,debug);
+            try {
+                boolean resolved;
+                resolved=transactionResolver.resolve(v,debug);
                 if (!resolved) {
-                    log.warn("Can't commit transaction "+transactionname);
-                    log.warn("Nodes \n"+v);
+                    log.error("Can't resolve transaction "+transactionname);
+                    log.error("Nodes \n"+v);
+                    throw new TransactionManagerException("Can't resolve transaction "+transactionname);
                 } else {
-                    if (debug) log.debug("commited "+transactionname);
-                    // if (!debug) transactions.remove(transactionname);
+                    resolved=performCommits(user,v,debug);
+                    if (!resolved) {
+                        log.error("Can't commit transaction "+transactionname);
+                        log.error("Nodes \n"+v);
+                        throw new TransactionManagerException("Can't commit transaction "+transactionname);
+                    } else {
+                        if (debug) log.debug("commited "+transactionname);
+                    }
                 }
+            } finally {
+                // remove nodes from the temporary node cache
+                MMObjectNode node;
+                MMObjectBuilder bul=mmbase.getTypeDef();
+                for (int i=0;i<v.size();i++) {
+                    node=(MMObjectNode)v.elementAt(i);
+                    bul.removeTmpNode(node.getStringValue("_number"));
+                }
+                transactions.remove(transactionname);
             }
-            transactions.remove(transactionname);
         } else {
-            log.warn("Can't find transaction "+transactionname);
+            throw new TransactionManagerException("transaction unknown");
         }
         return transactionname;
     }
@@ -222,42 +235,37 @@ public class TransactionManager implements TransactionManagerInterface {
 
         MMObjectNode node;
         MMObjectBuilder bul=mmbase.getMMObject("typedef");
-        boolean okay=false,res=false;
+        boolean okay=false;
         int[] nodestate=new int[nodes.size()];
         int[] nodetype=new int[nodes.size()];
         int[] nodeexist=new int[nodes.size()];
         int i,tmpstate;
         String username=findUserName(user),exists;
 
-
-        // Nodes are uncommited by default
-        for (i=0;i<nodes.size();i++) nodestate[i]=UNCOMMITED;
-
         if (log.isDebugEnabled()) {
-            log.debug("performCommits: checking types");
+            log.debug("performCommits: checking types and existence");
         }
-        // check for type (relation or normal node)
+
         for (i=0;i<nodes.size();i++) {
             node=(MMObjectNode)nodes.elementAt(i);
-            // This should be easier
-            if (mmbase.getMMObject(node.getName()) instanceof InsRel) {
+            // Nodes are uncommited by default
+            nodestate[i]=UNCOMMITED;
+
+            //check type (relation or normal node)
+            if (node.parent instanceof InsRel) {
                 nodetype[i]=RELATION;
             } else {
                 nodetype[i]=NODE;
             }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("performCommits: checking existence");
-        }
-        // check if they alreay exist (aka use update vs insert)
-        for (i=0;i<nodes.size();i++) {
-            node=(MMObjectNode)nodes.elementAt(i);
+            // check if the node already exists
+            // note: check on _number seems stupid, no errors?
+            // not really needed anyway
             tmpstate=node.getDBState("_number");
             if ((tmpstate==FieldDefs.DBSTATE_UNKNOWN || tmpstate==FieldDefs.DBSTATE_VIRTUAL)) {
                  exists=node.getStringValue("_exists");
                 if (exists==null) {
-                    log.warn("performCommits: exists field does not exist "+node);
+                    // should throw an exception, as it breaks the code furtheron...
+                    log.error("performCommits: exists field does not exist "+node);
                 } else if (exists.equals(EXISTS_NO)) {
                     nodeexist[i]=I_EXISTS_NO;
                 } else if (exists.equals(EXISTS_YES)) {
@@ -265,14 +273,11 @@ public class TransactionManager implements TransactionManagerInterface {
                 } else if (exists.equals(EXISTS_NOLONGER)) {
                     nodeexist[i]=I_EXISTS_NOLONGER;
                 } else {
-                    log.warn("performCommits: invalid value for _exists "+node);
+                    // should throw an exception, as it breaks the code furtheron...
+                    log.error("performCommits: invalid value for _exists "+node);
                 }
             }
-        }
-
-        if (debug) {
-            for (i=0;i<nodes.size();i++) {
-                node=(MMObjectNode)nodes.elementAt(i);
+            if (debug) {
                 log.debug("node "+i+" type "+nodetype[i]+" , exist "+nodeexist[i]+" node "+node.getStringValue("_number"));
             }
         }
@@ -299,20 +304,15 @@ public class TransactionManager implements TransactionManagerInterface {
                             if (user instanceof UserContext) {
                                 mmbaseCop.getAuthorization().remove((UserContext)user, node.getNumber());
                             }
-                            res=true;
+                            nodestate[i]=COMMITED;
                         } else {
-                            res=true;
+                            nodestate[i]=COMMITED;
                         }
                         break;
                     default:
-                        res=false;
+                        nodestate[i]=FAILED;
                         log.warn("performCommits invalid exists value "+nodeexist[i]);
                         break;
-                }
-                if (res) {
-                    nodestate[i]=COMMITED;
-                } else {
-                    nodestate[i]=FAILED;
                 }
             }
         }
@@ -339,20 +339,15 @@ public class TransactionManager implements TransactionManagerInterface {
                             if (user instanceof UserContext) {
                                 mmbaseCop.getAuthorization().remove((UserContext)user,node.getNumber());
                             }
-                            res=true;
+                            nodestate[i]=COMMITED;
                         } else {
-                            res=true;
+                            nodestate[i]=COMMITED;
                         }
                         break;
                     default:
-                        res=false;
+                        nodestate[i]=FAILED;
                         log.warn("performCommits invalid exists value "+nodeexist[i]);
                         break;
-                }
-                if (res) {
-                    nodestate[i]=COMMITED;
-                } else {
-                    nodestate[i]=FAILED;
                 }
             }
         }
@@ -367,12 +362,17 @@ public class TransactionManager implements TransactionManagerInterface {
                 switch(nodeexist[i]) {
                     case I_EXISTS_YES:
                         if (!debug) {
-                            res=node.commit();
-                            if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
+                            // use safe commit, which locks the node cache
+                            if (node.parent.safeCommit(node)) {
+                                nodestate[i]=COMMITED;
+                                if (user instanceof UserContext) {
+                                    mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
+                                }
+                            } else {
+                                nodestate[i]=FAILED;
                             }
                         } else {
-                            res=true;
+                            nodestate[i]=COMMITED;
                         }
                         if (log.isDebugEnabled()) {
                             log.debug("node "+i+" commit ");
@@ -383,29 +383,25 @@ public class TransactionManager implements TransactionManagerInterface {
                             log.debug("node "+i+" insert ");
                         }
                         if (!debug) {
-                            if (username.length()>1) {
-                                res=node.insert(username)!=-1;
+                            if (node.parent.safeInsert(node,username)!=-1) {
+                                nodestate[i]=COMMITED;
+                                if (user instanceof UserContext) {
+                                    mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
+                                }
                             } else {
-                                res=node.insert(node.getStringValue("owner"))!=-1;
-                            }
-                            if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
+                                nodestate[i]=FAILED;
                             }
                         } else {
-                            res=true;
+                            nodestate[i]=COMMITED;
                         }
                         break;
                     case I_EXISTS_NOLONGER:
                         break;
                     default:
-                        res=false;
+                        nodestate[i]=FAILED;
                         log.warn("performCommits invalid exists value "+nodeexist[i]);
                         break;
-                }
-                if (res) {
-                    nodestate[i]=COMMITED;
-                } else {
-                    nodestate[i]=FAILED;
+
                 }
             }
         }
@@ -421,12 +417,17 @@ public class TransactionManager implements TransactionManagerInterface {
                 switch(nodeexist[i]) {
                     case I_EXISTS_YES:
                         if (!debug) {
-                            res=node.commit();
-                            if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
+                            // use safe commit, which locks the node cache
+                            if (node.parent.safeCommit(node)) {
+                                nodestate[i]=COMMITED;
+                                if (user instanceof UserContext) {
+                                    mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
+                                }
+                            } else {
+                                nodestate[i]=FAILED;
                             }
                         } else {
-                            res=true;
+                            nodestate[i]=COMMITED;
                         }
                         if (log.isDebugEnabled()) {
                             log.debug("node "+i+" commit ");
@@ -437,47 +438,29 @@ public class TransactionManager implements TransactionManagerInterface {
                             log.debug("node "+i+" insert ");
                         }
                         if (!debug) {
-                            if (username.length()>1) {
-                                res=node.insert(username)!=-1;
+                            boolean res=false;
+                            if (node.parent.safeInsert(node,username)!=-1) {
+                                nodestate[i]=COMMITED;
+                                if (user instanceof UserContext) {
+                                    mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
+                                }
                             } else {
-                                res=node.insert(node.getStringValue("owner"))!=-1;
-                            }
-                            if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
+                                nodestate[i]=FAILED;
                             }
                         } else {
-                            res=true;
+                            nodestate[i]=COMMITED;
                         }
                         break;
                     case I_EXISTS_NOLONGER:
                         break;
                     default:
-                        res=false;
+                        nodestate[i]=FAILED;
                         log.warn("performCommits invalid exists value "+nodeexist[i]);
                         break;
-                }
-                if (res) {
-                    nodestate[i]=COMMITED;
-                } else {
-                    nodestate[i]=FAILED;
                 }
             }
         }
         // check for failures
-
-        if (log.isDebugEnabled())  {
-            log.debug("performCommits: removing tmpnodes");
-        }
-        // remove temporary nodes from temporary area
-        for (i=0;i<nodes.size();i++) {
-            if (nodestate[i]==COMMITED) {
-                node=(MMObjectNode)nodes.elementAt(i);
-                if (log.isDebugEnabled()) {
-                    log.debug("commit "+node);
-                }
-                bul.removeTmpNode(node.getStringValue("_number"));
-            }
-        }
         okay=true;
         for (i=0;i<nodes.size();i++) {
             if (nodestate[i]==FAILED) {

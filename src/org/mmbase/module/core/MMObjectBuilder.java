@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.107 $ $Date: 2001-09-03 15:31:48 $
+ * @version $Revision: 1.108 $ $Date: 2001-09-10 08:24:38 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -92,6 +92,14 @@ public class MMObjectBuilder extends MMTable {
     static String currentPreCache=null;
     private static Hashtable fieldDefCache=new Hashtable(40);
     // unused
+
+    /**
+     * Determines whether the cache is locked.
+     * A locked cache can be read, and nodes can be removed from it (allowing it to
+     * clean invalid nodes), but nodes cannot be added.
+     * Needed for committing nodes from transactions.
+     */
+    private static int cacheLocked=0;
 
     /**
      * Logger routine
@@ -336,7 +344,7 @@ public class MMObjectBuilder extends MMTable {
         try {
             int n;
             n=database.insert(this,owner,node);
-            if (n>=0) nodeCache.put(new Integer(n),node);
+            if (n>=0) safeCache(new Integer(n),node);
             String alias=node.getAlias();
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
@@ -534,6 +542,63 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Stores a node in the cache provided the cache is not locked.
+     */
+    public void safeCache(Integer n, MMObjectNode node) {
+        synchronized(nodeCache) {
+            if(cacheLocked==0) {
+                nodeCache.put(n,node);
+            }
+        }
+    }
+
+    /**
+     * Locks the node cache during the commit of a node.
+     * This prevents the cache from gaining an invalid state
+     * during the commit.
+     */
+    public boolean safeCommit(MMObjectNode node) {
+        boolean res=false;
+        try {
+            synchronized(nodeCache) {
+                cacheLocked++;
+            }
+            nodeCache.remove(new Integer(node.getNumber()));
+            res=node.commit();
+        } finally {
+            synchronized(nodeCache) {
+                cacheLocked--;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Locks the node cache during the insert of a node.
+     * This prevents the cache from adding the node, which
+     * means that the next time the node is read it is 'refreshed'
+     * from the database
+     */
+    public int safeInsert(MMObjectNode node, String username) {
+        int res=-1;
+        try {
+            synchronized(nodeCache) {
+                cacheLocked++;
+            }
+            // determine valid username
+            if ((username==null) || (username.length()<=1)) {
+                username=node.getStringValue("owner");
+            }
+            res=node.insert(username);
+        } finally {
+            synchronized(nodeCache) {
+                cacheLocked--;
+            }
+        }
+        return res;
+    }
+
+    /**
      * Retrieves an object's type. If necessary, the type is added to the cache.
      * @param number The number of the node to search for
      * @return an <code>int</code> value which is the object type (otype) of the node.
@@ -587,62 +652,85 @@ public class MMObjectBuilder extends MMTable {
      * Note that the OAlias builder needs to be active for the alias to be used
      * (otherwise using an alias is concidered invalid).
      * @param key The value to search for
+     * @param usecache If true, the node is retrieved from the node cache if possible.
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      */
-    public MMObjectNode getNode(String key) {
+    public MMObjectNode getNode(String key, boolean usecache) {
         int nr;
         MMObjectNode node = null;
-
         if( key == null ) {
             log.error("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
             return null;
         }
-
         try {
             nr=Integer.parseInt(key);
         } catch (Exception e) {
             nr=-1;
         }
-        // load the node directy if the number is right
+        // is not a number, try top obtain the number from the alias builder
+        if ((nr<0) && (mmb.getOAlias()!=null)) {
+            nr=mmb.getOAlias().getNumber(key);
+        }
+        // load the node if the number is right
         if (nr>0) {
-            node=mmb.getTypeDef().getNode(nr);
-        } else {
-            //otherwise try to see if it can be retrieved by alias name
-            if (mmb.getOAlias()!=null) {
-                node=mmb.getOAlias().getAliasedNode(key);
-            }
+            node=getNode(nr,usecache);
         }
         return node;
     }
 
     /**
+     * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
+     * or the string-form of an integer value (the number field of an object node).
+     * Retrieves a node from the node cache if possible.
+     * @param key The value to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *       <code>MMObjectNode</code> containing the contents of the requested node.
+     */
+    public MMObjectNode getNode(String key) {
+        return getNode(key,true);
+    }
+
+    /**
+     * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
+     * or the string-form of an integer value (the number field of an object node).
+     * Retrieves the node from directly the database, not using the node cache.
+     * @param key The value to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *       <code>MMObjectNode</code> containing the contents of the requested node.
+     */
+    public MMObjectNode getHardNode(String key) {
+        return getNode(key,false);
+    }
+
+    /**
      * Retrieves a node based on it's number (a unique key).
-     * @param number The numbe rof the node to search for
+     * @param number The number of the node to search for
+     * @param usecache If true, the node is retrieved from the node cache if possible.
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *       <code>MMObjectNode</code> containign the contents of the requested node.
      */
-    public synchronized MMObjectNode getNode(int number) {
+    public synchronized MMObjectNode getNode(int number, boolean usecache) {
         // test with counting
         statCount("getnode");
         if (number==-1) {
             log.warn(" ("+tableName+") nodenumber == -1");
             return null;
         }
-        // cache setup
+        MMObjectNode node=null;
         Integer integerNumber=new Integer(number);
-        MMObjectNode node=(MMObjectNode)nodeCache.get(integerNumber);
-        if (node!=null) {
-            // added debug for testing cache problems.
-            //log.info("NODE "+number+" IN CACHE, node:"+node);
-            // lets add a extra asked counter to make a smart cache
-            int c=node.getIntValue("CacheCount");
-            c++;
-            node.setValue("CacheCount",c);
-            return node;
-        } // else
-            //log.info("NODE "+number+" NOT IN CACHE");
-
+        // try cache if indicated to do so
+        if (usecache) {
+            node=(MMObjectNode)nodeCache.get(integerNumber);
+            if (node!=null) {
+                // lets add a extra asked counter to make a smart cache
+                // XXX: better as a separate property?
+                int c=node.getIntValue("CacheCount");
+                c++;
+                node.setValue("CacheCount",c);
+                return node;
+            }
+        }
         // do the query on the database
         try {
             String bul="typedef";
@@ -679,7 +767,10 @@ public class MMObjectBuilder extends MMTable {
                         fieldname=rd.getColumnName(i);
                         node=database.decodeDBnodeField(node,fieldname,rs,i);
                     }
-                    nodeCache.put(integerNumber,node);
+                    // store in cache if indicated to do so
+                    if (usecache) {
+                        safeCache(integerNumber,node);
+                    }
                     // clear the changed signal
                     node.clearChanged();
                 } else {
@@ -699,69 +790,25 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Retrieves a node from database directly (not using nodeCache!) based on it's number (a unique key).
-     * Implementation is the same as getNode, except not using the nodeCache.
+     * Retrieves a node based on it's number (a unique key), retrieving the node
+     * from the node cache if possible.
+     * @param number The number of the node to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *       <code>MMObjectNode</code> containign the contents of the requested node.
+     */
+    public MMObjectNode getNode(int number) {
+        return getNode(number,true);
+    }
+
+    /**
+     * Retrieves a node based on it's number (a unique key), directly from
+     * the database, not using the node cache.
      * @param number The number of the node to search for
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *  <code>MMObjectNode</code> containign the contents of the requested node.
      */
-    public synchronized MMObjectNode getHardNode(int number) {
-        // test with counting
-        statCount("getnode");
-        if (number==-1) {
-            log.warn(" ("+tableName+") nodenumber == -1");
-            return null;
-        }
-        // do the query on the database
-        try {
-            MMObjectNode node =null;
-            String bul="typedef";
-
-            // retrieve node's objecttype
-            int bi=getNodeType(number);
-            if (bi!=0)
-                bul=mmb.getTypeDef().getValue(bi);
-            if (bul==null) {
-                log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
-                return null;
-            }
-            MultiConnection con =null;
-            Statement stmt = null;
-            try {
-                con=mmb.getConnection();
-                stmt=con.createStatement();
-                ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
-                if (rs.next()) {
-                    // create a new object and add it to the result vector
-                    MMObjectBuilder bu=mmb.getMMObject(bul);
-                    if (bu==null) {
-                        log.error("getMMObject did not return builder on : "+bul);
-                        return null;
-                    }
-                    node=new MMObjectNode(bu);
-                    ResultSetMetaData rd=rs.getMetaData();
-                    String fieldname;
-                    String fieldtype;
-                    for (int i=1;i<=rd.getColumnCount();i++) {
-                        fieldname=rd.getColumnName(i);
-                        node=database.decodeDBnodeField(node,fieldname,rs,i);
-                    }
-                    // clear the changed signal
-                    node.clearChanged();
-                } else {
-                    log.warn("getNode(): Node not found "+number);
-                    return null; // not found
-                }
-            } finally {
-                mmb.closeConnection(con,stmt);
-            }
-            // return the results
-            return node;
-        } catch (SQLException e) {
-            // something went wrong print it to the logs
-            log.error(Logging.stackTrace(e));
-            return null;
-        }
+    public MMObjectNode getHardNode(int number) {
+        return getNode(number,false);
     }
 
     /**
@@ -1256,7 +1303,7 @@ public class MMObjectBuilder extends MMTable {
                     // huge trick to fill the caches does it make sense ?
                     number=new Integer(node.getNumber());
                     if (!nodeCache.containsKey(number) || replaceCache) {
-                        nodeCache.put(number,node);
+                        safeCache(number,node);
                     } else {
                         node=(MMObjectNode)nodeCache.get(number);
                     }
