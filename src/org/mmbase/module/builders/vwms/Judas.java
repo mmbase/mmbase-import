@@ -240,6 +240,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		// checks for 3voor12
 		if (builder.equals("news")) {
 			get3voor12_zapcentral(inumber,ctype);
+			get3voor12_journalism(inumber,ctype);
 		} else if (builder.equals("episodes")) {
 			get3voor12_shows(inumber,ctype);
 		} else if (builder.equals("audioparts")) {
@@ -975,6 +976,65 @@ public class Judas extends Vwm implements MMBaseObserver {
 			curdaymark=daymarks.getDayCount();
 			if ((curdaymark-daymark)<60) {
 				addURL("/3voor12/artists/artists.shtml?"+portal+"+"+map+"+"+program);
+			}
+		}
+	}
+
+
+
+	/*
+		/3voor12/journalism/nieuws.shtml?portal,map,program,news
+		/3voor12/journalism/journalism.shtml?portal,map,program
+		/3voor12/journalism/journalism_genre_year.shtml?portal,map,program,'months',newstype
+		/3voor12/journalism/journalism_month.shtml?portal,map,program,'months'
+		/3voor12/journalism/type_search_result.shtml?portal,map,program,newstype
+	*/
+	private void get3voor12_journalism(int number,String ctype) {
+		MMObjectNode node;
+		Vector tables=new Vector();
+		Vector fields=new Vector();
+		Vector ordervec=new Vector();
+		Vector dirvec=new Vector();
+
+		int portal,map,program,news,newstype,themonth,theyearmonth;
+		int daymark,curdaymark;
+
+		if (ctype.equals("d")) return;
+
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		
+		/* 2534202 (portal) */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
+		tables.addElement("programs");
+		tables.addElement("news");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
+		fields.addElement("programs.number");
+		fields.addElement("news.number");
+		fields.addElement("news.type");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
+		debug("journalism: portals,maps,programs,news result "+vec);
+		for (Enumeration e=vec.elements();e.hasMoreElements();) {
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			news=node.getIntValue("news.number");
+			newstype=node.getIntValue("news.type");
+			themonth=getMonthNumber(news);
+			theyearmonth=themonth-(themonth%12);
+			addURL("/3voor12/journalism/nieuws.shtml?"+portal+"+"+map+"+"+program+"+"+news);
+			addURL("/3voor12/journalism/journalism_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+newstype);
+			addURL("/3voor12/journalism/journalism_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
+			addURL("/3voor12/journalism/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+newstype);
+			daymark=daymarks.getDayCountByObject(news);
+			curdaymark=daymarks.getDayCount();
+			if ((curdaymark-daymark)<60) {
+				addURL("/3voor12/journalism/journalism.shtml?"+portal+"+"+map+"+"+program);
 			}
 		}
 	}
