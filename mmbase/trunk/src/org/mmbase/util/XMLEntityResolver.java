@@ -22,9 +22,13 @@ import org.mmbase.module.core.MMBaseContext;
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.4 $ $Date: 2000-08-10 20:44:15 $
+ * @version $Revision: 1.5 $ $Date: 2000-09-11 20:09:52 $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2000/08/10 20:44:15  case
+ * cjr: removed some debug, checked path for '//', removed a stupid method
+ *      that I added earlier.
+ *
  * Revision 1.3  2000/08/06 14:54:34  case
  * cjr: removed UNIX dependency from a path; added boolean for whether DTD is set
  *
@@ -58,12 +62,14 @@ public class XMLEntityResolver implements EntityResolver {
             if (systemId.indexOf("http://www.mmbase.org/") != -1) {
                 int i = systemId.indexOf("/dtd/");
                 String dtdName = systemId.substring(i+5);
-                String configpath = MMBaseContext.getConfigPath();
+                // 11 sept 2000, changed MMBaseContext to getProperty call to be able to use from cmdline
+                //String configpath = MMBaseContext.getConfigPath();
+                String configpath = System.getProperty("mmbase.config");
                 String separator = "";
                 if (!configpath.endsWith(File.separator)) {
                     separator = File.separator;
                 }
-                String dtdLocation = MMBaseContext.getConfigPath()+separator+"dtd"+File.separator+dtdName;
+                String dtdLocation = configpath+separator+"dtd"+File.separator+dtdName;
                 if (debug) {
                     debug("dtdLocation = "+dtdLocation);
                 }
