@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.19 2003-03-18 16:44:25 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.20 2003-05-16 11:06:12 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -241,7 +241,7 @@ public class MMBaseServlet extends  HttpServlet {
         if (priority == null) priority = new Integer(0);
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e == null || (priority.intValue() >= e.priority)) {
-            log.service("Associating function '" + function + "' with servlet " + servletName + (e == null ? ""  : " (removing " + e.name +")"));
+            log.service("Associating function '" + function + "' with servlet " + servletName + (e == null ? ""  : " (removing association with " + e.name +" servlet)"));
             associatedServlets.put(function, new ServletEntry(servletName, priority));
         }
     }
@@ -252,6 +252,8 @@ public class MMBaseServlet extends  HttpServlet {
      * MMBase servlet will probably override this method.
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        long minute = System.currentTimeMillis() + (long) (60 * 1000);
+        res.setDateHeader("Expires", minute);
         res.setContentType("text/plain");
         PrintWriter pw = res.getWriter();
         pw.print(org.mmbase.Version.get());
