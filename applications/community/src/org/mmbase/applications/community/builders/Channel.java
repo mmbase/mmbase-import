@@ -86,6 +86,10 @@ public class Channel extends MMObjectBuilder {
 		 */
 		channel.setValue("open", channelOpen);
 		MMObjectNode community = communityParent(channel);
+		if (community==null) {
+		    log.error("open(): Can't open channel " + channel.getValue("number")+" : no relation with a community");
+		    return false;
+		}
 		int highestSequence = channel.getIntValue("highseq");
 		if (community.getStringValue("kind").equals("chatbox")) channel.setValue("highseq", -1); // this way we can check if the channel get closed properly
 		if (channel.commit()) {
