@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: INFO.java,v 1.27 2000-12-15 12:46:26 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module;
 
 import java.lang.*;
@@ -30,7 +35,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.26 $ $Date: 2000-12-10 15:54:13 $
+ * @$Revision: 1.27 $ $Date: 2000-12-15 12:46:26 $
  */
 public class INFO extends ProcessorModule {
 
@@ -427,8 +432,10 @@ public class INFO extends ProcessorModule {
 	 * REQUEST_URI, which returns the path of the file requested in SCAN<br />
 	 * BACK, which returns the name of the page visted befote the current page, notice not supported by all browsers<br />
 	 * COUNTRY, which returns the country name of the remote host ( mmbase.nl -> nl; mmbase.org-> org )<br />
-	 * DOMAIN, which returns the domain name where we are currently working on in SCAN<br />
-	 * INDOMAIN, which returns YES when remote host has the same domain as us otherwise it returns NO in SCAN																<br />
+	 * DOMAIN, which returns the domain name of the remote host<br />
+	 * INDOMAIN, which returns YES when remote host has the same domain as us otherwise it returns NO in SCAN	<br />
+	 * ISINTERNALVPROADDRESS, returns true when remotehost ipaddress contains vpro domain ip address, else false,
+	 * uses sp.isInternalVPROAddress <br />
 	 * @param tok StringTokenizer with the rest of the cmd.
 	 * @param sp the scanpage
 	 * @return a String containing cmd result.
@@ -492,6 +499,9 @@ public class INFO extends ProcessorModule {
 					String servername=getProperty("server","MachineName");
 					return toYesNo(servername.equals(tmp));
 				}
+			}
+			if (cmd.equals("ISINTERNALVPROADDRESS")) {
+				return ""+sp.isInternalVPROAddress();
 			}
 			return "Illegal user command";	
 		} else {
