@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.17 2003-02-21 20:18:03 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.18 2003-02-21 20:25:24 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -204,7 +204,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             usetime = time;
         }
 
-        if (inputformat == null) {
+        if (inputformat == null || inputformat.equals("")) {
             // Is the time given in second from EPOC (UTC)?
             try {
                 long timeFromEpoc = Long.parseLong(usetime);
