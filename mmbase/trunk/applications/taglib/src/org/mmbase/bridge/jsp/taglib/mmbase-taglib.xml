@@ -409,6 +409,8 @@ See mmexamples/taglib for more elaborated examples.
       A cloud referrer tag is a tag that needs to live in the body of a cloud tag. This means that
       it can use MMBase data.
     </info>
+    <see tag="cloud" />
+    <see tag="cloudprovider" />
     <attribute>
       <name>cloud</name>
       <required>false</required>
@@ -1289,6 +1291,15 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 &lt;mm:cloud method="logout" /&gt;
 &lt;% response.sendRedirect("http://my_host/my_page.jsp"); %&gt;
     </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/cloud.jsp.1" />
+    </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/cloud.jsp.2" />
+    </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/logout.jsp.1" />
+    </example>
   </tag>
   <tag>
     <name>info</name>
@@ -1619,6 +1630,18 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
   &lt;mm:import id="hoi_again"&gt;greetings from hilversum&lt;/mm:import&gt;
   &lt;mm:write referid="hoi_again" /&gt;
 &lt;/mm:context&gt;</example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/context.jsp.1" />
+    </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/context.jsp.2" />
+    </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/context.jsp.3" />
+    </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/context.jsp.4" />
+    </example>
   </tag>
   <tag>
     <name>createrelation</name>
@@ -2694,6 +2717,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
           &lt;/mm:isempty&gt;
         &lt;/mm:field&gt;
      </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/empty.jsp" />
+    </example>
   </tag>
   <tag>
     <name>isgreaterthan</name>
@@ -3335,6 +3361,9 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     </info>
     <extends>contextreader</extends>
     <see tag="formatter" />
+    <example>     
+      <include base="examples.taglib" href="codesamples/xsltinline.jsp" />
+    </example>
   </tag>
   <tag>
     <name>time</name>
@@ -3435,8 +3464,8 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <info>
       Logs the body or creates a Logger variable in it.  You can log
       to the MMBase log with this.  It logs its body on 'service'
-      within the category 'org.mmbase.PAGE', followed by the file name
-      of the jsp which is executed.
+      within the category 'org.mmbase.PAGE.LOGTAG', followed by the file name
+      of the jsp which is executed. 
     </info>
     <attribute>
       <name>jspvar</name>
@@ -3506,5 +3535,8 @@ The 0 is just counter, which starts at 0 on every page.
         <value>GB</value>
       </examplevalue>
     </attribute>
+    <example>     
+      <include base="examples.taglib" href="codesamples/timelocale.jsp" />
+    </example>
   </tag>
 </taglib>
