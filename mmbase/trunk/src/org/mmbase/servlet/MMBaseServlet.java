@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.14 2002-09-18 19:21:02 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.15 2002-10-25 18:46:27 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -107,7 +107,7 @@ public class MMBaseServlet extends  HttpServlet {
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
 
-    synchronized public void init() throws ServletException {
+    public void init() throws ServletException {
         if (! MMBaseContext.isInitialized()) {
             ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
@@ -122,7 +122,7 @@ public class MMBaseServlet extends  HttpServlet {
         boolean initialize=false;
         // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
-            initialize=(servletInstanceCount==0);
+            initialize = (servletInstanceCount == 0);
             servletInstanceCount+=1;
         }
         if (initialize) {
@@ -156,15 +156,14 @@ public class MMBaseServlet extends  HttpServlet {
             }
             log.debug("Loaded servlet mappings");
         }
-
-
         if (mmbase == null) {
-            mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");
+            log.service("Creating MMBase module in " + getServletName());
+            mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");                
             if (mmbase == null) {
                 log.error("Could not find module with name 'MMBASEROOT'!");
             }
         }
-
+        log.debug("Associating this servlet with functions");
         Iterator i = getAssociations().entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry e = (Map.Entry) i.next();
@@ -341,7 +340,7 @@ public class MMBaseServlet extends  HttpServlet {
 
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
-                    log.info("Running servlets: "+curCount);
+                    log.info("Running servlets: " + curCount);
                     for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
                         log.info(e.nextElement());
                 }// curCount>0
@@ -354,11 +353,13 @@ public class MMBaseServlet extends  HttpServlet {
         super.destroy();
          // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
-           servletInstanceCount-=1;
-            if (servletInstanceCount==0) {
+           servletInstanceCount -= 1;
+            if (servletInstanceCount == 0) {
                 log.info("Unloaded servlet mappings");
                 associatedServlets.clear();
                 servletMappings.clear();
+                log.info("No servlets leaving, MMBase can be shut down");
+                mmbase.shutdown();
             }
         }
    }
