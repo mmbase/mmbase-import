@@ -21,11 +21,12 @@ import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 */
 public class CreateAliasTag extends NodeReferrerTag {    
 
-    private String parameter = null;
+    private String alias = null;
 
-    public void setParameter(String p) {
-        parameter = p;
+    public void setName(String n) throws JspTagException {
+        alias = getAttributeValue(n);
     }
+
     /**
     * Add the alias.
     **/
@@ -33,13 +34,10 @@ public class CreateAliasTag extends NodeReferrerTag {
         // search the node:
         Node node = findNodeProvider().getNodeVar();
         
-        // alias name is in the body if no parameter is given
-        String alias;
-        if (parameter == null) {
+        // alias name is in the body if no attribute name is given
+        if (alias == null) {
             alias = bodyContent.getString();
-        } else {
-            alias =  pageContext.getRequest().getParameter(parameter);
-        }
+        } 
 
         if (alias != null) {
             if (! "".equals(alias)) {

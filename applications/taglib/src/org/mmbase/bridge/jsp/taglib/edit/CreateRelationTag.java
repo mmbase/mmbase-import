@@ -35,23 +35,21 @@ public class CreateRelationTag extends NodeTag {
     private String source;
     private String destination;
     
-    public void setRole(String r){
-        role = r;
+    public void setRole(String r) throws JspTagException {
+        role = getAttributeValue(r);
     }
     
-    public void setSource(String s) {
+    public void setSource(String s)  {
         source = s;
     }
-    public void setDestination(String d) {
+    public void setDestination(String d)  {
         destination = d;        
     }
        
     public int doStartTag() throws JspTagException{            
-        CloudProvider c = findCloudProvider();
         RelationManager rm = getCloudProviderVar().getRelationManager(role);
-        ContextTag    con = getContextTag();
-        Node sourceNode      = con.getNode(source);
-        Node destinationNode = con.getNode(destination);        
+        Node sourceNode      = getContextTag().getNode(source);
+        Node destinationNode = getContextTag().getNode(destination);        
 
         if (log.isDebugEnabled()) {
             log.debug("cloud from relationmanager " + rm.getCloud().getName());
