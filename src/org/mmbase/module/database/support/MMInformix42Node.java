@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.17 $ $Date: 2000-08-10 14:21:46 $
+* @$Revision: 1.18 $ $Date: 2000-08-31 21:37:28 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -280,7 +280,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		//bul.signalNewObject(bul.tableName,number);
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
-				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
 				// figure out tables to send the changed relations
 				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
 				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
@@ -289,7 +289,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			} else {
-				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
 			}
 		}
 		node.setValue("number",number);
