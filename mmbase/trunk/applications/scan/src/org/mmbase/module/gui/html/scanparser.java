@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.33 2000-11-23 14:50:43 install Exp $
+$Id: scanparser.java,v 1.34 2000-12-05 18:29:08 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.33  2000/11/23 14:50:43  install
+Rob changed <transaction> tag in <transactions>
+
 Revision 1.32  2000/11/21 16:40:05  vpro
 davzev: Added code to method do_part that forbids parting with filepaths that contain .. parent directory files.
 
@@ -122,7 +125,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.33 $ $Date: 2000-11-23 14:50:43 $
+ * @$Revision: 1.34 $ $Date: 2000-12-05 18:29:08 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -748,7 +751,8 @@ public class scanparser extends ProcessorModule {
 				// unlike include we need to map this ourselfs before including it
 				// in this page !!
 			try {
-				part=handle_line(part,session,sp);
+				String cachedPart = handlePartCache(filename + "?" + paramline, part, session, sp);
+				if (cachedPart == null) part = handle_line(part,session,sp); else part = cachedPart;
 			} catch (Exception e) {
 				String errorMsg = "Error in part "+filename;
 				if (paramline!=null) errorMsg += "?" + paramline;
@@ -779,6 +783,52 @@ public class scanparser extends ProcessorModule {
 		}
 	}
 
+	// Still have to do something for making reload possible.
+	// did I got the orginel or a copy of session and sp?
+	/**
+	 * When the part contains the tag <CACHE HENK> look if the part is cached.
+	 */ 
+	private String handlePartCache(String filename, String part, sessionInfo session,scanpage sp) throws ParseException
+	{		
+		if (part == null) return null;
+
+		/* Test if cache HENK is used in this page or not.
+		 */
+		int start = part.indexOf("<CACHE HENK");
+		int end;
+		if (start>=0)
+		{	start+=11;
+			end = part.indexOf(">", start);
+		}
+		else
+			return null;
+
+		/* Ok it's used. Now look for the specified filename in the cache by (poolname, key, <CACHE HENK expire_time>).
+		 */
+		// if (debug) debug("handlePartCache(): lookup " + filename);		
+		String result = scancache.get("HENK", filename, part.substring(start,end+1));
+		if (result != null)
+		{	//if (debug) debug("handlePartCache(): got " + filename + "out of cache HENK.");
+			return result;
+		}
+
+		/* The page couldn't be retrieved out of the cache.
+		 * Parse it and put it in the cache.
+		 */
+		try
+		{	result = handle_line(part,session,sp);
+		}
+		catch (Exception e)
+		{		String errorMsg = "Error in part "+filename;				
+				errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
+				part = errorMsg;
+				debug("handlePartCache(): "+errorMsg);
+				e.printStackTrace();
+		}
+		scancache.put("HENK", filename, result);
+
+		return result;
+	}
 
 	/**
 	 * Support method for do_smart
