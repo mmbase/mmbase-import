@@ -24,6 +24,8 @@
 
 	 -->
   	<authentication class="org.mmbase.security.Authentication" url="" />
+  	<!-- <authentication class="org.mmbase.security.implementation.AuthenticationHandler" 
+			url="/usr/local/mmbase/config/security/authentication.xml" /> -->
 
 	<!--
 		tag authorization:
@@ -37,7 +39,7 @@
 			class.
 	 -->
   	<authorization class="org.mmbase.security.Authorization" url="" />
-
+    	<!--   	<authorization class="org.mmbase.security.implementation.OwnerAuthorization" url="" /> -->
 
 	<!--
             shared secret:
