@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.Arguments;
+import org.mmbase.util.*;
 
 import java.util.*;
 
@@ -26,14 +26,14 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.1 2003-08-11 15:26:34 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.2 2003-08-12 18:13:40 michiel Exp $
  */
 public class AbstractFunctionTag extends NodeReferrerTag implements FunctionContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(AbstractFunctionTag.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractFunctionTag.class);
 
-    protected Attribute container = Attribute.NULL;
-    protected Attribute name      = Attribute.NULL;
+    protected Attribute container   = Attribute.NULL;
+    protected Attribute name        = Attribute.NULL;
     protected Attribute parameters  = Attribute.NULL;
 
 
@@ -59,14 +59,14 @@ public class AbstractFunctionTag extends NodeReferrerTag implements FunctionCont
 
         if (functionContainer != null) {
             arguments    = functionContainer.getParameters();
-            functionName =  functionContainer.getName();
         } else {    
             arguments =  parameters.getList(this);
             if (name == Attribute.NULL) {
                 throw new JspTagException("Should give name of function");
             }
-            functionName = name.getString(this);
-        }
+         }
+
+        functionName = name.getString(this);
         Object value = getNode().getFunctionValue(functionName, arguments).get();
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), value);

@@ -26,10 +26,13 @@ cd a * Function Container can be used around Function (-like) Tags
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.3 2003-08-12 17:10:21 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.4 2003-08-12 18:13:40 michiel Exp $
  */
-public class FunctionContainerTag extends ContextReferrerTag implements FunctionContainer {
-    private static Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
+public class FunctionContainerTag extends CloudReferrerTag implements FunctionContainer {
+    private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
+
+    private static final Argument LANGUAGE_ARGUMENT = new Argument("language", String.class);
+    private static final Argument USER_ARGUMENT = new Argument("user", org.mmbase.bridge.User.class);
 
     private List       parameters;
     protected Attribute argumentsDefinition = Attribute.NULL;
@@ -77,6 +80,20 @@ public class FunctionContainerTag extends ContextReferrerTag implements Function
                 throw new JspTagException(e.toString());
             }
             parameters = new Arguments(definition);
+
+            // fill some standard arguments
+            Arguments a = (Arguments) parameters;
+            a.setIfDefined("response", pageContext.getResponse());
+            a.setIfDefined("request",  pageContext.getRequest());
+            if (a.hasArgument(LANGUAGE_ARGUMENT)) {
+                LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+                if (localeTag != null) {
+                    a.set("language", localeTag.getLocale().getLanguage());
+                }
+            }
+            if (a.hasArgument(USERCONTEXT_ARGUMENT)) {
+                a.set("usercontext", getCloud().getUser());
+            }
         } else {
             parameters = new ArrayList();
         }
