@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author vpro
- * @version $Id: VideoUtils.java,v 1.7 2002-01-28 16:35:03 pierre Exp $
+ * @version $Id: VideoUtils.java,v 1.8 2002-01-29 12:42:38 pierre Exp $
  */
 public class VideoUtils extends MediaUtils {
 
@@ -180,7 +180,6 @@ public class VideoUtils extends MediaUtils {
 
     /**
      * @javadoc
-     * @vpro uses strange conmstants (otype?): 1573
      * @deprecation-used contains commented-out code
      */
     public static String getVideoUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels) {
@@ -206,7 +205,7 @@ public class VideoUtils extends MediaUtils {
                             String author            = null;
                             MMObjectBuilder builder  = mmbase.getMMObject("videoparts");
                             MMObjectNode node        = builder.getNode(number);
-                            Enumeration g            = mmbase.getInsRel().getRelated(node.getIntValue("number"), 1573);
+                            Enumeration g            = mmbase.getInsRel().getRelated(number, "groups");
                             if (g.hasMoreElements()) {
                                 node = (MMObjectNode)g.nextElement();
                                 String an  = node.getStringValue("name");
