@@ -19,7 +19,7 @@ import org.mmbase.util.*;
  * This module gives mail functionality 
  *
  * @author Rob Vermeulen
- * @version $Revision: 1.4 $ $Date: 2000-03-30 13:11:24 $
+ * @version $Revision: 1.5 $ $Date: 2000-11-03 16:24:55 $
  */
 public class SendMail extends Module implements SendMailInterface {
 	private String 		 classname 	= getClass().getName();
@@ -89,7 +89,10 @@ public class SendMail extends Module implements SendMailInterface {
 		String anwser="";
 
 		/** Connect to mail-host **/	
-		if (!connect(mailhost,25)) return false;
+		if (!connect(mailhost,25)) {
+			debug("sendMail(): ERROR: from("+from+"), to("+to+"), data("+data+"): Cannot connect to mailhost("+mailhost+")!");
+			return false;
+		}
 
 	 	try {
 			out.writeBytes("MAIL FROM:<"+from+">\n");
