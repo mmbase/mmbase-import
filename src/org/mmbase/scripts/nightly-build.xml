@@ -4,7 +4,7 @@
 
    @author Eduard Witteveen
    @author Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.8 2002-08-22 05:43:56 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.9 2002-09-23 21:48:44 michiel Exp $
    
 -->
 <project name="project naam" default="full" basedir=".">
@@ -19,6 +19,7 @@
   <property name="libpackage.path" value="${destination.dir}/mmbase-lib.zip"/>
   <property name="jarpackage.path" value="${destination.dir}/mmbase.jar"/>
   <property name="warpackage.file" value="${destination.dir}/mmbase.war"/>
+  <property name="minwarpackage.file" value="${destination.dir}/minimalistic-mmbase.war"/>
 
   <!-- Make build for this time -->
   <property name="date" value="now" />
@@ -147,8 +148,8 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
 	</target>
 
   <target name="build.war" depends="mirror">
-    <ant antfile="${buildlocation.buildfile.path}" dir="${buildlocation.buildscript.dir}" target="war" />
-	</target>
+    <ant antfile="${buildlocation.buildfile.path}" dir="${buildlocation.buildscript.dir}" target="wars" />
+   </target>
 
   <target name="javadocs" depends="mirror">
     <ant antfile="${buildlocation.buildfile.path}" dir="${buildlocation.buildscript.dir}" target="javadocs" />	
@@ -193,6 +194,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <target name="storewar" depends="build.war">
 		<!-- the war... -->
     <copy file="${buildlocation.dir}/build/mmbase/mmbase.war" tofile="${warpackage.file}"/>
+    <copy file="${buildlocation.dir}/build/mmbase/minimalistic-mmbase.war" tofile="${minwarpackage.file}"/>
 
     <!-- mmdocs -->
     <copy todir="${destination.dir}/mmdocs">
