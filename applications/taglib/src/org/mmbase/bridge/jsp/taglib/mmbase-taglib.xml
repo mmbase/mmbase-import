@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.287 2005-03-01 15:41:04 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.288 2005-03-15 12:56:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3802,6 +3802,18 @@ like the parameter list or the session (where ever it is available) --&gt;
         fails, then you can explicitely try to repair it, using this attribute.
       </info>
       <since>MMBase-1.7.1</since>
+    </attribute>
+    <attribute>
+      <name>attributes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Like 'referids', but sets the variables as request attributes.
+      </info>
+      <see tag="import" attribute="from" />
+      <see tag="write" attribute="attribute" />
+      <since>MMBase-1.8.0</since>
     </attribute>
     <see tag="param" />
     <see tag="url" />
