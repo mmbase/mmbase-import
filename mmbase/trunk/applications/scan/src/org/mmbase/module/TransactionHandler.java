@@ -105,7 +105,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
   			sessions.setValue (session, "FIELDEXCEPTION",t.fieldException); 
   			sessions.setValue (session, "FIELDID",t.fieldId); 
   			sessions.setValue (session, "TRANSACTIONHANDLEREXCEPTION",t.toString()); 
-			if(debug) { 
+			if(_debug) { 
 				debug(t.transactionException,0);
 				debug(t.transactionId,0);
 				debug(t.objectException,0);
@@ -277,7 +277,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} 
 				if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 				// End execution of XML
-			} catch (TransactionHandlerException e) {
+			} catch (Exception e) {
 				TransactionHandlerException t=null;
 				if (e instanceof TransactionHandlerException) {
 					t=(TransactionHandlerException)e;
