@@ -90,7 +90,7 @@
  <td class="data"><%=field.getStringValue("item3")%></td>
  <td class="data"><%=field.getStringValue("item4")%></td>
  <td class="navigate">
-    <a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>"/>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
+    <a href="<mm:url page='<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>'/>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -101,7 +101,7 @@
  <td class="data">&nbsp;</td>
  <td class="data">&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="newfield.jsp?builder="+builder%>" />"><img src="../../images/next.gif" alt="add new" border="0" align="right" /></a>
+    <a href="<mm:url page='<%="newfield.jsp?builder="+builder%>' />"><img src="../../images/next.gif" alt="add new" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -140,7 +140,7 @@
  <td class="data">XML-check</td>
  <td class="data" colspan="2"><%=check%></td>
  <td class="linkdata" colspan="2">
-<form action="<mm:url page="../config/details.jsp"/>" method="POST" target="_xml">
+<form action="<mm:url page='../config/details.jsp'/>" method="POST" target="_xml">
 <%    if (check.equals("Checked ok")) { %>
         <input type="hidden" name="todo" value="show" />
 <%  } else { %>

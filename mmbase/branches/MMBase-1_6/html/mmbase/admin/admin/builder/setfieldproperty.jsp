@@ -27,7 +27,7 @@
    String property="value";
 %>
 <table summary="builder field property data" width="93%" cellspacing="1" cellpadding="3">
-<form action="<mm:url page="field.jsp" />" method="POST">
+<form action="<mm:url page='field.jsp' />" method="POST">
 <tr align="left">
   <th class="header">Property</th>
   <% if (cmd.equals("newguiname")) { %>
@@ -77,7 +77,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field%>"/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page='<%="field.jsp?builder="+builder+"&field="+field%>'/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Builder Field Administration</td>
 </tr>
 </table>

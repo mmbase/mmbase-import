@@ -37,11 +37,11 @@
   <th class="header">Explain</th>
 </tr>
 
-<form action="<mm:url page="actions.jsp"/>" method="POST">
+<form action="<mm:url page='actions.jsp'/>" method="POST">
 <tr>
     <td class="data">Name</td>
     <td class="data"><input type="text" name="dbname" value="" /></td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_name' /> ">explain</a></td>
 </tr>
 
 <tr>
@@ -50,7 +50,7 @@
     <% String property="mmbasetype"; %>
 <%@include file="properties/dbmmbasetype.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_type' /> ">explain</a></td>
 </tr>
 
 <tr>
@@ -59,7 +59,7 @@
     <% property="guitype"; %>
 <%@include file="properties/guitype.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_guitype' /> ">explain</a></td>
 </tr>
 
 <tr>
@@ -68,7 +68,7 @@
     <% property="dbstate"; %>
 <%@include file="properties/dbstate.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_state' /> ">explain</a></td>
 </tr>
 
 <tr>
@@ -77,7 +77,7 @@
     <% property="dbnotnull"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_notnull' /> ">explain</a></td>
 </tr>
 
 <tr>
@@ -86,13 +86,13 @@
     <% property="dbkey"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_key' /> ">explain</a></td>
 </tr>
 
 <tr>
     <td class="data">Size</td>
     <td class="data"><input type="text" name="dbsize" value="" /></td>
-    <td class="data"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> ">explain</a></td>
+    <td class="data"><a href="<mm:url page='/mmdocs/administrators/builders.html#field_size' /> ">explain</a></td>
 </tr>
 
 <tr>
@@ -109,7 +109,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?builder="+builder%>' />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>
