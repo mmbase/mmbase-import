@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.2 2004-10-07 10:57:22 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.3 2004-10-07 11:11:51 michiel Exp $
  * @see    FileWatcher
  * @see    ResourceLoader
  */
@@ -132,21 +132,6 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
     }
 
-    /**
-     * Stops watching.
-     */
-    public void exit() {
-        Iterator i = fileWatchers.values().iterator();
-        while (i.hasNext()) {
-            FileWatcher fw = (FileWatcher) i.next();
-            fw.exit();
-            i.remove();
-        }
-        if (ResourceLoader.resourceBuilder != null) {
-            ResourceLoader.resourceBuilder.removeLocalObserver(this);
-            ResourceLoader.resourceBuilder.removeRemoteObserver(this);
-        }        
-    }
 
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
@@ -193,9 +178,14 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         while (i.hasNext()) {
             FileWatcher fw = (FileWatcher) i.next();
             fw.exit();
+            i.remove();
         }
-        // TODO: MMBaseObser stuff
+        if (ResourceLoader.resourceBuilder != null) {
+            ResourceLoader.resourceBuilder.removeLocalObserver(this);
+            ResourceLoader.resourceBuilder.removeRemoteObserver(this);
+        }        
     }
+
 
     /**
      * Shows the 'contents' of the filewatcher. It shows a list of files/last modified timestamps.
