@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.3 2000-10-08 21:48:58 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.4 2000-10-08 21:54:35 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -14,7 +14,7 @@
 #
 
 # change this to your MMBase-dir
-MMBASE_HOME=../
+MMBASE_HOME=..
 # change this to your Tomcat directory
 TOMCAT_HOME=/usr/local/tomcat
 
