@@ -1,12 +1,15 @@
 package org.mmbase.applications.crontab;
 
 import java.util.*;
+import org.mmbase.util.logging.*;
 /**
  * JCronDaemonn is a "crontab" clone written in java.
  * The daemon starts a thread that wakes up every minute
  *(it keeps sync by calculating the time to sleep)
  **/
 public class JCronDaemon implements Runnable{
+
+    private static final Logger log = Logging.getLoggerInstance(JCronDaemon.class);
     
     private static JCronDaemon jCronDaemon;
     private Thread cronThread;
@@ -25,15 +28,16 @@ public class JCronDaemon implements Runnable{
     }
     
     public void start(){
-        cronThread = new Thread(this,"JCronDaemon");
+        log.info("Starting JCronDaemon");
+        cronThread = new Thread(this, "JCronDaemon");
         //cronThread.setDaemon(true);
         cronThread.start();
     }
     
     public void stop(){
-        System.err.println("stop");
+        log.info("Stopping JCronDaemon");
         cronThread.interrupt();
-        cronThread= null;
+        cronThread=  null;
     }
     
     public static synchronized JCronDaemon getInstance(){
@@ -43,33 +47,31 @@ public class JCronDaemon implements Runnable{
         return jCronDaemon;
     }
     
-    public long getTime(){
-        return System.currentTimeMillis();
-    }
     
     public void run() {
         Thread thisThread = Thread.currentThread();
+
         while(thisThread == cronThread){
-            long now = getTime();
-            long next = (now  + 60 * 1000 )/60000 * 60000;
-            
+                    
+            long now  = System.currentTimeMillis();
+            long next = (now + 60 * 1000 ) / 60000 * 60000; // next minute, rounded to minute
+
             try {
-                Thread.sleep(next - now);
-            } catch (InterruptedException ie){
+                Thread.sleep(next - now); // sleep until  next minute
+            } catch (InterruptedException ie) {
+                log.info("Interrupted: " + ie.getMessage());
                 return;
             }
-            
-            System.err.println("--------------");
-            Date date = new Date();
-            date.setTime(next); //nice "rounded" time
-            
+            Date currentMinute = new Date(next);
+
+            log.debug("Checking " + currentMinute);
             for (int z = 0 ; z < jCronEntries.size(); z ++){
                 JCronEntry entry = jCronEntries.getJCronEntry(z);
-                if (entry.mustRun(date)){
+                if (entry.mustRun(currentMinute)) {
                     entry.kick();
-                    System.err.println(date + " run\t: " + entry.getName());
+                    log.debug(Calendar.getInstance().getTime() + ": started " + entry);
                 } else {
-                    System.err.println(date + " skip\t: " + entry.getName());
+                    log.trace(Calendar.getInstance().getTime() + ": skipped " + entry);
                 }
             }
         }
@@ -87,7 +89,7 @@ public class JCronDaemon implements Runnable{
         //entries.add(new JCronEntry("* * * 1 *","the first month of the year"));
         //entries.add(new JCronEntry("*/2 * * * *","every 2 minutes stating from 0"));
         //entries.add(new JCronEntry("1-59/2 * * * *","every 2 minutes stating from 1"));
-        d.addJCronEntry(new JCronEntry("1","*/2 5-23 * * *","every 2 minute from 5 till 11 pm","org.mmbase.applications.crontab.TestCronJob"));
+        d.addJCronEntry(new JCronEntry("1","*/2 5-23 * * *", "every 2 minute from 5 till 11 pm", "org.mmbase.applications.crontab.TestCronJob"));
         //entries.add(new JCronEntry("40-45,50-59 * * * *","test 40-45,50-60","Dummy"));
         
         try {Thread.currentThread().sleep(240 * 1000 * 60); } catch (Exception e){};
