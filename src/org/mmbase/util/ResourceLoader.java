@@ -54,7 +54,7 @@ InputStream configStream = ResourceLoader.getConfigurationRoot().getResourceAsSt
 </pre>
 or
 <pre>
-InputSource config = ResourceLoader.getConfiguationRoot().getInputSource("modules/myconfiguration.xml");
+InputSource config = ResourceLoader.getConfigurationRoot().getInputSource("modules/myconfiguration.xml");
 </pre>
 of if you need a list of all resources:
 <pre>
@@ -83,6 +83,9 @@ When you want to place a configuration file then you have several options, wich 
   </ol>
   </li>
 </ol>
+ * <p>
+ *   Resources which do not reside in the MMBase configuration repository, can also be handled. Those can be resolved relatively to the web root, using {@link #getWebRoot()}. 
+ * </p>
  *
  * <p>Resource can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
  *
@@ -94,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.8 2004-11-26 19:51:04 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.9 2004-12-16 18:00:27 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -397,7 +400,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used.
+     * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used. 
      *
      * Otherwise the name is resolved relatively. (For the root ResourceLoader that it the same as starting with /)
      *
@@ -736,8 +739,9 @@ public class ResourceLoader extends ClassLoader {
      * Used by {@link ResourceWatcher}. And by some deprecated code that wants to produce File objects.
      * @return A List of all files associated with the resource.
      */
-    public List getFiles(String name) {
+    public List/*<File>*/ getFiles(String name) {
 
+        
         List result = new ArrayList();
         Iterator i = roots.iterator();
         while (i.hasNext()) {
@@ -910,6 +914,13 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public File getFile(String name) {
+            if (name != null && name.startsWith("file:")) {
+                try {
+                    return new File(new URI(name)); // hff, how cumbersome, to translate an URL to a File
+                } catch (URISyntaxException use) {
+                    log.warn(use);
+                }
+            } 
             String fileName = fileRoot + ResourceLoader.this.context.getPath() + (name == null ? "" : name);
             if (! File.separator.equals("/")) { // windows compatibility
                 fileName = fileName.replace('/', File.separator.charAt(0)); // er
@@ -924,7 +935,11 @@ public class ResourceLoader extends ClassLoader {
         public URLConnection openConnection(String name)  {
             URL u;
             try {
-                u = new URL(null, "file:" + getFile(name), this);
+                if (name.startsWith("file:")) {
+                    u = new URL(null, name, this);
+                } else {
+                    u = new URL(null, "file:" + getFile(name), this);
+                }
             } catch (MalformedURLException mfue) {
                 throw new AssertionError(mfue.getMessage());
             }
@@ -1306,6 +1321,10 @@ public class ResourceLoader extends ClassLoader {
 
     protected class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
         private String root;
+
+        // Some arrangment to remember wich subdirs were possible
+        //private Set subDirs = new HashSet();
+
         ClassLoaderURLStreamHandler(String r) {
             root = r;
         }
@@ -1344,6 +1363,7 @@ public class ResourceLoader extends ClassLoader {
                 if (u == null) {
                     return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 }
+                //subDirs.add(ResourceLoader.getDirectory(name));
                 return u.openConnection();
             } catch (IOException ioe) {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
@@ -1366,7 +1386,10 @@ public class ResourceLoader extends ClassLoader {
                                 if (line.equals("")) continue;     // support for empty lines
                                 if (directories) {
                                     line = getDirectory(line);
-                            }
+                                    //subDirs.add(line);
+                                } else {
+                                    //subDirs.add(getDirectory(line));
+                                }
                                 if (pattern == null || pattern.matcher(line).matches()) {
                                     results.add(line);
                                 }
@@ -1379,6 +1402,17 @@ public class ResourceLoader extends ClassLoader {
                 }
             } catch (IOException ioe) {
             }
+            /*
+            if (directories) {
+                Iterator i = subDirs.iterator();
+                while (i.hasNext()) {
+                    String dir = (String) i.next();
+                    if (pattern == null || pattern.matcher(dir).matches()) {
+                        results.add(dir);
+                    }
+                }
+            }
+            */
             return results;
         }
 
