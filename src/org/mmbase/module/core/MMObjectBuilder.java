@@ -784,7 +784,6 @@ public class MMObjectBuilder extends MMTable {
     * @return A Vector which contains all nodes that were found
     */
     private Vector basicSearch(String query) {
-        //System.out.println(query);
         // test with counting
         statCount("search");
 
@@ -1383,7 +1382,7 @@ public class MMObjectBuilder extends MMTable {
         int pos2,pos1=field.indexOf('(');
         String name,function,val;
         if (pos1!=-1) {
-            pos2=field.indexOf(')');
+            pos2=field.lastIndexOf(')');
             if (pos2!=-1) {
                 name=field.substring(pos1+1,pos2);
                 function=field.substring(0,pos1);
@@ -1419,8 +1418,6 @@ public class MMObjectBuilder extends MMTable {
     */
     protected Object executeFunction(MMObjectNode node,String function,String field) {
         Object rtn=null;
-
-        //		System.out.println("Builder ("+tableName+") execute "+function+" on "+field);
 
         // time functions
         if(function.equals("date")) {					// date
@@ -1471,16 +1468,16 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.startsWith("wrap_")) {
             String val=node.getStringValue(field);
             try {
-		int wrappos=Integer.parseInt(function.substring(5));
-		System.out.println("WRAPPOS="+wrappos);
-            	rtn=wrap(val,wrappos);
-	    } catch(Exception e) {}
+                int wrappos=Integer.parseInt(function.substring(5));
+                log.debugprintln("WRAPPOS="+wrappos);
+                rtn=wrap(val,wrappos);
+            } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
 	     NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
 	     rtn=""+nf.format(val);
         } else {
-            System.out.println("Builder ("+tableName+") unknown function '"+function+"'");
+            log.warn("Builder ("+tableName+") unknown function '"+function+"'");
         }
 
         return rtn;
@@ -1661,7 +1658,6 @@ public class MMObjectBuilder extends MMTable {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
-        // System.out.println("MMObjectBuilder -> CHECK REMOTE remove from cache node="+tableName+" nr="+number);
         if (ctype.equals("c") || ctype.equals("d")) {
             try {
                 Integer i=new Integer(number);
@@ -1702,7 +1698,6 @@ public class MMObjectBuilder extends MMTable {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
-        // System.out.println("MMObjectBuilder -> CHECK LOCAL remove from cache node="+tableName+" nr="+number);
         if (ctype.equals("r")) {
             try {
                 Integer i=new Integer(number);
@@ -2420,10 +2415,11 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Debugging routine,sends message to log
     * @param msg the message to log
+    * @deprecated, use new logging system instead
     */
     protected void debug( String msg )
     {
-    	System.out.println( classname +":"+ msg );
+    	log.debug( classname +":"+ msg );
     }
 
     /**
@@ -2442,7 +2438,14 @@ public class MMObjectBuilder extends MMTable {
         maintainer=m;
     }
 
-
+    /**
+    * Wraps a string.
+    * Inserts newlines (\n) into a string at periodic intervals, to simulate wrapping.
+    * This also removes whitespace to the start of a line.
+    * @param text the text to wrap
+    * @param width the maximum width to wrap at
+    * @return the wrapped tekst
+    */
     public String wrap(String text,int width) {
 		StringTokenizer tok;
 		String word;
@@ -2456,20 +2459,23 @@ public class MMObjectBuilder extends MMTable {
 			if (word.equals("\n")) {
 				pos=0;
 			} else if (word.equals(" ")) {
-				pos++;
-				if (pos>=width) {
-					dst.append("\n");
-					pos=0;
-				}
+			    if (pos==0) {
+	                word="";
+			    } else {
+    				pos++;
+	    			if (pos>=width) {
+		    		    word="\n";
+			    		pos=0;
+    				}
+    			}
 			} else {
 				pos+=word.length();
 				if (pos>=width) {
 					dst.append("\n");
-					pos=0;
+					pos=word.length();
 				}
 			}
 			dst.append(word);
 		}
 		return(dst.toString());
-	}
-}
+	}}
