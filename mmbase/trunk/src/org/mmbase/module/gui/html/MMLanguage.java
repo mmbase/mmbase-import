@@ -57,6 +57,8 @@ public class MMLanguage extends ProcessorModule {
 				} else {
 					return("missing core term");
 				}
+			} else if (cmd.equals("LANGUAGE")) {
+				return(languagePrefix);
 			}
 		}
 		return("No command defined");
