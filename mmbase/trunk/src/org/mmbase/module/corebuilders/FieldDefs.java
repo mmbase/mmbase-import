@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @$Revision: 1.18 $ $Date: 2001-10-18 12:45:17 $
+ * @$Revision: 1.19 $ $Date: 2002-01-11 12:27:49 $
  */
 public class FieldDefs  {
     public final static int DBSTATE_MINVALUE = 0;
@@ -52,7 +52,9 @@ public class FieldDefs  {
     private final static String[] DBTYPES =
         { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG" };
 
-    // following fields will become private
+    /**
+     * @scope private
+     */
     public String GUIName;
     public Hashtable GUINames = new Hashtable();
     public String GUIType;
