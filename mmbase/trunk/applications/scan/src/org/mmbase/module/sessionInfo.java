@@ -22,7 +22,8 @@ import org.mmbase.util.logging.*;
  * The module which provides access to a filesystem residing in
  * a database
  *
- * @author Daniel Ockeloen
+ * @rename SessionInfo
+  * @author Daniel Ockeloen
  */
 public class sessionInfo {
 

@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: floppydrvs.java,v 1.7 2001-05-04 13:54:56 vpro Exp $
+$Id: floppydrvs.java,v 1.8 2001-12-14 09:33:19 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2001/05/04 13:54:56  vpro
+Davzev: Changed nodeLocalChanged and nodeRemoteChanged since machine name has now been added to MMBaseObserver
+interface declarations. The machine var holds the name of the machine that changed the node.
+
 Revision 1.6  2001/04/10 20:22:45  michiel
 michiel: new logging system
 
@@ -44,9 +48,10 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * @author Daniel Ockeloen
+ * @rename Floppydrvs
+  * @author Daniel Ockeloen
  * @author David V van Zeventer
- * @version $Revision: 1.7 $ $Date: 2001-05-04 13:54:56 $
+ * @version $Revision: 1.8 $ $Date: 2001-12-14 09:33:19 $
  */
 public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 

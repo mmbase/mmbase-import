@@ -124,8 +124,9 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @author Daniel,Marcel
- * @version $Revision: 1.7 $ $Date: 2001-04-19 12:30:45 $
+ * @rename G2encoderUnix
+  * @author Daniel,Marcel
+ * @version $Revision: 1.8 $ $Date: 2001-12-14 09:33:50 $
  */
 public class g2encoderUnix implements g2encoderInterface {
 

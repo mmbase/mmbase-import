@@ -16,7 +16,8 @@ import java.io.*;
 
 /**
  *
- * @version 27 Mar 1997
+ * @rename Multicast
+  * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class multicast implements ProtocolDriver {

@@ -26,7 +26,8 @@ import org.mmbase.util.logging.Logger;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version 22 Jan 1999
+ * @rename FloppydrvsProbe
+  * @version 22 Jan 1999
  * @author Daniel Ockeloen
  * @author David V van Zeventer
  */

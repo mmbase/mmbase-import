@@ -11,6 +11,12 @@ package org.mmbase.config;
 
 import java.util.Hashtable;
 
+/**
+ * Class Test
+ * 
+ * @javadoc
+ */
+
 public class Test {
     public static void main(String[] argv) {
 	String eol = "\n";

@@ -17,6 +17,12 @@ import org.mmbase.security.UserContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Class AnonymousLoginModule
+ * 
+ * @javadoc
+ */
+
 public class AnonymousLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(AnonymousLoginModule.class.getName());
 

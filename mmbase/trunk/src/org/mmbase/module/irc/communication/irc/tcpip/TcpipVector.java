@@ -12,6 +12,12 @@ package org.mmbase.module.irc.communication.irc.tcpip;
 
 import java.util.Vector;
 
+/**
+ * Class TcpipVector
+ * 
+ * @javadoc
+ */
+
 public class TcpipVector extends Vector
 {
 	

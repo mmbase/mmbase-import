@@ -13,6 +13,12 @@ package	org.mmbase.module.irc.communication;
 import	org.mmbase.module.irc.communication.*;
 import	org.mmbase.module.irc.communication.irc.*;
 
+/**
+ * Class Communication
+ * 
+ * @javadoc
+ */
+
 public	class 		Communication
 		extends		IrcConnection
 		implements	CommunicationInterface	

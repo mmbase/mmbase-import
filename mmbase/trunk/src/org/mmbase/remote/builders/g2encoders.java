@@ -19,8 +19,9 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @author Daniel Ockeloen
- * @version $Revision: 1.16 $ $Date: 2001-04-19 14:06:33 $
+ * @rename G2encoders
+  * @author Daniel Ockeloen
+ * @version $Revision: 1.17 $ $Date: 2001-12-14 09:33:34 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;

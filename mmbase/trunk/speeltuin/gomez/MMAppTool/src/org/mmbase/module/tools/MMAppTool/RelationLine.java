@@ -14,6 +14,12 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Class RelationLine
+ * 
+ * @javadoc
+ */
+
 public class RelationLine extends Object {
 
 	private AppCanvas parent;

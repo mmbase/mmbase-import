@@ -16,6 +16,12 @@ import java.awt.*;
 import java.awt.event.*;
 import org.mmbase.util.*;
 
+/**
+ * Class AppCanvas
+ * 
+ * @javadoc
+ */
+
 public class AppCanvas extends Canvas implements MouseMotionListener,MouseListener {
 
 	private Display parent;

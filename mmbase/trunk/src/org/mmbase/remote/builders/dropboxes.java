@@ -21,7 +21,8 @@ import org.mmbase.service.interfaces.*;
 //import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Revision: 1.8 $ $Date: 2001-04-20 14:15:50 $ 
+ * @rename Dropboxes
+  * @version $Revision: 1.9 $ $Date: 2001-12-14 09:33:33 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder { 
