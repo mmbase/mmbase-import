@@ -39,8 +39,7 @@ if (urlStack == null) {
 
 
 %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
-%><mm:import externid="pop" />
+<mm:import externid="pop" />
 <mm:import externid="push" />
 <mm:import externid="nopush" />
 <mm:import externid="clearstack" />
