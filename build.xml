@@ -60,11 +60,15 @@ several MMBase-checkouts.
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
 
+
   <property name="source.dir"   location="." />
   <property name="build.dir"    value="${source.dir}/build" />
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
+
+  <!-- project defaults -->  
+  <property file="build.properties.default"/>
 
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
@@ -268,10 +272,11 @@ builddate=${builddate}
   <target
     name="lib.release"
     description="Create the lib directory"
-    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar">
+    depends="init,init.get,jar">
+    <!--depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar"-->
 
     <mkdir dir="${release.lib.dir}" />
-    <copy file="${xalan.jar}"          tofile="${release.lib.dir}/xalar.renametojar" />
+    <copy file="${xalan.jar}"          tofile="${release.lib.dir}/xalan.renametojar" />
     <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xerces.renametojar" />
     <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
@@ -287,7 +292,8 @@ builddate=${builddate}
   </target>
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation"
-          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">
+          depends="init,init.get">
+          <!--depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">-->
 
     <mkdir dir="${compile.lib.dir}"/>
     <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
@@ -300,7 +306,6 @@ builddate=${builddate}
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
-    <copy file="${jdbc.jar}"      todir="${compile.lib.dir}" />
   </target>
 
   <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
@@ -872,247 +877,117 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
-  <target name="unzipdownloadzip" if="download.zip.present" unless="download.dir.present" >
+  <target name="unzipdownloadzip" if="download.zip.present" 
+          unless="download.dir.present">
     <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
   </target>
-
-  <target name="init.get">
+  
+  <target name="init.get" depends="proxyflags">
 
     <available property="download.zip.present" file="${download.zip}" />
     <available property="download.dir.present" file="${download.dir}" />
 
     <antcall target="unzipdownloadzip" />
 
-
-    <property name="servlet.version" value="jakarta-servletapi-4"/>
-    <property name="servlet.url" value="${jar.download}/jakarta-servletapi/${servlet.version}.tar.gz"/>
-    <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
-    <available property="servlet.present"
-               file="${download.dir}/${servlet.version}.tar.gz"/>
-    <available property="servlet.expanded"
-               file="${expand.dir}/${servlet.version}"/>
-    <available property="servlet.jar.present"
-               file="${servlet.jar}"/>
-
-    <!-- HypersonicSQL -->
-    <property name="hsql.version" value="hsql_142"/>
-    <property name="hsql.url" value="http://download.sourceforge.net/hsql/${hsql.version}.zip"/>
-    <property name="hsql.jar" value="${expand.dir}/${hsql.version}/hypersonicsql/demo/hsql.jar"/>
-    <available property="hsql.present"
-               file="${download.dir}/${hsql.version}.zip"/>
-    <available property="hsql.expanded"
-               file="${expand.dir}/${hsql.version}"/>
-
-    <!-- hsqldb -->
-    <property name="hsqldb.version" value="hsqldb_1_7_1"/>
-    <property name="hsqldb.url" value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/${hsqldb.version}.zip"/>
-    <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
-    <available property="hsqldb.present"
-               file="${download.dir}/${hsqldb.version}.zip"/>
-    <available property="hsqldb.expanded"
-               file="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
-
-    <!-- Xalan and Xerces -->
-    <!--
-    <property name="xalan.version" value="xalan-j_2_5_1"/>
-    <property name="xalan.fullversion" value="xalan-j_2_5_1"/>
-    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
-    <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar"/>
-    -->
-    <property name="xalan.version" value="xalan-j_2_2"/>
-    <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
-    <property name="xalan.url" value="${jar.download}/xalan/${xalan.version}-bin.tar.gz"/>
-    <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xerces.jar"/>
-
-    <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
-    <property name="xml-apis.jar" value="${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar"/>
-
-    <available property="xalan.present"
-               file="${download.dir}/${xalan.version}-bin.tar.gz"/>
-    <available property="xalan.expanded"
-               file="${expand.dir}/${xalan.fullversion}"/>
-
-    <!-- JAI -->
-    <property name="jai.version" value="jai1_0_2-lib-solaris"/>
-    <property name="jai.url" value="${jar.download}/jai/${jai.version}.tar.gz"/>
-    <property name="jai_codec.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_codec.jar"/>
-    <property name="jai_core.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_core.jar"/>
-    <available property="jai.present"
-               file="${download.dir}/${jai.version}.tar.gz"/>
-    <available property="jai.expanded"
-      file="${expand.dir}/${jai.version}"/>
-
-    <!-- mail.jar -->
-    <property name="javamail_version" value="javamail-1_3"/>
-    <property name="javamail.version" value="javamail-1.3"/>
-    <property name="javamail.url" value="${jar.download}/javamail/${javamail_version}.zip"/>
-    <property name="javamail.jar" value="${expand.dir}/${javamail.version}/mail.jar" />
-
-    <available property="javamail.present"  file="${download.dir}/${javamail_version}.zip"/>
-    <available property="javamail.expanded" file="${expand.dir}/${javamail.version}"/>
-
-
-    <!-- activation.jar -->
-    <property name="javaactivation_version" value="jaf-1_0_2"/>
-    <property name="javaactivation.version" value="jaf-1.0.2"/>
-   <property name="javaactivation.url" value="${jar.download}/jaf/${javaactivation_version}.zip"/>
-    <property name="javaactivation.jar" value="${expand.dir}/${javaactivation.version}/activation.jar" />
-
-    <available property="javaactivation.present"  file="${download.dir}/${javaactivation_version}.zip"/>
-    <available property="javaactivation.expanded" file="${expand.dir}/${javaactivation.version}"/>
-
-    <!-- Log4j -->
-    <property name="log4j.version" value="1.2.8" />
-    <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
-    <property name="log4j.url"         value="${jar.download}/jakarta-log4j/${log4j.fullversion}.tgz"/>
-    <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" />
-    <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/${log4j.jarpath}" />
-    <available property="log4j.present"
-               file="${download.dir}/${log4j.fullversion}.tgz"/>
-    <available property="log4j.expanded"
-               file="${expand.dir}/${log4j.fullversion}"/>
-
-    <!-- Docbook XSL -->
-    <property name="docbook-xsl.version" value="docbook-xsl-1.61.0"  />
-    <property name="docbook-xsl.file" value="${docbook-xsl.version}.tar.gz"  />
-    <property name="docbook-xsl.url" value="http://heanet.dl.sourceforge.net/sourceforge/docbook/${docbook-xsl.file}" />
-    <available property="docbook-xsl.present"  file="${download.dir}/${docbook-xsl.file}" />
-    <available property="docbook-xsl.expanded"  file="${expand.dir}/${docbook-xsl.version}" />
-
-
-    <!-- JDBC jar -->
-    <property  name="jdbc.url" value="${jar.download}/jdbc/jdbc.jar" />
-
-    <property name="jdbc.jar" value="${download.dir}/jdbc.jar" />
-    <available property="jdbc.present" file="${jdbc.jar}" />
-
-
-
-
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
+
+    <echo message="servlet" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${servlet.loc}"/>
+      <param name="destfile" value="${servlet.dest}"/>
+    </antcall>
+
+    <echo message="hsqldb" />
+    <antcall target="downloadzip">
+      <param name="sourcefile" value="${hsqldb.loc}"/>
+      <param name="destfile" value="${hsqldb.dest}"/>
+      <param name="destdir" value="${hsqldb.dir}"/>
+    </antcall>
+
+    <echo message="jai" />
+    <antcall target="downloadbz2">
+      <param name="sourcefile" value="${jai.loc}"/>
+      <param name="destfile" value="${jai.dest}"/>
+      <param name="destdir" value="${jai.dir}"/>
+    </antcall>
+
+    <echo message="javamail" />
+    <antcall target="downloadzip">
+      <param name="sourcefile" value="${javamail.loc}"/>
+      <param name="destfile" value="${javamail.dest}"/>
+      <param name="destdir" value="${javamail.dir}"/>
+    </antcall>
+
+    <echo message="javaactivation" />
+    <antcall target="downloadzip">
+      <param name="sourcefile" value="${javaactivation.loc}"/>
+      <param name="destfile" value="${javaactivation.dest}"/>
+      <param name="destdir" value="${javaactivation.dir}"/>
+    </antcall>
+
+    <echo message="docbook" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${docbook-xsl.loc}"/>
+      <param name="destfile" value="${docbook-xsl.dest}"/>
+    </antcall>
+
+    <echo message="log4j" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${log4j.loc}"/>
+      <param name="destfile" value="${log4j.dest}"/>
+    </antcall>
+
+    <echo message="xalan and xerces" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${xalan.loc}"/>
+      <param name="destfile" value="${xalan.dest}"/>
+    </antcall>
   </target>
 
-
-  <target name="get.jdbc" depends="init.get" unless="jdbc.present">
-    <get src="${jdbc.url}"
-         dest="${jdbc.jar}"
-         verbose="on"/>
+  <target name="proxyflags" depends="init">
+    <!-- check proxy parameters. -->
+    <condition property="useproxy">
+      <equals arg1="${proxy.use}" arg2="on" />
+    </condition>
   </target>
 
-  <target name="get.servlet" depends="init.get" unless="servlet.present">
-    <get src="${servlet.url}"
-         dest="${download.dir}/${servlet.version}.tar.gz"
-         verbose="on"/>
+  <target name="setproxy"  if="useproxy">
+    <taskdef name="setproxy"
+      classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
+    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/> 
+    <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
   </target>
 
-  <target name="expand.servlet" depends="get.servlet" unless="servlet.expanded">
-    <gunzip src="${download.dir}/${servlet.version}.tar.gz" dest="${expand.dir}"/>
-    <untar src="${expand.dir}/${servlet.version}.tar" dest="${expand.dir}/${servlet.version}"/>
-    <move todir="${expand.dir}/${servlet.version}">
-      <fileset dir="${expand.dir}/${servlet.version}/jakarta-servletapi-4"/>
-    </move>
-    <delete file="${expand.dir}/${servlet.version}.tar"/>
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
   </target>
 
-  <target name="get.hsqldb" depends="init.get" unless="hsqldb.present">
-    <get src="${hsqldb.url}"
-         dest="${download.dir}/${hsqldb.version}.zip"
-         verbose="on"
-    />
+  <target name="downloadgz" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+    <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar"/>    
   </target>
 
-  <target name="expand.hsqldb" depends="get.hsqldb" unless="hsqldb.expanded">
-    <!-- <mkdir dir="${expand.dir}/${hsqldb.version}"/> -->
-    <!-- <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}/${hsqldb.version}"/> -->
-    <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}"/>
+  <target name="downloadbz2" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+    <mkdir dir="${destdir}" />
+    <bunzip2 src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
+    <delete file="${download.dir}/file.tar"/>
   </target>
 
-  <target name="get.xalan" depends="init.get" unless="xalan.present">
-    <get src="${xalan.url}"
-         dest="${download.dir}/${xalan.version}-bin.tar.gz"
-         verbose="on"/>
+  <target name="downloadzip" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+    <mkdir dir="${destdir}" />
+    <unzip src="${destfile}" dest="${destdir}"/>
   </target>
-
-  <target name="expand.xalan" depends="get.xalan" unless="xalan.expanded">
-    <gunzip src="${download.dir}/${xalan.version}-bin.tar.gz" dest="${expand.dir}"/>
-    <untar src="${expand.dir}/${xalan.version}-bin.tar" dest="${expand.dir}"/>
-    <delete file="${expand.dir}/${xalan.version}-bin.tar"/>
-  </target>
-
-  <target name="get.jai" depends="init.get" unless="jai.present">
-    <get src="${jai.url}"
-         dest="${download.dir}/${jai.version}.tar.gz"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.jai" depends="get.jai" unless="jai.expanded">
-    <mkdir dir="${expand.dir}/${jai.version}"/>
-    <gunzip src="${download.dir}/${jai.version}.tar.gz" dest="${expand.dir}/${jai.version}"/>
-    <untar src="${expand.dir}/${jai.version}/${jai.version}.tar" dest="${expand.dir}/${jai.version}"/>
-    <delete file="${expand.dir}/${jai.version}/${jai.version}.tar"/>
-  </target>
-
-  <target name="get.javamail" depends="init.get" unless="javamail.present">
-    <get src="${javamail.url}"
-         dest="${download.dir}/${javamail_version}.zip"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.javamail" depends="get.javamail" unless="javamail.expanded">
-    <unzip src="${download.dir}/${javamail_version}.zip" dest="${expand.dir}"/>
-  </target>
-
-  <target name="get.javaactivation" depends="init.get" unless="javaactivation.present">
-    <get src="${javaactivation.url}"
-         dest="${download.dir}/${javaactivation_version}.zip"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.javaactivation" depends="get.javaactivation" unless="javaactivation.expanded">
-    <unzip src="${download.dir}/${javaactivation_version}.zip" dest="${expand.dir}"/>
-  </target>
-
-  <target name="get.log4j" depends="init.get" unless="log4j.present">
-    <get src="${log4j.url}"
-         dest="${download.dir}/${log4j.fullversion}.tgz"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.log4j" depends="get.log4j" unless="log4j.expanded">
-    <gunzip src="${download.dir}/${log4j.fullversion}.tgz" dest="${expand.dir}/${log4j.fullversion}.tar"/>
-    <untar src="${expand.dir}/${log4j.fullversion}.tar" dest="${expand.dir}"/>
-    <delete file="${expand.dir}/${log4j.fullversion}.tar"/>
-  </target>
-
-
-  <target name="get.hsql" depends="init.get" unless="hsql.present">
-    <get src="${hsql.url}"
-         dest="${download.dir}/${hsql.version}.zip"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.hsql" depends="get.hsql" unless="hsql.expanded">
-    <mkdir dir="${expand.dir}/${hsql.version}"/>
-    <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
-  </target>
-
-  <target name="get.docbook-xsl" depends="init,init.get" unless="docbook-xsl.present">
-    <get src="${docbook-xsl.url}"
-         dest="${download.dir}/${docbook-xsl.file}"
-         verbose="on"
-      />
-  </target>
-
-  <target name="expand.docbook-xsl" depends="get.docbook-xsl" unless="docbook-xsl.expanded">
-    <gunzip src="${download.dir}/${docbook-xsl.file}" dest="${expand.dir}/${docbook-xsl.version}.tar"/>
-    <untar src="${expand.dir}/${docbook-xsl.version}.tar"        dest="${expand.dir}"/>
-    <delete file="${expand.dir}/${docbook-xsl.version}.tar"/>
-  </target>
-
-
-
 
   <!-- =================================================================== -->
   <!-- Clean the download directory                                        -->
@@ -1160,8 +1035,9 @@ Build-compiler: ${build.compiler}
     </ant>
   </target>
 
+
   <!-- only needed for builder.docs -->
-  <target name="doc.resources" depends="expand.docbook-xsl">
+  <target name="doc.resources" depends="init.get">
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt"
