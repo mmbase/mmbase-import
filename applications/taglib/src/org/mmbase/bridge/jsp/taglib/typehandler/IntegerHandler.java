@@ -20,12 +20,18 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class IntegerHandler extends AbstractTypeHandler {
+
+    private static Logger log = Logging.getLoggerInstance(IntegerHandler.class.getName());
+
 
     private DateHandler dateHandler;
 
@@ -42,7 +48,7 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-            
+
         StringBuffer buffer = new StringBuffer();
         if (field.getGUIType().equals("boolean")) {
             boolean value = false;
@@ -58,6 +64,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             buffer.append(" />\n");
             return buffer.toString();
         } else if (field.getGUIType().equals("types")) {
+            log.warn("Guitype 'types' is deprecated. Use 'typedef' instead.");
             buffer.append("<select name=\"");
             buffer.append(prefix(field.getName()));
             buffer.append("\">\n");
@@ -98,6 +105,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             }
             return buffer.toString();
         } else if (field.getGUIType().equals("reldefs")) {
+            log.warn("Guitype 'reldefs' is deprecated. Use 'reldef' instead.");
             buffer.append("<select name=\"");
             buffer.append(prefix(field.getName()));
             buffer.append("\">\n");
@@ -153,7 +161,7 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
-        
+
         String fieldName = field.getName();
         if (field.getGUIType().equals("boolean")) {
             String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
@@ -182,8 +190,6 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-
-        StringBuffer buffer = new StringBuffer();
         String guitype = field.getGUIType();
         String fieldName = field.getName();
         if (guitype.equals("eventtime")) {
@@ -195,7 +201,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             } else {
                 return super.whereHtmlInput(field);
             }
-        }  else if (guitype.equals("integer")) {
+        } else if (guitype.equals("integer")) {
             return super.whereHtmlInput(field);
         } else {
             EnumHandler eh = new EnumHandler(context, field.getGUIType());
@@ -203,10 +209,8 @@ public class IntegerHandler extends AbstractTypeHandler {
                 return eh.whereHtmlInput(field);
             }
         }
-
-        return buffer.toString();
-    }        
-
+        return null;
+    }
 
     private class IntegerDateHandler extends DateHandler {
             public IntegerDateHandler(FieldInfoTag context) {
@@ -221,5 +225,5 @@ public class IntegerHandler extends AbstractTypeHandler {
                 return y;
             }
     }
-    
+
 }
