@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.179 2002-11-05 23:23:05 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.180 2002-11-07 15:29:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -497,19 +497,20 @@ public class MMObjectBuilder extends MMTable {
 
         // This doesn't do anything...
         if (false) {
+            MultiConnection con = null;
+            Statement stmt = null;
             // do the query on the database
             try {
-                MultiConnection con=mmb.getConnection();
-                Statement stmt=con.createStatement();
+                con  = mmb.getConnection();
+                stmt = con.createStatement();
                 ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+","+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object;");
                 while(rs.next() && (obj2type.size()<OBJ2TYPE_MAX_SIZE)) {
                     obj2type.put(new Integer(rs.getInt(1)),new Integer(rs.getInt(2)));
                 }
-                stmt.close();
-                con.close();
-
             } catch (SQLException e) {
                 log.error(Logging.stackTrace(e));
+            } finally {
+                mmb.closeConnection(con, stmt);
             }
         }
         return;
@@ -728,6 +729,8 @@ public class MMObjectBuilder extends MMTable {
 	if(number < 0 ) throw new RuntimeException("node number was invalid("+number+")" );
 
         int otype=-1;
+        MultiConnection con = null;
+        Statement stmt2 = null;
         try {
             // first try our mega cache for the convert
             if (obj2type!=null) {
@@ -738,8 +741,8 @@ public class MMObjectBuilder extends MMTable {
             }
             if (otype==-1 || otype==0) {
                 // first get the otype to select the correct builder
-                MultiConnection con=mmb.getConnection();
-                Statement stmt2=con.createStatement();
+                con   = mmb.getConnection();
+                stmt2 = con.createStatement();
 		String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
                 ResultSet rs=stmt2.executeQuery(sql);
                 if (rs.next()) {
@@ -753,14 +756,13 @@ public class MMObjectBuilder extends MMTable {
 		    // duh a SQLException?
                     throw new SQLException("Could not find the otype(no records) using following query:"+sql);
                 }
-                stmt2.close();
-                con.close();
-            }
-        }
-        catch (SQLException e) {
+             }
+        } catch (SQLException e) {
             // something went wrong print it to the logs
             log.error(Logging.stackTrace(e));
             return -1;
+        } finally {
+            mmb.closeConnection(con,stmt2);
         }
         return otype;
    }
