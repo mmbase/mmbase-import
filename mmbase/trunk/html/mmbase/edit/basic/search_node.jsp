@@ -18,9 +18,11 @@
 <table summary="node editors" width="100%" class="super">
   <tr align="left">
     <th width="20%">
-      <mm:present referid="node_type"><a href="<mm:url page="search_node.jsp" />"><%=m.getString("search_node.search")%></mm:present>
-      <mm:notpresent referid="node_type"><%=m.getString("search_node.search")%></mm:notpresent>
-    </a>
+      <mm:present referid="node_type"><a href="<mm:url page="search_node.jsp" />"><%=m.getString("search_node.search")%></a></mm:present>
+      
+      <mm:notpresent referid="node_type">
+        <%=m.getString("search_node.search")%>
+      </mm:notpresent>
     
     (<mm:compare referid="config.liststyle" value="short" >
     <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">long</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showall")%></span></a>
