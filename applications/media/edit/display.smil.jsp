@@ -1,4 +1,4 @@
-<%
+<%-- Used by player --%><%
     response.setHeader("Content-Type", "application/smil");
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %>

@@ -1,4 +1,5 @@
-<%response.setHeader("Content-Type", "text/vnd.rn-realtext");
+<%-- Used by player --%><%
+response.setHeader("Content-Type", "text/vnd.rn-realtext");
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><window bgcolor="blue" link="gray" width="200" height="20">
 <mm:cloud>
