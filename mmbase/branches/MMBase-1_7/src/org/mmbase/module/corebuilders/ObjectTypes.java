@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.32 2004-01-08 15:20:26 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.32.2.1 2005-01-04 12:18:51 andre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -202,6 +202,7 @@ public class ObjectTypes extends TypeDef {
         return success;
     }
 
+    /*
     private void testBuilderInUse(MMObjectBuilder builder) {
         if (builder instanceof InsRel) {
             MMObjectNode reldef = mmb.getRelDef().getDefaultForBuilder((InsRel)builder);
@@ -218,7 +219,39 @@ public class ObjectTypes extends TypeDef {
             throw new RuntimeException("Cannot delete node which represents a builder, it is referenced by typerels: " + typerels);
         }
     }
+    */
 
+	/**
+	* Method copied from 1.8. Tests if a builder is still in use,
+	* f.e. still contains nodes, is referenced in reldef or is referenced by a typerel.
+	*
+	* @param builder The builder to remove
+	* @throws RuntimeException When the operation could not be performed
+	* 
+	*/
+    private void testBuilderInUse(MMObjectBuilder builder) {
+        if (builder == null) {
+            throw new RuntimeException("Cannot delete inactive builders (because it is unknown what the state of the table in the database is)");
+        } else if (builder.size() > 0) {
+            throw new RuntimeException("Cannot delete this builder, it still contains nodes");
+        } else {
+            if (builder instanceof InsRel) {
+                MMObjectNode reldef = mmb.getRelDef().getDefaultForBuilder((InsRel)builder);
+                if (reldef != null) {
+                    throw new RuntimeException("Cannot delete this builder, it is referenced in reldef #" + reldef.getNumber());
+                }
+            }
+            Enumeration e = mmb.getTypeRel().search("WHERE snumber=" + builder.oType + " OR dnumber=" + builder.oType);
+            if (e.hasMoreElements()) {
+                String typerels = "#" + ((MMObjectNode)e.nextElement()).getNumber();
+                while (e.hasMoreElements()) {
+                    typerels = typerels + ", #" + ((MMObjectNode)e.nextElement()).getNumber();
+                }
+                throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
+            }
+        }
+    }
+    
     /**
      * Remove a node from the cloud, when the represented builder was active
      * it will also be unloaded
@@ -230,12 +263,7 @@ public class ObjectTypes extends TypeDef {
 
         // only delete when builder is completely empty...
         MMObjectBuilder builder = getBuilder(node);
-        if (builder == null) {
-            throw new RuntimeException("I can only delete active builders(otherwise we table's could stay in database..)");
-        }
-        if (builder != null && builder.size() > 0) {
-            throw new RuntimeException("Cannot delete node which represents a builder, (otherwise information could get lost..)");
-        }
+        // and is not in use somewhere else (f.e. reldef, insrel)
         testBuilderInUse(builder);
         builder = unloadBuilder(node);
         // now that the builder cannot be started again (since config is now really missing)
