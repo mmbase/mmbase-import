@@ -28,6 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * If you want to have attributes which obtain the value from a
  * parameter, extend from this.
+ * It also contains a few other 'utily' functions, which can be handy when constructing tags.
  *
  * @author Michiel Meeuwissen 
  */
@@ -45,24 +46,37 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         contextId = c;
     }
     
+    /**
+     * Call this function in your set-attribute function. It makes it
+     * possible for the user of the taglib to prefix the attribute
+     * value with things like 'session:', 'param:' and of course with
+     * 'context:'.
+     *
+     */
 
     protected String getAttributeValue(String attribute) throws JspTagException {
         String attributeValue = attribute;
-        if (attribute.startsWith("param:")) {
+        if (attribute.startsWith("param:")) {        // interpret as parameter
             String param = attribute.substring(6);
             attributeValue = pageContext.getRequest().getParameter(param);
             if (attributeValue == null) {
                 throw new JspTagException("Parameter " + param + " could not be found");
             }
-        } else if (attribute.startsWith("session:")){
+        } else if (attribute.startsWith("session:")){ // interpret as key from session
             String param = attribute.substring(8);
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
             attributeValue = (String) req.getSession().getAttribute(param);
             if (attributeValue == null) {
                 throw new JspTagException("Session attribute " + param + " could not be found");
             }
-        } else if (attribute.startsWith("context:")) {
+        } else if (attribute.startsWith("context:")) { // interpret as key from context
             String param = attribute.substring(8);
+            attributeValue = getContextTag().getString(param);
+            if (attributeValue == null) {
+                throw new JspTagException("Context attribute " + param + " could not be found");
+            }
+        } else if (attribute.startsWith("key:")) {    // general, as a key, so from context.
+            String param = attribute.substring(4);
             attributeValue = getContextTag().getString(param);
             if (attributeValue == null) {
                 throw new JspTagException("Context attribute " + param + " could not be found");
@@ -72,29 +86,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return attributeValue;        
     }
 
-
     /**
-    * Simple util method to split comma separated values
-    * to a vector. Usefull for attributes.
-    * @param string the string to split
-    * @param delimiter
-    * @return a Vector containing the elements, the elements are also trimed
-    */
-
-    static public Vector stringSplitter(String attribute, String delimiter) { 
-        Vector retval = new Vector();
-        StringTokenizer st = new StringTokenizer(attribute, delimiter);
-        while(st.hasMoreTokens()){
-            retval.addElement(st.nextToken().trim());
-        }
-        return retval;
-    }
-
-    static public Vector stringSplitter(String string) {
-        return stringSplitter(string, ",");
-    }
-
-    
+     * Finds a parent tag by class and id.
+     *
+     * @param classname the classname of the Tag to find.
+     * @param id        the id of the Tag to find.
+     */
+   
     protected TagSupport findParentTag(String classname, String id) throws JspTagException {
         
         Class clazz ;
@@ -122,11 +120,42 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     }
 
+    /**
+     * Finds the parent context tag.
+     */
+
     protected ContextTag getContextTag() throws JspTagException {
         if (contextTag == null) {
             contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextId);
         }
         return contextTag;
     }
+
+
+    // --------------------------------------------------------------------------------
+    // utils
+    
+    /**
+    * Simple util method to split comma separated values
+    * to a vector. Usefull for attributes.
+    * @param string the string to split
+    * @param delimiter
+    * @return a Vector containing the elements, the elements are also trimed
+    */
+
+    static public Vector stringSplitter(String attribute, String delimiter) { 
+        Vector retval = new Vector();
+        StringTokenizer st = new StringTokenizer(attribute, delimiter);
+        while(st.hasMoreTokens()){
+            retval.addElement(st.nextToken().trim());
+        }
+        return retval;
+    }
+
+    static public Vector stringSplitter(String string) {
+        return stringSplitter(string, ",");
+    }
+
+
 
 }
