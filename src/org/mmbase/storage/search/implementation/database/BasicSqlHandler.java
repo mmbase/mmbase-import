@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -313,15 +313,13 @@ public class BasicSqlHandler implements SqlHandler {
                         append(getAllowedValue(relationAlias)).
                         append(".").
                         append(getAllowedValue("snumber"));
-                        if (relationStep.getRole() != null) {
+                        if (relationStep.getCheckedDirectionality()) {
                             sbRelations.append(" AND ").
                             append(getAllowedValue(relationAlias)).
                             append(".").
-                            append(getAllowedValue("rnumber")).
-                            append("=").
-                            append(relationStep.getRole());
+                            append(getAllowedValue("dir")).
+                            append("<>1");
                         }
-                        sbRelations.append(")");
                         break;
                         
                     case RelationStep.DIRECTIONS_DESTINATION:
@@ -341,15 +339,6 @@ public class BasicSqlHandler implements SqlHandler {
                         append(getAllowedValue(relationAlias)).
                         append(".").
                         append(getAllowedValue("dnumber"));
-                        if (relationStep.getRole() != null) {
-                            sbRelations.append(" AND ").
-                            append(getAllowedValue(relationAlias)).
-                            append(".").
-                            append(getAllowedValue("rnumber")).
-                            append("=").
-                            append(relationStep.getRole());
-                        }
-                        sbRelations.append(")");
                         break;
                         
                     case RelationStep.DIRECTIONS_BOTH:
@@ -368,8 +357,15 @@ public class BasicSqlHandler implements SqlHandler {
                         append("=").
                         append(getAllowedValue(relationAlias)).
                         append(".").
-                        append(getAllowedValue("snumber")).
-                        append(") OR (").
+                        append(getAllowedValue("snumber"));
+                        if (relationStep.getCheckedDirectionality()) {
+                            sbRelations.append(" AND ").
+                            append(getAllowedValue(relationAlias)).
+                            append(".").
+                            append(getAllowedValue("dir")).
+                            append("<>1");
+                        }
+                        sbRelations.append(") OR (").
                         append(getAllowedValue(previousAlias)).
                         append(".").
                         append(getAllowedValue("number")).
@@ -386,21 +382,21 @@ public class BasicSqlHandler implements SqlHandler {
                         append(".").
                         append(getAllowedValue("dnumber")).
                         append(")");
-                        if (relationStep.getRole() != null) {
-                            sbRelations.append(" AND ").
-                            append(getAllowedValue(relationAlias)).
-                            append(".").
-                            append(getAllowedValue("rnumber")).
-                            append("=").
-                            append(relationStep.getRole());
-                        }
-                        sbRelations.append(")");
                         break;
                         
                     default: // Invalid directionality value.
                         throw new IllegalStateException(
                         "Invalid directionality value: " + relationStep.getDirectionality());
                 }
+                if (relationStep.getRole() != null) {
+                    sbRelations.append(" AND ").
+                    append(getAllowedValue(relationAlias)).
+                    append(".").
+                    append(getAllowedValue("rnumber")).
+                    append("=").
+                    append(relationStep.getRole());
+                }
+                sbRelations.append(")");
             }
         }
         
