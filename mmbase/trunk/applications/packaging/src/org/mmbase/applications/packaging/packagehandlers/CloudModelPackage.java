@@ -272,6 +272,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
             installStep substep = step.getNextInstallStep();
             substep.setUserFeedBack("checking allowed relation " + from + " " + to + " " + type + "..");
+            if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+".. allowed relation " + from + " " + to + " " + type);
             if (installTypeRel(from, to, type, -1)) {
                 substep.setUserFeedBack("checking allowed relation " + from + " " + to + " " + type + ".. installed");
             } else {
@@ -300,6 +301,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
             installStep substep = step.getNextInstallStep();
             substep.setUserFeedBack("checking builder " + name + " ..");
+            if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+"..checking builder "+ name);
 
             MMBase mmb = MMBase.getMMBase();
 
@@ -411,6 +413,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
         if (reldef != null) {
             installStep substep = step.getNextInstallStep();
             substep.setUserFeedBack("checking reldef " + sname + "/" + dname + " ..");
+            if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+"..checking reldef " + sname + "/" + dname + " ..");
             if (reldef.getNumberByName(sname + "/" + dname) == -1) {
                 MMObjectNode node = reldef.getNewNode("system");
                 node.setValue("sname", sname);

@@ -808,5 +808,9 @@ public class BasicPackage implements PackageInterface {
         return (int) progressbar;
     }
 
+    public installStep getBundleStep() {
+	return bundlestep;
+    }
+
 }
 

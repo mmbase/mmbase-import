@@ -60,6 +60,7 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
             // step 2
             step = getNextInstallStep();
             step.setUserFeedBack("receiving package ..");
+	    if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+"..receiving package");
             JarFile jf = getJarFile();
             if (jf != null) {
                 step.setUserFeedBack("receiving package ... done (" + jf + ")");
@@ -189,9 +190,11 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
                         substep.setUserFeedBack("creating dir : " + htmldir + name + ".. done");
                     }
                 } else {
+        	    step.setUserFeedBack("installing html pages .. "+name);
+		    if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+".. "+name);
                     substep.setUserFeedBack("creating file : " + htmldir + name + ".. ");
                     try {
-                        InputStream in = jf.getInputStream(zippy);
+                        BufferedInputStream in = new BufferedInputStream(jf.getInputStream(zippy));
                         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(htmldir + name));
                         int val;
                         while ((val = in.read()) != -1) {
