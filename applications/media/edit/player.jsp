@@ -1,12 +1,12 @@
-<!&#68;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" %><?xml version="1.0" encoding="UTF-8"?>
+<mm:content language="$config.lang" type="text/html" expires="0">
 <html>
 <head>
 <mm:import externid="fragment" required="true" />
 <mm:import externid="forceplayer" />
-<mm:locale language="$config.lang">
 
 <title>[ STREAM ]</title>
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
@@ -126,6 +126,7 @@
 <!--
 preferred player: <mm:write referid="config.player" /><br />
 used source:      <mm:write referid="source" /> <br />
+used fragment:      <mm:field name="number" /> <br />
 used player:      <mm:write referid="player" /><br />
 mimetype:      <mm:field name="mimetype()" /><br />
 mimetype:      <mm:field name="contenttype()" /><br />
@@ -148,5 +149,5 @@ format:      <mm:field name="format(ram,wmf)" /><br />
 </mm:notpresent>
 </mm:cloud>
 </body>
-</mm:locale>
 </html>
+</mm:content>

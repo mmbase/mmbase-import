@@ -2,15 +2,17 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page import="java.util.*"
 %><%@include file="../config/read.jsp" %>
-<mm:locale language="$config.lang"><mm:cloud jspvar="cloud" method="asis"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<mm:content type="text/html" expires="0" language="$config.lang">
+<mm:cloud jspvar="cloud" method="asis">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-   <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
-   <link href="../style/streammanager.css" type="text/css" rel="stylesheet" />
-<script src="<mm:url page="../style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
-<head>
+  <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
+  <link href="../style/streammanager.css" type="text/css" rel="stylesheet" />
+  <script src="<mm:url page="../style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
+</head>
 
-<mm:import externid="origin">media.myfragments</mm:import>
+<mm:import externid="origin" />
 <mm:import externid="type">mediafragments</mm:import>
 <mm:import externid="owner"      />
 <mm:import externid="searchvalue"/>
@@ -19,29 +21,48 @@
 
 <body  onload="init('search');">
   <table>
-    <tr><th colspan="3">Result of type <mm:nodeinfo nodetype="$type" type="guitype" /></th></tr> 
+    <tr>
+      <th colspan="3">
+        Result of type <mm:nodeinfo nodetype="$type" type="guitype" />
+        <mm:node number="$config.mediaeditors_origin" notfound="skip"> - <mm:field name="name" /></mm:node>
+        <mm:write referid="origin">
+          <mm:isnotempty>
+          - <mm:node number="$origin"><mm:field name="name" /></mm:node>
+          </mm:isnotempty>
+        </mm:write>
+      </th>
+    </tr> 
     <tr><th>Titel</th><th>Items en URL's</th><th><%=m.getString("owner")%></th></tr>
-    <mm:listnodescontainer path="pools,$type" element="$type">
+    <mm:node number="media.allstreams">
+    <mm:relatednodescontainer path="parent,pools1,parent,pools2,$type" element="$type" searchdirs="destination,destination,destination">
       <mm:maxnumber value="$max" />
       <mm:offset    value="$offset" />
       <mm:write referid="origin">
         <mm:isnotempty>
-          <mm:constraint field="pools.number" value="$_" />
-       </mm:isnotempty>
+          <mm:constraint field="pools2.number" value="$_" />
+        </mm:isnotempty>
+        <mm:isempty>
+          <mm:isnotempty referid="config.mediaeditors_origin">
+            <mm:constraint field="pools1.number" value="$config.mediaeditors_origin" />
+          </mm:isnotempty>
+        </mm:isempty>
       </mm:write>
       <mm:constraint field="owner" operator="LIKE" value="%$owner%" />
       <mm:composite operator="OR">
-        <mm:constraint field="title" operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="pools2.name"    operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="pools2.description" operator="LIKE" value="%$searchvalue%" />
+
+        <mm:constraint field="title"    operator="LIKE" value="%$searchvalue%" />
         <mm:constraint field="subtitle" operator="LIKE" value="%$searchvalue%" />
-        <mm:constraint field="intro" operator="LIKE" value="%$searchvalue%" />
-        <mm:constraint field="body" operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="intro"    operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="body"     operator="LIKE" value="%$searchvalue%" />
       </mm:composite>
       <mm:sortorder  field="number" direction="down" />
-      <mm:listnodes id="fragment">
+      <mm:relatednodes id="fragment">
         <mm:nodeinfo id="actualtype" type="type" write="false" />
         <tr class="view">
           <td>
-            <img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /> <mm:field name="gui()" /> 
+            <img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /> <mm:nodeinfo type="gui" /> 
           </td>
           <td>      
             <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
@@ -64,7 +85,7 @@
             <mm:field name="owner" />
           </td>
         </tr>
-      </mm:listnodes>
+      </mm:relatednodes>
       <tr class="view">
         <td colspan="100">
           <mm:context>
@@ -84,7 +105,8 @@
           </mm:context>
         </td>
       </tr>
-    </mm:listnodescontainer>
+    </mm:relatednodescontainer>
+    </mm:node>
   </table>
   <!-- p id="colofon">
     <img src="../images/mmbase.png" />
@@ -92,4 +114,4 @@
 </body>
 </html>
 </mm:cloud>
-</mm:locale>
+</mm:content>

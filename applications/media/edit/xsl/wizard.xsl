@@ -83,8 +83,8 @@
             <xsl:apply-templates select="/*/steps-validator" />
           </table>
         </td>
-        <td valign="top" width="100%">
-          <table width="100%">
+        <td>
+          <table>
             <xsl:apply-templates select="form[@id=/wizard/curform]" />
           </table>
         </td>
@@ -97,9 +97,7 @@
     <tr>
       <td>
         <xsl:for-each select="step">
-          <p class="step">
-            <xsl:call-template name="steptemplate" />
-          </p>
+            <xsl:call-template name="steptemplate" /> <br />
         </xsl:for-each>
       </td>
     </tr>
@@ -119,15 +117,9 @@
     <tr>
       <td colspan="2">
         <hr />
-        <p>
-          <xsl:call-template name="cancelbutton" />
-        </p>
-        <p>
-          <xsl:call-template name="savebutton" />
-        </p>
-        <p>
-          <xsl:call-template name="saveonlybutton" />
-        </p>
+        <xsl:call-template name="cancelbutton" /><br />
+        <xsl:call-template name="savebutton" /><br />
+		<xsl:call-template name="saveonlybutton" /> 
       </td>
     </tr>    
   </xsl:template>
