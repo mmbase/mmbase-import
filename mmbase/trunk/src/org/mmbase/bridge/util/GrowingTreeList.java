@@ -13,6 +13,7 @@ package org.mmbase.bridge.util;
 import java.util.Iterator;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.2 2004-02-11 20:43:22 keesj Exp $
+ * @version $Id: GrowingTreeList.java,v 1.3 2004-06-17 11:35:50 johannes Exp $
  * @since   MMBase-1.7
  */
 
@@ -75,7 +76,36 @@ public  class GrowingTreeList extends TreeList {
         if (numberOfSteps + 2  > maxNumberOfSteps) {
             foundEnd = true;
         } else {
-            grow(pathElement.nodeManager, pathElement.role, pathElement.searchDir);
+            RelationStep step = grow(pathElement.nodeManager, pathElement.role, pathElement.searchDir);
+            if (step != null) {
+                // add sortorder to the query
+                Step nextStep = step.getNext();
+
+                // Step doesn't have a .getQuery() method, so we'll have to fall back to this:
+                Query newQuery = (Query)queries.get(queries.size() - 1);
+
+                if (pathElement.sortFieldRelation != null && !"".equals(pathElement.sortFieldRelation)) {
+                    if (pathElement.sortOrderRelation != SortOrder.ORDER_ASCENDING && pathElement.sortOrderRelation != SortOrder.ORDER_DESCENDING)
+                        pathElement.sortOrderRelation = SortOrder.ORDER_DESCENDING;
+                    StepField sf1 = newQuery.createStepField(step, pathElement.sortFieldRelation);
+                    newQuery.addSortOrder(sf1, pathElement.sortOrderRelation);
+                }
+
+                if (pathElement.sortFieldNodes != null && !"".equals(pathElement.sortFieldNodes)) {
+                    if (pathElement.sortOrderNodes != SortOrder.ORDER_ASCENDING && pathElement.sortOrderNodes != SortOrder.ORDER_DESCENDING)
+                        pathElement.sortOrderNodes = SortOrder.ORDER_DESCENDING;
+
+                    StepField sf2 = newQuery.createStepField(nextStep, pathElement.sortFieldNodes);
+                    newQuery.addSortOrder(sf2, pathElement.sortOrderNodes);
+                }
+                
+                // Always add a sort on number fields, because the sort order
+                // needs to be unique and consistent every time
+                StepField sf1 = newQuery.createStepField(step, "number");
+                newQuery.addSortOrder(sf1, SortOrder.ORDER_DESCENDING);
+                StepField sf2 = newQuery.createStepField(nextStep, "number");
+                newQuery.addSortOrder(sf2, SortOrder.ORDER_DESCENDING);
+            }
         }
     }
 
@@ -84,12 +114,29 @@ public  class GrowingTreeList extends TreeList {
         String      role;
         String      searchDir;
         String      fields;
-        String      sortOrders;
+        String      sortFieldNodes = null;
+        int         sortOrderNodes = 0;
+        String      sortFieldRelation = null;
+        int         sortOrderRelation = 0;
 
         public PathElement(NodeManager nm, String r, String sd) {
             nodeManager = nm;
             role = r;
             searchDir = sd;
+        }
+
+        public PathElement(NodeManager nm, String r, String sd, String so, int sdir) {
+            nodeManager = nm;
+            role = r;
+            searchDir = sd;
+            if (so != null && so.startsWith(r + ".")) {
+                // Change 'posrel.pos' to 'pos'
+                sortFieldRelation = so.substring(r.length() + 1, so.length());
+                sortOrderRelation = sdir;
+            } else {
+                sortFieldNodes = so;
+                sortOrderNodes = sdir;
+            }
         }
     }
 
@@ -108,10 +155,5 @@ public  class GrowingTreeList extends TreeList {
             Node n = (Node) i.next();
             System.out.println(n.toString());
         }
-
-        
-        
     }
-
-
 }
