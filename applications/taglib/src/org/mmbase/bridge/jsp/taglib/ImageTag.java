@@ -81,15 +81,11 @@ public class ImageTag extends FieldTag {
         }
 
 
-        //String thisDir = 
-        //log.info("making relative " + thisDir + " to /");
-        String root    = UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/");
-
         String servletPath;
         {
             Arguments args = new Arguments(AbstractServletBuilder.SERVLETPATH_ARGUMENTS)
                 .set("session",  sessionName)
-                .set("context",  root)
+                .set("context",  UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/"))
                 .set("argument", number)
                 ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
