@@ -42,7 +42,7 @@
 
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header" colspan="2"><%= cache.getDescription() %> Status</th>
+  <th class="header" colspan="2"><%= cache.getDescription() %> Cache Status</th>
 </tr>
 <tr>
   <td class="data" colspan="2">
@@ -62,7 +62,7 @@
 
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header"><%= cache.getDescription() %> Property</th>
+  <th class="header"><%= cache.getDescription() %> Cache Property</th>
   <th class="header">Value</th>
 </tr>
 <tr>
@@ -98,40 +98,6 @@
 
 %>
 
-
-
-
-<tr><td>&nbsp;</td></tr>
-<tr align="left">
-  <th class="header">Node Cache Property</th>
-  <th class="header">Value</th>
-</tr>
-<tr>
-  <td class="data">Requests</td>
-  <td class="data"><%=mmAdmin.getInfo("NODECACHEREQUESTS",request,response)%></td>
-</tr>
-<tr>
-  <td class="data">Hits</td>
-  <td class="data"><%=mmAdmin.getInfo("NODECACHEHITS",request,response)%></td>
-</tr>
-<tr>
-  <td class="data">Misses</td>
-  <td class="data"><%=mmAdmin.getInfo("NODECACHEMISSES",request,response)%></td>
-</tr>
-<tr>
-  <td class="data">Size</td>
-  <td class="data"><%=mmAdmin.getInfo("NODECACHESIZE",request,response)%></td>
-</tr>
-<tr>
-  <td class="data">Performance</td>
-  <td class="data"><%=mmAdmin.getInfo("NODECACHEPERFORMANCE",request,response)%></td>
-</tr>
-<tr>
-  <td class="data">Show first 1000 entry's of the cache</td>
-  <td class="navigate">
-    <a href="cache/nodecache.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
-  </td>
-</tr>
 
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
