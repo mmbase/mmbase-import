@@ -56,7 +56,7 @@ NetComponents can be found at:
 ============================================================================ -->
 
 <project name="MMBase" default="usage" basedir=".">
-
+  
   <!-- =================================================================== -->
   <!-- Init                                                                -->
   <!-- =================================================================== -->
@@ -74,21 +74,22 @@ NetComponents can be found at:
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="distro"      value="MMBase 1.6.0"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="source-config.dir" location="${source.dir}/config"/>
-  <property name="source-html.dir" location="${source.dir}/html"/>
-  <property name="source-documentation.dir" location="${source.dir}/documentation" />
-  <property name="source-src.dir" location="${source.dir}/src"/>
-  <property name="source-taglib.xml" location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
-  <property name="source-community.xml" location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
-  <property name="xml2tld"  location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
-  <property name="xml2html" location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
-  <property name="webapp.dir" value="${build.dir}/mmbase/mmbase-webapp"/>
-  <property name="mmdocs.dir" value="${webapp.dir}/mmdocs"/>
-  <property name="reference.dir" value="${webapp.dir}/mmdocs/reference"/>
-  <property name="web.dir" value="${webapp.dir}/WEB-INF"/>
-  <property name="release.lib.dir" value="${web.dir}/lib"/>
-  <property name="compile.lib.dir" value="${build.dir}/lib"/>
-  <property name="mmbase.jar" value="${release.lib.dir}/mmbase.jar"/>
+  <property name="source-config.dir"    location="${source.dir}/config"/>
+  <property name="source-html.dir"      location="${source.dir}/html"/>
+  <property name="source-documentation.dir" 
+                                        location="${source.dir}/documentation" />
+  <property name="source-src.dir"       location="${source.dir}/src"/>
+  <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
+  <property name="source-community.xml" value="org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
+  <property name="xml2tld"              value="org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+  <property name="xml2html"             value="org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+  <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
+  <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
+  <property name="reference.dir"        value="${webapp.dir}/mmdocs/reference"/>
+  <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
+  <property name="release.lib.dir"      value="${web.dir}/lib"/>
+  <property name="compile.lib.dir"      value="${build.dir}/lib"/>
+  <property name="mmbase.jar"           value="${release.lib.dir}/mmbase.jar"/>
 
   <target name="init" depends="check.dir.all">
     <tstamp/>
@@ -377,6 +378,10 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <target name="compile" description="Compile the source directory"
      depends="compile.local,compile.remote">
+  </target>
+
+  <target name="build"   description="Compile and generate tld's"
+     depends="taglib.tld,community.tld,compile" >
   </target>
   <!-- =================================================================== -->
   <!-- Compile the source directory (exclude remote)                       -->
@@ -715,7 +720,7 @@ Distribution: ${distro}
 
   <target name="taglib.tld.check">    
     <uptodate property="taglib.tld.uptodate" targetfile="${web.dir}/mmbase-taglib.tld" >
-      <srcfiles dir="." includes="${source-taglib.xml},${xml2tld}" />
+      <srcfiles dir="${source-src.dir}" includes="${source-taglib.xml},${xml2tld}" />
     </uptodate>
   </target>
 
@@ -731,17 +736,17 @@ Distribution: ${distro}
       <arg value="-XML"/>
       <arg value="-DIAG"/>
       <arg value="-IN"/>
-      <arg value="file:///${source-taglib.xml}" />
+      <arg value="file:///${source-src.dir}/${source-taglib.xml}" />
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
-      <arg value="${xml2tld}" />
+      <arg value="${source-src.dir}/${xml2tld}" />
     </java>
   </target>
 
   <target name="taglib.doc.check">
     <uptodate property="taglib.doc.uptodate" targetfile="${reference.dir}/mmbase-taglib.html" >
-      <srcfiles dir="." includes="${source-taglib.xml},${xml2html}" />
+      <srcfiles dir="${source-src.dir}" includes="${source-taglib.xml},${xml2html}" />
     </uptodate>
   </target>
 
@@ -762,9 +767,9 @@ Distribution: ${distro}
       <arg value="files"/>
       <arg value="taglib" />
       <arg value="-XSL"/>
-      <arg value="${xml2html}" />
+      <arg value="${source-src.dir}/${xml2html}" />
       <arg value="-IN"/>
-      <arg value="file:///${source-taglib.xml}" />
+      <arg value="file:///${source-src.dir}/${source-taglib.xml}" />
       <arg value="-OUT"/>
       <arg value="${reference.dir}/mmbase-taglib.html"/>
     </java>
@@ -772,7 +777,7 @@ Distribution: ${distro}
 
   <target name="community.tld.check">
     <uptodate property="community.tld.uptodate" targetfile="${web.dir}/mmcommunity-taglib.tld" >
-      <srcfiles dir="." includes="${source-community.xml},${xml2tld}" />
+      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2tld}" />
     </uptodate>
   </target>
 
@@ -787,18 +792,18 @@ Distribution: ${distro}
       <arg value="-Q"/>
       <arg value="-DIAG"/>
       <arg value="-IN"/>
-      <arg value="file:///${source-community.xml}"/>
+      <arg value="file:///${source-src.dir}/${source-community.xml}"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmcommunity-taglib.tld"/>
       <arg value="-XSL"/>
-      <arg value="${xml2tld}" />
+      <arg value="${source-src.dir}/${xml2tld}" />
     </java>
   </target>
 
 
   <target name="community.doc.check">
     <uptodate property="community.doc.uptodate" targetfile="${reference.dir}/mmcommunity-taglib.html" >
-      <srcfiles dir="." includes="${source-community.xml},${xml2html}" />
+      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2html}" />
     </uptodate>
   </target>
 
@@ -813,7 +818,7 @@ Distribution: ${distro}
           failonerror="yes">
       <arg value="-DIAG"/>
       <arg value="-IN"/>
-      <arg value="file:///${source-community.xml}"/>
+      <arg value="file:///${source-src.dir}/${source-community.xml}" />
       <arg value="-PARAM"/>
       <arg value="basedir"/>
       <arg value="${reference.dir}"/>
@@ -823,7 +828,7 @@ Distribution: ${distro}
       <arg value="-OUT"/>
       <arg value="${reference.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
-      <arg value="${xml2html}" />
+      <arg value="${source-src.dir}/${xml2html}" />
     </java>
   </target>
 
