@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.156 2002-09-30 16:19:00 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.157 2002-10-02 21:19:53 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -163,7 +163,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Default output when no data is available to determine a node's GUI description
      */
-    String GUIIndicator="no info";
+    static String GUI_INDICATOR = "no info";
 
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
      */
@@ -850,7 +850,6 @@ public class MMObjectBuilder extends MMTable {
                     node=new MMObjectNode(bu);
                     ResultSetMetaData rd=rs.getMetaData();
                     String fieldname;
-                    String fieldtype;
                     for (int i=1;i<=rd.getColumnCount();i++) {
                         fieldname=rd.getColumnName(i);
                         node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
@@ -1099,6 +1098,9 @@ public class MMObjectBuilder extends MMTable {
         MultiConnection con=null;
         Statement stmt=null;
         Vector results;
+        if (log.isDebugEnabled()) {
+            log.debug("query: " + query);
+        }
         try {
             con = mmb.getConnection();
             stmt = con.createStatement();
@@ -1438,10 +1440,8 @@ public class MMObjectBuilder extends MMTable {
                 node = new MMObjectNode(this);
                 ResultSetMetaData rd=rs.getMetaData();
                 String fieldname;
-                String fieldtype;
                 for (int i=1;i<=rd.getColumnCount();i++) {
-                    fieldname=rd.getColumnName(i);
-                    //fieldtype=rd.getColumnTypeName(i);
+                    fieldname = rd.getColumnName(i);
                     node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
                 }
 		// maybe we retrieved the wrong type of node, if so,.. retrieve the correct one!
@@ -1458,17 +1458,21 @@ public class MMObjectBuilder extends MMTable {
 			    log.debug("object #" + node.getNumber() + " was of type: " + node.getOType() + " while we searched for type: " + oType + " class was: " + getClass().getName());
 			}
                         MMObjectBuilder builder = mmb.getBuilder(getNode(node.getOType()).getStringValue("name"));
-                        MMObjectNode found = builder.getNode(node.getNumber());
-                        if(found != null) {
-                            node = found;
-                        }
-                        else {
-                            String msg = "could not resolve the nodetype, for the node found which was found.." + node;
-                            log.fatal(msg);
-                            throw new RuntimeException(msg);
+                        if (builder == null) {
+                            log.error("Could not find 'real' builder of node " + node.getNumber() + " (otype=" + node.getOType() + "), so it cannot be casted");
+                            node.setValue("otype", oType);
+                        } else {
+                            MMObjectNode found = builder.getNode(node.getNumber());
+                            if(found != null) {
+                                node = found;
+                            } else {
+                                String msg = "could not resolve the nodetype, for the node found which was found.." + node;
+                                log.fatal(msg);
+                                throw new RuntimeException(msg);
+                            }
                         }
                     } else if(log.isDebugEnabled()) {
-			log.info("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
+			log.debug("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
 		    }
                 }
 
@@ -1598,6 +1602,7 @@ public class MMObjectBuilder extends MMTable {
         // note: sortedDBLayout is deprectated
         // sortedDBLayout=new Vector();
         setDBLayout_xml(fields);
+        // log.service("currently fields: " + fields);
     }
 
     /**
@@ -1688,15 +1693,16 @@ public class MMObjectBuilder extends MMTable {
         // do the best we can because this method was not implemeted
         // we get the first field in the object and try to make it
         // to a string we can return
-        if (sortedDBLayout.size()>2) {
-            String fname=(String)sortedDBLayout.elementAt(2);
+        Vector list = getSortedListFields();
+        if (list.size() > 0) {
+            String fname = ((FieldDefs) list.get(0)).getDBName();
             String str = node.getStringValue( fname );
-            if (str.length()>128) {
-                return str.substring(0,128)+"...";
+            if (str.length() > 128) {
+                return str.substring(0, 128) + "...";
             }
             return str;
         } else {
-            return GUIIndicator;
+            return GUI_INDICATOR;
         }
     }
 
@@ -1820,36 +1826,45 @@ public class MMObjectBuilder extends MMTable {
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
-    public Object getValue(MMObjectNode node,String field) {
-        Object rtn=null;
-        int pos2,pos1=field.indexOf('(');
-        String name,function,val;
-        if (pos1!=-1) {
-            pos2=field.lastIndexOf(')');
-            if (pos2!=-1) {
-                name=field.substring(pos1+1,pos2);
-                function=field.substring(0,pos1);
-                if (log.isDebugEnabled()) {
-                    log.debug("function= "+function+", fieldname ="+name);
-                }
-                rtn = executeFunction(node, function, name);
-            }
-        }
+    public Object getValue(MMObjectNode node, String field) {
+        Object rtn = getObjectValue(node, field);
+        
         // Old code
         if (field.indexOf("short_")==0) {
-            val=node.getStringValue(field.substring(6));
+            String val=node.getStringValue(field.substring(6));
             val=getShort(val,34);
             rtn=val;
         }  else if (field.indexOf("html_")==0) {
-            val=node.getStringValue(field.substring(5));
+            String val=node.getStringValue(field.substring(5));
             val=getHTML(val);
             rtn=val;
         } else if (field.indexOf("wap_")==0) {
-            val=node.getStringValue(field.substring(4));
+            String val=node.getStringValue(field.substring(4));
             val=getWAP(val);
             rtn=val;
         }
         // end old
+        return rtn;
+    }
+    /**
+     * Like getValue, but without the 'old' code.
+     * @since MMBase-1.6
+     */
+
+    protected Object getObjectValue(MMObjectNode node, String field) {
+        Object rtn = null;
+        int pos1 = field.indexOf('(');
+        if (pos1 != -1) {
+            int pos2 = field.lastIndexOf(')');
+            if (pos2 != -1) {
+                String name     = field.substring(pos1 + 1, pos2);
+                String function = field.substring(0, pos1);
+                if (log.isDebugEnabled()) {
+                    log.debug("function= " + function + ", fieldname =" + name);
+                }                
+                rtn = getFunctionValue(node, function, getFunctionParameters(name));
+            }
+        }
         return rtn;
     }
 
@@ -1859,7 +1874,7 @@ public class MMObjectBuilder extends MMTable {
 
     protected Vector getFunctionParameters(String fields) {
         int commapos=0;
-        int nested=0;
+        int nested  =0;
         Vector v= new Vector();
         int i;
         if (log.isDebugEnabled()) log.debug("Fields=" + fields);
@@ -1886,41 +1901,64 @@ public class MMObjectBuilder extends MMTable {
     /**
      * @since MMBase-1.6
      */
+    final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
 
-    public Object executeFunction(MMObjectNode node, String function, List arguments) {
-        if (log.isDebugEnabled()) { 
-            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
-        }
-        
-        // For backwards compatibility we call the old executeFunction
-        // for the simple cases.
         Object rtn = null;
         if (arguments == null) arguments = new Vector();
-        if (arguments.size() == 0) {
-            rtn =  executeFunction(node, function, "");
-            if (rtn != null) return rtn;
-        } 
+        // for backwards compatibility
         if (arguments.size() == 1 && arguments.get(0) instanceof String) {
             rtn =  executeFunction(node, function, (String) arguments.get(0));
             if (rtn != null) return rtn;
         }
-        if (function.equals("wrap")) {       
+        return executeFunction(node, function, arguments);
+
+    }
+
+    /**
+     * @since MMBase-1.6
+     * @throw IllegalArgumentException if the argument List does not fit the function
+     */
+
+    protected Object executeFunction(MMObjectNode node, String function, List arguments) {
+        if (log.isDebugEnabled()) { 
+            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
+        }
+        
+
+        if (function.equals("info")) {
+            Map info = new HashMap();
+            info.put("wrap", "bla bla");
+            info.put("gui",  "(field, session, language) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+            info.put("html",  "(field), XHTML escape the field");
+            info.put("substring", "bla bla");
+            info.put("smartpath", "bla bla");
+            info.put("bla bla", "bla bla");
+            if (arguments == null || arguments.size() == 0) {
+                return info;
+            } else {
+                return info.get(arguments.get(0));
+            }            
+        } else if (function.equals("wrap")) {       
             try {
                 String val  = node.getStringValue((String)arguments.get(0));
                 int wrappos = Integer.parseInt((String)arguments.get(1));
                 return wrap(val, wrappos);
             } catch(Exception e) {}
         } else if (function.equals("substring")) {
+            if (arguments.size() < 2) throw new IllegalArgumentException("substring function needs 2 or 3 arguments (currenty:" + arguments.size() + " : "  + arguments + ")");
             try {
                 String val = node.getStringValue((String)arguments.get(0));
                 int len    = Integer.parseInt((String)arguments.get(1));
                 if (arguments.size() > 2) {
                     String filler = (String)arguments.get(2);
-                    rtn = substring(val, len, filler);
+                    return substring(val, len, filler);
                 } else {
-                    rtn = substring(val, len, null);
+                    return substring(val, len, null);
                 }
-            } catch(Exception e) {}
+            } catch(Exception e) {
+                log.debug(Logging.stackTrace(e));
+                return e.toString();
+            }
         } else if (function.equals("smartpath")) {
             try {
                 String documentRoot = (String) arguments.get(0);
@@ -1931,49 +1969,17 @@ public class MMObjectBuilder extends MMTable {
                         version = null;
                     }
                 }
-                rtn = getSmartPath(documentRoot, path, "" + node.getNumber(), version);
+                return getSmartPath(documentRoot, path, "" + node.getNumber(), version);
             } catch(Exception e) {
                 log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
             }
-        } else if (function.equals("sgui")) {
-            // 'ServletBuilders' can need a first argument (to store a reference to a logged-on
-            // cloud). Other builders could simply give gui().
-            // See AbstractServletBuilder.            
-            if (arguments.size() < 2) {
-                if (arguments.size() == 0) arguments.add("");
-                rtn = executeFunction(node, "gui", arguments);
-            } else {
-                rtn = executeFunction(node, "gui", arguments.subList(1, arguments.size()));
-            }
-        } else { // still not found!, try 'subfnctions'
-            if (arguments.size() == 1 && arguments.get(0) instanceof String) {
-                List args = getFunctionParameters((String) arguments.get(0));
-                if (args.size() != 1) rtn = executeFunction(node, function, args);
-            }
-            if (rtn == null) log.warn("Builder ("+tableName+") unknown function '"+function+"'");
-        }
-        return rtn;
-    }
-
-    /**
-     * Executes a function on the field of a node, and returns the result.
-     * This method is called by the builder's {@link #getValue} method.
-     * Derived builders should override this method to provide additional functions.
-     *
-     * current functions are:<br />
-     * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
-     * on text:  wap, html, shorted, uppercase, lowercase <br />
-     * on node:  age() <br />
-     * on numbers: wrap_&lt;int&gt;, currency_euro <br />
-     *
-     * @param node the node whose fields are queries
-     * @param field the fieldname that is requested
-     * @return the result of the 'function', or null if no valid functions could be determined.
-     */
-    protected Object executeFunction(MMObjectNode node, String function, String field) {
-
-        if (log.isDebugEnabled()) { 
-            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + field);
+        } 
+        
+        String field;
+        if (arguments.size() == 0) {
+            field = "";
+        } else {
+            field = (String) arguments.get(0);
         }
 
         // time functions
@@ -2050,11 +2056,10 @@ public class MMObjectBuilder extends MMTable {
              NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
              return  "" + nf.format(val);
         } else if (function.equals("gui")) {
-            String val = null;
             if (field.equals("")) {
-                val = getGUIIndicator(node);
+                return getGUIIndicator(node);
             } else {
-                val = getGUIIndicator(field, node);
+                String val =  getGUIIndicator(field, node);
                 if (val == null) {
                     FieldDefs fdef = getField(field);
                     if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
@@ -2063,14 +2068,35 @@ public class MMObjectBuilder extends MMTable {
                         val = node.getStringValue(field);
                     }
                 }
+            return val; 
             }
-            return val;
+
         } else {
             // old manner: parsing list from string. That is ugly.
-            List args = getFunctionParameters(field);
-            if (args.size() > 1) {
-                return executeFunction(node, function, args);
-            }                                   
+            return getObjectValue(node, field);
+        }
+        return null;
+    }
+
+    /**
+     * Executes a function on the field of a node, and returns the result.
+     * This method is called by the builder's {@link #getValue} method.
+     * Derived builders should override this method to provide additional functions.
+     *
+     * current functions are:<br />
+     * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
+     * on text:  wap, html, shorted, uppercase, lowercase <br />
+     * on node:  age() <br />
+     * on numbers: wrap_&lt;int&gt;, currency_euro <br />
+     *
+     * @param node the node whose fields are queries
+     * @param field the fieldname that is requested
+     * @return the result of the 'function', or null if no valid functions could be determined.
+     * @deprecated use executeFunction(MMObjectNode, String, List)
+     */
+    protected Object executeFunction(MMObjectNode node, String function, String field) {      
+        if (log.isDebugEnabled()) { 
+            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + field);
         }
         return null;
     }

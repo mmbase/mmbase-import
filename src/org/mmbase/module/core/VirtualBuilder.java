@@ -117,12 +117,12 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param node The node to display
      * @return either the name field of the node or "no info"
      */
-     public String getGUIIndicator(MMObjectNode node) {
+     public String getGUIInicator(MMObjectNode node) {
         String s= node.getStringValue("name");
         if (s!=null) {
             return s;
         } else {
-            return GUIIndicator;
+            return GUI_INDICATOR;
         }
     }
 
