@@ -1023,11 +1023,18 @@ Build-compiler: ${build.compiler}
                file="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
                
     <!-- Xalan and Xerces -->
+    <!-- 
+    <property name="xalan.version" value="xalan-j_2_4_0"/>
+    <property name="xalan.fullversion" value="xalan-j_2_4_0"/>
+    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
+    <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar"/>
+    -->
     <property name="xalan.version" value="xalan-j_2_2"/>
     <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
     <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/old/${xalan.version}-bin.tar.gz"/>
-    <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
     <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xerces.jar"/>
+
+    <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
     <property name="xml-apis.jar" value="${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar"/>
 
     <available property="xalan.present"
@@ -1381,7 +1388,7 @@ Version: MMBase build ${version}
  <!-- ================================================================================ -->
 
   <target name="docbookumentation" 
-    depends="expand.docbook-xsl"
+    depends="expand.docbook-xsl,init,init.compile"
     description="Make the MMBase documentation from docbook-sources">
 
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
@@ -1395,6 +1402,7 @@ Version: MMBase build ${version}
       </fileset>
     </copy>
 
+    <!-- 
     <style 
       basedir="${source-documentation.dir}" 
       destdir="${mmdocs.dir}"      
@@ -1404,6 +1412,28 @@ Version: MMBase build ${version}
       <param name="html.stylesheet" expression="'style.css'"/>
       <include name="**/*.xml" />
     </style>
+    -->
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile.classpath"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/util/XSLTransformer.java" />
+    </javac>
+
+    <java classname="org.mmbase.util.XSLTransformer"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="yes">
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${build.dir}/docbook2xhtml.xslt" />
+      <arg value="${source-documentation.dir}" />
+      <arg value="${mmdocs.dir}" />
+    </java>
     
   </target>
 
