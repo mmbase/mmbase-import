@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.5 2003-08-01 11:56:22 pierre Exp $
+ * @version $Id: Schemes.java,v 1.6 2003-08-18 14:42:46 pierre Exp $
  */
 public final class Schemes {
 
@@ -59,7 +59,7 @@ public final class Schemes {
     /**
      *  The default scheme for creating a table.
      */
-    public static final String CREATE_TABLE_DEFAULT = "CREATE TABLE {1} {4} {5}";
+    public static final String CREATE_TABLE_DEFAULT = "CREATE TABLE {1} ({4} {5})";
 
     /**
      *  Name of the scheme for creating a row type (i.e.. for an OO-database such as Informix)
@@ -99,7 +99,7 @@ public final class Schemes {
     /**
      *  The default scheme for creating a table.
      */
-    public static final String CREATE_OBJECT_TABLE_DEFAULT = "CREATE TABLE {1} {4} {5}";
+    public static final String CREATE_OBJECT_TABLE_DEFAULT = "CREATE TABLE {1} ({4} {5})";
 
     /**
      *  Name of the scheme for creating a primary key
@@ -112,7 +112,7 @@ public final class Schemes {
      *    <li>{4} the basic storage element (name of the object table)</li>
      *  </ul>
      */
-    public static final String CREATE_PRIMARY_KEY = "create.primary.key";
+    public static final String CREATE_PRIMARY_KEY = "create.primary.key.scheme";
 
     /**
      *  The default scheme for creating a prinary key
@@ -130,7 +130,7 @@ public final class Schemes {
      *    <li>{4} the basic storage element (name of the object table)</li>
      *  </ul>
      */
-    public static final String CREATE_SECONDARY_KEY = "create.secondary.key";
+    public static final String CREATE_SECONDARY_KEY = "create.secondary.key.scheme";
 
     /**
      *  Name of the scheme for creating a foreign (referential) key
@@ -143,7 +143,7 @@ public final class Schemes {
      *    <li>{4} the basic storage element referenced (name of the object table)</li>
      *  </ul>
      */
-    public static final String CREATE_FOREIGN_KEY = "create.foreign.key";
+    public static final String CREATE_FOREIGN_KEY = "create.foreign.key.scheme";
 
     /**
      *  Name of the scheme for selecting a node type.

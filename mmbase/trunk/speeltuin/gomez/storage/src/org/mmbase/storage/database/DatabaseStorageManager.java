@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.22 2003-08-05 08:30:39 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.23 2003-08-18 14:42:46 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -951,26 +951,32 @@ public class DatabaseStorageManager implements StorageManager {
                 if (createFields.length() > 0) createFields.append(", ");
                 createFields.append(fieldDef);
                 // test on composite indices
-                if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+                if (!"number".equals(field.getDBName()) && field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+                    if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
+                    createFieldsAndIndices.append(fieldDef);
                     compositeIndices.add(field);
                 } else {
                     // test on other indices
                     String indexDef = getIndexDefinition(field);
                     if (indexDef != null) {
-                        if (createIndices.length() > 0) createIndices.append(", ");
+//                        if (createIndices.length() > 0) createIndices.append(", "); 
+                        createIndices.append(", ");
                         createIndices.append(indexDef);
                         if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
                         createFieldsAndIndices.append(fieldDef+" "+indexDef);
+                    } else {
+                        if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
+                        createFieldsAndIndices.append(fieldDef);
                     }
                 }
             }
-            if (compositeIndices.size()>0) {
-                // test on other indices
-                String indexDef = getCompositeIndexDefinition(compositeIndices);
-                if (indexDef != null) {
-                    if (createCompositeIndices.length() > 0) createCompositeIndices.append(", ");
-                    createCompositeIndices.append(indexDef);
-                }
+        }
+        if (compositeIndices.size()>0) {
+            // test on other indices
+            String indexDef = getCompositeIndexDefinition(compositeIndices);
+            if (indexDef != null) {
+                createCompositeIndices.append(",");
+                createCompositeIndices.append(indexDef);
             }
         }
         Scheme rowtypeScheme;
@@ -996,6 +1002,10 @@ public class DatabaseStorageManager implements StorageManager {
                 s.executeUpdate(query);
             }
             // create the table
+log.info("fields="+createFields.toString());
+log.info("indices="+createIndices.toString());
+log.info("fields+indices="+createFieldsAndIndices.toString());
+log.info("composite="+createCompositeIndices.toString());
             String query = tableScheme.format(new Object[] { this, builder,
                                                         createFields.toString(),
                                                         createIndices.toString(),
@@ -1028,6 +1038,9 @@ public class DatabaseStorageManager implements StorageManager {
         mapping.setFixedSize(size);
         // search type mapping
         List typeMappings = factory.getTypeMappings();
+        
+log.info("Map:"+mapping);
+
         int found = typeMappings.indexOf(mapping);
         if (found > -1) {
             String fieldDef = factory.getStorageIdentifier(field)+" "+((TypeMapping)typeMappings.get(found)).getType(size);
@@ -1187,10 +1200,13 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected boolean exists(String tableName) throws StorageException {
         try {
+log.info("Exists: "+tableName);
             getActiveConnection();
             DatabaseMetaData metaData = activeConnection.getMetaData();
             ResultSet res = metaData.getTables(null, null, tableName, null);
-            return res.next();
+            boolean result = res.next();
+log.info("Exists result: "+result);
+            return result;
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
         } finally {
