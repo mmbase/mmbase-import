@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.8 2000-12-30 14:06:06 daniel Exp $
+	$Id: TransactionResolver.java,v 1.9 2001-02-05 11:41:44 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/12/30 14:06:06  daniel
+	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
+	
 	Revision 1.7  2000/12/14 10:54:52  rico
 	Rico: added John Balder's changes for exception handling
 	
@@ -42,7 +45,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.8 2000-12-30 14:06:06 daniel Exp $
+ * @version $Id: TransactionResolver.java,v 1.9 2001-02-05 11:41:44 daniel Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -109,12 +112,12 @@ public class TransactionResolver {
 										nnodes.put(node,v);
 									}
 								} else {
-									debug("Can't find key for field "+tmpfield+" node "+node+" (warning)");
+									if (_debug) debug("Can't find key for field "+tmpfield+" node "+node+" (warning)");
 								}
 								if (field.equals("number")) node.setValue("_exists",TransactionManager.EXISTS_NO);
 							} else {
 								// Key is already set
-								debug("Key for value "+field+" is already set "+ikey);
+								if (_debug) debug("Key for value "+field+" is already set "+ikey);
 								// Mark it as existing
 								if (field.equals("number")) {
 									// test for remove here
@@ -126,7 +129,7 @@ public class TransactionResolver {
 									if (key!=null) {
 										numbers.put( key, new Integer(ikey));
 									} else {
-										debug("Can't find key for field "+tmpfield+" node "+node);
+										if (_debug) debug("Can't find key for field "+tmpfield+" node "+node);
 									}
 								}
 							}
