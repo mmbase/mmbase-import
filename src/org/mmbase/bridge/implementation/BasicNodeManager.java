@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.80 2004-10-11 11:08:42 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.81 2004-10-12 09:43:36 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -63,7 +63,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param id the id of the node in the temporary cloud
      */
     BasicNodeManager(MMObjectNode node, Cloud cloud, int nodeid) {
-        super(node,cloud, nodeid);
+        super(node, cloud, nodeid);
         // no initialization - for a new node, builder is null.
     }
 
@@ -76,7 +76,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectNode node, Cloud cloud) {
-        super(node,cloud);
+        super(node, cloud);
         initManager();
     }
 
@@ -88,9 +88,25 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
-        super(builder.isVirtual() ? new VirtualNode(BasicCloudContext.mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
-        this.builder=builder;
+        super(getNodeForBuilder(builder), cloud);
+        this.builder = builder;
         initManager();
+    }
+
+    /**
+     * This method is  only needed to get clearer exception from above constructor in case of problem with builder.
+     * @since MMBase-1.8
+     */
+    private static MMObjectNode getNodeForBuilder(MMObjectBuilder builder) {
+        if (builder.isVirtual()) {
+            return  new VirtualNode(BasicCloudContext.mmb.getTypeDef());
+        } else {
+            MMObjectNode typedefNode = builder.getNode(builder.oType);
+            if (typedefNode == null) {
+                throw new RuntimeException("Could not find typedef node for builder " + builder + " with otype " + builder.oType);
+            }
+            return typedefNode;
+        }
     }
 
     /**
