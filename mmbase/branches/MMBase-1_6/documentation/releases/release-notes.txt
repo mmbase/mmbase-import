@@ -24,13 +24,15 @@ General New Features:
 --------------------
 
 [1.6.3]
+ - added ConvertDummy class, which can be used if ImageMagic or JAI are unavailable
+   ConvertDummy does not convert iamges, but does allow use of images and the image servlet.
 
 [1.6.2]
  - getRelatedNodes speedup, avoiding databasequeries when casting to actual type
  - Inheritance support in relations. It is possible to define
  object->object (related) now!
  - %k (to log memory usage) in MMPatternLayout
- 
+
 [1.6.1]
  This is a bugfix release, so no new features
 
@@ -45,9 +47,9 @@ General New Features:
 - Improved support for Oracle
 - Added the 'storage' classes. The storage classes are a new (yet experimental)
   interface for adding database support. Supported databases are mysql
-  and postgresql. 
+  and postgresql.
   The database configuration classes for these implentations are
-  relational.xml and postgresql.xml. 
+  relational.xml and postgresql.xml.
   These database layers automatically add indexes, and provide
   database support for deep builder inheritance.
 - A lot of new documentation has been added to this release. This
@@ -70,7 +72,7 @@ Documentation New Features:
 --------------------------
 
 [1.6.3]
-[1.6.2] 
+[1.6.2]
 - Chunked output. This takes very long. Put
   docbook.stylesheet=xhtml/docbook.xsl in build.properties, for
   old-style documentation
@@ -90,7 +92,7 @@ MMCI New Features:
 - (rmmci) iterators work
 - (rmmci) rmmci target has been added to the build.xml
 
- 
+
 [1.6.1]
 [1.6.0]
 - Updated to MMCI 1.2.
@@ -145,7 +147,7 @@ General Bug Fixes:
 - Fixed bug causing connections to be closed prematurely: #5097
 - XML importer handles binary values using Base64 decoding: #5087
 - More efficient Base64 encoding/decoding: #5073
-- attachment-tag attachment-servlet bugs: #4895, #4876 
+- attachment-tag attachment-servlet bugs: #4895, #4876
 - MMObjectNode.getRelationCount(String) does not consider builder
   inheritance: #4864
 - Fixed a bug that could come up if the platform's default charset
@@ -180,22 +182,22 @@ Application bug fixes:
 
 [1.6.2]
 - Errors during installation of an application will be displayed in
-the resultpage. 
+the resultpage.
 
 [1.6.1]
 - Using comments in application files results in errors in the log:
-  #4952 
+  #4952
 
 ------------------
 Security Bug Fixes:
 ------------------
 
 [1.6.3]
--  #5976  mm:relatednodes doesn't check read rights of destination node 
+-  #5976  mm:relatednodes doesn't check read rights of destination node
 
 [1.6.2]
-- #5396  context-security. No sensible error if user does not exist. 
-- #5232  Can not add Ranks to security 
+- #5396  context-security. No sensible error if user does not exist.
+- #5232  Can not add Ranks to security
 
 [1.6.0]
 - Fixed a problem with checking whether relations can be added (bug #3602)
@@ -213,7 +215,7 @@ MMCI Bug Fixes:
 
 [1.6.2]
 - #5568 getAllowedRelations(NodeManager nodeManager, String role,
-  String direction) fails to allow relation between two same types 
+  String direction) fails to allow relation between two same types
 
 ----------------
 RMMCI Bug Fixes:
@@ -229,14 +231,14 @@ Taglib Bug Fixes:
 ----------------
 
 [1.6.3]
--  #5979  FieldInfo's NodeHandler implements check for NodeManager wrong 
+-  #5979  FieldInfo's NodeHandler implements check for NodeManager wrong
 
 [1.6.2]
-- #5587  TEI-class for Fieldinfo tag.    
+- #5587  TEI-class for Fieldinfo tag.
 - Behavior of mm:include / mm:import (mm:import hack)
-- #5286 ListRelations tag does not accept an id attribute 
-- #5242 mm:write cookie does not set 'path' explicitely. 
-- #5174 mm:include doesn't work in mozilla  
+- #5286 ListRelations tag does not accept an id attribute
+- #5242 mm:write cookie does not set 'path' explicitely.
+- #5174 mm:include doesn't work in mozilla
 
 
 [1.6.1]
@@ -247,7 +249,7 @@ Taglib Bug Fixes:
 
 [1.6.0]
 - Taglib works with Tomcat 4.1.x (version 4.1.12 is the first version
-  it's working) 
+  it's working)
 
 
 -----------------
@@ -301,7 +303,7 @@ Known Issues and Problems:
 - The following bugfix was mistakenly added to the 1.6.0 releasenotes:
   "Performance issue resolved regarding MMObjectNode::getRelated() and
   MMObjectNode::getRelated(type) where type is a builder". It will be
-  fixed in MMBase-1.6.2. 
+  fixed in MMBase-1.6.2.
 [1.6.0]
 - Jsp-editors aren't working completly when using Tomcat 4.0.x, you'll
   get an "Illegal target of jump or branch"-error when trying to add
@@ -367,14 +369,14 @@ Known Issues and Problems:
   using the shutdown script provided by the servlet-engine. This is
   caused by the fact that the jvm won't quit if there are non-daemon
   threads running. The only way to stop the servlet-engine is to kill
-  it.    
+  it.
 
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
   this by changing the properties in
 
    <mmbase-webapp>/WEB-INF/config/builders/applications/images.xml (after installation of 'Resource')
-   or 
+   or
    <mmbase-webapp>/WEB-INF/config/applications/Resources/builders/images.xml (before installation of 'Resource')
 
    into:
