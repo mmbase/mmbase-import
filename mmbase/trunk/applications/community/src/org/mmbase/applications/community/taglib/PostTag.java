@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * This tag posts a message. The body of the tag is the message text.
  *
  * @author Pierre van Rooden
- * @version $Id: PostTag.java,v 1.9 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id: PostTag.java,v 1.10 2003-08-11 17:06:24 michiel Exp $
  */
  
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {
@@ -88,9 +88,9 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         if (subject!=null) params.put("MESSAGE-SUBJECT",subject.trim());
         community.process("MESSAGE-POST",thread,params,
                           pageContext.getRequest(),pageContext.getResponse());
-        Object resultvalue=params.get("MESSAGE-NUMBER");
-        Object err=params.get("MESSAGE-ERROR");
-        if (err!=null) {
+        Object resultvalue = params.get("MESSAGE-NUMBER");
+        Object err = params.get("MESSAGE-ERROR");
+        if (err != null) {
             throw new JspTagException("Post failed : "+err);
         }
         if (jspvar!=null) {
