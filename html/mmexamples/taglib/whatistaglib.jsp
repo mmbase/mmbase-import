@@ -6,17 +6,16 @@
   </head>
   <body>
    <mm:timer>
+   <mm:import externid="color">green</mm:import><!-- stupid example for xsl arguments -->
    <mm:log>Hello</mm:log>
-    <mm:formatter>
+    <mm:formatter options="color=$color">
       <mm:xslt>
         <!-- based on normal xslt, but a little changed -->
         <xsl:import href="mm:xslt/mmxf2xhtml.xslt" />
-        <xsl:template match = "mmxf" >
-       <xsl:apply-templates select = "p|section" />
-        </xsl:template>
+        <xsl:param name="color">green</xsl:param>
         <xsl:template match = "section" >
-       <xsl:if test="count(ancestor::section)=0"><font color="green"><h1><xsl:value-of select="@title" /></h1></font></xsl:if>
-       <xsl:if test="count(ancestor::section)=1"><font color="red"><b><xsl:value-of select="@title" /></b></font></xsl:if>
+             <xsl:if test="count(ancestor::section)=0"><font color="{$color}"><h1><xsl:value-of select="@title" /></h1></font></xsl:if>
+             <xsl:if test="count(ancestor::section)=1"><font color="red"><b><xsl:value-of select="@title" /></b></font></xsl:if>
        <xsl:apply-templates select = "section|p|ul" />
         </xsl:template>        
       </mm:xslt>
