@@ -108,11 +108,11 @@ Change directory to ${build.dir}/orion and run:
   <property name="manifest"      value="manifest.mf"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/lib/mmbase.jar"/>
-  <property name="source-config.dir" location="${source.dir}/config"/>
+  <property name="source-config.dir" location="${source.dir}/config/default"/>
   <property name="source-html.dir" location="${source.dir}/html"/>
   <property name="source-src.dir" location="${source.dir}/src"/>
-  <property name="lib.dir" value="${build.dir}/mmbase/lib"/>
-  <property name="web.dir" value="${build.dir}/mmbase/web"/>
+  <property name="lib.dir" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+  <property name="web.dir" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF"/>
   <target name="init" depends="check.dir.all">
     <tstamp/>
     <mkdir dir="${build.dir}"/>
@@ -150,15 +150,17 @@ Change directory to ${build.dir}/orion and run:
       </fileset>
     </copy>
     <!-- copy the config files -->
-    <mkdir dir="${build.dir}/mmbase-src/config"/>
-    <copy todir="${build.dir}/mmbase-src/config">
+    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp"/>
+    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF"/>
+    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config"/>
+    <copy todir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config">
       <fileset dir="${source-config.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the html files -->
-    <mkdir dir="${build.dir}/mmbase-src/html"/>
-    <copy todir="${build.dir}/mmbase-src/html">
+    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp"/>
+    <copy todir="${build.dir}/mmbase-src/mmbase-webapp">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
@@ -188,7 +190,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib,jar,javadocs">
+          depends="lib,jar,javadocs,srcdist">
     <!-- copy the scripts -->
     <copy todir="${build.dir}/mmbase/scripts">
       <fileset dir="${source-src.dir}/org/mmbase/scripts">
@@ -210,13 +212,14 @@ Change directory to ${build.dir}/orion and run:
     <!-- copy a readme from somewhere -->
     <!-- not in cvs yet -->
     <!-- copy the config -->
-    <copy todir="${build.dir}/mmbase/config">
+    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config"/>
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config">
       <fileset dir="${source-config.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the html -->
-    <copy todir="${build.dir}/mmbase/html">
+    <copy todir="${build.dir}/mmbase/mmbase-webapp">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
@@ -242,15 +245,17 @@ Change directory to ${build.dir}/orion and run:
   <target name="lib" description="Create the lib directory"
           depends="init,expand.servlet,expand.xalan,expand.jai,
                    expand.log4j,expand.junit">
-    <mkdir dir="${build.dir}/mmbase/lib"/>
-    <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${xalan.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${xerces.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${xml-apis.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp"/>
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF"/>
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${xalan.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${xml-apis.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${log4j.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${junit.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
   </target>
 
   
@@ -259,7 +264,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
 
   <target name="clean.lib" description="Clean the lib directory">
-     <delete dir="${build.dir}/mmbase/lib" />
+     <delete dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" />
   </target>
 
   <!-- =================================================================== -->
@@ -565,12 +570,17 @@ Change directory to ${build.dir}/orion and run:
           depends="compile,web">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
-    <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
+    <jar jarfile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"
          basedir="${build.dir}/classes"
 	     includes="org/mmbase/**"
 	     manifest="${manifest}" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
+        <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
+    <delete file="${web.dir}/taglib.tld" />
+    <delete file="${web.dir}/mmbase-taglib.tld" />
+    <delete file="${web.dir}/mmcommunity-taglib.tld" />
+
   </target>
 
 
@@ -602,9 +612,9 @@ Change directory to ${build.dir}/orion and run:
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase 2001">
+             bottom="MMBase 2002">
       <classpath>
-        <fileset dir="${build.dir}/mmbase/lib">
+        <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
           <include name="*.jar"/>
           <exclude name="mmbase.jar"/>
         </fileset>
@@ -664,7 +674,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="${source-html.dir}/mmdocs/mmbase-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
@@ -691,7 +701,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmcommunity-taglib.html"/>
+      <arg value="${source-html.dir}/mmdocs/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
@@ -715,7 +725,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmbase-taglib.tld"/>
+      <arg value="${build.dir}/mmbase/mmbase-webapp/mmdocs/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
@@ -752,7 +762,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmcommunity-taglib.html"/>
+      <arg value="${build.dir}/mmbase/mmbase-webapp/mmdocs/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
