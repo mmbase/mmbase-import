@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.8 2003-06-26 20:58:48 michiel Exp $
+ * @version $Id: Users.java,v 1.9 2003-07-08 17:42:45 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -36,7 +36,7 @@ public class Users extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Users.class.getName());
 
 
-    public final static String FIELD_STATUS     = "status";
+    public final static String FIELD_STATUS    = "status";
     public final static String STATES_RESOURCE = "org.mmbase.security.states";
 
     protected static Cache rankCache = new Cache(20) {
@@ -107,7 +107,7 @@ public class Users extends MMObjectBuilder {
     /**
      * Notify the cache that the rank of user node changed
      * this is fixed by CacheInvalidator alreayd ?
-    public void rankChanged(MMObjectNode node) {
+     public void rankChanged(MMObjectNode node) {
         rankCache.remove(node);
     }
     */
@@ -143,45 +143,79 @@ public class Users extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * Gets the usernode and check its credential (password only, currently)
+     * 
+     * @return the authenticated user, or null
+     * @throws SecurityException
      */
     public MMObjectNode getUser(String userName, String password)   {
         if (log.isDebugEnabled()) {
             log.debug("username: '" + userName + "' password: '" + password + "'");
         }
-        Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
-        while(enumeration.hasMoreElements()) {
-            MMObjectNode node = (MMObjectNode) enumeration.nextElement();
-            if (getField(FIELD_STATUS) != null) {
-                if (node.getIntValue(FIELD_STATUS) == -1) {
-                    throw new SecurityException("account for '" + userName + "' is blocked");
-                }
+        MMObjectNode user = getUser(userName);
+
+        if (userName.equals("anonymous")) {
+            log.debug("an anonymous username");
+            if (user == null) {
+                throw new SecurityException("no node for anonymous user"); // odd.
             }
-            if (userName.equals("anonymous")) {
-                log.debug("an anonymous username");
-                return node;
-            }
-            if (encode(password).equals(node.getStringValue("password"))) {
-                if (log.isDebugEnabled()) {
-                    log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + node.getNumber());
-                }
-                return node;
-            } else {
-                log.debug("PASSWORD NOT CORRECT");
-                // return null // could return then, or do we really expect more users with same username?
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("username: '" + userName + "' found in node #" + node.getNumber() + " --> PASSWORDS NOT EQUAL");
+            return user;
+        }
+
+        if (user == null) {
+            log.debug("username: '" + userName + "' --> USERNAME NOT CORRECT");
+            return null;
+        } 
+
+        if (getField(FIELD_STATUS) != null) {
+            if (user.getIntValue(FIELD_STATUS) == -1) {
+                throw new SecurityException("account for '" + userName + "' is blocked");
             }
         }
 
-        if(userName.equals("anonymous")) {
-            throw new SecurityException("no node for anonymous user"); // odd.
+        if (encode(password).equals(user.getStringValue("password"))) {
+            if (log.isDebugEnabled()) {
+                log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
+            }
+            return user;
         } else {
-            log.debug("username: '" + userName + "' --> USERNAME OR PASSWORD NOT CORRECT");
+            if (log.isDebugEnabled()) {
+                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL");
+            }
             return null;
         }
+
     }
+    /**
+     * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
+     */
+    protected  MMObjectNode getUser(String userName)   {
+        MMObjectNode user = null;
+        Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
+        while(enumeration.hasMoreElements()) {
+            user = (MMObjectNode) enumeration.nextElement();
+        }
+        return user;
+    }
+
+    /**
+     * UserName must be unique, check it also here (to throw nicer exceptions)    
+     */
+    public int insert(String owner, MMObjectNode node) {
+        int res = super.insert(owner, node);
+        String userName = node.getStringValue("username");
+
+        Enumeration e = searchWithWhere(" username = '" + userName + "'");
+        while (e.hasMoreElements()) {
+            MMObjectNode n = (MMObjectNode) e.nextElement();
+            if (n.getNumber() == node.getNumber()) continue;
+            removeNode(node);
+            throw new SecurityException("Cannot insert user '" + userName + "', because there is already is a user with that name");
+        }
+        return res;
+    }
+
+
 
     /**
      * @see org.mmbase.security.implementation.cloudcontext.User#getOwnerField

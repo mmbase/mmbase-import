@@ -43,7 +43,7 @@
       </editor>
       <db>
         <name>username</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="32" notnull="true" key="true">STRING</type>
       </db>
     </field>
     <field>

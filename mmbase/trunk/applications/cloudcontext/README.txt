@@ -1,4 +1,4 @@
-Context security in the cloud.
+Context security in the cloud. Should work on MMBase >= 1.6.4.
 
 Use this in security.xml
 
