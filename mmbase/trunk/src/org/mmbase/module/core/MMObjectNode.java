@@ -20,6 +20,9 @@ import org.mmbase.module.gui.html.*;
 import org.mmbase.util.logging.*;
 
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+
 /**
  * MMObjectNode is the core of the MMBase system.
  * This class is what its all about, because the instances of this class hold the content we are using.
@@ -30,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.53 $ $Date: 2002-01-25 10:57:59 $
+ * @version $Revision: 1.54 $ $Date: 2002-02-22 13:04:07 $
  */
 
 public class MMObjectNode {
@@ -72,7 +75,7 @@ public class MMObjectNode {
      * Used to make fields from multiple nodes (for multilevel for example)
      * possible.
      * This is a 'default' value.
-     * XXX: specifying the prefix in the fieldname SHOULD override this field.
+     * XXX: specifying the prefix in the fieldName SHOULD override this field.
      * @scope private
      */
     public String prefix="";
@@ -132,7 +135,7 @@ public class MMObjectNode {
      *   If the data was unrecoverably invalid (the references did not point to existing objects)
      */
     public void testValidData() throws InvalidDataException {
-      parent.testValidData(this);
+        parent.testValidData(this);
     };
 
     /**
@@ -225,21 +228,23 @@ public class MMObjectNode {
     /**
      * Stores a value in the values hashtable.
      *
-     * @param fieldname the name of the field to change
+     * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      */
-    protected void storeValue(String fieldname,Object fieldvalue) {
-        values.put(fieldname,fieldvalue);
+    protected void storeValue(String fieldName,Object fieldValue) {
+        // arrgh.. we will do XML checking here... dunno where else to do....
+        //
+        values.put(fieldName,fieldValue);
     }
 
     /**
      * Retrieves a value from the values hashtable.
      *
-     * @param fieldname the name of the field to change
+     * @param fieldName the name of the field to change
      * @return the value of the field
      */
-    protected Object retrieveValue(String fieldname) {
-        return values.get(fieldname);
+    protected Object retrieveValue(String fieldName) {
+        return values.get(fieldName);
     }
 
     /**
@@ -249,72 +254,177 @@ public class MMObjectNode {
     public boolean isVirtual() {
         return virtual;
     }
+        
 
     /**
      *  Sets a key/value pair in the main values of this node.
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
-     *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
      *  @param fieldValue the value to assign
      *  @return <code>true</code> When the field was changed, false otherwise.
      */
-    public boolean setValue(String fieldname,Object fieldvalue) {
+    public boolean setValue(String fieldName, Object fieldValue) {
+        //////////////////////////////////////
         // retrieve the original value
-        Object originalValue = values.get(fieldname);
+        // if number == -1 then we have a new node...
+        if(parent != null) {
+            // in case the field is of type XML, it can (must) be validated:
+            if(parent.getField(fieldName) != null && parent.getField(fieldName).getDBType() == FieldDefs.TYPE_XML) {
+                fieldValue = validateXML(fieldName, fieldValue);
+            }
+        } else {
+            log.error("parent was null for node with number" + getNumber());
+        }
+        
+        // check the value also when the parent thing is null
+	Object originalValue = values.get(fieldName);
         // put the key/value in the value hashtable
-        storeValue(fieldname,fieldvalue);
+        storeValue(fieldName, fieldValue);
         // process the changed value (?)
         if (parent!=null) {
-            if(!parent.setValue(this,fieldname, originalValue)) {
-                // setValue of parent returned false, no update needed...
-                return false;
+	    if(!parent.setValue(this,fieldName, originalValue)) {
+	        // setValue of parent returned false, no update needed...
+	        return false;
             }
-        }
-        setUpdate(fieldname);
+	}
+        setUpdate(fieldName);
         return true;
     }
 
+    /**
+     * When setting the value of an XML field, the value is validated.
+     * The value must be an instance of String (XML format) or a DOM element.
+     *
+     * @return the value of the field as a DOM Element.
+     **/
 
+    private Element validateXML(String fieldName, Object fieldValue) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("validating" + getNumber() + "field:" + fieldName);
+        }
+
+        if (fieldValue instanceof String) {                 
+            // Backwards compatibility, if a string is not in XML format (not starting with '<'), then
+            // we have a way to convert it to mmxf XML (or something else when we support it).
+            if (((String)fieldValue).indexOf("<") != 0) { // not XML, make it XML
+
+                // Depending on the gui type choose conversion....
+                // for the moment only mmxf is supported.
+
+                // MMXF_POOR, this is the rich format we use, it is little less rich then MMXF_RICH...                
+                
+                fieldValue = org.mmbase.util.Encode.decode("MMXF_POOR", (String) fieldValue);
+
+                if (log.isDebugEnabled()) log.debug("field was not XML, converted to " + fieldValue);
+            }
+        
+            /////////////////////////////////////////////
+            // TODO: RE-USE THE PARSER EVERY TIME !    //        
+
+            String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
+            String xmlDocType = "<!DOCTYPE " + parent.getField(fieldName).getGUIType() + ">"; //hmm, going to change this..
+            String completeXML = xmlHeader + "\n" + xmlDocType + "\n" + (String)fieldValue;
+    	    try {                
+                javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+                dfactory.setValidating(true);
+                javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+                documentBuilder.setErrorHandler(new org.mmbase.util.XMLErrorHandler());
+                documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
+                fieldValue = documentBuilder.parse(new java.io.ByteArrayInputStream(completeXML.getBytes(parent.mmb.getEncoding()))).getDocumentElement();
+                // ByteArrayInputStream?
+                // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
+                writeStringToTmpFile(completeXML, fieldName);
+                
+
+            }
+            catch(javax.xml.parsers.ParserConfigurationException pce) {
+	        String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+completeXML;
+                log.error(msg);
+	        throw new RuntimeException(msg);
+            }
+            catch(org.xml.sax.SAXException se) {
+	        String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+completeXML;
+                log.error(msg);
+                log.error("wrote to " + writeStringToTmpFile(msg, fieldName));
+	        throw new RuntimeException(msg);	
+            }
+            catch(java.io.IOException ioe) {
+	        String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+completeXML;
+                log.error(msg);
+	        throw new RuntimeException(msg);					
+            }
+        } else if (fieldValue instanceof Element) {
+            // check if the Element is in concordance with the specified GUIType for this field.
+
+            // not yet implemented.
+            // TODO
+
+        } else {
+            String msg = "XML fields can only be valid if they are an instance of String or of dom.Element";
+            log.error(msg);
+            throw new RuntimeException(msg);
+        }
+        return (Element) fieldValue;
+
+    }
+
+
+    // for debugging purposes.
+    public String writeStringToTmpFile(String test, String postfix) {
+
+        String fileName = "/tmp/debug." + parent.mmb.getEncoding() + postfix + ".txt";
+        try {
+            java.io.OutputStreamWriter fw = new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName), parent.mmb.getEncoding());        
+            fw.write(test);        
+            fw.close();
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+        return fileName;
+        
+    }
 
 
     /**
      * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
      * Note that if this node is a node in cache, the changes are immediately visible to
      * everyone, even if the changes are not committed.
-     * The fieldname is added to the (public) 'changed' vector to track changes.
-     * @param fieldname the name of the field to change
+     * The fieldName is added to the (public) 'changed' vector to track changes.
+     * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      * @return always <code>true</code>
      */
-    public boolean setValue(String fieldname,boolean fieldvalue) {
-        return setValue(fieldname,new Boolean(fieldvalue));
+    public boolean setValue(String fieldName,boolean fieldValue) {
+        return setValue(fieldName,new Boolean(fieldValue));
     }
 
     /**
      *  Sets a key/value pair in the main values of this node. The value to set is of type <code>int</code>.
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
-     *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldname,int fieldvalue) {
-        return setValue(fieldname,new Integer(fieldvalue));
+    public boolean setValue(String fieldName,int fieldValue) {
+        return setValue(fieldName,new Integer(fieldValue));
     }
 
     /**
      *  Sets a key/value pair in the main values of this node. The value to set is of type <code>double</code>.
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
-     *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
      *  @param fieldValue the value to assign
      *  @return always <code>true</code>
      */
-    public boolean setValue(String fieldname,double fieldvalue) {
-        return setValue(fieldname,new Double(fieldvalue));
+    public boolean setValue(String fieldName,double fieldValue) {
+        return setValue(fieldName,new Double(fieldValue));
     }
 
     /**
@@ -322,8 +432,8 @@ public class MMObjectNode {
      *  The value to set is converted to the indicated type.
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
-     *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
+     *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @param fieldName the name of the field to change
      *  @param fieldValue the value to assign
      *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
      */
@@ -339,6 +449,7 @@ public class MMObjectNode {
             return false;
         }
         switch (type) {
+            case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING:
                 setValue( fieldName, value);
                 break;
@@ -379,18 +490,18 @@ public class MMObjectNode {
 
     // Add the field to update to the changed Vector
     //
-    private void setUpdate(String fieldname) {
+    private void setUpdate(String fieldName) {
         // obtain the type of field this is
-        int state=getDBState(fieldname);
+        int state=getDBState(fieldName);
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (!changed.contains(fieldname) && state==FieldDefs.DBSTATE_PERSISTENT) {
-            changed.addElement(fieldname);
+        if (!changed.contains(fieldName) && state==FieldDefs.DBSTATE_PERSISTENT) {
+            changed.addElement(fieldName);
         }
 
         // is it a memory only field ? then send a fieldchange
-        if (state==0) sendFieldChangeSignal(fieldname);
+        if (state==0) sendFieldChangeSignal(fieldName);
     }
 
     /**
@@ -413,19 +524,19 @@ public class MMObjectNode {
 
     /**
      * Get a value of a certain field.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
-    public Object getValue(String fieldname) {
-
+    public Object getValue(String fieldName) {
+        
         // get the value from the values table
-        Object o=retrieveValue(prefix+fieldname);
+        Object o = retrieveValue(prefix+fieldName);
 
         // routine to check for indirect values
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-        if (o==null) return parent.getValue(this,fieldname);
+        if (o==null) return parent.getValue(this,fieldName);
 
         // return the found object
         return o;
@@ -434,14 +545,14 @@ public class MMObjectNode {
     /**
      * Get a value of a certain field.
      * The value is returned as a String. Non-string values are automatically converted to String.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>String</code>
      */
-    public String getStringValue(String fieldname) {
+    public String getStringValue(String fieldName) {
 
         // try to get the value from the values table
         String tmp = "";
-        Object o=getValue(fieldname);
+        Object o=getValue(fieldName);
         if (o!=null) {
             if (o instanceof byte[]) {
                 tmp = new String((byte[])o);
@@ -459,14 +570,13 @@ public class MMObjectNode {
         // because every blob/text mapping is a extra request to the
         // database
         if (tmp.indexOf("$SHORTED")==0) {
-
-            log.debug("getStringValue(): node="+this+" -- fieldname "+fieldname);
+            if (log.isDebugEnabled()) log.debug("getStringValue(): node="+this+" -- fieldName "+fieldName);
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
             // multiple database support.
-            int type=getDBType(fieldname);
+            int type=getDBType(fieldName);
 
-            log.debug("getStringValue(): fieldname "+fieldname+" has type "+type);
+            log.debug("getStringValue(): fieldName "+fieldName+" has type "+type);
             // check if for known mapped types
             if (type==FieldDefs.TYPE_STRING) {
                 MMObjectBuilder bul;
@@ -485,14 +595,14 @@ public class MMObjectNode {
                     }
 //                    number=getNumber();
                     bul=parent.mmb.getMMObject(tmptable);
-                    log.debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldname);
+                    log.debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldName);
                 } else {
                     bul=parent;
                 }
 
                 // call our builder with the convert request this will probably
                 // map it to the database we are running.
-                String tmp2=bul.getShortedText(fieldname,number);
+                String tmp2=bul.getShortedText(fieldName,number);
 
                 // did we get a result then store it in the values for next use
                 // and return it.
@@ -500,7 +610,7 @@ public class MMObjectNode {
                 // or make this programmable per builder ?
                 if (tmp2!=null) {
                     // store the unmapped value (replacing the $SHORTED text)
-                    storeValue(prefix+fieldname,tmp2);
+                    storeValue(prefix+fieldName,tmp2);
                     // return the found and now unmapped value
                     return tmp2;
                 } else {
@@ -514,11 +624,88 @@ public class MMObjectNode {
     }
 
     /**
+     * @see getXMLValue
+     */
+    public Element getXMLValue(String fieldName, Document tree) {
+
+        Object o = getValue(fieldName);
+
+        Element field; // the DOM field to be returned.
+
+        org.mmbase.module.corebuilders.FieldDefs mmfield = parent.getField(fieldName);
+
+        // create the field
+        field = tree.createElement("field");    	
+
+        org.w3c.dom.Attr attr;
+        // the name...
+        attr = tree.createAttribute("name");
+        attr.setValue(fieldName);
+        field.setAttributeNode(attr);
+
+        // guilist, necessary to make generic presenter of the node:
+        attr = tree.createAttribute("guilist");
+        attr.setValue("" + mmfield.getGUIList());
+        field.setAttributeNode(attr);
+        
+        // the format
+        attr = tree.createAttribute("format");
+        attr.setValue(mmfield.getDBTypeDescription());
+        field.setAttributeNode(attr);            
+
+        org.w3c.dom.Node subField;
+
+        if (o instanceof Element) {
+            subField = (Element) o;
+            if (subField.getOwnerDocument() != tree) { // it is not in this tree, copy it in:
+                subField = tree.importNode(subField, true);
+            }
+        } else {             
+            // the text
+            subField = tree.createTextNode(getStringValue(fieldName));
+        }
+        field.appendChild(subField);
+        
+        return field;
+
+    }
+
+    /**
+     * Get a value of a field.
+     * The value is returned as a DOM element 'field'. Non-XML values are automatically converted to DOM Element.
+     *
+     * The format is rather basic. All non XML fields will be converted to 'field's. 
+     *
+     * @param fieldName the name of the field who's data to return
+     * @return          the field's value as a DOM <code>Element</code>
+     */
+    public Element getXMLValue(String fieldName) {
+
+        // try to get the value from the values table
+        Object o = getValue(fieldName);
+        if (o != null) {
+            if (o instanceof Element) {
+                return (Element) o;
+            } else { // try to make one
+                try {
+                    javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();    	    
+                    javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+                    Document tree = documentBuilder.newDocument();
+                    return getXMLValue(fieldName, tree);
+                } catch (Exception e) {
+                    log.error(e.toString());
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get a binary value of a certain field.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
-    public byte[] getByteValue(String fieldname) {
+    public byte[] getByteValue(String fieldName) {
 
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
@@ -526,7 +713,7 @@ public class MMObjectNode {
 
         // call below also allows for byte[] type of
         // formatting functons.
-        Object obj=getValue(fieldname);
+        Object obj=getValue(fieldName);
 
         // well same as with strings we only unmap byte values when
         // we really use them since they mean a extra request to the
@@ -539,19 +726,19 @@ public class MMObjectNode {
         } else {
 
             byte[] b;
-            if (getDBType(fieldname) == FieldDefs.TYPE_BYTE) {
+            if (getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
                 // call our builder with the convert request this will probably
                 // map it to the database we are running.
-                b=parent.getShortedByte(fieldname,getNumber());
+                b=parent.getShortedByte(fieldName,getNumber());
                 if (b == null) {
                     b = new byte[0];
                 }
                 // we could in the future also leave it unmapped in the values
                 // or make this programmable per builder ?
-                storeValue(prefix+fieldname,b);
+                storeValue(prefix+fieldName,b);
             } else {
-                if (getDBType(fieldname) == FieldDefs.TYPE_STRING) {
-                    String s = getStringValue(fieldname);
+                if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
+                    String s = getStringValue(fieldName);
                     b = s.getBytes();
                 } else {
                     b = new byte[0];
@@ -571,13 +758,13 @@ public class MMObjectNode {
      * that alias. The only other possible values are those created by
      * certain virtual fields.
      * All remaining situations return <code>null</code>.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>int</code>
      */
-    public MMObjectNode getNodeValue(String fieldname) {
-        if (fieldname==null || fieldname.equals("number")) return this;
+    public MMObjectNode getNodeValue(String fieldName) {
+        if (fieldName==null || fieldName.equals("number")) return this;
         MMObjectNode res=null;
-        Object i=getValue(fieldname);
+        Object i=getValue(fieldName);
         if (i instanceof MMObjectNode) {
             res=(MMObjectNode)i;
         } else if (i instanceof Number) {
@@ -595,11 +782,11 @@ public class MMObjectNode {
      * String fields are parsed to a number, if possible.
      * If a value is an MMObjectNode, it's numberfield is returned.
      * All remaining field values return -1.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>int</code>
      */
-    public int getIntValue(String fieldname) {
-        Object i=getValue(fieldname);
+    public int getIntValue(String fieldName) {
+        Object i=getValue(fieldName);
         int res=-1;
         if (i instanceof MMObjectNode) {
             res=((MMObjectNode)i).getNumber();
@@ -628,11 +815,11 @@ public class MMObjectNode {
      * Note that there is currently no basic MMBase boolean type, but some
      * <code>excecuteFunction</code> calls may return a Boolean result.
      *
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>int</code>
      */
-    public boolean getBooleanValue(String fieldname) {
-        Object b=getValue(fieldname);
+    public boolean getBooleanValue(String fieldName) {
+        Object b=getValue(fieldName);
         boolean res=false;
         if (b instanceof Boolean) {
             res=((Boolean)b).booleanValue();
@@ -664,11 +851,11 @@ public class MMObjectNode {
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Integer</code>
      */
-    public Integer getIntegerValue(String fieldname) {
-        Object i=getValue(fieldname);
+    public Integer getIntegerValue(String fieldName) {
+        Object i=getValue(fieldName);
         int res=-1;
         if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
@@ -688,11 +875,11 @@ public class MMObjectNode {
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>long</code>
      */
-    public long getLongValue(String fieldname) {
-        Object i=getValue(fieldname);
+    public long getLongValue(String fieldName) {
+        Object i=getValue(fieldName);
         long res =-1;
         if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
@@ -713,11 +900,11 @@ public class MMObjectNode {
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>float</code>
      */
-    public float getFloatValue(String fieldname) {
-        Object i=getValue(fieldname);
+    public float getFloatValue(String fieldName) {
+        Object i=getValue(fieldName);
         float res =-1;
         if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
@@ -738,11 +925,11 @@ public class MMObjectNode {
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>double</code>
      */
-    public double getDoubleValue(String fieldname) {
-        Object i=getValue(fieldname);
+    public double getDoubleValue(String fieldName) {
+        Object i=getValue(fieldName);
         double res =-1;
         if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
@@ -758,7 +945,7 @@ public class MMObjectNode {
 
     /**
      * Get a value of a certain field and return is in string form (regardless of actual type).
-     * @param fieldname the name of the field who's data to return
+     * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>String</code>
      * @deprecated use {@link #getStringValue} instead.
      */
@@ -784,30 +971,30 @@ public class MMObjectNode {
 
     /**
      * Returns the DBType of a field.
-     * @param fieldname the name of the field who's type to return
+     * @param fieldName the name of the field who's type to return
      * @return the field's DBType
      */
-    public int getDBType(String fieldname) {
+    public int getDBType(String fieldName) {
         if (prefix!=null && prefix.length()>0) {
             // If the prefix is set use the builder contained therein
             int pos=prefix.indexOf('.');
             if (pos==-1) pos=prefix.length();
             MMObjectBuilder bul=parent.mmb.getMMObject(prefix.substring(0,pos));
-            return bul.getDBType(fieldname);
+            return bul.getDBType(fieldName);
         } else {
-            return parent.getDBType(fieldname);
+            return parent.getDBType(fieldName);
         }
     }
 
 
     /**
      * Returns the DBState of a field.
-     * @param fieldname the name of the field who's state to return
+     * @param fieldName the name of the field who's state to return
      * @return the field's DBState
      */
-    public int getDBState(String fieldname) {
+    public int getDBState(String fieldName) {
         if (parent!=null)    {
-            return parent.getDBState(fieldname);
+            return parent.getDBState(fieldName);
         } else {
             return FieldDefs.DBSTATE_UNKNOWN;
         }
@@ -816,7 +1003,7 @@ public class MMObjectNode {
     /**
      * Return all the names of fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
-     * @param a <code>Vector</code> containing all the fieldnames
+     * @param a <code>Vector</code> containing all the fieldNames
      */
     public Vector getChanged() {
         return changed;
@@ -1139,11 +1326,11 @@ public class MMObjectNode {
 
     /**
      * Sends a field-changed signal.
-     * @param fieldname the name of the changed field.
+     * @param fieldName the name of the changed field.
      * @return always <code>true</code>
      */
-    public boolean sendFieldChangeSignal(String fieldname) {
-        return parent.sendFieldChangeSignal(this,fieldname);
+    public boolean sendFieldChangeSignal(String fieldName) {
+        return parent.sendFieldChangeSignal(this,fieldName);
     }
 
     /**
