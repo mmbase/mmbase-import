@@ -32,14 +32,12 @@
 <body>
 
 <div class="header">
-  <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
-  <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                               
 <div class="bodypart">
 
 <mm:include page="path.jsp?type=$pathtype" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%" align="center">
 <tr><th ><mm:write referid="mlg_Account" /></th><th><mm:write referid="mlg_Location" /></th><th><mm:write referid="mlg_Last_seen" /></th></tr>
   	<mm:nodelistfunction set="mmbob" name="getPostersOnline" referids="forumid">
 	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="id" />&pathtype=onlineposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
@@ -49,8 +47,6 @@
 </div>
 
 <div class="footer">
-  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
-  <jsp:include page="<%=footerpath%>"/>
 </div>
                                                                                               
 </body>
