@@ -14,15 +14,19 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * To call the method createAlias from Node.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: CreateAliasTag.java,v 1.8 2003-06-06 10:03:19 pierre Exp $
+ * @version $Id: CreateAliasTag.java,v 1.9 2003-09-02 19:47:49 michiel Exp $
  */
 
 public class CreateAliasTag extends NodeReferrerTag {    
+
+    private static final Logger log = Logging.getLoggerInstance(CreateAliasTag.class);
 
     private Attribute alias = Attribute.NULL;
 
@@ -31,6 +35,7 @@ public class CreateAliasTag extends NodeReferrerTag {
     }
 
     protected void doJob(Node n, String a) {
+        log.debug("Creating alias '" + a + "' for node " + n.getNumber());
         n.createAlias(a);
     }
 
