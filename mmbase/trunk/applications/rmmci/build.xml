@@ -90,7 +90,7 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Create rmmci.jar                                                    -->
+  <!-- Create mmbase-rmmci.jar                                             -->
   <!-- =================================================================== -->
   <target name="rmmci" depends="compile.remote">
     <mkdir dir="build/rmmcitmp"/>
@@ -108,7 +108,7 @@ Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
 </echo>
 
-    <jar jarfile="build/rmmci.jar"
+    <jar jarfile="build/mmbase-rmmci.jar"
          manifest="build/rmmcitmp/manifest.mf"
     >
        <fileset dir="build/classes">
