@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.7 2000-03-10 12:09:57 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.8 2000-03-15 10:18:42 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.7  2000/03/10 12:09:57  wwwtech
+	Rico: added circular part detection to scanparser, it is also now possilbe to subclass ParseException and throw that in scanparser for those unholdable situations.
+	
 	Revision 1.6  2000/03/09 15:57:47  wwwtech
 	Rico: fixed bugs in the detection of the reload state, also detects CACHE PAGE pages as a reload situation now
 	
@@ -50,14 +53,14 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.7 2000-03-10 12:09:57 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.8 2000-03-15 10:18:42 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
-	private int multilevel_cachesize=256;
+	private int multilevel_cachesize=150;
 	private LRUHashtable multilevel_cache;
 
 	MMBase mmb=null;
@@ -261,6 +264,7 @@ public class HtmlBase extends ProcessorModule {
 			if (bul==null) {
 				debug("doRealations(): ERROR: asking relations on a unkown builder : "+type);
 			} else {
+				debug("doRelations(): ERROR: url("+sp.getUrl()+") : "+g);
 				g.printStackTrace();
 			}
 		}
@@ -639,25 +643,27 @@ public class HtmlBase extends ProcessorModule {
 	String getObjectField(scanpage sp, StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
 			String nodeNr=tok.nextToken();
-			String fieldname=tok.nextToken();
-			String result=null;
-			MMObjectBuilder bul=mmb.getMMObject("fielddef");
-			MMObjectNode node=bul.getNode(nodeNr);
-			sessionInfo pagesession=getPageSession(sp);
-			if (pagesession!=null) {
-				pagesession.addSetValue("PAGECACHENODES",""+nodeNr);
-			}
-			if (result!=null) {
-				return(result);
-			} else  {
-				result=getNodeStringValue(node,fieldname);
-				if (result!=null && !result.equals("null")) {
-					return(result);
-				} else {
-					return("");
+			if( tok.hasMoreTokens()){
+				String fieldname=tok.nextToken();
+				String result=null;
+				MMObjectBuilder bul=mmb.getMMObject("fielddef");
+				MMObjectNode node=bul.getNode(nodeNr);
+				sessionInfo pagesession=getPageSession(sp);
+				if (pagesession!=null) {
+					pagesession.addSetValue("PAGECACHENODES",""+nodeNr);
 				}
-			}
-		}
+				if (result!=null) {
+					return(result);
+				} else  {
+					result=getNodeStringValue(node,fieldname);
+					if (result!=null && !result.equals("null")) {
+						return(result);
+					} else {
+						return("");
+					}
+				}
+			} else debug("getObjectField(): ERROR: no token fieldname found, nodenr("+nodeNr+"), url("+sp.getUrl()+")");
+		} else debug("getObjectField(): ERROR: no token nodenr found, url("+sp.getUrl()+")");
 		return("no command defined");
 	}
 
