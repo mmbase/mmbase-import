@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
@@ -300,184 +300,6 @@ public class BasicSearchQueryTest extends TestCase {
         testSetOffset();
     }
     
-    /** Test of toSQL92 method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. 
-     */
-    public void testToSQL92() throws Exception {
-        BasicSearchQuery instance = new BasicSearchQuery();
-        
-        // Query without step, should throw IllegalStateException.
-        try {
-            BasicSearchQuery.toSQL92(instance);
-            fail("Query without step, should throw IllegalStateException.");
-        } catch (IllegalStateException e) {};
-        
-        BasicStep step1 = instance.addStep(images);
-
-        // Query without field, should throw IllegalStateException.
-        try {
-            BasicSearchQuery.toSQL92(instance);
-            fail("Query without field, should throw IllegalStateException.");
-        } catch (IllegalStateException e) {};
-        
-        FieldDefs imagesTitle = images.getField("title");
-        FieldDefs insrelRNumber = insrel.getField("rnumber");
-        FieldDefs poolsName = pools.getField("name");
-
-        // Query with one step (default alias) and one field (default alias).
-        BasicStepField field1a = instance.addField(step1, imagesTitle);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT images.title AS title "
-            + "FROM images images"));
-         
-        // Set step alias.
-       step1.setAlias("i");
-       assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS title "
-            + "FROM images i"));
-        
-        // Set field alias.
-        field1a.setAlias("imageTitle");
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle "
-            + "FROM images i"));
-        
-        // Add second field (default alias).
-        FieldDefs imagesNumber = images.getField("number");
-        BasicStepField field1b = instance.addField(step1, imagesNumber);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS number "
-            + "FROM images i"));
-        
-        // Set alias for second field.
-        field1b.setAlias("imageNumber");
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i"));
-        
-        // Set distinct true.
-        instance.setDistinct(true);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT DISTINCT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i"));
-        
-        // Add sortorder (default direction).
-        BasicSortOrder sortOrder1a = instance.addSortOrder(field1a);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT DISTINCT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Set sortorder direction.
-        sortOrder1a.setDirection(SortOrder.ORDER_DESCENDING);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT DISTINCT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i "
-            + "ORDER BY imageTitle DESC"));
-        
-        // Set sortorder direction.
-        sortOrder1a.setDirection(SortOrder.ORDER_ASCENDING);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT DISTINCT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Set distinct false.
-        instance.setDistinct(false);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Add node constraint for first step (one node).
-        step1.addNode(123);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i "
-            + "WHERE i.number IN (123) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Add second node to node constraint.
-        step1.addNode(456);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i "
-            + "WHERE i.number IN (123,456) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Add relationstep (default directionality).
-        BasicRelationStep step2 = instance.addRelationStep(insrel,pools);
-        BasicStep step3 = (BasicStep) step2.getNext();
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND ((i.number=insrel.dnumber AND pools.number=insrel.snumber) OR (i.number=insrel.snumber AND pools.number=insrel.dnumber)) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Set directionality for relationstep to DESTINATION.
-        step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND (i.number=insrel.snumber AND pools.number=insrel.dnumber) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Set directionality for relationstep to SOURCE.
-        step2.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND (i.number=insrel.dnumber AND pools.number=insrel.snumber) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Set directionality for relationstep to BOTH.
-        step2.setDirectionality(RelationStep.DIRECTIONS_BOTH);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND ((i.number=insrel.dnumber AND pools.number=insrel.snumber) OR (i.number=insrel.snumber AND pools.number=insrel.dnumber)) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Add field for relationstep.
-        StepField field2a = instance.addField(step2, insrelRNumber);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber,insrel.rnumber AS rnumber "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND ((i.number=insrel.dnumber AND pools.number=insrel.snumber) OR (i.number=insrel.snumber AND pools.number=insrel.dnumber)) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Add field for third step.
-        StepField field3a = instance.addField(step3, poolsName);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber,insrel.rnumber AS rnumber,pools.name AS name "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND ((i.number=insrel.dnumber AND pools.number=insrel.snumber) OR (i.number=insrel.snumber AND pools.number=insrel.dnumber)) "
-            + "ORDER BY imageTitle ASC"));
-        
-        // Add second sortorder
-        BasicSortOrder sortOrder3a = instance.addSortOrder(field3a);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber,insrel.rnumber AS rnumber,pools.name AS name "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND ((i.number=insrel.dnumber AND pools.number=insrel.snumber) OR (i.number=insrel.snumber AND pools.number=insrel.dnumber)) "
-            + "ORDER BY imageTitle ASC,name ASC"));
-        
-        // Add third sortorder.
-        BasicSortOrder sortOrder2a = instance.addSortOrder(field2a);
-        assert(BasicSearchQuery.toSQL92(instance), BasicSearchQuery.toSQL92(instance).equals(
-            "SELECT i.title AS imageTitle,i.number AS imageNumber,insrel.rnumber AS rnumber,pools.name AS name "
-            + "FROM images i,insrel insrel,pools pools "
-            + "WHERE i.number IN (123,456) "
-            + "AND ((i.number=insrel.dnumber AND pools.number=insrel.snumber) OR (i.number=insrel.snumber AND pools.number=insrel.dnumber)) "
-            + "ORDER BY imageTitle ASC,name ASC,rnumber ASC"));
-   }
-    
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testEquals() {
         // TODO: implement test
@@ -486,6 +308,48 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testHashCode() {
         // TODO: implement test
+    }
+    
+    /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
+    public void testToString() {
+        
+        BasicStep step1 = instance.addStep(images);
+        BasicStepField field1a = instance.addField(step1, images.getField("title"));
+        instance.setConstraint(new BasicFieldNullConstraint(field1a));
+        instance.addSortOrder(field1a);
+
+        assert(instance.toString(),
+        instance.toString().equals(
+        "SearchQuery(distinct:" + instance.isDistinct()
+        + ", steps:" + instance.getSteps()
+        + ", fields:" + instance.getFields()
+        + ", constraint:" + instance.getConstraint()
+        + ", sortorders:" + instance.getSortOrders()
+        + ", max:" + instance.getMaxNumber()
+        + ", offset:" + instance.getOffset() + ")"));
+
+        instance.setDistinct(true);
+        assert(instance.toString(),
+        instance.toString().equals(
+        "SearchQuery(distinct:" + instance.isDistinct()
+        + ", steps:" + instance.getSteps()
+        + ", fields:" + instance.getFields()
+        + ", constraint:" + instance.getConstraint()
+        + ", sortorders:" + instance.getSortOrders()
+        + ", max:" + instance.getMaxNumber()
+        + ", offset:" + instance.getOffset() + ")"));
+
+        instance.setMaxNumber(100);
+        instance.setOffset(50);
+        assert(instance.toString(),
+        instance.toString().equals(
+        "SearchQuery(distinct:" + instance.isDistinct()
+        + ", steps:" + instance.getSteps()
+        + ", fields:" + instance.getFields()
+        + ", constraint:" + instance.getConstraint()
+        + ", sortorders:" + instance.getSortOrders()
+        + ", max:" + instance.getMaxNumber()
+        + ", offset:" + instance.getOffset() + ")"));
     }
     
     public static Test suite() {

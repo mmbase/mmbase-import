@@ -14,7 +14,7 @@ import java.util.List;
  * The Vts query handler adds support for Verity Text Search constraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 // TODO: add javadoc, elaborate on overwritten methods.
 public class VtsQueryHandler extends ChainedSqlHandler implements SqlHandler {

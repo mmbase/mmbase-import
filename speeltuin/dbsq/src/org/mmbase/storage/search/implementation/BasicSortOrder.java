@@ -8,7 +8,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSortOrder implements SortOrder {
     
@@ -81,12 +81,8 @@ public class BasicSortOrder implements SortOrder {
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("SortOrder(field:");
-        sb.append(getField().getAlias()).
-        append(", dir:").
-        append(getDirection()).
-        append(")");
-        return sb.toString();
+        return "SortOrder(field:" + getField().getAlias()
+        + ", dir:" + getDirection() + ")";
     }
     
 }

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     
