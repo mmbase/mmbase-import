@@ -18,15 +18,26 @@ import org.mmbase.util.*;
 
 /**
  * @author Case Roole, cjr@dds.nl
+ *
+ * XSL conversion module
+ *
+ * Right now, only the replace() method is defined. It is called as:
+ *   $MOD-XSLCONVERT-xmlPath-xslFile
+ * where xmlPath is the path relative to mmbase.config and xslFile is
+ * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
- * $Id: XSLConvert.java,v 1.1 2000-08-10 15:08:17 case Exp $
+ * $Id: XSLConvert.java,v 1.2 2000-08-10 20:06:04 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/08/10 15:08:17  case
+ * cjr: XSL conversion module - call as $MOD-XSLCONVERT-xmlpath-xslfile
+ *
  */
 public class XSLConvert extends ProcessorModule {
 
     private String classname = getClass().getName();
     private String configpath;
+    private static boolean debug = false;
 
     public void init() {
         configpath = System.getProperty("mmbase.config");
@@ -41,11 +52,14 @@ public class XSLConvert extends ProcessorModule {
 
 
 
+
     public void onload() {}
 
 
 
+
     public void unload() {}
+
 
 
 
@@ -76,7 +90,11 @@ public class XSLConvert extends ProcessorModule {
     /**
     *	Handle a $MOD command
     *
-    * NOT IMPLEMENTED FOR XSLConvert
+    * It is called as:
+    *   $MOD-XSLCONVERT-xmlPath-xslFile
+    * where:
+    *  - xmlPath is the path relative to mmbase.config and,
+    *  - xslFile is xsl file located in the subdirectory xslt of mmbase.config.
     */
     public String replace(scanpage sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
@@ -113,8 +131,10 @@ public class XSLConvert extends ProcessorModule {
      */
     public String transform(String xmlPath, String xslPath) {
         // Do nothing for the time being
-        debug("XML file = "+xmlPath);
-        debug("XSL file = "+xslPath);
+        if (debug) {
+            debug("XML file = "+xmlPath);
+            debug("XSL file = "+xslPath);
+        }
         XSLTransformer T = new XSLTransformer();
         return T.transform(xmlPath,xslPath);
     }
