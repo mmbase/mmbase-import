@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.6 2003-08-08 16:03:48 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.7 2003-08-11 15:27:20 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -86,8 +86,8 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
 
     // ContextProvider implementation
-    public ContextContainer getContainer() {
-        return collector.getContainer();
+    public ContextContainer getContextContainer() {
+        return collector.getContextContainer();
     }
 
 
@@ -116,7 +116,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
      */
     public int doStartTag() throws JspTagException{
 
-        collector = new ContextCollector(getContextProvider().getContainer());
+        collector = new ContextCollector(getContextProvider().getContextContainer());
 
 
         helper.overrideWrite(false); // default behavior is not to write to page
@@ -143,7 +143,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
     public int doAfterBody() throws JspException {
         if (getId() != null) {
-            getContextProvider().getContainer().unRegister(getId());
+            getContextProvider().getContextContainer().unRegister(getId());
         }
 
         helper.doAfterBody();
@@ -165,7 +165,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     }
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), returnList);
+            getContextProvider().getContextContainer().register(getId(), returnList);
         }
         return  EVAL_PAGE;
     }
@@ -176,7 +176,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             currentItemIndex ++;
             helper.setValue("" + iterator.next());
             if (getId() != null) {
-                getContextProvider().getContainer().register(getId(), helper.getValue());
+                getContextProvider().getContextContainer().register(getId(), helper.getValue());
             }
 
         }

@@ -24,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.18 2003-08-08 12:11:12 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.19 2003-08-11 15:27:30 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -109,7 +109,7 @@ public class NodeHandler extends IntegerHandler {
                     // this is the selected one!
                     buffer.append("selected=\"selected\"");
                 } else if (search) {
-                    String searchi =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(field.getName()));
+                    String searchi =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(field.getName()));
                     if (gui.getValue().equals(searchi)) {
                         buffer.append(" selected=\"selected\"");
                     }
@@ -123,7 +123,7 @@ public class NodeHandler extends IntegerHandler {
                 buffer.append("<input type=\"checkbox\" name=\"");
                 String name = prefix(field.getName() + "_search");
                 buffer.append(name);
-                String searchi =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), name);
+                String searchi =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), name);
                 buffer.append("\" ");
                 if (searchi != null) {
                     buffer.append(" checked=\"checked\"");
@@ -142,7 +142,7 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
+            if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
                 return null;
             } 
         }
@@ -153,7 +153,7 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
+            if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
                 return null;
             } 
         }                

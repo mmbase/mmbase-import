@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.186 2003-08-08 17:09:24 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.187 2003-08-11 15:27:25 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -616,6 +616,32 @@ See mmexamples/taglib for more elaborated examples.
       Refers to a nodelist container. Normally these kind of tags are 'query modifiers'. 
     </info>
     <since>MMBase-1.7</since>
+  </taginterface>
+  <taginterface>
+    <name>functiontag</name>
+    <info>
+    </info>
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        <p>
+          The name of the function to evaluate.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>parameters</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        <p>
+           parameters
+        </p>
+      </info>
+    </attribute>
   </taginterface>
   <tag>
     <name>list</name>
@@ -1743,34 +1769,62 @@ access the value of title:
   <tag>
     <name>function</name>
     <extends>writer</extends>
+    <extends>functiontag</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.FunctionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
-      Gets the function value of function `name' from node `node' (can also be list).
+      Gets the function value of function `name' from node `node', the function value is available as a writer.
     </info>
     <since>MMBase-1.7</since>
-    <see tag="fieldinfo" />
-    <see tag="fieldlist" />
     <see tag="node" />
+    <see tag="booleanfunction" />
+    <see tag="listfunction" />
+
+  </tag>
+  <tag>
+    <name>booleanfunction</name>
+    <extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <extends>functiontag</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.BooleanFunctionTag</tagclass>
+    <info>
+      Gets the function value of function `name' from node `node', the function value is available as a writer.
+    </info>
+    <since>MMBase-1.7</since>
+    <see tag="node" />
+    <see tag="function" />
+    <see tag="listfunction" />
+  </tag>
+
+  <tag>
+    <name>listfunction</name>
+    <extends>listprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <extends>functiontag</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListFunctionTag</tagclass>
+    <info>
+      Gets the function value of function `name' from node `node', the function value is available as a writer.
+    </info>
+    <since>MMBase-1.7</since>
+    <see tag="node" />
+    <see tag="booleanfunction" />
+    <see tag="function" />
     <attribute>
-      <name>name</name>
+      <name>comparator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        <p>
-          The name of the function to evaluate.
-        </p>
-      </info>
-      <examplevalue>
-        <value>gui</value>
-        <info>Returns the value of the field `title'</info>
-      </examplevalue>
+      <see tag="list" attribute="searchdir" />
+      <since>MMBase-1.7</since>
     </attribute>
   </tag>
+
   <tag>
     <name>createalias</name>
     <extends>nodereferrer</extends>
@@ -4550,7 +4604,8 @@ The 0 is just counter, which starts at 0 on every page.
       <name>max</name>
       <required>false</required>
       <info>
-        Maximul number of batches to be produces.
+        Maximul number of batches to be produces. If more 'previous' batches are available than this
+        number, the list is truncated from the beginning (of course).
       </info>
     </attribute>
 

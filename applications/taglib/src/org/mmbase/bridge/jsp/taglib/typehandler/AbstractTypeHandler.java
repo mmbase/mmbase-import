@@ -23,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.ParamHandler;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.13 2003-08-08 12:11:12 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.14 2003-08-11 15:27:29 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -49,7 +49,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else if (search) {
-            String searchParam = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(field.getName()));
+            String searchParam = (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(field.getName()));
             show.append((searchParam == null ? "" : searchParam));
         }
         show.append("\" />");
@@ -61,7 +61,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        String fieldValue = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
+        String fieldValue = (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
 
         } else {
@@ -101,7 +101,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     final protected String findString(Field field) throws JspTagException {
         String fieldName = field.getName();
-        String search = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
+        String search = (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName));
         if (search == null || "".equals(search)) {
             return null;
         }

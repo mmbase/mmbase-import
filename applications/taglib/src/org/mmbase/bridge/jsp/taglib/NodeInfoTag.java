@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.24 2003-06-17 18:07:38 michiel Exp $ 
+ * @version $Id: NodeInfoTag.java,v 1.25 2003-08-11 15:27:19 michiel Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -125,7 +125,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         helper.setTag(this);
         helper.setValue(show);
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

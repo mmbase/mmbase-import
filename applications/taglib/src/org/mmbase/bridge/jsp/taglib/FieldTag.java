@@ -24,11 +24,11 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.38 2003-06-06 10:03:07 pierre Exp $ 
+ * @version $Id: FieldTag.java,v 1.39 2003-08-11 15:27:17 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(FieldTag.class);
 
     protected Node   node;
     protected NodeProvider nodeProvider;
@@ -99,10 +99,18 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
     public int doStartTag() throws JspTagException {
-        log.debug("Field.doStartTag()" );
-        node= null;
+        node = null;
         fieldName = (String) name.getValue(this);
+        if ("number".equals(fieldName)) {
+            if (nodeProvider instanceof org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag) {
+                // WHY can't it simply return the number it _will_ get?
+                throw new JspTagException("It does not make sense to ask 'number' field on uncommited node");
+            }
+        }
         setFieldVar(fieldName); // set field and node
+        if (log.isDebugEnabled()) {
+            log.debug("Field.doStartTag(); '"  + fieldName + "'");
+        }
 
         // found the node now. Now we can decide what must be shown:
         Object value;
@@ -113,7 +121,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             } else {         // function
                 value = getNodeVar().getValue(fieldName);
             }
-        } else {                        // a field was found!
+        } else {        // a field was found!
             // if direct parent is a Formatter Tag, then communicate
             FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
             if (f != null && f.wantXML()) {
@@ -151,7 +159,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         helper.setTag(this);
         helper.setValue(value);
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         log.debug("end of doStartTag");
         return EVAL_BODY_BUFFERED;

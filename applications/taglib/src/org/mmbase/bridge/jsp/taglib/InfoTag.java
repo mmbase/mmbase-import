@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspException;
  * Calls 'doInfo' from NodeManager or from Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InfoTag.java,v 1.20 2003-06-06 10:03:08 pierre Exp $ 
+ * @version $Id: InfoTag.java,v 1.21 2003-08-11 15:27:18 michiel Exp $ 
  * @deprecated
  */
 
@@ -56,7 +56,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
         helper.setTag(this);
         helper.setValue(result);
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

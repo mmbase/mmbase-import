@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.24 2003-06-17 18:07:37 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.25 2003-08-11 15:27:14 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -88,7 +88,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
             pageContext.setAttribute(jspvar, node);
         }
         if (id != Attribute.NULL) {
-            getContextProvider().getContainer().registerNode(getId(), node);
+            getContextProvider().getContextContainer().registerNode(getId(), node);
         }
     }
                
@@ -111,6 +111,13 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
 
     public void setModified() {
         modified = true;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected boolean getModified() {
+        return modified;
     }
     /**
     * Does everything needed on the afterbody tag of every

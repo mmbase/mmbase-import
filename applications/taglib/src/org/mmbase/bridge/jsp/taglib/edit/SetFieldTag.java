@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.22 2003-07-29 10:05:50 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.23 2003-08-11 15:27:26 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -98,7 +98,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
             }
             getNodeVar().setValue(fieldName, value);
             if (getId() != null) {
-                getContextProvider().getContainer().register(getId(), value);
+                getContextProvider().getContextContainer().register(getId(), value);
             }
         }
         findNodeProvider().setModified();

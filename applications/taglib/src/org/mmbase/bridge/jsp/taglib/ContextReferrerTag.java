@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.43 2003-06-17 18:07:38 michiel Exp $ 
+ * @version $Id: ContextReferrerTag.java,v 1.44 2003-08-11 15:27:15 michiel Exp $ 
  * @see ContextTag
  */
 
@@ -402,7 +402,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (log.isDebugEnabled()) { 
             log.debug("Getting object '" + key + "' from '" + getContextProvider().getId() + "'");
         }
-        Object r = getContextProvider().getContainer().getObject(key);
+        Object r = getContextProvider().getContextContainer().getObject(key);
         if (r == null) { 
             log.debug("Not found, returning empty string");
             return "";

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.45 2003-07-14 09:44:26 michiel Exp $ 
+ * @version $Id: NodeTag.java,v 1.46 2003-08-11 15:27:19 michiel Exp $ 
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -112,10 +112,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public int doStartTag() throws JspTagException{
         Node node = null;
         if (referid != Attribute.NULL) {
-            String referString = referid.getString(this);
+            String referString = (String) referid.getValue(this);
             // try to find if already in context.
             if (log.isDebugEnabled()) {
-                log.debug("looking up Node with " + referString + " in context");
+                log.debug("Looking up Node with " + referString + " in context");
             }
             switch(getNotfound()) {               
             case NOT_FOUND_SKIP:         { 
@@ -131,7 +131,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
 
             if(referString.equals(getId())) {
-                getContextProvider().getContainer().unRegister(referString);
+                getContextProvider().getContextContainer().unRegister(referString);
                 // register it again, but as node
                 // (often referid would have been a string).                
             }
@@ -142,7 +142,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             if (log.isDebugEnabled()) {
                 log.debug("node is null, number attribute: '" + n + "'");
             }
-            if (! n.equals("")) {
+            if (number != Attribute.NULL) { // if (! n.equals("")) {   // if empty string should mean 'not present'. Not sure what is most conventient
                 // explicity indicated which node (by number or alias)
                 if (! getCloud().hasNode(n)) {
                     switch(getNotfound()) {
@@ -159,7 +159,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }                
             } else {
                 // get the node from a parent element.
-                NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class, null);
+                NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class, null, false);
+                if (nodeProvider == null) {
+                    throw new JspTagException("Could not find parent of type org.mmbase.bridge.jsp.taglib.NodeProvider, and no 'number' or 'referid' attribute specified.");
+                }
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                 } else {

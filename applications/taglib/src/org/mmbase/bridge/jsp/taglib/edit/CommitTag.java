@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * serves as a baseclass for e.g. CancelTag
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CommitTag.java,v 1.14 2003-06-06 10:03:19 pierre Exp $
+ * @version $Id: CommitTag.java,v 1.15 2003-08-11 15:27:26 michiel Exp $
  */
 
 public class CommitTag extends CloudReferrerTag { 
@@ -48,7 +48,7 @@ public class CommitTag extends CloudReferrerTag {
         /*
           why should we do this??
         if (tt.getId() != null) {
-            getContextProvider().getContainer().unRegister(tt.getId());
+            getContextProvider().getContextContainer().unRegister(tt.getId());
         }
         */
         return SKIP_BODY;    
