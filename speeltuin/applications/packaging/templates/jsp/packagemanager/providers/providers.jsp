@@ -25,16 +25,16 @@
 </tr>
 <mm:nodelistfunction set="mmpm" name="getProviders">
 <tr>
-		<td>
+		<td align="left">
 			<mm:field name="name" />	
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="method" />	
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="maintainer" />	
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="state" />	
 		</td>
 		<mm:remove referid="name" />
