@@ -26,7 +26,7 @@
     <filter-name>Jumpers Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  -->
+-->
 
 	<!-- Overrides config/module/mmbaseroot.xml#encoding -->
   <!-- Filter Character Encoding
@@ -165,7 +165,7 @@
   <!-- mmbase-taglib, -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
+    <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
   </taglib>
 
   <!-- mmbase-community-taglib,
