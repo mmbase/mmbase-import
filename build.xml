@@ -211,7 +211,7 @@ version=1.7.0-dev
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,jar,web">
+          depends="lib.release,jar,web,rmmci">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -1474,7 +1474,7 @@ Version: MMBase build ${version}
     <mkdir dir="${build.dir}/rmmcitmp"/>
     <unjar src="${servlet.jar}" dest="${build.dir}/rmmcitmp" />
     <unjar src="${xml-apis.jar}" dest="${build.dir}/rmmcitmp" />
-    <jar jarfile="build/rmmci.jar">
+    <jar jarfile="build/mmbase/rmmci.jar">
        <fileset dir="${build.dir}/classes">
         <include name="org/mmbase/bridge/*.class"/>
         <include name="org/mmbase/bridge/remote/**"/>
