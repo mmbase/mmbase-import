@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.2 2003-07-25 18:16:33 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.3 2003-07-25 20:59:56 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -88,7 +88,23 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         Constraint newConstraint;
         if (query instanceof NodeQuery) {
             NodeQuery nodeQuery = (NodeQuery) query;
-            newConstraint = nodeQuery.createConstraint(nodeQuery.getStepField(field.getString(this)), getOperator(), value.getValue(this));
+            int operator = getOperator();
+            Object compareValue;
+            if (operator < FieldCompareConstraint.LIKE) {
+                String stringValue = value.getString(this);
+                try {
+                    compareValue = new Integer(stringValue);
+                } catch (NumberFormatException e) {
+                    try {
+                        compareValue = new Double(stringValue);
+                    } catch (NumberFormatException e2) {
+                        throw new  JspTagException("Operator requires number value ('" + stringValue + "' is not)");
+                    }
+                } 
+            } else {
+                compareValue = value.getValue(this);
+            }
+            newConstraint = nodeQuery.createConstraint(nodeQuery.getStepField(field.getString(this)), getOperator(), compareValue);
         } else {
             throw new UnsupportedOperationException("not yet implemented");
         }
