@@ -140,7 +140,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
             String directions) {
         String where = null;
         if ((constraints != null) && (!constraints.trim().equals(""))) {
-            where = "WHERE " + constraints;
+            where=cloud.convertClauseToDBS(constraints);
         }
         Vector v;
         if (orderby != null && (!orderby.trim().equals(""))) {
@@ -230,7 +230,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
      * sorting, which makes the sorting alphabetic. This is what you
      * need when you e.g. try to make an generic editor.
      *
-     * @param o the object to compare with 
+     * @param o the object to compare with
      */
     public int compareTo(Object o) {
 	if (! (o instanceof NodeManager)) { return -1; }
@@ -244,8 +244,8 @@ public class BasicNodeManager implements NodeManager, Comparable {
     public int hashCode() {
         return builder.oType;
     }
-    
+
     public boolean mayCreateNode() {
-        return cloud.check(Operation.CREATE, builder.oType);    
+        return cloud.check(Operation.CREATE, builder.oType);
     }
 }

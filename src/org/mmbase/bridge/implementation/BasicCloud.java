@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
@@ -455,6 +456,40 @@ public class BasicCloud implements Cloud, Cloneable {
         mmbaseCop.getAuthorization().update(userContext.getUserContext(),nodeID);
     }
 
+    /**
+     * Converts a constraint by turning all 'quoted' fields into
+     * database supported fields.
+     * XXX: todo: escape characters for '[' and ']'.
+     */
+    String convertClauseToDBS(String constraints) {
+        // obtain dbs for fieldname checks
+        if (constraints.startsWith("MMNODE")) return constraints;
+        if (constraints.startsWith("WHERE ")) return constraints;
+        MMJdbc2NodeInterface dbs=cloudContext.mmb.getDatabase();
+        String result="";
+        int posa=constraints.indexOf('[');
+        while (posa>-1) {
+            int posb=constraints.indexOf(']',posa);
+            if (posb==-1) {
+                posa=-1;
+            } else {
+                String fieldname=constraints.substring(posa+1,posb);
+                int posc=fieldname.indexOf('.',posa);
+                if (posc==-1) {
+                    fieldname=dbs.getAllowedField(fieldname);
+                } else {
+                    fieldname= fieldname.substring(0,posc+1)+
+                        dbs.getAllowedField(fieldname.substring(posc+1));
+                }
+                result+=constraints.substring(0,posa)+fieldname;
+                constraints=constraints.substring(posb+1);
+                posa=constraints.indexOf('[');
+            }
+        }
+        result="WHERE "+result+constraints;
+        return result;
+    }
+
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
             String searchDir, boolean distinct) {
@@ -515,7 +550,7 @@ public class BasicCloud implements Cloud, Cloneable {
             if (constraints.trim().equals("")) {
                 constraints = null;
             } else {
-                constraints="WHERE "+constraints;
+                constraints=convertClauseToDBS(constraints);
             }
         }
         Vector v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,
