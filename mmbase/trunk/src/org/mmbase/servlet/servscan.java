@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.16 2000-10-09 13:25:25 vpro Exp $
+ * @version $Id: servscan.java,v 1.17 2000-11-20 13:36:43 install Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -120,6 +120,7 @@ public class servscan extends JamesServlet {
 			if (mimetype==null) mimetype="text/html";
 			sp.mimetype=mimetype;
 			sp.setReq(req);
+			sp.setRes(res);
 	
 			String sname=getCookie(sp.req,res);
 			sp.sname=sname;
