@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.14 2002-03-01 14:00:43 pierre Exp $
+ * @version $Id: MMFlash.java,v 1.15 2002-05-08 13:11:48 vpro Exp $
  */
 public class MMFlash extends Module {
 
@@ -93,90 +93,100 @@ public class MMFlash extends Module {
         return(bytes);
     }
 
+    /**
+    * Dynamically generated flash.
+    * 
+    * This method parses a xml-script and generate flash.
+    * This is done in 2 stages, first the xml is parsed through 
+    * scan, the next stage will generate the flash which will then
+    * be returned.
+    * 
+    * @param sp scanpage
+    * @return the dynamically generated flash or null when error occured
+    */
     public synchronized byte[] getScanParsedFlash(scanpage sp) {
-        // Get inputfile
-        String url = sp.req.getRequestURI();
-        String filename=htmlroot+url;
-        byte[] inp=readBytesFile(filename);
-        if (inp==null) {
-            log.error( "No valid sxf file ("+filename+") !" );        
-            return(null);
-        }
-        sp.body = new String(inp);
 
-        // oke try to parse it
-        if (scanp!=null) {
-            try {
-                sp.body = scanp.handle_line(sp.body,sp.session,sp);
-            } catch(Exception e) {}
-        } else {
-            log.error("MMFlash-> can't reach scanparser");
-        }
+        byte[] result = null;
 
-        // now feed it to the xml reader
-        CharArrayReader reader=new CharArrayReader(sp.body.toCharArray());
-            
-        XMLDynamicFlashReader script=new XMLDynamicFlashReader(reader);
+        // get inputfile
+        // -------------
+        String url      = sp.req.getRequestURI();
+        String filename = htmlroot+url;
+        String query    = sp.req.getQueryString();
 
-        String body="";
-        String src=script.getSrcName();
-        if (src.startsWith("/")) {
-            body+="INPUT \""+htmlroot+src+"\"\n";
-        } else {
-            String purl=url.substring(0,url.lastIndexOf('/')+1);
-            src=purl+src;
-            body+="INPUT \""+htmlroot+src+"\"\n";
-        }
-        body+="OUTPUT \""+generatortemppath+"export.swf\"\n";
+        log.debug("url("+url+"), filename("+filename+"), query("+query+")");
 
-
-        // is there a caching option set ?
-        String caching=script.getCaching();
-        String query=sp.req.getQueryString();
-        
+        // cache stage 1
+        // -------------
         if (!sp.reload) {
-            if (caching!=null && caching.equals("lru")) {
-                byte[] bytes=(byte[])lru.get(url+query);
-                if (bytes!=null) {
-                    return(bytes);
-                }
-            } else if (caching!=null && caching.equals("disk")) {
-                byte[] bytes=(byte[])lru.get(url+query);
-                if (bytes!=null) {
-                    log.info("WOW from disk+lru");
-                    return(bytes);
-                } else {
-                    bytes=loadDiskCache(htmlroot+src,query);
-                    if (bytes!=null) {
-                        log.info("WOW from disk");
-                        lru.put(url+query,bytes);
-                        return(bytes);
-                    }
+            result =(byte[])lru.get(url+query);
+            if (result!=null) {
+                log.info("Cache hit from disk+lru");
+            } else {
+                result=loadDiskCache(filename,query);
+                if (result!=null) {
+                    log.info("Cache hit from from disk");
+                    lru.put(url+query,result);
                 }
             }
-        }// !sp.reload
+        }
 
+        // cache miss or reload
+        // --------------------
+        if(result==null) { 
+            byte[] inp      = readBytesFile(filename);
 
-        String scriptpath=src;
-        scriptpath=scriptpath.substring(0,scriptpath.lastIndexOf('/')+1);
+            // check if file exists
+            // --------------------
+            if (inp==null) {
+                log.error("Cannot find the sxf-file: '"+filename+"'!");
+                return(null);
+            }
 
-        body+=addDefines(script.getDefines(),scriptpath);
-        body+=addReplaces(script.getReplaces(),scriptpath);
+            sp.body = new String(inp);
 
-        // save the created input file for the generator
-        saveFile(generatortemppath+"input.sws",body);    
-        // lets generate the file
-        generateFlash(scriptpath);
-    
-        byte[] bytes=readBytesFile(generatortemppath+"export.swf");
-        if (caching!=null && caching.equals("lru")) {
-            lru.put(url+query,bytes);
-        } else if (caching!=null && caching.equals("disk")) {
-            saveDiskCache(htmlroot+src,query,bytes);
-            lru.put(url+query,bytes);
-        }    
+            // oke try to parse it
+            // -------------------
+            if (scanp!=null) {
+                try {
+                    sp.body = scanp.handle_line(sp.body,sp.session,sp);
+                } catch(Exception e) {}
+            } else {
+                log.error("The scanparser cannot be found! Check scanparser.xml in config-directory!");
+            }
+
+            // now feed it to the xml reader
+            CharArrayReader         reader  = new CharArrayReader(sp.body.toCharArray());
+            XMLDynamicFlashReader   script  = new XMLDynamicFlashReader(reader);
+
+            String body="";
+            String src=script.getSrcName();
+            if (src.startsWith("/")) {
+                body+="INPUT \""+htmlroot+src+"\"\n";
+            } else {
+                String purl=url.substring(0,url.lastIndexOf('/')+1);
+                src=purl+src;
+                body+="INPUT \""+htmlroot+src+"\"\n";
+            }
+            body+="OUTPUT \""+generatortemppath+"export.swf\"\n";
+
+            String scriptpath=src;
+            scriptpath=scriptpath.substring(0,scriptpath.lastIndexOf('/')+1);
+
+            body+=addDefines(script.getDefines(),scriptpath);
+            body+=addReplaces(script.getReplaces(),scriptpath);
+
+            saveFile(generatortemppath+"input.sws",body);    
+            generateFlash(scriptpath);
+
+            result =readBytesFile(generatortemppath+"export.swf");
+            lru.put(url+query,result);
+            saveDiskCache(filename,query,result);
+        } else { 
+            // log.debug("cache hit"); 
+        }   
         /* WHAT ABOUT CLEANING UP THE MESS WE LEFT?? */
-        return(bytes);
+        return result;
     }
 
     /**
@@ -187,7 +197,7 @@ public class MMFlash extends Module {
      * @param    flashXML    a xml which contains the manipulations on the flash template
      * @param     workingdir  the path where there has to be searched for the template and the 
      *                        other things, like pictures.(THIS LOOKS BELOW THE mmbase.htmlroot !!)
-     * @return              a byte thingie, which contains the new generated flash thingie
+     * @return              a byte thingie, which contains the newly generated flash file
      */
     public synchronized byte[] getParsedFlash(String flashXML, String workingdir) {
         CharArrayReader reader=new CharArrayReader(flashXML.toCharArray());
@@ -406,52 +416,50 @@ public class MMFlash extends Module {
         return(part);
     }
 
-    byte[] readBytesFile(String filename) {
-        File bfile = new File(filename);
-        int filesize = (int)bfile.length();
-        byte[] buffer=new byte[filesize];
+    /**
+    * Read a file from disk.
+    *
+    * @param filename
+    * @return bytes from file
+    */
+    private byte[] readBytesFile(String filename) {
+        File   bfile    = new File(filename);
+        int    filesize = (int)bfile.length();
+        byte[] buffer   = new byte[filesize];
         try {
-                FileInputStream scan = new FileInputStream(bfile);
-            int len=scan.read(buffer,0,filesize);
+            FileInputStream scan = new FileInputStream(bfile);
+            int len = scan.read(buffer,0,filesize);
             scan.close();
         } catch(FileNotFoundException e) {
-            log.error("error getfile, not found : "+filename);
+            log.error("Cannot find file: "+filename);
             return(null);
          } catch(IOException e) {
-            log.error("error getfile, could not read : "+filename);        
+            log.error("Cannot read file: "+filename);        
             return null;
         }
         return(buffer);
     }
 
 
+    /**
+    * Reads a file from disk.
+    *
+    * @param filename filename (+query) constructs the real filename
+    * @param query query, is put after filename to construct real file on disk
+    * @return bytes from file
+    */
     private byte[] loadDiskCache(String filename,String query) {
-        if (query!=null) {
-            filename=filename.substring(0,filename.length()-3)+"swf?"+query;
-        } else {
-            filename=filename.substring(0,filename.length()-3)+"swf";
-        }
+        if(query!=null && !query.equals(""))
+            filename = filename.substring(0,filename.length()-3) + "swf?" + query;
+        else 
+            filename = filename.substring(0,filename.length()-3) + "swf";
 
         if (subdir!=null && !subdir.equals("")) {
             int pos=filename.lastIndexOf('/');
             filename=filename.substring(0,pos)+"/"+subdir+filename.substring(pos);
         }
-
-        File bfile = new File(filename);
-        int filesize = (int)bfile.length();
-        byte[] buffer=new byte[filesize];
-        try {
-            FileInputStream scan = new FileInputStream(bfile);
-            int len=scan.read(buffer,0,filesize);
-            scan.close();
-        } catch(FileNotFoundException e) {
-            log.error("error getfile, not found : "+filename);            
-            return(null);
-         } catch(IOException e) {
-            log.error("error getfile, could not read : "+filename);        
-            return(null);
-        }
-        return(buffer);
+        log.debug("load from disk: " + filename);
+        return readBytesFile(filename);
     }
 
 
@@ -565,11 +573,10 @@ public class MMFlash extends Module {
     }
 
     private boolean saveDiskCache(String filename,String query,byte[] value) {
-        if (query!=null) {
-            filename=filename.substring(0,filename.length()-3)+"swf?"+query;
-        } else {
-            filename=filename.substring(0,filename.length()-3)+"swf";
-        }
+        if(query!=null && !query.equals(""))
+            filename = filename.substring(0,filename.length()-3) + "swf?" + query;
+        else
+            filename = filename.substring(0,filename.length()-3) + "swf";
 
         if (subdir!=null && !subdir.equals("")) {
             int pos=filename.lastIndexOf('/');
@@ -581,7 +588,7 @@ public class MMFlash extends Module {
             }
         }
 
-        log.debug("filename="+filename);        
+        log.debug("save to disk: "+filename);        
         //System.out.println("filename="+filename);    
         
         File sfile = new File(filename);
