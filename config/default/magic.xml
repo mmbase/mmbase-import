@@ -1951,22 +1951,22 @@
   <test offset="0" type="string" comparator="=">PO^Q`</test>
 </detector>
 <detector>
-  <mimetype>???</mimetype>
+  <mimetype>application/msword</mimetype>
   <extension>???</extension>
-  <designation>Office Document</designation>
-  <test offset="0" type="string" comparator="=">\3767\000#Microsoft</test>
+  <designation>Microsoft Office Document</designation>
+  <test offset="0" type="string" comparator="=">\376\067\000\043</test>
 </detector>
 <detector>
-  <mimetype>???</mimetype>
+  <mimetype>application/msword</mimetype>
   <extension>???</extension>
-  <designation>Office Document</designation>
-  <test offset="0" type="string" comparator="=">\320\317\021\340\241\261Microsoft</test>
+  <designation>Microsoft Office Document</designation>
+  <test offset="0" type="string" comparator="=">\320\317\021\340\241\261</test>
 </detector>
 <detector>
-  <mimetype>???</mimetype>
+  <mimetype>application/msword</mimetype>
   <extension>???</extension>
-  <designation>Office Document</designation>
-  <test offset="0" type="string" comparator="=">\333\245\000\000\000Microsoft</test>
+  <designation>Microsoft Office Document</designation>
+  <test offset="0" type="string" comparator="=">\333\245\000\000\000</test>
 </detector>
 <detector>
   <mimetype>???</mimetype>
