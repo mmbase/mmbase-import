@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.60 2004-06-11 15:48:28 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.61 2004-06-11 15:49:05 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -633,7 +633,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     private String getTableName(String table) {        
         int end = table.length() - 1;
-        if (end < 1) throw new IllegalArgumentException("Table name to short '" + table + "'");
+        if (end < 1) throw new IllegalArgumentException("Table name too short '" + table + "'");
         while (Character.isDigit(table.charAt(end))) --end;
         return table.substring(0, end + 1);
     }
