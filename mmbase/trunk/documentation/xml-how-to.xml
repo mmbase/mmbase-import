@@ -14,16 +14,23 @@
 				<surname>van Rooden</surname>
 			</author>
 		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+			</para>
+		</legalnotice>
 		<revhistory>
 			<revision>
 				<revnumber>0.3</revnumber>
 				<date>30 January 2003</date>
-				<revremark>Henk Hangyi, hangyi@xs4all.nl. Part of the context-security document</revremark>
+				<authorinitials>HH</authorinitials>
+				<revremark>Part of the context-security document</revremark>
 			</revision>
 			<revision>
 				<revnumber>0.4</revnumber>
 				<date>07 February 2003</date>
-				<revremark>Pierre van Rooden. Turned this into a separate document</revremark>
+				<authorinitials>PvR</authorinitials>
+				<revremark>Turned this into a separate document</revremark>
 			</revision>
 		</revhistory>
 	</articleinfo>
