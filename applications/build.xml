@@ -117,7 +117,7 @@ Applications build file
      <ant dir="email"      target="clean" />
      <ant dir="xmlimporter"   target="clean" />
      <!-- <ant dir="aselect"      target="clean" /> -->
-    <delete dir="${applications.build.dir}" />
+     <delete dir="${applications.build.dir}" />
   </target>
 
 
