@@ -28,6 +28,8 @@ public class EditStateNode {
 	private boolean debug	  = false;
 	private void debug( String msg ){ System.out.println( classname +":"+ msg ); }
 
+	private static boolean removeRelations=false; // remover relations on node delete
+
 	Hashtable searchValues = new Hashtable();
 	Hashtable htmlValues = new Hashtable();
 	String editNode;
@@ -137,7 +139,9 @@ public class EditStateNode {
 	}
 
 	public void removeRelations() {
-		mmObjectBuilder.removeRelations(node);
+		if (removeRelations) {
+			mmObjectBuilder.removeRelations(node);
+		}
 	}
 
 	public MMObjectNode getEditNode() {
