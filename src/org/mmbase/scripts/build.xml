@@ -63,7 +63,7 @@ NetComponents can be found at:
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
-  <property name="source.dir" location="../../../.." />
+  <property name="source.dir" location="." />
   <property name="build.dir" value="${source.dir}/build"/>
   <property name="download.dir" value="${build.dir}/download"/>
   <property name="expand.dir" value="${download.dir}/expanded"/>
