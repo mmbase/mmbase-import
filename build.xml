@@ -274,9 +274,9 @@ builddate=${builddate}
     depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar">
 
     <mkdir dir="${release.lib.dir}" />
-    <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
-    <copy file="${xerces.jar}"         todir="${release.lib.dir}" />
-    <copy file="${xml-apis.jar}"       todir="${release.lib.dir}" />
+    <copy file="${xalan.jar}"          tofile="${release.lib.dir}/xalar.renametojar" />
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xerces.renametojar" />
+    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
