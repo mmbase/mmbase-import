@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.82 2003-01-13 16:55:41 robmaris Exp $
+ * @version $Id: MMBase.java,v 1.83 2003-02-19 20:23:50 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -415,6 +415,8 @@ public class MMBase extends ProcessorModule  {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
+
+        TypeRel.readCache();
 
         // signal that MMBase is up and running
         mmbasestate=STATE_UP;
@@ -1075,16 +1077,17 @@ public class MMBase extends ProcessorModule  {
         String path = builderpath + ipath;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
-        if (bdir.isDirectory()) {
+        if (bdir.isDirectory() && bdir.canRead()) {
+            log.service("Reading all builders of directory " + bdir);
             String files[] = bdir.list();
             if (files!=null) {
                 for (int i=0;i<files.length;i++) {
                     String bname=files[i];
                     if (bname.endsWith(".xml")) {
-            bname=bname.substring(0,bname.length()-4);
-            loadBuilderFromXML(bname,ipath);
-                    } else {
-            loadBuilders(ipath +  bname + File.separator);
+                        bname = bname.substring(0, bname.length()-4);
+                        loadBuilderFromXML(bname, ipath);
+                    } else if (bdir.isDirectory()) {
+                        loadBuilders(ipath +  bname + File.separator);
                     }
                 }
             } else {
@@ -1183,7 +1186,7 @@ public class MMBase extends ProcessorModule  {
         try {
             // register the loading of this builder
             loading.put(objectname,"TRUE");
-            XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml", this);
+            XMLBuilderReader parser = new XMLBuilderReader(path+builder+".xml", this);
             String status=parser.getStatus();
             if (status.equals("active")) {
                 String classname=parser.getClassFile();

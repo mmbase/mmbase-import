@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.96 2003-02-14 10:03:45 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.97 2003-02-19 20:23:50 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -203,6 +203,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return parent.preEdit(ed,this);
     }
 
+
     /**
      * Returns the core of this node in a string.
      * Used for debugging.
@@ -210,24 +211,33 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the contents of the node as a string.
      */
     public String toString() {
-        String result="";
-        try {
-            result="prefix='"+prefix+"'";
-            Enumeration e=values.keys();
-            while (e.hasMoreElements()) {
-                String key=(String)e.nextElement();
-                int dbtype=getDBType(key);
-                String value=""+values.get(key);  // XXX:should be retrieveValue ?
-                if (result.equals("")) {
-                    result=key+"="+dbtype+":'"+value+"'";
-                } else {
-                    result+=","+key+"="+dbtype+":'"+value+"'";
-                }
-            }
-        } catch(Exception e) {}
-        return result;
+        if (parent != null) {
+            return parent.toString(this);
+        } else {
+            return defaultToString();
+        }
     }
 
+    /**
+     * @since MMBase-1.6.2
+     */
+    String defaultToString() {        
+    	StringBuffer result=new StringBuffer("prefix='"+prefix+"'");
+	try {
+	    Enumeration e=values.keys();
+	    while (e.hasMoreElements()) {
+		String key=(String)e.nextElement();
+		int dbtype=getDBType(key);
+		String value=""+values.get(key);  // XXX:should be retrieveValue ?
+		if (result.equals("")) {
+		    result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
+		} else {
+		    result.append(","+key+"="+dbtype+":'"+value+"'");
+		}
+	    }
+	} catch(Exception e) {}
+	return result.toString();
+    }
 
     /**
      * Return the node as a string in XML format.
@@ -1033,41 +1043,41 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Return the number of relations of this node, filtered on a specified type.
-     * @param wt the 'type' of related nodes (NOT the relations!).
+     * @param wantedtype the 'type' of related nodes (NOT the relations!).
      * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount(String wt) {
-        int count=0;
+        int count = 0;
         MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
         if (wantedType != null) {
-			
-            if (relations==null) {
-                relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
-                relation_cache_miss++;
-            } else {
-                relation_cache_hits++;
-            }
-            if (relations!=null) {
-                for(Enumeration e=relations.elements();e.hasMoreElements();) {
-                    MMObjectNode tnode=(MMObjectNode)e.nextElement();
-                    int snumber=tnode.getIntValue("snumber");
-                    int nodetype =0;
-                    if (snumber==getNumber()) {
-                        nodetype=parent.getNodeType(tnode.getIntValue("dnumber"));
-                    } else {
-                        nodetype=parent.getNodeType(snumber);
-                    }
+	    if (relations==null) {
+		relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
+		relation_cache_miss++;
+	    } else {
+		relation_cache_hits++;
+	    }
+	    if (relations!=null) {
+		for(Enumeration e=relations.elements();e.hasMoreElements();) {
+		    MMObjectNode tnode=(MMObjectNode)e.nextElement();
+		    int snumber=tnode.getIntValue("snumber");
+		    int nodetype =0;
+		    if (snumber==getNumber()) {
+			nodetype=parent.getNodeType(tnode.getIntValue("dnumber"));
+		    } else {
+			nodetype=parent.getNodeType(snumber);
+		    }
                     MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
                     if (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType)) {
                         count++;
                     }
-                }
-            }
-        } else {
-            log.warn("getRelationCount is requested with an invalid Builder name (otype "+wt+" does not exist)");
-        }
-        return count;
+		}
+	    }
+	} else {
+	    log.warn("getRelationCount is requested with an invalid Builder name (otype "+wt+" does not exist)");
+	}
+	return count;
     }
+
 
     /**
      * Returns the node's age
@@ -1167,7 +1177,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	}
 
 	log.debug("related("+parent.getTableName()+"("+getNumber()+")) = size("+result.size()+")");
-
+        
 	return result;
     }
 
@@ -1380,4 +1390,46 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
         return sizeof.sizeof(values) + sizeof.sizeof(relations);
     }
+
+
+    /**
+     * @since MMBase-1.6.2
+     */
+    public int hashCode() {
+        if (parent != null) {
+            return parent.hashCode(this);
+        } else {
+            return super.hashCode();
+        }
+    }
+
+    /**
+     * @since MMBase-1.6.2
+     */
+    public boolean equals(Object o) {
+        if (o instanceof MMObjectNode) {                
+            MMObjectNode n = (MMObjectNode) o;
+            if (parent != null) {
+                return parent.equals(this, n);
+            } else {
+                return defaultEquals(n);
+            }
+        }
+        return false;
+    }
+    /**
+     * @since MMBase-1.6.2
+     */
+    public boolean defaultEquals(MMObjectNode n) {
+        /*
+          if (getNumber() >= 0) {  // we know when real nodes are equal
+          return n.getNumber() == getNumber();
+          } else { // I don't know about others
+          return super.equals(n); // compare as objects.
+          } 
+        */
+        return super.equals(n); // compare as objects.
+    }
+
+
 }
