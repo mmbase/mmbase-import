@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.132 2002-04-18 07:10:03 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.133 2002-04-18 07:50:46 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -239,9 +239,6 @@ public class MMObjectBuilder extends MMTable {
     // Version information for builder registration
     // Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
     private int version=0;
-
-    // Dutch builder description (?)
-    private String dutchSName="onbekend";
 
     /**
      * determines whether builders are created using xml, accessible through {@link #getXMLConfig}
@@ -2384,23 +2381,12 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Sets Dutch Short name.
-     * @see #getDutchSName
-     * @deprecated Will be removed soon
-     */
-    public void setDutchSName(String d) {
-        this.dutchSName=d;
-    }
-
-
-    /**
      * Sets search Age.
      * @param age the search age as a <code>String</code>
      */
     public void setSearchAge(String age) {
         this.searchAge=age;
     }
-
 
     /**
      * Gets search Age
@@ -2411,27 +2397,9 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Gets Dutch Short name.
-     * Actually returns the builders short name in either the 'current language', or the default language 'us', whichever is available.
-     * If this fails, the value set with {@link #setDutchSName} is used instead.
-     * @returns the 'dutch' short name
-     * @deprecated use {@link #getSingularName} instead.
-     */
-    public String getDutchSName() {
-        if (singularNames!=null) {
-            String tmp=(String)singularNames.get(mmb.getLanguage());
-            if (tmp==null) {
-               tmp=(String)singularNames.get("en");
-            }
-            return tmp;
-        }
-        return dutchSName;
-    }
-
-    /**
      * Gets short name of the builder, using the specified language.
      * @param lang The language requested
-     * @returns the short name in that language, or <code>null</code> if it is not avaialble
+     * @return the short name in that language, or <code>null</code> if it is not available
      */
     public String getSingularName(String lang) {
         if (singularNames==null) return null;
@@ -2441,19 +2409,20 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Gets short name of the builder in the current default language.
      * If the current language is not available, the "en" version is returned instead.
-     * @returns the short name in either the default language or in "en"
+     * If that name is not available, the internal builder name (table name) is returned.
+     * @return the short name in either the default language or in "en"
      */
     public String getSingularName() {
         String tmp = getSingularName(mmb.getLanguage());
-        if (tmp==null) tmp=getSingularName("en");
-        if (tmp==null) tmp=tableName;
+        if (tmp==null) tmp = getSingularName("en");
+        if (tmp==null) tmp = tableName;
         return tmp;
     }
 
     /**
      * Gets long name of the builder, using the specified language.
      * @param lang The language requested
-     * @returns the long name in that language, or <code>null</code> if it is not avaialble
+     * @return the long name in that language, or <code>null</code> if it is not available
      */
     public String getPluralName(String lang) {
         if (pluralNames==null) return null;
@@ -2463,12 +2432,13 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Gets long name of the builder in the current default language.
      * If the current language is not available, the "en" version is returned instead.
-     * @returns the long name in either the default language or in "en"
+     * If that name is not available, the singular name is returned.
+     * @return the long name in either the default language or in "en"
      */
     public String getPluralName() {
         String tmp = getPluralName(mmb.getLanguage());
         if (tmp==null) tmp = getPluralName("en");
-        if (tmp==null) tmp=getSingularName();
+        if (tmp==null) tmp = getSingularName();
         return tmp;
     }
 
