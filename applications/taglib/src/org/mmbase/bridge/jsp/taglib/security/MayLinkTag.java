@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
 public class MayLinkTag extends MayWriteTag implements Condition {
 
     public int doStartTag() throws JspTagException {
-        if ((getNode().mayLink()) != inverse) {
+        if ((getNode().mayLink()) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;

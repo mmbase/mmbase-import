@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
@@ -22,14 +23,17 @@ import javax.servlet.jsp.JspTagException;
  */
 public class MayWriteTag extends NodeReferrerTag implements Condition {
 
-    protected boolean inverse = false;
+    protected Attribute inverse = Attribute.NULL;
 
-    public void setInverse(Boolean b) {
-        inverse = b.booleanValue();
+    public void setInverse(String b) throws JspTagException {
+        inverse = getAttribute(b);
+    }
+    protected boolean getInverse() throws JspTagException {
+        return inverse.getBoolean(this, false);
     }
 
     public int doStartTag() throws JspTagException {
-        if ((getNode().mayWrite()) != inverse) {
+        if ((getNode().mayWrite()) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
@@ -46,7 +50,6 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
     }
 
     public int doEndTag() throws JspTagException {     
-        inverse = false;
         return EVAL_PAGE;
     }
 
