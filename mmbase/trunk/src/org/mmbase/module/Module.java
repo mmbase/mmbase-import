@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.43 2003-03-18 16:41:58 michiel Exp $
+ * @version $Id: Module.java,v 1.44 2003-04-04 21:29:59 michiel Exp $
  */
 public abstract class Module {
 
     // logging
-    static private Logger log = Logging.getLoggerInstance(Module.class.getName());
+    static private Logger log = null;
 
     static Map modules;
     static String mmbaseconfig;
@@ -253,6 +253,7 @@ public abstract class Module {
 
     public static synchronized final void startModules() {
         // call the onload to get properties
+        if (log == null) log = Logging.getLoggerInstance(Module.class.getName());
         log.service("Starting modules " + modules.keySet());
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
             Module mod = (Module)i.next();
@@ -315,6 +316,7 @@ public abstract class Module {
     synchronized public static Object getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules == null) {
+            if (log == null) log = Logging.getLoggerInstance(Module.class.getName());
             log.service("Loading MMBase modules...");
             modules = loadModulesFromDisk();
             if (log.isDebugEnabled()) {
