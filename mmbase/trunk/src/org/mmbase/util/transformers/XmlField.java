@@ -1,8 +1,6 @@
 package org.mmbase.util.transformers;
 
-import java.io.Reader;
-import java.io.Writer;
-import java.io.File;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,23 +15,23 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.7 2003-05-06 20:46:35 michiel Exp $
+ * @version $Id: XmlField.java,v 1.8 2003-05-07 21:25:44 michiel Exp $
  */
 
-public class XmlField extends AbstractTransformer implements CharTransformer {
+public class XmlField extends ConfigurableCharTransformer implements CharTransformer {
 
 
     private static Logger log = Logging.getLoggerInstance(XmlField.class.getName());
 
     // can be decoded:
-    private final static int RICH   = 1;
-    private final static int POOR   = 2;
-    private final static int BODY   = 3;
-    private final static int XML    = 4;
+    public final static int RICH   = 1;
+    public final static int POOR   = 2;
+    public final static int BODY   = 3;
+    public final static int XML    = 4;
 
     // cannot be decoded:
-    private final static int ASCII  = 10;
-    private final static int XHTML  = 11;
+    public final static int ASCII  = 10;
+    public final static int XHTML  = 11;
 
 
     private final static String CODING = "UTF-8"; // This class only support UTF-8 now.
@@ -501,11 +499,12 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     /**
      * Takes an object, normally a string
      */
-    public Writer transform(Reader r) {
-        throw new UnsupportedOperationException("transform(Reader) is not yet supported");
-    }
-    public Writer transformBack(Reader r) {
-        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
+    public Writer transform(Reader r, Writer w) {
+        return transformUtil(r, w);
+    }   
+
+    public Writer transformBack(Reader r, Writer w) {
+        return transformBackUtil(r, w);
     }
 
     public String transform(String data) {
@@ -516,7 +515,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         case XHTML:       return XSLTransform("mmxf2xhtml.xsl", data);
         case BODY:        return xmlBody(data);
         case XML:         return data;
-        default: throw new UnsupportedOperationException("Cannot transform");
+        default: throw new UnknownCodingException(getClass(), to);
         }
     }
     public String transformBack(String r) {
@@ -536,7 +535,8 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
             result = r;
             break;
         case ASCII:
-        default: throw new UnsupportedOperationException("Cannot transform");
+            throw new UnsupportedOperationException("Cannot transform");
+        default: throw new UnknownCodingException(getClass(), to);
         }
         try {
             validate(XML_HEADER + result);
@@ -553,7 +553,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         case XHTML: return "MMXF_XHTML";
         case BODY:  return "MMXF_BODY";
         case XML:   return "MMXF_MMXF";
-        default: throw new UnsupportedOperationException("unknown encoding");
+        default: throw new UnknownCodingException(getClass(), to);
         }
     }
 }

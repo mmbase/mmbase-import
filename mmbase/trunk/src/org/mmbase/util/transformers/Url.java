@@ -25,10 +25,10 @@ import org.mmbase.util.URLParamEscape;
  * @author Michiel Meeuwissen 
  */
 
-public class Url extends AbstractTransformer implements CharTransformer {
+public class Url extends ConfigurableCharTransformer implements CharTransformer {
     
-    private final static int ESCAPE       = 1;     
-    private final static int PARAM_ESCAPE = 2;
+    public final static int ESCAPE       = 1;     
+    public final static int PARAM_ESCAPE = 2;
 
     /**
      * Used when registering this class as a possible Transformer
@@ -41,32 +41,34 @@ public class Url extends AbstractTransformer implements CharTransformer {
         return h;
     }
 
-    public Writer transform(Reader r) {
-        throw new UnsupportedOperationException("transform(Reader) is not yet supported");
+    public Writer transform(Reader r, Writer w) {
+        return transformUtil(r, w);
     }
-    public Writer transformBack(Reader r) {
-        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
-    } 
+
+    public Writer transformBack(Reader r, Writer w) {
+        return transformBackUtil(r, w);
+    }
+
 
     public String transform(String r) {
         switch(to){
         case ESCAPE:           return URLEscape.escapeurl(r);
         case PARAM_ESCAPE:     return URLParamEscape.escapeurl(r);
-        default: throw new UnsupportedOperationException("Cannot transform");
+        default: throw new UnknownCodingException(getClass(), to);
         }
     }
     public String transformBack(String r) {
         switch(to){
         case ESCAPE:           return URLEscape.unescapeurl(r);
         case PARAM_ESCAPE:     return URLParamEscape.unescapeurl(r);
-        default: throw new UnsupportedOperationException("Cannot transform");
+        default: throw new UnknownCodingException(getClass(), to);
         }
     } 
     public String getEncoding() {
         switch(to){
         case ESCAPE:        return "ESCAPE_URL";
         case PARAM_ESCAPE:  return "ESCAPE_URL_PARAM";
-        default: throw new UnsupportedOperationException("unknown encoding");
+        default: throw new UnknownCodingException(getClass(), to);
         }
     }
 }

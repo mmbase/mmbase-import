@@ -16,41 +16,32 @@ import java.util.Map;
 
 
 /**
- * Do MD5 encoding
+ * Do MD5 encoding. Decoding is of course not possible. MD5 encoding
+ * can not be efficiently 'piped', because the complete String is
+ * needed. So, be careful 'chaining' it.
  *
  * @author Michiel Meeuwissen 
  */
 
-public class MD5 extends AbstractTransformer implements CharTransformer {
+public class MD5 extends AbstractCharTransformer implements CharTransformer {
     private final static String ENCODING     = "MD5";
     private MD5Implementation transformer = new MD5Implementation();    
 
-    /**
-     * Used when registering this class as a possible Transformer
-     */
-    public Map transformers() {
-        HashMap h = new HashMap();
-        h.put(ENCODING, new Config(MD5.class, 42, "Encode using MD5"));
-        return h;
-    }
 
-    public Writer transform(Reader r) {
-        throw new UnsupportedOperationException("transform(Reader) is not yet supported");
-    }
-    
-    public Writer transformBack(Reader r) {
-        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
-    } 
 
-    public String getEncoding() {
+    public String toString() {
         return ENCODING;
+    }
+
+    public Writer transform(Reader r, Writer w) {
+        return transformUtil(r, w);
     }
     
     public String transform(String r) {
         return transformer.calcMD5(r);
     }
     
-    public String transformBack(String r) {
+    public String transformBack(String r, Writer w) {
         throw new UnsupportedOperationException("transformBack(String) can never be done for MD5(i hope so :p)");
     }     
     

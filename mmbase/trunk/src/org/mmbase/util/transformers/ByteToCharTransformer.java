@@ -23,7 +23,10 @@ import java.io.Writer;
 public interface ByteToCharTransformer extends Transformer {
 
     public Writer transform(InputStream r); 
+    //public Writer transform(InputStream r, Writer w); 
+
     public OutputStream transformBack(Reader r);
+    //public OutputStream transformBack(Reader r, OutputStream o);
 
     public String transform(byte[] r); 
     public byte[] transformBack(String r);
