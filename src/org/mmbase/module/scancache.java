@@ -210,6 +210,10 @@ public class scancache extends Module implements scancacheInterface {
      * It is first retrieved from meory. if that fails, the file is retrieved from disk.
      * This method performs a check on expiration using either the default expiration
      * time (6 hours), or the value in the line parameter.
+ 	 * This method returns an old version of the page if the page in the cache has expired.
+	 * It will signal the scanparser to calculate a new one in the background.
+	 * This avoids contention on a busy server as the page is only calculated once when expired
+ 	 * not calculate every request that comes in during the window of calculation.
      * @param poolname name of the cache pool, expected (but not verified) are "HENK" or "PAGE"
      * @param key URL of the page to retrieve
      * @param line the expiration value, either the expiration value in seconds or the word 'NOEXPIRE'. Due to
@@ -620,6 +624,13 @@ public class scancache extends Module implements scancacheInterface {
         return status;
     }
 
+	/**
+	 * This method signals the scanparser to start caclulation on the page
+	 * given in uri/scanpage, it will duplicate the request as not to interfere
+	 * with the original request.
+	 * @param sp The original requests scanpage
+	 * @param uri of the request
+	 */
 	private void signalProcessor(scanpage sp, String uri) {
 		scanpage fakesp=sp.duplicate();
 		scanparser.processPage(fakesp,uri);

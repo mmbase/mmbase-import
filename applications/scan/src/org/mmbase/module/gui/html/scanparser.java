@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.50 $ $Date: 2001-11-25 18:32:23 $
+ * @$Revision: 1.51 $ $Date: 2001-11-26 12:55:29 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -2014,10 +2014,16 @@ public class scanparser extends ProcessorModule {
 		}
 	}
 
+	/**
+	 * Start a process to calculate a page in the background
+	 * used by scancache to generate new pages for expired ones
+	 * @param sp The request of the page (duplicated from the original)
+ 	 * @param uri The uri of the request
+	 */
 	public synchronized void processPage(scanpage sp,String uri) {
 		if (!pagesprocessing.containsKey(uri)) {
 			log.debug("processPage : creating process for: "+uri);
-			pageProcess pp=new pageProcess(this,sp,uri);
+			PageProcess pp=new PageProcess(this,sp,uri);
 			pagesprocessing.put(uri,pp);
 			log.debug("processPage : currently running "+pagesprocessing);
 		} else {
@@ -2025,6 +2031,10 @@ public class scanparser extends ProcessorModule {
 		}
 	}
 
+	/**
+	 * Remove a PageProcess from the list of pages currently being calculated
+	 * @param uri Uri of the request being calculated
+	 */
 	public void removeProcess(String uri) {
 		pagesprocessing.remove(uri);
 	}
@@ -2097,9 +2107,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.50 2001-11-25 18:32:23 vpro Exp $
+$Id: scanparser.java,v 1.51 2001-11-26 12:55:29 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.50  2001/11/25 18:32:23  vpro
+Rico: req queueing
+
 Revision 1.49  2001/11/25 16:41:55  vpro
 Rico: scanparser sequencer
 
