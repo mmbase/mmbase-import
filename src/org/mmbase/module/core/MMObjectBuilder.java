@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.157 2002-10-02 21:19:53 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.158 2002-10-03 15:31:07 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1718,6 +1718,7 @@ public class MMObjectBuilder extends MMTable {
         return null;
     }
 
+
     /**
      * Get the field definitions for the editor, sorted according to the specified order.
      * This method makes an explicit sort (it does not use a cached list).
@@ -1924,21 +1925,44 @@ public class MMObjectBuilder extends MMTable {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
         }
         
-
         if (function.equals("info")) {
             Map info = new HashMap();
-            info.put("wrap", "bla bla");
+            info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
             info.put("gui",  "(field, session, language) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+            // language is only implemented in TypeDef now, session in AbstractServletBuilder
+            // if needed on more place, then it can be generalized to here.
+
             info.put("html",  "(field), XHTML escape the field");
-            info.put("substring", "bla bla");
-            info.put("smartpath", "bla bla");
-            info.put("bla bla", "bla bla");
+            info.put("substring", "(string, length, fill)");
+            info.put("date", "deprecated, use time-tag");
+            info.put("time", "deprecated, use time-tag");
+            info.put("timesec", "deprecated, use time-tag");
+            info.put("longmonth", "deprecated, use time-tag");
+            info.put("monthnumber", "deprecated, use time-tag");
+            info.put("month", "deprecated, use time-tag");
+            info.put("weekday", "deprecated, use time-tag");
+            info.put("shortday", "deprecated, use time-tag");
+            info.put("day", "deprecated, use time-tag");
+            info.put("shortyear", "deprecated, use time-tag");
+            info.put("year", "deprecated, use time-tag");
+            info.put("thisdaycurtime", "deprecated, use time-tag");
+            info.put("age", "Returns the age of this object in days");
+            info.put("wap", "(string)");
+            info.put("shorted", "(string) Truncated version of string");
+            info.put("uppercase", "(string)");
+            info.put("lowercase", "(string)");
+            info.put("hostname", "");
+            info.put("urlencode", "");
+            info.put("wrap_<lengh>", "deprecated");
+            info.put("currency_euro", "");
+            info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
             if (arguments == null || arguments.size() == 0) {
                 return info;
             } else {
                 return info.get(arguments.get(0));
-            }            
-        } else if (function.equals("wrap")) {       
+            }
+        } else if (function.equals("wrap")) {
+            if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currenty:" + arguments.size() + " : "  + arguments + ")");
             try {
                 String val  = node.getStringValue((String)arguments.get(0));
                 int wrappos = Integer.parseInt((String)arguments.get(1));
