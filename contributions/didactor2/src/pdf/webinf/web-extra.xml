@@ -31,3 +31,9 @@
         <param-value>${internalUrl}</param-value>
     </context-param>
  
+ <taglib>
+    <taglib-uri>http://jtidy.sf.net</taglib-uri>
+    <taglib-location>jtidy-taglib-12.tld</taglib-location>
+  </taglib>
+
+

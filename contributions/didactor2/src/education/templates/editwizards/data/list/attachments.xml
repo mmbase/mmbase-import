@@ -9,7 +9,8 @@
         <field ftype="data" name="description">
             <prompt>Omschrijving</prompt>
         </field>
-    </item>
+        <field wizardname="attachment" ftype="startwizard" />
+   </item>
 
     <command name="startwizard" inline="true" wizardname="attachment" objectnumber="new" />
 

@@ -12,6 +12,7 @@
         <field ftype="image" name="title">
             <prompt>Afbeelding</prompt>
         </field>
+        <field wizardname="image" ftype="startwizard" />
     </item>
 
     <command name="startwizard" inline="true" wizardname="image" objectnumber="new" />
