@@ -7,8 +7,9 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.6 2002-06-14 11:28:59 michiel Exp $
+  @version $Id: caches.xml,v 1.7 2002-08-01 18:36:55 michiel Exp $
   @author  Michiel Meeuwissen
+
 -->
 <caches>
   <!-- ================================================================================
@@ -20,10 +21,17 @@
     <status>active</status>
     <size>4096</size>
   </cache>
+
   <!-- cluster nodes -->
   <cache name="MultilevelCache">
     <status>active</status>
     <size>300</size>
+  </cache>
+
+  <!-- related nodes, used in InsRel -->
+  <cache name="RelatedCache">
+    <status>active</status>
+    <size>25</size>
   </cache>
 
 
@@ -59,7 +67,7 @@
   <!-- Quick search of the icache node number (by template/ckey) -->
   <cache name="CkeyNumberCache">
     <status>active</status>
-    <size>501</size>
+    <size>500</size>
   </cache>
 
   <!-- Small image handles are caches as well -->
