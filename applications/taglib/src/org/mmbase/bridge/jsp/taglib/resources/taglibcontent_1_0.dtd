@@ -5,6 +5,7 @@
 <!ATTLIST content  type   CDATA  #REQUIRED > 
 <!ATTLIST content defaultescaper       CDATA  #REQUIRED > 
 <!ATTLIST content defaultpostprocessor CDATA  #REQUIRED > 
+<!ATTLIST content defaultencoding      CDATA  #IMPLIED  > 
 
 <!ELEMENT escaper  (class*) >
 <!ATTLIST escaper  id    CDATA  #REQUIRED > 
