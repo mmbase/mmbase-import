@@ -56,7 +56,11 @@ th {
    background-color: #42BDAD;
    color: black;
    font-weight: bold;
-   white-space: nowrap;
+  white-space: nowrap;
+}
+
+table.list th { 
+  white-space: normal;
 }
 
 th a:link    { color: black; }
