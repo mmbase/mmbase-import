@@ -17,7 +17,6 @@ import java.io.*;
 import org.mmbase.applications.media.cache.URLCache;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMBaseContext;
 
 import org.mmbase.util.*;
 
@@ -31,9 +30,6 @@ import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 
 /**
  * The MediaSource builder describes a specific type of media that can be retrieved (real/mp3/etc). Information about
@@ -44,7 +40,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.30 2004-05-13 16:05:32 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.31 2004-06-03 15:58:16 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -83,17 +79,8 @@ public class MediaSources extends MMObjectBuilder {
     public final static int MONO   = 1;
     public final static int STEREO = 2;
 
-    public static final String PUBLIC_ID_MIMEMAPPING_1_0 = "-//MMBase//DTD mimemapping config 1.0//EN";
-    public static final String DTD_MIMEMAPPING_1_0       = "mimemapping_1_0.dtd";
-    
-    
-    static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, MediaSources.class);
-    }
-
     
 
-    private static Map mimeMapping = null;
 
     private String defaultProvider = null;
     
@@ -101,29 +88,7 @@ public class MediaSources extends MMObjectBuilder {
      * {@inheritDoc}
      */
     public boolean init() {
-        boolean result = super.init();               
-        if (mimeMapping == null) {
-            mimeMapping = new HashMap();
-           
-            File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
-
-            if (mimeMappingFile.canRead()) {
-                log.service("Reading " + mimeMappingFile);
-                XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), getClass());
-                
-                for(Enumeration e = reader.getChildElements("mimemapping", "map"); e.hasMoreElements();) {
-                    Element map = (Element)e.nextElement();
-                    String format = reader.getElementAttributeValue(map, "format");
-                    String codec = reader.getElementAttributeValue(map, "codec");
-                    String mime = reader.getElementValue(map);
-                    
-                    mimeMapping.put(format + "/" + codec,mime);
-                    log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
-                }
-            } else {
-                log.service("The file " + mimeMappingFile + " can not be read");
-            }
-        }
+        boolean result = super.init();
 
         defaultProvider = getInitParameter("default.provider.alias");
         
@@ -185,6 +150,7 @@ public class MediaSources extends MMObjectBuilder {
         URLComposer ri = (URLComposer) urls.get(0);
         return ri.getURL();
     }
+
     
     /**
      * Resolve the mimetype for a certain media source
@@ -193,31 +159,8 @@ public class MediaSources extends MMObjectBuilder {
      * @return the content type
      */
     String getMimeType(MMObjectNode source) { // package because it is used in URLResolver
-        String format = getFormat(source).toString();
-        if(format == null || format.equals("")) {
-            format = "*";
-        }
-        String codec = getCodec(source).toString();
-        if(codec == null || codec.equals("")) {
-            codec = "*";
-        }
-        
-        String mimetype;
-        if(mimeMapping.containsKey(format+"/"+codec)) {
-            mimetype = (String) mimeMapping.get(format + "/" + codec);
-        } else if (mimeMapping.containsKey(format + "/*")) {
-            mimetype = (String) mimeMapping.get(format + "/*");
-        } else if (mimeMapping.containsKey("*/" + codec)) {
-            mimetype = (String) mimeMapping.get("/" + codec);
-        } else if (mimeMapping.containsKey("*/*")) {
-            mimetype = (String) mimeMapping.get("*/*");
-        }  else {
-            mimetype = "application/octet-stream";
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Mimetype for mediasource " + source.getIntValue("number") + " is "+mimetype);
-        }
-        return mimetype;
+        return getFormat(source).getMimeType();
+
     }
     
     
@@ -308,11 +251,15 @@ public class MediaSources extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (FUNCTION_URLS.equals(function) || FUNCTION_FILTEREDURLS.equals(function)) {
+
+            Parameters parameters = Parameters.get(URLS_PARAMETERS, args);
+
             MMObjectNode fragment;
-            if (args == null || args.size() == 0) {
+                                                   
+            Object f = parameters.get("node");
+            if (f == null) {
                 fragment = null;
-            } else if (args.size() == 1) {
-                Object f = args.get(0);
+            } else {
                 if (f instanceof MMObjectNode) {
                     fragment = (MMObjectNode) f;
                 } else if (f instanceof org.mmbase.bridge.Node) {
@@ -322,9 +269,8 @@ public class MediaSources extends MMObjectBuilder {
                 } else {
                     throw new IllegalArgumentException("Argument of function " + FUNCTION_URLS + " must be a Node");
                 }
-            } else {
-                throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");
-            }
+            } 
+
             if (FUNCTION_FILTEREDURLS.equals(function)) {
                 return getFilteredURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
             } else {
@@ -527,7 +473,9 @@ public class MediaSources extends MMObjectBuilder {
             int dot = url.lastIndexOf('.');
             if (dot > 0) {
                 String extension = url.substring(dot + 1).toLowerCase();
-                log.service("Format of was unset, trying to autodetect by using 'url' field '" + url + "' with extension '" + extension + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("Format of was unset, trying to autodetect by using 'url' field '" + url + "' with extension '" + extension + "'");
+                }
                 node.setValue("format", Format.get(extension).toInt());
             }
         }
@@ -553,4 +501,7 @@ public class MediaSources extends MMObjectBuilder {
         checkFields(node);
         return super.insert(owner, node);
     }
+
+
+
 }
