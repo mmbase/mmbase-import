@@ -17,21 +17,16 @@
 
 <p>
   The pages found here are made to give some taglib examples. Things are kept
-  simple so that the page sources are as clear as possible.
-</p>
+  simple so that the page sources are as clear as possible. You may need the 'mynews' example to be installed. 
+  You can install this application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">ADMIN ->
+  APPLICATIONS</a>, if you have not done so yet (The default name/password is admin/admin2k).
+  </p> 
 <p>
   A general introduction to taglib can be found <a href="<mm:url page="whatistaglib.jsp" />">here</a>
 </p>
-
-<p>
-  Some of the examples require the presence of a certain builders (i.e. 'news').
-  You can install these builders and there relations by installing the MyNews application.
-</p>
-
 <p>
   Here's a list of nodemanagers (typedef objects) which you can use to see if the MMBase taglib is
-  working. It is a rather complicated example. On the left, you see
-  the source code, and on the right to what it evaluates.
+  working. This is already a rather complicated example. On the left, you see   the source code, and on the right to what it evaluates.
 </p>
 
 <table>

@@ -1,5 +1,7 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><html>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@page errorPage="error.jsp"%>
+<mm:content type="text/html" expires="0">
+<html>
 <head>
  <title>A simple editor</title>
  <link href="style.css" rel="stylesheet" type="text/css"/>
@@ -8,7 +10,6 @@
 <%@ include file="menu.jsp"%>
 
 <mm:cloud method="http">
-<mm:context> <!-- the explicit use of context tag is only necessary in orion 1.5.2 -->
 
 <h1>Simple editor</h1>
   <h2>Creating a form</h2>
@@ -33,7 +34,7 @@ It was implemented like this:
 </p>
 <pre><mm:formatter format="escapexml"><mm:include page="codesamples/edit.jsp.1" /></mm:formatter></pre>
 
-</mm:context>
 </mm:cloud>
 </body>
 </html>
+</mm:content>

@@ -1,13 +1,12 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content expires="0" type="text/html">
 
-<%@ include file="methods.jsp"%>
+<mm:cloud>
 
-<mm:cloud name="mmbase">
-
-<mm:import externid="number"    />
+<mm:import externid="number">default.mags</mm:import>
 <mm:import externid="nodes"     />
-<mm:import externid="path" />
-<mm:import externid="fields" />
+<mm:import externid="path" vartype="list">news,urls</mm:import>
+<mm:import externid="fields" vartype="list">news.title,urls.url</mm:import>
 <mm:import externid="constraints" />
 <mm:import externid="orderby" />
 <mm:import externid="directions" />
@@ -50,7 +49,7 @@
 <tr><td></td><td></td><td>searchdir=</td><td>&quot;</td><td><input type="text" size="20" name="searchdir" value="<mm:write referid="searchdir"/>"></td><td>&quot;&gt;</td></tr>
 <tr><td></td><td colspan="5">&lt;/related&gt;</td></tr>
 <tr><td colspan="6">&lt;/node&gt;</td></tr>
-<tr><td colspan="6" align="right"><input type="submit" value="try"/></td></tr>
+<tr><td colspan="6" align="right"><input type="submit" name="try" value="try"/></td></tr>
 
 </table>
 
@@ -59,38 +58,19 @@
     </td>
     <td valign="top">
 
-<mm:present referid="path">
-  <table border="1">
-    <mm:node number="${number}">
-      <mm:related nodes="${nodes}" path="${path}" fields="${fields}"
-                  constraints="${constraints}" orderby="${orderby}"
-                  directions="${directions}" distinct="${distinct}"
-                  max="${max}" offset="${offset}"
-                  searchdir="${searchdir}">
-        <tr>
-          <mm:compare referid="fields" value="">
-			<mm:write referid="path" jspvar="path" vartype="String">
-            <% for (Enumeration e = convertToEnumeration(path); e.hasMoreElements();) { %>
-              <mm:node element="<%=(String)e.nextElement()%>">
-                 <mm:fieldlist type="list">
-                    <td>
-                      <mm:fieldinfo type="value"/>
-                    </td>
-                 </mm:fieldlist>
-              </mm:node>
-            <% } %>
-            </mm:write>   
-          </mm:compare>
-          <mm:compare referid="fields" value="" inverse="true">
-            <mm:write referid="fields" jspvar="fields" vartype="String">
-            <% for (Enumeration e = convertToEnumeration(fields); e.hasMoreElements();) { %>
-              <td>
-                <mm:field name="<%=(String)e.nextElement()%>"/>
-              </td>
-            <% } %>
-            </mm:write>
-          </mm:compare>
-        </tr>
+<mm:import externid="try" />
+<mm:present referid="try">
+  <table style="width: auto;" >
+    <tr><th colspan="100">Search Result</th></tr>
+    <mm:node number="$number">
+
+      <mm:related nodes="$nodes" path="$path" fields="$fields"
+                  constraints="$constraints" orderby="$orderby"
+                  directions="$directions" distinct="$distinct"
+                  max="$max" offset="$offset"
+                  searchdir="$searchdir">
+
+         <%@include file="showclusternodes.trs.jsp" %>
       </mm:related>
     </mm:node>
   </table>
@@ -99,9 +79,14 @@
     </td>
   </tr>
 </table>
+<hr />
+<a target="_new" href="<mm:url page="showanypage.jsp"><mm:param
+name="page"><%=request.getServletPath()%></mm:param></mm:url>">source
+of this page</a>.
 
 </body>
 
 </html>
 
 </mm:cloud>
+</mm:content>

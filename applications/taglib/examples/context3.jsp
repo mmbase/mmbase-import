@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page contentType="text/html; charset=utf-8" %><html>
+%><%@page errorPage="error.jsp" session="false"%><html>
+<mm:content type="text/html">
 <head>
 <title>Contexts</title>
 <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
@@ -48,3 +49,4 @@ The first node we give an id of itself, to export it to the next page.
 </mm:cloud>
 </body>
 </html>
+</mm:content>

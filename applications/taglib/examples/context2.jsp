@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><%@page errorPage="error.jsp" session="false"%><html>
+<mm:content type="text/html">
+<html>
 <head>
   <title>context 2</title>
   <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
@@ -48,3 +50,4 @@ the `present' and `notpresent' tags.
 <a href='<mm:url referids="alias" page="context3.jsp" />'>next page</a>
 </body>
 </html>
+</mm:content>

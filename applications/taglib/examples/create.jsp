@@ -1,4 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@page errorPage="error.jsp"%>
+<mm:content type="text/html" expires="0">
 <mm:cloud name="mmbase" method="http">
 	<mm:import externid ="nodemanager"/>
 	<mm:import externid ="fieldname" />
@@ -35,3 +37,4 @@ It was implemented like this:
 </html>
 
 </mm:cloud>
+</mm:content>
