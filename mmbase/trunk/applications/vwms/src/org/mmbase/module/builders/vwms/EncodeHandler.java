@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeHandler.java,v 1.15 2001-02-15 13:28:07 vpro Exp $
+$Id: EncodeHandler.java,v 1.16 2001-02-28 10:57:26 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2001/02/15 13:28:07  vpro
+Davzev: Renamed methods comments etc... and most importantly tracknr is already in cdplayers.info field so additional cdrip info like audiopartobj nr is added.
+
 Revision 1.14  2001/01/12 13:27:29  vpro
 Davzev: added comment to doNewCdTrack() and fixed debug line in it.
 
@@ -59,7 +62,7 @@ import org.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.15 $ $Date: 2001-02-15 13:28:07 $
+ * @version $Revision: 1.16 $ $Date: 2001-02-28 10:57:26 $
  */
 public class EncodeHandler implements Runnable {
 
@@ -227,20 +230,7 @@ public class EncodeHandler implements Runnable {
 	
 				int id=node.getIntValue("id");	
 	
-				// hack should move to the real encoder to create the dir ?
-				// Will be moved to remote builder in next version, davzev
-				File file = new File("/data/audio/ra/"+id);
-				try {
-					if (file.mkdir())
-						debug("doG2Encode: Created directory : "+id+" in /data/audio/ra/ to put encoded file in.");
-					else 
-						debug("doG2Encode: WARNING mkdir() for "+id+" in /data/audio/ra returned false");
-				} catch (Exception f) {
-					debug("doG2Encode: ERROR Creating directory "+id+" in /data/audio/ra/");
-					f.printStackTrace();
-				}
-
-				// Encoded files are stored in subdir, name is the id.	
+				// Encoded files will be stored in subdir, where name is the id nr. (mkdir is done remotely).	
 				String params="subdir="+id+" inputname=/data/audio/wav/"+id+".wav outputname=/data/audio/ra/"+id+"/surestream.rm sureStream=true encodeAudio=true forceOverwrite=true audioFormat=\"stereo music\"";
 				if (debug) debug("doG2Encode: Changing g2node setting state to 'encode' info to '"+params+"'");
 				g2node.setValue("info",params);
@@ -264,7 +254,15 @@ public class EncodeHandler implements Runnable {
 				// asume all went oke for now
 				node.setValue("url","F=/"+id+"/surestream.rm H1=station.vpro.nl");
 				node.setValue("status",RawAudioDef.STATUS_GEDAAN);
-				node.setValue("cpu","twohigh");
+
+				// Searching mmserver running this code.
+				debug("doG2Encode: Searching for mmserver that runs this code.");
+				Enumeration e=parent.Vwms.mmb.getInsRel().getRelated(parent.wvmnode.getIntValue("number"),"mmservers");
+				if (e.hasMoreElements()) {
+					MMObjectNode mmserverNode = (MMObjectNode) e.nextElement();
+					debug("doG2Encode: Found mmserverNode: "+mmserverNode);
+					node.setValue("cpu",mmserverNode.getStringValue("name"));
+				}
 				node.commit();
 				parent.removeEncodeHandler( this );
 			}
