@@ -16,34 +16,8 @@
         <relation destination="questions" role="posrel" />
         <relation destination="mmevents" role="related" />
         <relation destination="feedback" role="related" />
-        <relation destination="metadata" role="related">
-          <object type="metadata">
-           <relation destination="metalangstring" role="posrel">
-              <object type="metalangstring">
-                <field name="number"/>
-                <field name="language"/>
-                <field name="value"/>
-              </object>
-            </relation>
-           <relation destination="metadate" role="posrel">
-              <object type="metadate">
-                <field name="number"/>
-                <field name="value"/>
-              </object>
-            </relation>
-           <relation destination="metavocabulary" role="posrel">
-              <object type="metavocabulary">
-                <field name="number"/>
-                <field name="value"/>
-              </object>
-            </relation>
-            <relation destination="metadefinition" role="related">
-              <object type="metadefinition">
-                <relation destination="metavocabulary" role="related"/>
-              </object>
-            </relation>
-            </object>
-        </relation>
+        <relation destination="competencies" role="needcomp" />
+        <relation destination="competencies" role="developcomp" />
     </action>
 
     <action type="delete" />
@@ -69,7 +43,7 @@
 
     <steps>
         <step form-schema="step1" />
-        <!-- step form-schema="step2" / -->
+        <step form-schema="step2" />
     </steps>
     <form-schema id="step1">
         <title>Toets invoeren</title>
@@ -81,10 +55,10 @@
             <prompt>Tekst</prompt>
         </field>
 
-	<field name="questionamount">
+   <field name="questionamount">
             <prompt>Aantal te stellen vragen (&lt; 1: alle)</prompt>
         </field>
-	
+
         <field name="requiredscore">
             <prompt>Benodigd aantal goed</prompt>
         </field>
@@ -120,7 +94,7 @@
                     <prompt>Positie</prompt>
                     <description>Positie van de vraag in de toets</description>
                 </field>
-	   </item>
+      </item>
 
             <action type="create">
                 <relation role="posrel" destinationtype="questions">
@@ -128,7 +102,7 @@
                 </relation>
             </action>
 
-            <command name="search" nodepath="questions" fields="title" age="7" orderby="number" directions="down" >
+            <command name="search" nodepath="questions" fields="title" age="-1" orderby="number" directions="down" >
                 <prompt>Zoeken naar vragen</prompt>
                 <search-filter>
                     <name>Titel bevat</name>
@@ -163,7 +137,7 @@
             <command name="startwizard" inline="true" wizardname="dropquestions" objectnumber="new">
                 <prompt>Nieuwe drag en drop vraag</prompt>
             </command>
-						    
+
 
 <!-- Not available in this version. Take care that the reuse questions is based on another question.
             <command name="startwizard" inline="true" wizardname="reusequestions" objectnumber="new">
@@ -176,7 +150,7 @@
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
             <title>Zoeken op tekenreeks</title>
             <item displaytype="none"></item>
- 
+
             <action type="create">
                 <relation role="posrel" destinationtype="questions">
                   <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
@@ -184,20 +158,20 @@
             </action>
 
 
-             <command name="search" nodepath="metalangstring,metadata,questions" fields="questions.title,metalangstring.value" age="7" orderby="questions.number" directions="down" >
+             <command name="search" nodepath="metalangstring,metadata,questions" fields="questions.title,metalangstring.value" age="-1" orderby="questions.number" directions="down" >
                 <prompt>Zoeken naar vragen op metadata</prompt>
                 <search-filter>
                     <name>Metadata tekenreeks bevat</name>
                     <search-fields>metalangstring.value</search-fields>
                 </search-filter>
-           </command>           
+           </command>
         </list>
 
         <!-- we need a new list to make an extra search command -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
             <title>Zoeken op vocabulair</title>
             <item displaytype="none"></item>
- 
+
             <action type="create">
                 <relation role="posrel" destinationtype="questions">
                   <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
@@ -205,20 +179,20 @@
             </action>
 
 
-             <command name="search" nodepath="metavocabulary,metadata,questions" fields="questions.title,metavocabulary.value" age="7" orderby="questions.number" directions="down" >
+             <command name="search" nodepath="metavocabulary,metadata,questions" fields="questions.title,metavocabulary.value" age="-1" orderby="questions.number" directions="down" >
                 <prompt>Zoeken naar vragen op metadata</prompt>
                 <search-filter>
                     <name>Metadata vocabulair bevat</name>
                     <search-fields>metavocabulary.value</search-fields>
                 </search-filter>
-           </command>           
+           </command>
         </list>
 
         <!-- we need a new list because there can be only one search command per list -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
             <title>Zoeken op datum (YYYY-MM-DD HH:MM:SS)</title>
             <item displaytype="none"></item>
- 
+
             <action type="create">
                 <relation role="posrel" destinationtype="questions">
                   <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
@@ -226,14 +200,14 @@
             </action>
 
 
-             <command name="search" nodepath="metadate,metadata,questions" fields="questions.title,metadate.value" age="7" orderby="questions.number" directions="down" >
+             <command name="search" nodepath="metadate,metadata,questions" fields="questions.title,metadate.value" age="-1" orderby="questions.number" directions="down" >
                 <prompt>Zoeken naar vragen op metadata</prompt>
                 <search-filter>
                     <name>Metadata datum bevat</name>
                     <search-fields>FROM_UNIXTIME(metadate.value)</search-fields>
                 </search-filter>
            </command>
-           
+
         </list>
 
 
@@ -243,9 +217,9 @@
     </form-schema>
 
     <form-schema id="step2">
-        <title>Metadata invoeren</title>
-        <list extends="list/metadatalangstring.xml"/>
-        <list extends="list/metadatadate.xml"/>
-        <list extends="list/metadatavocabulary.xml"/>
+        <title>Competenties invoeren</title>
+        <field name="name" ftype="data"/>
+        <list extends="list/needcompetencies.xml"/>
+        <list extends="list/developcompetencies.xml"/>
     </form-schema>
 </wizard-schema>
