@@ -41,8 +41,8 @@
   <a name="editor"> </a>
   <p>
     De editor van de de streammanager kan gebruikt worden om nieuwe media fragment in te voeren en
-    te wijzigen. Als u dit wilt doen is het goed om te weten hoe de ondeliggend objecten-structuur in
-    elkaar zit.
+    te wijzigen. Deze optie is alleen beschikbaar als u bent ingelogged. Als u dit wilt doen is het
+    goed om te weten hoe de ondeliggend objecten-structuur in elkaar zit.
   </p>
   <p>
     We onderscheiden 'mediaproviders', 'mediabronnen' en 'mediafragmenten'. Voor
@@ -100,9 +100,10 @@
       </dd>
       <dt>Beheerders</dt>
       <dd>
-        Beheerders kunnen niewe gebruikers en nieuwe categorieën maken. Ze hebben toegang tot een
-        'security' tabje. Zij kunnen ook categorieën 'weggeven' aan een andere security context. In
-        de 'account' editor valt er meer informatie te vinden over wat een 'security context' is.
+        Beheerders kunnen niewe gebruikers en nieuwe categorie&euml;n maken. Zij hebben ook toegang tot een
+        'security' tabje. Ze kunnen hier ook categorieën 'weggeven' aan een andere security contex,en
+         nieuwe categori&euml; cre&euml;eren. In de 'account' editor valt er meer informatie te
+        vinden over wat een 'security context' is.
       </dd>
     </dl>
   </p>

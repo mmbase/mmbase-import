@@ -16,6 +16,7 @@
   <span class="realpositionitem">
     <xsl:variable name="thisprompt"><!--<xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template>--></xsl:variable>
     <nobr>
+	<xsl:if test="@dttype != 'string'"> <!-- e.g. field ftype="realposition" name="title" (just to get the 'view' link ) -->
 
     <input type="button" value="{$button_current}{$thisprompt}"  title="{$tooltip_current}"  onClick="document.forms['form'].elements['{@fieldname}'].value = getPosition();" />
     <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
@@ -41,11 +42,22 @@
     <input type="text" name="{@fieldname}" value="{value}" class="input" onBlur="validate_validator(event);">
      <xsl:apply-templates select="@*" />
     </input> ms
-     <img height="10" src="{$referrerdir}/media/a_right.gif" alt="-&gt;" />
-
-      
+     <img height="10" src="{$referrerdir}/media/a_right.gif" alt="-&gt;" />      
      <input class="check" type="button" value="{$button_check}{$thisprompt}" title="{$tooltip_check}" onClick="setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
 
+     </xsl:if>
+	 <xsl:if test="@dttype='string'">
+	 <span class="normal">
+        <xsl:if test="@maywrite!='false'">
+          <xsl:apply-templates select="value" mode="inputline"/>
+        </xsl:if>
+        <xsl:if test="@maywrite='false'">
+          <span class="readonly">
+            <xsl:apply-templates select="value" mode="value"/>
+          </span>
+        </xsl:if>
+		</span>	
+	 </xsl:if>
 
      <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
        <xsl:if test="substring(@number, 1, 1) != 'n'"><!-- cannot view if not commited -->
