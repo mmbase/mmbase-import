@@ -15,39 +15,45 @@ import java.text.DateFormat;
 import java.util.*;
 import java.util.jar.*;
 
-
-
 /**
  * MMBase version reporter
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.19 2003-10-15 10:19:57 keesj Exp $
+ * @version $Id: Version.java,v 1.20 2003-10-15 10:22:21 keesj Exp $
  */
 public class Version {
-   
+
     /**
      * Returns the 'name' part of the MMBase version. This will normall be 'MMBase'.
      * @since MMBase-1.6
      */
-    public static String  getName()   { return "MMBase"; }
+    public static String getName() {
+        return "MMBase";
+    }
 
     /**
      * Returns the major version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getMajor()  { return 1; }
+    public static int getMajor() {
+        return 1;
+    }
     /**
      * Returns the minor version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getMinor()  { return 7; }    
+    public static int getMinor() {
+        return 7;
+    }
 
     /**
      * Returns the patch level numer of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getPatchLevel()  { return 0; }    
+    public static int getPatchLevel() {
+        return 0;
+    }
 
     /**
      * Returns the build date of this MMBase. During the build, the
@@ -55,7 +61,7 @@ public class Version {
      *
      * @since MMBase-1.6
      */
-    public static String  getBuildDate() {
+    public static String getBuildDate() {
         String resource = "";
         InputStream builddate = Version.class.getResourceAsStream("builddate.properties");
         if (builddate != null) {
@@ -63,7 +69,7 @@ public class Version {
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(builddate));
                 resource = "." + buffer.readLine();
                 buffer.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 // error
                 resource = "" + e;
             }
@@ -75,25 +81,31 @@ public class Version {
      * Returns the version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  getNumber() { return getMajor() +  "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "" :  getBuildDate()); }    
+    public static String getNumber() {
+        return getMajor() + "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "" : getBuildDate());
+    }
 
     /**
      * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
      * @since MMBase-1.6
      */
-    public static boolean isRelease() { return false; };    
+    public static boolean isRelease() {
+        return false;
+    };
 
     /**
      * Returns the version of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  get()       { return getName() + " " + getNumber(); }
+    public static String get() {
+        return getName() + " " + getNumber();
+    }
 
     /**
      * @javadoc
      */
     public static void showHelp() {
-		System.out.println("MMBase version: " + get());
+        System.out.println("MMBase version: " + get());
         System.out.println("usage   : [command] [param1] [param2] [...]\n");
         System.out.println("format  : check localjar remote-manifest");
         System.out.println("info    : compare mmbase.jar version against a manifest file");
@@ -110,98 +122,97 @@ public class Version {
     /**
      * @javadoc
      */
-    public static void createManifest(String path,String targetfile,String versionfile) {
-        String body="Manifest-Version: 1.0\n";
+    public static void createManifest(String path, String targetfile, String versionfile) {
+        String body = "Manifest-Version: 1.0\n";
 
-        body+=getMainMMBaseVersion(versionfile);
+        body += getMainMMBaseVersion(versionfile);
 
         // check if input is a cvs log or a src dir
-        File fl=new File(path);
+        File fl = new File(path);
         if (fl.isDirectory()) {
-            body+=getManifestFile(path);
+            body += getManifestFile(path);
         } else {
-            body+=getManifestCVS(path);
+            body += getManifestCVS(path);
         }
-        System.out.println("writing new manifest file : "+targetfile);
-        saveFile(targetfile,body);
+        System.out.println("writing new manifest file : " + targetfile);
+        saveFile(targetfile, body);
     }
 
     /**
      * @javadoc
      */
     public static String getMainMMBaseVersion(String versionfile) {
-        String maintainer="unknown";
-        int major=0;
-        int minor=0;
-        int build=0;
+        String maintainer = "unknown";
+        int major = 0;
+        int minor = 0;
+        int build = 0;
 
-        String ver=loadFile(versionfile);
-        StringTokenizer tok= new StringTokenizer(ver,"\n\r");
+        String ver = loadFile(versionfile);
+        StringTokenizer tok = new StringTokenizer(ver, "\n\r");
         while (tok.hasMoreTokens()) {
-            String line=tok.nextToken();
+            String line = tok.nextToken();
             if (line.startsWith("maintainer=")) {
-                maintainer=line.substring(11);
+                maintainer = line.substring(11);
             } else if (line.startsWith("major=")) {
                 try {
-                    major=Integer.parseInt(line.substring(6));
-                } catch(Exception e) {}
+                    major = Integer.parseInt(line.substring(6));
+                } catch (Exception e) {}
             } else if (line.startsWith("minor=")) {
                 try {
-                    minor=Integer.parseInt(line.substring(6));
-                } catch(Exception e) {}
+                    minor = Integer.parseInt(line.substring(6));
+                } catch (Exception e) {}
             } else if (line.startsWith("build=")) {
                 try {
-                    build=Integer.parseInt(line.substring(6));
-                } catch(Exception e) {}
+                    build = Integer.parseInt(line.substring(6));
+                } catch (Exception e) {}
             }
         }
-        String body="Name: MMBase Content Management System\n";
-        body+="Created-By: "+maintainer+"\n";
-        body+="Implementation-Vendor: mmbase organisation\n";
-        body+="Implementation-Version: "+major+"."+minor+"."+(build+1)+"\n";
-        body+="Implementation-Date: "+DateFormat.getDateTimeInstance().format(new Date())+"\n\n";
-        String newbody="maintainer="+maintainer+"\n";
-        newbody+="major="+major+"\n";
-        newbody+="minor="+minor+"\n";
-        newbody+="build="+(build+1)+"\n";
-        System.out.println("updating version file : "+versionfile+" to : "+major+"."+minor+"."+(build+1));
-        saveFile(versionfile,newbody);
+        String body = "Name: MMBase Content Management System\n";
+        body += "Created-By: " + maintainer + "\n";
+        body += "Implementation-Vendor: mmbase organisation\n";
+        body += "Implementation-Version: " + major + "." + minor + "." + (build + 1) + "\n";
+        body += "Implementation-Date: " + DateFormat.getDateTimeInstance().format(new Date()) + "\n\n";
+        String newbody = "maintainer=" + maintainer + "\n";
+        newbody += "major=" + major + "\n";
+        newbody += "minor=" + minor + "\n";
+        newbody += "build=" + (build + 1) + "\n";
+        System.out.println("updating version file : " + versionfile + " to : " + major + "." + minor + "." + (build + 1));
+        saveFile(versionfile, newbody);
         return body;
     }
-
 
     /**
      * @javadoc
      */
     public static String getManifestCVS(String filename) {
-        System.out.println("reading : "+filename+" for target manifest");
-        String body="";
-        String cvslog=loadFile(filename);
-        StringTokenizer tok=new StringTokenizer(cvslog,"\n\r");
+        System.out.println("reading : " + filename + " for target manifest");
+        String body = "";
+        String cvslog = loadFile(filename);
+        StringTokenizer tok = new StringTokenizer(cvslog, "\n\r");
         while (tok.hasMoreTokens()) {
             // read 9 lines
-            String l1=tok.nextToken();
-            String fileline=tok.nextToken();
-            String wline=tok.nextToken();
-            String rline=tok.nextToken();
-            String l6=tok.nextToken();
-            String l7=tok.nextToken();
-            String l8=tok.nextToken();
+            String l1 = tok.nextToken();
+            String fileline = tok.nextToken();
+            String wline = tok.nextToken();
+            String rline = tok.nextToken();
+            String l6 = tok.nextToken();
+            String l7 = tok.nextToken();
+            String l8 = tok.nextToken();
             // convert the rline to a valid package name
             if (rline.endsWith(".java,v")) {
-                int pos=rline.indexOf("/cvs/");
-                if (pos!=-1) {
-                    String p="org."+rline.substring(pos+5,rline.length()-7);
-                    p=p.replace('/','.');
-                    String v=rline.substring(24);
-                    int pos2=v.indexOf("\t");
-                    if (pos2!=-1) {
-                        v=v.substring(0,pos2);
+                int pos = rline.indexOf("/cvs/");
+                if (pos != -1) {
+                    String p = "org." + rline.substring(pos + 5, rline.length() - 7);
+                    p = p.replace('/', '.');
+                    String v = rline.substring(24);
+                    int pos2 = v.indexOf("\t");
+                    if (pos2 != -1) {
+                        v = v.substring(0, pos2);
                     }
                     if (!p.equals("org.mmbase.Version")) {
-                        body+="Name: "+p+"\n";
-                        body+="Created-By: www.mmbase.org\n";
-                        body+="Implementation-Version: "+v+"\n\n";
+                        body += "Name: " + p + "\n";
+                        body += "Created-By: www.mmbase.org\n";
+                        body += "Implementation-Version: " + v + "\n\n";
                     }
                 }
             }
@@ -213,39 +224,39 @@ public class Version {
      * @javadoc
      */
     public static String getManifestFile(String path) {
-        System.out.println("scanning : "+path+"/* for target manifest");
-        String body="";
-        File fl=new File(path);
+        System.out.println("scanning : " + path + "/* for target manifest");
+        String body = "";
+        File fl = new File(path);
         if (fl.isDirectory()) {
             String files[] = fl.list();
-            for (int i=0;i<files.length;i++) {
-                String bname=files[i];
-                body+=getManifestFile(path+bname+"/");
+            for (int i = 0; i < files.length; i++) {
+                String bname = files[i];
+                body += getManifestFile(path + bname + "/");
             }
         } else {
-            String filename=fl.getPath();
+            String filename = fl.getPath();
             if (filename.endsWith(".java")) {
-                String classname="";
-                String filebody=loadFile(filename);
+                String classname = "";
+                String filebody = loadFile(filename);
                 // find package name
-                int pos=filebody.indexOf("package");
-                int pos2=filebody.indexOf(";",pos);
-                if (pos!=-1 && pos2!=-1) {
-                    classname=filebody.substring(pos+8,pos2);
+                int pos = filebody.indexOf("package");
+                int pos2 = filebody.indexOf(";", pos);
+                if (pos != -1 && pos2 != -1) {
+                    classname = filebody.substring(pos + 8, pos2);
                     // find class name or interface name
-                    classname+="."+fl.getName().substring(0,fl.getName().length()-5);
+                    classname += "." + fl.getName().substring(0, fl.getName().length() - 5);
                 }
-                pos=filebody.indexOf("$Id:");
-                if (pos!=-1) {
-                    filebody=filebody.substring(pos);
-                    pos2=filebody.indexOf(",v ");
-                    filebody=filebody.substring(pos2+3);
-                    int pos3=filebody.indexOf(" ");
-                    String version=filebody.substring(0,pos3);
+                pos = filebody.indexOf("$Id:");
+                if (pos != -1) {
+                    filebody = filebody.substring(pos);
+                    pos2 = filebody.indexOf(",v ");
+                    filebody = filebody.substring(pos2 + 3);
+                    int pos3 = filebody.indexOf(" ");
+                    String version = filebody.substring(0, pos3);
                     if (!classname.equals("org.mmbase.Version")) {
-                        body+="Name: "+classname+"\n";
-                        body+="Created-By: www.mmbase.org\n";
-                        body+="Implementation-Version: "+version+"\n\n";
+                        body += "Name: " + classname + "\n";
+                        body += "Created-By: www.mmbase.org\n";
+                        body += "Implementation-Version: " + version + "\n\n";
                     }
                 }
             }
@@ -256,16 +267,16 @@ public class Version {
     /**
      * @javadoc
      */
-    public static void performCheck(String file,String checkurl) {
-        System.out.println("checking : "+file+" against public manifest : "+checkurl);
+    public static void performCheck(String file, String checkurl) {
+        System.out.println("checking : " + file + " against public manifest : " + checkurl);
         try {
-            JarFile jf=new JarFile(file);
-            Manifest mf=jf.getManifest();
+            JarFile jf = new JarFile(file);
+            Manifest mf = jf.getManifest();
             System.out.println("local manifest : loaded");
 
-            URL ur=new URL(checkurl);
-            InputStream in=ur.openStream();
-            Manifest remotemf=new Manifest(in);
+            URL ur = new URL(checkurl);
+            InputStream in = ur.openStream();
+            Manifest remotemf = new Manifest(in);
             System.out.println("remote manifest : loaded");
 
             if (mf.equals(remotemf)) {
@@ -273,7 +284,7 @@ public class Version {
             } else {
                 System.out.println("mmbase.jar needs update !! ");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -281,40 +292,40 @@ public class Version {
     /**
      * @javadoc
      */
-    public static void performCheckList(String file,String checkurl,boolean newonly) {
-        System.out.println("checking : "+file+" against public manifest : "+checkurl);
+    public static void performCheckList(String file, String checkurl, boolean newonly) {
+        System.out.println("checking : " + file + " against public manifest : " + checkurl);
         try {
-            URL ur=new URL(checkurl);
-            InputStream in=ur.openStream();
-            Manifest remotemf=new Manifest(in);
+            URL ur = new URL(checkurl);
+            InputStream in = ur.openStream();
+            Manifest remotemf = new Manifest(in);
             System.out.println("remote manifest : loaded");
 
-            JarFile jf=new JarFile(file);
-            Manifest mf=jf.getManifest();
+            JarFile jf = new JarFile(file);
+            Manifest mf = jf.getManifest();
             System.out.println("local manifest : loaded");
 
-            Iterator r=remotemf.getEntries().keySet().iterator();
+            Iterator r = remotemf.getEntries().keySet().iterator();
             while (r.hasNext()) {
-                String key=(String)r.next();
-                Attributes at=mf.getAttributes(key);
-                String version=at.getValue("Implementation-Version");
-                String createdby=at.getValue("Created-By");
-                Attributes remoteat=remotemf.getAttributes(key);
-                String remoteversion=remoteat.getValue("Implementation-Version");
-                String remotecreatedby=remoteat.getValue("Created-By");
+                String key = (String)r.next();
+                Attributes at = mf.getAttributes(key);
+                String version = at.getValue("Implementation-Version");
+                String createdby = at.getValue("Created-By");
+                Attributes remoteat = remotemf.getAttributes(key);
+                String remoteversion = remoteat.getValue("Implementation-Version");
+                String remotecreatedby = remoteat.getValue("Created-By");
                 /*
                 System.out.println("version="+version);
                 System.out.println("createdby="+createdby);
                 */
                 if (version.equals(remoteversion)) {
                     if (!newonly) {
-                        System.out.println("valid : "+key+" "+version+" "+createdby);
+                        System.out.println("valid : " + key + " " + version + " " + createdby);
                     }
                 } else {
-                    System.out.println("newer version : "+key+" "+version+" "+createdby+" (remote version : "+remoteversion+")");
+                    System.out.println("newer version : " + key + " " + version + " " + createdby + " (remote version : " + remoteversion + ")");
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -324,65 +335,63 @@ public class Version {
      */
     public static void performList(String file) {
         try {
-            JarFile jf=new JarFile(file);
-            Manifest mf=jf.getManifest();
+            JarFile jf = new JarFile(file);
+            Manifest mf = jf.getManifest();
             //System.out.println("mf="+mf.getMainAttributes().keySet());
             //System.out.println("me="+mf.getEntries().keySet());
-            Iterator r=mf.getEntries().keySet().iterator();
+            Iterator r = mf.getEntries().keySet().iterator();
             while (r.hasNext()) {
-                String key=(String)r.next();
-                Attributes at=mf.getAttributes(key);
-                String version=at.getValue("Implementation-Version");
-                String createdby=at.getValue("Created-By");
-                System.out.println("check="+key+" "+version+" "+createdby);
+                String key = (String)r.next();
+                Attributes at = mf.getAttributes(key);
+                String version = at.getValue("Implementation-Version");
+                String createdby = at.getValue("Created-By");
+                System.out.println("check=" + key + " " + version + " " + createdby);
 
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     /**
      * @javadoc
      */
     private static String loadFile(String file) {
         File scanfile;
-        int filesize,len=0; /// XXX should this be -1 ?
+        int filesize, len = 0; /// XXX should this be -1 ?
         byte[] buffer;
         FileInputStream scan;
         Date lastmod;
-        String rtn=null;
+        String rtn = null;
 
         scanfile = new File(file);
         filesize = (int)scanfile.length();
-        lastmod=new Date(scanfile.lastModified());
-        buffer=new byte[filesize];
+        lastmod = new Date(scanfile.lastModified());
+        buffer = new byte[filesize];
         try {
             scan = new FileInputStream(scanfile);
-            len=scan.read(buffer,0,filesize);
+            len = scan.read(buffer, 0, filesize);
             scan.close();
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             // oops we have a problem
-        } catch(IOException e) {}
-        if (len!=-1) {  // XXX: len is 0 is an exception occurred!
-            rtn=new String(buffer);
+        } catch (IOException e) {}
+        if (len != -1) { // XXX: len is 0 is an exception occurred!
+            rtn = new String(buffer);
         }
         return rtn;
     }
 
-
     /**
      * @javadoc
      */
-    public static boolean saveFile(String filename,String value) {
+    public static boolean saveFile(String filename, String value) {
         File sfile = new File(filename);
         try {
             DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
             scan.writeBytes(value);
             scan.flush();
             scan.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
@@ -392,22 +401,22 @@ public class Version {
      * @javadoc
      */
     public static void main(String args[]) {
-        System.out.println("\n\n Version report tool 0.2 - MMBase version "+getNumber());
+        System.out.println("\n\n Version report tool 0.2 - MMBase version " + getNumber());
         System.out.println("=======================================================\n");
-        if (args.length>0) {
-            String cmd=args[0];
+        if (args.length > 0) {
+            String cmd = args[0];
             if (cmd.equals("list")) {
                 performList(args[1]);
             } else if (cmd.equals("help")) {
                 showHelp();
             } else if (cmd.equals("check")) {
-                performCheck(args[1],args[2]);
+                performCheck(args[1], args[2]);
             } else if (cmd.equals("checklist")) {
-                performCheckList(args[1],args[2],false);
+                performCheckList(args[1], args[2], false);
             } else if (cmd.equals("checknew")) {
-                performCheckList(args[1],args[2],true);
+                performCheckList(args[1], args[2], true);
             } else if (cmd.equals("create")) {
-                createManifest(args[1],args[2],args[3]);
+                createManifest(args[1], args[2], args[3]);
             }
         } else {
             System.out.println("No command found, showing help\n");
@@ -416,5 +425,3 @@ public class Version {
     }
 
 }
-
-
