@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<people exportsource="mmbase://www.mmbase.org/mmexamples/media" timestamp="20020516170724">
-	<node number="10000" owner="system">
-
+<mediasources exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
+	<node number="544" owner="michiel">
+		<state>-1</state>
+		<url>/tv/nos/journaal/maandag.2000.rm</url>
+		<channels>-1</channels>
+		<codec>-1</codec>
+		<bitrate>-1</bitrate>
+		<format>6</format>
+		<filesize>-1</filesize>
 	</node>
 
-</people>
+	<node number="168" owner="admin">
+		<state>-1</state>
+		<url>/tv/vpro/noorderlicht/sb.20020328.rm</url>
+		<channels>-1</channels>
+		<codec>-1</codec>
+		<bitrate>-1</bitrate>
+		<format>6</format>
+		<filesize>-1</filesize>
+	</node>
+
+</mediasources>

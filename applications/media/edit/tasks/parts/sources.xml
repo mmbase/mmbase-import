@@ -1,5 +1,5 @@
 
-<list role="related" destination="mediasources" minoccurs="1" >
+<list role="related" destination="&sources;" minoccurs="1" >
   <title>Sources</title>       
   <title xml:lang="nl">Bronnen</title>       
   <item>
@@ -11,32 +11,15 @@
     <field ftype="enum" name="format">
       <optionlist select="formats" />
     </field>
-   
-    <list role="related" destination="mediaproviders" minoccurs="1">
-      <title>Media provider</title>
-      <title xml:lang="en">Stream server</title>
-      <title xml:lang="nl">Stream server</title>
-      <item>
-        <field name="name" ftype="data" />
-      </item>
-      <command name="search" nodepath="mediaproviders" fields="name,rooturl,rootpath" orderby="name" age="-1" >
-        <search-filter>
-          <name>Name</name>
-          <search-fields>name</search-fields>
-        </search-filter>
-        <search-filter>
-          <name>Server</name>
-          <search-fields>rooturl</search-fields>
-        </search-filter>
-      </command>
-      <action type="create">
-        <relation destinationtype="mediaproviders" role="related" />
-      </action>
-    </list>
+    
+    &sourcefields;
+
+    &providers;
+
   </item>
 	<action type="create">
 		<relation  role="related">
-      <object type="mediasources" />
+      <object type="&sources;" />
     </relation>
 	</action>
 </list>

@@ -16,6 +16,25 @@ body {
 	scrollbar-track-color:#BDC6D1;
 }
 
+hr {
+	color : #1C5BA2;
+}
+
+.kop {
+    display: block;
+	background-color: #fff;
+	font-family : Verdana;
+	font-size : 12px;
+	font-weight: bold;
+	color: #1C5BA2;
+    margin-top: 20px;
+	text-align: left;
+}
+
+table.entrance {
+    margin-top: 20px;
+}
+
 input {
 	font-family: Verdana;
 	font-size:10px;
@@ -33,7 +52,11 @@ textarea {
   }
 
 span.realpositionitem input.input {
-    width: 150px;
+   width: 150px;
+}
+
+nobr input.input {
+  width: 100px;
 }
 
 table {
@@ -91,7 +114,7 @@ a:active {
 	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
- 	border:  none;
+	border:  none;
  	font-weight: bold;
  	text-decoration: none;
 }

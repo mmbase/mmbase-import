@@ -7,9 +7,9 @@
 <title>Login</title>
 </head>
 <body>
-    <h2>Login</h2>
+    <span class="kop">Login</span>
      <mm:import externid="reason">please</mm:import>
-     <mm:import externid="referrer">search_node.jsp</mm:import>
+     <mm:import externid="referrer">entrancepage.jsp</mm:import>
       <mm:compare referid="reason" value="failed">
         <p class="failed">
           Failed to log in. Try again.

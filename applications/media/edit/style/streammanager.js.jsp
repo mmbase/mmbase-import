@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><% response.setContentType("text/javascript"); %>
-<mm:import externid="fragment" required="true" />
+<mm:import externid="fragment" />
+<mm:import externid="language" required="true" />
 <mm:import externid="dir"      required="true" />
 
 function ExplorerFix()  { 
@@ -12,7 +13,9 @@ if(document.all) document.onmousedown = ExplorerFix;
 
 
 function getPlayerURL(form) {
-    if (form == "itemize") {    
+    if (form == "entrance") {
+        return '<mm:write value="poolselector.jsp?language=$language" />';
+    } else if (form == "itemize") {    
         return '<mm:write value="${dir}player.jsp?fragment=$fragment" />';  
     } else {
         return '<mm:write value="${dir}placeholder.jsp" />';
@@ -29,11 +32,18 @@ function getTime(formattedtime) {
 
 function setPlayerFrame(form) {
     var current = parent.frames["player"].location.href;
-    var player  = getPlayerURL(form); 
-    if (current.indexOf(player) == -1) {
-        // alert("Setting player to '" + player + "' current = '" + current + "'");
-        parent.frames["player"].location.replace(player);
+    if (form != "basics") {
+        var player  = getPlayerURL(form); 
+        if (current.indexOf(player) == -1) {
+            //alert("Setting player to '" + player + "' current = '" + current + "'");
+            parent.frames["player"].location.replace(player);
+        }
     }
+}
+
+function setContentFrame(url) {
+    // alert("Setting content to '" + url);
+    parent.frames["content"].location.replace(url);
 }
 
 // not used
