@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.2 2002-04-17 10:29:27 pierre Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.3 2002-07-23 14:19:56 michiel Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -296,8 +296,8 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
     protected int insertObjectTable(MMObjectNode node, DatabaseTransaction trans) throws StorageException {
         String sqlinsert=
             insertSQL(getFullTableName("object"),
-                         getNumberString()+getOTypeString()+getOwnerString(),
-                         node.getNumber()+","+node.getIntValue("otype")+",'"+node.getStringValue("owner"));
+                         getNumberString()+ "," + getOTypeString() + "," + getOwnerString(),
+                         node.getNumber()+","+node.getIntValue("otype")+",'"+node.getStringValue("owner")+"'");
         if (!trans.executeUpdate(sqlinsert)) {
             return -1;
         } else {
