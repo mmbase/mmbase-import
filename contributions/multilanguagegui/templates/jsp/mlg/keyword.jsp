@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud logon="admin" method="http">
+<%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
-   <link rel="stylesheet" type="text/css" href="css/mmbase-dev.css" />
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBase forums</title>
-   <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </head>
-<mm:cloud logon="admin" method="http">
 <mm:import externid="setname" />
 <mm:import externid="keyword" />
 <!-- action check -->
@@ -21,27 +22,24 @@
 	  <th colspan="4">Multilanguage GUI editor 0.2</th>
 	</tr>
 	<mm:include page="path.jsp?type=keyword&setname=$setname&keyword=$keyword" />
-		<mm:function set="mlg" name="getTranslations">
-                  <mm:setparam name="setname" value="$setname" />
-                  <mm:setparam name="keyword" value="$keyword" />
-		  <mm:resultnodes>
+		<mm:nodelistfunction set="mlg" name="getTranslations" referids="setname,keyword">
 		<tr>
-		<form action="keyword.jsp">
+		<form action="keyword.jsp" method="post">
 		<th><mm:field name="name" /></th>
 		<td>
 		<input name="value" value="<mm:field name="value" />" size="32" />
 		</td>
 		<td align="middle">
-			<input name="language" type="hidden" value="<mm:field name="name" />" />
+			<input name="lang" type="hidden" value="<mm:field name="name" />" />
 			<input name="setname" type="hidden" value="<mm:write referid="setname" />" />
 			<input name="keyword" type="hidden" value="<mm:write referid="keyword" />" />
 			<input name="action" type="hidden" value="changelanguage" />
 			<input type="submit" value="change" />
 		</td>
 		</form>
-		<form action="keyword.jsp">
+		<form action="keyword.jsp" method="post">
 		<td align="middle">
-			<input name="language" type="hidden" value="<mm:field name="name" />" />
+			<input name="lang" type="hidden" value="<mm:field name="name" />" />
 			<input name="setname" type="hidden" value="<mm:write referid="setname" />" />
 			<input name="keyword" type="hidden" value="<mm:write referid="keyword" />" />
 			<input name="action" type="hidden" value="removelanguage" />
@@ -49,12 +47,11 @@
 		</td>
 		</tr>
 		</form>
-		</mm:resultnodes>
-		</mm:function>
+		</mm:nodelistfunction>
 
 	<tr>
-	<form action="keyword.jsp">
-	<th><input size="2" name="language" /></th>
+	<form action="keyword.jsp" method="post">
+	<th><input size="2" name="lang" /></th>
 	<td>
 		<input size="32" name="value" />
 	</td>
