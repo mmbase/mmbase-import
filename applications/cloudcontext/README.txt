@@ -21,7 +21,7 @@ same files normally in WEB-INF/config)
 4) Restart MMBase.
 
 5) Under 'templates' you find a security administration tool for this implementation. You can put
-   it anywhery in your web-app.
+   it anywhere in your web-app. I suggest under /mmbase/security/.
 
 
 Michiel Meeuwissen
