@@ -33,7 +33,7 @@ import java.lang.Integer;
  * mediasourcefilter configuration file.
  *
  * One standard filters is provided:
- * 1) preferedSource, this is a list of media formats. The first found format is
+ * 1) preferredSource, this is a list of media formats. The first found format is
  * returned.
  *
  * A specific method for RealAudio is implemented. More of these can follow.
@@ -52,8 +52,8 @@ public class MediaSourceFilter {
     private static int MINCHANNELS     = 0;
     private static int MAXCHANNELS     = 0;
     
-    // PreferedSource information
-    private List preferedSources = null;
+    // PreferredSource information
+    private List preferredSources = null;
     
     // contains the external filters
     private Map externFilters = null;
@@ -99,7 +99,7 @@ public class MediaSourceFilter {
         for(Enumeration e = reader.getChildElements("mediasourcefilter.chain","filter");e.hasMoreElements();) {
             Element chainelement=(Element)e.nextElement();
             String chainvalue = reader.getElementValue(chainelement);
-            if(!chainvalue.equals("preferedSource")) {
+            if(!chainvalue.equals("preferredSource")) {
                 
                 try {
                     Class newclass=Class.forName(chainvalue);
@@ -116,13 +116,13 @@ public class MediaSourceFilter {
                 filterChain.add(chainvalue);
             }
         }
-        // reading preferedSource information
-        preferedSources = new Vector();
-        for( Enumeration e = reader.getChildElements("mediasourcefilter.preferedSource","source");e.hasMoreElements();) {
+        // reading preferredSource information
+        preferredSources = new Vector();
+        for( Enumeration e = reader.getChildElements("mediasourcefilter.preferredSource","source");e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String format = reader.getElementAttributeValue(n3,"format");
-            preferedSources.add(format.toLowerCase());
-            log.debug("Adding preferedSource format: "+format);
+            preferredSources.add(format.toLowerCase());
+            log.debug("Adding preferredSource format: "+format);
         }
         
         try {
@@ -161,8 +161,8 @@ public class MediaSourceFilter {
         for (Iterator i = filterChain.iterator(); i.hasNext();) {
             String filter = (String) i.next();
             log.debug("Using filter " + filter);
-            if(filter.equals("preferedSource")) {
-                mediaSources = preferedSource(mediaSources, info);
+            if(filter.equals("preferredSource")) {
+                mediaSources = getPreferredSource(mediaSources, info);
             } else {
                 MediaSourceFilterInterface mpfi = (MediaSourceFilterInterface)externFilters.get(filter);
                 mediaSources = mpfi.filterMediaSource(mediaSources, mediaFragment, info);
@@ -191,16 +191,16 @@ public class MediaSourceFilter {
     }
     
     /**
-     * Find a media source with a format specified in the preferedSource list in the
+     * Find a media source with a format specified in the preferredSource list in the
      * mediasourcefilter configuration file.
      * @param mediasources The list with appropriate mediasources
      * @param info Additional information
      * @return The most appropriate media source
      */
-    private List preferedSource(List mediasources, Map info) {
+    private List getPreferredSource(List mediasources, Map info) {
         MMObjectNode node = null;
         
-        for (Iterator i=preferedSources.iterator(); i.hasNext();) {
+        for (Iterator i = preferredSources.iterator(); i.hasNext();) {
             String format = (String) i.next();
             log.debug("checking format "+format);
             if(format.equals("ra")) {
@@ -226,7 +226,7 @@ public class MediaSourceFilter {
      * @return a mediasource of wanted format
      */
     private MMObjectNode getFormat(List mediaSources, int format) {
-        log.debug("Getting format "+format);
+        if (log.isDebugEnabled()) log.debug("Getting format "+format);
         for(Iterator i=mediaSources.iterator(); i.hasNext();) {
             MMObjectNode mediaSource = (MMObjectNode) i.next();
             
