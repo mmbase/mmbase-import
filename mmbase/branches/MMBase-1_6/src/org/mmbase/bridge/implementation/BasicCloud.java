@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.76.2.2 2002-11-27 09:55:40 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.76.2.3 2002-11-28 10:26:30 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -183,7 +183,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
-            log.error("Something went wrong while getting node with number " + nodenumber + "\n" + Logging.stackTrace(e));
             throw new NotFoundException("Something went wrong while getting node with number " + nodenumber);
         }
         if (node==null) {
