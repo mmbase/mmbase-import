@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.10 2003-02-13 18:11:06 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.11 2003-02-14 08:50:30 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1198,11 +1198,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.debug("Getting related nodes of " + this + " of type " + type);
         }
 
-
-	Vector result;
 	if(parent.mmb.InsRel.usesdir) {
             return  getRelatedNodes(type, ClusterBuilder.SEARCH_BOTH);
-	} else 
+	} else {
             //
 	    // determine related nodes
 	    Map source = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_SOURCE));
@@ -1213,10 +1211,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
 	    // remove duplicates (can happen if multirel is being used when no dir on insrel exists)
             destin.putAll(source);
-	    result = new Vector(destin.values());
+	    return new Vector(destin.values());
 	}
-
-	return result;
 
     }
 
