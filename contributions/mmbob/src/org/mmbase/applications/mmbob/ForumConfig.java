@@ -335,16 +335,40 @@ public class ForumConfig {
         return loginmodetype;
    }
 
+   public void setLoginModeType(String type) {
+        loginmodetype = type;
+   }
+
    public String getLogoutModeType() {
         return logoutmodetype;
+   }
+
+   public void setLogoutModeType(String type) {
+        logoutmodetype = type;
    }
 
    public String getGuestReadModeType() {
         return guestreadmodetype;
    }
 
+   public void setGuestReadModeType(String type) {
+        guestreadmodetype = type;
+   }
+
+   public void setAvatarsUploadEnabled(String mode) {
+        avatarsUploadEnabled = mode;
+   }
+
+   public void setAvatarsGalleryEnabled(String mode) {
+        avatarsGalleryEnabled = mode;
+   }
+
    public String getGuestWriteModeType() {
         return guestwritemodetype;
+   }
+
+   public void setGuestWriteModeType(String type) {
+        guestwritemodetype = type;
    }
 
     public String getXSLTPostingsOdd() {
