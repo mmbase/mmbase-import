@@ -40,6 +40,7 @@ public class SizeTag extends ListReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
     
     
     public int doStartTag() throws JspTagException{

@@ -43,7 +43,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-
+    public void haveBody() { helper.haveBody(); }
 
     private int type;
 

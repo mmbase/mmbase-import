@@ -67,7 +67,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             // so don't change this!
 
             pageContextTag.setPageContextOnly(pageContext);
-            //pageContextTag.pageContextTag = pageContextTag;
+
+            // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
             pageContextTag.fillVars();
             // register also the tag itself under __context.
             // _must_ set __context before calling setPageContext otherwise in infinite loop. 
@@ -96,6 +97,37 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     protected String getReferid() throws JspTagException {
         return referid;
     }
+
+
+
+    /*
+     * The writerreferrer functionality is here, though not every conterreferrer is a writerreferrer.
+     * So contextreferrer does not implement Writerreferrer. It is enough tough to 'implement WriterReferrer' 
+     * for every ContextReferrer to become a real WriterReferrer;
+     */
+    /**
+     * Which writer to use. 
+     */
+    protected String writerid = null;
+    
+    /**
+     * Find the parent writer tag.
+     */
+    public Writer findWriter() throws JspTagException {
+        Writer w;        
+        w = (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
+        w.haveBody();
+        return w;
+    }
+    /**
+     * Sets the writer attribute.
+     */
+    public void setWriter(String w) throws JspTagException {
+        writerid = getAttributeValue(w);
+        
+    }
+
+    
 
     /**
      * Release all allocated resources.
@@ -172,8 +204,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                     }
                 }
                 String varName = getAttributeValue(attribute.substring(foundpos, pos - 1)); // even variable names can be in a variable, why not...
-                if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
-                if (varName.charAt(0) == '+') { // make simple aritmetic possible
+                if (varName.length() < 1) throw new JspTagException("Expression too short in " + attribute);
+                if (varName.equals("_")) {
+                    result.append(findWriter().getWriterValue());
+                } else if (varName.charAt(0) == '+') { // make simple aritmetic possible
                     ExprCalc cl = new ExprCalc(varName.substring(1));
                     result.append(cl.getResult());
                 } else {
@@ -192,8 +226,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                         if (pos >= attribute.length()) break; // end of string
                         c = attribute.charAt(pos);
                     }
-                    if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
-                    result.append(getString(varName.toString()));
+                    // hmm a little bit of code repitition. Should think of something...
+                    if (varName.length() < 1) throw new JspTagException("Expression too short in " + attribute);
+                    if (varName.toString().equals("_")) {
+                        result.append(findWriter().getWriterValue());
+                    } else {
+                        result.append(getString(varName.toString()));
+                    }
                 }
             }
             // ready with this $, search next occasion;

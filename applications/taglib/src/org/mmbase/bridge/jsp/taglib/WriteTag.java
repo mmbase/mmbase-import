@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen 
  **/
 
-public class WriteTag extends ContextReferrerTag implements Writer, WriterReferrer {
+public class WriteTag extends ContextReferrerTag implements Writer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
@@ -46,6 +46,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
 
     private String sessionvar;
     private String cookie;
@@ -61,12 +62,6 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
     public void setValue(String v) throws JspTagException {
         value = getAttributeValue(v);
     }
-    private String writerid = null;
-    public void setWriter(String w) throws JspTagException {
-        writerid = getAttributeValue(w);
-        
-    }
-
     
     
     protected Object getObject() throws JspTagException {
@@ -74,8 +69,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
             log.debug("getting object " + getReferid());
         }
         if (getReferid() == null && value == null) { // get from parent Writer.
-            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
-            return w.getWriterValue();
+            return findWriter().getWriterValue();
         }
 
         if (value != null) {
@@ -95,6 +89,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
     public int doStartTag() throws JspTagException {    
         helper.setValue(getObject());
         helper.setJspvar(pageContext);  
+
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
