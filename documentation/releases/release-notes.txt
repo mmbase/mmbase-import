@@ -304,11 +304,18 @@ Java versions
 -------------
 - J2SE 1.4.2
 
+- J2SE Blackdown-1.4.2-rc1
+
+- J2SE 1.5.0-beta  (could not get editwizards working because of xalan/xerces troubles)
+
+
 -------------
 Java compilers
 -------------
 
 - sun jdk 1.4.2 (javac)
+
+- sun jdk 1.5.0-beta (javac, jikes does not work then?)
 
 - jikes version 1.18
 
