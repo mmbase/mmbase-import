@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.16 $ $Date: 2000-05-29 11:22:46 $
+ * @$Revision: 1.17 $ $Date: 2000-05-29 15:45:53 $
  */
 public class INFO extends ProcessorModule {
 
@@ -429,10 +429,87 @@ public class INFO extends ProcessorModule {
 			}
 
 			if (cmd.equals("MONTHS")) {
-				int year=calendar.get(Calendar.YEAR)-1970;
-				int month=calendar.get(Calendar.MONTH);
-				int months=month+year*12;
-				return(""+months);
+				rtn="";
+				int year,month,months;
+				Calendar cal=null;
+
+				if (whichname!=INFO.Not) {
+					int imonth;
+					if (tok.hasMoreTokens()) {
+						try {
+							imonth=Integer.parseInt(tok.nextToken());
+						} catch (NumberFormatException nfe) {
+							imonth=0;
+						}
+					} else {
+						imonth=0;
+					} 
+					cal=getCalendarMonths(imonth);
+				}
+				switch(whichname) {
+					case INFO.Not:
+						year=calendar.get(Calendar.YEAR)-1970;
+						month=calendar.get(Calendar.MONTH);
+						months=month+year*12;
+						rtn=""+months;
+						break;
+					case INFO.English:
+						month=cal.get(Calendar.MONTH);
+						rtn=DateStrings.longmonths[month];
+						break;
+					case INFO.Dutch:
+						month=cal.get(Calendar.MONTH);
+						rtn=DateStrings.Dutch_longmonths[month];
+						break;
+					default:
+						rtn="";
+						break;
+				}
+			
+				return(rtn);
+			}
+
+			if (cmd.equals("SHORTMONTHS")) {
+				rtn="";
+				int year,month,months;
+				Calendar cal=null;
+
+				if (whichname!=INFO.Not) {
+					int imonth;
+					if (tok.hasMoreTokens()) {
+						try {
+							imonth=Integer.parseInt(tok.nextToken());
+						} catch (NumberFormatException nfe) {
+							imonth=0;
+						}
+					} else {
+						imonth=0;
+					} 
+					cal=getCalendarMonths(imonth);
+				}
+				switch(whichname) {
+					case INFO.Not:
+						year=calendar.get(Calendar.YEAR)-1970;
+						month=calendar.get(Calendar.MONTH);
+						months=month+year*12;
+						rtn=""+months;
+						break;
+					case INFO.English:
+						year=cal.get(Calendar.YEAR);
+						month=cal.get(Calendar.MONTH);
+						rtn=DateStrings.months[month]+" "+year;
+						break;
+					case INFO.Dutch:
+						year=cal.get(Calendar.YEAR);
+						month=cal.get(Calendar.MONTH);
+						rtn=DateStrings.Dutch_months[month]+" "+year;
+						break;
+					default:
+						rtn="";
+						break;
+				}
+			
+				return(rtn);
 			}
 
 			//WEEK
@@ -985,6 +1062,15 @@ public class INFO extends ProcessorModule {
 		} else {
 			return(false);
 		}
+	}
+
+	private Calendar getCalendarMonths(int months) {
+		int year,month;
+		year=months/12;
+		month=months%12;
+		GregorianCalendar cal=new GregorianCalendar();
+		cal.set(year+1970,month,1,0,0,0);
+		return(cal);
 	}
 
     private void debug( String msg )
