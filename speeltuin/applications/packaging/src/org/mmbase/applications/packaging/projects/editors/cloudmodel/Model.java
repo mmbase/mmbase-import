@@ -82,6 +82,20 @@ public class Model {
     }
 
 
+    public boolean deleteNeededBuilder(String builder,String maintainer,String version) {
+    	Iterator nbl=getNeededBuilders();
+	while (nbl.hasNext()) {
+		NeededBuilder nb=(NeededBuilder)nbl.next();
+		if (nb.getName().equals(builder) && nb.getMaintainer().equals(maintainer) && nb.getVersion().equals(version)) {
+			neededbuilders.remove(nb);
+			writeModel();
+			return true;
+		}
+	}
+	return false;
+    }
+
+
     public boolean addNeededRelDef(String source,String target,String direction,String guisourcename,String guitargetname,String builder) {
 	NeededRelDef nr = new NeededRelDef();
 	nr.setSource(source);
@@ -96,6 +110,20 @@ public class Model {
     }
 
 
+    public boolean deleteNeededRelDef(String source,String target,String direction,String guisourcename,String guitargetname,String builder) {
+    	Iterator nrl=getNeededRelDefs();
+	while (nrl.hasNext()) {
+		NeededRelDef nr=(NeededRelDef)nrl.next();
+		if (nr.getSource().equals(source) && nr.getTarget().equals(target) && nr.getDirection().equals(direction) && nr.getGuiSourceName().equals(guitargetname) && nr.getGuiTargetName().equals(guitargetname) && nr.getBuilderName().equals(builder)) {
+			allowedrelations.remove(nr);
+			writeModel();
+			return true;
+		}
+	}
+	return true;
+    }
+
+
     public boolean addAllowedRelation(String from,String to,String type) {
 	AllowedRelation ar = new AllowedRelation();
 	ar.setFrom(from);
@@ -106,8 +134,21 @@ public class Model {
 	return true;
     }
 
+
+    public boolean deleteAllowedRelation(String from,String to,String type) {
+    	Iterator arl=getAllowedRelations();
+	while (arl.hasNext()) {
+		AllowedRelation ar=(AllowedRelation)arl.next();
+		if (ar.getFrom().equals(from) && ar.getTo().equals(to) && ar.getType().equals(type)) {
+			allowedrelations.remove(ar);
+			writeModel();
+			return true;
+		}
+	}
+	return false;
+    }
+
     private void readModel(String path) {
-	log.info("READING MODEL AT : "+path);
         File file = new File(path);
         if (file.exists()) {
             XMLBasicReader reader = new XMLBasicReader(path, Model.class);
