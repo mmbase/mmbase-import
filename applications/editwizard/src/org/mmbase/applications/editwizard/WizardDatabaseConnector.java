@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.9 2002-03-18 17:13:07 eduard Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.10 2002-03-22 09:48:51 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -243,15 +243,15 @@ public class WizardDatabaseConnector {
         // fires getRelations command and places results targetNode
         ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, loadaction);
         fireCommand(cmd);
-
         if (!cmd.hasError()) {
             NodeList relations = Utils.selectNodeList(cmd.getResponseXML(), "/*/object/relation");
+
             for (int i=0; i<relations.getLength(); i++) {
                 tagDataNode(relations.item(i));
             }
             Utils.appendNodeList(relations, targetNode);
         } else {
-            throw new Exception("Could NOT fire getData command for object " + objectnumber);
+            throw new Exception("Could NOT fire getRelations command for object " + objectnumber);
         }
     }
 
