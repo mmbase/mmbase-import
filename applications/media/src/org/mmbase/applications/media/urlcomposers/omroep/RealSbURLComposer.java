@@ -22,7 +22,7 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.3 2003-02-18 00:11:16 michiel Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.4 2003-02-19 20:50:26 michiel Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
@@ -51,7 +51,7 @@ public class RealSbURLComposer extends RealURLComposer {
         StringBuffer buff = new StringBuffer("rtsp://streams.omroep.nl");
         int lastSlash = CgiURLComposer.addURL(buff, source.getStringValue("url"));
         buff.insert(lastSlash + 1, getBandPrefix());
-        RealURLComposer.getRMArgs(buff, fragment); // append time, title, als
+        RealURLComposer.getRMArgs(buff, fragment, info); // append time, title, als
         return buff;
     }
 }
