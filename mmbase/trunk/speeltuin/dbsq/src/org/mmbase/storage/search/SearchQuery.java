@@ -18,14 +18,6 @@ public interface SearchQuery {
     boolean isDistinct();
 
     /**
-     * Gets the SortOrder objects in the order they are to be applied.
-     *  This specifies the sorting order of the search results.
-     * <p>
-     * This corresponds to the ORDER BY clause in SQL SELECT syntax. 
-     */
-    List getSortOrders();
-
-    /**
      * Gets the steps in the search request.
      * <p>
      * This corresponds to the tables in SQL SELECT-syntax. 
@@ -60,6 +52,14 @@ public interface SearchQuery {
     int getOffset();
 
     /**
+     * Gets the SortOrder objects in the order they are to be applied.
+     *  This specifies the sorting order of the search results.
+     * <p>
+     * This corresponds to the ORDER BY clause in SQL SELECT syntax. 
+     */
+    List getSortOrders();
+
+    /**
      * Compares this query to the specified object. The result is 
      * <code>true</code> if and only if the argument is a non-null 
      * SearchQuery object representing the same query.
@@ -73,6 +73,34 @@ public interface SearchQuery {
     // javadoc is inherited
     public int hashCode();
 
+    /**
+     * Returns a string representation of this SearchQuery. 
+     * The string representation has the form 
+     * "SearchQuery(distinct:&lt;distinct&gt;, 
+     *  steps:&lt;steps&gt;, fields:&lt;fields&gt;, 
+     *  constraint:&lt;constraint&gt;, sortorders:&lt;sortorders&gt;,
+     *  max:&lt;max&gt;, offset:&lt;offset&gt;)"
+     * where 
+     * <ul>
+     * <li><em>&lt;distinct&gt;</em> is value returned by 
+     *     {@link #isDistinct isDistinct()}
+     * <li><em>&lt;steps&gt;</em> is the list returned by 
+     *     {@link #getSteps getSteps()}
+     * <li><em>&lt;fields&gt;</em> is the list returned by 
+     *     {@link #getFields getFields()}
+     * <li><em>&lt;constraint&gt;</em> is the constraint returned by 
+     *     {@link #getConstraint getConstraint()}
+     * <li><em>&lt;sortorders&gt;</em> is the list returned by 
+     *     {@link #getSortOrders getSortOrders()}
+     * <li><em>&lt;max&gt;</em> is value returned by 
+     *     {@link #getMaxNumber getMaxNumber()}
+     * <li><em>&lt;offset&gt;</em> is value returned by 
+     *     {@link #getOffset getOffset()}
+     * </ul>
+     *
+     * @return A string representation of this SearchQuery.
+     */
+    
     /** @link dependency 
      * @label constraint
      * @clientRole 0-1

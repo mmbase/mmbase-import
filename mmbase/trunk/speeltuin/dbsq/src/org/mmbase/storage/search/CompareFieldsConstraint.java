@@ -24,7 +24,7 @@ public interface CompareFieldsConstraint extends FieldCompareConstraint {
      * <li><em>&lt;casesensitive&gt;</em> is the value returned by
      *     {@link FieldConstraint#isCaseSensitive isCaseSensitive()}
      * <li><em>&lt;operator&gt;</em> is the value returned by
-     *     (@link FieldCompareConstraint#getOperator getOperator()}
+     *     {@link FieldCompareConstraint#getOperator getOperator()}
      * <li><em>&lt;field2&gt;</em> is the field alias returned by
      *     <code>#getField2().getAlias()</code>
      * </ul>
