@@ -105,14 +105,14 @@ public class MMEvents extends MMObjectBuilder {
 		int now=(int)(DateSupport.currentTimeMillis()/1000);
 		log.debug("The currenttime in seconds NOW="+now);
 		MMObjectNode snode=null,enode=null;
-		Enumeration e=search("WHERE start>"+now+" AND start<"+(now+(3600*2))+" ORDER BY start");
+		Enumeration e=search("WHERE start>"+now+" AND start<"+(now+(3600*1))+" ORDER BY start");
 		if (e.hasMoreElements()) {
 			snode=(MMObjectNode)e.nextElement();
 			while (e.hasMoreElements()) {
 				also.addElement(e.nextElement());
 			}
 		}
-		e=search("WHERE stop>"+now+" AND stop<"+(now+(3600*2))+" ORDER BY stop");
+		e=search("WHERE stop>"+now+" AND stop<"+(now+(3600*1))+" ORDER BY stop");
 		if (e.hasMoreElements()) {
 			enode=(MMObjectNode)e.nextElement();
 			while (e.hasMoreElements()) {
