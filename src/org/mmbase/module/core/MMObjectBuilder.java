@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.240 2003-08-14 14:59:10 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.241 2003-08-26 09:37:01 johannes Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3710,12 +3710,14 @@ public class MMObjectBuilder extends MMTable {
         String rtn="";
         if (body!=null) {
             StringObject obj=new StringObject(body);
+            // escape ampersand first
+            obj.replace("&", "&amp;");
+
             obj.replace("<","&lt;");
             obj.replace(">","&gt;");
             // escape dollar-sign (prevent SCAN code to be run)
             obj.replace("$","&#36;");
             // unquote ampersand and quotes (see escapeXML method)
-            obj.replace("&", "&amp;");
             obj.replace("\"", "&quot;");
             obj.replace("'", "&#39;");
 
