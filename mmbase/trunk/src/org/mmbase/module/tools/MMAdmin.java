@@ -225,8 +225,10 @@ public class MMAdmin extends ProcessorModule {
 
 	private boolean startAppTool(String appname) {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
-		System.out.println("WANT : "+path+"/"+appname+".xml");
+		System.out.println("Starting apptool with : "+path+"/"+appname+".xml");
 		MMAppTool app=new MMAppTool(path+"/"+appname+".xml");
+		lastmsg="Started a instance of the MMAppTool with path : <BR><BR>\n";
+		lastmsg+=path+"/"+appname+".xml<BR><BR>\n";
 		return(true);
 	}
 
