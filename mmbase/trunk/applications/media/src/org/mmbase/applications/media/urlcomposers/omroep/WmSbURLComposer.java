@@ -15,13 +15,14 @@ import java.util.Map;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.7 2003-07-15 13:02:52 vpro Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.8 2003-11-26 16:48:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
 
     public boolean canCompose() {
-        return provider.getStringValue("host").equals("cgi.omroep.nl");
+        return provider.getStringValue("host").equals("cgi.omroep.nl") && provider.getStringValue("rootpath").charAt(0) == '%';
+
     }
     
     protected String getBandPrefix() {
@@ -38,8 +39,10 @@ public class WmSbURLComposer extends URLComposer {
 
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = new StringBuffer("mms://media.omroep.nl");
-        int lastSlash = CgiURLComposer.addURL(buff, source.getStringValue("url"));
-        buff.insert(lastSlash + 1, getBandPrefix());
+        int lastSlash = RealSbURLComposer.addURL(buff, source.getStringValue("url"));
+        if (lastSlash > 0) {
+            buff.insert(lastSlash + 1, getBandPrefix());
+        }
         return buff;
     }
 }
