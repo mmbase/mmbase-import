@@ -152,7 +152,10 @@ public class FieldInfoTag extends NodeReferrerTag {
                 }
                 show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
     	    	if (node != null) {
-		    show += Encode.XMLAttributeEscape(decode(node.getStringValue(field.getName()), node));
+		    // show += Encode.XMLAttributeEscape(decode(node.getStringValue(field.getName()), node));
+		    // ERROR : NEXT LINE HAS TO BE FIXED ! (or the class Encode should be checked in !! )
+    	    	    show += Encode.XMLEscape(decode(node.getStringValue(field.getName()), node));
+		    		    
 		}
 		show += "\" />";
     	    	break;
