@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.16 2000-07-12 09:18:48 install Exp $
+$Id: scanparser.java,v 1.17 2000-07-15 23:34:28 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2000/07/12 09:18:48  install
+Rob Added active builders support for editors
+
 Revision 1.15  2000/07/12 08:19:41  install
 Rob: added getMimeType methods
 
@@ -68,7 +71,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.16 $ $Date: 2000-07-12 09:18:48 $
+ * @$Revision: 1.17 $ $Date: 2000-07-15 23:34:28 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -666,7 +669,8 @@ public class scanparser extends ProcessorModule {
 			htmlroot=System.getProperty("mmbase.htmlroot");
 		}
 
-		String filename=htmlroot+where;
+		//String filename=htmlroot+where; // seems to give a problem on NT without the trim
+		String filename=htmlroot.trim()+where.trim();
 
 		filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
 		filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
