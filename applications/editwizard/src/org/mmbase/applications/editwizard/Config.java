@@ -29,7 +29,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.56 2004-11-11 17:44:44 michiel Exp $
+ * @version $Id: Config.java,v 1.57 2005-03-16 13:00:52 michiel Exp $
  */
 
 public class Config {
@@ -690,7 +690,7 @@ public class Config {
         }
         */
         public URL getResource(String path) throws MalformedURLException {
-            return ResourceLoader.getWebRoot().findResource(path);
+            return ResourceLoader.getWebRoot().getResource(path);
             /// page.getServletContext().getResource(path)  (not using ResourceLoader)
         }
 
