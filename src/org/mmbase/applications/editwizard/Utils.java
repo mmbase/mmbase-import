@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.18 2002-07-18 11:44:49 eduard Exp $
+ * @version $Id: Utils.java,v 1.19 2002-08-09 13:59:28 michiel Exp $
  */
 public class Utils {
 
@@ -82,7 +82,7 @@ public class Utils {
             DocumentBuilder b = getDocumentBuilder();
             return b.parse(new FileInputStream(file));
         } catch (Exception e) {
-            throw new WizardException("Could not load schema xml file. Filename:"+file + "\n" + Logging.stackTrace(e));
+            throw new WizardException("Could not load schema xml file '"+file + "'\n" + Logging.stackTrace(e));
         }
     }
 
