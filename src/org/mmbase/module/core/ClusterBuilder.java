@@ -37,7 +37,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.52 2003-11-27 12:44:19 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.53 2003-11-27 16:15:15 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -80,7 +80,9 @@ public class ClusterBuilder extends VirtualBuilder {
     // logging variable
     private static final Logger log= Logging.getLoggerInstance(ClusterBuilder.class);
 
-
+    /** Logger instance dedicated to logging fallback to legacy code. */
+    private final static Logger fallbackLog = 
+        Logging.getLoggerInstance(ClusterBuilder.class.getName() + ".fallback");
 
     /**
      * Creates <code>ClusterBuilder</code> instance.
@@ -362,10 +364,20 @@ public class ClusterBuilder extends VirtualBuilder {
 
             // If this fails, fall back to legacy code.
         } catch (Exception e) {
-            if (log.isServiceEnabled()) {
-                log.service("Failed to create SearchQuery for multilevel search, "
-                            + "exception:\n" + e + Logging.stackTrace(e)
-                            + "\nFalling back to legacy code in ClusterBuilder...");
+            // Log to fallback logger.
+            if (fallbackLog.isServiceEnabled()) {
+                fallbackLog.service(
+                    "Failed to create SearchQuery for multilevel search: "
+                    + "\n     snodes: " + snodes
+                    + "\n     fields: " + fields
+                    + "\n     pdistinct: " + pdistinct
+                    + "\n     tables: " + tables
+                    + "\n     where: " + where
+                    + "\n     orderVec: " + orderVec
+                    + "\n     direction: " + direction
+                    + "\n     searchdir: " + searchdir
+                    + "\n     exception: " + e + Logging.stackTrace(e)
+                    + "\nFalling back to legacy code in ClusterBuilder...");
             }
         }
 

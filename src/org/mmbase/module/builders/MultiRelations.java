@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.34 2003-11-24 12:35:26 robmaris Exp $
+ * @version $Id: MultiRelations.java,v 1.35 2003-11-27 16:15:14 robmaris Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -91,6 +91,10 @@ public class MultiRelations extends MMObjectBuilder {
 
     // logging variable
     private static Logger log = Logging.getLoggerInstance(MultiRelations.class.getName());
+
+    /** Logger instance dedicated to logging fallback to legacy code. */
+    private final static Logger fallbackLog = 
+        Logging.getLoggerInstance(MultiRelations.class.getName() + ".fallback");
 
     /**
      * Creates an instance of the MultiRelations builder.
@@ -311,10 +315,19 @@ public class MultiRelations extends MMObjectBuilder {
 
         // If this fails, fall back to legacy code.
         } catch (Exception e) {
-            if (log.isServiceEnabled()) {
-                log.service(
-                    "Failed to create SearchQuery for multilevel search, "
-                    + "exception:\n" + e + Logging.stackTrace(e)
+            // Log to fallback logger.
+            if (fallbackLog.isServiceEnabled()) {
+                fallbackLog.service(
+                    "Failed to create SearchQuery for multilevel search: "
+                    + "\n     snodes: " + snodes
+                    + "\n     fields: " + fields
+                    + "\n     pdistinct: " + pdistinct
+                    + "\n     tables: " + tables
+                    + "\n     where: " + where
+                    + "\n     orderVec: " + orderVec
+                    + "\n     direction: " + direction
+                    + "\n     searchdir: " + searchdir
+                    + "\n     exception: " + e + Logging.stackTrace(e)
                     + "\nFalling back to legacy code in MultiRelations...");
             }
         }
