@@ -20,17 +20,16 @@ import org.mmbase.module.core.TemporaryNodeManager;
 import org.mmbase.module.builders.Message;
 import org.mmbase.module.community.*;
 import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Dirk-Jan Hoekstra
  * @version 31 Jan 2001
  */
 
-public class Channel extends MMObjectBuilder
-{
-	public final String classname = getClass().getName();
+public class Channel extends MMObjectBuilder {
+    private static Logger log = Logging.getLoggerInstance(Channel.class.getName());
 	private Message messageBuilder;
-	private final boolean debug = true;	
 	private int otypeMsg = -1;
 	private int otypeChn;
 	private int otypeCommunity = -1;
@@ -58,8 +57,7 @@ public class Channel extends MMObjectBuilder
 	 * Initializes the builder.
 	 * Opens all channels whose open field is set to open or wantopen.
 	 */
-	public boolean init()
-	{
+	public boolean init() {
 		boolean result = super.init();
 		otypeChn = mmb.TypeDef.getIntValue("channel");
 		otypeCommunity = mmb.TypeDef.getIntValue("community");
@@ -71,19 +69,10 @@ public class Channel extends MMObjectBuilder
 
 		/* Lookup all channels in the cloud of who the field open is set to (want)open and try to open all these channels.
 		 */
-		if (debug) debug("init(): try to open all channels who are set open in the database");
+		log.debug("init(): try to open all channels who are set open in the database");
 		Enumeration openChannels = search("WHERE otype='" + mmb.TypeDef.getIntValue("channel") + "' AND (open='" + channelOpen + "' OR open='" + channelWantOpen + "')");
 		while (openChannels.hasMoreElements()) open((MMObjectNode)openChannels.nextElement());
 		return result;		
-	}
-
-	/**
-	 * Prints a error message.
-	 *
-	 * @param msg The error message.
-	 */
-	private String error(String msg)
-	{	return classname + " error-> " + msg;
 	}
 
 	/**
@@ -92,22 +81,22 @@ public class Channel extends MMObjectBuilder
 	 * @param channel The channel to open.
 	 * @result true if opening the channel was succesfull.
 	 */
-	public boolean open(MMObjectNode channel)
-	{ 
+	public boolean open(MMObjectNode channel) {
 		/* Try to open the channel, when the channel is part of a chatbox put the channel with his highest sequence in the openChannels HashTable.
 		 */
 		channel.setValue("open", channelOpen);
 		MMObjectNode community = communityParent(channel);
 		int highestSequence = channel.getIntValue("highseq");
 		if (community.getStringValue("kind").equals("chatbox")) channel.setValue("highseq", -1); // this way we can check if the channel get closed properly
-		if (channel.commit())
-		{	if (community.getStringValue("kind").equals("chatbox"))
-				if (openChannels.get(channel.getValue("number")) == null)
+		if (channel.commit()) {
+			if (community.getStringValue("kind").equals("chatbox"))
+				if (openChannels.get(channel.getValue("number")) == null) {
 					openChannels.put(channel.getValue("number"), new Integer(highestSequence));
-			if (debug) debug("open(): channel " + channel.getValue("number") + " (" + channel.getValue("name") + ") opened");			
+ 				}
+			log.debug("open(): channel " + channel.getValue("number") + " (" + channel.getValue("name") + ") opened");			
 			return true;
 		}
-		error("open(): Can't open channel " + channel.getValue("number"));
+		log.error("open(): Can't open channel " + channel.getValue("number"));
 		return false;
 	}
 
@@ -116,17 +105,17 @@ public class Channel extends MMObjectBuilder
 	 *
 	 * @param channel The channel to close.
 	 */
-	public boolean close(MMObjectNode channel)
-	{	if (channel.getIntValue("open") != channelClosed)
-		{	channel.setValue("open", channelClosed);
+	public boolean close(MMObjectNode channel) {
+		if (channel.getIntValue("open") != channelClosed) {
+			channel.setValue("open", channelClosed);
 			Integer highseq = (Integer)openChannels.get(channel.getValue("number"));
 			if (highseq != null) channel.setValue("highseq", highseq);
-			if (channel.commit())
-			{	if (debug) debug("close(): channel " + channel.getIntValue("number") + "(" + channel.getValue("name") + ") closed.");
+			if (channel.commit()) {
+				log.debug("close(): channel " + channel.getIntValue("number") + "(" + channel.getValue("name") + ") closed.");
 				openChannels.remove(channel.getValue("number"));
 				return true;
 			}
-			error("close(): Can't close channel " + channel.getValue("number"));		
+			log.error("close(): Can't close channel " + channel.getValue("number"));		
 			return false;
 		}
 		return true;
@@ -143,7 +132,7 @@ public class Channel extends MMObjectBuilder
 			case channelReadOnly: return "readonly";
 			case channelClosed: return "closed";
 			default:
-				error("isOpen: the folowing channel hasn't a valid open value: " + channel + " Returning the channel is closed.");
+				log.error("isOpen: the folowing channel hasn't a valid open value: " + channel + " Returning the channel is closed.");
  				return "closed";
 		}
 	}
@@ -168,7 +157,7 @@ public class Channel extends MMObjectBuilder
 		newHighseq = channel.getIntValue("highseq") + 1;
 		channel.setValue("highseq", newHighseq);
 		if (channel.commit()) return newHighseq;
-		error("getnewSequence(): couldn't return a new sequence number, because couldn't commit channel node.");
+		log.error("getnewSequence(): couldn't return a new sequence number, because couldn't commit channel node.");
 		return -1;		
 	}
 
@@ -193,8 +182,8 @@ public class Channel extends MMObjectBuilder
 	 * This will start the recording session of the given session. All messages posted in the channel
 	 * to who the session is related get also related to the recording session channel.
 	 */
-	public void startRecordSession(MMObjectNode session)
-	{	error("startRecordSession(): startRecordSession is not implemented yet!");
+	public void startRecordSession(MMObjectNode session) {
+		log.error("startRecordSession(): startRecordSession is not implemented yet!");
 	}
 
 	/**
@@ -232,8 +221,8 @@ public class Channel extends MMObjectBuilder
 			tmpNodeManager.setObjectField(tOwner, tmp, "dnumber", user.getValue("number"));
 			chatboxConnections.add(tOwner + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());			
 		}
-		catch(Exception e)
-		{	error("join(): Could create temporary relations between between channel and user.\n" + e);
+		catch(Exception e) {
+			log.error("join(): Could create temporary relations between between channel and user.\n" + e);
 			return "failed";
 		}
 
@@ -282,7 +271,7 @@ public class Channel extends MMObjectBuilder
 							String key = _number.substring(_number.indexOf("_") + 1);
 							tmpNodeManager.deleteTmpNode(owner, key);
 							chatboxConnections.remove(_number);
-							if (debug) debug("logout(): owner = " + owner + " key = " + key);
+							log.debug("logout(): owner = " + owner + " key = " + key);
 						}
 		}		
 		return "logged out";
@@ -350,14 +339,14 @@ public class Channel extends MMObjectBuilder
 	{
 		/* The first thing we expect is a channel number.
 		 */
-		if (!tok.hasMoreElements())
-		{	error("replace(): channel number expected after $MOD-BUILDER-channel-.");
+		if (!tok.hasMoreElements()) {
+			log.error("replace(): channel number expected after $MOD-BUILDER-channel-.");
 			return "";
 		}
 		MMObjectNode channel = getNode(tok.nextToken());
 		
-		if (tok.hasMoreElements())
-		{	String cmd = tok.nextToken();
+		if (tok.hasMoreElements()) {
+			String cmd = tok.nextToken();
 
 			if (cmd.equals("OPEN")) open(channel);
 			if (cmd.equals("CLOSE")) close(channel);
@@ -366,7 +355,10 @@ public class Channel extends MMObjectBuilder
 			if (cmd.equals("NEWSEQ")) return "" + getNewSequence(channel);
 			if (cmd.equals("JOIN")) join(getNode(tok.nextToken()), channel);
 			if (cmd.equals("QUIT")) logout(getNode(tok.nextToken()), channel);
-			if (cmd.equals("STILLACTIVE")) { userStillActive(getNode(tok.nextToken()), channel); debug("replace(): user still active") ; }
+			if (cmd.equals("STILLACTIVE")) { 
+				userStillActive(getNode(tok.nextToken()), channel); 
+				log.debug("replace(): user still active") ; 
+			}
 		}
 		return "";
 	}
@@ -374,12 +366,11 @@ public class Channel extends MMObjectBuilder
 	/**
 	 * Ask URL from related community and append the channel number to the URL.
 	 */
-	public String getDefaultUrl(int src)
-	{
+	public String getDefaultUrl(int src) {
 		if (otypeCommunity == -1) otypeCommunity = mmb.TypeDef.getIntValue("community");
 		Enumeration e = mmb.getInsRel().getRelated(src, otypeCommunity);
-		if (!e.hasMoreElements())
-		{	debug("GetDefaultURL Could not find related community for channel node " + src);
+		if (!e.hasMoreElements()) {
+			log.warn("GetDefaultURL Could not find related community for channel node " + src);
 			return(null);
 		}
 		
@@ -392,24 +383,23 @@ public class Channel extends MMObjectBuilder
 	/**
 	 * Represents the value of a channel node's field as more user friendly representation in the Editor.
 	 */
-	public String getGUIIndicator(String field, MMObjectNode node)
-	{	
-		if (field.equals("session"))
-		{	int value = node.getIntValue(field);
+	public String getGUIIndicator(String field, MMObjectNode node) {
+		if (field.equals("session")) {
+			int value = node.getIntValue(field);
 			if (value == 1) return "yes"; else return "no";
 		}
-		if (field.equals("state")) // alias login
-		{	int value = node.getIntValue(field);
-			switch(value)
-			{	case 0: return "no login";
+		if (field.equals("state")) { // alias login 
+			int value = node.getIntValue(field);
+			switch(value) {
+				case 0: return "no login";
 				case 2: return "login before post";
 				case 3: return "login before read";
 			}
 		}
-		if (field.equals("open"))
-		{	int value = node.getIntValue(field);
-			switch(value)
-			{	case channelOpen: return "open";
+		if (field.equals("open")) {
+			int value = node.getIntValue(field);
+			switch(value) {
+				case channelOpen: return "open";
 				case channelReadOnly: return "readonly";
 				case channelClosed: return "closed";				
 			}
