@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.13 2001-11-21 16:21:44 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.14 2002-02-05 14:35:31 eduard Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -46,7 +46,7 @@ public class XMLBasicReader  {
 
     // who has the guts to change this one to true ???
     // it should be done in the near future, but gives a lot of error messages...
-    private static boolean useJavaxXML = false;
+    private static boolean useJavaxXML = true;
     
     /** set this one to true, when all document pars */
     private static boolean validateJavaxXML = true;
