@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.40 2004-01-05 11:10:47 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.41 2004-01-12 22:09:08 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -54,10 +54,15 @@ function doOnLoad_ew() {
                 }
                 break;
         }
+        initializeElement(elem, dttype, ftype);
     }
 
     resizeEditTable();
     restoreScroll();
+}
+
+// function to initialize a custom element
+function initializeElement(elem, dttype, ftype) {
 }
 
 function doOnUnLoad_ew() {
@@ -356,16 +361,7 @@ function restoreScroll() {
     if (pf == document.forms[0].id) {
         document.getElementById("editform").scrollTop = st;
     } else {
-        form = document.forms["form"];
-        for (var i=0; i<form.elements.length; i++) {
-            var elem = form.elements[i];
-            // find first editable field
-            var hidden = elem.getAttribute("type"); //.toLowerCase();
-            if (hidden != "hidden") {
-                elem.focus();
-                break;
-            }
-        }
+        setFacusOnFirstInput();
     }
 }
 
@@ -381,6 +377,19 @@ function saveScroll() {
 
 function cleanScroll() {
     cleanupScroll = true;
+}
+
+function setFacusOnFirstInput() {
+    var form = document.forms["form"];
+    for (var i=0; i < form.elements.length; i++) {
+        var elem = form.elements[i];
+        // find first editable field
+        var hidden = elem.getAttribute("type"); //.toLowerCase();
+        if (hidden != "hidden") {
+            elem.focus();
+            break;
+        }
+    }
 }
 
 //********************************
