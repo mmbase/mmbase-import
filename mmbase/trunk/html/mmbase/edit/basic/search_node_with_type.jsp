@@ -67,7 +67,7 @@
         <mm:import id="maxage_constraint"> [number] >= <mm:field name="mark" /></mm:import>
      </mm:listnodes>
      <mm:notpresent referid="maxage_constraint">
-       <mm:import id="maxage_constraint" /><!-- no contraint -->
+       <mm:import id="maxage_constraint" /><!-- no constraint -->
      </mm:notpresent>    
   </mm:isnotempty>
 
