@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="organisation">
+	<title>Organisation</title>
+	<task-description>Use this wizard to edit a person.</task-description>
+	
+	<action include="wizards/organisation/create_organisation.xml" />
+	
+	<action include="wizards/organisation/delete_organisation.xml" />
+
+	<action include="wizards/organisation/load_organisation.xml" />
+
+	<steps>
+		<step form-schema="edit_organisation" />
+	</steps>
+
+	<form-schema id="edit_organisation">
+		<field name="name"><prompt>Name</prompt></field>
+		<field name="description" rows="4"><prompt>Description</prompt></field>
+		<field name="email"><prompt>Email</prompt></field>
+		<field name="phone"><prompt>Phone</prompt></field>
+		<field name="homepage"><prompt>Fax</prompt></field>
+		<field name="street"><prompt>Address</prompt></field>
+		<field name="zipcode"><prompt>Zipcode</prompt></field>
+		<field name="city"><prompt>City</prompt></field>
+		<field name="country"><prompt>Country</prompt></field>
+		<field name="contactperson"><prompt>Contact Person</prompt></field>
+		<field name="contactemail"><prompt>Contact Email</prompt></field>
+		<field name="contactphone"><prompt>Contact Phone</prompt></field>
+		<list include="wizards/images/add_images_posrel_maxone.xml" />
+		<list include="wizards/urls/add_urls_posrel_small.xml" />
+		<list include="wizards/persons/add_persons_posrel.xml" />
+</form-schema>
+
+</wizard-schema>
