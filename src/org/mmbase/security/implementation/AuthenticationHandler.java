@@ -111,9 +111,11 @@ public class AuthenticationHandler extends Authentication {
         }
 	return loginModulesAvailable;
     }
-
-    public Rank getRank(UserContext usercontext) throws org.mmbase.security.SecurityException {
-    	return ((NameContext)usercontext).getRank();
-    }       
     
+    /** 
+     * this method does nothing..
+     */        
+    public boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException {
+    	return true;
+    }
 }
