@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.21 2004-02-16 15:31:07 keesj Exp $
+ * @version $Id: FileWatcher.java,v 1.22 2004-05-03 11:55:01 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -112,7 +112,7 @@ public abstract class FileWatcher {
     /**
      * Add's a file to be checked...
      * @param file The file which has to be monitored..
-     * @throws RuntimeException If file is null or does not exist.
+     * @throws RuntimeException If file is null
      */
     public void add(File file) {
         FileEntry fe = new FileEntry(file);
@@ -265,17 +265,18 @@ public abstract class FileWatcher {
     }
 
     /**
-     * @javadoc
+     * The one thread to handle all FileWatchers. In earlier impelmentation every FileWatcher had
+     * it's own thread, but that is avoied by this now.
      */
     private static class FileWatcherRunner extends Thread {
 
         /**
-         * Set of wachters
+         * Set of file-watchers, which are currently active.
          */
         private Set watchers = new HashSet();
 
         /**
-         * Set of wachters to be added. This set is used because
+         * Set of watchers to be added. This set is used because
          * in the run method of the this thread the filewachter implementation might decide to 
          * add a new fileWachter (for example in in the onChange method) 
          */
@@ -295,8 +296,8 @@ public abstract class FileWatcher {
         }
 
         /**
-         *  Main loop, will repeat every amount of time.
-         *	It will stop, when either a file has been changed, or exit() has been called
+         *  Main loop, will check every watched file every amount of time.
+         *  It will never stop, this thread is a daemon.
          */
         public void run() {
             do {
@@ -361,7 +362,8 @@ public abstract class FileWatcher {
     }
 
     /**
-     * @javadoc
+     * Object used in file-lists of the FileWatcher. It wraps a File object, but adminstrates
+     * lastmodified an existence seperately (to compare with the actual values of the File).
      */
     private class FileEntry {
         // static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
@@ -380,7 +382,6 @@ public abstract class FileWatcher {
                 // file does not exist. A change will be triggered
                 // once the file comes into existence
                 log.info("file :" + file.getAbsolutePath() + " did not exist (yet)");
-                log.debug("file :" + file.getAbsolutePath() + " did not exist (yet)");
                 lastModified = -1;
             } else {
                 lastModified = file.lastModified();
