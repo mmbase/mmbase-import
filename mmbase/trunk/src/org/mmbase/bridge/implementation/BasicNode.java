@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.119 2004-01-08 12:37:16 johannes Exp $
+ * @version $Id: BasicNode.java,v 1.120 2004-02-20 07:33:55 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -435,10 +435,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setXMLValue(String fieldName, Document value) {
         value = (Document) ValueIntercepter.processSet(Field.TYPE_XML, this, nodeManager.getField(fieldName), value);
-        
+
         // do conversion, if needed from doctype 'incoming' to doctype 'needed'
         //DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
-        
+
         //setValueWithoutProcess(fieldName, dc.convert(value, cloud));
         setValueWithoutProcess(fieldName, value);
     }
@@ -502,8 +502,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (Integer) ValueIntercepter.processGet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), result);
         }
-        return result.intValue(); 
-        
+        return result.intValue();
+
     }
 
     public float getFloatValue(String fieldName) {
@@ -511,7 +511,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (Float) ValueIntercepter.processGet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), result);
         }
-        return result.floatValue(); 
+        return result.floatValue();
     }
 
     public long getLongValue(String fieldName) {
@@ -519,7 +519,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (Long) ValueIntercepter.processGet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), result);
         }
-        return result.longValue(); 
+        return result.longValue();
     }
 
     public double getDoubleValue(String fieldName) {
@@ -527,7 +527,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = (Double) ValueIntercepter.processGet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), result);
         }
-        return result.doubleValue(); 
+        return result.doubleValue();
     }
 
     public byte[] getByteValue(String fieldName) {
@@ -927,25 +927,25 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             Node alias = i.nextNode();
             result.add(alias.getStringValue("name"));
         }
-                
+
         // There might be aliases in temporary nodes
         // This is quite a dirty (and probably also slow) hack
         // for bug #6185.
         // Usually the TemporaryNodes hashtable shall not be
         // too full.
         if (cloud instanceof Transaction) {
-        	Hashtable tnodes = MMObjectBuilder.TemporaryNodes;
-        	for (Enumeration e = tnodes.elements(); e.hasMoreElements();) {
-        		MMObjectNode mynode = (MMObjectNode)e.nextElement();
-        		if (mynode.getTableName().equals("oalias")){
-        			String dest = mynode.getStringValue("_destination");
-        			if ((account + "_" + temporaryNodeId).equals(dest)) {
-        				result.add(mynode.getStringValue("name"));
-        			}
-        		}
-        	}        	
+            Hashtable tnodes = MMObjectBuilder.TemporaryNodes;
+            for (Enumeration e = tnodes.elements(); e.hasMoreElements();) {
+                MMObjectNode mynode = (MMObjectNode)e.nextElement();
+                if (mynode.getTableName().equals("oalias")){
+                    String dest = mynode.getStringValue("_destination");
+                    if ((account + "_" + temporaryNodeId).equals(dest)) {
+                        result.add(mynode.getStringValue("name"));
+                    }
+                }
+            }
         }
-        
+
         return result;
     }
 
@@ -979,26 +979,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
         // Live with it.
         if (!isnew) {
-            String sql = "WHERE (destination" + "=" + getNumber() + ")";
+            NodeManager oalias = cloud.getNodeManager("oalias");
+            NodeQuery q = oalias.createQuery();
+            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
             if (aliasName != null) {
-                sql += " AND (name='" + aliasName + "')";
+                Constraint c2 = q.createConstraint(q.getStepField(oalias.getField("name")), aliasName);
+                c = q.createConstraint (c,CompositeConstraint.LOGICAL_AND,c2);
             }
-            // search existing aliases until the right one is found!
-            OAlias alias = mmb.getOAlias();
-            if (alias != null) {
-                for (Enumeration e = alias.search(sql); e.hasMoreElements();) {
-                    MMObjectNode node = (MMObjectNode)e.nextElement();
-                    if (cloud instanceof Transaction) {
-                        BasicTransaction tran = (BasicTransaction)cloud;
-                        String oMmbaseId = "" + node.getValue("number");
-                        String currentObjectContext =
-                            BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
-                        tran.add(currentObjectContext);
-                        tran.delete(currentObjectContext);
-                    } else {
-                        node.remove( ((BasicUser)cloud.getUser()).getUserContext());
-                    }
-                }
+            q.setConstraint(c);
+            NodeList aliases = oalias.getList(q);
+            NodeIterator i = aliases.nodeIterator();
+            while (i.hasNext()) {
+                Node alias = i.nextNode();
+                alias.delete();
             }
         }
     }
