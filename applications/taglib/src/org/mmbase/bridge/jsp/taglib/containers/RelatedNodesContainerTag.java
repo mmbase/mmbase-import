@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.7 2004-07-10 12:16:45 nico Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.8 2004-07-23 14:55:59 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -45,6 +45,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
         query = cloud.createNodeQuery();
 
         Step step = query.addStep(node.getNodeManager());
+        query.setAlias(step, node.getNodeManager().getName() + "0");
         query.addNode(step, node);
 
         if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
