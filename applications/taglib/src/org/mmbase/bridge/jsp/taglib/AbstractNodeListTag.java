@@ -100,8 +100,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param sorted A comma separated list of fields on witch the returned
      * nodes should be sorted
      */
-    public void setOrderby(String sorted){
-        this.sortedString = sorted;
+    public void setOrderby(String sorted) throws JspTagException {
+        this.sortedString = getAttributeValue(sorted);
     }
 
     /**
@@ -109,8 +109,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param direction the selection query for the object we are looking for
      * direction
      */
-    public void setDirections(String directions){
-        this.directionString = directions;
+    public void setDirections(String directions) throws JspTagException {
+        this.directionString = getAttributeValue(directions);
     }
 
     /**
@@ -160,8 +160,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Sets the selection query
      * @param where the selection query
      */
-    public void setConstraints(String where) {
-        this.whereString = where;
+    public void setConstraints(String where) throws JspTagException {
+        this.whereString = getAttributeValue(where);
     }
 
     abstract public int doStartTag() throws JspTagException;
