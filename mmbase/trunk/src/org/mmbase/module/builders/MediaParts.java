@@ -18,42 +18,48 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * MediaParts is the main class for mediaobjects. All media type builders (eg. AudioParts) builders
- * extend from this one. MediaParts implements the replace command GETURL to get the url to a mediafile.
+ * MediaParts is the main class for mediaobjects. All media type builders (eg. AudioParts)
+ * extend from it.
+ * MediaParts implements the replace command GETURL to get the url to a media file.
  * <br />
- * MediaParts also implements an urlCache which comes in handy when queries lots of audioparts at once.
- * (This takes time since urls aren't stored directly in a mediapart but through rawaudios/videos etc..)
- * To use the urlCache you have to set the XML builder property 'UrlCaching' to 'true'. default is false.
+ * MediaParts also implements an cache which is sueful when querying lots of audioparts at once.
+ * This takes time since urls aren't stored directly in a mediapart, but through rawaudios and rawvideos.
+ * To use the cache you have to set the XML builder property 'UrlCaching' to 'true'. Default is false.
  * <br />
  * For each object whos url is requested two types of cache entries will me made. One is for requests coming
  * from the internal www server, and one for requests coming from outside.
  * i.e., VPRO uses this to send request from employees who visit the site to a local RealServer instead of the
  * main RealServer.
  * <br />
- * If an audiopart or videopart node changes locally or remotely, the related UrlCache entries will be removed
+ * If an audiopart or videopart node changes locally or remotely, the related cache entries will be removed
  * immediately.
  *
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.7 2002-01-25 15:13:16 pierre Exp $
+ * @version $Id: MediaParts.java,v 1.8 2002-02-20 10:43:26 pierre Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 
+    // logging
     private static Logger log = Logging.getLoggerInstance(MediaParts.class.getName());
 
     /**
-     * Define LRU Cache for video urls.
-     * @scope private, non static
+     * Define LRU Cache for media urls.
+     * @bad-literal the maximum size of the cache should be a named constant, or configurable
+     * @scope private, non static, so different builders can have their own cache
      */
     public static LRUHashtable urlCache = new LRUHashtable(1024);
 
     /**
-     * Use caching of not, determined by builder property 'CacheUrls'
+     * Use caching or not, determined by builder property 'CacheUrls'
      */
     private boolean urlCaching=false;
 
     /**
      * Initializes and gets builder properties.
-     * @return true always
+     * @todo evaluate how configuration of builder-specific caches can be made
+     *       more generic, i.e. use the same property name for turning on
+     *       caching or setting the maximum cache size.
+     * @return always true
      */
     public boolean init() {
         super.init();
@@ -173,7 +179,7 @@ public abstract class MediaParts extends MMObjectBuilder {
      * from cache or not depending on builder property.
      * @param sp the scanpage
      * @param sp the stringtokenizer reference with the replace command.
-     * @return a String the result value of the replace command or null.
+     * @return the result value of the replace command or null.
      */
     public String replace(scanpage sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
@@ -223,11 +229,11 @@ public abstract class MediaParts extends MMObjectBuilder {
                 }
             } else {
                 log.error("replace: Unknown command: "+token);
-                return("ERROR: Unknown command: "+token);
+                return "ERROR: Unknown command: "+token;
             }
         }
         log.info("replace: No command defined.");
-        return("No command defined, says the VideoParts builder.");
+        return "No command defined";
     }
 
     /**

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: VideoParts.java,v 1.16 2002-01-28 13:26:20 pierre Exp $
+ * @version $Id: VideoParts.java,v 1.17 2002-02-20 10:43:26 pierre Exp $
  */
 public class VideoParts extends MediaParts {
 
@@ -154,7 +154,7 @@ public class VideoParts extends MediaParts {
 
     /**
      * @javadoc
-     * @duplicate should be part of a utility class
+     * @duplicate Also appears in {@link AudioParts} - Time stuff should be in util class
      */
     public static long calcTime( String time ) {
         long result = -1;
@@ -245,7 +245,8 @@ public class VideoParts extends MediaParts {
      * @duplicate should be part of a utility class
      * @scope static see calcTime
      * @rename checkTime
-     * @todo check whether this method should return false if the time is an empty string
+     * @duplicate Also appears in {@link AudioParts} - Time stuff should be in util class
+     * @todo this method should return false if the time is an empty string (like in AudioParts)
      * @param time dd:hh:mm:ss.ss, each part (dd/hh/mm/ss/ss) is only valid if it is a number,
      *             higher than 0, lower than 100
      * @return  true if the time string is valid.
@@ -270,7 +271,7 @@ public class VideoParts extends MediaParts {
 
     /**
      * @javadoc
-     * @duplicate should be part of a utility class
+     * @duplicate Also appears in {@link AudioParts} - Time stuff should be in util class
      * @scope static see checktime
      * @rename checkTimeInt
      */

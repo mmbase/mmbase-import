@@ -31,9 +31,10 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.27 2002-01-28 13:26:20 pierre Exp $
+ * @version $Id: AudioParts.java,v 1.28 2002-02-20 10:43:26 pierre Exp $
  */
 public class AudioParts extends MediaParts {
+    //logging
     private static Logger log = Logging.getLoggerInstance(AudioParts.class.getName());
 
     public final static int AUDIOSOURCE_DEFAULT=0;
@@ -156,6 +157,7 @@ public class AudioParts extends MediaParts {
 
     /**
      * @javadoc
+     * @bad-literal clasification values should be named constants
      */
     private String getAudioClassificationString(int classification) {
         String rtn="";
@@ -254,7 +256,7 @@ public class AudioParts extends MediaParts {
 
     /**
      * @javadoc
-     * @deprecated Time stuff should be in util class
+     * @duplicate Also appears in {@link VideoParts} - Time stuff should be in util class
      */
     public static long calcTime( String time ) {
         long result = -1;
@@ -345,10 +347,14 @@ public class AudioParts extends MediaParts {
     }
 
     /**
-     * checktime( time ) <br />
-     * time = dd:hh:mm:ss.ss <br />
-     * Checks whether part is valid, each part (dd/hh/mm/ss/ss) are numbers, higher than 0, lower than 100
-     * If true, time can be inserted in DB.
+     * Checks whether the time string is valid
+     * @duplicate should be part of a utility class
+     * @scope static see calcTime
+     * @rename checkTime
+     * @duplicate Also appears in {@link VideoParts} - Time stuff should be in util class
+     * @param time dd:hh:mm:ss.ss, each part (dd/hh/mm/ss/ss) is only valid if it is a number,
+     *             higher than 0, lower than 100
+     * @return  true if the time string is valid.
      */
     private boolean checktime(String time) {
         if (time==null || time.equals("")) {
@@ -366,6 +372,9 @@ public class AudioParts extends MediaParts {
 
     /**
      * @javadoc
+     * @scope static see checktime
+     * @duplicate Also appears in {@link VideoParts} - Time stuff should be in util class
+     * @rename checkTimeInt
      */
     private boolean checktimeint( String time ) {
         boolean result = false;

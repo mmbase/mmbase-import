@@ -21,9 +21,20 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
+ * This is a wrapper class for the VideoPart object.
+ * It is used to provide member functions for selecting, for a wrapped videopart,
+ * the best available rawvideo (or rather, rawvideo wrapper), and then requesting
+ * the best  url for that rawvideo (using the best mirror site available).
+ *
+ * @deprecated Most of the actual functionality for these functions resides in
+ * VideoUtils, which is alo the place where these (temporary) objects are created.
+ * Presumably, the function of this wrapper is to enhance or speed up the selection
+ * of a url (or to cache it), but in reality these wrapper functions only copy data,
+ * and do not add functionality that could not be performed on it's own by VideoUtils.
+ * @duplicate very similar to {@link org.mmbase.util.media.audio.audioparts.AudioPartDef}
+ *
  * @author    vpro
- * @version   $Id: VideoPartDef.java,v 1.7 2002-01-28 16:35:03 pierre Exp $
+ * @version   $Id: VideoPartDef.java,v 1.8 2002-02-20 10:43:29 pierre Exp $
  */
 
 public class VideoPartDef {
@@ -32,75 +43,83 @@ public class VideoPartDef {
     private static Logger log = Logging.getLoggerInstance(VideoPartDef.class.getName());
 
     /**
-     * @javadoc
+     * Videopart object number
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public int number;
 
     /**
-     * @javadoc
+     * Videopart object type
      * @scope private
-     * @deprecated not used, implied by number
+     * @deprecated should be retrieved from node reference
      */
-    public int otype;        // not nes, but anyway
+    public int otype;
 
     /**
-     * @javadoc
+     * Videopart object owner
      * @scope private
-     * @deprecated not used, implied by number
+     * @deprecated should be retrieved from node reference
      */
     public String owner;
 
     /**
-     * @javadoc
+     * Videopart title
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public String title;
 
     /**
-     * @javadoc
+     * Videopart subtitle
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public String subtitle;
 
     /**
-     * @javadoc
+     * Videopart title
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public int source;
 
     /**
-     * @javadoc
+     * Videopart speel duur
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public int playtime;
 
     /**
-     * @javadoc
+     * Videopart intro tekst
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public String intro;
 
     /**
-     * @javadoc
+     * Videopart body tekst
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public String body;
 
     /**
-     * @javadoc
+     * Videopart mono of stereo
      * @scope private
+     * @deprecated should be retrieved from node reference
      */
     public int storage;
 
     /**
-     * @javadoc
+     * Videopart start tijd
      * @scope private
      */
     public String starttime;
 
     /**
-     * @javadoc
+     * Videopart eind tijd
      * @scope private
      */
     public String stoptime;
@@ -121,7 +140,10 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
+     * Creates the wrapper and initializes it by copying the node's fields and values.
+     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
+     * @param number The number of the node to wrap
+     * @performance why are fields stored as properties, rather than the node itself?
      */
     public VideoPartDef( MMBase mmbase, int number ) {
         if( !setparameters( mmbase, number ) )
@@ -129,7 +151,21 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
+     * Creates the wrapper and initializes it by copying the node's fields and values.
+     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
+     * @param node The node to wrap
+     * @performance why are fields stored as properties, rather than the node itself?
+     */
+    public VideoPartDef( MMBase mmbase, MMObjectNode node ) {
+        if( !setparameters( mmbase, node ) )
+            log.error("VideoPartDef("+node+"): Not initialised, something went wrong!");
+    }
+
+    /**
+     * Initializes the wrapper by copying the node's fields and values.
+     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
+     * @param number The number of the node to wrap
+     * @performance why are fields stored as properties, rather than the node itself?
      */
     public boolean setparameters( MMBase mmbase, int number ) {
         boolean result = false;
@@ -157,35 +193,29 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
-     */
-    public VideoPartDef( MMBase mmbase, MMObjectNode node ) {
-        if( !setparameters( mmbase, node ) )
-            log.error("VideoPartDef("+node+"): Not initialised, something went wrong!");
-    }
-
-    /**
-     * @javadoc
+     * Initializes the wrapper by copying the node's fields and values.
+     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
+     * @param node The node to wrap
      * @performance why are fields stored as properties, rather than the node itself?
      */
     public boolean setparameters( MMBase mmbase, MMObjectNode node ) {
         boolean result = false;
         if( node != null ) {
-            number         = node.getIntValue("number");
-            otype        = node.getIntValue("otype");
-            owner        = node.getStringValue("owner");
+            number = node.getIntValue("number"); // not needed
+            otype = node.getIntValue("otype"); // not needed
+            owner = node.getStringValue("owner"); // not needed
 
-            title        = node.getStringValue("title");
-            subtitle    = node.getStringValue("subtitle");
-            source        = node.getIntValue("source");
-            playtime    = node.getIntValue("playtime");
-            intro        = node.getStringValue("intro");
-            body        = node.getStringValue("body");
-            storage        = node.getIntValue("storage");
+            title = node.getStringValue("title"); // not needed
+            subtitle = node.getStringValue("subtitle"); // not needed
+            source = node.getIntValue("source"); // not needed
+            playtime = node.getIntValue("playtime"); // not needed
+            intro = node.getStringValue("intro"); // not needed
+            body = node.getStringValue("body"); // not needed
+            storage = node.getIntValue("storage"); // not needed
 
             getStartStop( mmbase );
 
-            result        = true;
+            result = true;
         } else {
             log.error("VideoPartsDef("+node+"): Node is null!");
         }
@@ -193,7 +223,14 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
+     * Attempts to selects the best available rawvideo object for the given speed and channels
+     * The result of this method is deciding for the outcome of the {@link @getRealVideoUrl} call.
+     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already wrapping a node)
+     * @param wantedspeed the desired speed of the video
+     * @param wantedchannels  the desired nr of channels for the video
+     * @param sorted whether to sort the available videos first (?)
+     * @return true if a raw video could be found. If true, the rawvideo is remembered by the object,
+     *          for use by a subsequent call to {@link @getRealVideoUrl}
      */
     public boolean getRawVideos( MMBase mmbase, int wantedspeed, int wantedchannels, boolean sorted ) {
         boolean result = false;
@@ -213,7 +250,9 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
+     * Determine start and stop time values of the given object.
+     * The values are retrieved from the properties builder (?) and stored in the wrapper object.
+     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already wrapping a node)
      */
     public void getStartStop( MMBase mmbase ) {
         if( mmbase != null ) {
@@ -244,35 +283,12 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
-     */
-    public String toText() {
-        String classname = this.getClass().getName();
-        StringBuffer b = new StringBuffer();
-        b.append( classname +":" + "number("+number+")\n");
-        b.append( classname +":" + "otype("+otype+")\n");
-        b.append( classname +":" + "owner("+owner+")\n");
-
-        b.append( classname +":" + "title("+title+")\n");
-        b.append( classname +":" + "subtitle("+subtitle+")\n");
-        b.append( classname +":" + "source("+source+")\n");
-        b.append( classname +":" + "playtime("+playtime+")\n");
-        b.append( classname +":" + "intro("+intro+")\n");
-        b.append( classname +":" + "body("+body+")\n");
-        b.append( classname +":" + "storage("+storage+")\n");
-        b.append( classname +":" + "starttime("+starttime+")\n");
-        b.append( classname +":" + "stoptime("+stoptime+")\n");
-        b.append( classname +":" + "rawvideos found : " + rawvideos.size() + "\n");
-        b.append( classname +":" + "best rawvideo   : " + rawvideo.toString() + "\n");
-        return b.toString();
-    }
-
-    /**
      * Gets the Realvideo url and ads the 'title','start' and 'end' name and values parameters.
-     * davzev: Removed the double quotes around the values since Real SMIL doesn't handle it correctly.
-     * @deprecation-used contains commented-out code
-     * @dependency scanpage (SCAN)
-     * @param sp the scanepage
+     * The result of this method is dependent on the outcome of the previous {@link @getRawVideos} call,
+     * which makes it unsafe for use in a multithreaded environment.
+     * @deprecation-used contains commented-out code (SMIL does not accept quoted values)
+     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
+     * @param sp the scanpage
      * @return a String with the url.
      */
     public String getRealVideoUrl( scanpage sp ) {
@@ -315,7 +331,31 @@ public class VideoPartDef {
     }
 
     /**
-     * @javadoc
+     * Returns a string representation of this object, for debugging purposes.
+     */
+    public String toText() {
+        String classname = this.getClass().getName();
+        StringBuffer b = new StringBuffer();
+        b.append( classname +":" + "number("+number+")\n");
+        b.append( classname +":" + "otype("+otype+")\n");
+        b.append( classname +":" + "owner("+owner+")\n");
+
+        b.append( classname +":" + "title("+title+")\n");
+        b.append( classname +":" + "subtitle("+subtitle+")\n");
+        b.append( classname +":" + "source("+source+")\n");
+        b.append( classname +":" + "playtime("+playtime+")\n");
+        b.append( classname +":" + "intro("+intro+")\n");
+        b.append( classname +":" + "body("+body+")\n");
+        b.append( classname +":" + "storage("+storage+")\n");
+        b.append( classname +":" + "starttime("+starttime+")\n");
+        b.append( classname +":" + "stoptime("+stoptime+")\n");
+        b.append( classname +":" + "rawvideos found : " + rawvideos.size() + "\n");
+        b.append( classname +":" + "best rawvideo   : " + rawvideo.toString() + "\n");
+        return b.toString();
+    }
+
+    /**
+     * Returns a string representation of this object, for debugging purposes.
      */
     public String toString() {
         return this.getClass().getName() +"( number("+number+") otype("+otype+") owner("+owner+") title("+title+") subtitle("+subtitle+") source("+source+") playtime("+playtime+") intro("+intro+") body("+body+") storage("+storage+"), starttime("+starttime+"), stoptime("+stoptime+"), rawvideos("+rawvideos.size()+"), rawvideo("+rawvideo.toString()+")";
