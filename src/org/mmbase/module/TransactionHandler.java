@@ -33,15 +33,21 @@ import org.mmbase.util.logging.*;
  * This class parses the TML code and calls the appropriate methods
  * in TransactionManager TemporarayNodeManager org.mmabse.module.core
  * Furthermore is does some nameserving.
+ *
+ * John Balder: 3MPS  added key-check 4-4-2001 for security
+ *
  */
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+  private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static Upload upload = null;
-	private static String version="2.3.6";
+	private static String version="2.3.7";
+	//JohnB key test
+	private static boolean needs_key = true; //set true for safety
+	private static String securityMode = "none";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -63,6 +69,12 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
  		sessions = (sessionsInterface)getModule("SESSION");
 		tmpObjectManager = new TemporaryNodeManager(mmbase);
 		transactionManager = new TransactionManager(mmbase,tmpObjectManager);
+		//JB key test initializatioon
+		needs_key = (getInitParameter("keycode") != null);
+		securityMode = getInitParameter("security");
+		if (securityMode == null) securityMode = "none";
+		log.debug(">> needs key: " + needs_key + " mode: " + securityMode);
+		//end JB key test initializatioon
 	}
 
 	/**	
@@ -169,6 +181,25 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				exceptionPage = "exception.shtml";	
 			}
 		
+			//  JB key test, only if there was a key defined in <module>.xml
+			if (needs_key) {
+				String key;
+				key = docRootElement.getAttribute("key");
+				
+				if ((key == null) || (!key.equals(getInitParameter("keycode"))) ) {
+					if (securityMode.equals("signal")) {
+						log.error("ACCESS VIOLATION key: >" + key + "<");
+				  } else if (securityMode.equals("secure")) {
+						log.error("ACCESS VIOLATION key: >" + key + "<");
+			  	TransactionHandlerException te =
+			  		new TransactionHandlerException(
+			  			"ACCESS VIOLATION by: >" + key + "<");
+					te.exceptionPage=exceptionPage;
+					throw te;
+			 	  }
+			 }
+			}
+			
 			// do for all transaction contexts (create-, open-, commit- and deleteTransaction)
 			transactionContextList = docRootElement.getChildNodes();
 		
