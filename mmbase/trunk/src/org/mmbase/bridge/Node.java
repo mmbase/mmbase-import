@@ -234,7 +234,7 @@ public interface Node {
      * existing relations with this node will be removed.
      */
 
-    // public void delete(boolean deleteRelations);
+    public void delete(boolean deleteRelations);
 
     /**
      * Converts the node to a string

@@ -340,10 +340,10 @@ public class BasicNode implements Node {
     };
 
     public void delete() {
-        delete(true); // delete(false);
+        delete(false);
     };
 
-    private void delete(boolean deleteRelations) {
+    public void delete(boolean deleteRelations) {
         edit(ACTION_DELETE);
         if (isnew) {
             // remove a temporary node (no true instantion yet, no relations)
