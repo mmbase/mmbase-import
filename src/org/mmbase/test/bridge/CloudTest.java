@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridgetest;
+package org.mmbase.test.bridge;
 
 import junit.framework.*;
 import org.mmbase.bridge.*;
