@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.9 2000-03-17 12:19:45 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.10 2000-03-20 10:40:59 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.9  2000/03/17 12:19:45  wwwtech
+	Rico: added better support for functions in getValue
+	
 	Revision 1.8  2000/03/15 10:18:42  wwwtech
 	Rico added which url caused the exception to doRelations
 	
@@ -56,7 +59,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.9 2000-03-17 12:19:45 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.10 2000-03-20 10:40:59 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -551,6 +554,8 @@ public class HtmlBase extends ProcessorModule {
 			String cmd=tok.nextToken();	
 			if (cmd.equals("FIELD")) { 
 				return(getObjectField(sp,tok));
+			} else if (cmd.equals("GETVALUE")) { 
+				return(getBuilderValue(sp,tok));
 			} else if (cmd.equals("PROPERTY")) { 
 				return(getObjectProperty(sp,tok));
 			} else if (cmd.equals("OTYPE")) { 
@@ -641,6 +646,17 @@ public class HtmlBase extends ProcessorModule {
 			return(node.getGUIIndicator());
 		}
 		return("unknown");
+	}
+
+	String getBuilderValue(scanpage sp, StringTokenizer tok) {
+		if (tok.hasMoreTokens()) {
+			String number=tok.nextToken();
+			String field="number";
+			if (tok.hasMoreTokens()) field=tok.nextToken();
+			MMObjectNode node=mmb.getTypeDef().getNode(number);
+			return(""+node.getValue(field));
+		}
+		return("");
 	}
 
 	String getObjectField(scanpage sp, StringTokenizer tok) {
