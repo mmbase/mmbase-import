@@ -11,6 +11,7 @@ package org.mmbase.storage.database;
 
 import java.util.*;
 import java.sql.*;
+import java.io.*;
 
 import org.mmbase.module.database.JDBCInterface;
 import org.mmbase.module.database.support.dTypeInfos;
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.8 2003-05-02 14:21:59 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.9 2003-05-02 20:27:16 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -82,6 +83,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Constructs the AbstractDatabaseSupport database layer support class
      */
     protected AbstractDatabaseStorage() {
+        super();
     }
 
     /**
@@ -287,7 +289,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @param scheme the scheme to use
      */
     public void setCreateScheme(String scheme) {
-        createScheme=scheme;
+         createScheme=scheme;
     }
 
     /**
@@ -343,7 +345,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return the expanded tablename
      */
     protected String getFullTableName(String tableName) {
-        return mmb.baseName+"_"+tableName;
+        return mmb.baseName + "_" + tableName;
     }
 
     /**
@@ -708,13 +710,8 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         }
     }
 
-    /**
-     * Stores a field in a table ResultSet in a MMObjectNode.
-     * @param node the node to store the field in
-     * @param fieldname the name of the field as it is known to MMBase
-     * @param rs the ResultSet containing the table row
-     * @param i the index of the field in the ResultSet
-     */
+
+    //javadoc inherited from DatabaseStorage
     abstract public void loadFieldFromTable(MMObjectNode node,String fieldname, ResultSet rs,int i);
 
     /**
@@ -728,6 +725,33 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @javadoc
      */
     abstract public byte[] getBytes(MMObjectNode node,String fieldname);
+
+
+    /**
+     * Get bytes of a database blob
+     * @javadoc
+     */
+    public byte[] getBytes(String tableName, String fieldName, int number) {
+        byte[] result = null;
+        String sqlselect=selectSQL(tableName, fieldName, number);
+        DatabaseTransaction trans=null;
+        try {
+            trans = createDatabaseTransaction();
+            ResultSet rs = trans.executeQuery(sqlselect);
+            if ((rs!=null) && rs.next()) {
+                result = getDBByte(rs,1);
+                if (log.isDebugEnabled()) {
+                    log.debug("got " + result.length + " bytes for field  " + fieldName);
+                }
+            }
+            trans.commit();
+        } catch (Exception e) {
+            log.error(e.toString());
+            if (trans != null) trans.rollback();
+        }
+        return result;
+    }
+
 
     /**
      * Set a prepared statement field i with value of key from the given node.
@@ -799,12 +823,12 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
             mmb.mmc.changedNode(node.getNumber(),builder.getTableName(),change);
             if (builder instanceof InsRel) {
                 // figure out tables to send the changed relations
-                MMObjectNode n1=node.getNodeValue("snumber");
-                MMObjectNode n2=node.getNodeValue("dnumber");
+                MMObjectNode n1 = node.getNodeValue("snumber");
+                MMObjectNode n2 = node.getNodeValue("dnumber");
                 n1.delRelationsCache();
                 n2.delRelationsCache();
-                mmb.mmc.changedNode(n1.getNumber(),n1.getBuilder().getTableName(),"r");
-                mmb.mmc.changedNode(n2.getNumber(),n2.getBuilder().getTableName(),"r");
+                mmb.mmc.changedNode(n1.getNumber(), n1.getBuilder().getTableName(), "r");
+                mmb.mmc.changedNode(n2.getNumber(), n2.getBuilder().getTableName(), "r");
             }
         }
     }
@@ -813,10 +837,15 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     /**
      * Get a String form the resultset
      */
-    public String getDBText(ResultSet rs,int idx) {
+    public String getDBText(ResultSet rs, int idx) {
         try {
+            String result = rs.getString(idx);
+            if (log.isDebugEnabled()) {
+                log.debug("getdbtext on field " + idx + " resulted: '" + result + "'");
+            }
             return rs.getString(idx);
         } catch (Exception e) {
+            log.error(e.toString());
             return "";
         }
     }
@@ -825,8 +854,11 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Set text array in database
      * @javadoc
      */
-    public void setDBText(int i, PreparedStatement stmt,String body) {
+    public void setDBText(int i, PreparedStatement stmt, String body) {
         try {
+            if (log.isDebugEnabled()) {
+                log.debug("setdbtext on " + i + " with '" + (body == null ? "NULL" : (body.length() <= 10 ? body :  body.substring(0, 10))) + "'");
+            }
             stmt.setString(i, body);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -834,26 +866,81 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     }
 
     /**
+     * Gets a byte array from a resultset
+     * 
+     */
+    // public for Support2Storage
+    public byte[] getDBByte(ResultSet rs, int idx) {
+        byte[] bytes = null;
+        try {
+            Blob b = rs.getBlob(idx);
+            return b.getBytes(0, (int) b.length());
+        } catch (Exception e) {
+            log.error("Byte  exception " + e);
+            log.error(Logging.stackTrace(e));
+        }
+        return bytes;
+    }
+
+
+    /**
+     * Drivers which do not understand getBlob can use this.
+     * @since MMBase-1.7
+     */
+    protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try {
+            InputStream inp = rs.getBinaryStream(idx);
+            while (true) {
+                int c = inp.read();
+                if (c == -1) break;
+                bytes.write(c);
+            }
+            inp.close(); // this also closes the underlying stream
+        } catch (SQLException e) {
+            log.error("Byte  exception " + e);
+            log.error(Logging.stackTrace(e));
+        } catch (IOException io) {
+            log.error("Byte  io-exception " + io);
+        }
+        return bytes.toByteArray();
+    }
+
+
+
+    /**
      * Set byte array in database
      * @javadoc
      */
-    abstract public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
+    // public for Support2Storage
+    public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
+        try {
+            InputStream stream = new ByteArrayInputStream(bytes);
+            stmt.setBinaryStream(i, stream, bytes.length);
+            stream.close();
+        } catch (Exception e) {
+            log.error("Can't set byte stream");
+            log.error(Logging.stackTrace(e));
+        }
+    }
+
 
     /**
      * Gives an unique number for a node to be inserted.
      * This method will work with multiple mmbases
      * @return unique number
      */
-    public int createKey() {
+    // public because this implements Support2Storage
+    public final int createKey() {
         int number =-1;
-        DatabaseTransaction trans=null;
+        DatabaseTransaction trans = null;
         try {
-            trans=createDatabaseTransaction();
-            number=createKey(trans);
+            trans = createDatabaseTransaction();
+            number = createKey(trans);
             trans.commit();
         } catch (StorageException e) {
             log.error(e.toString());
-            if (trans!=null) trans.rollback();
+            if (trans != null) trans.rollback();
         }
         return number;
     }
@@ -865,6 +952,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return unique number
      * @throws StorageException if an error occurred while obtaining the key
      */
+    // from Storage
     abstract public int createKey(Transaction trans) throws StorageException;
 
     /**
@@ -874,15 +962,16 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return The (new) number for this node, or -1 if an error occurs.
      */
     public int insert(MMObjectNode node) {
-        int result=-1;
-        DatabaseTransaction trans=null;
+        int result = -1;
+        DatabaseTransaction trans = null;
         try {
-            trans=createDatabaseTransaction();
-            result=insert(node,trans);
+            trans = createDatabaseTransaction();
+            result = insert(node, trans);
             trans.commit();
         } catch (StorageException e) {
-            if (trans!=null) trans.rollback();
+            if (trans != null) trans.rollback();
             log.error(e.getMessage());
+            log.error(Logging.stackTrace(e));
         }
         return result;
     }
