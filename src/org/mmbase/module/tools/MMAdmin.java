@@ -37,7 +37,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.98 2005-03-01 15:13:33 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.99 2005-03-01 15:29:52 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -390,7 +390,7 @@ public class MMAdmin extends ProcessorModule {
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return ("" + (MultilevelCache.getCache().maxSize()));
+                return ("" + (MultilevelCache.getCache().getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return ("" + MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -400,7 +400,7 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("NODECACHEPERFORMANCE")) {
                 return ("" + (MMObjectBuilder.nodeCache.getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
-                return ("" + (MMObjectBuilder.nodeCache.maxSize()));
+                return ("" + (MMObjectBuilder.nodeCache.getSize()));
             } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
                 return ("" + (MMObjectBuilder.TemporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
