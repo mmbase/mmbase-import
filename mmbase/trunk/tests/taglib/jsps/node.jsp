@@ -210,9 +210,9 @@ using list tag: <br />
         OK, threw an exception with role is 'related' (news->urls does not exist)<br />
      <% } %>
      <mm:relatedcontainer path="urls">
-       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       relatedcontainer: size  <mm:size /> (should be 2) <br />
        <mm:related>
-          9  related url (used related): <mm:field name="urls.url" /><br />
+          9.<mm:index />  related url (used related): <mm:field name="urls.url" /><br />
        </mm:related>
      </mm:relatedcontainer>
      <mm:relatedcontainer path="urls" searchdirs="source">
@@ -222,9 +222,9 @@ using list tag: <br />
        </mm:related>
      </mm:relatedcontainer>
      <mm:relatedcontainer path="urls" searchdirs="destination">
-       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       relatedcontainer: size  <mm:size /> (should be 2) <br />
        <mm:related>
-          10  related url (used related): <mm:field name="urls.url" /><br />
+          10.<mm:index /> related url (used related): <mm:field name="urls.url" /><br />
        </mm:related>
      </mm:relatedcontainer>
      <mm:relatedcontainer path="posrel,urls" searchdirs="destination">
@@ -254,6 +254,21 @@ using list tag: <br />
           14  position (relatednodescontainer): <mm:field name="pos" /> (should be 10)<br /> 
        </mm:relatednodes>
      </mm:relatednodescontainer>
+     <mm:relatednodes type="object" role="posrel" orderby="posrel.pos" jspvar="node">
+	   <mm:log><%=node%></mm:log>
+          15  actual type (listing object): <mm:nodeinfo type="nodemanager" /> (should be 'urls'): <mm:field name="url" /> (should see the url)<br />
+     </mm:relatednodes>
+     <em>Testing with 'sorted' role (a posrel)</em><br />
+     <mm:relatednodescontainer type="urls" role="sorted">
+       16 using 'sorted' role: size <mm:size /> (should be 1)<br />
+       <mm:constraint field="sorted.pos" value="100" />
+       17 using 'sorted' role (and constraint): size <mm:size /> (should be 1)<br />
+     </mm:relatednodescontainer>
+     <mm:relatednodescontainer path="sorted,urls" element="urls">
+       18 using 'sorted' path: size <mm:size /> (should be 1)<br />
+       <mm:constraint field="sorted.pos" value="100" />
+       19 using 'sorted' path (and constraint): size <mm:size /> (should be 1)<br />
+     </mm:relatednodescontainer>
    </mm:node>
 </mm:list>
 
@@ -270,7 +285,7 @@ using list tag: <br />
 
 <mm:listnodescontainer path="urls,news" element="news">
    <mm:constraint field="urls.url" value="$url" />
-   listnodescontainer: size <mm:size /> (should be 1) <br />
+   listnodescontainer: size <mm:size /> (should be 2) <br />
    <mm:listnodes>
     1 news: <mm:field name="title" /><br />
    </mm:listnodes>
@@ -281,7 +296,7 @@ using list tag: <br />
 
 <h3>List-tag with only one element</h3>
 <mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" >
-
+cd 
    <em>all the following should have values</em>:<br />
    news.title:    <mm:field name="news.title" />   <br />
    news.subtitle: <mm:field name="news.subtitle" /><br />
