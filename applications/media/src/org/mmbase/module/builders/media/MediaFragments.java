@@ -46,21 +46,7 @@ public class MediaFragments extends MMObjectBuilder {
     
     // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
-    
-    // Sources from which the media is (will be) recorded.
-    private final static int SOURCE_DEFAULT=0;
-    private final static int SOURCE_DROPBOX=4;
-    private final static int SOURCE_UPLOAD=5;
-    private final static int SOURCE_CD=6;
-    private final static int SOURCE_JAZZ=7;
-    private final static int SOURCE_VWM=8;
-    
-    // xxxxxxx
-    private final static int STORAGE_STEREO=1;
-    private final static int STORAGE_STEREO_NOBACKUP=2;
-    private final static int STORAGE_MONO=3;
-    private final static int STORAGE_MONO_NOBACKUP=4;
-    
+      
     // This filter is able to find the best mediasource by a mediafragment.
     private MediaSourceFilter mediaSourceFilter = null;
     
@@ -68,16 +54,14 @@ public class MediaFragments extends MMObjectBuilder {
     private MediaSources mediaSourceBuilder = null;
     
     public MediaFragments() {
-     
     }
     
-     public boolean init() {
+    public boolean init() {
         boolean result = super.init();
         
-         
+        
         // Retrieve a reference to the MediaSource builder
-        // Audiosources and videosources are using the mediasources funtionality.
-        mediaSourceBuilder = (MediaSources) mmb.getMMObject("audiosources");
+               mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
         if(mediaSourceBuilder==null) {
             log.error("Builder mediasources is not loaded.");
         } else {
@@ -96,15 +80,10 @@ public class MediaFragments extends MMObjectBuilder {
      * @return the information of the virtual field
      */
     public Object getValue(MMObjectNode node, String field) {
-                if (field.equals("showsource")) {
-            return getSourceString(node.getIntValue("source"));
-        } else if (field.equals("showclass")) {
-            // Maybe implement this to be backwards compatible.
-            return null;
-        } else if (field.equals("showlength")) {
+        if (field.equals("showlength")) {
             return ""+calculateLength(node);
         } else if (field.equals("urlresult")) {
-            return getUrl(node.getNumber(), null, 0, 0);        
+            return getUrl(node.getNumber(), null, 0, 0);
         } else {
             return super.getValue( node, field );
         }
@@ -120,17 +99,13 @@ public class MediaFragments extends MMObjectBuilder {
         long stop = node.getLongValue("stop");
         long length = node.getLongValue("length");
         
-        
         if(stop!=0) {
             return stop-start;
         } else if(length!=0) {
             return length-start;
-        } 
-        
+        }
         log.debug("length cannot be evaluated, no stoptime and no length");
-                                
         return 0;
-        
     }
     
     /**
@@ -143,7 +118,7 @@ public class MediaFragments extends MMObjectBuilder {
         return(str);
     }
     
-       
+    
     /**
      * get an url for the requested media.
      *
@@ -161,14 +136,14 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("Selected mediasource = "+mediaSource.getNumber());
         return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, wantedspeed, wantedchannels);
     }
-        
+    
     /**
      * if a mediafragment is coupled to another mediafragment instead of being directly
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
     public boolean isSubFragment(MMObjectNode mediafragment) {
-        int mediacount = mediafragment.getRelationCount("audiosources")+mediafragment.getRelationCount("videosources");
+        int mediacount = mediafragment.getRelationCount("mediasources");
         
         return (mediacount==0 && mediafragment.getRelationCount("mediafragments")>0);
     }
@@ -200,96 +175,21 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
             mediafragment = getParentFragment(mediafragment);
         }
-        Vector audiosources = mediafragment.getRelatedNodes("audiosources");
-        Vector videosources = mediafragment.getRelatedNodes("videosources");
-        log.debug("Mediafragment contains "+audiosources.size()+" audiosources"+
-                " and "+videosources.size()+" videosources");
+        Vector mediasources = mediafragment.getRelatedNodes("mediasources");
+        log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
         
-        // Just put audiosources and videosources together.
-        videosources.addAll(audiosources);
-        return videosources;
+        return mediasources;
     }
     
     /**
      * used by the editors
      */
     public String getGUIIndicator(String field,MMObjectNode node) {
-        if (field.equals("storage")) {
-            int val=node.getIntValue("storage");
-            switch(val) {
-                case STORAGE_STEREO: return("Stereo");
-                case STORAGE_STEREO_NOBACKUP: return("Stereo no backup");
-                case STORAGE_MONO: return("Mono");
-                case STORAGE_MONO_NOBACKUP: return("Mono no backup");
-                default: return("Unknown");
-            }
-        } else if (field.equals("source")) {
-            return(getSourceString(node.getIntValue("source")));
-            
-        } else if (field.equals("class")) {
-            return ""; //(getClassificationString(node.getIntValue("class")));
-        } 
-        return(null);
+        return "not implemented (11)";
     }
     
-    /**
-     * Called when a node was changed on a local server.
-     * @param machine Name of the node that was changed.
-     * @param number the object number of the node that was changed.
-     * @param builder the buildername of the object that was changed
-     * @param ctype the node changed type
-     * @return true, always
-     */
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        super.nodeLocalChanged(machine,number,builder,ctype);
-        if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
-        }
-        return true;
-    }
-    
-    /**
-     * Called when a node was changed by a remote server.
-     * @param machine Name of the node that was changed.
-     * @param number the object number of the node that was changed.
-     * @param builder the buildername of the object that was changed
-     * @param ctype the node changed type
-     * @return true, always
-     */
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-        super.nodeRemoteChanged(machine,number,builder,ctype);
-        if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
-        }
-        return true;
-    }
-    
-    
-    /**
-     * get the source device with which the media in recorded.
-     * @param source source device number
-     * @return the textual name of the device
-     */
-    protected String getSourceString(int source) {
-        
-        switch(source) {
-            case SOURCE_DEFAULT:
-                return "default";
-            case SOURCE_DROPBOX:
-                return "dropbox";
-            case SOURCE_UPLOAD:
-                return "upload";
-            case SOURCE_CD:
-                return "cd";
-            case SOURCE_JAZZ:
-                return "jazz";
-            case SOURCE_VWM:
-                return "vwm";
-            default:
-                return "unknown";
-        }
-    }
-    
+   
+           
     /**
      * add rawmedia object
      */
@@ -304,51 +204,15 @@ public class MediaFragments extends MMObjectBuilder {
         bul.insert("system",node);
     }
      */
-    
+        
     /**
-     * setDefaults for a node
-     * i think we have to make this configurable
-     */
-    public void setDefaults(MMObjectNode node) {
-        node.setValue("storage",STORAGE_STEREO_NOBACKUP);
-        node.setValue("body","");
-    }
-    
-    /**
-     * Removes related rawmedia objects.
-     * @param number objectnumber of the media part.
+     * Removes related media sources.
+     * @param number objectnumber of the media fragment.
      * @return true if remove was succesful, false otherwise.
      */
-    public boolean removeRawMedia(int number) {
-        MMObjectBuilder builder = null;
-        Enumeration e = null;
-        String buildername = getNode(number).getName();
+    public boolean removeMediaSources(int number) {
         
-        if (buildername.equals("audioparts")) {
-            if (log.isDebugEnabled()) {
-                log.debug("removeRaws: Deleting all rawaudios where id=" + number);
-            }
-            builder = mmb.getMMObject("rawaudios");
-        } else if (buildername.equals("videoparts")) {
-            if (log.isDebugEnabled()) {
-                log.debug("removeRaws: Deleting all rawvideos where id=" + number);
-            }
-            builder = mmb.getMMObject("rawvideos");
-        } else {
-            log.error("Can't delete raws since number:"+number+" is not an audio/videopart but a "+buildername);
-            return false;
-        }
-        
-        e = builder.search("WHERE id='"+number+"'");
-        MMObjectNode rawNode = null;
-        while (e.hasMoreElements()) {
-            rawNode = (MMObjectNode)e.nextElement();
-            if (log.isDebugEnabled()) {
-                log.debug("removeRaws: Removing rawobject " + rawNode.getIntValue("number"));
-            }
-            builder.removeNode(rawNode);
-        }
-        return true;
+        return false;
     }
     
     /**
@@ -415,5 +279,35 @@ public class MediaFragments extends MMObjectBuilder {
          */
         return "No command defined";
     }
+    /**
+     * Called when a node was changed on a local server.
+     * @param machine Name of the node that was changed.
+     * @param number the object number of the node that was changed.
+     * @param builder the buildername of the object that was changed
+     * @param ctype the node changed type
+     * @return true, always
+     */
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
+        if (log.isDebugEnabled()) {
+            log.debug("nodeLocalChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
+        }
+        return true;
+    }
     
+    /**
+     * Called when a node was changed by a remote server.
+     * @param machine Name of the node that was changed.
+     * @param number the object number of the node that was changed.
+     * @param builder the buildername of the object that was changed
+     * @param ctype the node changed type
+     * @return true, always
+     */
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
+        if (log.isDebugEnabled()) {
+            log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
+        }
+        return true;
+    } 
 }
