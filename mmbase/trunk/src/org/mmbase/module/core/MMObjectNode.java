@@ -240,6 +240,7 @@ public class MMObjectNode {
 	/** 
 	*  sets a key, value pair in the main values of this node where value int
 	*/
+	/*
 	public boolean setValue(String fieldname,double fieldvalue) {
 		// put the key/value in the value hashtable
 		values.put(fieldname,new Double(fieldvalue));
@@ -259,6 +260,7 @@ public class MMObjectNode {
 		if (state==0) sendFieldChangeSignal(fieldname);
 		return(true);
 	}
+	*/
 
 	/** 
 	*  sets a key, value pair in the main values of this node where value Integer
@@ -286,6 +288,7 @@ public class MMObjectNode {
 	/** 
 	*  sets a key, value pair in the main values of this node where value Integer
 	*/
+	/*
 	public boolean setValue(String fieldname,Double fieldvalue) {
 
 		// put the key/value in the value hashtable
@@ -304,6 +307,7 @@ public class MMObjectNode {
 		if (state==0) sendFieldChangeSignal(fieldname);
 		return(true);
 	}
+	*/
 
 
 	/** 
@@ -397,6 +401,7 @@ public class MMObjectNode {
 
 		if (o==null) { 
 			// well maybe its a propertie lets automap that
+			/*
 			o=getProperty(fieldname);
 			if (o!=null) {
 				System.out.println("o="+o);
@@ -404,6 +409,7 @@ public class MMObjectNode {
 				o=altnode.getStringValue("value");
 				return(o);
 			}
+			*/
 			return(parent.getValue(this,fieldname));
 		}
 		
@@ -575,6 +581,7 @@ public class MMObjectNode {
 	/** 
 	* get a value by its given key, will be returned must be Float
 	*/
+	/*
 	public Double getDoubleValue(String fieldname) {
 		Double i=(Double)values.get(prefix+fieldname);
 		if (i!=null) {
@@ -583,6 +590,7 @@ public class MMObjectNode {
 			return(new Double(-1));
 		}
 	}
+	*/
 
 
 
