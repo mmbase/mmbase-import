@@ -31,6 +31,9 @@ public class ModuleHandler implements Module {
     }
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
+/*
+// turned off because it causes errors on compiling with JDK1.2
+
         Class[] objClasses=mod.getClass().getInterfaces();
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
@@ -48,11 +51,11 @@ public class ModuleHandler implements Module {
             useintf = new Class[] {Module.class};
         }
         System.out.println("creating proxy for : "+mod.getName()+" = "+useintf);
-        //removed this because it causes errors on compiling with JDK1.2
-        //        return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
-        //                              useintf,
-        //                              new ModuleHandler(mod,cloudcontext));
-        return null;
+
+        return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
+                        useintf,new ModuleHandler(mod,cloudcontext));
+*/
+        return new ModuleHandler(mod,cloudcontext);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
