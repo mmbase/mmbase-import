@@ -12,14 +12,14 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
-
+import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.19 2003-04-04 14:49:01 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.20 2003-04-04 17:21:44 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -74,8 +74,8 @@ public class HttpPost {
      */
     public HttpPost(HttpServletRequest req) {
         try {
-            UtilReader reader = new UtilReader("httppost.xml");
-            properties = reader.getProperties();
+            UtilReader reader = new UtilReader(CONFIG_FILE);
+            Map properties = reader.getProperties();
             if(properties.containsKey("maxfilesize")) {
                 maxFileSize = Integer.parseInt(""+properties.get("maxfilesize"));
                 log.debug("Setting maxfilesize to "+maxFileSize);
