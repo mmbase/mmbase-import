@@ -43,16 +43,16 @@
 <!-- categories -->
 
 <!-- base category for all MMBase classes -->
-<category name="org.mmbase" class ="&logger;">
+<category name="org.mmbase" class ="&mmlogger;">
 <!-- nothing special -->
 </category>
 
-<category name="org.mmbase.security" class ="&logger;" additivity="false" >
+<category name="org.mmbase.security" class ="&mmlogger;" additivity="false" >
   <priority class="&priority;" value ="info" />
   <appender-ref ref="securityfile" />
 </category>
 
-<category name="STDERR" class ="&logger;">
+<category name="STDERR" class ="&mmlogger;">
     <priority class="&priority;" value ="debug" />	
 </category>
 

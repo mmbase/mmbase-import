@@ -106,7 +106,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         Log4jImpl err = getLoggerInstance("STDERR");
         // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
         if(err.getLevel() != Log4jLevel.FATAL) {
-            System.err.println("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
+            log.service("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
             System.setErr(new LoggerStream(err));
         }       
     }
