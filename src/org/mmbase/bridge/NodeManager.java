@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.24 2003-07-25 14:10:30 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.25 2003-08-18 09:16:04 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -204,13 +204,15 @@ public interface NodeManager extends Node {
 
 
     /**
-     * Perform a query and returns nodes of this node-manage.
+     * Perform a query and returns nodes of this node-manager. If the query contains one step, it
+     * must be this nodemanager (such a query can be made with createQuery). If the query contains
+     * more than one step, then the last step must be this nodemanager (the rest of the results is ignored).
      *
-     * @throws IllegalArgumentException if query does not contain exactly one step describing this nodemanager
      * @since MMBase-1.7
      * @see #createQuery
      */
     public NodeList getList(NodeQuery query);
+    
 
 
     /**
@@ -243,6 +245,7 @@ public interface NodeManager extends Node {
     /**
      * Retrieve all relation managers that can be used to create relations for objects of this nodemanager.
      * @return the relation manager list
+     * @since MMBase-1.6
      */
     public RelationManagerList getAllowedRelations();
 
@@ -253,6 +256,7 @@ public interface NodeManager extends Node {
      * @param role the role with which to make a relation, can be null
      * @param direction the search direction ("source", "destination", "both"), can be null
      * @return the relation manager list
+     * @since MMBase-1.6
      */
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction);
 
@@ -263,6 +267,7 @@ public interface NodeManager extends Node {
      * @param role the role with which to make a relation, can be null
      * @param direction the search direction ("source", "destination", "both"), can be null
      * @return the relation manager list
+     * @since MMBase-1.6
      */
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction);
 
@@ -292,6 +297,21 @@ public interface NodeManager extends Node {
      * @return  Check if the current user may create a new node of this type.
      */
     public boolean mayCreateNode();
+
+
+
+    /** 
+     * Returns a list of 'argument' definition of a certain function on nodes manager by this NodeManager.
+     *
+     *
+     * @since MMBase-1.7
+     */
+
+    /*
+    public List   getFunctionParameters(String function) {
+        return new ArrayList();
+    }
+    */
 
 
 
