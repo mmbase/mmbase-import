@@ -46,12 +46,14 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
     public int doAfterBody() throws JspTagException {
         setFieldVar();
 
+        String body = "";
+        if (bodyContent != null) body = bodyContent.getString();
         // Get the new value from the body.
         if ((field != null) && (field.getType() == Field.TYPE_BYTE)) {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
-            getNodeVar().setByteValue(fieldName, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
+            getNodeVar().setByteValue(fieldName, org.mmbase.util.Encode.decodeBytes("BASE64", body));
         } else {
-            String newValue = convert(bodyContent.getString());
+            String newValue = convert(body);
             getNodeVar().setValue(fieldName, newValue);
             if (getId() != null) {
                 getContextTag().register(getId(), newValue);

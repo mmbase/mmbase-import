@@ -41,9 +41,11 @@ public class ParamTag extends ContextReferrerTag {
 
     public int doAfterBody() throws JspException {
         if (value == null) {
-            // the value is the body context.      
-            urlTag.addParameter(name, bodyContent.getString());
-            handled = true;
+            if (bodyContent != null) {
+                // the value is the body context.      
+                urlTag.addParameter(name, bodyContent.getString());
+                handled = true;
+            }
         }
         return super.doAfterBody();
     }
