@@ -20,6 +20,7 @@ import org.mmbase.applications.dove.*;
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
+import org.mmbase.util.XMLEntityResolver;
 
 import org.w3c.dom.*;
 
@@ -41,11 +42,20 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.122 2004-04-15 10:47:05 michiel Exp $
+ * @version $Id: Wizard.java,v 1.123 2004-04-21 15:25:34 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(Wizard.class);
+    public static final String PUBLIC_ID_EDITWIZARD_1_0 = "-//MMBase//DTD editwizard 1.0//EN";
+    public static final String PUBLIC_ID_EDITWIZARD_1_0_FAULT = "-//MMBase/DTD editwizard 1.0//EN";
+    public static final String DTD_EDITWIZARD_1_0       = "wizard-schema_1_0.dtd";
+    
+    
+    static {
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0, DTD_EDITWIZARD_1_0, Wizard.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0_FAULT, DTD_EDITWIZARD_1_0, Wizard.class);
+    }
 
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
