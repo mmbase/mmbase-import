@@ -46,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.3 2002-04-03 11:19:28 eduard Exp $
+ * @version $Id: NodeFunction.java,v 1.4 2002-08-14 20:58:44 michiel Exp $
  * @since   MMBase-1.6
  */
 public  class NodeFunction {
@@ -58,7 +58,9 @@ public  class NodeFunction {
      */
 
     public static String function(String node, String function) {
-        log.debug("calling with string " + node);
+        if (log.isDebugEnabled()) {
+            log.debug("calling with string " + node + " function: " + function);
+        }
         return function("mmbase", node, function);
     }
     
@@ -72,8 +74,7 @@ public  class NodeFunction {
         log.debug("calling base");
         try {
             Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);        
-            Node node = cloud.getNode(number);            
-            return node.getStringValue(function);
+            return function(cloud, number, function);
         } catch (BridgeException e) {
             return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
         }
@@ -87,4 +88,25 @@ public  class NodeFunction {
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(number, function);
     }
+
+    public static String function(Cloud cloud, String number, String function) {
+        log.debug("calling base");
+        try {
+            Node node = cloud.getNode(number);
+            node.getStringValue(function);
+            return node.getStringValue(function);
+        } catch (BridgeException e) {
+            return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
+        }
+    }
+
+    /**
+     * It can be handy to supply a whole node, it will search for the field 'number' itself.
+     */
+    public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
+        log.debug("calling with dom node");
+        String number = XPathAPI.eval(node, "./field[@name='number']").toString();
+        return function(cloud, number, function);
+    }
+
 }
