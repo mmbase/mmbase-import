@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.51 2004-07-13 16:37:44 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.52 2004-07-29 18:56:19 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -52,11 +52,17 @@ public class IncludeTag extends UrlTag {
 
     private Attribute cite = Attribute.NULL;
 
+    private Attribute encodingAttribute = Attribute.NULL;
+
     /**
      * Test whether or not the 'cite' parameter is set
      */
     public void setCite(String c) throws JspTagException {
         cite = getAttribute(c);
+    }
+
+    public void setEncoding(String e) throws JspTagException {
+        encodingAttribute = getAttribute(e);
     }
 
     protected boolean getCite() throws JspTagException {
@@ -121,8 +127,11 @@ public class IncludeTag extends UrlTag {
                 }
             }
 
-            String encoding = connection.getContentEncoding();
-            log.info("Found content encoding " + encoding);
+            String encoding = encodingAttribute.getString(this);
+            if (encoding.equals("")) {            
+                encoding = connection.getContentEncoding();
+            }
+            log.debug("Found content encoding " + encoding);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             InputStream inputStream = connection.getInputStream();
             int c = inputStream.read();
@@ -131,19 +140,20 @@ public class IncludeTag extends UrlTag {
                 c = inputStream.read();
             }
             byte[] allBytes = bytes.toByteArray();
-            if (encoding == null) {
-                encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
+            if (encoding == null || encoding.equals("")) {
                 String contentType = connection.getContentType();
-                if (contentType != null) { 
-                    String charset = GenericResponseWrapper.getEncoding(contentType);
-                    if (encoding == null) {
-                        encoding = charset;
-                    } else {
-                        if (!charset.equals(encoding)) {
-                            // interesing, some server sent XML with a charset. Let's ignore that (tomcat is silly in that)
-                        }
-                    }
+                if (contentType != null) {
+                    // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
+                    encoding = GenericResponseWrapper.getEncoding(contentType);
                 }
+
+                if (encoding == null && contentType != null) { // take a default based on the content type
+                    encoding = GenericResponseWrapper.getDefaultEncoding(contentType);
+                }
+                if (encoding == GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding. 
+                    encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
+                }
+
             }
             log.debug("Using " + encoding);
             helper.setValue(debugStart(absoluteUrl) + new String(allBytes, encoding) + debugEnd(absoluteUrl));
@@ -204,9 +214,16 @@ public class IncludeTag extends UrlTag {
                 throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
             }
 
-            GenericResponseWrapper responseWrapper = new GenericResponseWrapper(resp);
+            GenericResponseWrapper responseWrapper;
+            String encoding = encodingAttribute.getString(this);
+            if (encoding.equals("")) { 
+                responseWrapper = new GenericResponseWrapper(resp);
+            } else {
+                responseWrapper = new GenericResponseWrapper(resp, encoding);
+            }
 
             requestDispatcher.include(requestWrapper, responseWrapper);                
+            log.info("Used character encoding " + responseWrapper.getCharacterEncoding());
             String page = responseWrapper.toString();
             helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
 
@@ -272,7 +289,11 @@ public class IncludeTag extends UrlTag {
                 c = inputStream.read();
             }
             byte[] allBytes = bytes.toByteArray();
-            String encoding = GenericResponseWrapper.getXMLEncoding(allBytes);
+            
+            String encoding = encodingAttribute.getString(this);
+            if (encoding.equals("")) {
+                encoding = GenericResponseWrapper.getXMLEncoding(allBytes);
+            }
 
             String fileContents;
             if (encoding == null) {
