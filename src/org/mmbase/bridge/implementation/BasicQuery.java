@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.29 2003-12-02 11:41:34 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.30 2003-12-09 22:51:38 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -118,10 +118,18 @@ public class BasicQuery implements Query  {
         }
     }
     public Query aggregatingClone() {
-        BasicSearchQuery bsq = new BasicSearchQuery(query, true); 
+        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_AGGREGATING); 
         BasicQuery clone     = new BasicQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = true;
+        return clone;
+    }
+
+    public Query cloneWithoutFields() {
+        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS); 
+        BasicQuery clone     = new BasicQuery(cloud, bsq);
+        clone.used = false;
+        clone.aggregating = false;
         return clone;
     }
 
@@ -352,12 +360,20 @@ public class BasicQuery implements Query  {
         return new BasicFieldValueBetweenConstraint(f, o1, o2);
     }
     public FieldValueInConstraint      createConstraint(StepField f, SortedSet v) {
-        BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(f);
-        Iterator i = v.iterator();
-        while (i.hasNext()) {
-            c.addValue(i.next());
+        if (v.size() == 0) { // make sure the query becomes empty!
+            Step step = f.getStep();
+            StepField nf = createStepField(step, "number");            
+            BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(nf);
+            c.addValue(new Integer(-1));
+            return c;
+        } else {
+            BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(f);
+            Iterator i = v.iterator();
+            while (i.hasNext()) {
+                c.addValue(i.next());
+            }
+            return c;
         }
-        return c;
     }
     
     public Constraint                  setInverse(Constraint c, boolean i) {
@@ -420,20 +436,13 @@ public class BasicQuery implements Query  {
     }
 
     /**
-     * Applies a security-constraint to this Query. Such a constraint can be remove easily (needed
+     * Applies a security-constraint to this Query. Such a constraint can be removed easily (needed
      * before cloning a query and so on).
      * @see #removeSecurityConstraint
      */
     void setSecurityConstraint(Authorization.QueryCheck c) {
         if (c != null && c.getConstraint() != null) {
-            Constraint constraint = query.getConstraint();
-            if (constraint != null) {
-                log.debug("compositing constraint");
-                Constraint compConstraint = createConstraint(constraint, CompositeConstraint.LOGICAL_AND, c.getConstraint());
-                query.setConstraint(compConstraint);
-            } else {
-                query.setConstraint(c.getConstraint());
-            }
+            Queries.addConstraint(this, c.getConstraint());
         }
         secureConstraint = c;
     }
