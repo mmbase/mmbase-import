@@ -7,65 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: AudioParts.java,v 1.20 2001-03-08 13:11:30 install Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.19  2000/12/14 16:22:15  vpro
-davzev: AudioParts and VideoParts now extend from MediaParts
-
-Revision 1.18  2000/12/14 15:53:39  vpro
-davzev: Removed replace() and related GETURL methods, now available in mediaparts, and added methods getMinSpeed,getMinChannels and doGetUrl.
-
-Revision 1.17  2000/11/10 10:31:32  vpro
-davzev: Added method makeRealCompatible that checks for Realplayer incompatible chars in title and author field plus url rtsp-pnm check uses charAt(0) instead of startsWith.
-
-Revision 1.16  2000/10/05 12:14:14  vpro
-Rico: removed limit on getGUIIndicator
-
-Revision 1.15  2000/08/01 09:49:40  install
-changed import
-
-Revision 1.14  2000/07/31 13:32:16  vpro
-davzev: Made urlCache variable static.
-
-Revision 1.13  2000/07/03 09:32:47  vpro
-davzev: Added url cache on top of $ MOD GETURL for performance reasons. When an url is retrieved using $ MOD-MMBASE-BUILDER-audioparts-GETURL-AudiopartNr-Speed-Channels, then first it will be looked up in a url cache (LRU). If its not in there it will be retrieved using the doGetUrl method and put in the cache. If an audiopart is not fully encoded yet, then it will not be put in the cache and null will be returned.
-
-Revision 1.12  2000/05/26 12:09:28  wwwtech
-davzev: Reduced debug from doGetUrl getSongInfo and getStartStopTimes
-
-Revision 1.11  2000/05/22 13:21:21  wwwtech
-Rico: removed cdtrack references
-
-Revision 1.10  2000/05/19 11:15:42  wwwtech
-Rico: fixed package name
-
-Revision 1.9  2000/05/18 15:10:28  wwwtech
-Rico: built in number - text translations of both source/class/storage
-
-Revision 1.8  2000/03/30 13:11:29  wwwtech
-Rico: added license
-
-Revision 1.7  2000/03/30 12:42:57  wwwtech
-Rico: added warning to these VPRO dependent builders
-
-Revision 1.6  2000/03/29 10:59:21  wwwtech
-Rob: Licenses changed
-
-Revision 1.5  2000/03/27 16:10:35  wwwtech
-Rico: added more refs in Audio/Video builders
-
-Revision 1.4  2000/03/24 14:33:56  wwwtech
-Rico: total recompile
-
-Revision 1.3  2000/02/28 17:13:48  wwwtech
-- (marcel) Added getAudiopartUrl()
-
-Revision 1.2  2000/02/24 13:40:03  wwwtech
-Davzev activated replace() method and GETURL and fixed GETURL related methods.
-
-*/
 
 /*************************************************************************
  * NOTE This Builder needs significant changes to operate on NON-VPRO
@@ -92,7 +33,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.20 2001-03-08 13:11:30 install Exp $
+ * @version $Id: AudioParts.java,v 1.21 2001-05-03 15:55:27 vpro Exp $
  * 
  */
 public class AudioParts extends MediaParts {
@@ -105,68 +46,72 @@ public class AudioParts extends MediaParts {
 	public final static int AUDIOSOURCE_JAZZ=7;
 	public final static int AUDIOSOURCE_VWM=8;
 
-	// Define LRU Cache for audio urls.
-	//moved to mediaparts public static LRUHashtable urlCache = new LRUHashtable(1024);
 
 	/**
-	* pre commit from the editor
+	* Just before commiting or inserting this method is called and 
+	* only when a node was changed (commit) we update the start
+	* and stoptimes.
+	* (start & stoptimes of newly inserted nodes are inserted by insertDone).
+	* @param ed the editstate
+	* @param node the audiopart node that has just been inserted.
+	* @return -1
 	*/
 	public int preEdit(EditState ed, MMObjectNode node) {
-		log.debug("preEdit(): start");
-		if ( node != null ) {
+		if (node==null)
+			log.error("node is null!");
+		else 
+			if (node.getIntValue("number")!=-1) {
+				log.debug("Updating start & stop times for "+node.getIntValue("number"));
+				handleTimes(ed,node);
+			}
+		return -1;
+	}
+
+	/**
+	 * When an audiopart is inserted, the start & stop times still need to be
+	 * saved.(start & stop are not real fields, these were later)
+	 * @param ed the editstate
+	 * @param node the audiopart node that has just been inserted.
+	 * @return -1
+	 */
+	public int insertDone(EditState ed, MMObjectNode node) {
+		log.debug("Inserting start & stop times for "+node.getIntValue("number"));
+		handleTimes(ed,node);	
+		return -1;	
+	}
+
+	/**
+	 * We save start and stoptime values in property objects where the
+	 * keys are 'starttime' and 'stoptime' and values the start & stoptimes.
+	 * @param ed the editstate
+	 * @param node the audiopart node that has just been inserted.
+	 */
+	private void handleTimes(EditState ed, MMObjectNode node) {
+
+		if (node != null) {
 			String starttime = ed.getHtmlValue("starttime");
 			String stoptime  = ed.getHtmlValue("stoptime");
-	
-			log.debug("preEdit("+node.getName()+"):starttime("+starttime+")");
-			log.debug("preEdit("+node.getName()+"): stoptime("+stoptime+")");
+
+			log.debug(node.getName()+" ("+node.getIntValue("number")+") starttime: "+starttime);
+			log.debug(node.getName()+" ("+node.getIntValue("number")+") stoptime : "+stoptime);
 
 			// check if (stop - start) == lengthOfPart, if lengthOfPart != -1
 
-			// startstop
-			if( starttime != null ) {
-				// is it valid ?
-				// -------------
+			// Check the starttime value
+			if (checktime(starttime))
+				putProperty(node, "starttime", starttime);
+			else
+				removeProperty(node, "starttime");
 
-				if (checktime(starttime)) {
-					putProperty( node, "starttime", starttime);
-				} else {
-					// no, maybe we have to remove it (when its empty or '-1')
-					// -------------------------------------------------------
-
-					if (starttime.equals("") || starttime.equals("-1")) {
-						removeProperty( node, "starttime" );
-					} else {
-						log.error("preEdit("+node+","+starttime+"): ERROR: Dont know what to do with this starttime for this node!");
-					}
-				}
-			}
-			else {
-				// error ? daniel	putProperty( node, "starttime", "-1");
-			}
-
-			if ( stoptime != null ) {
-				// check if its a valid time
-				// -------------------------
-
-				if(checktime(stoptime)) {
-					putProperty( node, "stoptime" , stoptime);
-				} else {
-					// not a valid time, maybe we have tot remove this property
-					// --------------------------------------------------------
-
-					if(stoptime.equals("") || stoptime.equals("-1"))
-						removeProperty(node, "stoptime");	
-					else
-						log.error("preEdit("+node+","+stoptime+"): ERROR: Dont know what to do this this stoptime for this node!");
-				}
-			} else {
-				// error ? daniel	putProperty( node, "stoptime" , "-1");
-			}
+			// Check the stoptime value
+			if (checktime(stoptime))
+				putProperty(node, "stoptime", stoptime);
+			else
+				removeProperty(node, "stoptime");
 		} else {
-			log.error("preEdit(): ERROR: node is null!");
+			log.error("Node is null!");
 		}
-		return(-1);	
-	}
+	} 
 
 	public Object getValue(MMObjectNode node, String field) {
 		if (field.equals("showsource")) {
@@ -393,22 +338,18 @@ public class AudioParts extends MediaParts {
 	 * If true, time can be inserted in DB.
 	 *
 	 */
-	private boolean checktime( String time ) {
-		boolean result = true;
-		
-		if (time!=null && !time.equals("")) {
-
-			StringTokenizer tok = new StringTokenizer( time, ":." );
-			while( tok.hasMoreTokens() ) {
-				if (!checktimeint(tok.nextToken())) {
-					result = false;
-					break;
-				}
-			}
-		} else {
-			log.error("checktime("+time+"): ERROR: Time is not valid!");
+	private boolean checktime(String time) {
+		if (time==null || time.equals("")) {
+			log.error("Timevalue ("+time+") invalid");
+			return false;
 		}
-		return result;
+
+		StringTokenizer tok = new StringTokenizer(time, ":.");
+		while(tok.hasMoreTokens()) {
+			if (!checktimeint(tok.nextToken()))
+				return false;
+		}
+		return true;
 	}
 
 	private boolean checktimeint( String time ) {
@@ -499,8 +440,6 @@ public class AudioParts extends MediaParts {
         	MMObjectNode pnode=node.getProperty(key);
             if (pnode!=null) 
 				pnode.parent.removeNode( pnode );
-			else
-				log.error("removeNode("+node+","+key+"): ERROR: Property not found( and cannot remove )");
 		}
 	}
 
