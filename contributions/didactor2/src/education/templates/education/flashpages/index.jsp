@@ -14,7 +14,7 @@
     <mm:param name="learnobjecttype">flashpages</mm:param>
 </mm:treeinclude>
 
-
+<mm:treeinclude page="/education/print.jsp" objectlist="$includePath" referids="$referids"/>
 
 <mm:node number="$learnobject">
    <mm:relatednodes type="attachments">

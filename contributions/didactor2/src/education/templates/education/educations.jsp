@@ -18,6 +18,13 @@
     <mm:param name="learnobjecttype">educations</mm:param>
 </mm:treeinclude>
 
+<script type="text/javascript">
+<!--
+    if(window.print) {
+        document.write("<a href='javascript:window.print();' class='printlink'>Afdrukken</a>");
+    }
+//-->
+</script>
 
 <mm:node number="$edu">
   <h1><mm:field name="name"/></h1>
