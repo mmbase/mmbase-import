@@ -24,10 +24,16 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.53 2002-02-20 10:27:44 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.54 2002-03-15 09:44:15 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
+
+    // lastRequestId
+    // used to generate a temporary ID number
+    // The Id starts at - 2 and is decremented each time a new id is asked
+    // until Integer.MIN_VALUE is reached (after which counting starts again at -2).
+    private static int lastRequestId = -2;
 
     // link to cloud context
     private BasicCloudContext cloudContext = null;
@@ -344,24 +350,32 @@ public class BasicCloud implements Cloud, Cloneable {
     }
 
     /**
-     * Create unique number
+     * Create unique temporary node number.
+     * The Id starts at - 2 and is decremented each time a new id is asked
+     * until Integer.MINVALUE is reached (after which counting starts again at -2).
+     * @todo This may be a temporary solution. It may be desirable to immediately reserve a
+     * number at the database layer, so resolving (by the transaction) will not be needed.
+     * However, this needs some changes in the TemporaryNodeManager and the classes that make use of this.
+     *
+     * @return the temporary id as an integer
      */
     static synchronized int uniqueId() {
-        try {
-            Thread.sleep(1); // A bit paranoid, but just to be sure that not two threads steal the same millisecond.
-            // aaarrchch!
-        } catch (Exception e) {}
-        return (int)(java.lang.System.currentTimeMillis() % Integer.MAX_VALUE);
+        if (lastRequestId>Integer.MIN_VALUE) {
+            lastRequestId = lastRequestId-1;
+        } else {
+            lastRequestId = -2;
+        }
+        return lastRequestId;
     }
-
 
     /**
      * Test if a node id is a temporay id.
+     * @param id the id (node numebr) to test
+     * @return true if the id is a temporary id
      * @since MMBase-1.5
      */
     static boolean isTemporaryId(int id) {
-        // this is terrible!
-        return id > 500000000;
+        return id < -1;
     }
 
     public Transaction createTransaction() {

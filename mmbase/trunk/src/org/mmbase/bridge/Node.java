@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.26 2002-02-27 09:33:31 eduard Exp $
+ * @version $Id: Node.java,v 1.27 2002-03-15 09:44:15 pierre Exp $
  */
 public interface Node {
 
@@ -35,8 +35,11 @@ public interface Node {
 
     /**
      * Returns the unique number for this node. Every node has a unique number
-     * wich can be used to refer to it. In addition to this number a node can
+     * which can be used to refer to it. In addition to this number a node can
      * have one or more aliases.
+     * A value of -1 indicates an invalid number.
+     * Other negative values may be used for temporary ids (but not true node numbers).
+     * This may differ by implementation.
      *
      * @return the unique number for this node
      * @see    #createAlias(String alias)
@@ -211,7 +214,7 @@ public interface Node {
     /**
      * Returns the value of the specified field as a <code>dom.Element</code>
      *
-     * @param fieldName  the name of the field to be returned 
+     * @param fieldName  the name of the field to be returned
      * @param tree       the DOM Document to which it must be added
      * @return           the value of the specified field as a DOM Element.
      * @since MMBase-1.6
@@ -254,7 +257,7 @@ public interface Node {
      * Converts the node to a string
      */
     public String toString();
-    
+
     /**
      * Get the xml for this node.
      *
