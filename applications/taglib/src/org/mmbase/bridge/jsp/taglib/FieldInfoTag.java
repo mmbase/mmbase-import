@@ -24,9 +24,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The FieldInfoTag can be used as a child of a 'FieldProvider' or
- * directly under a 'NodeProvider'tag (this last behaviour perhaps
- * should be deprecated?)
+ * The FieldInfoTag can be used as a child of a 'FieldProvider' to
+ * provide info about the field or fieldtype.
  * 
  * @author Michiel Meeuwissen 
  * @author Jaco de Groot 
