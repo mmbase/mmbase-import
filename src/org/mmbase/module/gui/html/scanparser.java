@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.26 2000-10-13 12:52:39 case Exp $
+$Id: scanparser.java,v 1.27 2000-10-15 22:51:46 gerard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.26  2000/10/13 12:52:39  case
+cjr: added length check on taking substring to fix out of bounds error if no
+other text follows </LIST> tag.
+
 Revision 1.25  2000/10/13 09:38:11  vpro
 Rico: added html-input hooks
 
@@ -99,7 +103,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.26 $ $Date: 2000-10-13 12:52:39 $
+ * @$Revision: 1.27 $ $Date: 2000-10-15 22:51:46 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -130,7 +134,7 @@ public class scanparser extends ProcessorModule {
 	public scanparser() {
 		documentRoot=System.getProperty("mmbase.htmlroot");
 		if (documentRoot==null) {
-			debug("ERROR: could not retrieve document root !");
+			debug("ERROR: could not retrieve document root, use property (-D)mmbase.htmlroot=/my/html/root/dir !");
 		} else {
 			if (documentRoot.endsWith(File.separator)) {
 				documentRoot=documentRoot.substring(0,documentRoot.length()-1);
