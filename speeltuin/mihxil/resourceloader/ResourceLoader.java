@@ -75,7 +75,7 @@ When you want to place a configuration file then you have several options, wich 
     <li>/WEB-INF/classes of your web application. If this is a real directory (you are not in a war), then the resource will also be returned by {@link #getFiles}.</li>
     <li>/WEB-INF/lib/*.jar of your web application</li>
     <li>$CATALINA_HOME/common/classes</li>
-    <li>$CATALINA_HOME/common/endorsed/*.jar</li>
+     <li>$CATALINA_HOME/common/endorsed/*.jar</li>
     <li>$CATALINA_HOME/common/lib/*.jar</li>
     <li>$CATALINA_BASE/shared/classes</li>
     <li>$CATALINA_BASE/shared/lib/*.jar</li>
@@ -93,7 +93,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.19 2004-10-29 21:35:22 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.20 2004-11-01 15:45:21 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -275,13 +275,13 @@ public class ResourceLoader extends ClassLoader {
                         configPath = servletContext.getRealPath(configPath.substring(8));
                     }
                 }
-                configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(configPath)));
+                configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(configPath), true));
             }
 
             if (servletContext != null) {
                 String s = servletContext.getRealPath(RESOURCE_ROOT);
                 if (s != null) {
-                    configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s)));
+                    configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), true));
                 }
             }
             configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
@@ -289,7 +289,7 @@ public class ResourceLoader extends ClassLoader {
             if (servletContext != null) {
                 String s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
                 if (s != null) {
-                    configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s)));
+                    configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), false));
                 }
             }
 
@@ -320,13 +320,13 @@ public class ResourceLoader extends ClassLoader {
                 htmlRoot = System.getProperty("mmbase.htmlroot");
             }
             if (htmlRoot != null) {
-                webRoot.roots.add(webRoot.new FileURLStreamHandler(new File(htmlRoot)));
+                webRoot.roots.add(webRoot.new FileURLStreamHandler(new File(htmlRoot), true));
             }
 
             if (servletContext != null) {
                 String s = servletContext.getRealPath("/");
                 if (s != null) {
-                    webRoot.roots.add(webRoot.new FileURLStreamHandler(new File(s)));
+                    webRoot.roots.add(webRoot.new FileURLStreamHandler(new File(s), true));
                 }
                 webRoot.roots.add(webRoot.new ServletResourceURLStreamHandler("/"));
             }
@@ -815,7 +815,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * ================================================================================
-     * INNER CLASSES, all private
+     * INNER CLASSES, all private, protected
      * ================================================================================
      */
 
@@ -823,7 +823,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Extension URLStreamHandler, used for the 'sub' Handlers, entries of 'roots' in ResourceLoader are of this type.
      */
-    private abstract class PathURLStreamHandler extends URLStreamHandler {
+    protected abstract class PathURLStreamHandler extends URLStreamHandler {
         /**
          * We need an openConnection by name only, and public.
          */
@@ -845,13 +845,17 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-    private  class FileURLStreamHandler extends PathURLStreamHandler {
-        File fileRoot;
-        FileURLStreamHandler(File root) {
+    protected  class FileURLStreamHandler extends PathURLStreamHandler {
+        private File fileRoot;
+        private boolean writeable;
+        FileURLStreamHandler(File root, boolean w) {
             fileRoot = root;
+            writeable = w;
+            
         }
         FileURLStreamHandler(FileURLStreamHandler f) {
-            fileRoot = f.fileRoot;
+            fileRoot  = f.fileRoot;
+            writeable = f.writeable;
         }
 
         public File getFile(String name) {
@@ -862,7 +866,9 @@ public class ResourceLoader extends ClassLoader {
             return new File(fileName);
         }
         public String getName(URL u) {
-            return u.getPath().substring((fileRoot + ResourceLoader.this.context.getPath()).length());
+            int l = (fileRoot + ResourceLoader.this.context.getPath()).length();
+            String path = u.getPath();
+            return l < path.length() ? path.substring(l) : path;
         }
         public URLConnection openConnection(String name)  {
             URL u;
@@ -871,7 +877,7 @@ public class ResourceLoader extends ClassLoader {
             } catch (MalformedURLException mfue) {
                 throw new AssertionError(mfue.getMessage());
             }
-            return new FileConnection(u, getFile(name));
+            return new FileConnection(u, getFile(name), writeable);
         }
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive ? "" : null, directories);
@@ -911,6 +917,8 @@ public class ResourceLoader extends ClassLoader {
 
 
     }
+
+
     /**
      * A URLConnection for connecting to a File.  Of course SUN ships an implementation as well
      * (File.getURL), but Sun's implementation sucks. You can't use it for writing a file, and
@@ -919,10 +927,12 @@ public class ResourceLoader extends ClassLoader {
      * rights) and deleting by <code>getOutputStream().write(null)</code>
      */
     private class FileConnection extends URLConnection {
-        File file;
-        FileConnection(URL u, File f) {
+        private File file;
+        private boolean writeable;
+        FileConnection(URL u, File f, boolean w) {
             super(u);
             this.file = f;
+            this.writeable = w;
         }
         public void connect() throws IOException {
             connected = true;
@@ -936,6 +946,7 @@ public class ResourceLoader extends ClassLoader {
             return file.canRead();
         }
         public boolean getDoOutput() {
+            if (! writeable) return false;
             if (file.exists()) {
                 return file.canWrite();
             } else {
@@ -949,6 +960,9 @@ public class ResourceLoader extends ClassLoader {
         }
         public OutputStream getOutputStream() throws IOException {
             if (! connected) connect();
+            if (! writeable) {
+                throw new UnknownServiceException("This file-connection does not allow writing");
+            }
             return new FileOutputStream(file) {
                     public void write(byte[] b) throws IOException {
                         if (b == null) {
@@ -973,7 +987,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * URLStreamHandler for NodeConnections.
      */
-    private class NodeURLStreamHandler extends PathURLStreamHandler {
+    protected class NodeURLStreamHandler extends PathURLStreamHandler {
         private int type;
         NodeURLStreamHandler(int type) {
             this.type    = type;
@@ -1171,7 +1185,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     private static boolean warned23 = false;
-    private  class ServletResourceURLStreamHandler extends PathURLStreamHandler {
+    protected  class ServletResourceURLStreamHandler extends PathURLStreamHandler {
         private String root;
         ServletResourceURLStreamHandler(String r) {
             root = r;
@@ -1242,7 +1256,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-    private class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
+    protected class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
         private String root;
         ClassLoaderURLStreamHandler(String r) {
             root = r;

@@ -286,6 +286,7 @@
               }
               read++; write++;
             }
+            if (write >= urls.size()) write--;
             while(i.hasPrevious()) {
               URL u = (URL) i.previous();
               URLConnection uc = u.openConnection();
@@ -313,15 +314,16 @@
           <% 
           counter++;
           }
-          if (read != write) {
+          if (read != write && read < counter) {
             %>
             
             <tr>
               <th colspan="4">
-                Warning, current resource is not writable. Will be upgraded on save.
+                Warning, current resource is not writeable. Will be upgraded on save.
               </th>
             </tr>
             <% } %>
+            <tr><td colspan="4"><hr /></td></tr>
        </table>  
        
      </td>

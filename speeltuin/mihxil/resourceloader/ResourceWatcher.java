@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.10 2004-10-29 21:35:22 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.11 2004-11-01 15:45:21 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -121,14 +121,14 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
 
     /**
-     * Wraps {@link @nodeChanged(String, String)}
+     * Wraps {@link #nodeChanged(String, String)}
      * {@inheritDoc} 
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         return nodeChanged(number, ctype);
     }
     /**
-     * Wraps {@link @nodeChanged(String, String)}
+     * Wraps {@link #nodeChanged(String, String)}
      * {@inheritDoc} 
      */
     public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
