@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.188 2002-11-29 15:51:07 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.189 2002-11-29 17:27:43 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1028,7 +1028,7 @@ public class MMObjectBuilder extends MMTable {
      *
      * @param where The constraint, can be a SQL where-clause, a MMNODE 
      *        expression or an altavista-formatted expression.
-     * @return The number of nodes.
+     * @return The number of nodes, or -1 when failing to retrieve the data.
      * @sql
      */
     public int count(String where) {
@@ -1087,8 +1087,8 @@ public class MMObjectBuilder extends MMTable {
      *
      * @param query The query.
      * @return The number of nodes.
-     * @throws IllegalArgumentException When the nodetype specified
-     *         by the query is not the nodetype corresponding to this builder.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @throws SearchQueryException when failing to retrieve the data.
      * @since MMBase-1.7
      */
     public int count(NodeSearchQuery query) throws SearchQueryException {
@@ -1131,8 +1131,8 @@ public class MMObjectBuilder extends MMTable {
      * Parses arguments of searchVector and searchList
      * @since MMBase-1.6
      * @sql
+     * @deprecated Use {@link #getSearchQuery(String) getSearchQuery()} instead.
      */
-
     protected String getQuery(String where) {
         if (where == null) where="";
         if (where.indexOf("MMNODE") != -1) {
@@ -1142,6 +1142,36 @@ public class MMObjectBuilder extends MMTable {
             where = QueryConvertor.altaVista2SQL(where, mmb.getDatabase());
         }
         return "SELECT * FROM " + getFullTableName() + " " + where;
+    }
+    
+    /**
+     * Creates search query to retrieve nodes matching a specified constraint. 
+     *
+     * @param where The constraint, can be a SQL where-clause, a MMNODE 
+     *        expression or an altavista-formatted expression.
+     * @return The query.
+     * @since MMBase-1.7
+     */
+    protected NodeSearchQuery getSearchQuery(String where) {
+        NodeSearchQuery query;
+        
+        if (where == null || where.length() == 0) {
+            // Empty constraint.
+            query = new NodeSearchQuery(this);
+        } else if (where.startsWith("MMNODE ")) {
+            // MMNODE expression.
+            query = convertMMNodeSearch2Query(where);
+        } else {
+            // TODO RvM: convert AltaVista format.
+            where = QueryConvertor.altaVista2SQL(where, mmb.getDatabase());
+            // Strip leading "where ".
+            LegacyConstraint constraint 
+                = new BasicLegacyConstraint(where.substring(6));
+            query = new NodeSearchQuery(this);
+            query.setConstraint(constraint);
+        }
+
+        return query;
     }
 
     /**
