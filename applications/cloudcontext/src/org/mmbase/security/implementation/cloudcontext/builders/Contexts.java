@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.18 2003-09-05 17:39:45 michiel Exp $
+ * @version $Id: Contexts.java,v 1.19 2003-09-10 18:55:53 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -466,34 +466,44 @@ public class Contexts extends MMObjectBuilder {
      * @return a  Set of all groups/users which allow the given operation (not recursively).
      */
     protected  Set getGroupsAndUsers(MMObjectNode contextNode, Operation operation) {        
-        
         Set found = operationsCache.get(contextNode, operation);
+        if (log.isDebugEnabled()) {
+            log.debug("found " + found  + " for " + contextNode + "/" + operation);
+        }
         if (found == null) {
             found = new HashSet();
             for(Enumeration enumeration = contextNode.getRelations(); enumeration.hasMoreElements();) {
-                // needed to get the correct type of builder!!
-                MMObjectNode relation = getNode(((MMObjectNode) enumeration.nextElement()).getNumber());
-                if (relation.parent instanceof RightsRel) {
-                    String nodeOperation = relation.getStringValue(RightsRel.OPERATION_FIELD);
-                    if (nodeOperation.equals(operation.toString()) || nodeOperation.equals("all")) {
-                        int source      = relation.getIntValue("snumber");
-                        MMObjectNode destination = relation.getNodeValue("dnumber");
-                        if (source == contextNode.getNumber()) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("found group # " + destination.getNumber() + " for operation" + operation + "(because " + nodeOperation + ")");
+                MMObjectNode originalRelation = null;
+                try {
+                    originalRelation = (MMObjectNode) enumeration.nextElement();
+                    // needed to get the correct type of builder!!
+                    MMObjectNode relation = getNode(originalRelation.getNumber()); 
+                    if (relation.parent instanceof RightsRel) {
+                        String nodeOperation = relation.getStringValue(RightsRel.OPERATION_FIELD);
+                        if (nodeOperation.equals(operation.toString()) || nodeOperation.equals("all")) {
+                            int source      = relation.getIntValue("snumber");
+                            MMObjectNode destination = relation.getNodeValue("dnumber");
+                            if (source == contextNode.getNumber()) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("found group # " + destination.getNumber() + " for operation" + operation + "(because " + nodeOperation + ")");
+                                }
+                                found.add(destination);
+                            } else {
+                                log.warn("source was not the same as out contextNode");
                             }
-                            found.add(destination);
-                        } else {
-                            log.warn("source was not the same as out contextNode");
-                        }
-                    }  
-                } 
+                        }  
+                    } 
+                } catch (RuntimeException rte) { 
+                    // ignore the cited excedption
+                    log.warn("Error with " + originalRelation +  Logging.stackTrace(rte, 5));
+                }
             }
             if (log.isDebugEnabled()) {
                 log.debug("found groups for operation " + operation + " " + found);
             }
             operationsCache.put(contextNode, operation, found);
         }
+
         return found;
     }
 
@@ -638,7 +648,9 @@ public class Contexts extends MMObjectBuilder {
      * @return boolean
      */    
     protected boolean parentsAllow(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
-        log.info("parents allow for " + contextNode + " " + groupOrUserNode + " " + operation);
+        if (log.isDebugEnabled()) {
+            log.debug("parents allow for " + contextNode + " " + groupOrUserNode + " " + operation);
+        }
         try {
             Groups groups = Groups.getBuilder();
             
@@ -690,7 +702,8 @@ public class Contexts extends MMObjectBuilder {
                 ownerString = DEFAULT_CONTEXT;
             }
             MMObjectNode newRight = rightsRel.getNewNode(ownerString, contextNode.getNumber(), groupOrUserNode.getNumber(), operation);
-            return newRight.insert(ownerString) > 0;
+            boolean res = newRight.insert(ownerString) > 0;
+            return res;
 
         } else {
             log.service("Granting right " + operation + " on context " + contextNode  + " to group/user " + groupOrUserNode + " by " + user + " failed because it it not allowed");
@@ -740,7 +753,8 @@ public class Contexts extends MMObjectBuilder {
             cons.addChild(c2);
             q.setConstraint(cons);
             try {
-                Iterator i = rights.getNodes(q).iterator();
+                List r = rights.getNodes(q);
+                Iterator i = r.iterator();
                 while (i.hasNext()) {
                     MMObjectNode right = (MMObjectNode) i.next();
                     rights.removeNode(right);
