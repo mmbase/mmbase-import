@@ -398,16 +398,16 @@ public class Message extends MMObjectBuilder {
      *      <code>listtail</code> field. Should be tagname without the tag delimiters.</li>
      * </ul>
      *
-     * @param tagger the attributes of the LIST tag.
+     * @param params the attributes of the LIST tag.
      * @return A <code>Vector</code> containing the requested fields.
      */
-    public Vector getListMessages(StringTagger tagger) {
+    public Vector getListMessages(StringTagger params) {
 
         Hashtable optionalAttributes = new Hashtable();
 
         /* Get the thread/node from who the related messages have to be given.
          */
-        String id = tagger.Value("NODE");
+        String id = params.Value("NODE");
         MMObjectNode node = getNode(id);
         if (node == null) {
             log.debug("getListMessages(): no or incorrect node specified");
@@ -416,7 +416,7 @@ public class Message extends MMObjectBuilder {
 
         /* Get the fieldnames out of the FIELDS attribute.
          */
-        Vector fields = tagger.Values("FIELDS");
+        Vector fields = params.Values("FIELDS");
 
         /*
          * When fields contains listhead it's assumed a <ul> HTML listing has to get generated.
@@ -429,13 +429,13 @@ public class Message extends MMObjectBuilder {
         int listheadItemNr = fields.indexOf("listhead");
         int listtailItemNr = -1;
         int depthItemNr = -1;
-        if (listheadItemNr > 0) {
+        if (listheadItemNr >= 0) {
             listtailItemNr = fields.indexOf("listtail");
             depthItemNr = fields.indexOf("depth");
             // add depth to fiel;ds
             if (depthItemNr < 0) fields.add("depth");
-            openTag = tagger.Value("OPENTAG");
-            closeTag = tagger.Value("CLOSETAG");
+            openTag = params.Value("OPENTAG");
+            closeTag = params.Value("CLOSETAG");
             if ((openTag == null) || (closeTag == null)) {
                 openTag = LIST_HEAD_TAG;
                 closeTag = LIST_TAIL_TAG;
@@ -445,34 +445,34 @@ public class Message extends MMObjectBuilder {
             }
         }
 
-        // Put in tagger the number of fields that will get returned.
-        tagger.setValue("ITEMS","" + fields.size());
+        // Put in params the number of fields that will get returned.
+        params.setValue("ITEMS","" + fields.size());
 
         // Get fromCount and maxCount.
-        String tmp = tagger.Value("FROMCOUNT");
+        String tmp = params.Value("FROMCOUNT");
         int fromCount;
         if (tmp != null) fromCount = Integer.decode(tmp).intValue(); else fromCount = 0;
         int maxCount;
-        tmp = tagger.Value("MAXCOUNT");
+        tmp = params.Value("MAXCOUNT");
         // MAXCOUNT was maxCount (now really!) line below is to allow support for 'old'
         // communities, but should be dropped!
-        if (tmp==null) tmp = tagger.Value("maxCount");
+        if (tmp==null) tmp = params.Value("maxCount");
 
         if (tmp != null) maxCount = Integer.decode(tmp).intValue(); else maxCount = Integer.MAX_VALUE;
         int maxDepth;
-        tmp = tagger.Value("MAXDEPTH");
+        tmp = params.Value("MAXDEPTH");
         if (tmp != null) maxDepth = Integer.decode(tmp).intValue(); else maxDepth = Integer.MAX_VALUE;
 
         // Get startAfterNode / startAfterSequence
         String nodeselectfield="number";
         int startAfterNode=-1;
 
-        tmp = tagger.Value("STARTAFTERNODE");
+        tmp = params.Value("STARTAFTERNODE");
         try {
             if (tmp != null) {
                 startAfterNode = Integer.decode(tmp).intValue();
             } else {
-                tmp = tagger.Value("STARTAFTERSEQUENCE");
+                tmp = params.Value("STARTAFTERSEQUENCE");
                 if (tmp != null) {
                     startAfterNode = Integer.decode(tmp).intValue();
                     nodeselectfield=F_SEQUENCE;
@@ -486,16 +486,16 @@ public class Message extends MMObjectBuilder {
          * the list sequence is used as a default.
          * Sortdirections can be specified in SORTDIRS or DBDIR.
          */
-        Vector sortFields = tagger.Values("SORTFIELDS");
+        Vector sortFields = params.Values("SORTFIELDS");
         if (sortFields == null) {
-            sortFields = tagger.Values("DBSORT");
+            sortFields = params.Values("DBSORT");
             if (sortFields == null) {
                 sortFields = new Vector(1);
                 sortFields.add(F_SEQUENCE);
             }
         }
-        Vector sortDirs = tagger.Values("SORTDIRS");
-        if (sortDirs == null) sortDirs = tagger.Values("DBDIR");
+        Vector sortDirs = params.Values("SORTDIRS");
+        if (sortDirs == null) sortDirs = params.Values("DBDIR");
         NodeComparator compareMessages;
         if (sortDirs == null) {
             compareMessages = new NodeComparator(sortFields);
@@ -645,18 +645,67 @@ public class Message extends MMObjectBuilder {
     }
 
     /**
+     * Add a node to a result vector, provided the type matches and the
+     * current count is higher than the offset of the resultlist.
+     */
+    private int addRelatedNode(MMObjectNode node, int otypeWanted, int count, int offset, Vector result) {
+        if ((node != null) &&
+            (node.getIntValue("otype") == otypeWanted)) {
+            count+=1;
+            if (count>offset) {
+                result.add(node);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Add a node identified by number to a result vector,
+     * provided the type matches and the current count is higher than the
+     * offset of the resultlist.
+     */
+    private int addRelated(int number, int otypeWanted, int count, int offset, Vector result) {
+        MMObjectNode node=getNode(number);
+        return addRelatedNode(node,otypeWanted, count, offset, result);
+    }
+
+    /**
+     * Add a temporary node identified by key to a result vector,
+     * provided the type matches and the current count is higher than the
+     * offset of the resultlist.
+     */
+    private int addRelated(Object key, int otypeWanted, int count, int offset, Vector result) {
+        if (key!=null) {
+            MMObjectNode node=(MMObjectNode)TemporaryNodes.get(""+key);
+            count=addRelatedNode(node,otypeWanted, count, offset, result);
+        }
+        return count;
+    }
+
+    /**
      * Get temporary MMObjectNodes related to a specified MMObjectNode
      * @param sourceNode this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
     public Vector getTemporaryRelated(MMObjectNode node, String wtype) {
+        return getTemporaryRelated(node, wtype, 0, Integer.MAX_VALUE);
+    }
+    /**
+     * Get temporary MMObjectNodes related to a specified MMObjectNode
+     * @param sourceNode this is the source MMObjectNode
+     * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
+     */
+    public Vector getTemporaryRelated(MMObjectNode node, String wtype,
+                                      int offset, int max) {
         Vector result = new Vector();
+        if (max<=0) return result;
         MMObjectNode relatedNode;
         MMObjectNode tmpInsRel;
         boolean found;
         String _dnumber;
         String _snumber;
-        int otypeWanted = mmb.getTypeDef().getIntValue(wtype);
+        int otypewanted = mmb.getTypeDef().getIntValue(wtype);
+        int count=0;
 
         // Get the node's number or _number.
         int number=-1;
@@ -665,7 +714,7 @@ public class Message extends MMObjectBuilder {
 
         // Get all temporary nodes and filter out all insrels.
         Enumeration tmpInsRels = TemporaryNodes.keys();
-        while (tmpInsRels.hasMoreElements()) {
+        while ((count<(offset+max))  && tmpInsRels.hasMoreElements()) {
             tmpInsRel = (MMObjectNode)TemporaryNodes.get(tmpInsRels.nextElement());
             if (tmpInsRel != null) {
                 if (tmpInsRel.parent instanceof InsRel) {
@@ -673,44 +722,30 @@ public class Message extends MMObjectBuilder {
                     // Test if the (_)snumbers are equal.
                     if (_number != null) {
                         found = _number.equals(tmpInsRel.getStringValue("_snumber"));
-                    } else if (tmpInsRel.getValue("snumber") != null) {
+                    } else {
                         found = (number == tmpInsRel.getIntValue("snumber"));
                     }
                     if (found) { // snumbers are equal
-                        if (tmpInsRel.getValue("dnumber") != null) {
-                            relatedNode = getNode(tmpInsRel.getIntValue("dnumber"));
-                            if (relatedNode != null)
-                                if (relatedNode.getIntValue("otype") == otypeWanted) result.add(relatedNode);
+                        int dnumber=tmpInsRel.getIntValue("dnumber");
+                        if (dnumber>-1) {
+                            count=addRelated(dnumber,otypewanted,count,offset,result);
                         } else {
-                            _dnumber = (String)tmpInsRel.getValue("_dnumber");
-                            if (_dnumber != null) {
-                                relatedNode = (MMObjectNode)TemporaryNodes.get(_dnumber);
-                                if ((relatedNode != null) &&
-                                    (relatedNode.getIntValue("otype") == otypeWanted)) {
-                                    result.add(relatedNode);
-                                }
-                            }
+                            count=addRelated(tmpInsRel.getValue("_dnumber"),
+                                             otypewanted,count,offset,result);
                         }
                     } else {
                         if (_number != null) {
                             found = _number.equals(tmpInsRel.getStringValue("_dnumber"));
-                        } else if (tmpInsRel.getValue("dnumber") != null) {
+                        } else {
                             found = (number == tmpInsRel.getIntValue("dnumber"));
                         }
                         if (found) { // (_)dumbers are equal.
-                            if (tmpInsRel.getValue("snumber") != null) {
-                                relatedNode = getNode(tmpInsRel.getIntValue("snumber"));
-                                if (relatedNode != null)
-                                    if (relatedNode.getIntValue("otype") == otypeWanted) result.add(relatedNode);
+                            int snumber=tmpInsRel.getIntValue("snumber");
+                            if (snumber>-1) {
+                                count=addRelated(snumber,otypewanted,count,offset,result);
                             } else {
-                                _snumber = (String)tmpInsRel.getValue("_snumber");
-                                if (_snumber != null) {
-                                    relatedNode = (MMObjectNode)TemporaryNodes.get(_snumber);
-                                    if ((relatedNode != null) &&
-                                        (relatedNode.getIntValue("otype") == otypeWanted)) {
-                                        result.add(relatedNode);
-                                    }
-                                }
+                                count=addRelated(tmpInsRel.getValue("_snumber"),
+                                             otypewanted,count,offset,result);
                             }
                         }
                     }
