@@ -20,6 +20,8 @@
 	<relationsourcelist>
 	</relationsourcelist>
 
+	<contextsourcelist>
+	</contextsourcelist>
 	<description>
 		Install the basic things like /admin and /edit
 	</description>
