@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
 
   <status>active</status>
   <classfile>PoolBuilder</classfile>
-  
+
   <searchage>1000</searchage>
-  
+
   <names>
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="fr">Regroupement</singular>

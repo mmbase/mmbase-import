@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" >
 
   <!-- <status>
@@ -50,7 +50,7 @@
     <description xml:lang="nl">Objekten</description>
     <description xml:lang="eo">Objektoj</description>
     <description xml:lang="fr">Objets</description>
-    <description xml:lang="fy">Objekten</description>    
+    <description xml:lang="fy">Objekten</description>
   </descriptions>
 
   <!-- <properties>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object" >
 
   <status>inactive</status>
-  
+
   <classfile>MMEvents</classfile>
-  
+
   <searchage>14</searchage>
   <names>
     <!-- singles per language as defined by ISO 639 -->
@@ -19,7 +19,7 @@
   </names>
 
   <!-- <descriptions>
-	small description of the builder for human reading
+    small description of the builder for human reading
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
@@ -40,8 +40,8 @@
 
   <!-- <fieldlist>
   defines the different fields in this object, be carefull the order is important
-	once defined keep them in the same order.
-	If you use number and owner (the 2 default fields, please check the docs for this)
+    once defined keep them in the same order.
+    If you use number and owner (the 2 default fields, please check the docs for this)
   -->
   <fieldlist>
     <!-- POS 3 : <field> 'name'  -->
