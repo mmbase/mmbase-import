@@ -8,30 +8,28 @@
 <td class="white" colspan="2" valign="top">
 
 <%-- LAST RELEASE --%>
-<h2>latest release</h2>
- <ul>
- <mm:list path="pages2,releases,mmevents" fields="releases.number,mmevents.start" orderby="mmevents.start" directions="DOWN" max="1">
-    <li>
+<h2><mm:node number="$page"><mm:field name="title" /></mm:node></h2>
+ <mm:list path="pages2,releases,mmevents"
+ 	fields="releases.number,mmevents.start" 
+ 	orderby="mmevents.start" directions="DOWN" max="1">
     <mm:node element="releases">
-	<h3><mm:field name="name"/></h3>
-	<mm:field name="version"/>
-	<mm:field name="html(intro)"/>                                
+	<h3><mm:field name="name" /> <mm:field name="version"/></h3>
+	<mm:field name="html(intro)" />                                
         <mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
-          <mm:first><ul></mm:first>
-          <li>
-          <mm:node element="urls">
-	    <mm:field name="url">
-              <a href="<mm:url page="$_"/>"><mm:field name="description"/></a>
-	    </mm:field>
-          </mm:node>
-          </li>
-	 <mm:last></ul></mm:last>
+        <mm:first><ul></mm:first>
+        <li>
+		<mm:node element="urls">
+		<mm:field name="url">
+			<a href="<mm:url page="$_"/>"><mm:field name="description"/></a>
+		</mm:field>
+		</mm:node>
+        </li>
+		<mm:last></ul></mm:last>
         </mm:related>
-     </mm:node>
+    </mm:node>
 </mm:list>
-</ul>
 
-<h2>latest builds from the stable branch(MMBase-1_7)</h2>
+<h2>Latest builds from the stable branch(MMBase-1_7)</h2>
 <% Iterator j = getStableBuilds(5).iterator() ;%>
 <ul>
 <% while (j.hasNext()) { 
@@ -40,7 +38,7 @@
 <% } %>
 </ul>
 
-<h2>latest builds from the HEAD branch that is to become the 1.8 release</h2> 
+<h2>Latest builds from the HEAD branch that is to become the 1.8 release</h2> 
 <% Iterator k = getHeadBuilds(5).iterator() ;%>
 <ul>
 <% while (k.hasNext()) {
@@ -49,7 +47,7 @@
 <% } %>
 </ul>
 
-<h2>latest occasional builds</h2> 
+<h2>Latest occasional builds</h2> 
 <% Iterator i = getOccasionalBuilds(5).iterator() ;%>
 <ul>
 <% while (i.hasNext()) {
