@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.42.2.2 2003-02-24 14:13:33 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.42.2.3 2003-03-14 08:28:29 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -643,6 +643,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 imagestream.write(inputbuffer, 0, size);
             }
 
+
             log.debug("retrieved all information");
             byte[] image = imagestream.toByteArray();
 
@@ -694,6 +695,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
             if (process != null) {
                 int errorCode = 0;
                 try {
+                    log.debug("waiting");
+                    process.waitFor(); // error code is only certainly available after the process finished
+
                     errorCode = process.exitValue();
                     if (errorCode != 0) {
                         log.error(
@@ -750,8 +754,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         }
                     }
                 } catch (IllegalThreadStateException ie) {
-                    log.warn(
-                        "Process didn't exit yet, but should have exited already.");
+                    log.warn("Process didn't exit yet, but should have exited already.");
+                } catch (InterruptedException ie) {
+                    log.warn("Process was interruped." + ie);
                 }
                 process.destroy();
             }
