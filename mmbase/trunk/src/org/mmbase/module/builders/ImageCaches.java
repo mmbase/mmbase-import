@@ -23,15 +23,16 @@ import javax.servlet.http.HttpServletResponse;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.26 2003-03-04 14:12:23 nico Exp $
+ * @version $Id: ImageCaches.java,v 1.27 2003-03-04 20:10:55 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
     private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
 
-    private org.mmbase.cache.Cache handleCache = new org.mmbase.cache.Cache(128) {  // a few images are in memory cache.
-        public String getName()        { return "ImageHandles"; }
-        public String getDescription() { return "Handles of Images"; }
+    private CKeyCache handleCache = new CKeyCache(128) {  // a few images are in memory cache.
+            public String getName()        { return "ImageHandles"; }
+            public String getDescription() { return "Handles of Images (ckey -> handle)"; }
+
         };
 
     public ImageCaches() {
@@ -92,19 +93,20 @@ public class ImageCaches extends AbstractImages {
      **/
     int getCachedNodeNumber(String ckey) {
         int number = -1;
+        MultiConnection con = null;
+        Statement stmt = null;
         try {
-            MultiConnection con= mmb.getConnection();
-            Statement stmt     = con.createStatement();
-
+            con = mmb.getConnection();
+            stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT " + mmb.getDatabase().getNumberString()+" FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
             if (rs.next()) {
                 number = rs.getInt(1);
             }
-            stmt.close();
-            con.close();
         } catch (java.sql.SQLException e) {
             log.error("getCkeyNode error " + ckey + ":" + toHexString(ckey));
             log.error(Logging.stackTrace(e));
+        } finally {
+            mmb.closeConnection(con, stmt);
         }
         return number;
     }
@@ -220,6 +222,7 @@ public class ImageCaches extends AbstractImages {
             removeNode(invalidNode);
             log.debug("deleted node with id#" + node.getNumber());
         }
+        handleCache.remove(node.getNumber());
     }
 
     /**
@@ -231,10 +234,11 @@ public class ImageCaches extends AbstractImages {
     public void removeNode(MMObjectNode node) {
         String ckey = node.getStringValue("ckey");
         log.service("Icaches: removing node " + node.getNumber() + " " + ckey);
-        super.removeNode(node);
+        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getIntValue("id"));
         // also delete from LRU Cache
         handleCache.remove(ckey);
-        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache();
+        super.removeNode(node);
+
     }
 
     /**
