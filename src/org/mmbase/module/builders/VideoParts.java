@@ -432,11 +432,7 @@ public class VideoParts extends MMObjectBuilder {
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("title");
-		if (str.length()>15) {
-			return(str.substring(0,12)+"...");
-		} else {
-			return(str);
-		}
+		return(str);
 	}
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
