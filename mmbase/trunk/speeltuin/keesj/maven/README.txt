@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.6 2005-02-08 14:32:13 keesj Exp $
+README for maven-mmbase $Id: README.txt,v 1.7 2005-02-12 22:36:09 keesj Exp $
 
 RUNNING:
 download maven from http://maven.apache.org/
@@ -8,8 +8,15 @@ download maven from http://maven.apache.org/
 @>export MAVEN_HOME
 @>PATH=$PATH:$MAVEN_HOME/bin
 
-run the ant task in this directory
-@>ant
+under windows for some reason (maybe user home not defined the ant cvspass command fails)
+run
+cvs -d:pserver:guest@cvs.mmbase.org:/var/cvs login
+(type guest at the prompt)
+
+run the mavenised ant task in this directory
+@>maven init
+This wil checkout the current mmbase to the tmp directory
+and copy files to the respective projects
 
 
 #
