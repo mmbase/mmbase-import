@@ -24,36 +24,32 @@ my $child;
 if ($child = fork()) {
     exit 1; # ok, we are ready
 } else { 
-
-# mesagxoj estas je STDIN:
-my @message = <stdin>;
-
-
-
-# determin user:
-
-my $cvsuser = $user;
-{
-  my ($fil, $oldversion, $newversion) = split(",", $files[0]);
-  my $logline =  `cvs log -r $fil | grep author:`;
-  if ($logline =~ /author: (.*)/) {
-      $cvsuser = $1;
-  }
-}
-
-
-
-
-my $message = "From: $cvsuser <$user\@mmbase.org>\n",join("", @message);
-my $logfile = new FileHandle(">>$log_filename");
-
-print $logfile "--------------------------------------------------------\n";
-print $logfile "$cvsuser  ". `date`. "\n";
-print $logfile $message;
-print $logfile "\n[$files]\n";
-$logfile->close();
-
     sleep 5;
+    # mesagxoj estas je STDIN:
+    my @message = <stdin>;
+    
+
+
+    # determin user:
+    
+    my $cvsuser = $user;
+    {
+	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
+	my $logline =  `cvs log -r $fil | grep author:`;
+	if ($logline =~ /author: (.*)/) {
+	    $cvsuser = $1;
+	}
+    }
+           
+    my $message = "From: $cvsuser <$user\@mmbase.org>\n",join("", @message);
+    my $logfile = new FileHandle(">>$log_filename");
+    
+    print $logfile "--------------------------------------------------------\n";
+    print $logfile "$cvsuser  ". `date`. "\n";
+    print $logfile $message;
+    print $logfile "\n[$files]\n";
+    $logfile->close();
+    
     my $subject = "[MMBASE CVS] ".$dir." ";
     for my $file (@files) {
 	$subject .= (split(",", $file))[0] . " ";
