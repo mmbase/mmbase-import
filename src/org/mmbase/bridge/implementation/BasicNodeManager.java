@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.48 2002-10-18 09:02:06 eduard Exp $
+ * @version $Id: BasicNodeManager.java,v 1.49 2002-10-25 11:09:40 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -92,7 +92,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 		log.error(msg);
 		throw new BridgeException(msg);
 	    }
-	    // look which node we represent, and 
+	    // look which node we represent, and
 	    // what the builder is that this
 	    // node is representing
 	    TypeDef typedef = (TypeDef) noderef.getBuilder();
@@ -256,7 +256,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 v.remove(i);
             }
         }
-        return new BasicNodeList(v,this);
+        NodeList list= new BasicNodeList(v,this);
+        list.setProperty("constraints",constraints);
+        list.setProperty("orderby",orderby);
+        list.setProperty("directions",directions);
+        return list;
+
     }
 
     public RelationManagerList getAllowedRelations() {

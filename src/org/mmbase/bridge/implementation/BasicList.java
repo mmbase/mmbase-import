@@ -19,34 +19,44 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.8 2002-09-23 14:31:03 pierre Exp $
+ * @version $Id: BasicList.java,v 1.9 2002-10-25 11:09:40 pierre Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
     private static Logger log = Logging.getLoggerInstance(BasicList.class.getName());
-  
+
+    private Map properties = new HashMap();
+
     BasicList() {
          super();
     }
-    
+
     BasicList(Collection c) {
          super(c);
     }
 
+    public Object getProperty(Object key) {
+        return properties.get(key);
+    }
+
+    public void setProperty(Object key, Object value) {
+        properties.put(key,value);
+    }
+
     /*
-     * converts the object in teh list to the excpected format  
-     */    
+     * converts the object in teh list to the excpected format
+     */
     protected Object convert(Object o, int index) {
         return o;
     }
 
     /*
-     * validates that an object can be converted to the excpected format  
-     */    
+     * validates that an object can be converted to the excpected format
+     */
     protected Object validate(Object o) throws ClassCastException {
         return o;
     }
-    
+
     public Object get(int index) {
         return convert(super.get(index), index);
     }
@@ -79,7 +89,7 @@ public class BasicList extends ArrayList implements BridgeList  {
         return super.toArray();
     }
 
-    public abstract class BasicIterator implements ListIterator {        
+    public abstract class BasicIterator implements ListIterator {
         protected BasicList list;
         protected int index=-1;
 
@@ -114,7 +124,7 @@ public class BasicList extends ArrayList implements BridgeList  {
         public void add(Object o) {
             list.add(index, o);
         }
-        
+
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
