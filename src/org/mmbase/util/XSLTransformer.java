@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.17 2003-06-30 15:17:32 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.18 2003-06-30 15:50:20 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -189,9 +189,14 @@ public class XSLTransformer {
         if (! resultDir.isDirectory()) {
             throw  new TransformerException("" + resultDir + " is not a directory");
         }
+        if (params == null) params = new HashMap();
+
+        List exclude = (List) params.get("exclude");
 
         File[] files = xmlDir.listFiles();
         for (int i = 0; i < files.length; i++) {
+            if (exclude.contains(files[i].getName())) continue;
+
             if (recurse && files[i].isDirectory()) {
                 if ("CVS".equals(files[i].getName())) continue;
                 File resultSubDir = new File(resultDir, files[i].getName());
@@ -217,7 +222,6 @@ public class XSLTransformer {
                 if (! files[i].getName().endsWith(".xml")) continue;
                 String fileName = files[i].getName();
                 fileName = fileName.substring(0, fileName.length() - 4);
-                if (params == null) params = new HashMap();                
                 params.put("filename", fileName);
                 String extension = (String) params.get("extension");
                 if (extension == null) extension = "html";
