@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.mmbase.util.StringSplitter;
 import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.51 2004-12-10 20:25:11 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.52 2004-12-13 18:24:40 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -112,6 +112,13 @@ public class WriterHelper extends BodyTagSupport {
     private   int     vartype          = TYPE_UNSET;
 
     private   ContextReferrerTag thisTag  = null;
+
+
+    /**
+     * 'underscore' stack, containing the values for '_'.
+     * @since MMBase_1.8
+     */
+    private   Stack _Stack;
 
     private   boolean hasBody          = false;
 
@@ -319,7 +326,14 @@ public class WriterHelper extends BodyTagSupport {
             }
             value = v;
         }
-        thisTag.getContextProvider().getContextContainer().register("_", value);
+        ContextContainer thisContextContainer = thisTag.getContextProvider().getContextContainer();
+        _Stack = (Stack) thisContextContainer.get("_STACK");
+        if (_Stack == null) {
+            _Stack = new Stack();
+            thisContextContainer.register("_STACK", _Stack);
+        }
+        _Stack.push(value);
+        thisContextContainer.put("_", value);
         setJspvar();
     }
 
@@ -411,14 +425,30 @@ public class WriterHelper extends BodyTagSupport {
     }
 
     /**
+     * Pops one value of the _-stack, if not yet happend, if stack exists.
+     * Puts the value of peek in "_" then, if not the stack is empty now, in which case "_" is removed.
+     * @since MMBase-1.8
+     */
+    private void pop_Stack() throws JspTagException {
+        if (_Stack != null) {
+            _Stack.pop();
+            if (_Stack.empty()) {
+                thisTag.getContextProvider().getContextContainer().remove("_");
+            } else {
+                thisTag.getContextProvider().getContextContainer().put("_", _Stack.peek());
+            }
+            _Stack = null;
+        }
+    }
+
+    /**
      * Sets the bodycontent (to be used in doEndTag)
      * @since MMBase-1.7
      */
-
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         bodyContent = thisTag.getBodyContent();
-        //
-        return super.doAfterBody();
+        pop_Stack();
+        return SKIP_BODY;
     }
 
     /**
@@ -444,6 +474,7 @@ public class WriterHelper extends BodyTagSupport {
         } catch (IOException ioe){
             throw new TaglibException(ioe);
         }
+        pop_Stack();
         release();
         log.debug("End of doEndTag");
         return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
@@ -455,6 +486,7 @@ public class WriterHelper extends BodyTagSupport {
         bodyContent   = null;
         pageContext   = null;
         value         = null;
+        _Stack        = null;
     }
 
 
