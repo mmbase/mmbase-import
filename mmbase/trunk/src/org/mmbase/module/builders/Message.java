@@ -876,10 +876,9 @@ public class Message extends MMObjectBuilder {
                 }
             }
             if (itemNr == itemsCount - fieldsCount) {
-                depth = 0;
-                while (previousDepth > depth) {
+                while (depth>0) {
                     postfix += closeTag; // end of one ore more sublists
-                    previousDepth--;
+                    depth--;
                 }
                 postfix += closeTag;
             }
