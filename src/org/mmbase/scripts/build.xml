@@ -419,10 +419,6 @@ NetComponents can be found at:
       </fileset>
     </copy>
 
-    <available property="log4j2.in.classpath"
-	       classpathref="compile.classpath"
-               classname="org.apache.log4j.Logger" />
-
     <available property="informix.in.classpath"
                classpathref="compile.classpath"
                classname="com.informix.jdbc.IfxCblob" />
@@ -449,11 +445,9 @@ NetComponents can be found at:
       <exclude name="org/mmbase/bridge/ContextProvider.java"/>
       <exclude name="org/mmbase/bridge/RemoteContext.java"/>
       <exclude name="org/mmbase/bridge/remote/**"/>
-      <exclude name="org/mmbase/util/logging/log4j/**"     if="log4j2.in.classpath" />
       <exclude name="org/mmbase/module/JMSendMail.java"    unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
-      <exclude name="org/mmbase/util/logging/log4j2/**" unless="log4j2.in.classpath" />
       <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
