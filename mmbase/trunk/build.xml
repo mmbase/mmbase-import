@@ -1095,7 +1095,7 @@ Build-compiler: ${build.compiler}
                file="${expand.dir}/${hsql.version}"/>
 
     <!-- hsqldb -->
-    <property name="hsqldb.version" value="hsqldb_1_7_0_RC6a"/>
+    <property name="hsqldb.version" value="hsqldb_1_7_1"/>
     <property name="hsqldb.url" value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/${hsqldb.version}.zip"/>
     <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
     <available property="hsqldb.present"
