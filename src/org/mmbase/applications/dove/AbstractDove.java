@@ -57,7 +57,8 @@ import org.mmbase.security.MMBaseCop;
  * out, as we can then assumes a correct model. This will optimize processing.
  *
  * @author Pierre van Rooden
- * @version $Id: AbstractDove.java,v 1.2 2002-02-21 16:12:52 pierre Exp $
+ * @since MMBase-1.5
+ * @version $Id: AbstractDove.java,v 1.3 2002-02-27 16:54:21 pierre Exp $
  */
 
 public abstract class AbstractDove {

@@ -21,8 +21,9 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Kars Veling
  * @author Michiel Meeuwissen
- * @since   MMBase-1.6
- * @version $Id: Wizard.java,v 1.9 2002-02-27 12:15:31 pierre Exp $
+ * @author Pierre van Rooden
+ * @since MMBase-1.6
+ * @version $Id: Wizard.java,v 1.10 2002-02-27 16:54:22 pierre Exp $
  *
  */
 public class Wizard {

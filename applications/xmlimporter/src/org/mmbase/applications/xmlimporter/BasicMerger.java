@@ -3,7 +3,7 @@
  *
  * Date: dec. 1st. 2001
  *
- * Copyright notice: 
+ * Copyright notice:
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -30,11 +30,11 @@ import org.mmbase.applications.xmlimporter.*;
  * </ul>
  *
  * @author Rob van Maris: Finalist IT Group
- *
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: BasicMerger.java,v 1.2 2002-02-27 16:54:24 pierre Exp $
  */
 public class BasicMerger implements ObjectMerger {
-    
+
     /** The initialization parameters, stored as String name-value pairs. */
     private static HashMap initParams = null;
 
@@ -50,7 +50,7 @@ public class BasicMerger implements ObjectMerger {
     public void init(HashMap params) {
         initParams = params;
     }
-    
+
     /** Merge a field. This implementation leaves all fields unaffected.
      * @param name The name of the field.
      * (Note: "number" and "owner" are not considered fields in this context,
@@ -61,7 +61,7 @@ public class BasicMerger implements ObjectMerger {
      * afterwards.
      */
     public void mergeField(TmpObject tmpObj1, TmpObject tmpObj2, String name) {}
-    
+
     /** Merge relations. This implementation moves all relations of the second
      * object to the merged object.
      * @param tmpObj1 The first object to be merged. This will hold
@@ -71,9 +71,9 @@ public class BasicMerger implements ObjectMerger {
      * @param relations1 List of all relations of the first object.
      * @param relations2 List of all relations of the second object.
      */
-    public void mergeRelations(TmpObject tmpObj1, TmpObject tmpObj2, 
+    public void mergeRelations(TmpObject tmpObj1, TmpObject tmpObj2,
             List relations1, List relations2) {
-                
+
         Iterator i = relations2.iterator();
         while (i.hasNext()) {
             TmpObject relation = (TmpObject) i.next();
@@ -85,7 +85,7 @@ public class BasicMerger implements ObjectMerger {
             }
         }
     }
-    
+
     /** Tests if two relations should be considered duplicates,
      * indicating that one of them can be disposed of.
      * This test will only be called for pairs of relations that
@@ -100,7 +100,7 @@ public class BasicMerger implements ObjectMerger {
     public boolean areDuplicates(TmpObject relation1, TmpObject relation2) {
         return true;
     }
-    
+
     /** Tests if this object should be added to the persistent cloud
      * when not present already.
      * When this returns false, the object will be deleted from the

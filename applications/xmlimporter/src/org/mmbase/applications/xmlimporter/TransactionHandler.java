@@ -42,34 +42,35 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen: VPRO
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: TransactionHandler.java,v 1.2 2002-02-27 16:54:27 pierre Exp $
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
    /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(TransactionHandler.class.getName());
-   
+
    /** Current version number. */
    private static String version="1.12.2001";
-   
+
    /** Sessions module. */
    private static sessionsInterface sessions;
-   
+
    /** Hashtable to store a UserTransactionInfo object for each user. */
    private static Hashtable transactionsPerUser = new Hashtable();
-   
+
    /** Hashtable to store a UserTransactionInfo object for each user. */
    private static Consultant consultant;
-   
+
    /** XML file header, consisting of XML and DOCTYPE declaration. */
    private final String xmlHeader =
    "<?xml version='1.0'?>\n<!DOCTYPE transactions SYSTEM \"transactions.dtd\">\n";
-   
+
    /**
     * Create new TransactionHandler.
     */
    public TransactionHandler() {}
-   
+
    /**
     * This method is called on loading of the transactionhandler module
     * and writes a log entry that the TransactionHandler is loaded.
@@ -77,7 +78,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
    public void onload(){
       log.info("Module TransactionHandler ("+version+") loaded.");
    }
-   
+
    /**
     * Initialize the transactionhandler module.
     */
@@ -85,7 +86,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
       log.service("Module TransactionHandler ("+version+") started.");
       sessions = (sessionsInterface)Module.getModule("SESSION");
    }
-   
+
    /**
     * special version of handleTransaction for SCAN PAGES
     * this version can be removed if scan is not supported anymore
@@ -98,20 +99,20 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
    public void handleTransaction(String template, sessionInfo session, scanpage sp) {
       UserTransactionInfo uti;
       TransactionsParser parser = null;
-      
+
       // Add header to xml file.
       // The class org.mmbase.module.gui.html.scanparser recognizes the xml file
       // because of the <trtansactions> tag. The header is already down the drain.
       // So it sends the file without header and it has to be added again.
       // The default utf8 encoding header is added.
       String xmlTransactions = xmlHeader + template;
-      
+
       log.service("TransactionHandler processing TCP from scanpage");
       if (log.isDebugEnabled()) {
          log.trace("Received template (with added xml header) is:");
          log.trace(xmlTransactions);
       }
-      
+
       // Get user transactions info object.
       if (session == null) {
          uti = new UserTransactionInfo();
@@ -121,28 +122,28 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
          String user = session.getCookie();
          uti = userInfo(user);
       }
-      
+
       if (log.isDebugEnabled()) {
          log.debug("Transactions started..");
       }
-      
+
       // Parse template.
       try {
          // Create InputSource.
          StringReader in = new StringReader(xmlTransactions);
-         
+
          // Parse.
          parser = new TransactionsParser(uti);
          parser.parse(in);
       } catch (Exception e) {
          log.error("TransactionError :" + e.toString());
          log.error("ExceptionPage "+(parser != null? parser.getExceptionPage(): ""));
-         
+
          if (session != null) {
             // Register the exception
             sessions.setValue(session, "TRANSACTIONERROR", e.toString());
          }
-         
+
          if (sp != null) {
             // set jump to exception page
             try {
@@ -156,11 +157,11 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
       }
       log.warn("Transaction stopped at : " + getTime());
    }
-   
+
    private String getTime() {
       return new Date().toString();
    }
-   
+
    /**
     * Get transaction info for this user.
     * A UserTransactionInfo object is stored for each user,
@@ -181,15 +182,15 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
          log.warn("UserTransactionInfo already known for user "+user);
       }
       return ((UserTransactionInfo) transactionsPerUser.get(user));
-   } 
-   
+   }
+
    /**
     * starts handleTransaction(java.io.Reader input) in a seperate thread
     * @param input input
     * @param consultant The intermediate import object. Used to set and get status from and set and get objects to and from.
     */
    public void handleTransactionAsynchronously(final java.io.Reader input,
-   final org.mmbase.applications.xmlimporter.Consultant consultant) {  
+   final org.mmbase.applications.xmlimporter.Consultant consultant) {
       //anonymous inner class
       Thread t = new Thread() {
          public void run() {
@@ -198,7 +199,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
       };
       t.start();
    }
-   
+
    /**
     * parses transactions xml file delivered by the reader and executes the TCP commands.
     * @param input the connection to the input source
@@ -207,7 +208,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
    public void handleTransaction(Reader input, Consultant consultant) {
       UserTransactionInfo uti;
       TransactionsParser parser = null;
-      
+
       log.service("TransactionHandler processing TCP");
       if (log.isDebugEnabled()) {
          try{
@@ -224,13 +225,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
             log.error("TransactionError " + e.toString());
          }
       }
-      
+
       // Get user transactions info object.
       uti = new UserTransactionInfo();
       uti.user = new User("automaticUser");
-      
+
       log.debug("Transactions started..");
-      
+
       // Parse template.
       try {
          // Parse.
@@ -243,48 +244,48 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
          log.error("ExceptionPage "+(parser!=null?parser.getExceptionPage():""));
          if (consultant.getImportStatus() != Consultant.IMPORT_TIMED_OUT) {
             consultant.setImportStatus(Consultant.IMPORT_EXCEPTION);
-         }         
+         }
       }
       log.warn("Transaction stopped at : " + getTime());
    }
-   
+
    /**
     * Performs JB key test. Compares key with TransactionHandler keycode,
     * logs message and throws exception when key rejected, depending
     * on TransactionHandler security mode.
     * @param key The key provided with the transactions.
-    * @throws TransactionHandlerException When the key is rejected, 
-    * while in secure mode. 
+    * @throws TransactionHandlerException When the key is rejected,
+    * while in secure mode.
     */
    void checkKey(String key) throws TransactionHandlerException {
        //  JB key test, only if there was a key defined in transactionhandler.xml
        String keycode = getInitParameter("keycode");
        String mode = getInitParameter("security");
        if (keycode != null) {
-           
+
            if (key == null || !key.equals(keycode)) {
                // Keycode rejected.
-               String message = "Transaction (TCP) key is incorrect." 
-               + " TCP key='" + key + "' Server TCP key='" 
+               String message = "Transaction (TCP) key is incorrect."
+               + " TCP key='" + key + "' Server TCP key='"
                + getInitParameter("keycode") + "'";
-               
+
                // No mode specified: do nothing.
                if (mode == null) {
                    return;
-               
+
                // Signal mode: just note in log.
                } else if (mode.equals("signal")) {
                    log.info(message);
-               
+
                // Secure mode: throw exception
                } else if (mode.equals("secure")) {
                    log.error(message);
-                   TransactionHandlerException te 
+                   TransactionHandlerException te
                    = new TransactionHandlerException(message);
                    throw te;
                }
            }
        }
    }
-   
+
 }

@@ -21,27 +21,26 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * A basic implementation of SimilarObjectFinder.
- *
- * @author Rob van Maris
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: BasicFinder.java,v 1.2 2002-02-27 16:54:24 pierre Exp $
  */
 public abstract class BasicFinder implements SimilarObjectFinder {
-    
+
     /** Logger instance. */
     private static Logger log
     = Logging.getLoggerInstance(BasicFinder.class.getName());
 
     /**
-     * Convenience method: finds MMBase id's for all objects in the 
+     * Convenience method: finds MMBase id's for all objects in the
      * persistent cloud of a given type and satisfying a criterium.
      * @param builder The builder for this type.
-     * @param criterium The criterium: SQL where-clause, but 
+     * @param criterium The criterium: SQL where-clause, but
      * without the "where ".
      * @return List of (Integer) MMBase id's.
      */
     protected static List findPersistentObjects(
     MMObjectBuilder builder, String criterium) {
-        
+
         Enumeration en = builder.searchWithWhere(criterium);
         List result = new ArrayList();
         while (en.hasMoreElements()) {
@@ -50,10 +49,10 @@ public abstract class BasicFinder implements SimilarObjectFinder {
         }
         return result;
     }
-    
+
     /** Creates new BasicFinder */
     public BasicFinder() {}
-    
+
     /**
      * Initializes this instance.
      * @param params The initialization parameters, provided as
@@ -62,7 +61,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      */
     public void init(HashMap params) throws TransactionHandlerException {
     }
-    
+
     /**
      * Searches for similar object. Objects found in the
      * persistent cloud will be accessed in the transaction.
@@ -75,7 +74,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
     throws TransactionHandlerException {
         Set exactMatches = new HashSet();
         Set closeMatches = new HashSet();
-        
+
         MMObjectNode node1 = tmpObj.getNode();
         int otype = node1.getOType();
         Integer mmBaseId1 = new Integer(tmpObj.getMMBaseId());
@@ -99,27 +98,27 @@ public abstract class BasicFinder implements SimilarObjectFinder {
                 }
             }
         }
-        
-        // Search persistent cloud for exactly matching nodes, 
+
+        // Search persistent cloud for exactly matching nodes,
         // add these to exactMatches.
-        Iterator iPersistentObjects 
+        Iterator iPersistentObjects
             = getExactPersistentObjects(tmpObj).iterator();
         while (iPersistentObjects.hasNext()) {
             Integer mmBaseId2 = ((Integer) iPersistentObjects.next());
-            
+
             // Ignore if this is the node to match to.
             if (mmBaseId2.equals(mmBaseId1)) {
                 continue;
             }
-            
+
             // Access the object in the transaction context.
-            TmpObject persObj2 
+            TmpObject persObj2
             = transaction.getAccessObject(mmBaseId2.intValue());
-            
+
             // Add to exact matches.
             exactMatches.add(persObj2);
         }
-        
+
         // When exact matches are found, return these.
         if (exactMatches.size() > 0) {
             if (log.isDebugEnabled()) {
@@ -128,24 +127,24 @@ public abstract class BasicFinder implements SimilarObjectFinder {
             }
             return new ArrayList(exactMatches);
         }
-        
+
         // When no exact matches found, search persistent cloud for
-        // close matching nodes as well. 
+        // close matching nodes as well.
         Iterator iCloseObjects
             = getClosePersistentObjects(tmpObj).iterator();
         while (iCloseObjects.hasNext()) {
             Integer mmBaseId2 = ((Integer) iCloseObjects.next());
-            
+
             // Ignore if this is the node to match to.
             if (mmBaseId2.equals(mmBaseId1)) {
                 continue;
             }
-            
+
             // Access the object in the transaction context.
             TmpObject persObj2
             = transaction.getAccessObject(mmBaseId2.intValue());
-            
-            // Evaluate matching rate, and add to exactMatches 
+
+            // Evaluate matching rate, and add to exactMatches
             // or closeMatches accordingly.
             evaluateMatch(persObj2, tmpObj, exactMatches, closeMatches);
         }
@@ -157,12 +156,12 @@ public abstract class BasicFinder implements SimilarObjectFinder {
         }
         return new ArrayList(closeMatches);
     }
-    
+
     /**
      * Calculates matching rate for two objects, e.g. the rate in
      * which tmpObj1 matches tmpObj2, represented by a value ranging
      * from 0 to 1: <ul>
-     * <li>1.0 for exact match, 
+     * <li>1.0 for exact match,
      * <li>between 1.0 and 0.0 for not-exact but qualifying match,
      * <li>0.0 for match that is not close enough to qualify.
      * </ul>
@@ -171,7 +170,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      * @return Matching rate.
      */
     public abstract float scoreNode(TmpObject tmpObj1, TmpObject tmpObj2);
-    
+
     /**
      * Gets MMBase id's for all objects from persistent cloud that
      * produce an exact match with the given object (possibly
@@ -187,22 +186,22 @@ public abstract class BasicFinder implements SimilarObjectFinder {
 
     /**
      * Gets MMBase id's for all objects from persistent cloud that
-     * might produce a qualifying match with the given object 
+     * might produce a qualifying match with the given object
      * (possibly including the object itself).
-     * When looking for a fuzzy match, this can be used to make a 
+     * When looking for a fuzzy match, this can be used to make a
      * pre-selection from all the objects in the persistent cloud,
      * to reduce the total number of objects to be inspected closer.
      * @param tmpObj The object to match with.
      * @return Collection of (Integer) MMBase id's for objects from the
-     *  persistent cloud that might produce a qualifying match with the 
+     *  persistent cloud that might produce a qualifying match with the
      *  given object.
      */
     public abstract Collection getClosePersistentObjects(TmpObject tmpObj);
-    
+
     /**
      * Calculates and evaluates matching rate of an object with respect
      * to a given object, and adds the object/match rate to a list of
-     * exact matches - when the match is exact, or a list of close matches 
+     * exact matches - when the match is exact, or a list of close matches
      * - when the match is qualifying but not exact.
      * @param tmpObj1 The object for which the matching rate is wanted.
      * @param tmpObj2 The object to match with.
