@@ -27,6 +27,9 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * The module which provides access to the MMBase database defined
@@ -167,8 +170,9 @@ public class MMBase extends ProcessorModule  {
 	
 	// Classname and debug routines
 	private String	_classname = getClass().getName();
+	private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
 	private boolean debug=false;
-	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
+	private void 	debug( String msg ) { log.warn("deprecated call to debug method :"+ msg ); }
 
 	/**
 	* Reference to the sendmail module. Accessible using getSendMail();
@@ -189,7 +193,7 @@ public class MMBase extends ProcessorModule  {
     * Constructor to create the MMBase root module.
     */
     public MMBase() {
-        if (debug) debug("MMBase constructed");
+        log.debug("MMBase constructed");
     }
 
 	/**
@@ -203,7 +207,7 @@ public class MMBase extends ProcessorModule  {
 			// yes then replace the default name (def1)
 			baseName=tmp;
 		} else {
-			debug("init(): No name defined for mmbase using default (def1)");
+			log.info("init(): No name defined for mmbase using default (def1)");
 		}
 
 		tmp=getInitParameter("AUTHTYPE");
@@ -273,7 +277,7 @@ public class MMBase extends ProcessorModule  {
 		initBuilders();
 
 
-		if (debug) debug("Objects started");
+		log.debug("Objects started");
 
 
 		MultiRelations = new MultiRelations(this);
@@ -295,7 +299,7 @@ public class MMBase extends ProcessorModule  {
 			while (t.hasMoreElements()) {
 				MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
 				String name=fbul.getTableName();
-				if (debug) debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
+				log.debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
 				if (!name.equals("multirelations")) {
 					XMLBuilderWriter.writeXMLFile(writerpath+File.separator+fbul.getTableName()+".xml",fbul);
 				}
@@ -353,7 +357,7 @@ public class MMBase extends ProcessorModule  {
 	*   (shouldn't it return <code>false</code> instead?)
 	*/
 	boolean createMMBase() {
-		debug(" creating new multimedia base : "+baseName);
+		log.debug(" creating new multimedia base : "+baseName);
 		Vector v;
 		database=getDatabase();
 		database.createObjectTable(baseName);
@@ -431,11 +435,11 @@ public class MMBase extends ProcessorModule  {
 			MultiConnection con=database.getConnection(jdbc);
 			return con;
 		} catch (SQLException e) {
-			debug("Can't get a JDBC connection (database error)"+e);
+			log.error("Can't get a JDBC connection (database error)"+e);
 			e.printStackTrace();
 			return null;
 		} catch (Exception e) {
-			debug("Can't get a JDBC connection (JDBC module error)"+e);
+			log.error("Can't get a JDBC connection (JDBC module error)"+e);
 			e.printStackTrace();
 			return null;
 		}
@@ -468,7 +472,7 @@ public class MMBase extends ProcessorModule  {
 			e.printStackTrace();
 			return null;
 		} catch (Exception e) {
-			debug("Can't get a JDBC connection (JDBC module error)"+e);
+			log.error("Can't get a JDBC connection (JDBC module error)"+e);
 			e.printStackTrace();
 			return null;
 		}
@@ -491,7 +495,7 @@ public class MMBase extends ProcessorModule  {
 		if (bul!=null) {
 			bul.probe();
 		} else {
-			debug("doProbeRun(): ERROR: Can't access builder : daymarks");
+			log.error("doProbeRun(): ERROR: Can't access builder : daymarks");
 		}
 	}
 
@@ -654,7 +658,7 @@ public class MMBase extends ProcessorModule  {
 		if (bul!=null) {
 			return bul.addRemoteObserver(obs);
 		} else {
-			debug("addRemoteObserver(): ERROR: Can't find builder : "+type);
+			log.error("addRemoteObserver(): ERROR: Can't find builder : "+type);
 			return false;
 		}
 	}
@@ -669,7 +673,7 @@ public class MMBase extends ProcessorModule  {
 		if (bul!=null) {
 			return bul.addLocalObserver(obs);
 		} else {
-			debug("addLocalObserver(): ERROR: Can't find builder : "+type);
+			log.error("addLocalObserver(): ERROR: Can't find builder : "+type);
 			return false;
 		}
 	}
@@ -686,7 +690,7 @@ public class MMBase extends ProcessorModule  {
 				int agecount=((DayMarkers)getMMObject("daymarks")).getDayCountAge(agenr);
 				return ""+agecount;
 			} catch (Exception e) {
-				debug(" Not a valid AGE");
+				log.debug(" Not a valid AGE");
 				return "No valid age given";
 			}
 		} else {
@@ -814,12 +818,10 @@ public class MMBase extends ProcessorModule  {
  		    	    }
                 }
             } else {
-				// Logging type = error
-				debug ("Cannot find modules in "+path);
+				log.error("Cannot find modules in "+path);
 			}
         } else {
-			// Logging type = error
-			debug (path+" is not a directory");
+			log.error(path+" is not a directory");
 		}
     }
      	     	
@@ -833,7 +835,7 @@ public class MMBase extends ProcessorModule  {
  	MMObjectBuilder loadBuilder(String builder, String ipath) {
 		MMObjectBuilder bul=getMMObject(builder);
 		if (bul!=null) {
-			if (debug) debug("Builder '"+builder+"' is already loaded");
+			log.info("Builder '"+builder+"' is already loaded");
 			return bul;
 		}
  	    String path = builderpath + ipath;
@@ -854,8 +856,7 @@ public class MMBase extends ProcessorModule  {
  				    }
  				}
  			} else {
-				// Logging type = error
-				debug("Cannot find builder files in "+path);
+				log.error("Cannot find builder files in "+path);
 			}	
  			return null;
  		}
@@ -876,7 +877,7 @@ public class MMBase extends ProcessorModule  {
 	
 		MMObjectBuilder bul=getMMObject(builder);
 		if (bul!=null) {
-			if (debug) debug("Builder '"+builder+"' is already loaded");
+			log.info("Builder '"+builder+"' is already loaded");
 			return bul;
 		}
 		
@@ -893,7 +894,7 @@ public class MMBase extends ProcessorModule  {
 
 		    String status=parser.getStatus();
 		    if (status.equals("active")) {
-			    debug(" Starting builder : "+objectname);
+			    log.info("Starting builder : "+objectname);
 				// is it a full name or inside the org.mmase.* path
 				int pos=classname.indexOf('.');
 				Class newclass=null;
@@ -958,7 +959,7 @@ public class MMBase extends ProcessorModule  {
  				String path=MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename+".xml";
 				XMLDatabaseReader dbdriver=new XMLDatabaseReader(path);
 				Class newclass=Class.forName(dbdriver.getMMBaseDatabaseDriver());
-				if (debug) debug("Loaded load class : "+newclass);
+				log.info("Loaded load class : "+newclass);
 				database=(MMJdbc2NodeInterface)newclass.newInstance();
 				database.init(this,dbdriver);
 			} catch(Exception e) {
