@@ -4,12 +4,9 @@
 <HEAD>
    <TITLE>MMADMIN tools</TITLE>
 </HEAD>
-
-<BODY BACKGROUND="beeld/bg1.jpg" TEXT="#FFFFFF" BGCOLOR="#fffffe" LINK="#000000" ALINK="#ffffff" VLINK="#333333"><CENTER>
-<BR>
-<BR>
-<BR>
-<PART /mmadmin/nav.shtml>
+<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
+<PART /mmadmin/nav.shtml?4>
 <BR>
 <TABLE width=90% cellspacing=0 cellpadding=3 border=1>
 <TR>
@@ -24,10 +21,10 @@
 </TR>
 <TR>
 	<FORM ACTION="examples.shtml" METHOD="POST">
-		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+		<TD BGCOLOR="#444477">
 			Which Example	
 		</TD>
-		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+		<TD BGCOLOR="#444477">
 			<SELECT INPUT NAME="SESSION-MMEXAMPLESEL">
 			<IF $SESSION-MMEXAMPLESEL^==Basics><OPTION SELECTED><ELSE><OPTION></IF>
 			Basics	
@@ -43,6 +40,7 @@
 </TR>
 </TABLE>
 <BR>
+<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
 <IF $SESSION-MMEXAMPLESEL^=N>
 <TABLE width=90% cellspacing=0 cellpadding=3 border=1>
 <TR>
@@ -53,7 +51,7 @@
 	</TD>
 </TR>
 <TR>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg" LINK="#FFFFFF" VLINK="#FFFFFF">
+	<TD BGCOLOR="#444477" LINK="#FFFFFF" VLINK="#FFFFFF">
 	<IF $SESSION-INSTALLED^==OKE>
 		<PART /mmadmin/examples/$SESSION-MMEXAMPLESEL^_installed.shtml>
 		<DO SESSION-INSTALLED==NO>
