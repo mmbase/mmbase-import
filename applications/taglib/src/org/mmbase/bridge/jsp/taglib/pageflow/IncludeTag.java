@@ -40,6 +40,12 @@ public class IncludeTag extends UrlTag {
     
     protected int debugtype = DEBUG_NONE;
     
+    private    boolean cite = false;
+
+    public void setCite(String c) throws JspTagException {
+        cite = ("true".equals(getAttributeValue(c)));
+    }
+
 
     public int doStartTag() throws JspTagException {
         if (page == null) { // for include tags, page attribute is obligatory.
@@ -47,6 +53,8 @@ public class IncludeTag extends UrlTag {
         }        
         return super.doStartTag();
     }
+
+
 
     protected void doAfterBodySetValue() throws JspTagException {        
     	includePage();
@@ -157,6 +165,32 @@ public class IncludeTag extends UrlTag {
             throw new JspTagException (e.toString());            
         } 
     }
+
+    /**
+     * When staying in the same web-application, then the file also can be found on the file system,
+     * and the possibility arises simply citing it (passing the web-server). It is in no way
+     * interpreted then. This can be useful when creating example pages.
+     */
+    
+
+
+    private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
+        try {
+            if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
+            java.io.File file = new java.io.File(pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length())));
+            if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
+            java.io.FileReader reader = new java.io.FileReader(file);
+            java.io.StringWriter string = new java.io.StringWriter();
+            int c = reader.read();
+            while (c != -1) {
+                string.write(c);
+                c = reader.read();
+            }
+            helper.setValue(string.toString());
+        } catch (java.io.IOException e) {
+            throw new JspTagException (e.toString()); 
+        }
+    }
     
     /**
      * Includes another page in the current page.
@@ -207,8 +241,12 @@ public class IncludeTag extends UrlTag {
                         urlString = urlString.substring(colIndex + 1) + params;
                     }
                 }
-                externalRelative(bodyContent, urlString, request, response);
-                //internal(bodyContent, urlString, request, response);
+                if (cite) {
+                    cite(bodyContent, urlString, request); 
+                } else {
+                    externalRelative(bodyContent, urlString, request, response);
+                    //internal(bodyContent, urlString, request, response);
+                }
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
             }
