@@ -18,7 +18,7 @@ table {
 	width:  100%;
 }
 table td {
-   border: solid lightgray 2px;
+   border: solid #b0b0b0 2px;
    padding: 3px;
    with: 100%;
 }
