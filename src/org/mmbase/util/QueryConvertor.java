@@ -16,6 +16,7 @@ import org.mmbase.module.database.support.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.legacy.ConstraintParser;
 
 /**
  * Class for the converion of a expression string to a SQL where clause.
@@ -87,23 +88,38 @@ public class QueryConvertor {
         String where, MMObjectBuilder builder) {
             
         NodeSearchQuery query = new NodeSearchQuery(builder);
+        setConstraint(query, where);
+        return query;
+    }
+
+    /**
+     * Sets constraint for a
+     * {@link org.mmbase.storage.search.BasicSearchQuery
+     * BasicSearchQuery} object.
+     *
+     * @param query The query.
+     * @param where The constraint.
+     */
+    // TODO RvM: more javadoc on possible formats.
+    public static void setConstraint(BasicSearchQuery query, String where) {
+
+        Constraint constraint = null;
+
         if (where == null || where.trim().length() == 0) {
             // Empty constraint.
             
         } else if (where.substring(0, 6).equalsIgnoreCase("WHERE ")) {
-            // "where"-Clause.
+            // "where"-clause.
             // Strip leading "where ".
-            BasicLegacyConstraint constraint 
-                = new BasicLegacyConstraint(where.substring(6));
-            query.setConstraint(constraint);
+            constraint = 
+                new ConstraintParser(query).toConstraint(where.substring(6));
             
         } else {
             // AltaVista format.
             DBQuery parsedQuery = new DBQuery(where);
-            Constraint constraint = parsedQuery.toConstraint(query);
-            query.setConstraint(constraint);
+            constraint = parsedQuery.toConstraint(query);
         }
-        return query;
+        query.setConstraint(constraint);
     }
 }
 
@@ -181,7 +197,7 @@ class DBQuery  extends ParseItem {
      * @return The constraint.
      */
     // package access!
-    Constraint toConstraint(SearchQuery query) {
+    Constraint toConstraint(BasicSearchQuery query) {
         BasicCompositeConstraint compositeConstraint = null;
         BasicFieldValueConstraint fieldValueConstraint = null;
         
@@ -232,12 +248,12 @@ class DBQuery  extends ParseItem {
             }
      
             DBConditionItem condition = (DBConditionItem) iItems.next();
-           
+            
             // Find corresponding field in query.
-            StepField field = null;
+            BasicStepField field = null;
             Iterator iFields = query.getFields().iterator();
             while (iFields.hasNext()) {
-                StepField field2 = (StepField) iFields.next();
+                BasicStepField field2 = (BasicStepField) iFields.next();
                 if ((condition.prefix == null 
                         || field2.getStep().getAlias().equals(condition.prefix))
                     && field2.getFieldName().equals(condition.fieldName)) {
@@ -245,15 +261,46 @@ class DBQuery  extends ParseItem {
                     break;
                 }
             }
-
-            // Throw exception when step not found.
+            
             if (field == null) {
-                throw new IllegalStateException("Field with name '" 
-                    + condition.fieldName + "' and " 
-                    + (condition.prefix == null? "no prefix": "prefix '" + condition.prefix + "'") 
-                    + "' not found in this query: " + query);
+                // Field not found, find step and add field.
+                BasicStep step = null;
+                if (condition.prefix == null) {
+                    step = (BasicStep) query.getSteps().get(0);
+                } else {
+                    Iterator iSteps = query.getSteps().iterator();
+                    while (iSteps.hasNext()) {
+                        BasicStep step2 = (BasicStep) iSteps.next();
+                        if (step2.getAlias().equals(condition.prefix)) {
+                            step = step2;
+                            break;
+                        }
+                    }
+                    if (step == null) {
+                        // Step not found.
+                        throw new IllegalStateException("Step with alias '"
+                            + condition.prefix + "' not found in this query: "
+                            + query);
+                    }
+                }
+
+                FieldDefs fieldDefs 
+                    = step.getBuilder().getField(condition.fieldName);
+                if (fieldDefs == null) {
+                    // Field not found.
+                    throw new IllegalStateException("Field with name '" 
+                        + condition.fieldName + "' not found in builder "
+                        + step.getTableName());
+                } else {
+                    field = query.addField(step, fieldDefs);
+                }
             }
             
+            // Prefix fieldname in alias.
+            if (condition.prefix != null) {
+                field.setAlias(condition.prefix + "." + condition.fieldName);
+            }
+                
             int fieldType = field.getType();
             if (fieldType == FieldDefs.TYPE_STRING 
                 || fieldType == FieldDefs.TYPE_XML) {

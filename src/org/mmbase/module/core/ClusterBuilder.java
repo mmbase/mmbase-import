@@ -17,6 +17,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.22 2002-12-06 12:25:52 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.23 2002-12-24 18:17:01 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -631,7 +632,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param fieldname the field name to convert
      * @return the SQL field name as a <code>String</code>
      */
-    private String getSQLFieldName(Vector alltables,String fieldName) {
+    private String getSQLFieldName(Vector alltables, String fieldName) {
         int pos=fieldName.indexOf('.'); // check if a tablename precedes the fieldname
         if (pos!=-1) {
             String table=fieldName.substring(0,pos); // the table
@@ -682,7 +683,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
     }
-
+    
     /**
      * Creates a select string for the Multi level query.
      * This consists of a list of fieldnames, preceded by a tablename.
@@ -734,7 +735,7 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return result;
     }
-
+    
     /**
      * Creates an order string for the Multi level query.
      * This consists of a list of fieldnames (preceded by a tablename), with an ascending or descending order.
@@ -781,7 +782,7 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return result;
     }
-
+    
     /**
      * Creates a WHERE clause for the Multi level query.
      * This involves replacing fieldnames in the clouse with those fit for the SQL query.
@@ -1053,6 +1054,563 @@ public class ClusterBuilder extends VirtualBuilder {
             return bul.getShortedByte(getFieldNameFromField(fieldname),number);
         }
         return null;
+    }
+
+    /**
+     * Creates search query that selects all the objects that match the
+     * searchkeys.
+     *
+     * @param snodes The numbers of the nodes to start the search with. These
+     have to be present in the first table
+     *      listed in the tables parameter.
+     * @param fields The fieldnames to return. This should include the name of
+     the builder. Fieldnames without a builder name are ignored.
+     *      Fieldnames are accessible in the nodes returned in the same format
+     (i.e. with manager indication) as they are specified in this parameter.
+     *      Examples: 'people.lastname'
+     * @param pdistinct 'YES' indicates the records returned need to be
+     distinct. Any other value indicates double values can be returned.
+     * @param tables The builder chain. A list containing builder names.
+     *      The search is formed by following the relations between successive
+     builders in the list. It is possible to explicitly supply
+     *      a relation builder by placing the name of the builder between two
+     builders to search.
+     *      Example: company,people or typedef,authrel,people.
+     * @param where The contraint. this is in essence a SQL where clause, using
+     the NodeManager names from the nodes as tablenames.
+     *      The syntax is either sql (if preceded by "WHERE') or
+     *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and
+     (people.lastname='admin')"
+     * @param sortFields the fieldnames on which you want to sort.
+     * @param directions A list of values containing, for each field in the order
+     parameter, a value indicating whether the sort is
+     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If
+     less values are syupplied then there are fields in order,
+     *      the first value in the list is used for the remaining fields.
+     Default value is <code>'UP'</code>.
+     * @param searchDir Specifies in which direction relations are to be
+     *      followed, this must be one of the values defined by this class.
+     * @return a <code>Vector</code> containing all matching nodes
+     * @since MMBase-1.7
+     */
+    public BasicSearchQuery getMultiLevelSearchQuery (
+            List snodes, List fields, String pdistinct,
+            List tables, String where, List sortFields, List directions,
+            int searchdir) {
+        String stables,relstring,select,order,basenodestring;
+        Vector alltables,selectTypes;
+
+        // Create the query.
+        BasicSearchQuery query = new BasicSearchQuery();
+
+        // Set the distinct property.
+        boolean distinct =
+            pdistinct != null && pdistinct.equalsIgnoreCase("YES");
+        query.setDistinct(distinct);
+
+        // Get ALL tables (including missing reltables)
+        Map roles= new HashMap();
+        Map fieldsByAlias = new HashMap();
+        Map stepsByAlias 
+            = addSteps(query, tables, roles, !distinct, fieldsByAlias);
+        
+        // Add fields.
+        Iterator iFields = fields.iterator();
+        while (iFields.hasNext()) {
+            addFields(
+                query, (String) iFields.next(), stepsByAlias, fieldsByAlias);
+        }
+        
+        // Add sortorders.
+        addSortOrders(query, sortFields, directions, fieldsByAlias);
+        
+        // Supporting more then 1 source node or no source node at all
+        // Note that node number -1 is seen as no source node
+        if (snodes != null && snodes.size() > 0) {
+            Integer nodeNumber = new Integer(-1);
+            
+            // Copy list, so the original list is not affected.
+            snodes = new ArrayList(snodes);
+ 
+            // Go trough the whole list of strings (each representing 
+            // either a nodenumber or an alias), convert all to Integer objects.
+            // from last to first,,... since we want snode to be the one that
+            // contains the first..
+           for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
+                String str = (String)snodes.get(i);
+                try {
+                    nodeNumber= new Integer(str);
+                } catch(NumberFormatException e) {
+                    // maybe it was not an integer, hmm lets look in OAlias
+                    // table then
+                    nodeNumber = new Integer(mmb.OAlias.getNumber(str));
+                    if (nodeNumber.intValue() < 0) {
+                        nodeNumber = new Integer(0);
+                    }
+                }
+                snodes.set(i, nodeNumber);
+            }
+            
+            BasicStep nodesStep 
+                = getNodesStep(query.getSteps(), nodeNumber.intValue());
+            if (nodesStep != null) {
+                Iterator iNodeNumbers = snodes.iterator();
+                while (iNodeNumbers.hasNext()) {
+                    Integer number = (Integer) iNodeNumbers.next();
+                    nodesStep.addNode(number.intValue());
+                }
+            }
+        }
+        
+        addRelationDirections(query, searchdir, roles);
+
+        // XXX RvM: so far so good
+
+        // create the extra where parts
+        if (where != null && (where = where.trim()).length() != 0) {
+            QueryConvertor.setConstraint(query, where);
+        }
+
+        return query;
+    }
+
+    /**
+     * Creates a full chain of steps, adds these to the specified query.
+     * This includes adding necessary relation tables when not explicitly 
+     * specified, and generating unique table aliases where necessary.
+     * Optionally adds "number"-fields for all tables in the original chain.
+     *
+     * @param query The searchquery.
+     * @param tables The original chain of tables.
+     * @param roles Map of tablenames mapped to <code>Integer</code> values,
+     *        representing the nodenumber of a corresponing RelDef node.
+     *        This method adds entries for table aliases that specify a role,
+     *        e.g. "related" or "related2".
+     * @param includeAllReference Indicates if the "number"-fields must 
+     *        included in the query for all tables in the original chain.
+     * @param fieldsByAlias Map, mapping aliases (fieldname prefixed by table 
+     *        alias) to the stepfields in the query. An entry is added for 
+     *        each stepfield added to the query.
+     * @return Map, maps original table names to steps.
+     * @since MMBase-1.7
+     */
+    // package access!
+    Map addSteps(BasicSearchQuery query, List tables, 
+            Map roles, boolean includeAllReference, Map fieldsByAlias) {
+                
+        Map stepsByAlias = new HashMap(); // Maps original table names to steps.
+        Set tableAliases = new HashSet(); // All table aliases that are in use.
+        
+        Iterator iTables = tables.iterator();
+        if (iTables.hasNext()) {
+            // First table.
+            String tableName = (String) iTables.next();
+            MMObjectBuilder bul = getBuilder(tableName, roles);
+            String tableAlias = getUniqueTableAlias(tableName, tableAliases, tables);
+            BasicStep step = query.addStep(bul);
+            step.setAlias(tableAlias);
+            stepsByAlias.put(tableName, step);
+            if (includeAllReference) {
+                 // Add number field.
+                addField(query, step, "number", fieldsByAlias);
+            }
+        }
+        while (iTables.hasNext()) {
+            String tableName;
+            InsRel bul;
+            String tableName2 = (String) iTables.next();
+            MMObjectBuilder bul2 = getBuilder(tableName2, roles);
+            BasicRelationStep relation;
+            BasicStep step2;
+            if (bul2 instanceof InsRel) {
+                // Explicit relation step.
+                tableName = tableName2;
+                bul = (InsRel) bul2;
+                tableName2 = (String) iTables.next();
+                bul2 = getBuilder(tableName2, roles);
+                relation = query.addRelationStep(bul, bul2);
+                step2 = (BasicStep) relation.getNext();
+                if (includeAllReference) {
+                    // Add number fields.
+                    relation.setAlias(tableName);
+                    addField(query, relation, "number", fieldsByAlias);
+                    step2.setAlias(tableName2);
+                    addField(query, step2, "number", fieldsByAlias);
+                 }
+            } else {
+                // Not a relation, relation step is implicit.
+                tableName = "insrel";
+                bul = mmb.getInsRel();
+                relation = query.addRelationStep(bul, bul2);
+                step2 = (BasicStep) relation.getNext();
+                if (includeAllReference) {
+                    // Add number field.
+                    step2.setAlias(tableName2);
+                    addField(query, step2, "number", fieldsByAlias);
+                }
+            }
+            String tableAlias = getUniqueTableAlias(tableName, tableAliases, tables);
+            String tableAlias2 = getUniqueTableAlias(tableName2, tableAliases, tables);
+            relation.setAlias(tableAlias);
+            step2.setAlias(tableAlias2);
+            stepsByAlias.put(tableAlias, relation);
+            stepsByAlias.put(tableAlias2, step2);
+        }
+        return stepsByAlias;
+    }
+
+    /**
+     * Gets builder corresponding to the specified table alias.
+     * This amounts to removing the optionally appended digit from the table
+     * alias, and interpreting the result as either a tablename or a relation
+     * role.
+     *
+     * @param tableAlias The table alias.
+     *        Must be tablename or relation role, optionally appended
+     *        with a digit, e.g. images, images3, related and related4.
+     * @param roles Map of tablenames mapped to <code>Integer</code> values,
+     *        representing the nodenumber of a corresponing RelDef node.
+     *        This method adds entries for table aliases that specify a role,
+     *        e.g. "related" or "related2".
+     * @return The builder.
+     * @since MMBase-1.7
+     */
+    // package access!
+    MMObjectBuilder getBuilder(String tableAlias, Map roles) {
+        String tableName = getTableName(tableAlias);
+        // check builder - should throw exception if builder doesn't exist ?
+        MMObjectBuilder bul = null;
+        try {
+            bul = mmb.getBuilder(tableName);
+        } catch (BuilderConfigurationException e) {}
+        if (bul == null) {
+            // check if it is a role name. if so, use the builder of the
+            // rolename and store a filter on rnumber.
+            int rnumber = mmb.getRelDef().getNumberByName(tableName);
+            if (rnumber == -1) {
+                String msg = "Specified builder " + tableName + " does not exist.";
+                log.error(msg);
+                throw new IllegalArgumentException(msg);
+            } else {
+                bul=mmb.getInsRel(); // dummy
+                roles.put(tableAlias, new Integer(rnumber));
+            }
+        } else if (bul instanceof InsRel) {
+            int rnumber = mmb.getRelDef().getNumberByName(tableName);
+            if (rnumber!=-1) {
+                roles.put(tableAlias, new Integer(rnumber));
+            }
+        }
+        return bul;
+    }
+    
+    /**
+     * Returns unique table alias, must be tablename/rolename, optionally
+     * appended with a digit.
+     * Tests the provided table alias for uniqueness, generates alternative
+     * table alias if the provided alias is already in use.
+     *
+     * @param tableAlias The table alias.
+     * @param tableAliases The table aliases that are already in use. The 
+     *        resulting table alias is added to this collection.
+     * @param originalAliases The originally supplied aliases - generated
+     *        aliases should not match any of these.
+     * @since MMBase-1.7
+     */
+    // package access!
+    String getUniqueTableAlias(String tableAlias, Set tableAliases, 
+            Collection originalAliases) {
+            
+        // If provided alias is not unique, try alternatives,
+        // skipping alternatives that are already in originalAliases.
+        if (tableAliases.contains(tableAlias)) {
+            tableName = getTableName(tableAlias);
+            tableAlias = tableName;
+            char ch = '0';
+            while (originalAliases.contains(tableAlias)
+                    || tableAliases.contains(tableAlias)) {
+                // Can't create more than 11 aliases for same tablename.
+                if (ch > '9') {
+                    throw new IndexOutOfBoundsException(
+                        "Failed to create unique table alias, because there "
+                        + "are already 11 aliases for this tablename: '" 
+                        + tableName + "'");
+                }
+                tableAlias = tableName + ch;
+                ch++;
+            }
+        }
+        
+        // Unique table alias: add to collection, return as result.
+        tableAliases.add(tableAlias);
+        return tableAlias;
+    }
+    
+    /**
+     * Retrieves fieldnames from an ezpression, and adds these to a search 
+     * query.
+     * The expression may be either a fieldname or a a functionname with a 
+     * parameterlist between parenthesis.
+     *
+     * @param query The query.
+     * @param expression The expression.
+     * @param stepsByAlias Map, mapping step aliases to the steps in the query.
+     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
+     *        table alias) to the stepfields in the query. 
+     *        An entry is added for each stepfield added to the query.
+     * @since MMBase-1.7
+     */
+    // package access!
+    void addFields(BasicSearchQuery query, 
+            String expression, Map stepsByAlias, Map fieldsByAlias) {
+        
+        // TODO RvM: stripping functions this (still) necessary?.        
+        // Strip function(s).
+        int pos1 = expression.indexOf('(');
+        int pos2 = expression.indexOf(')');
+        if (pos1 != -1 ^ pos2 != -1) {
+            // Parenthesis do not match.
+            throw new IllegalArgumentException(
+                "Parenthesis do not match in expression: '"
+                    + expression + "'");
+        } else if (pos1 != -1) {
+            // Function parameter list containing subexpression(s).
+            String parameters = expression.substring(pos1 + 1, pos2);
+            Iterator iParameters = getFunctionParameters(parameters).iterator();
+            while (iParameters.hasNext()) {
+                String parameter = (String) iParameters.next();
+                addFields(
+                    query, parameter, stepsByAlias, fieldsByAlias);
+            }
+        } else if (!Character.isDigit(expression.charAt(0))) {
+            int pos = expression.indexOf('.');
+            if (pos < 1 || pos == (expression.length() - 1)) {
+                throw new IllegalArgumentException(
+                    "Invalid fieldname: '" + expression + "'");
+            }
+            String stepAlias = expression.substring(0, pos);
+            String fieldName = expression.substring(pos + 1);
+
+            BasicStep step = (BasicStep) stepsByAlias.get(stepAlias);
+            if (step == null) {
+                throw new IllegalArgumentException(
+                    "Invalid step alias: '" + stepAlias + "'");
+            }
+            addField(query, step, fieldName, fieldsByAlias);
+        }
+    }
+    
+    /**
+     * Adds field to a search query, unless it is already added.
+     *
+     * @param query The query.
+     * @param step The non-null step corresponding to the field.
+     * @param fieldName The fieldname.
+     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
+     *        table alias) to the stepfields in the query. 
+     *        An entry is added for each stepfield added to the query.
+     * @since MMBase-1.7
+     */
+    private void addField(BasicSearchQuery query, BasicStep step, 
+            String fieldName, Map fieldsByAlias) {
+                
+        String fieldAlias = step.getAlias() + "." + fieldName;
+        if (fieldsByAlias.containsKey(fieldAlias)) {
+            // Added already.
+            return;
+        }
+            
+        MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
+        FieldDefs fieldDefs = builder.getField(fieldName);
+        if (fieldDefs == null) {
+            throw new IllegalArgumentException(
+                "Not a known field of builder " + step.getTableName()
+                    + ": '" + fieldName + "'");
+        }
+
+        // Add the stepfield.
+        BasicStepField stepField 
+            = query.addField(step, fieldDefs).setAlias(fieldAlias);
+        fieldsByAlias.put(fieldAlias, stepField);
+    }
+            
+    /**
+     * Adds sorting orders to a search query.
+     *
+     * @param query The query.
+     * @param orders The fieldnames prefixed by the table aliases.
+     * @param directions The corresponding sorting directions ("UP"/"DOWN").
+     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
+     *        table alias) to the stepfields in the query. 
+     * @since MMBase-1.7
+     */
+    // package visibility!
+    void addSortOrders(BasicSearchQuery query, List fieldNames, 
+            List directions, Map fieldsByAlias) {
+                
+        int defaultSortOrder = SortOrder.ORDER_ASCENDING;
+        if (directions != null && directions.size() != 0) {
+            if (((String) directions.get(0)).trim().equalsIgnoreCase("DOWN")) {
+                defaultSortOrder = SortOrder.ORDER_DESCENDING;
+            }
+        }
+        
+        Iterator iFieldNames = fieldNames.iterator();
+        Iterator iDirections = directions.iterator();
+        while (iFieldNames.hasNext()) {
+            String fieldName = (String) iFieldNames.next();
+            BasicStepField field = (BasicStepField) fieldsByAlias.get(fieldName);
+            if (field == null) {
+                throw new IllegalArgumentException(
+                    "Invalid fieldname: '" + fieldName + "'");
+            }
+            
+            // Add sort order.
+            BasicSortOrder sortOrder = query.addSortOrder(field); // ascending
+            
+            // Change direction if needed.
+            if (iDirections.hasNext()) {
+                String direction = (String) iDirections.next();
+                if (direction.trim().equalsIgnoreCase("DOWN")) {
+                    sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
+                }
+            } else {
+                sortOrder.setDirection(defaultSortOrder);
+            }
+        }
+    }
+    
+    /**
+     * Gets first step from list, that corresponds to the builder
+     * of a specified node - or one of its parentbuilders.
+     *
+     * @param steps The steps.
+     * @param nodeNumber The number identifying the node.
+     * @return The step, or <code>null</code> when not found.
+     * @since MMBase-1.7
+     */
+    // package visibility!
+    BasicStep getNodesStep(List steps, int nodeNumber) {
+        if (nodeNumber < 0) {
+            return null;
+        }
+        
+        MMObjectNode node = getNode(nodeNumber);
+        if (node == null) {
+            return null;
+        }
+        
+        MMObjectBuilder builder = node.parent;
+        BasicStep result = null;
+        do {
+            // Find step corresponding to builder.
+            Iterator iSteps = steps.iterator();
+            while (iSteps.hasNext() && result == null) {
+                BasicStep step = (BasicStep) iSteps.next();
+                if (step.getTableName().equals(builder.tableName)) {
+                    // Found.
+                    result = step;
+                }
+            }
+            // Not found, then try again with parentbuilder.
+            builder = builder.getParentBuilder();
+        } while (builder != null && result == null);
+        
+        return result;
+    }
+    
+    /**
+     * Adds relation directions.
+     *
+     * @param query The search query.
+     * @param searchDir Specifies in which direction relations are to be
+     *      followed, this must be one of the values defined by this class.
+     * @param roles Map of tablenames mapped to <code>Integer</code> values,
+     *        representing the nodenumber of the corresponing RelDef node.
+     * @since MMBase-1.7
+     */
+    // package visibility!
+    void addRelationDirections(BasicSearchQuery query, int searchdir, Map roles) {
+        
+        Iterator iSteps = query.getSteps().iterator();
+        BasicStep sourceStep = (BasicStep) iSteps.next();
+        BasicStep destinationStep = null;
+        while (iSteps.hasNext()) {
+            if (destinationStep != null) {
+                sourceStep = destinationStep;
+            }
+            BasicRelationStep relationStep = (BasicRelationStep) iSteps.next();
+            destinationStep = (BasicStep) iSteps.next();
+            
+            // Check directionality is requested and supported.
+            if (searchdir != SEARCH_ALL && InsRel.usesdir) {
+                relationStep.setCheckedDirectionality(true);
+            }
+            
+            // Determine in what direction(s) this relation can be followed:
+            boolean desttosrc = false; // From 'source' to 'destination'.
+            boolean srctodest = false; // From 'destination' to 'source'.
+            
+            // Determine typedef number of the source-type.
+            int srcType = mmb.getTypeDef().getIntValue(
+                getTableName(sourceStep.getAlias()));
+            // Determine reldef number of the role.
+            Integer role = (Integer) roles.get(relationStep.getAlias());
+            // Determine the typdef number of the destination-type.
+            int destType = mmb.getTypeDef().getIntValue(
+                getTableName(destinationStep.getAlias()));
+
+            // check if  a definite rnumber was requested...
+            if (role != null) {
+                relationStep.setRole(role);
+                srctodest = searchdir != SEARCH_SOURCE
+                    && mmb.getTypeRel().reldefCorrect(srcType, destType, role.intValue());
+                desttosrc = searchdir != SEARCH_DESTINATION
+                    && mmb.getTypeRel().reldefCorrect(destType, srcType, role.intValue());
+            } else {
+                Enumeration e = mmb.getTypeRel().getAllowedRelations(srcType, destType);
+                while (e.hasMoreElements()) {
+                    // get the allowed relation definitions
+                    MMObjectNode typenode = (MMObjectNode) e.nextElement();
+                    desttosrc = (searchdir != SEARCH_DESTINATION) &&
+                        (desttosrc || destType ==  mmb.getRootType() || // ignore root 'object' type
+                            typenode.getIntValue("snumber") == destType);
+
+                    srctodest = (searchdir != SEARCH_SOURCE) &&
+                        (srctodest || srcType ==  mmb.getRootType() || // ignore root 'object' type
+                            typenode.getIntValue("snumber") == srcType);
+                    if (desttosrc && srctodest) break;
+                }
+            }
+            
+            if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
+                desttosrc = false;
+            }
+            
+            if (desttosrc) {
+                // there is a typed relation from destination to src
+                if (srctodest) {
+                    // there is ALSO a typed relation from src to destination - make a more complex query
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_BOTH);
+                } else {
+                    // there is ONLY a typed relation from destination to src - optimized query
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
+                }
+            } else {
+                if (srctodest) {
+                    // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+                } else {
+                    // no results possible...
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+                    log.warn("No relation defined between " 
+                        + sourceStep.getAlias() + " and " 
+                        + destinationStep.getAlias() + " using " 
+                        + relationStep + " with direction(s) " 
+                        + getSearchDirString(searchdir));
+                }
+            }
+        }
     }
 
 }
