@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.edit;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.NodeTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 /**
  *
@@ -21,14 +22,17 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  */
 public class DeleteNodeTag extends NodeTag {
     
-    private boolean deleteRelations = false;
+    private Attribute deleteRelations = Attribute.NULL;
 
-    public void setDeleterelations(boolean r) {
-        deleteRelations = r;
+    public void setDeleterelations(String r) throws JspTagException {
+        deleteRelations = getAttribute(r);
+    }
+    protected boolean getDeleterelations() throws JspTagException {
+        return deleteRelations.getBoolean(this, false);
     }
         
     public int doEndTag() throws JspTagException {    
-        getNodeVar().delete(deleteRelations);       
+        getNodeVar().delete(getDeleterelations());       
         return super.doEndTag();
     }
 }

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 
 import org.mmbase.bridge.jsp.taglib.Condition;
@@ -23,14 +24,17 @@ import javax.servlet.jsp.JspTagException;
 */
 public class PresentTag extends ContextReferrerTag implements Condition {
 
-    protected boolean inverse = false;
+    protected Attribute inverse = Attribute.NULL;
 
-    public void setInverse(Boolean b) {
-        inverse = b.booleanValue();
+    public void setInverse(String b) throws JspTagException {
+        inverse = getAttribute(b);
+    }
+    protected boolean getInverse() throws JspTagException {
+        return inverse.getBoolean(this, false);
     }
 
     public int doStartTag() throws JspTagException {
-        if ((getContextTag().isPresent(getReferid())) != inverse) {
+        if ((getContextTag().isPresent(getReferid())) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;

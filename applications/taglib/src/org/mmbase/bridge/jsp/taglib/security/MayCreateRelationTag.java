@@ -43,7 +43,7 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
         Node sourceNode      = getNode(source);
         Node destinationNode = getNode(destination);
 
-        if (rm.mayCreateRelation(sourceNode, destinationNode) != inverse) {
+        if (rm.mayCreateRelation(sourceNode, destinationNode) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;

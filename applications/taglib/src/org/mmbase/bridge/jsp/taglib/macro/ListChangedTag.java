@@ -13,11 +13,10 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  *  Shortcut for listCondition changed
- *  @version $Id: ListChangedTag.java,v 1.3 2003-01-10 18:49:45 michiel Exp $
+ *  @version $Id: ListChangedTag.java,v 1.4 2003-03-25 13:21:03 michiel Exp $
  */
 public class ListChangedTag extends ListConditionTag{
-    public int doStartTag() throws JspTagException{
-        setValue("changed");
-        return super.doStartTag();
+    protected int getValue() throws JspTagException {
+        return CONDITION_CHANGED;
     }
 }

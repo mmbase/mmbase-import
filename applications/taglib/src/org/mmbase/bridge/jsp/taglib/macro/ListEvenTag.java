@@ -15,8 +15,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 *  shortcut for listContdition even
 */
 public class ListEvenTag extends ListConditionTag{
-	public int doStartTag() throws JspTagException{
-		setValue("even");
-		return super.doStartTag();
-	}
+    protected int getValue() throws JspTagException {
+        return CONDITION_EVEN;
+    }
 }

@@ -38,10 +38,11 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.55 2003-03-25 09:59:28 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.56 2003-03-25 13:21:00 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
+    private static Logger log;
 
     // Writer implementation:
     protected WriterHelper helper = new WriterHelper();
@@ -59,28 +60,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
 
-    private static Logger log;
 
     private static Class defaultHandler = DefaultTypeHandler.class;
-    private static Class[] handlers = null;
-
-
-    private static final int TYPE_NAME     = 0;
-    private static final int TYPE_GUINAME  = 1;
-    private static final int TYPE_VALUE    = 2;
-    private static final int TYPE_GUIVALUE  = 3;
-    private static final int TYPE_TYPE      = 4;
-    private static final int TYPE_GUITYPE   = 5;
-    private static final int TYPE_DESCRIPTION = 6;
-
-    private static final int TYPE_UNSET     = 100;
-
-    // input and useinput produces pieces of HTML
-    // very handy if you're creating an editors, but well yes, not very elegant.
-    private static final int TYPE_INPUT    = 10;
-    private static final int TYPE_USEINPUT = 11;
-    private static final int TYPE_SEARCHINPUT = 12;
-    private static final int TYPE_USESEARCHINPUT = 13;
+    private static Class[] handlers;
 
     static {
         try {
@@ -91,7 +73,24 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
     }
 
-    private Attribute type = Attribute.NULL;
+
+    protected static final int TYPE_NAME     = 0;
+    protected static final int TYPE_GUINAME  = 1;
+    protected static final int TYPE_VALUE    = 2;
+    protected static final int TYPE_GUIVALUE  = 3;
+    protected static final int TYPE_TYPE      = 4;
+    protected static final int TYPE_GUITYPE   = 5;
+    protected static final int TYPE_DESCRIPTION = 6;
+
+    protected static final int TYPE_UNSET     = 100;
+
+    // input and useinput produces pieces of HTML
+    // very handy if you're creating an editors, but well yes, not very elegant.
+    protected static final int TYPE_INPUT    = 10;
+    protected static final int TYPE_USEINPUT = 11;
+    protected static final int TYPE_SEARCHINPUT = 12;
+    protected static final int TYPE_USESEARCHINPUT = 13;
+
 
     private String sessionName = "cloud_mmbase";
 
@@ -99,12 +98,16 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         return sessionName;
     }
 
+    protected Attribute type = Attribute.NULL;
     public void setType(String t) throws JspTagException {
         type = getAttribute(t);
     }
 
-    public int getType() throws JspTagException {
-        String t = type.getString(this);
+
+    // Must be protected because otherwise tomcat does not work
+    // public would be defendable because typehandlers perhaps could need it.
+    protected int getType() throws JspTagException {
+        String t = type.getString(this).toLowerCase();
         if ("".equals(t)) {
             return TYPE_UNSET;
         } else if ("name".equals(t)) {
@@ -133,15 +136,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
     }
-    private String options;
+    private Attribute options = Attribute.NULL;
     public void setOptions(String o) throws JspTagException {
-        options = getAttributeValue(o);
+        options = getAttribute(o);
     }
 
     public String getOptions() throws JspTagException {
-        return options;        
+        return (String) options.getValue(this);
     }
-
 
     /**
      * Answer the type handler for the given type.
@@ -267,6 +269,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             args.add(getCloud().getLocale().getLanguage());
             args.add(sessionName);
             args.add(pageContext.getResponse());
+            args.add(pageContext.getRequest());
             show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
@@ -324,7 +327,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
                       "value: " + value);
         }
-        return this.getTypeHandler(field.getType()).htmlInput(node, field, search);
+        return getTypeHandler(field.getType()).htmlInput(node, field, search);
     }
 
 

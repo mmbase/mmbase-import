@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
@@ -29,25 +30,25 @@ public class CreateRelationTag extends NodeTag {
 
     private static Logger log = Logging.getLoggerInstance(CreateRelationTag.class.getName());
 
-    private String role;
-    private String source;
-    private String destination;
+    private Attribute role = Attribute.NULL;
+    private Attribute source = Attribute.NULL;
+    private Attribute destination = Attribute.NULL;
 
     public void setRole(String r) throws JspTagException {
-        role = getAttributeValue(r);
+        role = getAttribute(r);
     }
 
-    public void setSource(String s)  {
-        source = s;
+    public void setSource(String s) throws JspTagException {
+        source = getAttribute(s);
     }
-    public void setDestination(String d)  {
-        destination = d;
+    public void setDestination(String d) throws JspTagException {
+        destination = getAttribute(d);
     }
 
     public int doStartTag() throws JspTagException {
-        RelationManager rm = getCloud().getRelationManager(role);
-        Node sourceNode      = getNode(source);
-        Node destinationNode = getNode(destination);
+        RelationManager rm = getCloud().getRelationManager(role.getString(this));
+        Node sourceNode      = getNode(source.getString(this));
+        Node destinationNode = getNode(destination.getString(this));
 
         if (log.isDebugEnabled()) {
             log.debug("cloud from relationmanager " + rm.getCloud().getName());
