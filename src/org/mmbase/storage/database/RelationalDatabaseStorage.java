@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.5 2003-03-04 15:38:42 nico Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.6 2003-05-02 14:24:02 michiel Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -126,55 +126,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
         }
         return bytes;
     }
-
-    /**
-     * Get text of a database blob
-     * @javadoc
-     */
-    public String getDBText(ResultSet rs,int idx) {
-        String str=null;
-        try {
-            InputStream inp = rs.getBinaryStream(idx);
-            if ((inp==null) || rs.wasNull()) {
-                return("");
-            }
-            int siz=inp.available(); // DIRTY
-            if (siz<=0) return("");
-            DataInputStream input=new DataInputStream(inp);
-            byte[] rawchars = new byte[siz];
-            input.readFully(rawchars);
-            str = new String(rawchars, mmb.getEncoding());
-            input.close(); // this also closes the underlying stream
-        } catch (Exception e) {
-            log.error("MMObjectBuilder -> MMMysql text  exception "+e);
-            log.error(Logging.stackTrace(e));
-            return "";
-        }
-        return str;
-    }
-
-    /**
-     * Set text array in database
-     * @javadoc
-     */
-    public void setDBText(int i, PreparedStatement stmt,String body) {
-        byte[] rawchars=null;
-        try {
-            rawchars=body.getBytes(mmb.getEncoding());
-        } catch (Exception e) {
-            log.error("MMObjectBuilder -> String contains odd chars");
-            log.error(body);
-            log.error(Logging.stackTrace(e));
-        }
-        try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
-            stmt.setBinaryStream(i,stream,rawchars.length);
-            stream.close();
-        } catch (Exception e) {
-            log.error("MMObjectBuilder : Can't set ascii stream");
-            log.error(Logging.stackTrace(e));
-        }
-    }
+    
 
     /**
      * Set byte array in database
