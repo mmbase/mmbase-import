@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.2 2004-01-19 14:09:56 gerard Exp $
+# $Id: build.properties.default,v 1.3 2004-01-21 19:57:57 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -92,11 +92,11 @@ log4j.loc=${mmbase.loc}/jakarta-log4j/${log4j.file}
 log4j.jar=${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar
 
 # ----- Xalan and Xerces ----------
-xalan.version=xalan-j_2_2
-xalan.fullversion=${xalan.version}_0
+xalan.version=xalan-j_2_5_2
+xalan.fullversion=${xalan.version}
 xalan.file=${xalan.version}-bin.tar.gz
 xalan.dest=${download.dir}/${xalan.file}
 xalan.loc=${mmbase.loc}/xalan/${xalan.file}
 xalan.jar=${expand.dir}/${xalan.fullversion}/bin/xalan.jar
-xerces.jar=${expand.dir}/${xalan.fullversion}/bin/xerces.jar
+xerces.jar=${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar
