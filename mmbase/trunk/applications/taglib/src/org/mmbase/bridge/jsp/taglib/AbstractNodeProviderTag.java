@@ -39,9 +39,10 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     
     private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class.getName());
     
-    private   Node   node;        
+    protected Node   node;        
     protected String fields = "";
     private   String jspvar = null;
+    private   boolean  modified = false;
     
 
     // general attributes for NodeProviders
@@ -62,6 +63,12 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         return node;
     }
     
+    /**
+     * Children can also directly access the node member, but the
+     * prefered method is to treat this variable as much as possible
+     * as private, and use this.
+     */
+
     protected void setNodeVar(Node node) {        
         this.node = node;
     }
@@ -114,9 +121,26 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         }
         return field;
     }
+
+    public void setModified() {
+        modified = true;
+    }
+    /**
+    * Does everything needed on the afterbody tag of every NodeProvider.
+    * Normally this function will be overrided with one that has to call super.doAfterBody().
+    **/
+    public int doAfterBody() throws JspTagException {
+        if (modified) {
+            log.error("node was changed ! calling commit");
+            node.commit();
+        }
+        return SKIP_BODY;
+    }
     
     public int doEndTag() throws JspTagException {
         id = null;
+        node = null;
+        modified = false;
         return EVAL_PAGE;
     }
 }

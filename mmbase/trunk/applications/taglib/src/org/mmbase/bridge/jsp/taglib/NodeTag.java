@@ -35,9 +35,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private String type      = null;
     private String element   = null;
     private String contextid = null;
-    private Node   node      = null;
     private boolean unregistered = false;
-
 
     /**
      * Release all allocated resources.
@@ -120,7 +118,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
             }
         }
-        setNodeVar(node);
+        //setNodeVar(node);
         //log.debug("found node " + node.getValue("gui()"));
         return EVAL_BODY_TAG;
     }
@@ -130,12 +128,11 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         fillVars();
     }
 
-
-
     /**
     * this method writes the content of the body back to the jsp page
     **/
     public int doAfterBody() throws JspTagException {
+        super.doAfterBody();
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe){
@@ -143,6 +140,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
         return SKIP_BODY;
     }
+
 
     public int doEndTag() throws JspTagException {
         node = null;

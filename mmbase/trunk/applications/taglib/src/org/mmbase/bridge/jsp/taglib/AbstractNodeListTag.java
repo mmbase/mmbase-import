@@ -221,6 +221,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
     public int doAfterBody() throws JspTagException {
+        super.doAfterBody();
         String id = getId();
         if (id != null && ! "".equals(id)) {
             getContextTag().unRegister(id);
