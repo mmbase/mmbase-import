@@ -6,14 +6,33 @@ Display main configuration categories
 <SECURE>
 <html>
 <head><title>MMConfig</title></head>
-<body bgcolor="#ffffff">
+<BODY BACKGROUND="../beeld/bgmmbaselogo.jpg" TEXT="#000000" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="../beeld/mmbaselogosmall.gif" ALIGN="right"> 
 
-Main configuration categories:
-<ul>
-<LIST SHOW PROCESSOR="Config">
-<li><a href="configlist.shtml?$ITEM1">$ITEM1</a>
-</LIST>
-</ul>
+<table border=1>
+<tr>
+    <td align=center><a href="builderlist.shtml">builders</a></td>
+    <td align=center><a href="databaseslist.shtml?databases">databases</a></td>
+    <td align=center><a href="configlist.shtml?modules">modules</a></td>
+  </tr>
+  <tr>
+    <td colspan=3 align=left>
+    The <i>Config</i> module gives information on MMBase's configuration files.
+    These can be:
+    <ul>
+    <li>Listed by category:
+      <ul>
+	<li>A green box indicates that the object associated with a configuration file is active, red stands for inactive.
+	<li>If the file contains an xml error, this is indicated.
+        <li>Link under the filename goes to syntax colored display if the xml format checks allright and to a displayed annotated with error messages if not.
+      </ul>
+    <li>Displayed with syntax coloration (This is implemented on the basis of a successfull parse action)
+    <li>For xml files with errors there is a display of the file with an indication of what error occurs where. (Xerces error notification isn't quite what it should be!)
+    </ul>
+    </td>
+  </tr>
+</table>
 
+</center>
 </body>
 </html>
