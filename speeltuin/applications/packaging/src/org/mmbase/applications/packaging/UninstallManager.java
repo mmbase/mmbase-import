@@ -35,10 +35,10 @@ public class UninstallManager {
     private static Logger log = Logging.getLoggerInstance(UninstallManager.class);
 
     // is the uninstall manager active (for dependencies reasons)
-    private static boolean active=false;
+    private static boolean active = false;
 
     // signal if we are installing a bundle or a package
-    private static boolean bundle=false;
+    private static boolean bundle = false;
  
     // package we are uninstalling
     private static PackageInterface pkg;
@@ -53,28 +53,24 @@ public class UninstallManager {
     * uninstall a package
     */
     public static synchronized boolean uninstallPackage(PackageInterface p) {
-	if (!active) {
-		// turn the uninstallManager to active
-		active=true;
-		
-		// signal we are a package only install
-		bundle=false;
+        if (!active) {
+            // turn the uninstallManager to active
+            active = true;
+        
+            // signal we are a package only install
+            bundle = false;
 
-		// set the package
-		pkg=p;
-
-		state="uninstalling";
-
-		p.clearInstallSteps();
-
-		runner = new uninstallThread();
-		
-		return true;
-	} else {
-		// returning false _allways_ means we where busy
-		// error feedback is provided by the processsteps
-		return false;	
-	}
+            // set the package
+            pkg = p;
+            state = "uninstalling";
+            p.clearInstallSteps();
+            runner = new uninstallThread();
+            return true;
+        } else {
+            // returning false _allways_ means we where busy
+            // error feedback is provided by the processsteps
+            return false;    
+        }
     }
 
 
@@ -83,21 +79,21 @@ public class UninstallManager {
     * the background and keeps providing feedback using the steps interfaces
     */
     public static void performUninstall() {
-	try {
-		if (bnd!=null) {
-			bnd.uninstall();
-			state="waiting";
-			active=false;
-			bnd=null;
-		} else if (pkg!=null) {
-			pkg.uninstall();
-			state="waiting";
-			active=false;
-			pkg=null;
-		}
-	} catch(Exception e) {
-		log.error("performInstall problem");
-	}
+        try {
+            if (bnd != null) {
+                bnd.uninstall();
+                state = "waiting";
+                active = false;
+                bnd = null;
+            } else if (pkg != null) {
+                pkg.uninstall();
+                state = "waiting";
+                active = false;
+                pkg = null;
+            }
+        } catch(Exception e) {
+            log.error("performInstall problem");
+        }
     }
 
 
@@ -105,45 +101,45 @@ public class UninstallManager {
     * uninstall a package
     */
     public static synchronized boolean uninstallBundle(BundleInterface b) {
-	if (!active) {
-		// turn the uninstallManager to active
-		active=true;
-		
-		// signal we are a package only install
-		bundle=true;
+        if (!active) {
+            // turn the uninstallManager to active
+            active = true;
+        
+            // signal we are a package only install
+            bundle = true;
 
-		// set the package
-		bnd=b;
+            // set the package
+            bnd = b;
 
-		state="uninstalling";
+            state = "uninstalling";
 
-		b.clearInstallSteps();
+            b.clearInstallSteps();
 
-		runner = new uninstallThread();
-		
-		return true;
-	} else {
-		// returning false _allways_ means we where busy
-		// error feedback is provided by the processsteps
-		return false;	
-	}
+            runner = new uninstallThread();
+        
+            return true;
+        } else {
+            // returning false _allways_ means we where busy
+            // error feedback is provided by the processsteps
+            return false;    
+        }
     }
 
 
     public void setState(String state) {
-	this.state=state;
+        this.state = state;
     }
     
     public String getState() {
-	return state;
+        return state;
     }
 
     public static boolean isActive() {
-	return active;
+        return active;
     }
 
     public static PackageInterface getUnInstallingPackage() {
-	return pkg;
+        return pkg;
     }
 
     public static BundleInterface getUnInstallingBundle() {
@@ -151,9 +147,6 @@ public class UninstallManager {
     }
 
     public static Enumeration getUninstallSteps() {
-	return pkg.getInstallSteps();
+        return pkg.getInstallSteps();
     }
-
-
-  
 }
