@@ -55,7 +55,7 @@ public class servflash extends JamesServlet {
     public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         incRefCount(req);
         try {
-            log.service("Parsing FLASH page: " + req.getRequestURI());
+            pageLog.service("Parsing FLASH page: " + req.getRequestURI());
             BufferedOutputStream out = null;
             try {
                 out = new BufferedOutputStream(res.getOutputStream());
@@ -82,7 +82,7 @@ public class servflash extends JamesServlet {
                     }
                 }    
             }
-            log.service("END Parsing FLASH page");
+            pageLog.debug("END Parsing FLASH page");
         }    
         finally { 
             decRefCount(req); 
