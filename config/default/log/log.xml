@@ -3,10 +3,10 @@
 
 <logging>
   <!-- example: SimpleImpl -->
-  <!-- 
+  <!--
    <class>org.mmbase.util.logging.SimpleImpl</class>
-   <configuration>simple.xml</configuration>
-   -->
+   <configuration>stderr</configuration>
+  -->
    <class>org.mmbase.util.logging.log4j.Log4jImpl</class>
    <configuration>log4j.xml</configuration>
 </logging>
