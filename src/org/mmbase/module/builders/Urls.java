@@ -55,8 +55,8 @@ public class Urls extends MMObjectBuilder {
         if (builder.equals(tableName)) {
 			int nr = Integer.parseInt(number);
 			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
-			if (jumpers==null) { 
-				log.error("Urls builder - Could not get Jumper builder");
+			if (jumpers==null) {
+				log.debug("Urls builder - Could not get Jumper builder");
 			} else {
 				jumpers.delJumpCache(number);
 			}
