@@ -11,7 +11,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicRelationStepTest extends TestCase {
     
@@ -19,6 +19,7 @@ public class BasicRelationStepTest extends TestCase {
     private final static String TEST_BUILDER2 = "pools";
     private final static String INSREL = "insrel";
     private final static String TEST_ALIAS = "test";
+    private final static Integer TEST_ROLE = new Integer(123456);
     
     /** Test instance. */
     private BasicRelationStep instance = null;
@@ -41,6 +42,7 @@ public class BasicRelationStepTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
@@ -88,6 +90,26 @@ public class BasicRelationStepTest extends TestCase {
         testSetDirectionality();
     }
     
+    /** Test of setRole method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
+    public void testSetRole() {
+        // Defaults to null.
+        assertTrue(instance.getRole() == null);
+        
+        instance.setRole(TEST_ROLE);
+        assertTrue(instance.getRole().equals(TEST_ROLE));
+        
+        BasicRelationStep result = instance.setRole(null);
+        assertTrue(instance.getRole() == null);
+        assertTrue(result == instance);
+        
+    }
+    
+    /** Test of getRole method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
+    public void testGetRole() {
+        // Same as:
+        testSetRole();
+    }
+    
     /** Test of getPrevious method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
     public void testGetPrevious() {
         Step step1 = instance.getPrevious();
@@ -119,7 +141,8 @@ public class BasicRelationStepTest extends TestCase {
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
-        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] 
+        + ", role:" + instance.getRole() + ")"));
         
         // With test alias.
         instance.setAlias(TEST_ALIAS);
@@ -127,7 +150,8 @@ public class BasicRelationStepTest extends TestCase {
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
-        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] 
+        + ", role:" + instance.getRole() + ")"));
          
         // With nodes.
         instance.addNode(123)
@@ -136,7 +160,17 @@ public class BasicRelationStepTest extends TestCase {
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
-        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] 
+        + ", role:" + instance.getRole() + ")"));
+        
+        // With role.
+        instance.setRole(new Integer(345));
+        assertTrue(instance.toString(), 
+        instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
+        + ", alias:" + instance.getAlias() + ", nodes:" 
+        + instance.getNodes() + ", dir:" 
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] 
+        + ", role:" + instance.getRole() + ")"));
      }
     
     public static Test suite() {
