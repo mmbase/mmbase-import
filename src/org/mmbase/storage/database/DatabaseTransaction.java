@@ -28,14 +28,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.7 2003-06-23 17:16:19 michiel Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.8 2003-11-19 13:49:45 michiel Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(DatabaseTransaction.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(DatabaseTransaction.class);
     private Connection con = null;
     private Statement stmt = null;
     private ResultSet res = null;
@@ -60,7 +60,7 @@ public class DatabaseTransaction implements Transaction {
             con = jdbc.getConnection(jdbc.makeUrl());
             con.setAutoCommit(!supportsRollback);
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e);
         }
     }
 
@@ -77,7 +77,7 @@ public class DatabaseTransaction implements Transaction {
             DatabaseMetaData metaDeta = con.getMetaData();
             result = metaDeta.supportsTransactions();
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e);
         }
         return result;
     }
@@ -105,7 +105,7 @@ public class DatabaseTransaction implements Transaction {
             ResultSet res = metaDeta.getTables(null, null, tableName, null);
             result = res.next();
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e);
         }
         return result;
     }
@@ -126,7 +126,7 @@ public class DatabaseTransaction implements Transaction {
                 result.add(tableName);
             }
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e);
         }
         return result;
     }
@@ -233,7 +233,7 @@ public class DatabaseTransaction implements Transaction {
             res = stmt.executeQuery(sql);
             return res;
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e);
         }
     }
 
@@ -254,7 +254,7 @@ public class DatabaseTransaction implements Transaction {
             statement.executeUpdate(sql);
             return true;
         } catch (SQLException sqle) {
-            throw new StorageException(Logging.stackTrace(sqle));
+            throw new StorageException(sqle);
         }
 
     }
@@ -288,8 +288,7 @@ public class DatabaseTransaction implements Transaction {
             ((PreparedStatement) stmt).executeUpdate();
             return true;
         } catch (SQLException e) {
-            //TODO: add the root exeption
-            throw new StorageException(Logging.stackTrace(e));
+            throw new StorageException(e);
         }
     }
 
