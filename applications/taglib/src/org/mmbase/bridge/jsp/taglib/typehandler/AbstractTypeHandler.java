@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.17 2003-08-29 12:12:28 keesj Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.18 2003-09-26 18:43:57 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -63,7 +63,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (fieldValue == null) {
 
         } else {
-            node.setValue(fieldName,  fieldValue);
+            if (! fieldValue.equals(node.getValue(fieldName))) {
+                node.setValue(fieldName,  fieldValue);
+            }
         }
         return "";
     }

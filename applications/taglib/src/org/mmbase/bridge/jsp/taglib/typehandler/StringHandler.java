@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.18 2003-09-01 13:29:43 pierre Exp $
+ * @version $Id: StringHandler.java,v 1.19 2003-09-26 18:44:29 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -121,12 +121,12 @@ public class StringHandler extends AbstractTypeHandler {
         String fieldName = field.getName();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldName.equals("owner")) {
-            if (fieldValue != null) {
+            if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
                 node.setContext(fieldValue);
             }
         } else {
             fieldValue = tag.encode(fieldValue, field);
-            if (fieldValue != null) {
+            if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
                 node.setValue(fieldName,  fieldValue);
             }
         }
