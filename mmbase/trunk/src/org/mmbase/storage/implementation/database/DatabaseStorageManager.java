@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.30 2003-10-17 12:24:06 keesj Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.31 2003-10-24 11:38:28 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -259,7 +259,7 @@ public class DatabaseStorageManager implements StorageManager {
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
-    
+
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -661,7 +661,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
                     statement.setNull(index, java.sql.Types.REAL);
                 } else {
-                    statement.setFloat(index, Casting.toInt(value));
+                    statement.setFloat(index, Casting.toFloat(value));
                 }
                 break;
                 // Store doubles
@@ -669,7 +669,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
                     statement.setNull(index, java.sql.Types.DOUBLE);
                 } else {
-                    statement.setDouble(index, Casting.toInt(value));
+                    statement.setDouble(index, Casting.toDouble(value));
                 }
                 break;
                 // Store longs
@@ -677,7 +677,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
                     statement.setNull(index, java.sql.Types.BIGINT);
                 } else {
-                    statement.setLong(index, Casting.toInt(value));
+                    statement.setLong(index, Casting.toLong(value));
                 }
                 break;
         }
