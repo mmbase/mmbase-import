@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: floppydrvs.java,v 1.5 2000-03-31 13:27:52 wwwtech Exp $
+$Id: floppydrvs.java,v 1.6 2001-04-10 20:22:45 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/31 13:27:52  wwwtech
+Wilbert: Introduction of ParseException for method getList
+
 Revision 1.4  2000/03/30 13:11:35  wwwtech
 Rico: added license
 
@@ -34,12 +37,17 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * @author Daniel Ockeloen
  * @author David V van Zeventer
- * @version $Revision: 1.5 $ $Date: 2000-03-31 13:27:52 $
+ * @version $Revision: 1.6 $ $Date: 2001-04-10 20:22:45 $
  */
 public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
+
+    static Logger log = Logging.getLoggerInstance(floppydrvs.class.getName()); 
 
 	public final static String buildername = "floppydrvs";
 
@@ -72,12 +80,12 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 				+", floppytype char(128)"
 				+", state char(32)"
 				+", info char(2048) not null) under "+mmb.baseName+"_object_t");
-			System.out.println("Created "+tableName);
+			log.debug("Created "+tableName);
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create type "+tableName);
-			e.printStackTrace();
+			log.debug("can't create type "+tableName);
+			log.error(Logging.stackTrace(e));
 		}
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -87,8 +95,8 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			e.printStackTrace();
+			log.debug("can't create table "+tableName);
+			log.error(Logging.stackTrace(e));
 		}
 		return(false);
 	}
@@ -123,8 +131,8 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 				stmt.close();
 				con.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error(Logging.stackTrace(e));
+			log.debug("Error on : "+number+" "+owner+" fake");
 			return(-1);
 		}
 		return(number);	
@@ -161,7 +169,9 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 	public boolean nodeChanged(String number,String builder,String ctype) {
 		MMObjectNode node=getNode(number);
 		if (node!=null) {
-			System.out.println("floppydrvs node="+node.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("floppydrvs node=" + node.toString());
+            }
 			// is if for me ?, enum related mmservers to check
 			Enumeration e=mmb.getInsRel().getRelated(number,"mmservers");
 			while  (e.hasMoreElements()) {
@@ -185,11 +195,13 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		String info=node.getStringValue("info");
 
 		if (!state.equals("busy")) {
-			System.out.println("Action called on floppydrive : "+name);
+            if (log.isDebugEnabled()) {
+                log.debug("Action called on floppydrive : " + name);
+            }
 			// start a thread to handle command
 			new floppydrvsProbe(this,node);
 		} else {
-			System.out.println("Problem action called on floppydrive : "+name+" while it was busy");
+			log.warn("Problem action called on floppydrive : " + name + " while it was busy");
 		}
 	}
      	
@@ -252,11 +264,11 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 			driveprops.put("copyerr6"  , "not found");			//endsWith
 		}else{
 			String jname = fnode.getStringValue("name");
-			System.out.println(buildername+": fillDriveProperties: fnode:"+jname+" has unknown floppytype OS="+OS+" , FS="+FS);
+			log.error(buildername+": fillDriveProperties: fnode:"+jname+" has unknown floppytype OS="+OS+" , FS="+FS);
 			String errval = "Floppynode:"+jname+" has unknown floppytype OS="+OS+" , FS="+FS;
 			String explanation =  "User hasn't specified floppytype field correct.";
 			throw new DrivePropsNotFoundException(errval,explanation);
-                }
+        }
 		return driveprops;
 	}
 		
@@ -273,14 +285,16 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		Vector entries = new Vector();
 		Runtime rt = null;
 		java.util.Properties driveprops= null;
-
-		System.out.println(buildername+": "+methodname+": Executing getDir method.");
+        
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+": Executing getDir method.");
+        }
 		driveprops = new java.util.Properties();//Create properties object.
                 try {	
 			driveprops = getDriveProps(fnode);
 		}catch (DrivePropsNotFoundException dnfe){
                         String Exc = "DrivePropsNotFoundException -> ";
-			System.out.println(buildername+": "+methodname+": "+Exc+dnfe.errval+"  "+dnfe.explanation);
+			log.error(buildername+": "+methodname+": "+Exc+dnfe.errval+"  "+dnfe.explanation);
                         String error_found=buildername+": "+methodname+": "+Exc+dnfe.errval;
                         String explanation=dnfe.explanation;
 			throw new GetDirFailedException(error_found,explanation);
@@ -300,21 +314,21 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 				doUnmount(unmountcmd,mountdir,unmounterr,rt);
 			}catch (CmdFailedException cmdfe){
 				String Exc = "CmdFailedException -> ";
-				System.out.println(buildername+": "+methodname+": "+Exc+cmdfe.errval+"  "+cmdfe.explanation);
+				log.error(buildername+": "+methodname+": "+Exc+cmdfe.errval+"  "+cmdfe.explanation);
 				String error_found=buildername+": "+methodname+": "+Exc+cmdfe.errval;
                         	String explanation=cmdfe.explanation;
 				throw new GetDirFailedException(error_found,explanation);
 			}
-			//System.out.println(buildername+": "+methodname+": Entries: "+entries.size());
+			//log.debug(buildername+": "+methodname+": Entries: "+entries.size());
 			entries = alterEntries(entries,"remove whitespace","","");	// Remove whitespace
 			entries = alterEntries(entries,"remove empty entries","","");	// Revove empty entries
 			entries = alterEntries(entries,"remove ending on","/","");	// Remove ending on
 			entries = alterEntries(entries,"add paths","","");		// Add paths
-			//System.out.println(buildername+": "+methodname+": Entries: "+entries.size());
+			//log.debug(buildername+": "+methodname+": Entries: "+entries.size());
 
                 }catch (IOException ioe) {
 			String Exc = "IOException ->";
-			System.out.println(buildername+": "+methodname+": "+Exc+ioe);
+			log.error(buildername+": "+methodname+": "+Exc+ioe);
 			String error_found=buildername+": "+methodname+": "+Exc+ioe;
                        	String explanation="Something went wrong during IO on floppydisk";
 			throw new GetDirFailedException(error_found,explanation);
@@ -324,7 +338,7 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		for (Enumeration e = entries.elements(); e.hasMoreElements();){
                 	list+= "/"+drivename+(String)e.nextElement();
                 }
-		//System.out.println(buildername+": "+methodname+": Final list contains:"+list);
+		//log.debug(buildername+": "+methodname+": Final list contains:"+list);
                 return list;
 	}
 
@@ -343,12 +357,14 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		String srcfilepath = null,dstfilepath = null;
 		java.util.Properties driveprops= null;
 
-		System.out.println(buildername+": "+methodname+": Executing Copy method.");
-		System.out.println(buildername+": "+methodname+": srcfile -> "+srcfile);
-		System.out.println(buildername+": "+methodname+": dstfile -> "+dstfile);
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+": Executing Copy method.");
+            log.debug(buildername+": "+methodname+": srcfile -> "+srcfile);
+            log.debug(buildername+": "+methodname+": dstfile -> "+dstfile);
+        }
 
 		if (dstfile==null){
-			System.out.println(buildername+": "+methodname+": Dstfile:"+dstfile+" EMPTY.");
+			log.error(buildername+": "+methodname+": Dstfile:"+dstfile+" EMPTY.");
 			String error_found=buildername+": "+methodname+": Dstfile:"+dstfile+" EMPTY.";
                         String explanation="Hmmmmm!!!?!?! no idea.";
 			throw new CopyFailedException(error_found,explanation);
@@ -360,12 +376,12 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
                 if (tok.hasMoreTokens()) {
                         drivename = tok.nextToken();	//Retrieve drivename
                 }else{
-			System.out.println(buildername+": "+methodname+": Srcfile:"+srcfile+" INVALID.");
-                        System.out.println("Srcfile is empty OR doesn't contain any "+delim+" delimiters.");
-			String error_found=buildername+": "+methodname+": Srcfile:"+srcfile+" INVALID.";
-                        String explanation="Srcfile is empty OR doesn't contain any "+delim+" delimiters.";
-			throw new CopyFailedException(error_found,explanation);
-		}
+                    log.error(buildername+": "+methodname+": Srcfile:"+srcfile+" INVALID.");
+                    log.error("Srcfile is empty OR doesn't contain any "+delim+" delimiters.");
+                    String error_found=buildername+": "+methodname+": Srcfile:"+srcfile+" INVALID.";
+                    String explanation="Srcfile is empty OR doesn't contain any "+delim+" delimiters.";
+                    throw new CopyFailedException(error_found,explanation);
+                }
                 try {	
 			MMObjectNode fnode = null;
                         floppydrvs bul=(floppydrvs)mmb.getMMObject("floppydrvs");
@@ -376,7 +392,7 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 			driveprops = getDriveProps(fnode);
 		}catch (DrivePropsNotFoundException dnfe){
                         String Exc = "DrivePropsNotFoundException -> ";
-			System.out.println(buildername+": "+methodname+": "+Exc+dnfe.errval+"  "+dnfe.explanation);
+			log.error(buildername+": "+methodname+": "+Exc+dnfe.errval+"  "+dnfe.explanation);
                         String error_found=buildername+": "+methodname+": "+Exc+dnfe.errval;
                         String explanation=dnfe.explanation;
 			throw new CopyFailedException(error_found,explanation);
@@ -393,10 +409,10 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 
 		int startPos= delim.length() + drivename.length();
 		srcfilepath = srcfile.substring(startPos);	//Only use part following the drivename.
-               	//System.out.println(buildername+": "+methodname+": Cutting of drivename    srcfilepath -> "+srcfilepath);
+               	//log.debug(buildername+": "+methodname+": Cutting of drivename    srcfilepath -> "+srcfilepath);
 
-		//System.out.println(buildername+": "+methodname+": srcfilepath -> "+srcfilepath);
-		//System.out.println(buildername+": "+methodname+": dstfilepath -> "+dstfilepath);
+		//log.debug(buildername+": "+methodname+": srcfilepath -> "+srcfilepath);
+		//log.debug(buildername+": "+methodname+": dstfilepath -> "+dstfilepath);
 		try {
 			rt = Runtime.getRuntime();
 			try{    doMount(mountcmd,mountdir,mounterr,rt);
@@ -404,14 +420,14 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 	                	doUnmount(unmountcmd,mountdir,unmounterr,rt);     
 	  		}catch (CmdFailedException cmdfe){
 				String Exc = "CmdFailedException -> ";
-				System.out.println(buildername+": "+methodname+": "+Exc+cmdfe.errval+"  "+cmdfe.explanation);
+				log.error(buildername+": "+methodname+": "+Exc+cmdfe.errval+"  "+cmdfe.explanation);
 				String error_found=buildername+": "+methodname+": "+Exc+cmdfe.errval;
                         	String explanation=cmdfe.explanation;
 				throw new CopyFailedException(error_found,explanation);
 			}
                	}catch (IOException ioe) {
 			String Exc = "IOException ->";
-			System.out.println(buildername+": "+methodname+": "+ioe);
+			log.error(buildername+": "+methodname+": "+ioe);
 			String error_found=buildername+": "+methodname+": "+Exc+ioe;
                		String explanation="Something went wrong during IO on floppydisk";
 			throw new CopyFailedException(error_found,explanation);
@@ -428,12 +444,14 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		String stripped = null;
 		String unknown_error = "Unknown error -->";
 
-		System.out.println(buildername+": "+methodname+": Finding error.");
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+": Finding error.");
+        }
 		stripped = Strip.Whitespace(errval,errval.length()-3);	//Go back 3 chars and strip whitespace.
 		if (stripped.endsWith(known_error)){	//If the error value returned is known to me.
-			System.out.println(buildername+": "+methodname+": I know this error.");
+			log.debug(buildername+": "+methodname+": I know this error.");
 		}else{
-			System.out.println(buildername+": "+methodname+": Unknown error.");
+			log.debug(buildername+": "+methodname+": Unknown error.");
 			stripped = unknown_error + stripped;
 		}
 		return stripped;
@@ -451,32 +469,32 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		String error_found=null, explanation=null;
 		String unknown_error = "Unknown error -->";
 
-		System.out.println(buildername+": "+methodname+": Now executing "+mountcmd+" "+mountdir);
+		log.service(buildername+": "+methodname+": Now executing "+mountcmd+" "+mountdir);
 		//Process p = rt.exec(mountcmd+" "+mountdir);    //hmount /dev/sda
 		Process p = null;
 		DataInputStream in = new DataInputStream(p.getInputStream());
 		DataInputStream err = new DataInputStream(p.getErrorStream());
 
 		while ((retval = in.readLine())  != null){
-			//System.out.println(buildername+": "+methodname+": retval = "+retval);
+			//log.debug(buildername+": "+methodname+": retval = "+retval);
 			if (retval.startsWith("Volume name is")){
 				StringTokenizer tok = new StringTokenizer(retval,"\"");
 				if (tok.hasMoreTokens()){
 					volname = tok.nextToken();
 					volname = tok.nextToken();	//volname now contains volumename.
-					//System.out.println(buildername+": "+methodname+": Volumename retrieved: "+volname);
+					//log.debug(buildername+": "+methodname+": Volumename retrieved: "+volname);
 				}					
 			}
         	}
 
 		//New error handling -> immediately throws exception with error value.
 		while ((errval = err.readLine()) != null) {  //Get data from stderr.
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.error(buildername+": "+methodname+": errval = "+errval);
 			throw new CmdFailedException(errval,explanation);
 		}
 
 		/*while ((errval = err.readLine()) != null){
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.debug(buildername+": "+methodname+": errval = "+errval);
 			error_found = findError(errval,mountcmd,mounterr);
 			if (!error_found.startsWith(unknown_error)){
 				explanation = "This means that there's probably no floppydisk in drive";
@@ -497,7 +515,7 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		String error_found=null, explanation = null;
 		String unknown_error = "Unknown error -->";
 
-		System.out.println(buildername+": "+methodname+": Now executing "+unmountcmd+" "+mountdir);
+		log.debug(buildername+": "+methodname+": Now executing "+unmountcmd+" "+mountdir);
                 //Process p = rt.exec(unmountcmd+" "+mountdir);  //humount /dev/sda
 
 		Process p = null;
@@ -505,17 +523,17 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
                 DataInputStream err = new DataInputStream(p.getErrorStream());
 
 		while ((retval = in.readLine())  != null){
-			System.out.println(buildername+": "+methodname+": retval = "+retval);
+			log.debug(buildername+": "+methodname+": retval = "+retval);
         	}
 
 		//New error handling -> immediately throws exception with error value.
 		while ((errval = err.readLine()) != null) {  //Get data from stderr.
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.error(buildername+": "+methodname+": errval = "+errval);
 			throw new CmdFailedException(errval,explanation);
 		}
 
 		/*while ((errval = err.readLine()) != null){
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.debug(buildername+": "+methodname+": errval = "+errval);
 		 	error_found = findError(errval,unmountcmd,unmounterr);
 			if (!error_found.startsWith(unknown_error)){
 				explanation = "This probably means that there's been a floppydisk-change during session.";
@@ -538,26 +556,30 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		String error_found=null, explanation = null;
 		String unknown_error = "Unknown error -->";
 
-		System.out.println(buildername+": "+methodname+": Now executing "+dircmd);
-        	Process p = rt.exec(dircmd);      //eg ls -1pR
-        	DataInputStream in = new DataInputStream(p.getInputStream());
-                DataInputStream err = new DataInputStream(p.getErrorStream());
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+": Now executing "+dircmd);
+        }
+        Process p = rt.exec(dircmd);      //eg ls -1pR
+        DataInputStream in = new DataInputStream(p.getInputStream());
+        DataInputStream err = new DataInputStream(p.getErrorStream());
 		
-        	//Add all entries to a vector
-        	System.out.println(buildername+": "+methodname+": Adding all entries to a vector.");
-        	while ((entry = in.readLine()) != null){
-			//System.out.println(buildername+": "+methodname+": entry = "+entry);
+        //Add all entries to a vector
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+": Adding all entries to a vector.");
+        }
+        while ((entry = in.readLine()) != null){
+			//log.debug(buildername+": "+methodname+": entry = "+entry);
 			entries.addElement(entry);
-        	}
+        }
 
 		//New error handling -> immediately throws exception with error value.
 		while ((errval = err.readLine()) != null) {  //Get data from stderr.
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.error(buildername+": "+methodname+": errval = "+errval);
 			throw new CmdFailedException(errval,explanation);
 		}
 
 		/*while ((errval = err.readLine()) != null) {
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.debug(buildername+": "+methodname+": errval = "+errval);
 			error_found = findError(errval,dircmd,direrr);
 			if (!error_found.startsWith(unknown_error)){;
 				explanation = "This probably means that there's been a floppydisk change during session OR no disk in drive at all.";
@@ -580,33 +602,35 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 	 */
 	private void doCopy(String copycmd,String copyerr,String copyerr2,String srcfilepath,String dstfilepath,Runtime rt) throws CmdFailedException,IOException{
 		String methodname = "doCopy";
-                String retval=null, errval=null;
+        String retval=null, errval=null;
 		String error_found = null, explanation=null;
 		String unknown_error = "Unknown error -->";
 		boolean error_occured = false;
 
-		System.out.println(buildername+": "+methodname+":TEST: Now executing "+copycmd+" :davzevtest.wav /tmp/davzev2");
-        	Process p = rt.exec(copycmd+" "+"/tmp/davzev.wav"+" "+"/tmp/davzev.wav.copy"); //Used for testing
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+":TEST: Now executing "+copycmd+" :davzevtest.wav /tmp/davzev2");
+        }
+        Process p = rt.exec(copycmd+" "+"/tmp/davzev.wav"+" "+"/tmp/davzev.wav.copy"); //Used for testing
 
-		//System.out.println(buildername+": "+methodname+": Now executing "+copycmd+" "+srcfilepath+" "+dstfilepath);
+		//log.debug(buildername+": "+methodname+": Now executing "+copycmd+" "+srcfilepath+" "+dstfilepath);
 		//Process p = rt.exec(copycmd+" "+srcfilepath+" "+dstfilepath);
 
 		DataInputStream in = new DataInputStream(p.getInputStream());
-                DataInputStream err = new DataInputStream(p.getErrorStream());
-
-               	while ((retval = in.readLine()) != null) {	//Get data from stdin.
-                        System.out.println(buildername+": "+methodname+": stdin retval = "+retval);
+        DataInputStream err = new DataInputStream(p.getErrorStream());
+        
+        while ((retval = in.readLine()) != null) {	//Get data from stdin.
+            log.debug(buildername+": "+methodname+": stdin retval = "+retval);
 		}
 
 		//New error handling -> immediately throws exception with error value.
 		while ((errval = err.readLine()) != null) {  //Get data from stderr.
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.error(buildername+": "+methodname+": errval = "+errval);
 			throw new CmdFailedException(errval,explanation);
 		}
 
 		/*while ((errval = err.readLine()) != null) {	//Get data from stderr.
 			error_occured = true;
-			System.out.println(buildername+": "+methodname+": errval = "+errval);
+			log.debug(buildername+": "+methodname+": errval = "+errval);
 			
 			error_found = findError(errval,copycmd,copyerr);
 			if (!error_found.startsWith(unknown_error)){
@@ -621,7 +645,9 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 			}
         	}*/
 
-		System.out.println(buildername+": "+methodname+": Copy done.");
+        if (log.isDebugEnabled()) {
+            log.debug(buildername+": "+methodname+": Copy done.");
+        }
 	}
 
 	/**
@@ -632,43 +658,43 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		Vector altered = new Vector();
 		
 		if (cmd.equals("remove whitespace")){
-                	//System.out.println(buildername+": "+methodname+": Removing whitespace from entries.");
+                	//log.debug(buildername+": "+methodname+": Removing whitespace from entries.");
 			for (Enumeration e = entries.elements();e.hasMoreElements();){
 				String s = (String) e.nextElement();
 				altered.addElement(Strip.Whitespace(s,0));
 			}
 		} else if (cmd.equals("remove starting with")){
-                	//System.out.println(buildername+": "+methodname+": Removing entries starting with a "+param1);
+                	//log.debug(buildername+": "+methodname+": Removing entries starting with a "+param1);
 			for (Enumeration e = entries.elements(); e.hasMoreElements();){
          	        	String s = (String)e.nextElement();
                                	if (!s.startsWith(param1)){	//Only add file entries.
 					altered.addElement(s);
                            	}else{
-					//System.out.println(buildername+": "+methodname+": Removing element "+s);
+					//log.debug(buildername+": "+methodname+": Removing element "+s);
 				}
                         }
 		} else if (cmd.equals("remove ending on")){
-                	//System.out.println(buildername+": "+methodname+": Removing entries ending on a "+param1);
+                	//log.debug(buildername+": "+methodname+": Removing entries ending on a "+param1);
 			for (Enumeration e = entries.elements(); e.hasMoreElements();){
          	        	String s = (String)e.nextElement();
 				if (!s.endsWith(param1)){	//Only add file entries.
 					altered.addElement(s);
 				}else{
-					//System.out.println(buildername+": "+methodname+": Removing element "+s);
+					//log.debug(buildername+": "+methodname+": Removing element "+s);
 				}
                         }
 		} else if (cmd.equals("remove empty entries")){
-                	//System.out.println(buildername+": "+methodname+": Removing empty entries.");
+                	//log.debug(buildername+": "+methodname+": Removing empty entries.");
 			for (Enumeration e = entries.elements();e.hasMoreElements();){
 				String s = (String) e.nextElement();
 				if (s!=null){
 					altered.addElement(s);
 				}else{
-					//System.out.println(buildername+": "+methodname+": Removing empty entry.");
+					//log.debug(buildername+": "+methodname+": Removing empty entry.");
 				}
 			}
 		} else if (cmd.equals("keep token")){
-			//System.out.println(buildername+": "+methodname+": Keeping "+param1+" token only.");
+			//log.debug(buildername+": "+methodname+": Keeping "+param1+" token only.");
 			if (param1.equals("last")){
 				for (Enumeration e = entries.elements();e.hasMoreElements();){
 					String s = (String) e.nextElement();
@@ -687,7 +713,7 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 							int i=0;
 							while (i<tokens && entry_st.hasMoreTokens()){ //Go to the right token.
 								token = entry_st.nextToken();
-								//System.out.println("i:"+i+" token: "+token);
+								//log.debug("i:"+i+" token: "+token);
 								i++;
 							}
 							while (entry_st.hasMoreTokens()){ //Needed if filename contains spaces.
@@ -696,12 +722,12 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 							break;
 						}			
 					}
-					//System.out.println(buildername+": "+methodname+": Adding: "+token);
+					//log.debug(buildername+": "+methodname+": Adding: "+token);
 					altered.addElement(token);
 				}
 			}
 		} else if (cmd.equals("add paths")){
-                	//System.out.println(buildername+": "+methodname+": Adding paths to entries.");
+                	//log.debug(buildername+": "+methodname+": Adding paths to entries.");
 			String path = null;
 			for (Enumeration e = entries.elements();e.hasMoreElements();){
 				String s = (String) e.nextElement();
@@ -718,7 +744,7 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 				}
 			}
 		} else if (cmd.equals("replace")){
-                	//System.out.println(buildername+": "+methodname+": Replacing all "+param1+" with "+param2);
+                	//log.debug(buildername+": "+methodname+": Replacing all "+param1+" with "+param2);
 			for (Enumeration e = entries.elements();e.hasMoreElements();){
                         	String s = (String) e.nextElement();				
                                 altered.addElement(s.replace(param1.charAt(0),param2.charAt(0)));
@@ -738,11 +764,15 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 				waitUntilNodeChanged(node);
 				newnode=getNode(node.getIntValue("number"));
 				String state=newnode.getStringValue("state");
-				System.out.println("WAIT RESULT="+state);
+                if (log.isDebugEnabled()) {
+                    log.debug("WAIT RESULT="+state);
+                }
 				if (state.equals("waiting")||state.equals("error")) changed=true;
 			}
 			String val=newnode.getStringValue("info");
-			System.out.println(buildername+": getValue: val="+val);
+            if (log.isDebugEnabled()) {
+                log.debug(buildername+": getValue: val="+val);
+            }
 			return(val);
 		} else return super.getValue( node, field );
 	}

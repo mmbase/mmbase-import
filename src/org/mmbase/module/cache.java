@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,17 +16,18 @@ import java.io.*;
 
 import org.mmbase.util.LRUHashtable;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * Simple file cache system that can be used by any servlet
  *
- * @author  $Author: wwwtech $ 
- * @version $Revision: 1.7 $ $Date: 2000-06-20 14:56:13 $
+ * @author  $Author: michiel $ 
+ * @version $Revision: 1.8 $ $Date: 2001-04-10 20:23:50 $
  */
 public class cache extends Module implements cacheInterface {
 
-	private String 	classname 	= getClass().getName();
-	private boolean debug	 	= false;	
-	private void	debug(String msg ){ System.out.println(classname+":"+msg); }
+    static Logger log = Logging.getLoggerInstance(cache.class.getName()); 
 
 	boolean state_up = false;
 	int hits,miss;
@@ -67,10 +68,10 @@ public class cache extends Module implements cacheInterface {
 		if (!active) return(null);
 		cacheline o=(cacheline)lines.get(wanted);
 		if (o==null) {
-			//if( debug ) debug("WOW CACHE MIS = "+wanted);
+			//if (log.isDebugEnabled()) log.debug("WOW CACHE MIS = "+wanted);
 			miss++;
 		} else {
-			//if( debug ) debug("WOW CACHE HIT = "+wanted);
+			//if (log.isDebugEnabled()) log.debug("WOW CACHE HIT = "+wanted);
 			hits++;
 		}
 		return(o);
@@ -157,7 +158,7 @@ public class cache extends Module implements cacheInterface {
 			if (tmp!=null) MaxSize=Integer.parseInt(tmp)*1024;
 			tmp=getInitParameter("Active");
 		} catch (NumberFormatException e ) {
-			debug("readParams(): ERROR: " + e ) ;
+			log.error("readParams(): " + e ) ;
 		}
 
 		if (tmp!=null && (tmp.equals("yes") || tmp.equals("Yes"))) {

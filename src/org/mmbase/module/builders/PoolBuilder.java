@@ -16,11 +16,15 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Hans Speijer
  */
 public class PoolBuilder extends MMObjectBuilder {
 	
+    private static Logger log = Logging.getLoggerInstance(PoolBuilder.class.getName()); 
 
 	String cacheTableName;
 
@@ -32,7 +36,7 @@ public class PoolBuilder extends MMObjectBuilder {
 		String poolSet = "{";
 		Teasers teaserBuilder = (Teasers)mmb.getMMObject("teasers");
 
-		System.out.println("PoolBuilder -> Getting Teasers for :"+pool);
+		log.info("Getting Teasers for :" + pool);
 
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -61,7 +65,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			results.setCompare(new MMObjectDCompare("basedecay"));
 		} catch (SQLException e) {
 			// something went wrong print it to the logs
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 			return(null);
 		}		
 	
@@ -83,7 +87,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			return (results);
 		} catch (SQLException e) {
 			// something went wrong print it to the logs
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 			return(null);
 		}		
 	}
@@ -136,7 +140,7 @@ public class PoolBuilder extends MMObjectBuilder {
 
 		} catch (SQLException e) {
 			// something went wrong print it to the logs
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 			return(null);
 		}		
 		
@@ -169,7 +173,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			return (results);
 		} catch (SQLException e) {
 			// something went wrong print it to the logs
-			e.printStackTrace();	
+			log.error(Logging.stackTrace(e));
 		}
 		
 		return (null);		 
@@ -200,7 +204,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			return (results);
 		} catch (SQLException e) {
 			// something went wrong print it to the logs
-			e.printStackTrace();	
+			log.error(Logging.stackTrace(e));
 		}
 		
 		return (null);		 
@@ -226,7 +230,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			return (sv);
 		} catch (SQLException e) {
 			// something went wrong print it to the logs
-			e.printStackTrace();	
+			log.error(Logging.stackTrace(e));
 		}
 		
 		return (null);
