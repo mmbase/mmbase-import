@@ -11,7 +11,11 @@
 <mm:context> <!-- the explicit use of context tag is only necessary in orion 1.5.2 -->
 
 <h1>Variables</h1>
-Please have the code of this page handy.
+
+Please have the <a target="_new" href="<mm:url page="showanypage.jsp"><mm:param
+name="page"><%=request.getServletPath()%></mm:param></mm:url>">source
+of this page</a> of this page handy.
+
 <h2>Simple pure taglib</h2>
 <p>
 In a limited way you can use `variables' without escaping to
@@ -75,7 +79,7 @@ page="${a}" />
  Lets put a node in variable `typedefnode'.
 </p>
 <mm:cloud>
-<mm:listnodes type="typedef" max="1" ><mm:node id="typedefnode" /></mm:listnodes>
+<mm:listnodes type="typedef" max="2" ><mm:first><mm:node id="typedefnode" /></mm:first><mm:last><mm:node id="anothernode" /></mm:last></mm:listnodes>
 <p>
  Writing this variable is possible (though not very usefull). typedef: <mm:write referid="typedefnode" />  
 </p>
@@ -104,7 +108,7 @@ page="${a}" />
   'node' for this goal. Here we write again the same field as above,
   but it is not nested with two node tags:
   <mm:node id="outernode" referid="typedefnode">
-    <mm:node number="1">
+    <mm:node referid="anothernode">
        <mm:field node="outernode" name="description" /> 
     </mm:node>
   </mm:node>
