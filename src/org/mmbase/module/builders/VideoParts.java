@@ -5,20 +5,17 @@ OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
+*/
+/*
+$Id: VideoParts.java,v 1.11 2000-11-23 14:37:56 vpro Exp $
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
 import java.util.*;
 import java.sql.*;
 import java.io.*;
-
-/*
-import org.mmbase.module.database.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-*/
 
 import org.mmbase.module.gui.html.*;
 import org.mmbase.module.database.*;
@@ -32,27 +29,21 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: VideoParts.java,v 1.11 2000-11-23 14:37:56 vpro Exp $
  */
 public class VideoParts extends MMObjectBuilder {
 
 	private static String classname = "VideoParts"; // getClass().getName();
 
-	String diskid;
-	int playtime;
-
-	public VideoParts() {
-	}
-
 	public int insertDone(EditState ed,MMObjectNode node) {
 		String sourcepath=ed.getHtmlValue("sourcepath");
-        	int devtype=node.getIntValue("source");
+        int devtype=node.getIntValue("source");
 		int id=node.getIntValue("number");
 		String devname = null;
 
 		if(devtype==7) {		//Check if source is from a jazzdrive -> 7
 			debug("jazzdrives aren't supported at this moment");
-			/*
+			/* See Audioparts for comment 
            	//sourcepath contains  eg. /Drivename/Dir/File
            	String delim = "/";
            	StringTokenizer tok = new StringTokenizer(sourcepath,delim);     //Retrieve devname
@@ -71,7 +62,7 @@ public class VideoParts extends MMObjectBuilder {
              	jnode.commit();
        		}
 			*/
-		} else if (devtype==4 || devtype==5) {		//Check if source is from a import/
+		} else if (devtype==4 || devtype==5) {	//Check if source is from a import/
 			if (sourcepath!=null) {
 				System.out.println ("VideoParts.insertDone -> sourcepath = " + sourcepath);
 				System.out.println ("VideoParts.insertDone -> number = " + id);
@@ -99,7 +90,6 @@ public class VideoParts extends MMObjectBuilder {
 		// devtype 8 is Armin
 		return(id);
 	}
-
 
 
 	/**
@@ -430,11 +420,6 @@ public class VideoParts extends MMObjectBuilder {
 		}
 	}
 
-	public String getGUIIndicator(MMObjectNode node) {
-		String str=node.getStringValue("title");
-		return(str);
-	}
-
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("storage")) {
 			int val=node.getIntValue("storage");
@@ -447,14 +432,6 @@ public class VideoParts extends MMObjectBuilder {
 			}
 		}
 		return(null);
-	}
-
-	/**
-	* get new node
-	*/
-	public MMObjectNode getNewNode(String owner) {
-		MMObjectNode node=super.getNewNode(owner);
-		return(node);
 	}
 
 	public void movAvailable(String id) {
