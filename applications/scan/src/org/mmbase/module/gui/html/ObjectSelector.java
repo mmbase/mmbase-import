@@ -158,7 +158,8 @@ public class ObjectSelector implements CommandHandlerInterface {
 		MultiRelations multirel=(MultiRelations)stateMngr.mmBase.getMMObject("multirelations");
 		Vector tables=new Vector();
 		tables.addElement("typedef");
-		tables.addElement("authrel");
+		// bug bug, daniel (9 aug) tables.addElement("authrel");
+		tables.addElement("insrel");
 		tables.addElement("people");
 		Vector fields=new Vector();
 		fields.addElement("typedef.name");
