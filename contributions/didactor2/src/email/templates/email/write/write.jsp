@@ -328,7 +328,7 @@
               </td>
               <td>
                 <br>
-                <textarea name="body"><mm:write referid="body"/></textarea>
+                <textarea name="body" class="formInput"><mm:write referid="body"/></textarea>
                 <br>
               </td>
             </tr>

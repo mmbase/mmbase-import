@@ -192,10 +192,10 @@
 
     
     <mm:present referid="list_book">
-        <mm:import id="checkboxes">1</mm:import>
+        <mm:import id="checkboxes" reset="true">1</mm:import>
     </mm:present>
     <mm:present referid="field">
-        <mm:import id="checkboxes">1</mm:import>
+        <mm:import id="checkboxes" reset="true">1</mm:import>
     </mm:present>
 
 

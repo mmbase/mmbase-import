@@ -624,8 +624,20 @@ input.formbutton {
 	background-color: #EAEAEA;
 	border: #404040 1px solid }	
 	
+textarea.forminput { 
+	font-family: arial, tahoma, verdana, sans-serif;
+	font-size: 1.1em;
+	font-weight: normal;
+	color: #000000;
+	background-color: #EAEAEA;
+	padding: 0em 0em 0em 0em;
+	width: 24em;
+	height: 8em;
+	border: #404040 1px solid 
+}
+
 textarea { 
-	font-family: Arial, Tahoma, Verdana, sans-serif;
+	font-family: arial, tahoma, verdana, sans-serif;
 	font-size: 1.1em;
 	font-weight: normal;
 	color: #000000;
@@ -633,7 +645,7 @@ textarea {
 	padding: 0em 0em 0em 0em;
 	width: 24em;
 	height: 8em;
-	border: #404040 1px solid } 	
+} 	
 
 input {  
 	font-family: Arial, Tahoma, Verdana, sans-serif;
