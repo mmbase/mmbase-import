@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.10 2001-02-08 10:22:34 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.11 2001-03-08 13:40:45 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2001/02/08 10:22:34  vpro
+	Rico: zapped the old code that did the convert
+	
 	Revision 1.9  2001/02/08 10:20:39  vpro
 	Rico: changed the processing by using a Threaded writer to fix the "half" image bug using code provided by Kees Jongenburg
 	
@@ -45,19 +48,17 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.10 2001-02-08 10:22:34 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.11 2001-03-08 13:40:45 install Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
-
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug(String msg) { System.out.println(classname+":"+msg); }
+    private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
 
 	// Currenctly only ImageMagick works, this are the default value's
 	private static String ConverterRoot = "/usr/local/"; 
@@ -86,8 +87,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		if(!checkConvCom.exists()) System.err.println("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand("+ConverterCommand+"), "+command+" does not exist");
 		// Cant do more checking then this, i think....
 	
-		if (debug) debug("Root="+ConverterRoot);
-		if (debug) debug("Command="+ConverterCommand);
+		log.info("Root="+ConverterRoot);
+		log.debug("Command="+ConverterCommand);
 	}
 
 	/** This functions converts an image by the given parameters
@@ -142,7 +143,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 			if (pos!=-1 && pos2!=-1) {
 				type=key.substring(0,pos);
 				cmd=key.substring(pos+1,pos2);
-				if (debug) debug("getCommands(): type="+type+" cmd="+cmd);
+				log.debug("getCommands(): type="+type+" cmd="+cmd);
 				if (type.equals("s")) {
 					cmds.addElement("-geometry "+cmd);
 				} else if (type.equals("quality")) {
@@ -276,29 +277,29 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		int size;
 		ProcessWriter pw;
 		
-		if (debug) debug("ConvertImage(): converting img("+cmd+")");
+		log.service("ConvertImage(): converting img("+cmd+")");
 
 		try {
 			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-			if (debug) debug("Starting convert");
+			log.debug("Starting convert");
 			p=runtime.exec(command);
 			in=p.getInputStream();
 			pw=new ProcessWriter(new ByteArrayInputStream(pict),p.getOutputStream());
-			if (debug) debug("Starting writer");
+			log.debug("Starting writer");
 			pw.start();
 
 			imagestream=new ByteArrayOutputStream();
 			size=0;
-			if (debug) debug("Reading image");
+			log.debug("Reading image");
 			while((size=in.read(inputbuffer))>0) {
-				if (debug) debug("Reading data size "+size);
+				log.debug("Reading data size "+size);
 				imagestream.write(inputbuffer,0,size);
 			}
-			if (debug) debug("Done converting"); 
+			log.debug("Done converting"); 
 			image=imagestream.toByteArray();
 		} catch (Exception e) {
-			debug("Failure converting image "+cmd+" "+format);
-			debug("Message : "+e.getMessage());
+			log.error("Failure converting image "+cmd+" "+format);
+			log.error("Message : "+e.getMessage());
 		}
 		return(image);
 	}

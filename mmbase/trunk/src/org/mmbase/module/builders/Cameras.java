@@ -19,6 +19,7 @@ import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * The camera builder contains camera that MMBase can use.
@@ -29,10 +30,8 @@ import org.mmbase.util.*;
  * @author Rob Vermeulen
  * @date 12 juli 2000
  */
-
-/**
- */
 public class Cameras extends MMObjectBuilder implements MMBaseObserver {
+    private static Logger log = Logging.getLoggerInstance(Cameras.class.getName());
 
 	public final static String buildername = "Cameras";
 	public static java.util.Properties driveprops= null;
@@ -48,7 +47,7 @@ public class Cameras extends MMObjectBuilder implements MMBaseObserver {
 		try {
 			camera = tok.nextToken();
 		} catch (Exception e) {
-			debug("Syntax of LIST commando = <LIST BUILDER-camera-[cameraname]");	
+			log.error("Syntax of LIST commando = <LIST BUILDER-camera-[cameraname]");	
 		}
 
        	String comparefield = "modtime";
@@ -66,7 +65,7 @@ public class Cameras extends MMObjectBuilder implements MMBaseObserver {
             sorted = imglister.sortDirectories(unsorted,comparefield);
         	result = imglister.createThreeItems(sorted,tagger);
 		} catch (Exception e) {
-			debug("Something went wrong in the directory listner, probably "+path+" does not exists needed by "+camera);
+			log.error("Something went wrong in the directory listner, probably "+path+" does not exists needed by "+camera);
 		}
         tagger.setValue("ITEMS", "3");
         String reverse = tagger.Value("REVERSE");
