@@ -42,14 +42,14 @@ public class ListRelationsTag extends AbstractNodeListTag {
         type  = getAttributeValue(t);
     }
     /**
-     * @param role a nodeManager
+     * @param role a role
      */
     public void setRole(String r) throws JspTagException {
         role  = getAttributeValue(r);
     }
 
     public int doStartTag() throws JspTagException{
-        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             relatedfromNode =  (Node) getObject(getReferid() + ":relatedfromNode");
             // hmm, this might be a hack...

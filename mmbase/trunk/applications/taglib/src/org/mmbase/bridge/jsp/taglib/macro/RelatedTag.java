@@ -16,10 +16,15 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.ListTag;
 import org.mmbase.bridge.jsp.taglib.NodeProvider;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * Shortcut for List where the start node is the parent node.
  */
 public class RelatedTag extends ListTag {
+    private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
 
     private String parentNodeId = null;
     private String relatedNodesString=null;
@@ -45,6 +50,7 @@ public class RelatedTag extends ListTag {
      * @param type a comma separated list of nodeManagers
      */
     public void setPath(String path) throws JspTagException {
+        log.debug("setting path to " + path);
         this.relatedPathString = getAttributeValue(path);
     }
     /*
@@ -54,8 +60,7 @@ public class RelatedTag extends ListTag {
     */
 
     public int doStartTag() throws JspTagException {
-
-        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
@@ -69,6 +74,7 @@ public class RelatedTag extends ListTag {
         // adapt the path to include the (needed) starting nodemanager name
         // The nodemanager will be referrable as nodemanager0
         pathString= nodeType+"0,"+relatedPathString;
+        log.debug("pathString " + pathString);
         return super.doStartTag();
     }
 }

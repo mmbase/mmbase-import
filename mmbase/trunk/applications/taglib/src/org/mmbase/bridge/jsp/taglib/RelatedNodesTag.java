@@ -42,8 +42,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
      * Performs the search
      */
     public int doStartTag() throws JspTagException {
-
-        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
