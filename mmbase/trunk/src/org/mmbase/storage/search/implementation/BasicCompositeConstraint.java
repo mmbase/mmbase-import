@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.3 2003-03-10 11:50:54 pierre Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.4 2003-08-05 20:27:54 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint
@@ -66,6 +66,14 @@ implements CompositeConstraint {
         childs.add(child);
         return this;
     }
+
+    public BasicCompositeConstraint removeChild(Constraint child) {
+        if (! childs.remove(child)) {
+            // log.debug("Tried to remove non existing child");
+        }
+        return this;
+    }
+        
     
     // javadoc is inherited
     public List getChilds() {
