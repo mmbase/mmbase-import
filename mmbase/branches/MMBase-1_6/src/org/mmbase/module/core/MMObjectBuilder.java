@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.6 2003-02-03 15:33:30 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.7 2003-02-11 09:44:37 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable {
     
@@ -781,6 +781,63 @@ public class MMObjectBuilder extends MMTable {
     public MMObjectNode getAliasedNode(String key) {
         return getNode(key);
     }
+
+	/**
+	 * Convert virtual nodes to real nodes based on their otype
+	 *
+	 * Normally a multirelations-search will return virtual nodes. These nodes
+	 * will only contain values which where specified in the field-vector.
+	 * This method will make real nodes of those virtual nodes.
+	 *
+	 * @param List containing virtual nodes
+	 * @return List containing real nodes
+	 */
+	public List getNodes(List virtuals) {
+		List            result  = new ArrayList();
+		MMObjectNode    node    = null;
+		Integer         number  = null;
+		String          numbers = "";
+		Iterator        i       = virtuals.iterator();
+
+		while(i.hasNext()) {
+			node    = (MMObjectNode)i.next();
+			number  = new Integer(node.getIntValue("number"));
+
+			// check if this node is already in cache
+			if(nodeCache.containsKey(number))
+				result.add(nodeCache.get(number));
+			// else seek it with a search on builder in db
+			else {
+				if(numbers.equals(""))
+					numbers = "" + number;
+				else
+					numbers += "," + number;
+			}
+
+			if(numbers.length() > MAX_QUERY_SIZE) {
+				result.addAll(new ArrayList(basicSearch("SELECT * FROM "+getFullTableName()+" WHERE number in ("+numbers+")")));
+				numbers = "";
+			}
+		}
+
+		// now that we have a comma seperated string of numbers, we can
+		// the search with a where-clause containing this list
+		if(!numbers.equals("")) {
+			result.addAll(new ArrayList(basicSearch("SELECT * FROM "+getFullTableName()+" WHERE number in ("+numbers+")")));
+		} // else everything from cache
+
+		// check that we didnt loose any nodes
+
+		// Java 1.4
+		// assert(virtuals.size() == result.size());
+
+		// Below Java 1.4
+		if(virtuals.size() != result.size()) {
+			log.error("We lost a few nodes during conversion from virtualsnodes("+virtuals.size()+") to realnodes("+result.size()+")");
+		}
+		return result;
+	}
+
     
     /**
      * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
