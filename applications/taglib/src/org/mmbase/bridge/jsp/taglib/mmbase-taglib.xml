@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.250 2004-04-26 16:51:50 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.251 2004-05-08 15:32:10 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4829,6 +4829,9 @@ The 0 is just counter, which starts at 0 on every page.
 				 Id for reference by subtags and reuse.
 			</info>
 		</attribute>
+		<example>
+			<include base="examples.taglib" href="codesamples/query.jsp" />
+		</example>
 	</tag>
 	<tag>
 		<name>relatednodescontainer</name>
@@ -4881,6 +4884,12 @@ The 0 is just counter, which starts at 0 on every page.
 				 Id for reference by subtags and reuse.
 			</info>
 		</attribute>
+		<example>
+			<include base="examples.taglib" href="codesamples/query.relatednodes.jsp" />
+		</example>
+		<example>
+			<include base="examples.taglib" href="codesamples/query.relatednodes2.jsp" />
+		</example>
 	</tag>
 	<tag>
 		<name>listcontainer</name>
@@ -4923,6 +4932,9 @@ The 0 is just counter, which starts at 0 on every page.
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="list" attribute="fields" />
 		</attribute>
+		<example>
+			<include base="examples.taglib" href="codesamples/query.cluster.jsp" />
+		</example>
 	</tag>
 	<tag>
 		<name>relatedcontainer</name>
