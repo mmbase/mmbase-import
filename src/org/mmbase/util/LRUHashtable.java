@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.10 2002-08-12 16:12:29 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.11 2002-08-21 18:26:31 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -418,7 +418,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Element used to store information from the LRUHashtable.
      */
-    protected static class LRUEntry implements Map.Entry, Sizeable {
+    public static class LRUEntry implements Map.Entry, SizeMeasurable {
         /**
          * The element value
          */

@@ -26,10 +26,10 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.67 2002-08-21 17:22:04 michiel Exp $
+ * @version $Id: Wizard.java,v 1.68 2002-08-21 18:26:32 michiel Exp $
  *
  */
-public class Wizard implements org.mmbase.util.Sizeable {
+public class Wizard implements org.mmbase.util.SizeMeasurable {
     // logging
     private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
 

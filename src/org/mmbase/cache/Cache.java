@@ -20,7 +20,7 @@ import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 
 import org.mmbase.util.FileWatcher;
-import org.mmbase.util.Sizeable;
+import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.SizeOf;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,9 +30,9 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.10 2002-08-21 07:54:57 michiel Exp $
+ * @version $Id: Cache.java,v 1.11 2002-08-21 18:26:32 michiel Exp $
  */
-abstract public class Cache extends LRUHashtable implements Sizeable  {
+abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
     private static Logger log = Logging.getLoggerInstance(Cache.class.getName());
 
