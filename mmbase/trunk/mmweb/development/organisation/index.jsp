@@ -52,26 +52,22 @@
 	<mm:node referid="org">
 <tr>
 <td>
-	<h2><mm:field name="name" /><h2>
-
-	<p class="intro">
-		<mm:field name="description" />
+	<h2><mm:field name="name" /></h2>
+	<mm:field name="description"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
+	<p>
+	<mm:field name="street"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
+	<mm:field name="city"><mm:isnotempty><mm:field name="zipcode" /> <mm:write /><br/></mm:isnotempty></mm:field>
+	<mm:field name="country"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
 	</p>
 	<p>
-		<mm:field name="street" /><br/>
-		<mm:field name="zipcode" />	<mm:field name="city" /><br/>
-		<mm:field name="country" /><br/>
+	<mm:field name="phone"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
+	<a target="_blank" href="mailto:<mm:field name="email"/>"><mm:field name="email"/></a><br/>
+	<a target="_blank" href="<mm:field name="homepage"/>"><mm:field name="homepage"/></a><br/>
 	</p>
-	<p>
-		<mm:field name="phone" /><br/>
-		<a target="_blank" href="mailto:<mm:field name="email"/>"><mm:field name="email"/></a><br/>
-		<a target="_blank" href="<mm:field name="homepage"/>"><mm:field name="homepage"/></a><br/>
-	</p>
-	<p>
-	Contact:<br/>
-		<mm:field name="contactperson" /><br/>
-		<mm:field name="contactphone" /><br/>
-		<a target="_blank" href="mailto:<mm:field name="contactemail"/>"><mm:field name="contactemail"/></a><br/>
+	<p><strong>Contact:</strong><br/>
+	<mm:field name="contactperson"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
+	<mm:field name="contactphone"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
+	<mm:field name="contactemail"><mm:isnotempty><a href="mailto:<mm:write />"><mm:write /></a><br/></mm:isnotempty></mm:field>
 	</p>
 	
 	<%@include file="/includes/images.jsp" %>
