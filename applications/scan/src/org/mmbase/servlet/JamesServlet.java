@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.12 2000-05-12 15:10:11 wwwtech Exp $
+$Id: JamesServlet.java,v 1.13 2000-05-22 09:24:56 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/05/12 15:10:11  wwwtech
+- (marcel) set debg to false
+
 Revision 1.11  2000/05/11 11:18:12  wwwtech
 - (marcel) Added extra feature in getCookie to determine why certain browsers dont honor domain-wide cookies
 
@@ -45,7 +48,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.12 2000-05-12 15:10:11 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.13 2000-05-22 09:24:56 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -69,9 +72,9 @@ class DebugServlet {
 }
 	
 public class JamesServlet extends HttpServlet {
-    public String classname = getClass().getName();
-    public boolean debug = false;
-    public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    protected String classname = getClass().getName();
+    //public boolean debug = false;
+    protected void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	// org.mmbase
 
 	static String outputfile=null;
