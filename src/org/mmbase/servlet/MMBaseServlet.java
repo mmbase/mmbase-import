@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.29 2004-03-16 14:38:38 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.30 2004-11-05 17:04:15 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -65,7 +65,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * Hashtable containing currently running servlets
      */
-    private static Hashtable runningServlets = new Hashtable();
+    private static Map runningServlets = new HashMap();
     /**
      * Toggle to print running servlets to log.
      * @javadoc Not clear, I don't understand it.
@@ -88,7 +88,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /** 
      * @since MMBase-1.7
      */
-    private static ServletException initException = new ServletException("MMBase not yet, or not successfully initialized (check mmbase log)");
+    protected static ServletException initException = new ServletException("MMBase not yet, or not successfully initialized (check mmbase log)");
 
 
     private Thread initThread;
@@ -398,8 +398,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     } else {
                         s.refCount--;
                         int i = s.uris.indexOf(url);
-                        if (i >= 0) s.uris.removeElementAt(i);
+                        if (i >= 0) s.uris.remove(i);
                     }
+
                 }// s!=null
             }//sync
         }// if (logServlets)
@@ -426,15 +427,18 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     runningServlets.put(this, new ReferenceCountServlet(this, url, 0));
                 } else { 
                     s.refCount++; 
-                    s.uris.addElement(url); 
+                    s.uris.add(url); 
                 }
             }// sync
 
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
-                    log.info("Running servlets: " + curCount);
-                    for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
-                        log.info(e.nextElement());
+                    synchronized(servletCountLock) {        
+                        log.info("Running servlets: " + curCount);
+                        for(Iterator e = runningServlets.values().iterator(); e.hasNext();)
+                            log.info(e.next());
+                    }
+                    
                 }// curCount>0
             }
         }
@@ -484,7 +488,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
          * List of URIs that call the servlet
          * @scope private
          */
-        Vector uris = new Vector();
+        List uris = new ArrayList();
         /**
          * Nr. of references
          * @scope private
