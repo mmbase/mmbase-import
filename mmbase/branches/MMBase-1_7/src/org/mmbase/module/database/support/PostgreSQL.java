@@ -42,7 +42,8 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.5 2004-02-09 13:50:37 pierre Exp $
+ * @version $Id: PostgreSQL.java,v 1.5.2.1 2004-06-15 21:38:35 robmaris Exp $
+ * @since MMBase-1.7
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL72.class.getName());
@@ -561,10 +562,14 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
             con = mmb.getConnection();
             stmt=con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                number=rs.getInt("NEXTVAL");
-            } else {
-                log.warn("could not retieve the number for new node");
+            try {
+                if (rs.next()) {
+                    number=rs.getInt("NEXTVAL");
+                } else {
+                    log.warn("could not retieve the number for new node");
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
