@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.1 2003-07-25 18:16:33 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.2 2003-07-25 21:40:34 michiel Exp $
  */
 public class ListNodesContainerTag extends CloudReferrerTag implements NodeListContainer {
 
@@ -41,6 +41,7 @@ public class ListNodesContainerTag extends CloudReferrerTag implements NodeListC
     }
 
     public Query getQuery() {
+        if (query.isUsed()) query = (NodeQuery) query.clone();
         return query;
     }
 
@@ -60,6 +61,7 @@ public class ListNodesContainerTag extends CloudReferrerTag implements NodeListC
         }
         return result;
     }
+
 
     public int doStartTag() throws JspTagException {        
         query = getCloud().getNodeManager(nodeManager.getString(this)).createQuery();
