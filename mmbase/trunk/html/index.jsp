@@ -53,6 +53,19 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
 </tr>
 
 <tr>
+	<td>MMBase Demos Installation</td>
+	<td>
+	   Install the applications for MMBase examples.<br />
+           Go here <strong>FIRST</strong> if you run MMBase for the first time, and if you want
+           to use or view the MMBase examples.<br />
+           You need to log on using the administrator password (default: admin / admin2k).<br />
+	</td>
+	<td class="link" >
+		<a href="<mm:url page="mmexamples/install.jsp" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+	</td>
+</tr>
+
+<tr>
 	<td>MMBase Demos</td>
 	<td>
 	   Examples of MMBase functionality. Includes among other things a news application, an alternate editor,
