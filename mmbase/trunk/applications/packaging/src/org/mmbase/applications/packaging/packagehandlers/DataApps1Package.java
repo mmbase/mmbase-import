@@ -13,6 +13,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.installhandlers.*;
@@ -200,7 +201,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             JarEntry je = jf.getJarEntry("data.xml");
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
-                XMLBasicReader reader = new XMLBasicReader(new InputSource(input), DataApps1Package.class);
+                ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), DataApps1Package.class);
                 substep.setUserFeedBack("Opening data.xml ... done");
                 increaseProgressBar(100);
                 // 40%
@@ -263,7 +264,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             if (je != null) {
                 try {
                     InputStream input = jf.getInputStream(je);
-                    XMLBasicReader nodereader = new XMLBasicReader(new InputSource(input), DataApps1Package.class);
+                    ExtendedDocumentReader nodereader = new ExtendedDocumentReader(new InputSource(input), DataApps1Package.class);
                     Element nr = nodereader.getElementByPath("objectset");
                     String type = nr.getAttribute("type");
                     String exportsource = nr.getAttribute("exportsource");
@@ -328,7 +329,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
      * @param  jf          Description of the Parameter
      * @return             Description of the Return Value
      */
-    private MMObjectNode createNewObject(XMLBasicReader nodereader, MMObjectBuilder bul, Element n, JarFile jf) {
+    private MMObjectNode createNewObject(ExtendedDocumentReader nodereader, MMObjectBuilder bul, Element n, JarFile jf) {
         String owner = n.getAttribute("owner");
         String alias = n.getAttribute("alias");
 
@@ -466,7 +467,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             if (je != null) {
                 try {
                     InputStream input = jf.getInputStream(je);
-                    XMLBasicReader nodereader = new XMLBasicReader(new InputSource(input), DataApps1Package.class);
+                    ExtendedDocumentReader nodereader = new ExtendedDocumentReader(new InputSource(input), DataApps1Package.class);
                     Element nr = nodereader.getElementByPath("relationset");
                     String type = nr.getAttribute("type");
                     String exportsource = nr.getAttribute("exportsource");

@@ -46,7 +46,7 @@ public class ShareClientSession {
      * @return       Description of the Return Value
      */
     public boolean sendRemoteSignal(String myid) {
-        String url = callbackurl + "?id=" + URLParamEscape.escapeurl(myid);
+        String url = callbackurl + "?id=" + Encode.encode("ESCAPE_URL_PARAM",myid);
         log.info("sending signal =" + url);
         try {
             URL includeURL = new URL(url);

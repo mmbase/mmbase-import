@@ -12,6 +12,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
@@ -554,7 +555,7 @@ public class BasicPackage implements PackageInterface {
             JarEntry je = jf.getJarEntry("depends.xml");
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
-                XMLBasicReader reader = new XMLBasicReader(new InputSource(input), BasicPackage.class);
+                ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), BasicPackage.class);
                 for (Enumeration ns = reader.getChildElements("packagedepends", "package"); ns.hasMoreElements(); ) {
                     Element n = (Element) ns.nextElement();
                     String name = n.getAttribute("name");
@@ -631,7 +632,7 @@ public class BasicPackage implements PackageInterface {
             JarEntry je = jf.getJarEntry("package.xml");
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
-                XMLBasicReader reader = new XMLBasicReader(new InputSource(input), DiskProvider.class);
+                ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), DiskProvider.class);
                 if (reader != null) {
                     Element e = reader.getElementByPath("package");
                     addMetaInfo(e);

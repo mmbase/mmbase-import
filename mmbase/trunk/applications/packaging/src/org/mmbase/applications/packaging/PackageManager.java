@@ -14,10 +14,12 @@ import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.storage.search.SearchQueryException;
 
 import java.io.File;
@@ -106,7 +108,6 @@ public class PackageManager {
         if (o != null) {
             return (PackageInterface)o;
         }
-        log.error("package with id = "+id+" not found");
         return null;
     }
 
@@ -127,7 +128,6 @@ public class PackageManager {
                 }
             }
         }
-        log.error("package with id = "+id+" not found");
         return null;
     }
 
@@ -145,7 +145,6 @@ public class PackageManager {
                 return p;
             }
         }
-        log.error("package with id = "+id+" not found");
         return null;
     }
 
@@ -304,11 +303,12 @@ public class PackageManager {
 
     public static void readPackageHandlers() {
         packagehandlers = new HashMap();
-        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"packagehandlers.xml";
+        String filename = getConfigPath()+File.separator+"packaging"+File.separator+"packagehandlers.xml";
 
         File file = new File(filename);
         if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,PackageManager.class);
+
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,PackageManager.class);
             if(reader != null) {
                 for(Enumeration ns = reader.getChildElements("packagehandlers","packagehandler");ns.hasMoreElements(); ) {
                     Element n = (Element)ns.nextElement();
@@ -340,4 +340,14 @@ public class PackageManager {
     public static HashMap getPackageHandlers() { 
         return packagehandlers;
     }
+
+    public static String getConfigPath() {
+        List files =  ResourceLoader.getConfigurationRoot().getFiles("");
+        if (files.size() == 0) {
+            return null;
+        } else {
+            return ((File) files.get(0)).getAbsolutePath();
+        }
+    }
+
 }

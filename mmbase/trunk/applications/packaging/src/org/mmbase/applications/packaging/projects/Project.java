@@ -12,6 +12,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.projects.creators.*;
 import org.mmbase.util.*;
 
@@ -308,7 +309,7 @@ public class Project {
     public void readTargets() {
         File file = new File(path);
         if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(path, Project.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(path, Project.class);
             if (reader != null) {
 
                 org.w3c.dom.Node n2 = (org.w3c.dom.Node) reader.getElementByPath("packaging");

@@ -12,6 +12,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.installhandlers.*;
@@ -175,14 +176,14 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
             if (name.indexOf("META-INF")==-1) {
 	        String localfile = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+name;
                 if (name.indexOf("theme.xml")!=-1) {
-        		localfile = MMBaseContext.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+name;
+        		localfile = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+name;
 			themename = name.substring(0,name.indexOf('/'));
 			String dirname = MMBaseContext.getHtmlRoot() + File.separator + "mmbase"+File.separator+"thememanager"+File.separator+"images"+File.separator+themename;
                     	File d = new File(dirname);
                     	if (!d.exists()) {
                         	d.mkdir();
 			}
-        		dirname = MMBaseContext.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+themename;
+        		dirname = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator + "themes"+  File.separator+themename;
                     	d = new File(dirname);
                     	if (!d.exists()) {
                         	d.mkdir();
@@ -238,8 +239,8 @@ public class DisplayThemePackage extends BasicPackage implements PackageInterfac
     }
    
     private boolean addThemeName(String themename) {
-        String themedir = MMBaseContext.getConfigPath() + File.separator + "thememanager" + File.separator;
-        XMLBasicReader reader = new XMLBasicReader(themedir + "themes.xml", DisplayThemePackage.class);
+        String themedir = PackageManager.getConfigPath() + File.separator + "thememanager" + File.separator;
+        ExtendedDocumentReader reader = new ExtendedDocumentReader(themedir + "themes.xml", DisplayThemePackage.class);
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body += "<!DOCTYPE themes PUBLIC \"//MMBase - themes //\" \"http://www.mmbase.org/dtd/themes_1_0.dtd\">\n";
         body += "<themes>\n";
