@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.5 2002-05-08 14:46:18 pierre Exp $
+  @version $Id: list.xsl,v 1.6 2002-05-17 07:43:49 pierre Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -53,6 +53,32 @@
   <xsl:template name="style"> <!-- just to test overriding -->
     <title><xsl:value-of select="$wizardtitle" /> - <xsl:value-of select="$title" /></title>
     <link rel="stylesheet" type="text/css" href="../style.css" />
+  </xsl:template>
+
+  <xsl:template match="object">
+     <tr>
+         <xsl:if test="@mayedit='true'">
+           <xsl:attribute name="class">itemrow</xsl:attribute>
+           <xsl:attribute name="onMouseOver">objMouseOver(this);</xsl:attribute>
+           <xsl:attribute name="onMouseDown">objClick(this);</xsl:attribute>
+           <xsl:attribute name="onMouseOut">objMouseOut(this);</xsl:attribute>
+           <xsl:attribute name="href"><xsl:value-of select="$wizardpage" />&amp;wizard=<xsl:value-of select="$wizard" />&amp;objectnumber=<xsl:value-of select="@number" /></xsl:attribute>
+         </xsl:if>
+         <xsl:if test="@mayedit='false'">
+           <xsl:attribute name="class">itemrow-disabled</xsl:attribute>
+         </xsl:if>
+         <xsl:if test="$deletable='true'">
+           <td class="deletebutton">
+           <xsl:if test="@maydelete='true'">
+            <a href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"><img src="{$mediadir}remove.gif" border="0" width="20" height="20" title="{$deletedescription}" onmousedown="cancelClick=true;" onclick="return doDelete('{$deleteprompt}');" /></a><img src="{$mediadir}nix.gif" width="10" height="1" />
+           </xsl:if>
+           </td>
+         </xsl:if>
+         <td valign="top"><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+         </td>
+         <xsl:apply-templates select="field" />
+     </tr>
+     <tr><td><img src="{$mediadir}nix.gif" width="1" height="3" /></td></tr>
   </xsl:template>
 
 
@@ -137,19 +163,8 @@
                     </xsl:for-each>
                   </tr>
                 </xsl:if>
-
-                <xsl:for-each select="object[@number&gt;0]">
-                  <tr class="itemrow" onmouseover="objMouseOver(this);" onmousedown="objClick(this);" onmouseout="objMouseOut(this);" href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber={@number}">
-                    <xsl:if test="$deletable='true'">
-                      <td class="deletebutton"><a href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"><img src="{$mediadir}remove.gif" border="0" width="20" height="20" title="{$deletedescription}" onmousedown="cancelClick=true;" onclick="return doDelete('{$deleteprompt}');" /></a><img src="{$mediadir}nix.gif" width="10" height="1" /></td>
-                    </xsl:if>
-                    <td valign="top"><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                    </td>
-                    <xsl:apply-templates select="field" />
-                  </tr>
-                  <tr><td><img src="{$mediadir}nix.gif" width="1" height="3" /></td></tr>
-                </xsl:for-each>
-              </table>
+                <xsl:apply-templates select="object[@number&gt;0]" />
+               </table>
               <xsl:if test="$creatable='true'">
               <br />
               <div width="100%" align="right">
