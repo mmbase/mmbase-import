@@ -6,12 +6,13 @@
       RelationManager relationManager = relIterator.nextRelationManager();
       NodeManager otherManager =  source ? relationManager.getDestinationManager() : relationManager.getSourceManager();
       String      role         =  source ? relationManager.getForwardRole()        : relationManager.getReciprocalRole();
+      String      guirole      =  source ? relationManager.getForwardGUIName()     : relationManager.getReciprocalGUIName();
       %>
 
 <mm:context>
 <tr>
     <td class="data"> 
-        <%=otherManager.getGUIName()%> (<%=role%>)
+        <%=otherManager.getGUIName()%> (<%=guirole%>)
     </td>
     <th colspan="3"><%=m.getString("relations.relations")%></th>
     <th colspan="3"><%=m.getString("relations.related")%></th>
