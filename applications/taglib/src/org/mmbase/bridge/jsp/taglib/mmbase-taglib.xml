@@ -3889,7 +3889,7 @@ The 0 is just counter, which starts at 0 on every page.
     </info>
     <attribute>
       <name>language</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
