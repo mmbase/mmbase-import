@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.35 2003-03-10 11:50:35 pierre Exp $
+ * @version $Id: InsRel.java,v 1.36 2003-08-13 12:43:40 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -45,6 +45,7 @@ public class InsRel extends MMObjectBuilder {
     /**
      *  Cache system, holds the relations from the 25
      *  most used relations
+     * @todo Is this cache still used?
      */
 
     private Cache relatedCache = new Cache(25) {
@@ -60,10 +61,7 @@ public class InsRel extends MMObjectBuilder {
         };
     */
 
-    /**
-     * Logger routine
-     */
-    private static Logger log = Logging.getLoggerInstance(InsRel.class.getName());
+    private static Logger log = Logging.getLoggerInstance(InsRel.class);
 
     /**
      * needed for autoload
@@ -136,16 +134,17 @@ public class InsRel extends MMObjectBuilder {
      * @return A <code>integer</code> value identifying the newly inserted relation
      * @deprecated Use insert(String, MMObjectNode) instead.
      */
-    public int insert(String owner,int snumber,int dnumber, int rnumber) {
+    public int insert(String owner, int snumber, int dnumber, int rnumber) {
         int result = -1;
-        MMObjectNode node=getNewNode(owner);
+        MMObjectNode node = getNewNode(owner);
         if( node != null ) {
             node.setValue("snumber",snumber);
             node.setValue("dnumber",dnumber);
             node.setValue("rnumber",rnumber);
             result = insert(owner,node);
-        } else
+        } else {
             log.error("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): Cannot create new node("+node+")!");
+        }
         return result;
     }
 
@@ -159,7 +158,7 @@ public class InsRel extends MMObjectBuilder {
     public int insert(String owner, MMObjectNode node) {
         int result = -1;
         int snumber=node.getIntValue("snumber");
-            if( snumber >= 0 ) {
+        if( snumber >= 0 ) {
             int dnumber=node.getIntValue("dnumber");
             if( dnumber >= 0 ) {
                 int rnumber=node.getIntValue("rnumber");
@@ -171,7 +170,9 @@ public class InsRel extends MMObjectBuilder {
                         node.setValue("dir",dir);
                     }
                     node=alignRelNode(node);
-                    log.debug("insert("+owner+","+node+")");
+                    if (log.isDebugEnabled()) {
+                        log.debug("insert(" + owner + ","  + node + ")");
+                    }
                     result=super.insert(owner,node);
                     // remove cache for these nodes (enforce update)
                     deleteRelationCache(snumber);
@@ -184,12 +185,15 @@ public class InsRel extends MMObjectBuilder {
                             mmb.mmc.changedNode(n1.getNumber(),n1.getTableName(),"r");
                             mmb.mmc.changedNode(n2.getNumber(),n2.getTableName(),"r");
                                   */
-                } else
+                } else {
                     log.error("insert("+owner+","+node+"): rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
-            } else
+                }
+            } else {
                 log.error("insert("+owner+","+node+"): dnumber("+dnumber+" is not greater than 0! (something is seriously wrong)");
-        } else
+            }
+        } else {
             log.error("insert("+owner+","+node+"): snumber("+snumber+") is not greater than 0! (something is seriously wrong)");
+        }
         return result;
     }
 
