@@ -20,6 +20,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.platform.*;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
@@ -175,6 +176,7 @@ public class MMBase extends ProcessorModule  {
 		// signal that MMBase is up and running
 		mmbasestate=true;
 		System.out.println("MMBase is up and running");
+		checkUserLevel();
 	}
 
 	public void onload() {
@@ -633,5 +635,22 @@ public class MMBase extends ProcessorModule  {
 	
 	public boolean getState() {
 		return(mmbasestate);
+	}
+
+
+	public void checkUserLevel() {
+		String level=System.getProperty("mmbase.userlevel");
+		if (level!=null) {
+			System.out.println("CheckUserLevel ->  mmmbase.userlevel="+System.getProperty("mmbase.userlevel"));
+			int pos=level.indexOf(':');
+			if (pos!=-1) {
+				String user=level.substring(0,pos);
+				String group=level.substring(pos+1);
+	 			setUser setuser=new setUser();
+				setuser.setUserGroup(user,group);
+			} else {
+				System.out.println("CheckUserLevel ->  mmmbase.userlevel= not defined as user:group");
+			}
+		}
 	}
 }
