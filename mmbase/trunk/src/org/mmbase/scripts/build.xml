@@ -1111,8 +1111,8 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="init.get">
     <!-- Servlet -->
-    <property name="servlet.version" value="jakarta-servletapi-3.2"/>
-    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.1/bin/${servlet.version}.tar.gz"/>
+    <property name="servlet.version" value="jakarta-servletapi-3.2.3"/>
+    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.3/bin/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
     <available property="servlet.present"
                file="${download.dir}/${servlet.version}.tar.gz"/>
@@ -1121,8 +1121,8 @@ Change directory to ${build.dir}/orion and run:
     <available property="servlet.jar.present"
                file="${servlet.jar}"/>
     <!-- Tomcat -->
-    <property name="tomcat.version" value="jakarta-tomcat-3.2.1"/>
-    <property name="tomcat.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.1/bin/${tomcat.version}.tar.gz"/>
+    <property name="tomcat.version" value="jakarta-tomcat-3.2.3"/>
+    <property name="tomcat.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.3/bin/${tomcat.version}.tar.gz"/>
     <property name="webserver.jar" value="${expand.dir}/${tomcat.version}/lib/webserver.jar"/>
     <available property="tomcat.present"
                file="${download.dir}/${tomcat.version}.tar.gz"/>
