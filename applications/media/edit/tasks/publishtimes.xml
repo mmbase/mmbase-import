@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+ [
+    <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp" >
+    <!ENTITY itemize SYSTEM "parts/itemize.xml">
+  ]
+>
+<wizard-schema id="media">
+	<title>Test </title>
+
+	<action type="create">
+		<object type="publishtimes" />
+	</action>
+	
+	<action type="delete" />
+	
+	<action type="load">
+	</action>
+	<form-schema id="basics">
+		<title>Test typerel editor</title>
+		<field name="create" />
+		<field name="begin" />
+		<field name="end" />
+  </form-schema>
+
+
+</wizard-schema>

@@ -3,7 +3,6 @@
  [
     <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp" >
     <!ENTITY itemize SYSTEM  "parts/itemize.xml">
-    <!ENTITY itemize2 SYSTEM "parts/itemize2.xml">
   ]
 >
 <wizard-schema id="media">
@@ -21,6 +20,7 @@
 	<action type="load">
 		<relation destination="mediasources"   role="related" />
 		<relation destination="mediafragments" role="parent" />
+		<relation destination="publishtimes"   role="related" />
 	</action>
 
   &formats;

@@ -6,8 +6,7 @@
 <mm:import externid="language">nl</mm:import>
 <mm:import externid="fragment" required="true" />
 <mm:locale language="$language">
-<html>
-<head>
+
 <title>[ STREAM ]</title>
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
