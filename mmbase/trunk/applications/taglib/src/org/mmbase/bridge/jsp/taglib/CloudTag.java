@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.90 2004-02-25 23:31:20 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.91 2004-03-08 18:18:52 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -327,8 +327,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (cookies != null) {
                 for (int i = 0; i < cookies.length; i++) {
                     if (cookies[i].getName().equals(cookie)) {
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("removing cookie with value " + cookies[i]);
+                        }
                         cookies[i].setValue("");
                         cookies[i].setMaxAge(0); // remove
                         response.addCookie(cookies[i]);
@@ -480,7 +481,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private final boolean checkReuse() throws JspTagException {
         if (getReferid() != null) {
-            if (method != Attribute.NULL || logon != Attribute.NULL) { // probably add some more
+            if (method != Attribute.NULL || logonatt != Attribute.NULL) { // probably add some more
                 throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
             }
             log.debug("found cloud with referid");
@@ -496,12 +497,14 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
 
     private final boolean checkAnonymous() throws JspTagException {
+        setAnonymousCloud();
         if ((method == Attribute.NULL && logon == null && rankAnonymous() && loginpage == Attribute.NULL) || getMethod() == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
-            setAnonymousCloud();
+
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -731,8 +734,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             log.debug("no realm found, need to log on again");
             return denyHTTP("<h2>Need to log in again</h2> You logged out");
         }
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
+        }
         // find logon, password with http authentication
         String userName = null;
         String password = null;
@@ -769,10 +773,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("no username known");
                 return denyHTTP("<h2>No username given</h2>");
             }
-            logon = new ArrayList();
-            logon.add(userName);
+            /*
+              logon = new ArrayList();
+              logon.add(userName); why is this..
+            */
         }
-        user.put("username", logon.get(0));
+        user.put("username", userName);
         user.put("password", password);
         return EVAL_BODY;
 
@@ -809,8 +815,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             while (enumeration.hasMoreElements()) {
                 String key = (String) enumeration.nextElement();
                 String value = request.getParameter(key);
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("security info --> key:" + key + " value:" + value);
+                }
                 user.put(key, value);
             }
             return EVAL_BODY;
@@ -949,8 +956,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
                 Rank r = getRank();
                 if (curRank.getInt() < r.getInt()) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debug("logged on, but rank of user is too low (" + cloud.getUser().getRank() + ". log out first.");
+                    }
                     cloud = null;
                     if (session != null) {
                         session.removeAttribute(getSessionName());
@@ -1049,9 +1057,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return evalBody();
         }
         if (checkAnonymous()) {
-            if (cloud == null) {
+            if (cloud == null) { // could not be created!
+                // what can we do now?                
                 return SKIP_BODY;
             } else {
+                // yes, found
+                log.debug("Implicitely requested anonymous cloud. Will not use session");
                 return evalBody();
             }
         }
