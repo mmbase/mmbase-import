@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.174 2003-07-14 12:57:18 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.175 2003-07-15 09:28:50 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3826,7 +3826,12 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Specifies the 'precision' of the produced time.
+        Specifies the 'precision' of the produced time. Times are rounded off to the beginning of
+        the specified unit. This can have several purposes. One of them being that such a rounded of
+        time can be used in queries, without resulting to much different queries ('now' with a
+        precision of minutes, will e.g. result a new 'now' only once a minute, so a query with a
+        constraint containing 'now' has to be redone only once a minute (in stead of every
+        second)).
       </info>
       <possiblevalue>
         <value>seconds</value>
