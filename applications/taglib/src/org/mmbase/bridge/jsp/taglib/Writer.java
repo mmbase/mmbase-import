@@ -32,12 +32,6 @@ public interface Writer extends TagIdentifier {
     public void setWrite(String t) throws JspTagException;
 
     /**
-     * Session key to write to.
-     */
-    
-    public void setSession(String t) throws JspTagException;
-
-    /**
      * JspVar to Create, and write to
      */
     public void setJspvar(String j);
@@ -46,13 +40,13 @@ public interface Writer extends TagIdentifier {
      * Type of the jspvar.
      */
 
-    public void setType(String t) throws JspTagException;
+    public void setVartype(String t) throws JspTagException;
 
     /**
      * Subtags of 'Writer' tag can request the value.
      */
 
-    public Object getValue();
+    public Object getValue() throws JspTagException ;
     
 
 }

@@ -62,34 +62,43 @@ public class WriterHelper {
     private   Object  value             = null;
 
     private   String  jspvar           = null;
-    private   String  session          = null;
     private   Boolean write            = null;
-    private   int     type             = TYPE_UNSET;
+    private   Boolean overridewrite    = null;
+    private   int     vartype          = TYPE_UNSET;
     private   BodyContent  bodyContent;
-    
+
+    /**
+     * For implementation of the write attribute.
+     */
     public void setWrite(Boolean w) {
         write = w;
     }
+
+    /**
+     * There is a default behavior for what should happen if the 'write' attribute is not set.
+     * if you want to override this, then call this function.
+     */
+    public void overrideWrite(boolean w) {
+        overridewrite = w ? Boolean.TRUE : Boolean.FALSE;
+    }
+
     public boolean  isWrite() {
         if (write == null) {
             if (log.isDebugEnabled()) {
                 log.debug("write is unset, using default with body == '" + bodyContent.getString() + "'");
             }
+            if (overridewrite != null) return overridewrite.booleanValue();            
             return "".equals(bodyContent.getString());
         } else {
-            return write.booleanValue();
+            return write.booleanValue();        
         }
     }
     
-    public void setSession(String s) {
-        session = s;
-    }
-    public String getSession() {
-        return session;
-    }
-
     public void setJspvar(String j) {
         jspvar = j;
+    }
+    public String getJspvar() {
+        return jspvar;
     }
 
     public void setValue(Object v) {
@@ -106,13 +115,13 @@ public class WriterHelper {
      * Don't forget to call 'setValue' first!
      */
     
-    protected void setJspVar(javax.servlet.jsp.PageContext pageContext) throws JspTagException {
+    public void setJspvar(javax.servlet.jsp.PageContext pageContext) throws JspTagException {
       
         if (jspvar == null) return;
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value);
         }
-        switch (type) {
+        switch (vartype) {
         case TYPE_LIST:
             if (value instanceof java.util.List) {
                 pageContext.setAttribute(jspvar, value);
@@ -140,11 +149,11 @@ public class WriterHelper {
             return;
         }
         if (value == null) {
-            pageContext.setAttribute(jspvar, null);
+            // pageContext.setAttribute(jspvar, null);
             return;
         } 
 
-        switch (type) {
+        switch (vartype) {
         case TYPE_INTEGER:
             if (! (value instanceof Integer)) {
                 pageContext.setAttribute(jspvar, new Integer(value.toString()));
@@ -168,17 +177,24 @@ public class WriterHelper {
     }
 
 
-    public void setType(String t) throws JspTagException {
-        type = stringToType(t);
-        if (type == TYPE_UNKNOWN) {
+    public void setVartype(String t) throws JspTagException {
+        vartype = stringToType(t);
+        if (vartype == TYPE_UNKNOWN) {
             throw new JspTagException("Type " + t + " is not known");
         }
     }
-    public int getType() {
-        return type;
+    
+    public int getVartype() {
+        return vartype;
     }
 
-    public String getBodyString() throws JspTagException {        
+    /**
+     * Returns a string which can be written to the page.
+     */
+
+    protected String getPageString() throws JspTagException {
+        if (value == null) return "";
+
         if (value instanceof byte[]) {         
             // writing bytes to the page?? We write base64 encoded...
             return org.mmbase.util.Encode.encode("BASE64", (byte[]) value); 
@@ -196,12 +212,13 @@ public class WriterHelper {
             String body = bodyContent.getString();
             if (isWrite()) {
                 bodyContent.clearBody();
-                bodyContent.print(getBodyString() + body);
+                bodyContent.print(getPageString() + body);
             }
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }            
+        overridewrite = null;
         return javax.servlet.jsp.tagext.BodyTagSupport.SKIP_BODY;
     }
 

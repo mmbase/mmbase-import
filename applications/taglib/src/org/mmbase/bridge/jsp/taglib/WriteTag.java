@@ -30,14 +30,11 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     protected WriterHelper helper = new WriterHelper(); 
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setType(String t) throws JspTagException { 
-        helper.setType(t);
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
     }
     public void setJspvar(String j) {
         helper.setJspvar(j);
-    }
-    public void setSession(String s) throws JspTagException {
-        helper.setSession(getAttributeValue(s));
     }
     public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttributeBoolean(w));
@@ -45,6 +42,13 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     public Object getValue() {
         return helper.getValue();
     }
+
+    private String sessionvar;
+
+    public void setSession(String s) throws JspTagException {
+        sessionvar = getAttributeValue(s);
+    }
+
     
     
     protected Object getObject() throws JspTagException {
@@ -55,7 +59,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
             Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
             return w.getValue();
         }
-        if (helper.getType() == WriterHelper.TYPE_BYTES) {
+        if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
             return getContextTag().getBytes(getReferid()); // a hack..            
         }
         return getObject(getReferid());
@@ -64,9 +68,13 @@ public class WriteTag extends ContextReferrerTag implements Writer {
 
     public int doStartTag() throws JspTagException {    
         helper.setValue(getObject());        
-        helper.setJspVar(pageContext);  
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
+        }
+        if (sessionvar != null) {
+            pageContext.getSession().setAttribute(sessionvar, helper.getValue());
+            helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         return EVAL_BODY_TAG;
     }    
