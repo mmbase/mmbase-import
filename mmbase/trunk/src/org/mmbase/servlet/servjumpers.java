@@ -32,11 +32,11 @@ public class servjumpers extends JamesServlet {
     // reference to the MMBase cloud
     static MMBase mmbase;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+    public void init() throws ServletException {
+        super.init();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servjumpers.class.getName());
-        log.info("Init of servlet " + config.getServletName() + ".");
+        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
         mmbase=(MMBase)getModule("MMBASEROOT");
     }
 

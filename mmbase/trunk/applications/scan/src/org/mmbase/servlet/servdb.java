@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.41 2002-04-19 12:38:43 pierre Exp $
+ * @version $Id: servdb.java,v 1.42 2002-06-28 07:49:24 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -66,12 +66,11 @@ public class servdb extends JamesServlet {
     /**
      * @javadoc
      */
-    public void init(ServletConfig config) throws ServletException {
-
-        super.init(config);
+    public void init() throws ServletException {
+        super.init();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servdb.class.getName());
-        log.info("Init of servlet " + config.getServletName() + ".");
+        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
         playlists = (PlaylistsInterface) getModule("PLAYLISTS");
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
