@@ -11,7 +11,7 @@ package org.mmbase.servlet;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.mmbase.module.builders.*;
+import org.mmbase.module.builders.Jumpers;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -19,6 +19,7 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
+ * @version $Id: JumpersFilter.java,v 1.2 2002-02-08 10:12:26 pierre Exp $
  */
 public class JumpersFilter implements Filter {
     private static Logger log;
@@ -26,6 +27,27 @@ public class JumpersFilter implements Filter {
     private static Jumpers bul;
     private static String name;
 
+    /**
+     * Supported for use with older versions of the servlet api, such as used by Orion 1.5.2
+     * This method simply thows an exception when called.
+     * @deprecated will be dropped in future versions
+     */
+    public void setFilterConfig(FilterConfig fc) {
+        throw new UnsupportedOperationException("This routine has been dropped in the Servlet api 2.3");
+    }
+
+    /**
+     * Supported for use with older versions of the servlet api, such as used by Orion 1.5.2
+     * This method simply thows an exception when called.
+     * @deprecated will be dropped in future versions
+     */
+    public FilterConfig getFilterConfig() {
+        throw new UnsupportedOperationException("This routine has been dropped in the Servlet api 2.3");
+    }
+
+    /**
+     * @javadoc
+     */
     public void init(javax.servlet.FilterConfig filterConfig)
             throws ServletException {
         name = filterConfig.getFilterName();
@@ -49,8 +71,11 @@ public class JumpersFilter implements Filter {
         log.info("Filter " + name + " initialized.");
     }
 
+    /**
+     * @javadoc
+     */
     public void doFilter(ServletRequest servletRequest,
-            ServletResponse servletResponse, FilterChain filterChain) 
+            ServletResponse servletResponse, FilterChain filterChain)
             throws java.io.IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest)servletRequest;
         HttpServletResponse res = (HttpServletResponse)servletResponse;
@@ -67,6 +92,9 @@ public class JumpersFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
+    /**
+     * @javadoc
+     */
     public void destroy() {
         log.info("Filter " + name + " destroyed.");
     }
