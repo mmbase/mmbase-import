@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.72 2003-12-18 11:51:49 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.73 2004-02-26 22:11:20 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -70,7 +70,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_UNSET     = 100;
 
     // input and useinput produces pieces of HTML
-    // very handy if you're creating an editors, but well yes, not very elegant.
+    // very handy if you're creating an editor, but well yes, not very elegant.
     protected static final int TYPE_INPUT    = 10;
     protected static final int TYPE_USEINPUT = 11;
     protected static final int TYPE_SEARCHINPUT = 12;
