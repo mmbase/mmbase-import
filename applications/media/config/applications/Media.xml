@@ -47,7 +47,7 @@
     <relation from="videofragments"  to="videofragments"  type="parent" />
     <relation from="audiofragments"  to="audiofragments"  type="parent" />
      -->
-    <relation from="videofragments"  to="videosources"    type="related" /> <!-- to make getRelatedNodes('mediasources') possible .. -->
+    <relation from="mediafragments"  to="mediafragments"  type="parent" /> <!-- to make getRelatedNodes('mediafragments') possible .. -->
 
     <!-- subfragments -->
     <relation from="videofragments"  to="videofragments"  type="posrel" />
