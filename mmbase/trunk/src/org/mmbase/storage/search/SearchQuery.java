@@ -16,7 +16,7 @@ import java.util.List;
  * This corresponds to a SELECT query in SQL syntax.
  *
  * @author Rob van Maris
- * @version $Id: SearchQuery.java,v 1.2 2003-03-10 11:50:50 pierre Exp $
+ * @version $Id: SearchQuery.java,v 1.3 2004-04-01 20:57:48 robmaris Exp $
  * @since MMBase-1.7
  */
 public interface SearchQuery {
@@ -39,6 +39,11 @@ public interface SearchQuery {
      * . 
      */
     boolean isDistinct();
+    
+    /**
+     * Tests if this is an aggregating query, i.e. containing aggregated fields.
+     */
+    boolean isAggregating();
 
     /**
      * Gets the steps in the search request.
