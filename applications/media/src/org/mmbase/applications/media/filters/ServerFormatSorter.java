@@ -19,18 +19,20 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * A FormatSorter which can be configured with eht filters.xml.
+ * Sorts on format of the source, preferred formats can be can be configured with the filters.xml.
  *
  * @todo this implementation can be merged with FormatSorter itself, i think.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.1 2003-02-05 16:31:39 michiel Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.2 2003-02-05 16:55:28 michiel Exp $
  */
-public class ServerFormatSorter extends  FormatSorter {
+public class ServerFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class.getName());
 
     public static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".preferredSource";
     public static final String FORMAT_ATT = "format";
+
+    protected List preferredFormats;
 
     public  ServerFormatSorter() {};
 
@@ -45,6 +47,19 @@ public class ServerFormatSorter extends  FormatSorter {
         }
   
     }
+    
+    protected int getPreference(URLComposer ri) {
+        Format format = ri.getFormat();
+        int index =  preferredFormats.indexOf(format);
+        if (index == -1) { 
+            if (log.isDebugEnabled()) log.debug("Not found format: '" + format + "' in" + preferredFormats);
+            index = preferredFormats.size() + 1;
+        }
+        index = -index;   // low index =  high preference
+        if (log.isDebugEnabled()) log.debug("preference of format '" + format + "': " + index);
+        return index; 
+    }
+
     
 }
 
