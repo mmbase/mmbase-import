@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.21 2003-12-11 12:38:29 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.22 2003-12-11 13:05:26 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -69,7 +69,6 @@ public class BasicSqlHandler implements SqlHandler {
         }
         return result;
     }
-
     /**
      * Tests if a case sensitivity for a field constraint is false
      * and relevant, i.e. the constraint is set to case insensitive and
@@ -84,6 +83,17 @@ public class BasicSqlHandler implements SqlHandler {
         && (constraint.getField().getType() == FieldDefs.TYPE_STRING
         || constraint.getField().getType() == FieldDefs.TYPE_XML);
     }
+
+    /**
+     * Wether the 'LOWER' function needs to be used to implement case insensitivity. This is 
+     * not always the case, because some database only match case insensitively, in which case it
+     * does not make sense to lowercase.
+     */
+
+    protected boolean useLower(FieldCompareConstraint constraint) {
+        return true;
+    }
+
 
     /**
      * Represents field value as a string, appending the result to a
@@ -527,6 +537,26 @@ public class BasicSqlHandler implements SqlHandler {
         }
     }
 
+
+    /**
+     * Appends the 'LIKE' operator for the given case sensitiviy. Some databases support a case
+     * insensitive LIKE ('ILIKE'). Implementations for those database can override this method.
+     *
+     * @return The string buffer. 
+     */
+    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
+        sb.append(" LIKE ");
+        return sb;
+    }
+
+    
+    /*
+    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
+        sb.append(" ~ ");
+        return sb;
+    }
+    */
+
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
@@ -538,6 +568,7 @@ public class BasicSqlHandler implements SqlHandler {
 
         boolean multipleSteps = query.getSteps().size() > 1;
 
+        boolean toLowerCase = false;
         if (constraint instanceof FieldConstraint) {
 
             // Field constraint
@@ -612,13 +643,14 @@ public class BasicSqlHandler implements SqlHandler {
                 FieldCompareConstraint fieldCompareConstraint
                 = (FieldCompareConstraint) fieldConstraint;
                 sb.append(overallInverse? "NOT ": "");
-                if (isRelevantCaseInsensitive(fieldConstraint)) {
-                    // case insensitive
+                if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
+                    // case insensitive and database needs it
                     sb.append("LOWER(");
                     appendField(sb, step, fieldName, multipleSteps);
                     sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
+                    // XXX: MySQL want 'BINARY' for string if the mathing should happen case sensitive
                     appendField(sb, step, fieldName, multipleSteps);
                 }
                 switch (fieldCompareConstraint.getOperator()) {
@@ -647,11 +679,15 @@ public class BasicSqlHandler implements SqlHandler {
                     break;
                     
                 case FieldValueConstraint.LIKE:
-                    sb.append(" LIKE ");
+                    appendLikeOperator(sb, fieldConstraint.isCaseSensitive());
                     break;
-                    
+                    /*
+                case FieldValueConstraint.REGEXP:
+                    sb.append(getRegularExpressionOperator());
+                    break;
+                    */
                 default:
-                    throw new IllegalStateException("Unknown operator value in constraint: "
+                    throw new IllegalStateException("Unknown operator value in constraint: " 
                                                     + fieldCompareConstraint.getOperator());
                 }
                 if (fieldCompareConstraint instanceof FieldValueConstraint) {
@@ -659,8 +695,7 @@ public class BasicSqlHandler implements SqlHandler {
                     FieldValueConstraint fieldValueConstraint
                     = (FieldValueConstraint) fieldCompareConstraint;
                     Object value = fieldValueConstraint.getValue();
-                    appendFieldValue(sb, value,
-                        !fieldConstraint.isCaseSensitive(), fieldType);
+                    appendFieldValue(sb, value, useLower(fieldValueConstraint) && isRelevantCaseInsensitive(fieldValueConstraint), fieldType);
                 } else if (fieldCompareConstraint instanceof CompareFieldsConstraint) {
                     // CompareFieldsConstraint
                     CompareFieldsConstraint compareFieldsConstraint
@@ -669,7 +704,7 @@ public class BasicSqlHandler implements SqlHandler {
                     String fieldName2 = field2.getFieldName();
                     Step step2 = field2.getStep();
                     String tableAlias2 = field2.getStep().getAlias();
-                    if (isRelevantCaseInsensitive(fieldConstraint)) {
+                    if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                         // case insensitive
                         sb.append("LOWER(");
                         appendField(sb, step2, fieldName2, multipleSteps);
