@@ -34,6 +34,13 @@
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
              token="$${filemanagement.data.url}"
              value="${filemanagement.data.url}"/>
+
+    <replace file="${build.dir}/webapp/WEB-INF/web.xml"
+             token="$${emailsenderdomain}"
+             value="${emailsenderdomain}"/>
+
+
+
   </target>
 
   <target name="clean">
