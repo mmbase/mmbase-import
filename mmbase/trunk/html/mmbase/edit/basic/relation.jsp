@@ -30,7 +30,7 @@
 
 <tr>
     <td class="data">
-        <%=otherManager.getGUIName()%> (<%=guirole%>)
+        <%=otherManager.getGUIName()%> (<%= role %>: <%=guirole%>)
     </td>
     <th colspan="3"><%=m.getString("relations.relations")%></th>
     <th colspan="3"><%=m.getString("relations.related")%>
