@@ -99,6 +99,7 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("ESCAPE")) return(doEscape(sp,tok));
 			if (cmd.equals("EXISTS")) return(doExists(sp,tok));
 			if (cmd.equals("RELTIME")) return(doRelTime(tok));
+			if (cmd.equals("MEMORY")) return(doMemory(tok));
 		}
 		return("No command defined");
 	}
@@ -569,12 +570,12 @@ public class INFO extends ProcessorModule {
 
 	/**	
 	 * This method is used to retrieve time related info from a relative time value.
-     * 3 types of MOD commands exist:
+	 * 3 types of MOD commands exist:
 	 * 	$MOD-INFO-RELTIME-GET???-timeValueInMillis (where ??? is HOURS,MINUTES,SECONDS or MILLIS).
 	 * 	$MOD-INFO-RELTIME-COUNTMILLIS-hourValue-minuteValue-secondValue-milliValue
 	 * 	$MOD-INFO-RELTIME-GETTIME-timeValueInMillis
-     * @param tok The StringTokenizer containing the subsequent cmd argument tokens.
-     * @returns A String containing cmd result.
+	 * @param tok The StringTokenizer containing the subsequent cmd argument tokens.
+	 * @return A String containing cmd result.
 	 */
 	String doRelTime(StringTokenizer tok) {
 		int timeValue = 0;
@@ -672,6 +673,51 @@ public class INFO extends ProcessorModule {
 		}
 		// return("INFO::doRelTime: Not implemented yet.");
 	}
+
+	/**
+	 * This method is used to retrieve the amount of FREE MEMORY in either the JVM or the SYSTEM.
+	 * @param tok The StringTokenizer containing the subsequent cmd argument tokens.
+	 * @return A String containing the available memory.
+	 */
+	String doMemory(StringTokenizer tok) {
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();
+			Runtime rt = Runtime.getRuntime();
+			int whichMem = 0;
+			float memDiv = 0.0f;
+
+			// Check commandname.
+			if (cmd.equals("GETJVM")) {
+				whichMem = 0;
+			} else if (cmd.equals("GETSYS")) {
+				whichMem = 1;
+			} else {
+				debug("doMemory: Undefined command requested -> "+cmd);
+				return("INFO::doMemory: Undefined command requested -> "+cmd);
+			}
+
+			if (tok.hasMoreTokens()) {
+				cmd = tok.nextToken();
+				if (cmd.equals("MB"))      memDiv = 1048576.0f;
+				else if (cmd.equals("KB")) memDiv = 1024.0f;
+			}
+			if (memDiv < 1.0f) {
+				if (whichMem == 0)
+					return (""+rt.totalMemory());
+				else
+					return (""+rt.freeMemory());
+			} else {
+				if (whichMem == 0)
+					return (""+(rt.totalMemory()/memDiv));
+				else
+					return (""+(rt.freeMemory()/memDiv));
+			}
+		} else {
+			debug("doMemory: No command specified");
+			return("INFO::doMemory: No command specified");
+		}
+	}
+
 
 	Vector doScanDate(scanpage sp,StringTagger tagger) {
 		String temp = sp.req.getHeader("Pragma");
