@@ -1,5 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
-%><%@ include file="page_base.jsp"
+<%@ include file="page_base.jsp"
 %>
 <mm:write referid="style" />
 <mm:import id="configsubmitted" externid="config" from="parameters" />
@@ -13,6 +12,8 @@
     <mm:import externid="method" />
     <mm:import externid="session" />
     <mm:import externid="lang" />
+    <mm:import externid="liststyle" />
+    <mm:write  referid="liststyle"        cookie="mmjspeditors_liststyle" />
     <mm:write  referid="lang"        cookie="mmjspeditors_language" />
     <mm:write  referid="style_sheet" cookie="mmjspeditors_style" />
     <mm:write  referid="method" cookie="mmjspeditors_method" />
@@ -50,6 +51,12 @@
              <option value="purple.css" <mm:compare referid="config.style_sheet" value="purple.css">selected="selected"</mm:compare>>purple</option>
              <option value="yellow.css" <mm:compare referid="config.style_sheet" value="yellow.css">selected="selected"</mm:compare>>yellow</option>
              <option value="my_editors.css.jsp" <mm:compare referid="config.style_sheet" value="my_editors.css.jsp">selected="selected"</mm:compare>>My Editors</option>
+            </select></td>
+     </tr>
+     <tr><td><%=m.getString("config.liststyle")%></td>
+          <td><select name="liststyle">
+             <option value="short" <mm:compare referid="config.liststyle" value="short">selected="selected"</mm:compare>><%=m.getString("search_node.showshortlist")%></option>
+             <option value="long" <mm:compare referid="config.liststyle" value="long">selected="selected"</mm:compare>><%=m.getString("search_node.showall")%></option>
             </select></td>
      </tr>
      <tr><td><%= m.getString("config.method") %></td>

@@ -6,20 +6,30 @@
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
 </head>
+<mm:write referid="config.liststyle" vartype="string" jspvar="liststyle" >
 <mm:context id="edit">
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
 
 <body class="basic" <mm:present referid="node_type">onLoad="document.search.elements[0].focus();"</mm:present>>
     <table summary="node editors" width="100%" class="super">
     	<tr align="left">
-    	    <th width="20%"><%=m.getString("search_node.search")%></th>
+    	    <th width="20%"><%=m.getString("search_node.search")%>
+            
+             (<mm:compare referid="config.liststyle" value="short" >
+                <a href="<mm:url page="search_node.jsp" ><mm:param name="set_liststyle">long</mm:param></mm:url>"><%=m.getString("search_node.showall")%></a>
+              </mm:compare>
+              <mm:compare referid="config.liststyle" value="short" inverse="true" >
+                <a href="<mm:url page="search_node.jsp" ><mm:param name="set_liststyle">short</mm:param></mm:url>"><%=m.getString("search_node.showshortlist")%></a>
+              </mm:compare>)
+            
+            </th>
     	    <mm:present referid="node_type">
     	    	<th width="80%"><%=m.getString("search_node.type")%> <mm:nodeinfo nodetype="$node_type" type="guitype" />
                                               (<mm:nodeinfo nodetype="$node_type" type="type" />)
 				</th>
     	    </mm:present>		
     	    <mm:notpresent referid="node_type">
-    	    	<th width="80%"><%=m.getString("search_node.nonodes")%></th>
+     	    	<th width="80%"><%=m.getString("search_node.nonodes")%></th>
     	    </mm:notpresent>		
     	</tr>
     	<tr valign="top">
@@ -38,8 +48,10 @@
                        }
                     } ); // MMCI doesn't sort, do it ourselves.
                     for (int i=0; i<l.size(); i++) {
-                    NodeManager nt = l.getNodeManager(i);
-		    %>
+                        NodeManager nt = l.getNodeManager(i);
+                    
+                        if ( (nt.mayCreateNode() && !nt.hasField("dnumber")) || !"short".equals(liststyle)) {
+                %>
       	    	    <tr valign="top">
       	    	    	<td class="data" width="100%" colspan="2"><%=nt.getGUIName()%> </td>
       	    	    	<td class="navigate">
@@ -59,7 +71,7 @@
 			    <% } %>
       	    	    	</td>
 		    </tr>
-		    <%
+		    <%          }
     	    	    } 
 		    %>
     	    	    	<tr>
@@ -102,6 +114,7 @@
     	</tr>
     </table>
 </mm:context>
+</mm:write>
 <%@ include file="foot.jsp"  %>
 <!-- mm:timer -->
 </mm:cloud>
