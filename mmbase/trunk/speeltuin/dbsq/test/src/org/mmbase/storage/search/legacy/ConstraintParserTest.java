@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConstraintParserTest extends TestCase {
     
@@ -174,6 +174,7 @@ public class ConstraintParserTest extends TestCase {
         RelationStep step2 = query.addRelationStep(insrel, pools);
         Step step3 = step2.getNext();
         StepField field1 = instance.getField("step1.title");
+        StepField field2 = instance.getField("step1.description");
 
         // LIKE
         BasicFieldValueConstraint constraint1 
@@ -238,7 +239,7 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title is not null").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint2));
         
-        // =
+        // = value
         BasicFieldValueConstraint constraint3
             = (BasicFieldValueConstraint)
                 new BasicFieldValueConstraint(field1, "abc def")
@@ -247,7 +248,50 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title = 'abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint3));
         
-        // !=
+        // == value
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title == 'abc def'").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3));
+        
+        // = value case insensitive with LOWER
+        constraint3.setCaseSensitive(false);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("LOWER(step1.title) = 'abc def'").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3));
+                
+        // = value case sensitive with LOWER
+        constraint3.setValue("ABC DEF").setCaseSensitive(true);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("LOWER(step1.title) = 'ABC DEF'").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3));
+                
+        // = value case insensitive with UPPER
+        constraint3.setCaseSensitive(false);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("upper(step1.title) = 'ABC DEF'").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3));
+                
+        // = value case sensitive with UPPER
+        constraint3.setValue("abc def").setCaseSensitive(true);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("upper(step1.title) = 'abc def'").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3));
+                
+        // = field2
+        BasicCompareFieldsConstraint constraint3a
+            = (BasicCompareFieldsConstraint)
+                new BasicCompareFieldsConstraint(field1, field2)
+                    .setOperator(FieldCompareConstraint.EQUAL);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title = step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3a));
+        
+        // == field2
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title == step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint3a));
+        
+        // != value
         BasicFieldValueConstraint constraint4
             = (BasicFieldValueConstraint)
                 new BasicFieldValueConstraint(field1, "abc def")
@@ -256,12 +300,26 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title != 'abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint4));
         
-        // <>
+        // <> value
         constraint = instance.parseSimpleCondition(
             ConstraintParser.tokenize("step1.title <> 'abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint4));
         
-        // >
+        // != field2
+        BasicCompareFieldsConstraint constraint4a
+            = (BasicCompareFieldsConstraint)
+                new BasicCompareFieldsConstraint(field1, field2)
+                    .setOperator(FieldCompareConstraint.NOT_EQUAL);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title != step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint4a));
+
+        // <> field2
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title <> step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint4a));
+
+        // > value
         BasicFieldValueConstraint constraint5
             = (BasicFieldValueConstraint)
                 new BasicFieldValueConstraint(field1, "abc def")
@@ -270,7 +328,16 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title>'abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint5));
         
-        // >=
+        // > field2
+        BasicCompareFieldsConstraint constraint5a
+            = (BasicCompareFieldsConstraint)
+                new BasicCompareFieldsConstraint(field1, field2)
+                    .setOperator(FieldCompareConstraint.GREATER);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title>step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint5a));
+
+        // >= value
         BasicFieldValueConstraint constraint6
             = (BasicFieldValueConstraint)
                 new BasicFieldValueConstraint(field1, "abc def")
@@ -279,7 +346,16 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title>='abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint6));
         
-        // <
+        // >= field2
+        BasicCompareFieldsConstraint constraint6a
+            = (BasicCompareFieldsConstraint)
+                new BasicCompareFieldsConstraint(field1, field2)
+                    .setOperator(FieldCompareConstraint.GREATER_EQUAL);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title>=step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint6a));
+
+        // < value
         BasicFieldValueConstraint constraint7
             = (BasicFieldValueConstraint)
                 new BasicFieldValueConstraint(field1, "abc def")
@@ -288,7 +364,16 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title<'abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint7));
         
-        // <=
+        // < field2
+        BasicCompareFieldsConstraint constraint7a
+            = (BasicCompareFieldsConstraint)
+                new BasicCompareFieldsConstraint(field1, field2)
+                    .setOperator(FieldCompareConstraint.LESS);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title<step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint7a));
+
+        // <= value
         BasicFieldValueConstraint constraint8
             = (BasicFieldValueConstraint)
                 new BasicFieldValueConstraint(field1, "abc def")
@@ -297,6 +382,15 @@ public class ConstraintParserTest extends TestCase {
             ConstraintParser.tokenize("step1.title<='abc def'").listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint8));
         
+        // <= field2
+        BasicCompareFieldsConstraint constraint8a
+            = (BasicCompareFieldsConstraint)
+                new BasicCompareFieldsConstraint(field1, field2)
+                    .setOperator(FieldCompareConstraint.LESS_EQUAL);
+        constraint = instance.parseSimpleCondition(
+            ConstraintParser.tokenize("step1.title<=step1.description").listIterator());
+        assertTrue(constraint.toString(), constraint.equals(constraint8a));
+
         try {
             // Comparing numerical field with string, should throw 
             // IllegalArgumentException.
