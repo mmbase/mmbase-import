@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.8 2003-05-02 20:23:20 michiel Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.9 2003-05-05 13:26:35 michiel Exp $
  * @todo This function contains a lot of methods which do not seem
  *       specific for a 'relational' database. They should perhaps be moved
  *        to 'abstract' databasestorage
@@ -133,17 +133,17 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
             // integer should use getDataType?
             DatabaseTransaction trans=null;
             try {
-                trans=createDatabaseTransaction();
+                trans = createDatabaseTransaction();
                 String sqlcreate=
                     createSQL(getFullTableName("numberTable"),
-                        constructFieldDefinition("numberTable","number",FieldDefs.TYPE_INTEGER,-1,KEY_PRIMARY));
+                        constructFieldDefinition("numberTable", "number", FieldDefs.TYPE_INTEGER, -1, KEY_PRIMARY));
                 trans.executeUpdate(sqlcreate);
                 String sqlinsert= insertSQL(getFullTableName("numberTable"),getNumberString(),""+number);
                 trans.executeUpdate(sqlinsert);
                 trans.commit();
             } catch (StorageException e) {
                 log.error(e.toString());
-                if (trans!=null) trans.rollback();
+                if (trans != null) trans.rollback();
                 return;
             }
         }
