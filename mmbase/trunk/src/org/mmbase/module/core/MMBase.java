@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.72 2002-10-01 14:48:46 eduard Exp $
+ * @version $Id: MMBase.java,v 1.73 2002-10-09 14:33:20 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1234,7 +1234,18 @@ public class MMBase extends ProcessorModule  {
 	    String databasename = getInitParameter("DATABASE");
 	    if(databasename == null){
 		DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
-		databaseConfig = lookup.getDatabaseConfig(getDirectConnection());
+		// How do we know for sure that the JDBC.init() has been called first?
+		// the only way is by using the getModule, (little bit scary to use here)
+		JDBCInterface jdbcModule = (JDBCInterface) getModule("jdbc");
+		try {
+		    // dont use the getDirectConnection, upon failure, it will loop,....
+		    databaseConfig = lookup.getDatabaseConfig(jdbcModule.getDirectConnection(jdbcModule.makeUrl()));
+		}
+		catch(java.sql.SQLException sqle) {
+		    log.error(sqle);
+		    log.error(Logging.stackTrace(sqle));
+		    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
+		}
 	    }
 	    else {
 		// use the correct databas-xml
