@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021115165540">
-	<node number="516" owner="admin" alias="media.myfragments">
+<pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
+	<node number="157" owner="admin" alias="media.myfragments">
 		<name>My fragments</name>
 		<description>Used by the Media editor example</description>
 	</node>

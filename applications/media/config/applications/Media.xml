@@ -30,6 +30,8 @@
     <relation from="mediafragments"  to="mediafragments"  type="posrel" />
     <relation from="mediafragments"  to="publishtimes"    type="related" />
 
+    <relation from="mediasources"    to="mediaproviders"  type="related" />
+
     <!-- the following should not be needed (because of inheritance) -->
     <relation from="audiofragments"  to="audiosources" type="related" />
     <relation from="videofragments"  to="videosources" type="related" />
@@ -50,6 +52,7 @@
 
 	<relationsourcelist>
 		<relationsource builder="insrel" path="Media/insrel.xml" />
+		<relationsource builder="posrel" path="Media/posrel.xml" />
   </relationsourcelist>
   
   <contextsourcelist>

@@ -93,7 +93,7 @@
       <gui>
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Toestand</guiname>
-        <guitype>integer</guitype>
+        <guitype>org.mmbase.module.builders.media.resources.providerstates</guitype>
       </gui>
       <editor>
         <positions>

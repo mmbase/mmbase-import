@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021115165540">
+<mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
+	<node number="567" owner="admin">
+		<rooturl>cgi.omroep.nl</rooturl>
+		<state>1</state>
+		<name>play</name>
+		<info>Play cgi script</info>
+		<rootpath>/cgi-bin/play?</rootpath>
+	</node>
+
+	<node number="566" owner="admin">
+		<rooturl>cgi.omroep.nl/cgi-bin/streams</rooturl>
+		<state>1</state>
+		<name>streams</name>
+		<info>Streams CGI script.</info>
+		<rootpath>/cgi-bin/streams?</rootpath>
+	</node>
+
 </mediaproviders>
