@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.6 2003-05-22 08:42:17 michiel Exp $</edition>
+		<edition>$Id: builders.xml,v 1.7 2003-05-24 13:50:29 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -353,7 +353,7 @@
 							<para>Lists the positions of a field in certain types of forms.</para>
 							<section>
 								<anchor id="field_edit" />
-								<title>&lt;edit&gt;</title>
+								<title>&lt;input&gt;</title>
 								<para>Position of the field in an edit screen. -1 means the field cannot be edited.</para>
 							</section>
 							<section>
