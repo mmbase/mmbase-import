@@ -8,9 +8,9 @@
 
 
 body.basic { 
-       background-color: #aaa;
+       background-color: #222;
        margin-top: 1em;
-       color: #004; 
+       color: #fff; 
 }
 
 body.navigationbar {
@@ -26,7 +26,7 @@ a {
 a:active  { color: yellow; }
 a:hover   { 
 	  color: yellow; 
-          background-color: #66f;
+          background-color: #f6f;
 	  }
 
 span {
@@ -51,37 +51,37 @@ td {
 }	
 
 table.list td {
-     background-color: #004;
+     background-color: #404;
      color:white;
 }
 table.edit td {
-     background-color: #004;
+     background-color: #404;
      color: white;
 }
 table.edit td.navigate {
-   background-color: #339;
+   background-color: #939;
 }
 table.list td.navigate {
-   background-color: #339;
+   background-color: #939;
 }
 th {
-   background-color: #339;
+   background-color: #939;
    color: #fff;
    font-weight:bold
 }
 
 .data {
-     background-color: #004;
+     background-color: #404;
      color: #fff;
 }
 .navigate {
     text-align: right;
-    background-color: #339;
+    background-color: #939;
     color: #fff;
 }
 
 .edit {
-     background-color: #004;
+     background-color: #404;
      color: white;
 }
 .search {
@@ -90,20 +90,20 @@ th {
 }
 
 .linkdata {
-     background-color: #004;
+     background-color: #404;
      color: white;
      text-align: center;
 }
 
 .listdata {
-     background-color: #004;
-     color: #339;
+     background-color: #404;
+     color: #939;
      text-align: left;
 }
 
 .multidata  {
-     background-color: #004;
-     color: #339;
+     background-color: #404;
+     color: #939;
      padding-top: 1em;
 }
 

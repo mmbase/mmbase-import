@@ -43,6 +43,8 @@
              <option value="classic.css" <mm:compare referid="config.style_sheet" value="classic.css">selected="selected"</mm:compare>>classic</option>
              <option value="red.css" <mm:compare referid="config.style_sheet" value="red.css">selected="selected"</mm:compare>>red</option>
              <option value="blue.css" <mm:compare referid="config.style_sheet" value="blue.css">selected="selected"</mm:compare>>blue</option>
+             <option value="purple.css" <mm:compare referid="config.style_sheet" value="purple.css">selected="selected"</mm:compare>>purple</option>
+             <option value="yellow.css" <mm:compare referid="config.style_sheet" value="yellow.css">selected="selected"</mm:compare>>yellow</option>
             </select></td>
      </tr>
      <tr><td><%= m.getString("config.method") %></td>
