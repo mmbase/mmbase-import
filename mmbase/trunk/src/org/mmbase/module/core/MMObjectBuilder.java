@@ -62,9 +62,16 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.279 2004-11-08 13:31:30 marcel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.280 2004-11-09 09:05:27 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
+
+    public static final String FIELD_NUMBER  = "number";
+    public static final String FIELD_OWNER   = "owner";
+    public static final String FIELD_OTYPE   = "otype";
+
+    public static final String SYSTEM_OWNER   = "system";
+
 
     /** Max size of the object type cache */
     public final static int OBJ2TYPE_MAX_SIZE = 20000;
@@ -367,7 +374,7 @@ public class MMObjectBuilder extends MMTable {
                 oType = typeDef.getIntValue(tableName);
                 if (oType == -1) { // no object type number defined yet
                     if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
-                    MMObjectNode node = typeDef.getNewNode("system");
+                    MMObjectNode node = typeDef.getNewNode(SYSTEM_OWNER);
                     node.setValue("name", tableName);
 
                     // This sucks:
@@ -377,12 +384,12 @@ public class MMObjectBuilder extends MMTable {
 
                     oType = mmb.getDatabase().getDBKey();
                     log.debug("Got key " + oType);
-                    node.setValue("number", oType);
+                    node.setValue(FIELD_NUMBER, oType);
                     // for typedef, set otype explictly, as it wasn't set in getNewNode()
                     if (this == typeDef) {
-                        node.setValue("otype", oType);
+                        node.setValue(FIELD_OTYPE, oType);
                     }
-                    typeDef.insert("system", node, false);
+                    typeDef.insert(SYSTEM_OWNER, node, false);
                     // for typedef, call it's parents init again, as otype is only now set
                     if (this == typeDef) {
                         initAncestors();
@@ -615,9 +622,9 @@ public class MMObjectBuilder extends MMTable {
      */
     public MMObjectNode getNewNode(String owner) {
         MMObjectNode node = new MMObjectNode(this);
-        node.setValue("number", -1);
-        node.setValue("owner", owner);
-        node.setValue("otype", oType);
+        node.setValue(FIELD_NUMBER, -1);
+        node.setValue(FIELD_OWNER, owner);
+        node.setValue(FIELD_OTYPE, oType);
         setDefaults(node);
         return node;
     }
@@ -844,7 +851,7 @@ public class MMObjectBuilder extends MMTable {
             }
             // determine valid username
             if ((userName == null) || (userName.length() <= 1 )) { // may not have owner of 1 char??
-                userName = node.getStringValue("owner");
+                userName = node.getStringValue(FIELD_OWNER);
                 log.info("Found username " + (userName == null ? "NULL" : userName));
             }
             res = node.insert(userName);
@@ -1319,7 +1326,7 @@ public class MMObjectBuilder extends MMTable {
         // Wrap in modifiable query, replace fields by one count field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
         Step step = (Step) query.getSteps().get(0);
-        FieldDefs numberFieldDefs = getField("number");
+        FieldDefs numberFieldDefs = getField(FIELD_NUMBER);
         AggregatedField field = new BasicAggregatedField(
             step, numberFieldDefs, AggregatedField.AGGREGATION_TYPE_COUNT);
         List newFields = new ArrayList(1);
@@ -1336,7 +1343,7 @@ public class MMObjectBuilder extends MMTable {
             cache.put(modifiedQuery, results);
         }
         ResultNode result = (ResultNode) results.get(0);
-        return result.getIntValue("number");
+        return result.getIntValue(FIELD_NUMBER);
     }
 
 
@@ -1632,15 +1639,14 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 
-    /**
+    /*
      * Executes a search (sql query) on the current database
      * and returns the nodes that result from the search as a Vector.
      * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
      * @param query The SQL query
      * @return A Vector which contains all nodes that were found
-     * @deprecated Use {@link getNodes(NodeSearchQuery)
-     *             getNodes(NodeSearchQuery} to perform a node search.
-     */
+     * @deprecated Use {@link getNodes(NodeSearchQuery) to perform a node search.
+     *
     private Vector basicSearch(String query) {
         // In order to support this method:
         // - The result is converted to a vector.
@@ -1655,7 +1661,7 @@ public class MMObjectBuilder extends MMTable {
         return result;
     }
 
-    /**
+    /*
      * As basicSearch
      * But:
      * - Throws exception on error
@@ -1663,8 +1669,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      * @deprecated Use {@link getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
-     */
-
+     *
     private List getList(String query) {
         MultiConnection con=null;
         Statement stmt=null;
@@ -1710,6 +1715,7 @@ public class MMObjectBuilder extends MMTable {
         processSearchResults(results);
         return results;
     }
+    */
 
     /**
      * Returns nodes matching a specified constraint.
@@ -1787,7 +1793,7 @@ public class MMObjectBuilder extends MMTable {
         // Wrap in modifiable query, replace fields by just the "number"-field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
         Step step = (Step) query.getSteps().get(0);
-        FieldDefs numberFieldDefs = getField("number");
+        FieldDefs numberFieldDefs = getField(FIELD_NUMBER);
         StepField field = query.getField(numberFieldDefs);
         List newFields = new ArrayList(1);
         newFields.add(field);
@@ -1801,7 +1807,7 @@ public class MMObjectBuilder extends MMTable {
             Iterator iResultNodes = resultNodes.iterator();
             while (iResultNodes.hasNext()) {
                 ResultNode resultNode = (ResultNode) iResultNodes.next();
-                results.add(resultNode.getIntegerValue("number"));
+                results.add(resultNode.getIntegerValue(FIELD_NUMBER));
             }
         } catch (SearchQueryException e) {
             log.error(e);
@@ -1865,8 +1871,8 @@ public class MMObjectBuilder extends MMTable {
             // Nodenumbers specified as query:
             // do the query on the database
             // TODO RvM: phase this out, subquery should not be supported.
-            String query = "SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
-            return basicSearch(query);
+            String query = "WHERE "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+            return searchVector(query);
         }
 
         // In order to support this method:
@@ -1900,8 +1906,8 @@ public class MMObjectBuilder extends MMTable {
             // do the query on the database
             // TODO RvM: phase this out, subquery should not be supported.
             // do the query on the database
-            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
-            return basicSearch(query);
+            String query = QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+            return searchVector(query);
         }
 
         // In order to support this method:
@@ -1956,11 +1962,11 @@ public class MMObjectBuilder extends MMTable {
             sorted=mmb.getDatabase().getAllowedField(sorted);
             // do the query on the database
             if (direction) {
-                String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
-                return basicSearch(query);
+                String query = QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
+                return searchVector(query);
             } else {
-                String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
-                return basicSearch(query);
+                String query = QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
+                return searchVector(query);
             }
         }
 
@@ -2467,7 +2473,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getGUIIndicator(String field, MMObjectNode node) {
         FieldDefs fieldDef = getField(field);
-        if (fieldDef.getDBType() == FieldDefs.TYPE_NODE && ! field.equals("number")) {
+        if (fieldDef.getDBType() == FieldDefs.TYPE_NODE && ! field.equals(FIELD_NUMBER)) {
             MMObjectNode otherNode = node.getNodeValue(field);
             if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
                 return "NULL";
@@ -3529,8 +3535,8 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDBLayout_xml(Hashtable fields) {
         sortedDBLayout=new Vector();
-        sortedDBLayout.addElement("otype");
-        sortedDBLayout.addElement("owner");
+        sortedDBLayout.addElement(FIELD_OTYPE);
+        sortedDBLayout.addElement(FIELD_OWNER);
 
         FieldDefs node;
 
@@ -3538,7 +3544,7 @@ public class MMObjectBuilder extends MMTable {
         for (Iterator i=orderedfields.iterator();i.hasNext();) {
             node=(FieldDefs)i.next();
             String name=node.getDBName();
-            if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
+            if (name!=null && !name.equals(FIELD_NUMBER) && !name.equals(FIELD_OTYPE) && !name.equals(FIELD_OWNER)) {
                 if(sortedDBLayout.contains(name)) {
                     log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");
                     continue;
@@ -3996,10 +4002,10 @@ public class MMObjectBuilder extends MMTable {
         }
 
         // should be TYPE_NODE ???
-        if (fields.get("otype") == null) {
+        if (fields.get(FIELD_OTYPE) == null) {
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
-            FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
+            FieldDefs def=new FieldDefs("Type","integer",-1,-1,FIELD_OTYPE,FieldDefs.TYPE_INTEGER,-1,3);
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setDBPos(2);
             // required field
@@ -4011,7 +4017,7 @@ public class MMObjectBuilder extends MMTable {
                 if (pos>1) field.setDBPos(pos+1);
             }
             def.setParent(this);
-            fields.put("otype",def);
+            fields.put(FIELD_OTYPE,def);
         }
         updateFields();
     }
