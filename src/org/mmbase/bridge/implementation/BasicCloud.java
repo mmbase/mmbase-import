@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.118 2004-10-09 09:37:33 nico Exp $
+ * @version $Id: BasicCloud.java,v 1.119 2004-10-29 13:32:08 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -704,9 +704,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             MMObjectNode node = (MMObjectNode)o;
             boolean mayRead = true;
             for (int j = 0; mayRead && (j < steps.size()); ++j) {
-                int nodenr = node.getIntValue(((Step)steps.get(j)).getTableName() + ".number");
+                // Only virtual nodes have fields with a prepended builder name (bug #6612).
+                int nodenr;
+                if (node.isVirtual()) {
+                    nodenr = node.getIntValue(((Step)steps.get(j)).getTableName() + ".number");                 
+                } else {
+                    nodenr = node.getIntValue("number");
+                }
+
                 if (nodenr != -1) {
                     mayRead = auth.check(user, nodenr, Operation.READ);
+                    if (!mayRead) break;
                 }
             }
             if (!mayRead) {
