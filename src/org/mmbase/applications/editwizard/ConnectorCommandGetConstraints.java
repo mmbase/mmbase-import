@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetConstraints.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
+ * @version $Id: ConnectorCommandGetConstraints.java,v 1.4 2002-03-18 17:13:06 eduard Exp $
  */
 
 public class ConnectorCommandGetConstraints extends ConnectorCommand {
@@ -25,7 +25,7 @@ public class ConnectorCommandGetConstraints extends ConnectorCommand {
     /**
      * @javadoc
      */
-    public ConnectorCommandGetConstraints(String objecttype) {
+    public ConnectorCommandGetConstraints(String objecttype) throws WizardException {
         super("getconstraints");
         addCommandAttr("type",objecttype);
     }

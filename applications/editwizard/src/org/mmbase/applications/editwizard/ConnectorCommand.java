@@ -17,7 +17,7 @@ import java.util.Date;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommand.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
+ * @version $Id: ConnectorCommand.java,v 1.4 2002-03-18 17:13:06 eduard Exp $
  */
 
 public class ConnectorCommand {
@@ -29,7 +29,7 @@ public class ConnectorCommand {
     /**
      * @javadoc
      */
-    public ConnectorCommand(String aname) {
+    public ConnectorCommand(String aname) throws WizardException {
         name = aname;
         id = new Date().getTime()+"";
         xml = Utils.parseXML("<"+name+" id=\"" + id + "\"/>");
