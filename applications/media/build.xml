@@ -1,11 +1,13 @@
 <!-- ===========================================================================
 
 
-Media project build file
+Generic project build file.
+
+Generates a jar.
 
 ============================================================================ -->
 
-<project name="MMBase media" default="jar" basedir=".">
+<project name="MMBase project" default="jar" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Init                                                                -->
@@ -16,17 +18,18 @@ Media project build file
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
   <property name="deprecation" value="on"/>
-  <property name="media.source.dir" location="." />
-  <property name="media.build.dir"  location="./build" />
+  <property name="project.source.dir" location="." />
+  <property name="project.build.dir"  location="./build" />
   <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
   <property name="mmbase.jar"  value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
-  <property name="mmmedia.jar" value="${media.build.dir}/mmmedia.jar"/>
+  <property name="project.name" value="a-mmbase-project" />
+  <property name="project.jar" value="${project.build.dir}/${project.name}.jar"/>
 
   <target name="init" depends="">
     <tstamp/>
-    <mkdir dir="${media.build.dir}"/>
-    <property name="name" value="mmbasemedia"/>
+    <mkdir dir="${project.build.dir}"/>
+    <property name="name" value="${project.name}"/>
     <property name="version" value="${DSTAMP}"/>
     <property name="distro"  value="1.6.0"/>
   </target>
@@ -35,13 +38,13 @@ Media project build file
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
-  <target name="jar" description="Create the MMBase media jar file"
+  <target name="jar" description="Create the MMBase project jar file"
           depends="init,compile">
 
-    <echo file="${media.build.dir}/manifest.mf">
+    <echo file="${project.build.dir}/manifest.mf">
 Name: org/mmbase
-Vendor: MMBase Community
-URL: http://www.mmbase.org
+Vendor: MMBase community
+URL: http://{$project.name}.mmbase.org
 Comment: The MMBase Content Managment System
 Version: ${distro}.${version}
 Distribution: ${distro}
@@ -50,10 +53,10 @@ Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
 </echo>
 
-    <jar jarfile="${mmmedia.jar}"
-         basedir="${media.build.dir}/classes"
+    <jar jarfile="${project.jar}"
+         basedir="${project.build.dir}/classes"
 	     includes="org/**,nl/**"
-	     manifest="${media.build.dir}/manifest.mf" >
+	     manifest="${project.build.dir}/manifest.mf" >
     </jar>
 
   </target>
@@ -63,35 +66,39 @@ Build-compiler: ${build.compiler}
   <target name="compile" description="Compile the source directory"
           depends="init">
 
-    <mkdir dir="${media.build.dir}/classes"/>
-
+    <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
 
-    <copy todir="${media.build.dir}/classes">
-      <fileset dir="${media.source.dir}">
+    <echo message="copying" />
+
+    <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
+      <fileset dir="${project.source.dir}">
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
         <include name="**/*.xml"/>
+        <exclude name="build/**"/>
       </fileset>
     </copy>
 
-    <javac srcdir="${media.source.dir}"
-           destdir="${media.build.dir}/classes"
-           debug="$[debug}"
+    <echo message="compiling" />
+
+    <javac srcdir="${project.source.dir}"
+           destdir="${project.build.dir}/classes"
+           debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
       <classpath>
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
       </classpath>
-
+         <include name="**/*.java"/>
     </javac>
   </target>
 
 
   <target name="clean" description="Clean">
-    <delete dir="${media.build.dir}" />
+    <delete dir="${project.build.dir}" />
   </target>
 
 
