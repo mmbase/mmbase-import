@@ -83,6 +83,10 @@ several MMBase-checkouts.
   <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
 
 
+  <!-- applications related setting -->
+  <property name="applications.home"  value="${source.dir}/applications" />
+
+
   <property name="source-config.dir"         location="${source.dir}/config"/>
   <property name="source-config-builders.dir" location="${source.dir}/config/builders;${source.dir}/config/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
@@ -223,7 +227,7 @@ builddate=${builddate}
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,web">
+          depends="lib.release,web,applications">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -1217,6 +1221,19 @@ Build-compiler: ${build.compiler}
     </copy>
   </target>
 
+  <!-- ================================================================================ -->
+  <!-- applications -->
+  <!-- ================================================================================ -->
+
+  <target name="applications">
+    <ant dir="${applications.home}" target="install">
+    </ant>
+  </target>
+  <target name="clean.applications">
+    <ant dir="${applications.home}" target="clean">
+    </ant>
+  </target>
+
   <!-- only needed for builder.docs -->
   <target name="doc.resources" depends="expand.docbook-xsl">
     <delete file="${build.dir}/docbook2xhtml.xslt" />
@@ -1226,6 +1243,7 @@ Build-compiler: ${build.compiler}
               value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
 
   </target>
+
 
   <target name="documentation" 
           depends="jar,taglib.doc,documentation.builders,mmcidocs">
@@ -1375,7 +1393,7 @@ Build-compiler: ${build.compiler}
 
   <target
     name="clean"
-    depends="clean.build,clean.documentation,clean.expand,clean.srcdist,clean.bindist,clean.war"
+    depends="clean.build,clean.documentation,clean.expand,clean.srcdist,clean.bindist,clean.war,clean.applications"
     description="Clean everything (except for downloading)" />
 
 </project>

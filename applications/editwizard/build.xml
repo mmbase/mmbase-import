@@ -6,6 +6,12 @@
 <project name="MMBase editwizard project" default="jar" basedir=".">
   <property name="project.name"     value="editwizard" />
   <property name="project.package"   value="org/mmbase/applications/editwizard" />
+
+  <!-- JSPSmartUpload -->
+  <property name="jspsmartupload.file" value="jspSmartUpload" />
+  <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
+  <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
+
   &base;
 
   <target name="init.get">
@@ -17,14 +23,9 @@
   <target name="dependent.package" depends="jspsmartupload,package" />
 
   <target name="jspsmartupload" depends="expand.jspsmartupload">
-    <copy todir="${project.jar.dir}" file="${expand.dir}/jspsmartupload/jspsmartupload.jar">
+    <copy todir="${project.jar.dir}" file="${jspsmartupload.jar}">
     </copy>
   </target>
-
-  <!-- JSPSmartUpload -->
-  <property name="jspsmartupload.file" value="jspSmartUpload" />
-  <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
-  <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
   
 
   <!-- Jsp Smartupload is necessary for the editwizards -->
@@ -49,6 +50,10 @@ Version: MMBase build ${version}.${builddate}
        includes="com/**"
        manifest="${expand.dir}/jspsmartupload/manifest.mf" >
     </jar>
+  </target>
+
+  <target name="dependent.install" depends="install,jspsmartupload">
+    <copy todir="${release.lib.dir}" file="${jspsmartupload.jar}" /> 
   </target>
 
 </project>
