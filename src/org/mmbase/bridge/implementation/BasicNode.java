@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.46 2002-02-20 10:34:54 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.47 2002-02-22 14:40:56 michiel Exp $
  */
 public class BasicNode implements Node {
 
@@ -338,12 +338,21 @@ public class BasicNode implements Node {
         return noderef.getStringValue(attribute);
     }
 
+    public Element getXMLValue(String fieldName, Document tree) {
+        return getXMLValue(nodeManager.getField(fieldName), tree);
+    }
+
+    Element getXMLValue(Field field, Document tree) {
+        Element result = noderef.getXMLValue(field.getName(), tree);
+        result = sophisticateField(field, result);
+        return result;
+    }
+
 
     public void commit() {
         if (isnew) {
             cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
-
         edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
@@ -785,5 +794,266 @@ public class BasicNode implements Node {
 	    }
 	}
     }    
+
+    /**
+     * Executes a xpath query on a DOM document.
+     */
+          
+    protected static Element getXMLElement(org.w3c.dom.Node tree, String xpath) {
+	log.debug("gonna execute the query:" + xpath);
+	Element found = null;
+	try {
+	    found = (Element) org.apache.xpath.XPathAPI.selectSingleNode(tree, xpath);
+	}
+	catch(javax.xml.transform.TransformerException te) {
+	    String msg = "error executing query: '" + xpath + "'";
+	    log.error(msg);
+	    log.error(Logging.stackTrace(te));
+    	    throw new BridgeException(msg);
+	}
+	return found; 
+    }
+
+    /** 
+     * Inserts this node into a DOM Document 'objects' if it is not in
+     * it already. 
+     *
+     * @param   tree A DOM Document in which the object should be created.
+     * @return       The node as a DOM Element.
+     * 
+     */
+    
+    public Element toXML(Document tree) {
+        return toXMLBase(tree, getNodeManager().getFields(), false, true);
+    }
+
+    public Element toXML(Document tree, FieldList fieldList) {
+        return toXMLBase(tree, fieldList, true, false);
+    }
+    public Element toXML(Document tree, Field field) {
+        return toXMLBase(tree, field, true, false);
+    }
+    
+    /**
+     * Create the node if it is not in tree already. Add the given
+     * fields, unless 'addFieldsIfExist' is false.
+     * 
+     * allFields should be true if you are adding all fields.
+     *
+     */
+    private Element toXMLBase(Document tree, Object fields, boolean addFieldsIfExist, boolean allFields) {
+    	if(tree == null) {
+	    String message = "Tree was null";
+	    log.error(message);
+	    throw new BridgeException(message);	
+	}
+    
+    	// first look if we have the <objects start="/objects/object[%number%]" />
+	// when not, this node is the start object....
+	Element root = getXMLElement(tree, "/objects");
+	
+	if(root== null) {
+            // No root element was available yet in the toXML function.
+            // This means that the first node was inserted.....
+            
+            // Create the root element.
+    	    root = tree.createElement("objects");
+	    org.w3c.dom.Attr attr = tree.createAttribute("root");
+    	    attr.setValue("" + getNumber());
+	    root.setAttributeNode(attr);
+	    
+	    // get the complete node..
+	    org.w3c.dom.Element object = createNodeToXML(tree, fields, allFields);
+	    root.appendChild(object);
+	    
+	    // put it in the document
+    	    tree.appendChild(root);
+	    return object;	    
+	} else { // roo already  exists already.
+    	    // look if this  node is already available in the tree.
+    	    Element object = getXMLElement(tree, "/objects/object[@id='"+getNumber()+"']");            
+
+	    if(object == null) {  // It doesn't exist, insert it into the tree...
+                object = createNodeToXML(tree, fields, allFields);
+                root.appendChild(object);
+            } else {
+                if (addFieldsIfExist) { // it does exist, add the new fields, if this was explicity requested
+                    nodeToXML(object, fields);
+                }
+            }
+	    return object;
+	}
+    }
+
+    /** 
+     * Creates a node as a DOM Element which can be inserted into tree.
+     *
+     * @param   tree A DOM Document in which the object should be created.
+     * @return       The node as a DOM Element.
+     *
+     **/
+
+    Element createNodeToXML(Document tree, Object fields, boolean allFields) {
+        org.w3c.dom.Element object = tree.createElement("object");
+    	// the id...
+	org.w3c.dom.Attr attr = tree.createAttribute("id");
+    	attr.setValue(""+getNumber());
+	object.setAttributeNode(attr);
+	
+	// the type...
+	attr = tree.createAttribute("type");
+    	attr.setValue(getNodeManager().getName());
+	object.setAttributeNode(attr);
+
+	// the type...
+	attr = tree.createAttribute("complete");
+    	attr.setValue(allFields ? "true" : "false");
+	object.setAttributeNode(attr);
+
+        return nodeToXML(object, fields);
+        
+    }
+
+    /**
+     * Add new fields to the object, (unless the field already exist).
+     * 
+     * You can feed it with a FieldList or with a Field.
+     */
+
+    Element nodeToXML(Element object, Object fields) {
+	if (fields != null) {
+            if (fields instanceof FieldList) {
+                // we now insert all the fields with their info..
+                FieldIterator i = ((FieldList) fields).fieldIterator();
+                while(i.hasNext()) {
+                    Field field = i.nextField();
+                    log.debug("getting field " + field.getName());
+                    if (getXMLElement(object, "field[@name='" + field.getName() + "']") == null) {
+                        object.appendChild(getXMLValue(field, object.getOwnerDocument()));
+                    }
+                }
+            } else {
+                String fieldName = ((Field) fields).getName();
+                log.debug("getting field " + fieldName);
+                if (getXMLElement(object, "field[@name='" + fieldName + "']") == null) {
+                    object.appendChild(getXMLValue(((Field) fields), object.getOwnerDocument()));
+                }
+                
+            }
+        }
+	return object;
+    }
+
+    /**
+     * Gets the value of a field as XML. MMObjectNode does already do
+     * this in a very simple way.    
+     *
+     * With this function, the result from MMObjectNode is made al little more sohpisticated, and 
+     * fit to be used in this classe's 'toXML'.
+     * 
+     */
+
+    Element sophisticateField(Field type, Element field) {
+
+        
+    	String fieldName = type.getName(); //or : String fieldName = field.getAttribute("name");
+        String guiType   = type.getGUIType(); 
+
+
+        log.debug("sophisticating " + fieldName + " (" + guiType + ")");
+        Document tree = field.getOwnerDocument();
+
+	switch(type.getType()) {
+        case Field.TYPE_XML : {
+            
+            // is already in XML;
+
+            break;
+        }
+    	case Field.TYPE_STRING :
+            field.setAttribute("format", "string");
+            break;
+    	case Field.TYPE_INTEGER :
+	    // was it a builder?
+	    if(fieldName.equals("otype")) {
+                field = tree.createElement("builder");
+    	    	// the name...
+    	    	org.w3c.dom.Attr attr = tree.createAttribute("object");
+    	    	attr.setValue(getStringValue(fieldName));
+	    	field.setAttributeNode(attr);
+	    	break;
+	    }	    	    
+	    // was source in relation?
+	    if(fieldName.equals("snumber")) {
+    	    	field = tree.createElement("source");
+    	    	// the name...
+    	    	org.w3c.dom.Attr attr = tree.createAttribute("object");
+    	    	attr.setValue(getStringValue(fieldName));
+	    	field.setAttributeNode(attr);
+                break;
+	    }
+	    // was destination in relation?
+    	    if(fieldName.equals("dnumber")) {
+    	    	field = tree.createElement("destination");
+    	    	// the name...
+    	    	org.w3c.dom.Attr attr = tree.createAttribute("object");
+    	    	attr.setValue(getStringValue(fieldName));
+	    	field.setAttributeNode(attr);
+                break;
+	    }
+	    // was role in relation?
+    	    if(fieldName.equals("rnumber")) {
+    	    	field = tree.createElement("role");
+    	    	// the name...
+    	    	org.w3c.dom.Attr attr = tree.createAttribute("object");
+    	    	attr.setValue(getStringValue(fieldName));
+	    	field.setAttributeNode(attr);
+                break;
+	    }
+	    //	uh, what do we do here?
+    	    if(guiType.equals("reldefs")) {
+    	    	field = tree.createElement("NoNaMeYeT");
+    	    	// the name...
+    	    	org.w3c.dom.Attr attr = tree.createAttribute("object");
+    	    	attr.setValue(getStringValue(fieldName));
+	    	field.setAttributeNode(attr);
+                break;
+	    }	    
+	    // was it a date?
+    	    if(guiType.equals("eventtime")) {
+	    	String value;
+    	    	if(getLongValue("date") == -1) value = "";
+    	    	java.text.SimpleDateFormat dateFormat = (java.text.SimpleDateFormat) java.text.SimpleDateFormat.getDateInstance();
+                // iso 8601 for date/time
+    	    	dateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
+	    	java.util.Date datum = new java.util.Date(getLongValue("date") * 1000);
+    	    	value = dateFormat.format(datum);                
+
+
+	    	((org.w3c.dom.Text) field.getFirstChild()).setData(value);
+
+                field.setAttribute("format", "date");
+                break;
+	    }	    
+	    // well then it WAS a integer i assume.. then resume to numeric part...
+	case Field.TYPE_FLOAT:
+    	case Field.TYPE_DOUBLE:
+	case Field.TYPE_LONG:	    
+	    // all the numeric thingies	    
+            field.setAttribute("format", "numeric");
+            break;
+    	case Field.TYPE_BYTE :
+    	    // return tree.createCDATASection(org.mmbase.util.Encode.encode("BASE64", getByteValue(fieldName)));
+    	    field = tree.createElement("resource");    	    
+	    org.w3c.dom.Attr attr = tree.createAttribute("id");
+    	    attr.setValue(fieldName+"@"+getNumber());
+    	    field.setAttributeNode(attr);	    
+    	    break;
+	default :
+            field.setAttribute("format", "unknown");
+            break;
+	}
+        return field;
+    }
 
 }
