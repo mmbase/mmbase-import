@@ -18,7 +18,7 @@ package org.mmbase.bridge;
  * initCause() and getCause();
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeException.java,v 1.5 2002-09-23 12:07:11 pierre Exp $
+ * @version $Id: BridgeException.java,v 1.6 2002-09-23 15:57:34 pierre Exp $
  */
 public class BridgeException extends RuntimeException {
 
@@ -27,6 +27,7 @@ public class BridgeException extends RuntimeException {
     /**
      * Constructs a <code>BridgeException</code> with <code>null</code> as its
      * message.
+     * @since  MMBase-1.6
      */
     public BridgeException() {
         super();
@@ -48,6 +49,7 @@ public class BridgeException extends RuntimeException {
      * The cause can be retrieved with getCause().
      *
      * @param Throwable the cause of the error
+     * @since  MMBase-1.6
      */
     public BridgeException(Throwable cause) {
         super((cause==null ? null : cause.toString()));
@@ -63,6 +65,7 @@ public class BridgeException extends RuntimeException {
      *
      * @param message a description of the error
      * @param Throwable the cause of the error
+     * @since  MMBase-1.6
      */
     public BridgeException(String message, Throwable cause) {
         super(message);
@@ -75,6 +78,7 @@ public class BridgeException extends RuntimeException {
      * Sets the cause of the exception.
      *
      * @return the cause of the error
+     * @since  MMBase-1.6
      */
     public Throwable initCause(Throwable cause) {
         if (cause==this) {
@@ -93,6 +97,7 @@ public class BridgeException extends RuntimeException {
      * Returns the cause of the exception.
      *
      * @return the cause of the exception
+     * @since  MMBase-1.6
      */
     public Throwable getCause() {
         return cause;

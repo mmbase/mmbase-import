@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.9 2002-07-24 11:15:13 pierre Exp $
+ * @version $Id: Field.java,v 1.10 2002-09-23 15:57:34 pierre Exp $
  */
 public interface Field {
 
@@ -88,6 +88,7 @@ public interface Field {
      * As such, isRequired will mostly be used as an indicator for (generic) editors.
      *
      * @return  <code>true</code> if the field is required
+     * @since  MMBase-1.6
      */
     public boolean isRequired();
 
@@ -97,6 +98,7 @@ public interface Field {
      * not support this the uniqueness may not be enforced.
      *
      * @return  <code>true</code> if the field is unique
+     * @since  MMBase-1.6
      */
     public boolean isUnique();
 

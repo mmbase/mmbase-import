@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 /**
- * This exception gets thrown when an object is not found in the bridge.
- * @author Michiel Meeuwissen
+ * This exception gets thrown when an attempt is made to create a transaction with a name that already exists
+ * @author Pierre van Rooden
+ * @version $Id: AlreadyExistsException.java,v 1.2 2002-09-23 15:57:34 pierre Exp $
+ * @since  MMBase-1.6
  */
 public class AlreadyExistsException extends BridgeException {
 

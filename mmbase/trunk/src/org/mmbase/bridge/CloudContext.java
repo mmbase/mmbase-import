@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.16 2002-08-16 18:17:02 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.17 2002-09-23 15:57:34 pierre Exp $
  */
 public interface CloudContext {
 
@@ -86,5 +86,4 @@ public interface CloudContext {
      */
     public java.util.Locale getDefaultLocale();
     
-
  }

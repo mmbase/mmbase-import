@@ -17,7 +17,8 @@ import java.util.Comparator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeList.java,v 1.1 2002-09-23 14:31:02 pierre Exp $
+ * @version $Id: BridgeList.java,v 1.2 2002-09-23 15:57:34 pierre Exp $
+ * @since  MMBase-1.6
  */
 public interface BridgeList extends List {
 
