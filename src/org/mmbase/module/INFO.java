@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.35 2001-05-21 10:03:55 michiel Exp $
+$Id: INFO.java,v 1.36 2001-06-23 16:27:19 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.35  2001/05/21 10:03:55  michiel
+michiel: new logging system
+
 Revision 1.34  2001/05/17 17:10:47  daniel
 sync to make sure, probably some curtime calls added
 
@@ -44,6 +47,7 @@ import java.text.*;
 import java.text.SimpleDateFormat;
 
 import org.mmbase.util.*;
+import org.mmbase.module.core.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -59,7 +63,7 @@ import org.mmbase.util.logging.Logger;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.35 $ $Date: 2001-05-21 10:03:55 $
+ * @$Revision: 1.36 $ $Date: 2001-06-23 16:27:19 $
  */
 public class INFO extends ProcessorModule {
 
@@ -90,7 +94,8 @@ public class INFO extends ProcessorModule {
             String curdir=System.getProperty("user.dir");
             documentroot=curdir+"/default-web-app/";
         } else {
-            documentroot=System.getProperty("mmbase.htmlroot");
+            //documentroot=System.getProperty("mmbase.htmlroot");
+            documentroot=MMBaseContext.getHtmlRoot();
         }
         // org.mmbase super.init();
         rnd=new RandomPlus();
@@ -169,6 +174,7 @@ public class INFO extends ProcessorModule {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();    
+            if (cmd.equals("CLASS")) return("CLASS="+this);
             if (cmd.equals("BROWSER")) return doBrowser(sp,tok);
             if (cmd.equals("DECODE")) return doParamDecode(sp,tok);
             if (cmd.equals("ENCODE")) return doParamEncode(sp,tok);
@@ -1183,6 +1189,7 @@ public class INFO extends ProcessorModule {
             }
         }
         Runtime rt = Runtime.getRuntime();
+
         if (memDiv < 1.0f) {
             if (whichMem == 0)
                 return (""+rt.totalMemory());
