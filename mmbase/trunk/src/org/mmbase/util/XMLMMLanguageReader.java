@@ -20,7 +20,7 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * cjr@dds.nl
+ * @author cjr@dds.nl
  *
  * XMLLanguageReader parses the .xml file in its argument in its constructor.
  * This .xml file should be formatted according to mmlanguage.dtd.
@@ -82,12 +82,12 @@ public class XMLMMLanguageReader  {
 		    Node n2=n1.getFirstChild();
 		    while (n2!=null) {
 			if (n2.getNodeName().equalsIgnoreCase("dictionary")) {
-			    System.out.println(n2.getNodeName());
+			    //System.out.println(n2.getNodeName());
 			    Node n3=n2.getFirstChild();
 			    while (n3!=null) {
 				Node n4 = n3.getFirstChild();
 				if (n4 != null && n4.getNodeType() == n4.TEXT_NODE) {
-				    System.out.println(n3.getNodeName() + " -> " + n4.getNodeValue());
+				    //System.out.println(n3.getNodeName() + " -> " + n4.getNodeValue());
 				    dictionary.put(n3.getNodeName(),n4.getNodeValue());
 				}
 				n3 = n3.getNextSibling();
