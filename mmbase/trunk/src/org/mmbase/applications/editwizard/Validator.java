@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.3 2002-02-27 16:54:22 pierre Exp $
+ * @version $Id: Validator.java,v 1.4 2002-09-23 11:09:16 michiel Exp $
  */
 
 public class Validator {
@@ -89,7 +89,7 @@ public class Validator {
         val = field.getOwnerDocument().createElement("validator");
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
-        if (dttype.equals("string") || ftype.equals("html")) {
+        if ("html".equals(dttype) || "html".equals(ftype)) {
             // string or html
             int dtminlength = 0;
             try {
@@ -110,7 +110,7 @@ public class Validator {
                 addValidationError(val, 1, "Entered text is too long or too short.");
             }
         }
-        if (dttype.equals("int")) {
+        if ("int".equals(dttype)) {
             // int
             int nr=0;
             boolean isint=false;
@@ -130,11 +130,11 @@ public class Validator {
                 }
             }
         }
-        if (dttype.equals("date")) {
+        if ("date".equals(dttype)) {
             // date
             // TODO
         }
-        if (dttype.equals("enum")) {
+        if ("enum".equals(dttype)) {
             // enum
             // TODO
         }
