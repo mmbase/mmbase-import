@@ -285,6 +285,7 @@ public class servdb extends JamesServlet {
 					// --------
 					if (req.getRequestURI().indexOf("rastream")!=-1) 
 					{
+						cacheReq = false;
 						debug("service(rastream)");
 
 						boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
@@ -334,7 +335,7 @@ public class servdb extends JamesServlet {
 					// --------
 					if (req.getRequestURI().indexOf("rmstream")!=-1) 
 					{
-
+						cacheReq = false;
 						if (debug) debug("service(rastream)");
 
 						// is it a audiopart or an episode ?
