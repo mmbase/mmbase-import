@@ -12,7 +12,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 
-import org.mmbase.bridge.jsp.taglib.ConditionTag;
+import org.mmbase.bridge.jsp.taglib.Condition;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
 * 
 * @author Michiel Meeuwissen
 */
-public class PresentTag extends ContextReferrerTag implements ConditionTag {
+public class PresentTag extends ContextReferrerTag implements Condition {
 
     protected boolean inverse = false;
 

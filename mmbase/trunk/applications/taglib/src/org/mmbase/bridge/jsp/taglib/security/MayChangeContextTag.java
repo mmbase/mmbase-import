@@ -9,16 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
-import org.mmbase.bridge.jsp.taglib.ConditionTag;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A very simple tag to check if node may be linked to.
-* 
-* @author Michiel Meeuwissen
-*/
-public class MayChangeContextTag extends MayWriteTag implements ConditionTag {
+ * A very simple tag to check if node may be linked to.
+ * 
+ * @author Michiel Meeuwissen
+ */
+public class MayChangeContextTag extends MayWriteTag implements Condition {
                
     public int doStartTag() throws JspTagException {
         if ((getNode().mayChangeContext()) != inverse) {

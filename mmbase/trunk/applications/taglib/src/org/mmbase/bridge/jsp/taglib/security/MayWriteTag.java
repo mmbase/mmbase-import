@@ -9,18 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
-import org.mmbase.bridge.jsp.taglib.ConditionTag;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
 import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A very simple tag to check if node may be deleted.
-* 
-* @author Michiel Meeuwissen
-*/
-public class MayWriteTag extends NodeReferrerTag implements ConditionTag {
+ * A very simple tag to check if node may be deleted.
+ * 
+ * @author Michiel Meeuwissen
+ */
+public class MayWriteTag extends NodeReferrerTag implements Condition {
 
     protected boolean inverse = false;
 
