@@ -12,8 +12,8 @@
   <target name="all" depends="mmbase-core">
 		  </target>
   <target name="mmbase-core" depends="init">
-<!-- create a structure that matches the maven structure -->
-    <mkdir dir="mmbase-core"/>
+   <!-- create a structure that matches the maven structure -->
+	 <delete dir="mmbase-core/CVS"/>
     <copy todir="mmbase-core/src">
       <fileset dir="${mmbaseroot}/src" defaultexcludes="no">
         <exclude name="org/mmbase/module/builders/ConvertJAI.java"/>
