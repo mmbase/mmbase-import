@@ -123,7 +123,7 @@ public class Posting {
      * @return accountname/nick of the poster
      */
     public String getPoster() {
-        return node.getStringValue("poster");
+        return node.getStringValue("c_poster");
     }
 
     /**
