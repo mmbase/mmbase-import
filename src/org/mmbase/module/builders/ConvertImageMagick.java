@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.46 2003-03-13 13:51:37 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.47 2003-04-25 11:37:43 kees Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -645,10 +645,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
             }
             
             
-            ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict), process.getOutputStream());
-            log.debug("starting process writer");
-            pw.start();
-            log.debug("done with process writer");
+            if (pict.length >0){
+                ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict), process.getOutputStream());
+                log.debug("starting process writer");
+                pw.start();
+                log.debug("done with process writer");
+            } else {
+                log.warn("trying to convert empty byte[] (no picute data)");
+            }
 
             // in grabs the stuff coming from stdout from program...
             in = new BufferedInputStream(process.getInputStream(), 1);
