@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.64 2002-06-20 14:11:06 michiel Exp $
+ * @version $Id: MMBase.java,v 1.65 2002-06-26 12:01:27 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -298,9 +298,9 @@ public class MMBase extends ProcessorModule  {
             locale = new Locale(tmp, "");
         }
 
-        tmp=getInitParameter("ENCODING");
+        tmp = getInitParameter("ENCODING");
         if (tmp != null && !tmp.equals("")) {
-            encoding=tmp;
+            encoding = tmp;
         }
 
         tmp=getInitParameter("AUTH401URL");
@@ -1080,8 +1080,8 @@ public class MMBase extends ProcessorModule  {
      */
     public MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
         MMObjectBuilder bul=getMMObject(builder);
-        if (bul!=null) {
-            log.info("Builder '"+builder+"' is already loaded");
+        if (bul != null) {
+            log.debug("Builder '"+builder+"' is already loaded");
             return bul;
         }
 
@@ -1219,7 +1219,7 @@ public class MMBase extends ProcessorModule  {
      * @since  MMBase-1.6
      */
     public String getEncoding() {
-    return encoding;
+        return encoding;
     }
 
     /**
