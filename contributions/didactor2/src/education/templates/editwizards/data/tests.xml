@@ -172,6 +172,50 @@
 -->
         </list>
 
+        <!-- we need a new list to make an extra search command -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
+            <title>Zoeken op tekenreeks</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="posrel" destinationtype="questions">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+
+
+             <command name="search" nodepath="metalangstring,metadata,questions" fields="questions.title,metalangstring.value" age="7" orderby="questions.number" directions="down" >
+                <prompt>Zoeken naar vragen op metadata</prompt>
+                <search-filter>
+                    <name>Metadata tekenreeks bevat</name>
+                    <search-fields>metalangstring.value</search-fields>
+                </search-filter>
+           </command>           
+        </list>
+
+        <!-- we need a new list to make an extra search command -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
+            <title>Zoeken op vocabulair</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="posrel" destinationtype="questions">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+
+
+             <command name="search" nodepath="metavocabulary,metadata,questions" fields="questions.title,metavocabulary.value" age="7" orderby="questions.number" directions="down" >
+                <prompt>Zoeken naar vragen op metadata</prompt>
+                <search-filter>
+                    <name>Metadata vocabulair bevat</name>
+                    <search-fields>metavocabulary.value</search-fields>
+                </search-filter>
+           </command>           
+        </list>
+
+
+
         <list role="related" extends="list/online.xml" />
         <list destination="feedback" role="related" extends="list/feedback.xml" />
     </form-schema>

@@ -106,7 +106,6 @@
             <command name="startwizard" inline="true" wizardname="tests" objectnumber="new">
               <prompt>Nieuwe toets</prompt>
             </command>
-
             <command name="search" nodepath="learnobjects" fields="name" age="7" orderby="number" directions="down" >
                 <prompt>Zoeken naar leerobjecten</prompt>
                 <search-filter>
@@ -115,6 +114,51 @@
                 </search-filter>
            </command>
         </list>
+
+
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
+            <title>Zoeken op tekenreeks</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="posrel" destinationtype="learnobjects">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+
+
+             <command name="search" nodepath="metalangstring,metadata,learnobjects" fields="learnobjects.name,metalangstring.value" age="7" orderby="learnobjects.number" directions="down" >
+                <prompt>Zoeken naar leerobjecten op metadata</prompt>
+                <search-filter>
+                    <name>Metadata tekenreeks bevat</name>
+                    <search-fields>metalangstring.value</search-fields>
+                </search-filter>
+           </command>           
+        </list>
+
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
+            <title>Zoeken op vocabulair</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="posrel" destinationtype="learnobjects">
+                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+                </relation>
+            </action>
+
+
+             <command name="search" nodepath="metavocabulary,metadata,learnobjects" fields="learnobjects.name,metavocabulary.value" age="7" orderby="learnobjects.number" directions="down" >
+                <prompt>Zoeken naar leerobjecten op metadata</prompt>
+                <search-filter>
+                    <name>Metadata vocabulair bevat</name>
+                    <search-fields>metavocabulary.value</search-fields>
+                </search-filter>
+           </command>
+           
+        </list>
+
 
 
         <list role="related" extends="list/online.xml" />
