@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.43 2002-07-05 21:08:54 michiel Exp $
+ * @version $Id: Wizard.java,v 1.44 2002-07-08 09:59:50 pierre Exp $
  *
  */
 public class Wizard {
@@ -1065,7 +1065,7 @@ public class Wizard {
         }
 
         // resolve special attributes
-        if (ftype.equals("startwizard")) {           
+        if (ftype.equals("startwizard")) {
             String objectNumber = Utils.getAttribute(newfield,"objectNumber", "new");
             objectNumber = Utils.transformAttribute(datanode, objectNumber);
             Utils.setAttribute(newfield, "objectNumber", objectNumber);
@@ -1087,7 +1087,7 @@ public class Wizard {
                     theValue = Utils.getAttribute(field, "name");
                     log.debug("Found a function field " + theValue);
                 } else {
-                    log.debug("Probably a new node");                    
+                    log.debug("Probably a new node");
                     throw new WizardException("No datanode given for field " + theValue + " and ftype does not equal 'function' (but " + ftype + ")");
                 }
             } else if (datanode.getNodeType() == Node.ATTRIBUTE_NODE){
@@ -1174,7 +1174,7 @@ public class Wizard {
      * @param  fid     The wizarddefinition field id what applies to this data
      * @param  value   The (String) value what should be stored in the data.
      */
-    private void storeValue(String did, String fid, String value) throws WizardException {       
+    private void storeValue(String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled()) {
             log.debug("String value " + value + " in " + did + " for field " + fid);
             log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
@@ -1188,7 +1188,7 @@ public class Wizard {
         boolean ok = false;
 
         if (datanode == null){
-            log.debug("Node datanode found!");          
+            log.debug("Node datanode found!");
             // Nothing.
         } else if (dttype.equals("binary")) {
             // binaries are stored differently
@@ -1718,7 +1718,7 @@ public class Wizard {
         // in the old format, ftype was date, while dttype was date,datetime, or time
         // In the new format, this is reversed (dttype contains the base datatype,
         // ftype the format in which to enter it)
-        if (dttype.equals("date") || dttype.equals("time") || dttype.equals("datetime")) {
+        if (dttype.equals("date") || dttype.equals("time")) {
             ftype=dttype;
             dttype="datetime";
         }
