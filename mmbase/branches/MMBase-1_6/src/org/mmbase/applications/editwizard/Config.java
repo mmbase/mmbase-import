@@ -24,13 +24,13 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26 2002-08-21 17:22:04 michiel Exp $
+ * @version $Id: Config.java,v 1.26.2.1 2003-04-16 13:49:17 vpro Exp $
  */
 
 public class Config {
 
     // logging
-    private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Config.class.getName());
 
     // protocol string to test referrer pages
     private final static String PROTOCOL = "http://";
