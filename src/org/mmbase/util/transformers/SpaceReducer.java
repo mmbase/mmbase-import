@@ -25,17 +25,34 @@ import java.io.Writer;
 
 public class SpaceReducer extends AbstractCharTransformer implements CharTransformer {
 
-    // to be implemented
+
     public Writer transform(Reader r, Writer w) {
+        int space = 0;
+        int nl = 0;
         try {
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                w.write(c);
+                if (c == '\n') {
+                    if (nl == 0) w.write(c);                    
+                    space++;
+                    nl++;
+                } else if (c == ' ' || c == '\t') {
+                    if (space == 0) w.write(c);
+                    space ++;
+                } else {                
+                    space = 0; nl = 0;
+                    w.write(c);
+                }
             }
         } catch (java.io.IOException e) {
+            System.out.println("w" + e.toString());
         }
         return w;
     }
 
+
+    public String toString() {
+        return "SPACEREDUCER";
+    }
 }
