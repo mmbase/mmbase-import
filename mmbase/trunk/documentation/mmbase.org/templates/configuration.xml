@@ -17,7 +17,7 @@
 
 		<date>[date, format: YYYY-MM-DD ]</date>
 
-		<edition>$Id: configuration.xml,v 1.1 2004-02-05 09:34:45 pierre Exp $</edition>
+		<edition>$Id: configuration.xml,v 1.2 2004-02-05 14:05:23 pierre Exp $</edition>
 
 		<authorgroup>
 			<!-- one or more authors -->
@@ -59,9 +59,9 @@
 		<para>[Place here a description of the configuration of the system, and how it is accessed. Use this section if you have more than one configuration file (or if a file has distinct sections) or if the configuration is of a complex nature.
 		The following lists the individual files or sections. For each file or section, create a separate section tag below.]</para>
 		<itemizedlist>
-			<title>Values:</title>
+			<title>Sections:</title>
 			<listitem>
-				<formalpara><title>[Configuration file/sectionname]</title></formalpara>
+				<formalpara><title><link linkend="configuration_[filename]">[Configuration file/sectionname]</link></title></formalpara>
 				<para>[Place here a text describing the purpose of this file or section.]</para>
 			</listitem>
 		</itemizedlist>
@@ -70,17 +70,19 @@
 	<section id="configuration_[filename]">
 		<title>[Configuration file or section name]</title>
 		<para>[Place here a text describing the structure of this file or section.]</para>
-		<section>
-			<title>[Configuration parameter name or xmlpath]</title>
-			<para>[Place here a text describing the purpose of this parameter. If there is a limited set of values,  list them below.]</para>
-			<itemizedlist>
-				<title>Values:</title>
-				<listitem>
-					<formalpara><title>[value]</title></formalpara>
-					<para>[Description of the meaning of this value.]</para>
-				</listitem>
-			</itemizedlist>
-		</section>
+		<itemizedlist>
+			<listitem>
+				<formalpara><title>[Configuration parameter name or xmlpath]</title></formalpara>
+				<para>[Place here a text describing the purpose of this parameter. If there is a limited set of values,  list them below.]</para>
+				<itemizedlist>
+					<title>Values:</title>
+					<listitem>
+						<formalpara><title>[value]</title></formalpara>
+						<para>[Description of the meaning of this value.]</para>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+		</itemizedlist>
 	</section>
 
 	<section id="references">
