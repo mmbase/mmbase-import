@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.69 2002-09-30 16:29:28 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.70 2002-10-01 19:45:21 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -446,7 +446,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
         // Create a String that represents the amount of DB fields to be used in the insert.
         // First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
-        String fieldAmounts="?";
+        StringBuffer fieldAmounts = new StringBuffer();
 
         // Append the DB elements to the fieldAmounts String.
         for (Enumeration e= ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
@@ -459,7 +459,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 // hack for blobs to disk
                 int dbtype=node.getDBType(key);
                 if (!bdm || dbtype!=FieldDefs.TYPE_BYTE) {
-                    fieldAmounts+=",?";
+                    fieldAmounts.append(",?");
                 } else {
                 }
             } else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
@@ -467,7 +467,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             } else {
 
                 if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
-                    fieldAmounts+=",?";
+                    fieldAmounts.append(",?");
                 } else {
                     log.error("Insert: DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
                 }
@@ -480,16 +480,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             // Prepare the statement using the amount of fields found.
             if (log.isDebugEnabled()) log.trace("Insert: Preparing statement "+mmb.baseName+"_"+tableName+" using fieldamount String: "+fieldAmounts);
             con=bul.mmb.getConnection();
-            stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values("+fieldAmounts+")");
+            stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values("+fieldAmounts.substring(1)+")");
         } catch(Exception e) {
             log.error(Logging.stackTrace(e));
         }
         try {
             stmt.setEscapeProcessing(false);
-            // First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
-            stmt.setInt(1,number);
-
-            int j=2;
+            int j = 1;
             for (Enumeration e=((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
                 String key = ((FieldDefs)e.nextElement()).getDBName();
                 int DBState = node.getDBState(key);
@@ -1698,16 +1695,16 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             ResultSet rs=stmt.executeQuery("select * from "+mmb.baseName+"_"+tablename);
             ResultSetMetaData rsmd = rs.getMetaData();
             int colcount=rsmd.getColumnCount();
-            String fieldAmounts="?";
+            StringBuffer fieldAmounts = new StringBuffer();
 
             Vector newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
             for (int i=1;i<newfields.size();i++) {
-                fieldAmounts+=",?";
+                fieldAmounts.append(",?");
             }
 
             while(rs.next()) {
                 MultiConnection con2=mmb.getConnection();
-                PreparedStatement stmt2=con2.prepareStatement("insert into "+mmb.baseName+"_"+tmptable+" values("+fieldAmounts+")");
+                PreparedStatement stmt2=con2.prepareStatement("insert into "+mmb.baseName+"_"+tmptable+" values("+fieldAmounts.substring(1)+")");
                 stmt2.setEscapeProcessing(false);
                 Hashtable oldvalues=new Hashtable(colcount);
                 for (int i=1;i<colcount+1;i++) {
