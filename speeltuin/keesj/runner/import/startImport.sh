@@ -1,5 +1,5 @@
 CLASSPATH=.
-for i in ../WEB-INF/lib/*.jar
+for i in ../../WEB-INF/lib/*.jar
 do
 	CLASSPATH=$CLASSPATH:$i
 done
