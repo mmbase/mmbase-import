@@ -157,11 +157,21 @@ public class BasicNodeManager implements NodeManager {
      * @return a <code>List</code> of found nodes
      */
     public List search(String where, String sorted, boolean direction) {
+  		
   		Vector retval = new Vector();
-		Enumeration nodeEnum = builder.searchVector(where,sorted,direction).elements();
+  		Enumeration nodeEnum = null;
+  		if ((where!=null) && (!where.trim().equals(""))) {
+		    where="WHERE "+where;
+  		}
+  		if ((sorted!=null) && (!sorted.trim().equals(""))) {
+		    nodeEnum = builder.searchVector(where,sorted,direction).elements();
+	    } else {
+		    nodeEnum = builder.searchVector(where).elements();
+	    }
         while(nodeEnum.hasMoreElements()){
 			retval.addElement(new BasicNode((MMObjectNode)nodeEnum.nextElement(),this));
 		}
   		return retval;
+  		
     }
 }
