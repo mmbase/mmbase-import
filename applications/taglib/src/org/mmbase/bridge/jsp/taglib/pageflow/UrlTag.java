@@ -17,21 +17,39 @@ import java.io.IOException;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 
+import org.mmbase.bridge.jsp.taglib.Writer;
+import org.mmbase.bridge.jsp.taglib.WriterHelper;
+
 import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A Tag to produce an URL with parameters. This meant to live in a
-* Context of type 'parameters'.
-* 
-* @author Michiel Meeuwissen
-*/
-public class UrlTag extends ContextReferrerTag {
+ * A Tag to produce an URL with parameters. This meant to live in a
+ * Context of type 'parameters'.
+ * 
+ * @author Michiel Meeuwissen
+ */
+public class UrlTag extends ContextReferrerTag  implements Writer {
+
+    protected WriterHelper helper = new WriterHelper(); 
+    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
+
+    public void setVartype(String t) throws JspTagException { 
+        throw new JspTagException("Url tag can only produces Strings");
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getValue() throws JspTagException {
+        return getUrl();
+    }
            
-    private Vector  referids = null;
-    private HashMap extraParameters = null;
+    private   Vector  referids = null;
+    private   HashMap extraParameters = null;
     protected String  page;
-    private String  jspvar;
 
     public void setReferids(String r) throws JspTagException {
         referids = stringSplitter(getAttributeValue(r));
@@ -41,18 +59,28 @@ public class UrlTag extends ContextReferrerTag {
         page = getAttributeValue(p); 
     }
 
-    public void setJspvar(String jv) {
-        jspvar = jv;
-    }
-
-    void addParameter(String key, Object value) {
+    void addParameter(String key, Object value) throws JspTagException {
         extraParameters.put(key, value);
+        if (helper.getJspvar() != null) {
+            helper.setValue(getUrl());        
+            helper.setJspvar(pageContext);  
+        }
     }
 
    
     
     public int doStartTag() throws JspTagException {  
         extraParameters = new HashMap();
+        if (page == null) {
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+            page = req.getRequestURI();
+        }
+
+        String show = getUrl();
+        if (helper.getJspvar() != null) {
+            helper.setValue(getUrl());        
+            helper.setJspvar(pageContext);  
+        }
         return EVAL_BODY_TAG;
     }
 
@@ -93,31 +121,15 @@ public class UrlTag extends ContextReferrerTag {
     }
 
     public int doAfterBody() throws JspTagException {
-
-        if (page == null) {
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            page = req.getRequestURI();
+        helper.setBodyContent(bodyContent);
+        if (helper.getJspvar() == null) {
+            helper.overrideWrite(true); // because Url tag can have subtags (param), default writing even with body seems sensible
         }
-
-        String show = getUrl();
-
+        helper.setValue(getUrl());
         if (getId() != null) {
-            getContextTag().register(getId(), show);
+            getContextTag().register(getId(), helper.getValue());
         }
-            
-        if (jspvar != null) {
-            pageContext.setAttribute(jspvar, show);
-        } else {
-            try {                
-                bodyContent.clear();
-                bodyContent.print(show);                
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (IOException e) {
-                throw new JspTagException (e.toString());            
-            }
-            
-        }
-        return SKIP_BODY;
+        return helper.doAfterBody();
     }
 
 }
