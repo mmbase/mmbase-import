@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @version 09 Mar 2001
- * @$Revision: 1.13 $ $Date: 2002-11-13 22:07:50 $
+ * @$Revision: 1.14 $ $Date: 2002-11-14 16:31:19 $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
    
@@ -566,8 +566,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
             n1.delRelationsCache();
             n2.delRelationsCache();
-            mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-            mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+            mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+            mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
          } else {
             mmb.mmc.changedNode(node.getIntValue("number"),tableName,"n");
          }
@@ -829,8 +829,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             // figure out tables to send the changed relations
             MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
             MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-            mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-            mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+            mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+            mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
          } else {
             mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
          }
