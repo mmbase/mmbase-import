@@ -278,7 +278,7 @@ public class RemoteGenerator{
                     
                     paramCounter ++;
                     if (parameter.getOriginalName().indexOf("mmbase") != -1  ){
-                        sb.append("("+parameter.getShortName() +")StubToLocalMapper.get(param"  + paramCounter +".getMapperCode())");
+                        sb.append("("+parameter.getShortName() +")StubToLocalMapper.get(param" + paramCounter + " == null ? \"\" + null : param"  + paramCounter +".getMapperCode())");
                     } else if (parameter.getOriginalName().equals("java.lang.Object") && ! parameter.isArray){
                         sb.append("ObjectWrapper.rmiObjectToLocal(param" + paramCounter +")");
                     } else {
@@ -440,7 +440,8 @@ public class RemoteGenerator{
                     XMLClass parameter =(XMLClass) paramIter.next();
                     paramCounter ++;
                     if (parameter.getOriginalName().indexOf("mmbase") != -1){
-                        sb.append("(Remote"+parameter.getShortName()+")((MappedObject)param"+paramCounter +").getWrappedObject()");
+                        
+                        sb.append("(Remote"+parameter.getShortName()+")( param" + paramCounter + " == null ? null : ((MappedObject) param"+paramCounter +").getWrappedObject())");
                     } else {
                         if (parameter.getOriginalName().equals("java.lang.Object")){
                             String sss = className.substring(6,className.length() -9 );
