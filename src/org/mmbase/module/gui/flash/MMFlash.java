@@ -24,6 +24,11 @@ import org.mmbase.module.gui.html.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Implements the parsing and generating of dynamic flash files
+ * @author Daniel Ockeloen
+ * @version $Id: MMFlash.java,v 1.5 2001-05-04 12:28:35 vpro Exp $
+ */
 public class MMFlash extends Module {
 
 	static Logger log =Logging.getLoggerInstance(MMFlash.class.getName()); 
