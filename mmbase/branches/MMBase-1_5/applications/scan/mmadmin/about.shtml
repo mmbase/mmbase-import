@@ -11,7 +11,7 @@
 	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 	<TD BGCOLOR="#44BDAD">
 		<FONT COLOR="#000000">
-		<B>MMBase runner version 1.4.0</B>
+		<B>MMBase 1.5</B>
 		</FONT>
 	</TD>
 </TR>
@@ -83,7 +83,7 @@ The Source distro includes all the sources to build your own MMBase.
 
 			<BR><BR>
 If you run into problems you can get help from the following sources :<BR><BR>
-readme - <A HREF="/mmdocs/readme.txt" TARGET="_ext">/mmdocs/readme.txt</A><BR>
+readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />
 website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
 mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
 irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
