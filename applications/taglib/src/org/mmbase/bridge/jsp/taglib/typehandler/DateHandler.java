@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.2 2002-12-17 15:32:10 pierre Exp $
+ * @version $Id: DateHandler.java,v 1.3 2003-03-20 10:56:14 pierre Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -204,13 +204,22 @@ public class DateHandler extends AbstractTypeHandler {
         String guitype = field.getGUIType();
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
+        String input_day    = context.getContextTag().findAndRegisterString(prefix(fieldName + "_day"));
+        String input_month  = context.getContextTag().findAndRegisterString(prefix(fieldName + "_month"));
+        String input_year   = context.getContextTag().findAndRegisterString(prefix(fieldName + "_year"));
+        String input_hour   = context.getContextTag().findAndRegisterString(prefix(fieldName + "_hour"));
+        String input_minute = context.getContextTag().findAndRegisterString(prefix(fieldName + "_minute"));
+        String input_second = context.getContextTag().findAndRegisterString(prefix(fieldName + "_second"));
+        if (input_day==null || input_hour==null) {
+            return null;
+        }
         try {
-            Integer day    = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_day")));
-            Integer month  = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_month")));
-            Integer year   = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_year")));
-            Integer hour   = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_hour")));
-            Integer minute = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_minute")));
-            Integer second = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_second")));
+            Integer day    = new Integer(input_day);
+            Integer month  = new Integer(input_month);
+            Integer year   = new Integer(input_year);
+            Integer hour   = new Integer(input_hour);
+            Integer minute = new Integer(input_minute);
+            Integer second = new Integer(input_second);
             cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
