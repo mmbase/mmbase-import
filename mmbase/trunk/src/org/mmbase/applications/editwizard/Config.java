@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.8 2002-05-17 10:45:53 pierre Exp $
+ * @version $Id: Config.java,v 1.9 2002-05-17 11:04:18 michiel Exp $
  */
 
 public class Config {
@@ -51,6 +51,7 @@ public class Config {
         public String objectNumber;
     }
     static public class ListConfig extends SubConfig {
+        public String title;
         public File   template;
         public String fields;
         public String startNodes;
