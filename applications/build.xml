@@ -101,7 +101,7 @@ Applications build file
   </target>
 
   <target name="install">
-    <ant dir="taglib"        target="install" />
+    <ant dir="taglib"        target="dependent.install" />
     <ant dir="editwizard"    target="dependent.install" />
     <ant dir="community"     target="dependent.install" />
     <ant dir="dove"          target="install" />
@@ -112,6 +112,7 @@ Applications build file
   </target>
 
   <target name="clean">
+     <ant dir="taglib"      target="clean" />
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
      <ant dir="dove"      target="clean" />

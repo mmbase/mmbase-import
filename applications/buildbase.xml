@@ -59,6 +59,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="examples.dir"    value="${webapp.dir}/mmexamples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
+  <property name="mmdocs.dir"      value="${webapp.dir}/mmdocs"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
   <property name="mmbase.jar"      value="${release.lib.dir}/mmbase.jar"/>
   <property name="mmbase.config"   value="${web.dir}/config"/>
@@ -100,8 +101,8 @@ Create a build.xml with a DOCTYPE like this:
     <available property="documentation.available" file="${project.source.dir}/documentation" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
-    <available property="templates.available"      file="${project.templates.dir}"/>
-    <available property="config.available"      file="${project.config.dir}"/>
+    <available property="templates.available"     file="${project.templates.dir}"/>
+    <available property="config.available"        file="${project.config.dir}"/>
 
     <available property="templates.available"      file="${project.templates.dir}"/>
 
@@ -295,6 +296,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   
 
   <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
+    <available property="documentation.available"        file="${project.build.dir}/documentation"/>
   </target>
 
   <target name="documentation.rawhtml" depends="init" if="do.documentation">
@@ -369,7 +371,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
   </target>
 
-  <target name="install" depends="jar,install.templates,install.examples,install.config">
+  <target name="install.documentation" depends="documentation" if="documentation.available">
+    <copy todir="${mmdocs.dir}">
+      <fileset dir="${project.build.dir}/documentation">
+      </fileset>      
+    </copy>
+  </target>
+
+  <target name="install" depends="jar,install.templates,install.examples,install.config,install.documentation">
     <copy todir="${release.lib.dir}">
       <fileset dir="${project.jar.dir}">
         <include name="**/*.jar" />
