@@ -40,7 +40,7 @@
   <relationsourcelist>
     <!-- relationsource builder="containsrel" path="Security/containsrel.xml" /-->
     <relationsource builder="rightsrel" path="Security/rightsrel.xml" />
-    <relationsource builder="rightsrel" path="Security/insrel.xml" />
+    <relationsource builder="insrel" path="Security/insrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>
