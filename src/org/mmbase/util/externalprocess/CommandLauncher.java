@@ -159,6 +159,7 @@ public class CommandLauncher {
      */
     public void execute(String commandPath, String[] args) throws ProcessException {
         commandArgs = constructCommandArray(commandPath, args);
+		execute(commandArgs);
     }
 
     /**
