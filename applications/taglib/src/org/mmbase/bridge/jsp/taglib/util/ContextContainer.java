@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.8 2003-08-01 14:13:22 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.9 2003-08-04 20:19:09 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -315,7 +315,7 @@ public class ContextContainer extends HashMap {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             String key = (String) entry.getKey();
-            register(key, entry.getValue(), ! key.startsWith("__")); // 'system var's like those produces by fieldinfo, should never raise exceptions 'id already registerd'). Therefore they are prefixed with '__'.
+            register(key, entry.getValue());
         }
         
     }
@@ -338,27 +338,13 @@ public class ContextContainer extends HashMap {
         register(id, n);
     }
 
-
+   
     /**
-     * Searches a key in request, postparameters, session, parent
-     * context and registers it in this one.
-     *
-     *  Returns null if it could not be found.
+     * @since MMBase-1.7
      */
-    public Object findAndRegister(PageContext pageContext, int from, String referid, String newid) throws JspTagException {
-        return findAndRegister(pageContext, from, referid, newid, true);
-    }
 
-    public Object findAndRegister(PageContext pageContext, int from, String referid, String newid, boolean check) throws JspTagException {
-        if (newid == null) {
-            throw new JspTagException("Cannot register with id is null");
-        }
-        if (referid == null) {
-            throw new JspTagException("Cannot refer with id is null");
-        }
+    public Object find(PageContext pageContext, int from, String referid) throws JspTagException {
         Object result = null;
-        // if it cannot be found, then 'null' will be put in the hashmap ('not present')
-
         switch (from) {
         case LOCATION_COOKIE:
             javax.servlet.http.Cookie[] cookies = ((HttpServletRequest) pageContext.getRequest()).getCookies();
@@ -451,6 +437,57 @@ public class ContextContainer extends HashMap {
         default:
             result = null;
         }
+        return result;
+ 
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+
+    public Object find(PageContext pageContext, String externid) throws JspTagException {
+        log.debug("searching in parent");
+        Object result;
+        result = find(pageContext, LOCATION_PARENT, externid);
+        if (result != null) return result;
+        log.debug("searching in parameters");
+        result = find(pageContext, LOCATION_ATTRIBUTES, externid);
+        if (result != null) return result;
+        log.debug("searching in parameters");
+        result = find(pageContext, LOCATION_PARAMETERS, externid);
+        if (result != null) return result;
+        if (MultiPart.isMultipart(pageContext)) {
+            log.debug("searching in multipart post");
+            result = find(pageContext, LOCATION_MULTIPART, externid);
+            if (result != null) return result;
+        }
+        if (((HttpServletRequest) pageContext.getRequest()).getSession() != null) {
+            log.debug("searching in session");
+            result = find(pageContext, LOCATION_SESSION, externid);
+        }
+        return result;
+    }
+
+    /**
+     * Searches a key in request, postparameters, session, parent
+     * context and registers it in this one.
+     *
+     *  Returns null if it could not be found.
+     */
+    public Object findAndRegister(PageContext pageContext, int from, String referid, String newid) throws JspTagException {
+        return findAndRegister(pageContext, from, referid, newid, true);
+    }
+
+    public Object findAndRegister(PageContext pageContext, int from, String referid, String newid, boolean check) throws JspTagException {
+        if (newid == null) {
+            throw new JspTagException("Cannot register with id is null");
+        }
+        if (referid == null) {
+            throw new JspTagException("Cannot refer with id is null");
+        }
+        Object result = find(pageContext, from, referid);
+        // if it cannot be found, then 'null' will be put in the hashmap ('not present')
+  
         register(newid, result, check);
         if (log.isDebugEnabled()) {
             log.debug("found " + newid + " (" + result + ")");
@@ -476,25 +513,8 @@ public class ContextContainer extends HashMap {
             throw new JspTagException(mes);
         }
         // if (findAndRegister(LOCATION_PAGE, referid, id)) return true;
-        log.debug("searching in parent");
-        Object result;
-        result = findAndRegister(pageContext, LOCATION_PARENT, externid, newid, false); // don't check, we have checked already.
-        if (result != null) return result;
-        log.debug("searching in parameters");
-        result = findAndRegister(pageContext, LOCATION_ATTRIBUTES, externid, newid, false);
-        if (result != null) return result;
-        log.debug("searching in parameters");
-        result = findAndRegister(pageContext, LOCATION_PARAMETERS, externid, newid, false);
-        if (result != null) return result;
-        if (MultiPart.isMultipart(pageContext)) {
-            log.debug("searching in multipart post");
-            result = findAndRegister(pageContext, LOCATION_MULTIPART, externid, newid, false);
-            if (result != null) return result;
-        }
-        if (((HttpServletRequest) pageContext.getRequest()).getSession() != null) {
-            log.debug("searching in session");
-            result = findAndRegister(pageContext, LOCATION_SESSION, externid, newid, false);
-        }
+        Object result = find(pageContext, externid);
+        register(newid, result, check);
         return result;
     }
 

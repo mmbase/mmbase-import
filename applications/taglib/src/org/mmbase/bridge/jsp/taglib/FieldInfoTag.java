@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.67 2003-08-01 14:13:22 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.68 2003-08-04 20:19:08 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -76,6 +76,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_USEINPUT = 11;
     protected static final int TYPE_SEARCHINPUT = 12;
     protected static final int TYPE_USESEARCHINPUT = 13;
+    protected static final int TYPE_REUSESEARCHINPUT = 14;
 
 
     private String sessionName = "cloud_mmbase";
@@ -120,6 +121,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             return TYPE_SEARCHINPUT;
         } else if ("usesearchinput".equals(t)) {
             return TYPE_USESEARCHINPUT;
+        } else if ("reusesearchinput".equals(t)) {
+            return TYPE_REUSESEARCHINPUT;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -293,6 +296,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
             break;
         }
+        case TYPE_REUSESEARCHINPUT: {
+            paramHtmlInput((ParamHandler) findParentTag(ParamHandler.class, null), field);
+            show = "";
+            break;
+        }
         case TYPE_TYPE:
             show = "" + field.getType();
             break;
@@ -311,6 +319,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         return EVAL_BODY_BUFFERED;
     }
+
 
 
     /**
@@ -352,9 +361,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         return getTypeHandler(field.getType()).whereHtmlInput(field);
     }
 
+    private void  paramHtmlInput(ParamHandler handler, Field field) throws JspTagException {
+         getTypeHandler(field.getType()).paramHtmlInput(handler, field);
+    }
 
-    private String whereHtmlInput(Field field, Query query) throws JspTagException {
-        return getTypeHandler(field.getType()).whereHtmlInput(field, query);
+
+    private void  whereHtmlInput(Field field, Query query) throws JspTagException {
+        getTypeHandler(field.getType()).whereHtmlInput(field, query);
     }
 
 

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.9 2003-08-01 14:13:24 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.10 2003-08-04 20:19:09 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -90,7 +90,7 @@ public class StringHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
-        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
+        String fieldValue =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
         fieldValue = context.encode(fieldValue, field);
         if (fieldValue != null) {
             node.setValue(fieldName,  fieldValue);
@@ -102,31 +102,27 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        String fieldName = field.getName();
-        log.debug("where " + fieldName);
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
-        log.debug("a");
+        String search =  super.getSearchValue(field.getName());
         if (search == null) {
             return null;
         }
+      
         if ("".equals(search)) {
             return null;
         }
         Sql sql = new Sql(Sql.ESCAPE_QUOTES);
         
-        return "( UPPER( [" + fieldName + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
+        return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
     }
-
-    public String whereHtmlInput(Field field, Query query) throws JspTagException {
-        String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
-        log.debug("found search '" + search + "'");
-        if (search == null || "".equals(search)) {
-            return null;
-        }
-        NodeListConstraintTag.addConstraint(query, fieldName, FieldCompareConstraint.LIKE, '%' + search + '%'); // how can I do this case insensitive?
-        return "";
+    
+    protected int getOperator() {
+        return FieldCompareConstraint.LIKE; // how can I do this case insensitive?
     }
-
+    protected String getSearchValue(String string) {
+        return "%" + string + "%";
+    }
+   public void whereHtmlInput(Field field, Query query) throws JspTagException {
+       query.makeCaseInsensitive(NodeListConstraintTag.addConstraint(query, field.getName(), getOperator(), findString(field)));
+   }
 
 }

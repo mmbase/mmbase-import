@@ -10,10 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+
+import java.util.*;
 import org.mmbase.bridge.Query;
 
 /**
@@ -21,7 +24,7 @@ import org.mmbase.bridge.Query;
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.3 2003-07-28 20:01:19 michiel Exp $
+ * @version $Id: TypeHandler.java,v 1.4 2003-08-04 20:19:09 michiel Exp $
  */
 
 public interface TypeHandler {
@@ -35,6 +38,11 @@ public interface TypeHandler {
     /**
      * @since MMBase-1.7
      */
-    public String whereHtmlInput(Field field, Query query) throws JspTagException;
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException;
+
+    /**
+     * @since MMBase-1.7
+     */
+    public void whereHtmlInput(Field field, Query query) throws JspTagException;
 
 }
