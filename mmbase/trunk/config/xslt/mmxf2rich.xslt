@@ -2,14 +2,14 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.1.1.1 2003-02-25 06:59:49 kees Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.2 2004-02-11 20:00:09 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" version = "1.0" >
   <xsl:output method = "text" />
   
     <xsl:template match = "mmxf" >
-    <xsl:apply-templates select="p" />     
+    <xsl:apply-templates select="p" />
     <xsl:apply-templates select="section">
       <xsl:with-param name="depth">$</xsl:with-param>
     </xsl:apply-templates>   
