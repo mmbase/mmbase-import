@@ -36,14 +36,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.14 2003-06-23 17:17:34 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.15 2003-06-24 09:49:16 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(AbstractDatabaseStorage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AbstractDatabaseStorage.class);
 
     // maps with type mappings (MMBase type to database type)
     private Map typeMap;
@@ -56,9 +56,9 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     // the table fieldname for the number field
     private String numberString;
     // if true, blobs are stored as files
-    private boolean storeBinaryAsFile=false;
+    private boolean storeBinaryAsFile = false;
     // filepath in case blobs are stored as files
-    private String binaryFilePath="/tmp/data/";
+    private File binaryFilePath = new File("/tmp/data/"); // this default is never used.
     // scheme for creating primary keys
     private String primaryKeyScheme;
     // scheme for creating not null fields
@@ -93,34 +93,50 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @param mmb the MBase instance that uses this database layer
      * @param document the database configuration document
      */
-    public void init(MMBase mmb,XMLDatabaseReader document) {
-        this.mmb=mmb;
-        deployDatabaseDocument(document);
+    public void init(MMBase mmb, XMLDatabaseReader reader) {
+        this.mmb = mmb;
+        deployDatabaseReader(reader);
     }
 
     /**
      * This reads database specific content from the database configuration document.
      * @param document the database configuration document
      */
-    public void deployDatabaseDocument(XMLDatabaseReader document) {
-        String path = document.getBlobDataDir();
-        setBinaryFilePath(path);
+    protected void deployDatabaseReader(XMLDatabaseReader reader) {
+        String path = reader.getBlobDataDir();
         setStoreBinaryAsFile(path != null && ! path.equals(""));
         if (getStoreBinaryAsFile()) {
-            log.service("Byte array blobs will be stored in the directory '" + path + "'");
+           
+            File dir = new File(path); // relative paths must be possible.
+            if (! dir.isAbsolute()) {
+                //"file:///..."
+                String parent = new File(reader.getFileName().substring(7)).getParent();
+                if (log.isDebugEnabled()) {
+                    log.service("Blobdatadir not specified absolutely, determining it relative to " + parent);
+                }
+
+                dir = new File(parent, path);
+            }
+
+            setBinaryFilePath(dir);
+            try {
+                log.service("Byte array blobs will be stored in the directory '" + dir.getCanonicalPath() + "'");
+            } catch (IOException ioe) {
+                log.error(ioe.toString());
+            }
         }
-        setTypeMap(document.getTypeMapping());
-        setFieldNameMap(document.getDisallowedFields());
-        setPrimaryKeyScheme(document.getPrimaryKeyScheme());
-        setNotNullScheme(document.getNotNullScheme());
-        setKeyScheme(document.getKeyScheme());
-        setForeignKeyScheme(document.getForeignKeyScheme());
-        setCreateScheme(document.getCreateScheme());
-        setCreateExtendedScheme(document.getCreateExtendedScheme());
-        setMaxDropSize(document.getMaxDropSize());
+        setTypeMap(reader.getTypeMapping());
+        setFieldNameMap(reader.getDisallowedFields());
+        setPrimaryKeyScheme(reader.getPrimaryKeyScheme());
+        setNotNullScheme(reader.getNotNullScheme());
+        setKeyScheme(reader.getKeyScheme());
+        setForeignKeyScheme(reader.getForeignKeyScheme());
+        setCreateScheme(reader.getCreateScheme());
+        setCreateExtendedScheme(reader.getCreateExtendedScheme());
+        setMaxDropSize(reader.getMaxDropSize());
         
         // Instantiate and initialize sql handler.
-        super.init(getFieldNameMap(), document);
+        super.init(getFieldNameMap(), reader);
     }
 
     /**
@@ -136,7 +152,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @param value if true, binary objects will be stored as files
      */
     public void setStoreBinaryAsFile(boolean value) {
-        storeBinaryAsFile=value;
+        storeBinaryAsFile = value;
     }
 
     /**
@@ -144,7 +160,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @return the file path
      */
-    public String getBinaryFilePath() {
+    public File getBinaryFilePath() {
         return binaryFilePath;
     }
 
@@ -153,7 +169,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @param path the file path
      */
-    public void setBinaryFilePath(String path) {
+    public void setBinaryFilePath(File path) {
         binaryFilePath = path;
     }
 
