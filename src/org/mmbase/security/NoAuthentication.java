@@ -9,19 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.security.SecurityException;
 import java.util.Map;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
- * This class is used when no authentication is configured.
- * @javadoc
+ * This class is used when no authentication is configured. Every credential is rewarded with a
+ * UserContext object. So every attempt to log in will succeed.
+ *
  * @author Eduard Witteveen
- * @version $Id: NoAuthentication.java,v 1.6 2002-06-07 12:56:55 pierre Exp $
+ * @version $Id: NoAuthentication.java,v 1.7 2003-11-26 20:50:49 michiel Exp $
+ * @see UserContext
  */
-public class NoAuthentication extends Authentication {
-    private static Logger log=Logging.getLoggerInstance(NoAuthentication.class.getName());
+final public class NoAuthentication extends Authentication {
+
+    static final UserContext userContext = new UserContext(); 
+    // package because NoAuthorization uses it to get the one 'possible context' (which is of course the 'getOwnerField' of the only possible user)
+    // (this is assuming that NoAuthentication is used too, but if not so, that does not matter)
 
     /**
      *	This method does nothing
@@ -31,16 +34,18 @@ public class NoAuthentication extends Authentication {
 
 
     /**
-     * this method does nothing..
+     * Returns always the same object (an user 'anonymous'with rank 'administrator'')
+     * @see UserContext
      */
-    public UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
-        return new UserContext();
+    public UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException {
+        return userContext;
     }
 
     /**
-     * this method does nothing..
+     * Users remain valid always. 
+     * @return true
      */
-    public boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException {
+    public boolean isValid(UserContext usercontext) throws SecurityException {
         return true;
     }
 }
