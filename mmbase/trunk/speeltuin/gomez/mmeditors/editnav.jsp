@@ -38,8 +38,7 @@
             %>
         </td>
         <td class="status">
-          (<%=cloud.getUser().getIdentifier() %>)&nbsp;&nbsp;<a href="http://www.vpro.nl/tools/reload.2/help.shtml" target="_new">Reload help</a>
-          </font>
+          (<%=cloud.getUser().getIdentifier() %>)
         </td>
       </tr>
     </table>
