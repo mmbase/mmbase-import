@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.35 2000-08-06 11:59:35 daniel Exp $
+	$Id: Images.java,v 1.36 2000-11-13 18:01:25 eduard Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.35  2000/08/06 11:59:35  daniel
+	removed some debug
+	
 	Revision 1.34  2000/08/04 08:59:54  install
 	Rob recovered
 	
@@ -116,7 +119,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.35 2000-08-06 11:59:35 daniel Exp $
+ * @version $Id: Images.java,v 1.36 2000-11-13 18:01:25 eduard Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -136,6 +139,7 @@ public class Images extends MMObjectBuilder {
 
 	public boolean init() {
 		super.init();
+		
 		String tmp;
 		int itmp;
 		tmp=getInitParameter("ImageConvertClass");
@@ -145,10 +149,10 @@ public class Images extends MMObjectBuilder {
 		if (tmp!=null) {
 			try {
 				itmp=Integer.parseInt(tmp);
-			} catch (NumberFormatException e) {
+			} 
+			catch (NumberFormatException e) {
 				itmp=2;
-			}
-			MaxConcurrentRequests=itmp;
+			} MaxConcurrentRequests=itmp;
 		}
 
 		imageconvert=loadImageConverter(ImageConvertClass);
@@ -170,6 +174,7 @@ public class Images extends MMObjectBuilder {
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("number");
 		if (num!=-1) {
+			// NOTE that this has to be configurable instead of static like this
 			return("<A HREF=\"/img.db?"+node.getIntValue("number")+"\" TARGET=\"_new\"><IMG SRC=\"/img.db?"+node.getIntValue("number")+"+s(100x60)\" BORDER=0></A>");
 		}
 		return(null);
@@ -183,12 +188,14 @@ public class Images extends MMObjectBuilder {
 		if (field.equals("handle")) {
 			int num=node.getIntValue("number");
 			if (num!=-1) {
+				// NOTE that this has to be configurable instead of static like this			
 				return("<A HREF=\"/img.db?"+num+"\" TARGET=\"_new\"><IMG SRC=\"/img.db?"+num+"+s(100x60)\" BORDER=0></A>");
 			}
 		}
 		return(null);
 	}
 
+	// called by init..used to retrieve all settings
 	private void getImageConvertParams(Hashtable params) {
 		String key;
 		for (Enumeration e=params.keys();e.hasMoreElements();) {
@@ -214,43 +221,169 @@ public class Images extends MMObjectBuilder {
 	}
 
 
+	/**	Will return "jpg" as default type, or one of the strings in params, must contain the following "f(type)" where type will be returned
+ 	 	*	@param params a <code>Vector</code> of <code>String</code>s, which could contain the "f(type)" string
+		*	@return "jpg" by default, or the first occurence of "f(type)"
+ 	 	*/
 	public String getImageMimeType(Vector params) {
-		String format=null,mimetype;
-		String key,type,cmd;
-		int pos,pos2;
+		String format=null;
+		String key;
 
 		for (Enumeration e=params.elements();e.hasMoreElements();) {
 			key=(String)e.nextElement();
-			pos=key.indexOf('(');
-			pos2=key.lastIndexOf(')');
-			if (pos!=-1 && pos2!=-1) {
-				type=key.substring(0,pos);
-				cmd=key.substring(pos+1,pos2);
-				if (type.equals("f")) {
-					format=cmd;
+
+			// look if our string is long enough...
+			if(key != null && key.length() > 2) {
+				// first look if we start with an "f("... format is f(gif)
+				if(key.startsWith("f(")) {
+					// one search function remaining...
+					int pos=key.lastIndexOf(')');
+					// we know for sure that our "(" is at pos 1, so we can define this hard...
+					format = key.substring(2,pos);
+					break;
 				}
 			}
 		}
 		if (format==null) format="jpg";
-		mimetype=mmb.getMimeType(format);
+		String mimetype=mmb.getMimeType(format);
 		if (debug) debug("getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
-		
 		return(mimetype);
-	}
-
-
-	// glue method until org.mmbase.servlet.servdb is updated
-	public byte[] getImageBytes5(Vector params) {
-		return getImageBytes5(null,params);
-	}
+	}	
 
 	// glue method until org.mmbase.servlet.servdb is updated
+	/** Returns a picture wich belongs to the given param line, with caching
+		* @param sp Not needed at this moment,... 
+ 	 	*	@param params The name/id of the picture, followed by operations, which can be performed on the picture..
+		*	@return null if something goes wrong, otherwise the picture in a byte[]
+		* @depricated glue method until org.mmbase.servlet.servdb is updated
+		*/	
 	public byte[] getImageBytes5(scanpage sp,Vector params) {
-		return ConvertImage(sp,params);
+		return getImageBytes(sp,params);
 	}
 
+	/** Returns a picture wich belongs to the given param line, with caching
+		* @param sp Not needed at this moment,... 
+ 	 	*	@param params The name/id of the picture, followed by operations, which can be performed on the picture..
+		*	@return null if something goes wrong, otherwise the picture in a byte[]
+		*/
+	// should scanpage be removed ???? when yes, must be marked as depricated
 	public byte[] getImageBytes(scanpage sp,Vector params) {
-		return ConvertImage(sp,params);
+		byte[] picture = getCachedImage(params);
+
+		if(picture != null && picture.length > 0) {
+			return picture;
+		} else {
+			return getOriginalImage(params);
+		}
+	}
+
+	/** 
+		* This function will flatten the parameters to an unique key, so that an image can be found in the cache
+		* @param params a <code>Vector</code> of <code>String</code>s, with a size greater then 0 and not null
+		* @returns a string containing the key for this vector, or <code>null</code>,....
+		*/
+	private String flattenParameters(Vector params) {
+		if (params==null || params.size() == 0) {
+			debug("flattenParameters: no parameters");
+			return null;				
+		}
+		// flatten parameters as a 'hashed' key;
+		String ckey="";
+		Enumeration enum=params.elements();
+		while(enum.hasMoreElements()) {
+			ckey += (String) enum.nextElement();
+		}
+		// skip spaces at beginning and ending..
+		ckey = ckey.trim();
+		if(ckey.length() > 0) {
+			return ckey;
+		}			
+		else {
+			debug("flattenParameters: empty parameters");		
+			return null;
+		}
+	}
+	
+	/**	Will return null when not in cache, and otherwise a byte [] representing the picture..	
+ 	 	*	@param params a <code>Vector</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
+		*	@return null if something goes wrong, otherwise the picture in a byte[]
+ 	 	*/
+	public byte[] getCachedImage(Vector params) {		
+		// get a connection to the cache module
+		ImageCaches imageCacheBuilder = (ImageCaches) mmb.getMMObject("icaches");
+		if(imageCacheBuilder == null) {
+			debug("getCachedImage(): ERROR builder icaches not loaded, load it by putting it in objects.def");
+			return null;
+		}
+		
+		// get our hashcode
+		String ckey = flattenParameters(params);
+		if(ckey == null) {
+			debug("getCachedImage: no parameters");				
+			return null;
+		}
+		
+		// now get the actual bytes
+		byte[] cachedPicture = null;
+		cachedPicture = imageCacheBuilder.getCkeyNode(ckey);
+		return cachedPicture;
+	}
+	
+	/**	Will return null when something goes wrong otherwise, a byte[] whcih represents the picture
+ 	 	*	@param params a <code>Vector</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
+		*	@return null if something goes wrong, otherwise the picture in a byte[]
+ 	 	*/
+	public byte[] getOriginalImage(Vector params) {
+		if (params==null || params.size() == 0) {
+			debug("getOriginalImage: no parameters");
+			return null;
+		}
+	
+		// get our hashcode
+		String ckey = flattenParameters(params);
+		if(ckey == null) {
+			debug("getCachedImage: no parameters");				
+			return null;
+		}		
+
+		// try to resolve the number of our object (first param) (could also be the name)
+		int objectId = convertAlias((String)params.elementAt(0));
+		if ( objectId < 0 ) {
+			// why is 0 a valid object number???
+			debug("getOriginalImage: Parameter is not a valid image "+objectId);
+			return null;
+		}
+
+		// retrieve the original image
+		MMObjectNode node;
+		node=getNode(objectId);
+		
+		// get the Object...
+		if(node == null) {
+			debug("ConvertImage: Image node not found "+objectId);
+			return null;
+		}
+		
+		// get  the bytes from the Object (assume in field handle)
+		byte[] inputPicture=node.getByteValue("handle");
+		if(inputPicture == null) {
+			debug("ConvertImage: Image Node is bad "+objectId);
+			return null;
+		}
+		
+		// convert the image, this will be done in an special thread,...
+		synchronized(imageRequestTable) {
+			ImageRequest req = (ImageRequest) imageRequestTable.get(ckey);
+			if (req != null) {
+				if (debug) debug("ConvertImage: a conversion in progress ("+ckey+")...  (requests="+(req.count()+1)+")");
+				return null;
+			} else {
+				req = new ImageRequest(objectId, ckey, params, inputPicture);
+				imageRequestTable.put(ckey,req);
+				imageRequestQueue.append(req);
+				return req.getOutput();
+			}
+		}
 	}
 
 	public int convertAlias(String num) {
@@ -270,74 +403,16 @@ public class Images extends MMObjectBuilder {
 		return(number);
 	}
 
-	public byte[] ConvertImage(scanpage sp,Vector params) {
-		String ckey="",key;
-		byte[] picture=null;
-		int number=-1;
-		ImageRequest req=null;
-
-		if (params!=null && params.size()>0) {
-	
-			String num=(String)params.elementAt(0);
-
-			number=convertAlias(num);
-				
-			if (number>=0) {
-				// flatten parameters as a 'hashed' key;
-				ckey="";
-				for (Enumeration t=params.elements();t.hasMoreElements();) {
-					key=(String)t.nextElement();
-					ckey+=key;
-				}
-			
-				ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
-				if (bul!=null) {
-					picture=bul.getCkeyNode(ckey);
-					if (picture==null) {
-						MMObjectNode node;
-						node=getNode(number);
-						if (node!=null) {
-							byte[] inputpicture=node.getByteValue("handle");
-							if (inputpicture!=null) {
-								synchronized(imageRequestTable) {
-									req=(ImageRequest)imageRequestTable.get(ckey);
-									if (req==null) {
-										req=new ImageRequest(number,ckey,params,inputpicture);
-										imageRequestTable.put(ckey,req);
-										imageRequestQueue.append(req);
-									} else {
-										if (debug) debug("ConvertImage: a conversion in progress...  (requests="+(req.count()+1)+")");
-									}
-								}
-								picture=req.getOutput();
-							} else {
-								debug("ConvertImage: Image Node is bad "+number);
-							}
-						} else {
-							debug("ConvertImage: Image node not found "+number);
-						}
-					} else {
-						// We are done ImageCache HIT
-					}
-				} else {
-					debug("ConvertImage(): ERROR builder icaches not loaded, load it by putting it in objects.def");
-				}
-			} else {
-				debug("ConvertImage: Parameter is not a valid image "+num);
-			}
-		} else {
-			debug("ConvertImage(): no parameters");
-		}
-		return(picture);
-	}
-
+	/**
+		*	
+	 	*/
  	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
 		Vector devices = new Vector();
-        if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
+    
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();
 
-
-            if (cmd.equals("devices")) {
+      if (cmd.equals("devices")) {
 				if(mmb.getMMObject("scanners")!=null) {
 					getDevices("scanners",devices);
 				} 
@@ -347,29 +422,29 @@ public class Images extends MMObjectBuilder {
 				if(mmb.getMMObject("pccards")!=null) {
 					getDevices("pccards",devices);
 				} 
-
-		        tagger.setValue("ITEMS","2");
+		    tagger.setValue("ITEMS","2");
 				return devices;	
 			}
-        }
-        return(null);
-    }
+		}
+  	return(null);
+  }
+	
 
 	/**
 	 * get all devices of given devicetype
 	 * e.g. give all scanners.
 	 */
 	private void getDevices(String devicetype, Vector devices) {
-
 		MMObjectBuilder mmob = mmb.getMMObject(devicetype);
 		Vector v = mmob.searchVector("");	
 		Enumeration e = v.elements();
+		
 		while (e.hasMoreElements()) {
 			MMObjectNode mmon = (MMObjectNode)e.nextElement();
-			String name  = ""+mmon.getValue("name");
+			String name  = "" + mmon.getValue("name");
 			devices.addElement(devicetype);
 			devices.addElement(name);
 		}
-	}
+	}	
 }
 		
