@@ -161,6 +161,7 @@ public class Logging {
         }
         // System.out.println("logging to " + getLocations());
         configureClass(configuration);
+        XMLBasicReader.reinitLogger();
     }
 
     /** 
