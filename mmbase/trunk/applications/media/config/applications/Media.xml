@@ -41,13 +41,6 @@
     <relation from="mediasources"    to="mediaproviders"  type="related" />
 
 
-    <!-- The fragment related to the sources is special and is linked with 'parent' to the other fragments -->
-    <!-- should be 
-    <relation from="videofragments"  to="videofragments"  type="parent" />
-    <relation from="audiofragments"  to="audiofragments"  type="parent" />
-     -->
-    <relation from="mediafragments"  to="mediafragments"  type="parent" /> <!-- to make getRelatedNodes('mediafragments') possible .. -->
-
     <!-- subfragments -->
     <relation from="videofragments"  to="videofragments"  type="posrel" />
     <relation from="audiofragments"  to="audiofragments"  type="posrel" />

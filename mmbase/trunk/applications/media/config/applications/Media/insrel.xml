@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+
+
 	<node number="4000" owner="media" snumber="96" dnumber="99" rtype="parent" dir="bidirectional">
-	</node>
+	</node><!-- pool -> pool -->
 
 	<node number="4001" owner="media" snumber="96" dnumber="94" rtype="parent" dir="bidirectional">
-	</node>
+	</node><!-- pool -> pool -->
+
 
 	<node number="4002" owner="media" snumber="99" dnumber="124" rtype="related" dir="bidirectional">
 	</node>
@@ -21,8 +24,6 @@
 	<node number="4006" owner="media" snumber="99" dnumber="108" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="4007" owner="media" snumber="122" dnumber="124" rtype="parent" dir="bidirectional">
-	</node>
 
 	<node number="4008" owner="media" snumber="99" dnumber="116" rtype="related" dir="bidirectional">
 	</node>
@@ -30,8 +31,6 @@
 	<node number="4009" owner="media" snumber="116" dnumber="128" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="4010" owner="media" snumber="114" dnumber="116" rtype="parent" dir="bidirectional">
-	</node>
 
 
   <!-- source -> providers -->
