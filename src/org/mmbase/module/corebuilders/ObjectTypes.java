@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.17 2002-08-15 17:16:09 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.18 2002-09-18 14:52:33 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -204,6 +204,9 @@ public class ObjectTypes extends TypeDef {
 
         builder = unloadBuilder(node);
         
+        // now that the builder cannot be started again (since config is now really missing)
+        if(!deleteBuilderTable(builder))  throw new RuntimeException("Could not delete builder table");        
+        
         // try to delete the configuration file first!.....
         if(!deleteBuilderFile(node)) {
             // delete-ing failed, reload the builder again...
@@ -211,9 +214,6 @@ public class ObjectTypes extends TypeDef {
             throw new RuntimeException("Could not delete builder config");
         }
                                 
-        // now that the builder cannot be started again (since config is now really missing)
-        if(!deleteBuilderTable(builder))  throw new RuntimeException("Could not delete builder table");        
-        
         super.removeNode(node);        
     }
 
@@ -448,8 +448,7 @@ public class ObjectTypes extends TypeDef {
         
         // well, since the whole thing doesnt exist anymore, now also drop the table, to clean the system a little bit...
         try {
-            builder.drop();
-            return true;
+            return builder.drop();
         }
         catch(Exception e) {
             log.fatal("please report this error: "  + e);
