@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.47 2004-01-19 17:03:13 michiel Exp $
+ * @version $Id: Config.java,v 1.48 2004-02-17 12:38:56 pierre Exp $
  */
 
 public class Config {
@@ -64,7 +64,7 @@ public class Config {
         public String wizard;
         public String page;
         public Map popups = new HashMap(); // all popups now in use below this (key -> Config)
-        
+
         public Map attributes = new HashMap();
 
         /**
@@ -107,7 +107,7 @@ public class Config {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map getAttributes() {            
+        public Map getAttributes() {
             Map attributeMap = new HashMap(attributes);
             return attributeMap;
         }
@@ -362,7 +362,7 @@ public class Config {
             searchDir   = configurator.getParam("searchdir",  searchDir);
             directions  = configurator.getParam("directions", directions);
             orderBy     = configurator.getParam("orderby",    orderBy);
-            distinct    = configurator.getParam("distinct",   new Boolean(true)).booleanValue();
+            distinct    = configurator.getParam("distinct",   new Boolean(false)).booleanValue();
 
             // only perform the following is there was no prior parsing
             if (!parsed) {
