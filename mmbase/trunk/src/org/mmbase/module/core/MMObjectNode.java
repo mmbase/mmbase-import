@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.133 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.134 2005-01-26 10:21:57 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -692,6 +692,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Get a value of a certain field.
+     * @performance do not store byte values directly in node (?)
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
@@ -704,6 +705,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // should probably be made more generic for other values
         if ("$SHORTED".equals(o) && getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
             o = parent.getShortedByte(fieldName, getNumber());
+            // should we do this? May give memory issues
             storeValue(prefix + fieldName, o);
         }
 
@@ -844,10 +846,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Get a binary value of a certain field.
+     * @performance do not store byte values directly in node (?)
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
-
     public byte[] getByteValue(String fieldName) {
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
@@ -870,9 +872,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         } else {
             byte[] b;
             if (getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
-                // call our builder with the convert request this will probably
-                // map it to the database we are running.
+                // We should't get here... already gets handled by getValue()!
                 b = parent.getShortedByte(fieldName, getNumber());
+                // should we do this? May give memory issues
                 storeValue(prefix + fieldName, b);
                 if (b == null) {
                     b = new byte[0];
