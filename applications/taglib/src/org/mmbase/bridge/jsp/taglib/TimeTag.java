@@ -13,6 +13,7 @@ import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 import java.util.*;
 import java.text.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -22,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.40 2004-03-08 12:31:40 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.41 2004-05-18 15:38:25 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -49,16 +50,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     private final static int PRECISION_YEARS   = 7;
 
     /**
-     * DateFormat user for parsing dates. Given dates are always in english.
-     */
-    private SimpleDateFormat parseFormat = new SimpleDateFormat("", Locale.ENGLISH);
-
-    /**
-     * Format attribute used for displaying the dates.
-     */
-    private Attribute dateFormat = Attribute.NULL;
-
-    /**
      * Fast way to find the day number of a day
      */
     static private Map days   = new HashMap();
@@ -73,6 +64,22 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         setMonths(dfs);
    }
 
+
+    /**
+     * DateFormat user for parsing dates. Given dates are always in english.
+     */
+    private SimpleDateFormat parseFormat = new SimpleDateFormat("", Locale.ENGLISH);
+
+    /**
+     * Format attribute used for displaying the dates.
+     */
+    private Attribute dateFormat = Attribute.NULL;
+
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    protected Date date;
 
     // Attributes
     public void setTime(String time) throws JspTagException {
@@ -181,12 +188,25 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         timezone = getAttribute(tz);
     }
 
+    /**
+     * You could implement a tag for the body of time-tag, which can then receive the date-object.
+     * @todo  Don't we use getCalendar (to get Locales right)
+     * @since MMBase-1.7.1
+     */
+    public Date getDate() {
+        return date;
+    }
+
     public int doStartTag() throws JspTagException {
         
         helper.setValue(evaluateTime());
 
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            if (helper.getVartype() == WriterHelper.TYPE_DATE) {
+                getContextProvider().getContextContainer().register(getId(), getDate());
+            } else {
+                getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            }
         }
         return EVAL_BODY_BUFFERED;
     }
@@ -237,82 +257,95 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputFormat +"'");
         }
 
-        String usetime = null;
-        Date date = null;
+        String useTime = null;
+        date = null;
         // If the time attribute is not set, check if referid is used, otherwise check if the parent set the time.
         // Otherwise use current time
         if(time == Attribute.NULL) {
             if(getReferid() != null) { // try to get it from other time tag
-                usetime = getString(getReferid());
+                Object object = getObject(getReferid());
+                if (object instanceof Date) {
+                    date = (Date) object;
+                } else {
+                    useTime = Casting.toString(object);
+                }
             } else {                   // try to get it from parent writer.
                 Writer w =  findWriter(false);
                 if (w != null) {
-                    usetime = "" + w.getWriterValue();
+                    Object object = w.getWriterValue();
+                    if (object instanceof Date) {
+                        date = (Date) object;
+                    } else {
+                        useTime = "" + object;
+                    }
+
                 }
             }
 
-            if(usetime == null) { // still not found
+            if(useTime == null && date == null) { // still not found
                 throw new JspTagException("Cannot evaluate time. No time attribute given, no referid attribute set, and no writer parent tag found.");
             }
         } else {
-            usetime = time.getString(this);
+            useTime = time.getString(this);
         }
 
         String iformat = inputFormat.getString(this);
-        if (iformat.equals("")) {
-            // Is the time given in second from EPOC (UTC)?
-            try {
-                long timeFromEpoc = Long.parseLong(usetime);
-                date = new Date(timeFromEpoc*1000);
-            } catch (NumberFormatException nfe) {
-                // perhaps it was a keyWord...
-                // this will be explored hereafter.
-                // TODO Should we depend on exceptions? I think this is slow (?), and also ugly (though that is a matter of taste).
-                // indeed, using exceptions as if statements is rather low performance.
-                log.debug("Time not given in second from epoc");
+        if (iformat.equals("")) {            
+            if (date == null) {
+                // Is the time given in second from EPOC (UTC)?
+                try {
+                    long timeFromEpoc = Long.parseLong(useTime);
+                    date = new Date(timeFromEpoc*1000);
+                } catch (NumberFormatException nfe) {
+                    // perhaps it was a keyWord...
+                    // this will be explored hereafter.
+                    // TODO Should we depend on exceptions? I think this is slow (?), and also ugly (though that is a matter of taste).
+                    // indeed, using exceptions as if statements is rather low performance.
+                    log.debug("Time not given in second from epoc");
+                }
             }
 
             // Is a day specified, like: monday, tuesday ?
-            if(date == null && isDay(usetime)) {
+            if(date == null && isDay(useTime)) {
                 try {
-                    date = handleDay(usetime);
+                    date = handleDay(useTime);
                 } catch (ParseException e) {
-                    String msg = "Cannot evaluate handleDay with time '" + usetime + "' (exception:" + e + ")";
+                    String msg = "Cannot evaluate handleDay with time '" + useTime + "' (exception:" + e + ")";
                     // Why should we log this? designers dont have access to logs
                     // log.error(msg);
                     throw new TaglibException(msg, e);
                 }
             }
             // Is a month specified, like: january, february ?
-            if(date == null && isMonth(usetime)) {
+            if(date == null && isMonth(useTime)) {
                 try {
-                    date = handleMonth(usetime);
+                    date = handleMonth(useTime);
                 } catch (ParseException e) {
-                    String msg = "Cannot evaluate handleMonth with time '" + usetime + "' (exception:" + e + ")";
+                    String msg = "Cannot evaluate handleMonth with time '" + useTime + "' (exception:" + e + ")";
                     // Why should we log this? designers dont have access to logs
                     // log.error(msg);
                     throw new TaglibException(msg, e);
                 }
             }
             // Is a keyword used, like: yesterday, today ?
-            if(date == null && isKeyword(usetime)) {
+            if(date == null && isKeyword(useTime)) {
                 try {
-                    date = handleKeyword(usetime);
+                    date = handleKeyword(useTime);
                 } catch (ParseException e) {
-                    String msg = "Cannot evaluate handleKeyword with time '" + usetime + "' (exception:" + e + ")";
+                    String msg = "Cannot evaluate handleKeyword with time '" + useTime + "' (exception:" + e + ")";
                     // Why should we log this? designers dont have access to logs
                     // log.error(msg);
                     throw new TaglibException(msg, e);
                 }
             }
             if (date == null) {
-                date = getDate();  // Try to parse it in three standard ways.
+                date = parseTime();  // Try to parse it in three standard ways.
             }
 
         } else { // The input format is provided. We use that to parse the time attribute
             try {
                 parseFormat.applyPattern(iformat);
-                date = parseFormat.parse(usetime);
+                date = parseFormat.parse(useTime);
             } catch (java.text.ParseException e) {
                 throw new TaglibException(e);
             }
@@ -320,10 +353,12 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
 
-        if (log.isDebugEnabled()) log.debug("date: '" + date + "'");
+        if (log.isDebugEnabled()) {
+            log.debug("date: '" + date + "'");
+        }
 
         if (date == null) { // don't know if it can come here, but if it does, an exception must be thrown!
-            throw new JspTagException("Could not evaluate time " + usetime);
+            throw new JspTagException("Could not evaluate time " + useTime);
         }
 
         // Calculate the offset
@@ -332,7 +367,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             long os;
             String off = offset.getString(this);
             try {
-               os  = Long.parseLong(off) * 1000;
+                os  = Long.parseLong(off) * 1000;
             } catch (NumberFormatException nfe) {
                 os = new Double(off).longValue() * 1000;
             }
@@ -422,10 +457,10 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * hh:mm:ss, yyyy/mm/dd, or hh:mm:ss.  This function parses and
      * returns the corresponding Date object, or throws an exception
      * if unsuccessful.
+     * So, it parses the 'time' attribute without the use of 'inputformat'.
      *
-     * aargh!
      */
-    private Date getDate() throws JspTagException {
+    private Date parseTime() throws JspTagException {
         if(time == Attribute.NULL) return null;
 
         Date date = new Date();
