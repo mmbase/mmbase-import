@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.32 2005-01-03 20:15:40 michiel Exp $
+ * @version $Id: Casting.java,v 1.33 2005-01-06 20:18:02 michiel Exp $
  */
 
 import java.util.*;
@@ -28,9 +28,11 @@ import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;
+import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.module.core.*;
 import org.mmbase.util.transformers.XmlField;
 import org.mmbase.util.logging.*;
+
 import org.w3c.dom.*;
 
 public class Casting {
@@ -188,8 +190,10 @@ public class Casting {
     /**
      * Does not yet really cast the object to String, but only wraps it in an object with a toString as we desire. Casting can now be done with 
      * toString() on the resulting object.
+     * 
+     * This is used to make JSTL en EL behave similarly as mmbase taglib when writing objects to the page (taglib calls Casting, but they of course don't).
      *
-     * @todo  Not everything is wrapped already. 
+     * @todo  Not everything is wrapped (and can be unwrapped) already. 
      * @since MMBase-1.8
      */
 
@@ -197,7 +201,7 @@ public class Casting {
         if (o == null || o == MMObjectNode.VALUE_NULL) {
             return "";
         } else if (o instanceof Node) {
-            return new org.mmbase.bridge.util.NodeWrapper((Node)o) {
+            return new NodeWrapper((Node)o) {
                     public String toString() {
                         return "" + node.getNumber();
                     }
@@ -219,37 +223,24 @@ public class Casting {
             // don't know how to wrap
             return convertXmlToString(null, (Document)o);
         } else if (o instanceof List) {
-            return new AbstractList() {
-                    private final List list = (List) o;
-                    public Object get(int index) { return list.get(index); }
-                    public int size() { return list.size(); }
-                    public Object set(int index, Object value) { return list.set(index, value); }
-                    public void add(int index, Object value) { list.add(index, value); }
-                    public Object remove(int index) { return list.remove(index); }
-                    public boolean isEmpty() 	    {return list.isEmpty();}
-                    public boolean contains(Object o)   {return list.contains(o);}
-                    public Object[] toArray() 	    {return list.toArray();}
-                    public Object[] toArray(Object[] a) {return list.toArray(a);}
-                    public Iterator iterator() { return list.iterator(); }
-                    public ListIterator listIterator() { return list.listIterator(); }
-                    public String toString() {
-                        StringBuffer buf = new StringBuffer();
-                        Iterator i = list.iterator();
-                        boolean hasNext = i.hasNext();
-                        while (i.hasNext()) {
-                            buf.append(i.next());
-                            hasNext = i.hasNext();
-                            if (hasNext) {
-                                buf.append(',');
-                            }
-                        }
-                        return buf.toString();
-                    }
-                };
+            return new ListWrapper((List) o);
         } else {
             return o;
         }
         
+    }
+    /**
+     * When you want to undo the wrapping, this method can be used.
+     * @since MMBase-1.8
+     */
+    public static Object unWrap(final Object o) {
+        if (o instanceof NodeWrapper) {
+            return ((NodeWrapper)o).getNode();
+        } else if (o instanceof ListWrapper) {
+            return ((ListWrapper)o).getList();
+        } else {
+            return o;
+        }
     }
 
     /**
@@ -824,4 +815,38 @@ public class Casting {
         }
     }
 
+
+    public static class ListWrapper extends AbstractList{ 
+        private final List list;
+        ListWrapper (List l) {
+            list = l;
+        }
+        public Object get(int index) { return list.get(index); }
+        public int size() { return list.size(); }
+        public Object set(int index, Object value) { return list.set(index, value); }
+        public void add(int index, Object value) { list.add(index, value); }
+        public Object remove(int index) { return list.remove(index); }
+        public boolean isEmpty() 	    {return list.isEmpty();}
+        public boolean contains(Object o)   {return list.contains(o);}
+        public Object[] toArray() 	    {return list.toArray();}
+        public Object[] toArray(Object[] a) {return list.toArray(a);}
+        public Iterator iterator() { return list.iterator(); }
+        public ListIterator listIterator() { return list.listIterator(); }
+        public String toString() {
+            StringBuffer buf = new StringBuffer();
+            Iterator i = list.iterator();
+            boolean hasNext = i.hasNext();
+            while (hasNext) {
+                Casting.toStringBuffer(buf, i.next());
+                hasNext = i.hasNext();
+                if (hasNext) {
+                    buf.append(',');
+                }
+            }
+            return buf.toString();
+        }
+        public List getList() {
+            return list;
+        }
+    }
 }
