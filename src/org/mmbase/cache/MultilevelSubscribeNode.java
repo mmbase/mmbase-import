@@ -11,7 +11,7 @@ package org.mmbase.cache;
 
 import java.util.List;
 import java.util.Vector;
-import java.util.Iterator;
+import java.util.Enumeration;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseObserver;
 
@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMBaseObserver;
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.3 2002-03-22 13:11:02 pierre Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.4 2002-03-22 15:21:33 pierre Exp $
  */
 public class MultilevelSubscribeNode implements MMBaseObserver {
 
@@ -35,7 +35,7 @@ public class MultilevelSubscribeNode implements MMBaseObserver {
      * @javadoc
      * @badliteral initial size should be configurable or java default?
      */
-    private List queue=new Vector(50);
+    private Vector queue=new Vector(50);
 
     /**
      * @javadoc
@@ -59,8 +59,9 @@ public class MultilevelSubscribeNode implements MMBaseObserver {
      * @javadoc
      */
     public synchronized void clearEntrys() {
-        for (Iterator i=queue.iterator(); i.hasNext(); ) {
-            MultilevelCacheEntry n=(MultilevelCacheEntry)i.next();
+        // bit unsafe (?): gets an enumeration, then removes nodes form the enum's list
+        for (Enumeration e=queue.elements(); e.hasMoreElements(); ) {
+            MultilevelCacheEntry n=(MultilevelCacheEntry)e.nextElement();
             // call the entry's clear that will remove all observers
             // too including myself !
             n.clear();
