@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.13 2002-06-11 12:51:12 michiel Exp $
+     * @version  $Id: list.jsp,v 1.14 2002-06-24 12:34:18 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -206,7 +206,7 @@ for (int i=start; i< end; i++) {
         } else {
             fieldguiname=item.getNodeManager().getField(fieldname).getGUIName();
         }
-        addField(obj, fieldguiname, item.getStringValue(fieldname));
+        addField(obj, fieldguiname, item.getStringValue("gui("+fieldname+")"));
     }
     if (multilevel) {
         item=item.getNodeValue(mainObjectName);
