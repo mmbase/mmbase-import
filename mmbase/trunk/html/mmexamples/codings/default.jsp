@@ -1,7 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page language="java" contentType="text/html;charset=utf-8" %>
 <mm:cloud jspvar="cloud">
-<% response.setContentType("text/html; charset=utf-8"); %>
 <html>
     <head>
 	  <title>Codings examples</title>	 

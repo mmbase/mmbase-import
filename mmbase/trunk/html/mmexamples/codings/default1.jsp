@@ -1,11 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@page language="java" contentType="text/html;charset=iso-8859-1" 
-%><% response.setContentType("text/html; charset=iso-8859-1"); %>
-<mm:cloud jspvar="cloud">
+%><mm:cloud jspvar="cloud">
 	<html>
 	  <head>
 		<title>Codings examples</title>
-
 	  </head>
 	  <body>
 		<h1>Introduction</h1>
