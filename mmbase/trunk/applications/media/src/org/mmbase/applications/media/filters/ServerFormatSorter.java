@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @todo this implementation can be merged with FormatSorter itself, i think.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.2 2003-02-05 16:55:28 michiel Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.3 2003-02-06 13:36:22 michiel Exp $
  */
 public class ServerFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class.getName());
@@ -32,7 +32,7 @@ public class ServerFormatSorter extends  PreferenceSorter {
     public static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".preferredSource";
     public static final String FORMAT_ATT = "format";
 
-    protected List preferredFormats;
+    protected List preferredFormats = new ArrayList();
 
     public  ServerFormatSorter() {};
 
