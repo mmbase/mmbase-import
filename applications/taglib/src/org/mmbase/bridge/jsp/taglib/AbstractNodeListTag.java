@@ -246,7 +246,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         // returnList is know, now we can serve parent formatter tag
         FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
         if (f != null && f.wantXML()) {
-            f.getGenerator().addNodeList(nodes);
+            f.getGenerator().add(nodes);
         }
 
         returnValues = returnList.nodeIterator();
