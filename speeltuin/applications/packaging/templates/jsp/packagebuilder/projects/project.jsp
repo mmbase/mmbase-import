@@ -168,11 +168,11 @@
 	<input type="hidden" name="name" value="<mm:write referid="name" />" />
 	<tr>
 	<th width="100">Name</ht>
-	<td><input name="newname" style="width: 28%" value="<mm:field name="name" />"></td>
+	<td><input name="newname" style="width: 45%" value="<mm:field name="name" />"><img src="<mm:write referid="image_help" />"  valign="middle" title="Name the project for example 'myproject'" /></td>
 	</tr>
 	<tr>
 	<th width="100">Path</ht>
-	<td><input name="newpath" style="width: 98%" value="<mm:field name="path" />"></td>
+	<td><input name="newpath" style="width: 90%" value="<mm:field name="path" />"><img src="<mm:write referid="image_help" />"  valign="middle" title="path of the packaging.xml file,example /usr/me/myproject/packaging.xml" /></td>
 	</tr>
 	</mm:nodefunction>
 	<tr>
