@@ -30,13 +30,13 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.38 2003-08-27 21:33:37 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.39 2003-11-19 16:57:43 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
 
-    public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
-    public static String COOKIE_PATH    = "/";
+    public static final int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
+    public static final String COOKIE_PATH    = "/";
     private static final Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
 
     private Attribute sessionvar = Attribute.NULL;
@@ -85,7 +85,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("start writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
-        helper.setTag(this);
+        
         helper.setValue(getObject());
 
 
