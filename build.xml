@@ -560,7 +560,7 @@ builddate=${builddate}
 
 
   <target name="jar" description="Create the MMBase jar file"
-          depends="jar.check" unless="jar.uptodate">
+          depends="init,jar.check" unless="jar.uptodate">
     <antcall target="compile" />
     <antcall target="taglib.tld" />
     <antcall target="resources" />
