@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.43 2003-10-02 11:58:26 pierre Exp $
+     * @version  $Id: list.jsp,v 1.44 2003-12-02 14:14:31 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -124,10 +124,14 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=nul
     results = cloud.getCloudContext().createNodeList();
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
-    query = Queries.createQuery(cloud, listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
-                                listConfig.orderBy,
-                                listConfig.directions, listConfig.searchDir,
-                                listConfig.distinct);
+    query = cloud.createQuery();
+
+    Queries.addPath(query, listConfig.nodePath, listConfig.searchDir); // also possible to specify more than one searchDir
+    Queries.addSortOrders(query, listConfig.orderBy, listConfig.directions);
+    Queries.addFields(query, listConfig.fields);
+    Queries.addStartNodes(query, listConfig.startNodes);
+    Queries.addConstraints(query, listConfig.constraints);
+    query.setDistinct(listConfig.distinct);
 
 } else {
     log.trace("This is not a multilevel. Getting nodes from type " + listConfig.nodePath);
