@@ -27,9 +27,9 @@ package org.mmbase.util;
  * @since  MMBase-1.6
  */
 public class DijkstraSemaphore {
-    private int mCount;
-    private int mMaxCount;
-    private Object mStarvationLock = new Object();
+    private int count;
+    private int maxCount;
+    private Object starvationLock = new Object();
 
     /**
      * Creates a Dijkstra semaphore with the specified max count and initial count set
@@ -48,8 +48,8 @@ public class DijkstraSemaphore {
      * have already been acquired). 0 <= pInitialCount <= pMaxCount
      */
     public DijkstraSemaphore(int pMaxCount, int pInitialCount) {
-        mCount = pInitialCount;
-        mMaxCount = pMaxCount;
+        count = pInitialCount;
+        maxCount = pMaxCount;
     }
 
     /**
@@ -62,13 +62,13 @@ public class DijkstraSemaphore {
     public synchronized void acquire() throws InterruptedException {
         // Using a spin lock to take care of rogue threads that can enter
         // before a thread that has exited the wait state acquires the monitor
-        while (mCount == 0) {
+        while (count == 0) {
             wait();
         }
-        mCount--;
-        synchronized (mStarvationLock) {
-            if (mCount == 0) {
-                mStarvationLock.notify();
+        count--;
+        synchronized (starvationLock) {
+            if (count == 0) {
+                starvationLock.notify();
             }
         }
     }
@@ -79,11 +79,11 @@ public class DijkstraSemaphore {
      * otherwise
      */
     public synchronized boolean tryAcquire() {
-        if (mCount != 0) {
-            mCount--;
-            synchronized (mStarvationLock) {
-                if (mCount == 0) {
-                    mStarvationLock.notify();
+        if (count != 0) {
+            count--;
+            synchronized (starvationLock) {
+                if (count == 0) {
+                    starvationLock.notify();
                 }
             }
             return true;
@@ -102,9 +102,9 @@ public class DijkstraSemaphore {
      * @see #releaseAll()
      */
     public synchronized void release() {
-        mCount++;
-        if (mCount > mMaxCount) {
-            mCount = mMaxCount;
+        count++;
+        if (count > maxCount) {
+            count = maxCount;
         }
         notify();
     }
@@ -116,10 +116,10 @@ public class DijkstraSemaphore {
      * @see #release()
      */
     public synchronized void release(int pCount) {
-        if (mCount + pCount > mMaxCount) {
-            mCount = mMaxCount;
+        if (count + pCount > maxCount) {
+            count = maxCount;
         } else {
-            mCount += pCount;
+            count += pCount;
         }
         notifyAll();
     }
@@ -131,7 +131,7 @@ public class DijkstraSemaphore {
      * @see #releaseAll()
      */
     public synchronized void acquireAll() throws InterruptedException {
-        for (int index = 0; index < mMaxCount; index++) {
+        for (int index = 0; index < maxCount; index++) {
             acquire();
         }
     }
@@ -143,7 +143,7 @@ public class DijkstraSemaphore {
      * @see #acquireAll()
      */
     public synchronized void releaseAll() {
-        release(mMaxCount);
+        release(maxCount);
         notifyAll();
     }
 
@@ -156,9 +156,9 @@ public class DijkstraSemaphore {
      * @throws InterruptedException if the thread is interrupted while waiting
      */
     public void starvationCheck() throws InterruptedException {
-        synchronized (mStarvationLock) {
-            if (mCount != 0) {
-                mStarvationLock.wait();
+        synchronized (starvationLock) {
+            if (count != 0) {
+                starvationLock.wait();
             }
         }
     }
