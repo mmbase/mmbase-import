@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+	<node number="96" owner="media" alias="media.allstreams">
+		<name>All audio &amp; video streams</name>
+		<description></description>
+	</node>
+
+	<node number="8001" owner="media">
+		<name>TEST</name>
+		<description></description>
+	</node>
+
+
 	<node number="99" owner="media" alias="media.myfragments">
 		<name>My clips</name>
 		<description>Used by the Media editor example</description>
-	</node>
-
-	<node number="96" owner="media" alias="media.streams">
-		<name>Audio &amp; video streams input</name>
-		<description></description>
 	</node>
 
 	<node number="94" owner="media">
@@ -19,5 +25,6 @@
 		<name>Intro's</name>
 		<description></description>
 	</node>
+
 
 </pools>
