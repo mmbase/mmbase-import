@@ -60,12 +60,40 @@ import org.mmbase.util.logging.*;
  * <li><em>field</em> <b>&lt;&gt;</b> <em>field2</em>
  * <li><em>field</em> <b>!=</b> <em>value</em>
  * <li><em>field</em> <b>!=</b> <em>field2</em>
+ * <li><em>string-search-condition</em>
  * </ul>
  * A <em>field</em> can be one of these forms:
  * <ul>
  * <li><em>stepalias</em><b>.</b><em>fieldname</em>
  * <li><em>fieldname</em> (only when the query has just one step).
  * </ul>
+ * A <em>string-search-condition</em> can be of this form:
+ * <ul>
+ * <li><b>StringSearch(</b>PHRASE|PROXIMITY|WORD<b>,</b>
+ *  FUZZY|LITERAL|SYNONYM<b>,</b>
+ *  <em>searchterms</em><b>,</b>
+ *  <em>casesensitive</em><b>)</b>
+ *  [<b>.set(FUZZINESS,</b><em>fuzziness</em><b>)</b>]
+ *  [<b>.set(PROXIMITY_LIMIT,</b>proximity</em><b>)</b>]
+ * </ul>
+ * <em>searchterms</em> can be of one of these forms:
+ * <ul>
+ * <li><b>'</b>term1<b>'</b>
+ * <li><b>"</b>term1<b>"</b>
+ * <li><b>'</b>term1 term2<b>'</b>
+ * <li><b>"</b>term1 term2<b>"</b>
+ * <li> etc...
+ * </ul>
+ * <em>casesensitive</em> can be of one on these forms:
+ * <ul>
+ * <li><b>true</b>
+ * <li><b>false</b>
+ * </ul>
+ * <em>fuzziness</em> must be a float value between 0.0 and 1.0,
+ * <em>proximity</em> must be a int value &gt; 0<br>
+ * <p>
+ * See {@link org.mmbase.storage.search.StringSearchConstraint 
+ * StringSearchConstraint} for more info on string-search constraints.
  * <p>
  * A search condition that is not of one of these forms will be converted to a
  * {@link org.mmbase.storage.search.LegacyConstraint LegacyConstraint}, i.e. 
@@ -73,7 +101,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
