@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.74 2002-09-03 16:30:00 michiel Exp $
+  @version $Id: wizard.xsl,v 1.75 2002-09-06 13:08:11 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -293,7 +293,7 @@
        Prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
        Useful in fieldsets. 
        -->
-  <xsl:template name="prefix|postfix">
+  <xsl:template match="prefix|postfix">
     <xsl:value-of select="name()" /><xsl:value-of select="." />
   </xsl:template>
 
