@@ -22,11 +22,12 @@ import org.mmbase.bridge.Node;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.9 2002-06-30 20:15:52 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.10 2002-07-24 19:43:18 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
  * @see    org.mmbase.module.builders.Images#executeFunction
+ * @see    AttachmentServlet
  */
 public class ImageServlet extends HandleServlet {
 
@@ -38,7 +39,7 @@ public class ImageServlet extends HandleServlet {
         Map a = super.getAssociations();
         a.put("images",      new Integer(50));  // Is good in images (knows icaches)
         a.put("attachments", new Integer(5));   // Can do attachments a little
-        a.put("downloads",   new Integer(-10));   // Can do attachments a little
+        a.put("downloads",   new Integer(-10)); // Can do downloads even worse.
         return a;
     }
 
