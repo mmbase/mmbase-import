@@ -23,74 +23,110 @@ public class BasicRelation extends BasicNode implements Relation {
     private RelationManager relationManager = null;
     private int snum = 0;
     private int dnum = 0;
-    private int rnum = 0;
 
 
-  	BasicRelation(MMObjectNode node, NodeManager nodeManager) {
-  	    super(node,nodeManager);
-  	    snum=node.getIntValue("snumber");
-  	    dnum=node.getIntValue("dnumber");
-  	    rnum=node.getIntValue("rnumber");
-  	}
+    BasicRelation(MMObjectNode node, NodeManager nodeManager) {
+        super(node,nodeManager);
+        if (nodeManager instanceof RelationManager) {
+            this.relationManager=relationManager;
+        }
+        snum=node.getIntValue("snumber");
+        dnum=node.getIntValue("dnumber");
+    }
 
-  	BasicRelation(MMObjectNode node, RelationManager relationManager, int id) {
-        super(node,relationManager,id);
+    BasicRelation(MMObjectNode node, NodeManager nodeManager, int id) {
+        super(node,nodeManager,id);
         isnew=true;
-   	    this.relationManager=relationManager;
-  	    temporaryNodeId=id;
-  	}
+        if (nodeManager instanceof RelationManager) {
+            this.relationManager=relationManager;
 
-	public Node getSource() {
+        }
+        temporaryNodeId=id;
+    }
+
+    public Node getSource() {
         // Note that this will not return an accurate value when the field is
         // edited during a transaction.
-	    return nodeManager.getCloud().getNode(snum);
-	}
+        return nodeManager.getCloud().getNode(snum);
+    }
 
-	public Node getDestination() {
-	    // Note that this will not return an accurate value when the field is
+    public Node getDestination() {
+        // Note that this will not return an accurate value when the field is
         // edited during a transaction.
-	    return nodeManager.getCloud().getNode(dnum);
-	}
+        return nodeManager.getCloud().getNode(dnum);
+    }
 
-	public void setSource(Node node) {
+    public void setSource(Node node) {
         if (node.getCloud() != cloud) {
             throw new BasicBridgeException("Source and relation are not in the same transaction or from different clouds");
         }
         Edit(ACTION_EDIT);
         ((BasicNode)node).Edit(ACTION_LINK);
-	    int source=node.getIntValue("number");
+        int source=node.getIntValue("number");
         if (source==-1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_snumber",node.getValue("_number"));
         } else {
-    	    getNode().setValue("snumber",source);
+          getNode().setValue("snumber",source);
         }
-	    snum=node.getNumber();
-	}
+        snum=node.getNumber();
+    }
 
-	public void setDestination(Node node) {
+    public void setDestination(Node node) {
         if (node.getCloud() != cloud) {
             throw new BasicBridgeException("Destination and relation are not in the same transaction or from different clouds");
         }
         Edit(ACTION_EDIT);
         ((BasicNode)node).Edit(ACTION_LINK);
-	    int dest=node.getIntValue("number");
+        int dest=node.getIntValue("number");
         if (dest==-1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_dnumber",node.getValue("_number"));
         } else {
-    	    getNode().setValue("dnumber",dest);
+          getNode().setValue("dnumber",dest);
         }
-	    dnum=node.getNumber();
-	}
+       dnum=node.getNumber();
+    }
 
     public RelationManager getRelationManager() {
         if (relationManager==null) {
-  	        int stypenum=mmb.getTypeRel().getNodeType(snum);
-      	    int dtypenum=mmb.getTypeRel().getNodeType(dnum);
-      	    relationManager=cloud.getRelationManager(stypenum,dtypenum,rnum);
+            int stypenum=mmb.getTypeRel().getNodeType(snum);
+            int dtypenum=mmb.getTypeRel().getNodeType(dnum);
+            relationManager=cloud.getRelationManager(stypenum,dtypenum,
+                                getNode().getIntValue("rnumber"));
         }
         return relationManager;
+    }
+
+    void checkValid() {
+        int snumber=mmb.getTypeDef().getNodeType(snum);
+        int dnumber=mmb.getTypeDef().getNodeType(dnum);
+        int rnumber=getNode().getIntValue("rnumber");
+        if (!mmb.getTypeRel().reldefCorrect(snumber,dnumber,rnumber)) {
+          if (!mmb.getTypeRel().reldefCorrect(dnumber,snumber,rnumber)) {
+            throw new BasicBridgeException("Source and/or Destination node are not of the correct type.");
+          }
+        }
+    }
+
+    public void commit() {
+        // Check types of source and destination
+        // Normally, this check would be run in the core.
+        // However, the current system mdoes not throw an exception when a wrong
+        // node is created, we want to do this so for them moment
+        // we perform this check here.
+        // Note that we do not realign the node since InsRel does it for us,
+        // but we DO update snum and dnum.
+        //
+        // XXX:This check should ultimately be removed, once we have an agreement
+        // on throwing the exception in the core
+
+        checkValid();
+        super.commit();
+        if (!(cloud instanceof Transaction)) {
+            snum=getNode().getIntValue("snumber");
+            dnum=getNode().getIntValue("dnumber");
+        }
     }
 
     /**

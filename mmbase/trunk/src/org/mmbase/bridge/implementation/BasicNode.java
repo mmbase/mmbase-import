@@ -21,7 +21,7 @@ import java.util.*;
  * @author Pierre van Rooden
  */
 public class BasicNode implements Node {
-    
+
     public static final int ACTION_ADD = 1;      // add a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
     public static final int ACTION_REMOVE = 3;   // remove node
@@ -81,7 +81,7 @@ public class BasicNode implements Node {
             temporaryNodeId=noderef.getNumber();
         }
     }
-    
+
     /*
      * Instantiates a new node (for insert), using a specified nodeManager.
      * @param node a temporary MMObjectNode that is the base for the node
@@ -94,14 +94,14 @@ public class BasicNode implements Node {
         Edit(ACTION_ADD);
         isnew=true;
     }
-    
+
     protected MMObjectNode getNode() {
         if (noderef==null) {
             throw new BasicBridgeException("Node is invalidated or removed.");
         }
         return noderef;
     }
-    
+
     public Cloud getCloud() {
         return nodeManager.getCloud();
     }
@@ -109,7 +109,7 @@ public class BasicNode implements Node {
     public NodeManager getNodeManager() {
         return nodeManager;
     }
-	
+
     public int getNumber() {
         int i=getNode().getNumber();
         // new node, thus return temp id.
@@ -126,7 +126,7 @@ public class BasicNode implements Node {
     boolean isNew() {
         return isnew;
     }
-    	
+
     /**
      * Edit this node.
      * Check whether edits are allowed and prepare a node for edits if needed.
@@ -148,7 +148,7 @@ public class BasicNode implements Node {
         if (nodeManager instanceof VirtualNodeManager) {
             throw new BasicBridgeException("Cannot make edits to a virtual node.");
         }
-	
+
         int realnumber=noderef.getNumber();
         if (realnumber!=-1) {
             if (action==ACTION_REMOVE) {
@@ -161,19 +161,19 @@ public class BasicNode implements Node {
                 cloud.assert(Operation.WRITE,realnumber);
             }
         }
-	
+
         // check for the existence of a temporary node
         if (temporaryNodeId==-1) {
             // when committing a temporary node id must exist (otherwise fail).
             if (action == ACTION_COMMIT) {
                 throw new BasicBridgeException("This node cannot be comitted (not changed).");
-            }	
+            }
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
             if (action == ACTION_ADD) {
                 throw new BasicBridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
-            }	
-            
+            }
+
             // when editing a temporary node id must exist (otherwise create one)
             // This also applies if you remove a node in a transaction (as the transction manager requires a temporary node)
             //
@@ -193,10 +193,10 @@ public class BasicNode implements Node {
             }
         }
     }
-	
+
     public void setValue(String attribute, Object value) {
         Edit(ACTION_EDIT);
-        if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute) 
+        if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
             //|| "snumber".equals(attribute) || "dnumber".equals(attribute) || "rnumber".equals(attribute)
             ) {
             throw new BasicBridgeException("Not allowed to change field "
@@ -211,7 +211,7 @@ public class BasicNode implements Node {
     public void setIntValue(String attribute, int value) {
         setValue(attribute,new Integer(value));
     }
-    
+
     public void setFloatValue(String attribute, float value) {
         setValue(attribute,new Float(value));
     }
@@ -277,7 +277,7 @@ public class BasicNode implements Node {
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             temporaryNodeId=-1;
-        }    
+        }
     };
 
     public void cancel() {
@@ -295,9 +295,9 @@ public class BasicNode implements Node {
                 // should we update the node?, reset fields? etc...
             }
             temporaryNodeId=-1;
-        }    
+        }
     };
-    
+
     public void remove() {
         remove(true);
     };
@@ -350,7 +350,7 @@ public class BasicNode implements Node {
         temporaryNodeId=-1;
         noderef=null;
     }
-    
+
     public String toString() {
         return noderef.toString();
     };
@@ -380,7 +380,7 @@ public class BasicNode implements Node {
             }
         }
     };
-    
+
     public void removeRelations() {
         deleteRelations(-1);
     }
@@ -395,7 +395,7 @@ public class BasicNode implements Node {
         }
     };
 
-    private RelationList getRelations(int type) {    
+    private RelationList getRelations(int type) {
         Vector relvector=new Vector();
         Enumeration e=getNode().getRelations() ;
         NodeManager insrelman = cloud.getNodeManager("insrel");
@@ -411,8 +411,8 @@ public class BasicNode implements Node {
         }
         return new BasicRelationList(relvector,cloud,insrelman);
     };
-    
-    public RelationList getRelations() {    
+
+    public RelationList getRelations() {
         return getRelations(-1);
     };
 
@@ -469,7 +469,7 @@ public class BasicNode implements Node {
     public int countRelatedNodes(String type) {
         return getNode().getRelationCount(type);
     };
-    
+
     public List getAliases() {
         Vector aliasvector=new Vector();
         OAlias alias=mmb.OAlias;
@@ -540,7 +540,6 @@ public class BasicNode implements Node {
     };
 
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
-        Edit(ACTION_LINK);
         Relation relation = relationManager.createRelation(this,destinationNode);
         return relation;
     };
