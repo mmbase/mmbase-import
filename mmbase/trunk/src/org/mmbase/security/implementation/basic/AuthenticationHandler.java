@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.8 2004-04-19 17:23:46 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.9 2005-03-01 14:09:02 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
@@ -115,13 +115,11 @@ public class AuthenticationHandler extends Authentication {
             log.error("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
             throw new UnknownAuthenticationMethodException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
         }
-        NameContext newUser = new NameContext((Rank)moduleRanks.get(moduleName));
+        NameContext newUser = new NameContext((Rank)moduleRanks.get(moduleName), moduleName);
         if (module.login(newUser, loginInfo, parameters)) {
             // our login succeeded..
-
             // check if the identifier was set by the loginModule, when invalid will trow exception..
             newUser.getIdentifier();
-
             return newUser;
         }
         return null;

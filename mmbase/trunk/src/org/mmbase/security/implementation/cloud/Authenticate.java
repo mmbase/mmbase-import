@@ -11,6 +11,7 @@ package org.mmbase.security.implementation.cloud;
 
 import org.mmbase.security.Rank;
 import org.mmbase.security.UserContext;
+import org.mmbase.security.BasicUser;
 import org.mmbase.security.Authentication;
 
 import java.util.Map;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.8 2004-04-19 17:00:32 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.9 2005-03-01 14:09:57 michiel Exp $
  */
 
 public class Authenticate extends Authentication {
@@ -63,7 +64,7 @@ public class Authenticate extends Authentication {
         log.trace("login-module: '" + moduleName + "'");
         if("anonymous".equals(moduleName)) {
             log.debug("[anonymous login]");
-            return new User("anonymous", Rank.ANONYMOUS, validKey);
+            return new User("anonymous", Rank.ANONYMOUS, validKey, "anonymous");
         } else if("name/password".equals(moduleName)) {
             // look if the builder is good and such things....
             checkBuilder();
@@ -78,7 +79,7 @@ public class Authenticate extends Authentication {
             if(password == null) throw new org.mmbase.security.SecurityException("expected the property 'password' with login");
             
             if(builder.exists(userName, password)) {
-                return new User(userName, getRank(userName), validKey);
+                return new User(userName, getRank(userName), validKey, "name/password");
             } else {
                 // helaas, pindakaas...
                 return null;
@@ -91,7 +92,7 @@ public class Authenticate extends Authentication {
             String userName = (String) li.getMap().get("username");
             if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
             if(builder.exists(userName, null)) {
-                return new User(userName, getRank(userName), validKey);
+                return new User(userName, getRank(userName), validKey, "class");
             } else {
                 return null;
             }
@@ -125,12 +126,13 @@ public class Authenticate extends Authentication {
     /**
      * The user object for 'cloud' security.
      */
-    private static class User extends UserContext {
+    private static class User extends BasicUser {
         private String user;
         private Rank rank;
         private long key;
         
-        User(String user, Rank rank, long key) {
+        User(String user, Rank rank, long key, String app) {
+            super(app);
             this.user = user;
             this.rank = rank;
             this.key = key;
