@@ -83,31 +83,45 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
 
 	public MMObjectNode getClaimedBy(String owner) {
-		if( debug ) debug("getClaimedBy("+owner+"), seeking nodenr..");
-		
 		MMObjectNode result	= null;
-		MMObjectNode node 	= null;
-		MMObjectNode node2 	= null;
-		if (cache==null) cache=getCache();
+		if( owner != null ) {
 
-		// hunt down the claimed node by this user
-		// ---------------------------------------
-		Enumeration e=cache.elements();
-		while (e.hasMoreElements()) {
-			node=(MMObjectNode)e.nextElement();
-			if( debug ) debug("CLAIMNode="+node);
+			if( debug ) debug("getClaimedBy("+owner+"), seeking nodenr..");
+		
+			MMObjectNode node 	= null;
+			MMObjectNode node2 	= null;
+			if (cache==null) cache=getCache();
+	
+			// hunt down the claimed node by this user
+			// ---------------------------------------
+			Enumeration e=cache.elements();
+			while (e.hasMoreElements()) {
+				node=(MMObjectNode)e.nextElement();
+				if( debug ) debug("getClaimedBy("+owner+"): node("+node+")");
+	
+				node2=getNode(node.getIntValue("number"));
 
-			node2=getNode(node.getIntValue("number"));
-			if( debug ) debug("CLAIMNode2="+node2);
-
-			String info=node2.getStringValue("info");
-			StringTagger tagger=new StringTagger(info);
-			String user=tagger.Value("user");
-
-			if (user!=null && user.equals(owner)) {
-				if( debug ) debug("getClaimedBy("+owner+"): found node("+node2+")");
-				result=node2;
+				if( node2 != null ) {
+					if( debug ) debug("getClaimedBy("+owner+"): node2("+node2+")");
+		
+					String info=node2.getStringValue("info");
+					if( info != null ) { 
+						StringTagger tagger=new StringTagger(info);
+						String user=tagger.Value("user");
+			
+						if (user!=null && user.equals(owner)) {
+							if( debug ) debug("getClaimedBy("+owner+"): found node("+node2+")");
+							result=node2;
+						}
+					} else { 
+						debug("getClaimedBy("+owner+"): ERROR: in node("+node2+"): no info-field detected!");
+					}
+				} else { 
+					debug("getClaimedBy("+owner+"): ERROR: node("+node+"), node2("+node2+") is null!");
+				}
 			}
+		} else { 
+			debug("getClaimedBy("+owner+"): ERROR: No owner!");
 		}
 
 		if (result!=null) 
@@ -115,7 +129,6 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		else
 			return(null);
 	}
-
 
 	public Hashtable getCache() {
 		Hashtable cache=new Hashtable();
@@ -125,7 +138,8 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 			int number=node.getIntValue("number");
 			cache.put(new Integer(number),node);
 		}
-		if( debug ) debug("getCache(): cache("+cache+")");
+		if( debug ) 
+			debug("getCache(): cache("+cache+"), size("+cache.size()+")");
 		return(cache);
 	}
 
