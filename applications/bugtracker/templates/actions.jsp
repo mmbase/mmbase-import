@@ -211,7 +211,11 @@ issue      :<mm:field name="issue" escape="none"/>
 bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
 rationale  :<mm:field name="rationale"/>
 
-http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:field name="bugid" />
+
+           <mm:url referids="parameters,$parameters" page="<%=request.getScheme() %>://<%=request.getServerName() %><%=request.getContextPath()%><%= request.getRequestURI() %>">
+               <mm:param name="btemplate" value="fullview.jsp" />
+               <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
+          </mm:url>
            </mm:node>
         </mm:setfield>
 	    </mm:createnode>
@@ -301,7 +305,10 @@ issue      :<mm:field name="issue" escape="none"/>
 bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
 rationale  :<mm:field name="rationale"/>
 
-http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:field name="bugid" />
+<mm:url referids="parameters,$parameters" page="<%=request.getScheme() %>://<%=request.getServerName() %><%=request.getContextPath()%><%= request.getRequestURI() %>">
+    <mm:param name="btemplate" value="fullview.jsp" />
+    <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
+</mm:url>
            </mm:node>
         </mm:setfield>
 	    </mm:createnode>
@@ -445,7 +452,10 @@ user <mm:node referid="newuser"><mm:field name="account"/></mm:node> commented
 <mm:write referid="newtext" escape="none"/>
 
 
-http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:field name="bugid" />
+ <mm:url referids="parameters,$parameters" page="<%=request.getScheme() %>://<%=request.getServerName() %><%=request.getContextPath()%><%= request.getRequestURI() %>">
+     <mm:param name="btemplate" value="fullview.jsp" />
+     <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
+</mm:url>
            </mm:node>
         </mm:setfield>
 	    </mm:createnode>
