@@ -24,6 +24,10 @@
         <property name="base.cvs.html.dir" value="${base.cvs.dir}"/>
         <property name="cvs.html.module" value="html"/>
         <property name="cvs.html.dir" value="${base.cvs.html.dir}/${cvs.html.module}"/>
+
+        <property name="base.cvs.documenation.dir" value="${base.cvs.dir}"/>
+        <property name="cvs.documentation.module" value="documentation"/>
+        <property name="cvs.documentation.dir" value="${base.cvs.documentation.dir}/${cvs.documenation.module}"/>
         
         <property name="base.cvs.src.dir" value="${base.cvs.dir}/src/org"/>
         <property name="cvs.mmbase.module" value="mmbase"/>
@@ -45,6 +49,13 @@
                 <cvs cvsRoot=":pserver:guest@www.mmbase.org:/usr/local/cvs"
                 package="${cvs.html.module}"
                 dest="${base.cvs.html.dir}"
+        />                              
+
+                <!-- get documentation from cvs -->
+                <mkdir dir="${base.cvs.documentation.dir}"/>
+                <cvs cvsRoot=":pserver:guest@www.mmbase.org:/usr/local/cvs"
+                package="${cvs.documentation.module}"
+                dest="${base.cvs.documentation.dir}"
         />                              
 
                 <!-- get src from cvs -->
