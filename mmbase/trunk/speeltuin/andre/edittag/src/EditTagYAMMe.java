@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * 'knows' which nodes and fields are available in the page.
  *
  * @author Andre van Toly
- * @version $Id: EditTagYAMMe.java,v 1.1 2005-02-21 22:16:38 andre Exp $
+ * @version $Id: EditTagYAMMe.java,v 1.2 2005-03-18 13:19:26 andre Exp $
  */
 
 public class EditTagYAMMe extends TagSupport implements EditTag {
