@@ -44,7 +44,7 @@ import org.mmbase.util.logging.*;
  *
  * Postgresql driver for MMBase
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL72.java,v 1.1 2002-10-11 13:03:13 eduard Exp $
+ * @version $Id: PostgreSQL72.java,v 1.1.2.1 2003-03-27 17:31:44 robmaris Exp $
  */
 //public class PostgreSQL72 extends PostgresSQL71 implements MMJdbc2NodeInterface  {
 public class PostgreSQL72 extends  PostgreSQL71 {
@@ -88,32 +88,35 @@ public class PostgreSQL72 extends  PostgreSQL71 {
     }
 
     public byte[] getShortedByte(String tableName,String fieldname,int number) {
-
+        
         MultiConnection con = null;
         Statement stmt = null;
-
+        
         try {
             log.debug("retrieving the field :" + fieldname +" of object("+number+") of type : " + tableName);
             con = mmb.getConnection();
-
-	    // TODO: use prepare statement, can be cached..
+            
+            // TODO: use prepare statement, can be cached..
             stmt = con.createStatement();
-	    
+            
             String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
             log.debug("gonna excute the followin query: " + sql);
+            byte[] data=null;
             ResultSet rs = stmt.executeQuery(sql);
-	    if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
-
-           byte[] data=null;
-            if(rs.next()) {
-		data = rs.getBytes(1);
-                log.debug("data was read from the database(#"+data.length+" bytes)");
+            try {
+                if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
+                
+                if(rs.next()) {
+                    data = rs.getBytes(1);
+                    log.debug("data was read from the database(#"+data.length+" bytes)");
+                }
+            } finally {
+                rs.close();
             }
-            rs.close();
             stmt.close();
-
+            
             con.close();
-
+            
             if (data != null) {
                 log.debug("retrieved "+data.length+" bytes of data");
             } else {

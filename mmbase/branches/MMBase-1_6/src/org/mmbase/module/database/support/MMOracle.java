@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @version 09 Mar 2001
- * @$Revision: 1.14 $ $Date: 2002-11-14 16:31:19 $
+ * @$Revision: 1.14.2.1 $ $Date: 2003-03-27 17:31:42 $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
    
@@ -246,8 +246,12 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
          MultiConnection con=mmb.getConnection();
          Statement stmt=con.createStatement();
          ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
-         if (rs.next()) {
-            result=getDBText(rs,1);
+         try {
+             if (rs.next()) {
+                result=getDBText(rs,1);
+             }
+         } finally {
+             rs.close();
          }
          stmt.close();
          con.close();
@@ -269,8 +273,12 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
          MultiConnection con=mmb.getConnection();
          Statement stmt=con.createStatement();
          ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
-         if (rs.next()) {
-            result=getDBByte(rs,1);
+         try {
+             if (rs.next()) {
+                result=getDBByte(rs,1);
+             }
+         } finally {
+             rs.close();
          }
          stmt.close();
          con.close();
@@ -664,8 +672,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             ps.setInt(updateParam, number);
             ps.executeUpdate();
          }
-      }
-      finally {
+      } finally {
          if (rs != null) {
             rs.close();
          }
@@ -880,8 +887,12 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
          //stmt.executeUpdate("lock tables "+mmb.baseName+"_numbertable WRITE;");
          stmt.executeUpdate("update "+mmb.baseName+"_numbertable set "+getNumberString()+" = "+getNumberString()+"+1");
          ResultSet rs=stmt.executeQuery("select "+getNumberString()+" from "+mmb.baseName+"_numbertable");
-         while(rs.next()) {
-            number=rs.getInt(1);
+         try {
+             while(rs.next()) {
+                number=rs.getInt(1);
+             }
+         } finally {
+             rs.close();
          }
          // not part of sql92, please find new trick (daniel)
          // stmt.executeUpdate("unlock tables;");
@@ -901,11 +912,15 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
          MultiConnection con=mmb.getConnection();
          Statement stmt=con.createStatement();
          ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
-         if (rs.next()) {
-            number=rs.getInt(1);
-            number++;
-         } else {
-            number=1;
+         try {
+             if (rs.next()) {
+                number=rs.getInt(1);
+                number++;
+             } else {
+                number=1;
+             }
+         } finally {
+             rs.close();
          }
          stmt.close();
          con.close();
@@ -939,12 +954,16 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
       MultiConnection con=null;
       Statement stmt=null;
       try {
+         int i=-1;
          con=mmb.getConnection();
          stmt=con.createStatement();
          ResultSet rs=stmt.executeQuery("SELECT count(*) FROM "+tableName);
-         int i=-1;
-         while(rs.next()) {
-            i=rs.getInt(1);
+         try {
+             while(rs.next()) {
+                i=rs.getInt(1);
+             }
+         } finally {
+             rs.close();
          }
          stmt.close();
          con.close();

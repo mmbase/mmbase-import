@@ -72,13 +72,17 @@ public class MMTable {
             String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
 			log.info(query);
 			ResultSet rs=stmt.executeQuery(query);
-			int i=-1;
-			while(rs.next()) {
-				i=rs.getInt(1);
-			}	
-			stmt.close();
-			con.close();
-			return i;
+            try {
+                int i=-1;
+                while(rs.next()) {
+                    i=rs.getInt(1);
+                }	
+                stmt.close();
+                con.close();
+                return i;
+            } finally {
+                rs.close();
+            }
 		} catch (Exception e) {
 			return(-1);
 		}

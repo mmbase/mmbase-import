@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18.2.2 2003-02-20 13:45:24 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.3 2003-03-27 17:30:45 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -424,24 +424,28 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (log.isDebugEnabled()) log.debug("Query "+query);
 
                 ResultSet rs=stmt.executeQuery(query);
-                ClusterNode node;
-                Vector results=new Vector();
-                String tmp,prefix;
-                while(rs.next()) {
-                    // create a new VIRTUAL object and add it to the result vector
-                    node=new ClusterNode(this,tables.size());
-                    ResultSetMetaData rd=rs.getMetaData();
-                    String fieldname;
-                    for (int i=1;i<=rd.getColumnCount();i++) {
-                        prefix=selectTypes.elementAt(i-1)+".";
-                        fieldname=rd.getColumnName(i);
-                        database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                try {
+                    ClusterNode node;
+                    Vector results=new Vector();
+                    String tmp,prefix;
+                    while(rs.next()) {
+                        // create a new VIRTUAL object and add it to the result vector
+                        node=new ClusterNode(this,tables.size());
+                        ResultSetMetaData rd=rs.getMetaData();
+                        String fieldname;
+                        for (int i=1;i<=rd.getColumnCount();i++) {
+                            prefix=selectTypes.elementAt(i-1)+".";
+                            fieldname=rd.getColumnName(i);
+                            database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        }
+                        node.initializing=false;
+                        results.addElement(node);
                     }
-                    node.initializing=false;
-                    results.addElement(node);
+                    //  return the results
+                    return results;
+                } finally {
+                    rs.close();
                 }
-                //  return the results
-                return results;
             } finally {
                 mmb.closeConnection(con,stmt);
             }

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.13 2002-11-14 16:22:11 robmaris Exp $
+$Id: MMPostgres42Node.java,v 1.13.2.1 2003-03-27 17:31:42 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2002/11/14 16:22:11  robmaris
+RvM: replaced calls to deprecated MMObjectNode getTableName() by getName().
+
 Revision 1.12  2001/07/09 12:30:03  jaco
 jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
 
@@ -73,7 +76,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.13 $ $Date: 2002-11-14 16:22:11 $
+* @$Revision: 1.13.2.1 $ $Date: 2003-03-27 17:31:42 $
 */
 public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -299,9 +302,13 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-			if (rs.next()) {
-				result=getDBText(rs,1);
-			}
+            try {
+                if (rs.next()) {
+                    result=getDBText(rs,1);
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 			return(result);
@@ -322,9 +329,13 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-			if (rs.next()) {
-				result=getDBByte(rs,1);
-			}
+			try {
+                if (rs.next()) {
+                    result=getDBByte(rs,1);
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 			return(result);
@@ -747,10 +758,14 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("select max(number) from "+mmb.getBaseName()+"_object");
-			if (rs.next()) {
-				number=rs.getInt(1);
-				number++;
-			}
+			try {
+                if (rs.next()) {
+                    number=rs.getInt(1);
+                    number++;
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
@@ -784,11 +799,15 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		try {
 			con=mmb.getConnection();
 			stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("SELECT count(*) FROM "+tableName+";");
 			int i=-1;
-			while(rs.next()) {
-				i=rs.getInt(1);
-			}	
+			ResultSet rs=stmt.executeQuery("SELECT count(*) FROM "+tableName+";");
+            try {
+                while(rs.next()) {
+                    i=rs.getInt(1);
+                }	
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 			return i;
