@@ -13,7 +13,7 @@
   <content 
     type="text/html" 
     defaultescaper="text/html" 
-    defaultpostprocessor="reducespace" 
+    defaultpostprocessor="reducespace"
     />
   <content 
     type="text/xml" 
@@ -38,8 +38,8 @@
   <escaper id="text/xml">
     <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
   </escaper>
-  <escaper id="text/html/rich">
-    <class config="POOR" back="true">org.mmbase.util.transformers.XmlField</class>
+  <escaper id="rich">
+    <class config="RICHBODY" back="true">org.mmbase.util.transformers.XmlField</class>
   </escaper>
   <escaper id="uppercase">
     <class>org.mmbase.util.transformers.UpperCaser</class>
