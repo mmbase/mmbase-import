@@ -162,7 +162,7 @@ public class XMLBuilderReader  {
 					String name2=n3.getNodeName();
 					if (name2.equals("name")) {
 						getGUIName(n3,def);
-					} if (name2.equals("type")) {
+					} if (name2.equals("type") || name2.equals("gype")) {
 						def.GUIType=getGUIType(n3);
 					}
 					n3=n3.getNextSibling();
@@ -245,12 +245,6 @@ public class XMLBuilderReader  {
 					def.DBState=FieldDefs.DBSTATE_UNKNOWN;
 				}
 			}
-			/*
-	public final static int DBSTATE_VIRTUAL = 0;
-	public final static int DBSTATE_PERSISTENT = 2;
-	public final static int DBSTATE_SYSTEM = 3;
-	public final static int DBSTATE_UNKNOWN = -1;
-			*/
 		}
 		return(val);
 	}
