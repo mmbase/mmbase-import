@@ -20,36 +20,36 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.18 2004-04-01 20:57:48 robmaris Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.19 2004-12-23 17:31:05 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
-    
+
     /** Distinct property. */
     private boolean distinct = false;
-    
+
     /** MaxNumber property. */
     private int maxNumber = SearchQuery.DEFAULT_MAX_NUMBER;
-    
+
     /** Offset property. */
     private int offset = SearchQuery.DEFAULT_OFFSET;
-    
+
     /** Step list. */
     private List steps = new ArrayList();
-    
+
     /** StepField list. */
     protected List fields = new ArrayList();
-    
+
     /** SortOrder list. */
     private List sortOrders = new ArrayList();
-    
+
     /** Constraint.. */
     private Constraint constraint = null;
-    
+
     /** Aggragating property. */
     private boolean aggregating = false;
-    
+
     /**
      * Constructor.
      *
@@ -58,7 +58,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public BasicSearchQuery(boolean aggregating) {
         this.aggregating = aggregating;
     }
-    
+
     /**
      * Constructor, constructs non-aggragating query.
      */
@@ -94,7 +94,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         case COPY_AGGREGATING:
             aggregating = true;
             break;
-            
+
         }
     }
 
@@ -102,7 +102,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /**
      * A deep copy. Needed if you want to do multiple queries (and change the query between them).
      * Used by bridge.Query#clone (so it will be decided that that is not needed, ths can be removed too)
-     * @see org.mmbase.bridge.Query#clone 
+     * @see org.mmbase.bridge.Query#clone
      */
     public BasicSearchQuery(SearchQuery q) {
         this(q, COPY_NORMAL);
@@ -131,10 +131,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         MMBase mmb = MMBase.getMMBase();
         steps = new ArrayList();
         Iterator i = q.getSteps().iterator();
-        while (i.hasNext()) {            
+        while (i.hasNext()) {
             Step step = (Step) i.next();
             if (step instanceof RelationStep) {
-                RelationStep relationStep = (RelationStep) step;               
+                RelationStep relationStep = (RelationStep) step;
                 MMObjectBuilder dest   = mmb.getBuilder(relationStep.getNext().getTableName());
                 InsRel         insrel  = (InsRel) mmb.getBuilder(relationStep.getTableName());
                 BasicRelationStep newRelationStep = addRelationStep(insrel, dest);
@@ -154,7 +154,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                     newNext.addNode(((Integer) j.next()).intValue());
                 }
                 i.next(); // dealt with that already
-                                                                    
+
             } else {
                 BasicStep newStep = addStep(mmb.getBuilder(step.getTableName()));
                 newStep.setAlias(step.getAlias());
@@ -167,7 +167,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         //log.info("copied steps " + q.getSteps() + " became " + steps);
 
     }
-    protected void copyFields(SearchQuery q) {        
+    protected void copyFields(SearchQuery q) {
         fields = new ArrayList();
         MMBase mmb = MMBase.getMMBase();
         Iterator i = q.getFields().iterator();
@@ -181,7 +181,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             }
             Step newStep = (Step) steps.get(j);
             BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
-            newField.setAlias(field.getAlias());                                        
+            newField.setAlias(field.getAlias());
         }
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
@@ -205,7 +205,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             newSortOrder.setDirection(sortOrder.getDirection());
         }
 
-                
+
 
     }
 
@@ -218,14 +218,14 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         List steps = q.getSteps();
         Step step = (Step) steps.get(steps.indexOf(fstep));
         MMObjectBuilder bul = MMBase.getMMBase().getBuilder(step.getTableName());
-        return new BasicStepField(step, bul.getField(f.getFieldName()));        
+        return new BasicStepField(step, bul.getField(f.getFieldName()));
     }
-    
+
 
     /**
      * Used by copy-constructor. Constraints have to be done recursively.
      */
-    protected Constraint copyConstraint(SearchQuery q, Constraint c) {        
+    protected Constraint copyConstraint(SearchQuery q, Constraint c) {
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
             BasicCompositeConstraint newConstraint = new BasicCompositeConstraint(constraint.getLogicalOperator());
@@ -237,7 +237,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;
         } else if (c instanceof CompareFieldsConstraint) {
-            CompareFieldsConstraint constraint = (CompareFieldsConstraint) c;       
+            CompareFieldsConstraint constraint = (CompareFieldsConstraint) c;
             BasicCompareFieldsConstraint newConstraint = new BasicCompareFieldsConstraint(createNewStepField(q, constraint.getField()), createNewStepField(q, constraint.getField2()));
             newConstraint.setOperator(constraint.getOperator());
             newConstraint.setInverse(constraint.isInverse());
@@ -250,24 +250,24 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             newConstraint.setOperator(constraint.getOperator());
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
-            return newConstraint;            
+            return newConstraint;
         } else if (c instanceof FieldNullConstraint) {
             FieldNullConstraint constraint = (FieldNullConstraint) c;
             BasicFieldNullConstraint newConstraint = new BasicFieldNullConstraint(createNewStepField(q, constraint.getField()));
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
-            return newConstraint;            
+            return newConstraint;
         } else if (c instanceof FieldValueBetweenConstraint) {
             FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
             BasicFieldValueBetweenConstraint newConstraint;
             try {
-                newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), new Integer(constraint.getLowerLimit()), new Integer(constraint.getUpperLimit()));
+                newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), constraint.getLowerLimit(), constraint.getUpperLimit());
             } catch (NumberFormatException e) {
-                newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), new Double(constraint.getLowerLimit()), new Double(constraint.getUpperLimit()));
+                newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), constraint.getLowerLimit(), constraint.getUpperLimit());
             }
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
-            return newConstraint;            
+            return newConstraint;
         } else if (c instanceof FieldValueInConstraint) {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
             BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
@@ -276,22 +276,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             Iterator k = constraint.getValues().iterator();
             while (k.hasNext()) {
                 Object value = k.next();
-                switch(type) {
-                case FieldDefs.TYPE_INTEGER:
-                case FieldDefs.TYPE_LONG:
-                case FieldDefs.TYPE_NODE:
-                    value = new Long((String) value);
-                    break;
-                case FieldDefs.TYPE_FLOAT:
-                case FieldDefs.TYPE_DOUBLE:
-                    value = new Double((String) value);
-                    break;
-                }
                 newConstraint.addValue(value);
             }
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
-            return newConstraint;            
+            return newConstraint;
         } else if (c instanceof LegacyConstraint) {
             LegacyConstraint constraint = (LegacyConstraint) c;
             BasicLegacyConstraint newConstraint = new BasicLegacyConstraint(constraint.getConstraint());
@@ -310,7 +299,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         this.distinct = distinct;
         return this;
     }
-    
+
     /**
      * Sets maxNumber.
      *
@@ -325,7 +314,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         this.maxNumber = maxNumber;
         return this;
     }
-    
+
     /**
      * Sets offset.
      *
@@ -341,7 +330,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         this.offset = offset;
         return this;
     }
-    
+
     /**
      * Adds new step to this SearchQuery.
      *
@@ -354,7 +343,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         steps.add(step);
         return step;
     }
-    
+
     /**
      * Adds new relationstep to this SearchQuery.
      * This adds the next step as well, it can be retrieved by calling <code>
@@ -382,7 +371,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         steps.add(next);
         return relationStep;
     }
-    
+
     /**
      * Adds new field to this SearchQuery.
      *
@@ -390,7 +379,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @param fieldDefs The associated fieldDefs.
      * @return The new field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
-     * @throws UnsupportedOperationException when called 
+     * @throws UnsupportedOperationException when called
      *         on an aggregating query.
      */
     public BasicStepField addField(Step step, FieldDefs fieldDefs) {
@@ -405,7 +394,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     // MM //only sensible for NodeSearchQuery
     protected void mapField(FieldDefs field, StepField stepField) {
-        
+
     }
     // MM
     public void  addFields(Step step) {
@@ -414,14 +403,14 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-	    if ( field.getDBType() != FieldDefs.TYPE_BYTE 
-		 && ( field.getDBState() == FieldDefs.DBSTATE_PERSISTENT 
-	      || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
-		    )
-		) {
-		BasicStepField stepField = addField(step, field);
+        if ( field.getDBType() != FieldDefs.TYPE_BYTE
+         && ( field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
+          || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
+            )
+        ) {
+        BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
-	    }
+        }
         }
 
     }
@@ -429,7 +418,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void removeFields() {
         fields.clear();
     }
-    
+
     /**
      * Adds new aggregated field to this SearchQuery.
      *
@@ -438,7 +427,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @param aggregatinType The aggregation type.
      * @return The new field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
-     * @throws UnsupportedOperationException when called 
+     * @throws UnsupportedOperationException when called
      *         on an non-aggregating query.
      */
     public BasicAggregatedField addAggregatedField(Step step, FieldDefs fielDefs,
@@ -451,7 +440,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         fields.add(field);
         return field;
     }
-    
+
     /**
      * Creates sortorder for this SearchQuery.
      *
@@ -464,7 +453,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         sortOrders.add(sortOrder);
         return sortOrder;
     }
-    
+
     /**
      * Sets constraint.
      *
@@ -474,51 +463,51 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void setConstraint(Constraint constraint) {
         this.constraint = constraint;
     }
-    
+
     // javadoc is inherited
     public boolean isDistinct() {
         return distinct;
     }
-    
+
     // javadoc is inherited
     public boolean isAggregating() {
         return aggregating;
     }
-    
+
     // javadoc is inherited
     public List getSortOrders() {
         // return as unmodifiable list
         return Collections.unmodifiableList(sortOrders);
     }
-    
+
     // javadoc is inherited
     public List getSteps() {
         // return as unmodifiable list
         return Collections.unmodifiableList(steps);
     }
-    
-    
+
+
     // javadoc is inherited
     public List getFields() {
         // return as unmodifiable list
         return Collections.unmodifiableList(fields);
     }
-    
+
     // javadoc is inherited
     public Constraint getConstraint() {
         return constraint;
     }
-    
+
     // javadoc is inherited
     public int getMaxNumber() {
         return maxNumber;
     }
-    
+
     //javadoc is inherited
     public int getOffset() {
         return offset;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -539,7 +528,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return (distinct? 0: 101)
@@ -549,7 +538,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         + 31 * sortOrders.hashCode()
         + 37 * (constraint == null? 0: constraint.hashCode());
     }
-    
+
     // javadoc is inherited
     public String toString() {
         return "SearchQuery(distinct:" + isDistinct()
@@ -560,5 +549,5 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         + ", max:" + getMaxNumber()
         + ", offset:" + getOffset() + ")";
     }
-    
+
 }

@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueInConstraint.java,v 1.11 2004-07-26 20:07:15 michiel Exp $
+ * @version $Id: BasicFieldValueInConstraint.java,v 1.12 2004-12-23 17:31:05 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -43,20 +43,7 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      */
     public BasicFieldValueInConstraint addValue(Object value) {
         BasicStepField.testValue(value, getField());
-        if (value instanceof Number) {
-            // Add value as string. This facilitates comparison of
-            // numerical values of different type.
-            Number numberValue = (Number) value;
-            // Represent integral value as integer,
-            // other values as floating point.
-            if (numberValue.intValue() == numberValue.doubleValue()) {
-                values.add(Integer.toString(numberValue.intValue()));
-            } else {
-                values.add(numberValue.toString());
-            }
-        } else {
-            values.add(value.toString());
-        }
+        values.add(value);
         return this;
     }
 
@@ -99,7 +86,7 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
         StringBuffer sb = new StringBuffer("FieldValueInConstraint(inverse:").
         append(isInverse()).
         append(", field:").
-        append(fieldName). 
+        append(fieldName).
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", values:").

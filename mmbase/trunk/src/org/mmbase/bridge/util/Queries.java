@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.48 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: Queries.java,v 1.49 2004-12-23 17:31:05 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -651,9 +651,9 @@ abstract public class Queries {
         } else if (c instanceof FieldValueBetweenConstraint) {
             FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
             try {
-                newConstraint = query.createConstraint(field, new Integer(constraint.getLowerLimit()), new Integer(constraint.getUpperLimit()));
+                newConstraint = query.createConstraint(field, constraint.getLowerLimit(), constraint.getUpperLimit());
             } catch (NumberFormatException e) {
-                newConstraint = query.createConstraint(field, new Double(constraint.getLowerLimit()), new Double(constraint.getUpperLimit()));
+                newConstraint = query.createConstraint(field, constraint.getLowerLimit(), constraint.getUpperLimit());
             }
         } else if (c instanceof FieldValueInConstraint) {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
