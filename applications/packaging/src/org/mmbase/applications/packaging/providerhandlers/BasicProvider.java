@@ -16,6 +16,7 @@ import org.mmbase.applications.packaging.installhandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.projects.*;
+import org.mmbase.applications.packaging.projects.creators.*;
 
 import java.io.*;
 import java.util.*;
@@ -288,12 +289,12 @@ public class BasicProvider implements ProviderInterface {
         return true;
     }
 
-    public boolean publish(BundleInterface bundle,String sharepassword) {
+    public boolean publish(CreatorInterface creator,BundleInterface bundle,String sharepassword) {
 	log.error("Publish (bundle) call not supported in this provider type : "+getName());
 	return false;
     }
 
-    public boolean publish(PackageInterface bundle,String sharepassword) {
+    public boolean publish(CreatorInterface creator,PackageInterface bundle,String sharepassword) {
 	log.error("Publish (package) call not supported in this provider type : "+getName());
 	return false;
     }

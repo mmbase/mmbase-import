@@ -15,6 +15,7 @@ import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
+import org.mmbase.applications.packaging.projects.creators.*;
 
 import java.io.*;
 import java.net.*;
@@ -448,7 +449,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
     }
 
 
-    public boolean publish(PackageInterface pack,String sharepassword) {
+    public boolean publish(CreatorInterface creator,PackageInterface pack,String sharepassword) {
 	// should be general code for all types once all is in
 	String filename=pack.getId()+"_"+pack.getVersion()+".mmp";
 
@@ -538,7 +539,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	return true;
     }
 
-    public boolean publish(BundleInterface bundle,String sharepassword) {
+    public boolean publish(CreatorInterface creator,BundleInterface bundle,String sharepassword) {
 	// should be general code for all types once all is in
 	String filename=bundle.getId()+"_"+bundle.getVersion()+".mmb";
 
@@ -587,6 +588,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 
             try {
                 BufferedInputStream in = new BufferedInputStream(bundle.getJarStream());
+		log.info("SENDING CREATOR="+creator);
                 int val;
 		int totallen=0;
                 while ((val = in.read()) != -1) {
