@@ -19,15 +19,8 @@
 
 	<form-schema id="step1">
 		<title>Image upload</title>
-		<field fdatapath="field[@name='title']" ftype="line" dttype="string" dtminlength="1" dtmaxlength="255">
-			<prompt>Title</prompt>
-		</field>
-		<field fdatapath="field[@name='description']" ftype="text" rows="8">
-			<prompt>Description</prompt>
-		</field>
-		
-		<field fdatapath="field[@name='handle']" ftype="upload" dttype="image">
-			<prompt>upload</prompt>
-		</field>
+		<field fdatapath="field[@name='title']" ftype="line" dttype="string" dtminlength="1" dtmaxlength="255" />
+		<field fdatapath="field[@name='description']" ftype="text" rows="8" />
+		<field fdatapath="field[@name='handle']" ftype="upload" dttype="image" />
 	</form-schema>	
 </wizard-schema>
