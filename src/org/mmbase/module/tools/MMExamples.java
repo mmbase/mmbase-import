@@ -190,12 +190,10 @@ public class MMExamples extends ProcessorModule {
 					}
 				}
 			}
-			System.out.println("Check Query : "+checkQ);
 			if (!checkQ.equals("")) {
 				Enumeration r=bul.search(checkQ);
 				if (r.hasMoreElements()) {
 					MMObjectNode oldnode=(MMObjectNode)r.nextElement();	
-					System.out.println(oldnode);
 					return(oldnode.getIntValue("number"));
 				}
 
@@ -210,14 +208,11 @@ public class MMExamples extends ProcessorModule {
 	}
 
 	boolean installRelationSources(Vector ds) {
-		System.out.println("START RELATION ADDER");
-		System.out.println("AAA1="+ds.size());
 		for (Enumeration h = ds.elements();h.hasMoreElements();) {
 			Hashtable bh=(Hashtable)h.nextElement();	
 			String path=(String)bh.get("path");
 			path=MMBaseContext.getConfigPath()+("/applications/")+path;
 			XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
-			System.out.println("AAA2");
 			
 			String exportsource=nodereader.getExportSource();
 			int timestamp=nodereader.getTimeStamp();
@@ -232,7 +227,6 @@ public class MMExamples extends ProcessorModule {
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
 						System.out.println("node allready installed : "+exportnumber);
 					} else {
-						System.out.println("AAA3="+newnode);
 						newnode.setValue("number",-1);
 						
 						// find snumber
@@ -259,7 +253,6 @@ public class MMExamples extends ProcessorModule {
 					
 						newnode.setValue("snumber",snumber);
 						newnode.setValue("dnumber",dnumber);
-						System.out.println("REL="+newnode);	
 						int localnumber=-1;	
 						if (snumber!=-1 && dnumber!=-1) localnumber=newnode.insert("import");
 						if (localnumber!=-1) {
