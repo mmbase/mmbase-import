@@ -179,7 +179,7 @@ public class MMObjectNode {
 	
 		// is it a memory only field ? then send a fieldchange
 		// a small test begin for transient fields
-		//sendFieldChangeSignal(fieldname);
+		if (state==0) sendFieldChangeSignal(fieldname);
 
 		return(true);
 	}
@@ -205,7 +205,7 @@ public class MMObjectNode {
 		}
 
 		// is it a memory only field ? then send a fieldchange
-		//sendFieldChangeSignal(fieldname);
+		if (state==0) sendFieldChangeSignal(fieldname);
 		return(true);
 	}
 
@@ -228,7 +228,7 @@ public class MMObjectNode {
 		}
 
 		// is it a memory only field ? then send a fieldchange
-		//sendFieldChangeSignal(fieldname);
+		if (state==0) sendFieldChangeSignal(fieldname);
 		return(true);
 	}
 
@@ -250,7 +250,7 @@ public class MMObjectNode {
 		}
 
 		// is it a memory only field ? then send a fieldchange
-		//sendFieldChangeSignal(fieldname);
+		if (state==0) sendFieldChangeSignal(fieldname);
 		return(true);
 	}
 
