@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
+import org.mmbase.storage.StorageInaccessibleException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBCInterface;
 
@@ -27,7 +28,7 @@ import org.mmbase.module.database.JDBCInterface;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.2 2003-07-21 13:21:54 pierre Exp $
+ * @version $Id: GenericDataSource.java,v 1.3 2003-07-24 12:29:05 pierre Exp $
  */
 public final class GenericDataSource implements DataSource {
 
@@ -42,11 +43,12 @@ public final class GenericDataSource implements DataSource {
      * Constructs a datasource for accessing the database belonging to the given MMBase module.
      * The MMBase parameter is not currently used, but is included for future expansion
      * @param mmbase the MMBase instance
+     * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
-    public GenericDataSource(MMBase mmbase) {
+    public GenericDataSource(MMBase mmbase) throws StorageInaccessibleException {
         jdbc = (JDBCInterface)mmbase.getModule("JDBC", true);
         if (jdbc == null) {
-            throw new RuntimeException("Cannot load Datasource or JDBC Module");
+            throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
     }
 
