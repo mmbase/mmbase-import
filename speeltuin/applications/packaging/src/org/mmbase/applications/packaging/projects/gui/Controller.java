@@ -337,9 +337,24 @@ public class Controller {
                         virtual.setValue("name", ip.getName());
                         virtual.setValue("maintainer", ip.getMaintainer());
                         virtual.setValue("version", ip.getVersion());
+			PackageInterface pa = PackageManager.getPackage(ip.getId());
+                        virtual.setValue("lastversion", pa.getVersion());
+			// weird way	
+			try {
+	                	virtual.setValue("nextversion", Integer.parseInt(pa.getVersion())+1);
+			} catch (Exception e) {}
                         virtual.setValue("type", ip.getType());
                         virtual.setValue("id", ip.getId());
                         virtual.setValue("included", ip.getIncluded());
+
+			// add the target name if this is a created inside
+			// the current project.
+			Target t2 = p.getTargetById(ip.getId());
+			if (t2 != null ) {
+                        	virtual.setValue("target", t2.getName());
+			} else {
+                        	virtual.setValue("target", "");
+			}
                         list.add(virtual);
                     }
                 }
@@ -391,11 +406,47 @@ public class Controller {
      * @param  newversion  Description of the Parameter
      * @return             Description of the Return Value
      */
-    public boolean packageTarget(String project, String target, int newversion) {
+    public boolean packageTarget(String project, String target, int newversion,String latest,String createnew) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
         Project p = ProjectManager.getProject(project);
         if (p != null) {
+	// this first part handles auto includes and updates (mostly for bundles)
+		if (!latest.equals("")) {
+			StringTokenizer tok = new StringTokenizer(latest,",\n\t");
+			while (tok.hasMoreTokens()) {
+				String pid = tok.nextToken();
+				PackageInterface pa = PackageManager.getPackage(pid);
+				if (pa!=null) {
+    					setIncludedVersion(project,target,pid,pa.getVersion());
+				}
+			}
+		}
+
+
+		if (!createnew.equals("")) {
+			StringTokenizer tok = new StringTokenizer(createnew,",\n\t");
+			while (tok.hasMoreTokens()) {
+				String tid = tok.nextToken();
+				Target t2 = p.getTarget(tid);
+				if (t2 != null) {
+					int nv=t2.getNextVersion();
+            				t2.createPackage(nv);
+					PackageInterface pa = PackageManager.getPackage(t2.getId());
+					while (!pa.getVersion().equals(""+nv)) {
+						// really weird way to delay until provider has found
+						// the new package
+						try {
+							Thread.sleep(1000);
+						} catch(Exception e) {}
+					}
+					if (pa!=null) {
+    						setIncludedVersion(project,target,t2.getId(),""+nv);
+					}
+				}
+			}
+		}
+
             Target t = p.getTarget(target);
             t.createPackage(newversion);
         }
@@ -1059,4 +1110,3 @@ public class Controller {
     }
 
 }
-
