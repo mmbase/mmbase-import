@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.15 2003-10-30 14:05:07 pierre Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.16 2003-11-05 15:42:27 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -42,6 +42,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
     protected Attribute inverse    = Attribute.NULL;
 
     protected Attribute field2     = Attribute.NULL; // not implemented
+
+    protected Attribute caseSensitive = Attribute.NULL;
 
 
     public void setContainer(String c) throws JspTagException {
@@ -70,6 +72,21 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     public void setInverse(String i) throws JspTagException {
         inverse = getAttribute(i);
+    }
+
+    public void setCasesensitive(String c) throws JspTagException {
+        caseSensitive = getAttribute(c);
+    }
+
+    public boolean getCaseSensitive() throws JspTagException {
+        String cs = caseSensitive.getString(this).toUpperCase();
+        if (cs.equals("") || cs.equals("FALSE")) {
+            return false;
+        }  else if (cs.equals("TRUE")) {
+            return true;
+        } else {
+            throw new JspTagException("Unknown value '" + cs + "' for casesensitive attribute");
+        }
     }
 
     protected int getOperator() throws JspTagException {
@@ -108,7 +125,12 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
     }
 
     public static Constraint buildConstraint(Query query, String field, String field2, int operator,
-                                          String stringValue, String stringValue2) throws JspTagException {
+                                             String stringValue, String stringValue2) throws JspTagException {
+        return buildConstraint(query, field, field2, operator, stringValue, stringValue2, false);
+    }
+
+    protected static Constraint buildConstraint(Query query, String field, String field2, int operator,
+                                          String stringValue, String stringValue2, boolean caseSensitive) throws JspTagException {
         Object compareValue;
 
         StepField stepField = query.createStepField(field);
@@ -138,6 +160,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
                 }
             }
         }
+        query.setCaseSensitive(newConstraint, caseSensitive);
         return newConstraint;
     }
 
@@ -153,9 +176,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         return newConstraint;
     }
 
-    private Constraint addConstraint(Query query, String field, String field2, int operator,
-                                          String stringValue, String stringValue2) throws JspTagException {
-        Constraint newConstraint = buildConstraint(query, field, field2, operator, stringValue, stringValue2);
+    private Constraint addConstraint(Query query) throws JspTagException {
+        Constraint newConstraint = buildConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this), getCaseSensitive());
 
         // if there is a OR or an AND tag, add
         // the constraint to that tag,
@@ -173,7 +195,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
-        Constraint cons = addConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this));
+        Constraint cons = addConstraint(query);
         if (inverse.getBoolean(this, false)) {
             query.setInverse(cons, true);
         }

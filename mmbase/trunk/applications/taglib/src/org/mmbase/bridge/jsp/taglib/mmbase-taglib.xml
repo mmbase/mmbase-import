@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.210 2003-10-30 14:05:03 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.211 2003-11-05 15:42:28 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4638,6 +4638,14 @@ The 0 is just counter, which starts at 0 on every page.
 			<rtexprvalue>true</rtexprvalue>
 			<info>
 				Inverses the constraint. So adds a NOT.
+			</info>
+		</attribute>
+		<attribute>
+			<name>casesensitive</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+        Changes the given constraint's 'case sensitivity' (if applicable). Default it is false.
 			</info>
 		</attribute>
 		<attribute>
