@@ -29,13 +29,13 @@ public interface NodeTypeInterface {
     public CloudInterface getCloud();
 
  	/**
-	 * Retrieve the name of the nodetype
-	 * @param language the language in which you want the name
-	 */
-	public String getName(String language);
+     * Retrieve the Graphical User Interface name of the NodeType
+     * @param language the language in which you want the name
+     */
+    public String getGuiName(String language);
 
-	/**
-     * Retrieve the name of the nodetype (in the default language defined in mmbaseroot.xml)
+    /**
+     * Retrieve the System name of the module
      */
     public String getName();
 
