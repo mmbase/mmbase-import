@@ -25,6 +25,9 @@
 			<!-- there could be properties wich are used by a certain module, to configurate them -->
 			<property name="optional">properies could be specified here..</property>
 		</module>
+
+		<module name="class" class="org.mmbase.security.implementation.context.ClassLogin">
+		</module>
 	</loginmodules>
 
 	<!-- account is used by the loginmodules, to get the users with their properties  -->
