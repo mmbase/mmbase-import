@@ -22,8 +22,8 @@ public class IncludeTag extends UrlTag {
             throw new JspTagException("Attribute 'page' was not specified");
         }
         try {
-            bodyContent.clear(); // newlines and such must be removed
-            pageContext.include(getUrl());
+            bodyContent.clear(); // newlines and such must be removed            
+            pageContext.include(getUrl(false)); // false: don't write &amp; tags but real &.
             if (getId() != null) {
                 getContextTag().register(getId(), bodyContent.getString());
             }
