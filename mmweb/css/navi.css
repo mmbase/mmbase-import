@@ -22,9 +22,9 @@ div.navilayer div {
 	border-top-width: 1px;
 	border-top-style: solid;
 	border-top-color: #F9FAFB;
-	padding-top: 0px;
-	padding-bottom: 0px;
-        font: arial,helvetica,sans-serif;
+	padding-top: 5px;
+	padding-bottom: 5px;
+        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 	font-size: 12px;
 	letter-spacing: 1px; 
 	margin-left: 0px;
@@ -46,7 +46,9 @@ div.navilayer a {
 	display: block;
 	text-decoration: none;
 	padding-left: 5px;
+        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 	color: #3E3E3E;
+	font-weight: normal;
 }
 
 /* onMouseOver I give the DIV around the links a CLASS="over".
