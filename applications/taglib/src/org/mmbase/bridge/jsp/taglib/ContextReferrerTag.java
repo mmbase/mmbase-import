@@ -24,6 +24,7 @@ import org.mmbase.util.ExprCalc;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -44,6 +45,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     protected String     contextId = null; // context to which this tag is referring to.
     protected String     referid = null;
 
+    private boolean showParseEnd = false;
+
     void setPageContextOnly(PageContext pc) {
         super.setPageContext(pc);
         // the 'page' Context
@@ -58,6 +61,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContexTag found in pagecontext, creating..");
+            log.service("Parsing JSP page: " + ((HttpServletRequest)pageContext.getRequest()).getRequestURI());
+            showParseEnd = true;
 
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
@@ -135,6 +140,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public void release() {        
         super.release();
         log.debug("releasing context-referrer " + this.getClass().getName());
+        if (showParseEnd) {
+            log.service("END Parsing JSP page: " + ((HttpServletRequest)pageContext.getRequest()).getRequestURI());
+        }
         id = null;
         referid = null;
         contextId = null;
