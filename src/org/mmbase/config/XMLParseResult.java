@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Document;
 
 /**
@@ -26,7 +27,7 @@ import org.w3c.dom.Document;
 
 class XMLParseResult {
 
-    private static Logger log = Logging.getLoggerInstance(XMLParseResult.class.getName());
+    private static Logger log = Logging.getLoggerInstance(XMLParseResult.class);
 
     List warningList, errorList, fatalList, resultList;
     boolean hasDTD;
@@ -39,7 +40,7 @@ class XMLParseResult {
 
             XMLCheckErrorHandler errorHandler = new XMLCheckErrorHandler();
 
-            DocumentBuilder parser = XMLBasicReader.getDocumentBuilder(true, errorHandler);
+            DocumentBuilder parser = DocumentReader.getDocumentBuilder(true, errorHandler, null);
 
             Document document = parser.parse(path);
 
