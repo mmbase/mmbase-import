@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.19 2004-01-19 17:22:10 michiel Exp $
+ * @version $Id: Attribute.java,v 1.20 2004-07-19 15:28:49 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -292,7 +292,7 @@ public class Attribute {
             } else {
                 String var =  (String) a.getValue(null);
                 if (var.length() < 1) {
-                    log.error("Expression too short :"+var);
+                    log.error("Expression too short :" + var);
                     throw new AttributeException("Expression too short");
                 }
                 part = var;
