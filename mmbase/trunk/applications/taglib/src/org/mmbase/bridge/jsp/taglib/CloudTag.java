@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.113 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.114 2005-03-16 13:02:30 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -304,7 +304,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 }
                 return false;
             }
-            log.debug("setting realm in session");
+            if (log.isDebugEnabled()) {
+                log.debug("Setting realm " + r + " in session " + REALM + getSessionName());
+            }
             session.setAttribute(REALM + getSessionName(), r);
         }
         return true;
@@ -315,6 +317,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
 
     private void removeRealm() throws JspTagException {
+        log.debug("Removing realm");
         if (session == null) {
             String cookie = REALM + getSessionName();
             log.debug("removing cookie");
@@ -330,7 +333,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     }
                 }
             }
-        } else {
+        } else {            
             session.removeAttribute(REALM + getSessionName());
         }
     }
@@ -348,7 +351,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             return null;
         } else {
-            return (String) session.getAttribute(REALM + getSessionName());
+            String realm =  (String) session.getAttribute(REALM + getSessionName());
+            if (log.isDebugEnabled()) {
+                log.debug("Getting realm  from session " + REALM + getSessionName() + " --> " + realm);
+            }
+            return realm;
+
         }
     }
 
@@ -379,7 +387,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("setting header: " + getRealm());
+            log.debug("Setting header WWW-Authenticate: " + getRealm());
         }
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealm() + "\"");
 
@@ -566,10 +574,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private final boolean checkLogoutMethod() throws JspTagException {
         if (getMethod() == AuthenticationData.METHOD_LOGOUT) {
             log.debug("Requested logout");
-            removeRealm();
-            if (session != null) {
-                log.debug("ok. session is not null");
-                session.removeAttribute(getSessionName()); // remove cloud itself
+            if (cloud != null) { // if cloud already null, don't do it, otherwise login method="http" on same page doesnt work
+                removeRealm();
+
+                if (session != null) {
+                    log.debug("ok. session is not null");
+                    session.removeAttribute(getSessionName()); // remove cloud itself
+                }
             }
             // add some information for actual logout
             // Logout is loging in with 'anonymous' with some extra info.
@@ -791,7 +802,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return denyHTTP("<h2>Need to log in again</h2> You logged out");
         }
         if (log.isDebugEnabled()) {
-            log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
+            log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm() + " authorization " + request.getHeader("Authorization"));
         }
         // find logon, password with http authentication
         String userName = null;
