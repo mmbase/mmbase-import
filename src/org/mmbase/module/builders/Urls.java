@@ -36,8 +36,8 @@ public class Urls extends MMObjectBuilder {
 		if (field.equals("url")) {
 			String url=node.getStringValue("url");
 			if (url!=null) return("<A HREF=\""+url+"\" TARGET=\"extern\">"+url+"</A>");
-			else return(null);
 		}
+		return(null);
 	}
 
 
