@@ -565,7 +565,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
   <target name="jar" description="Create the MMBase jar file"
-          depends="compile,web">
+          depends="compile,taglib.tld">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
     <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
@@ -726,10 +726,12 @@ Change directory to ${build.dir}/orion and run:
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear in the web-servers html directory"
-         depends="init.compile">
+         depends="init.compile,taglib.tld,taglib.doc,community.tld,community.doc">
+  </target>
+
+  <target name="taglib.tld" description="Make the MMBase taglib  tld"
+          depends="init.compile">          
     <mkdir dir="${web.dir}"/>
-    <mkdir dir="${web.dir}/taglib"/>
-    <mkdir dir="${web.dir}/community-taglib"/>
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -744,6 +746,10 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
+  </target>
+  <target name="taglib.doc" description="Make the MMBase taglib documentation"
+          depends="init.compile">          
+    <mkdir dir="${web.dir}/taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -764,6 +770,10 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.html"/>
     </java>
+  </target>
+  <target name="community.tld" description="Make the MMBase community taglib tld"
+          depends="init.compile">          
+    <mkdir dir="${web.dir}" />
     <!-- create the mmcommunity tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -778,6 +788,10 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
+  </target>
+  <target name="community.doc" description="Make the MMBase community taglib documentation"
+          depends="init.compile">          
+    <mkdir dir="${web.dir}/community-taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
