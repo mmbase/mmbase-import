@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.6 2003-08-13 10:39:18 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.7 2003-08-19 13:29:07 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
