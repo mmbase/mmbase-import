@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.25 2004-02-17 12:41:16 michiel Exp $
+ * @version $Id: Queries.java,v 1.26 2004-02-17 17:54:48 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -647,7 +647,7 @@ public class Queries {
         } else {
             List fields = query.getFields();
             if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
-                throw new IllegalArgumentException("Cannot count queries with less than one field");
+                throw new IllegalArgumentException("Cannot count queries with less than one field: " + query);
             }
 
             if (query.isDistinct() && fields.size() > 1) {
