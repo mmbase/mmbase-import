@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the table name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -83,6 +83,15 @@ public class BasicStep implements Step {
         }
         nodes.add(new Integer(nodeNumber));
         return this;
+    }
+    
+    /**
+     * Gets the associated builder.
+     *
+     * @return The builder.
+     */
+    public MMObjectBuilder getBuilder() {
+        return builder;
     }
     
     // javadoc is inherited
