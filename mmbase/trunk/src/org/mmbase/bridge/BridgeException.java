@@ -7,31 +7,23 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.implementation;
-import org.mmbase.util.logging.*;
+package org.mmbase.bridge;
 
 /**
  * This exception gets thrown when something goes wronmg on the MMCI.
  */
 public class BridgeException extends RuntimeException {
-
-	/**
-	* Logger routine
-	*/
-	private static Logger log = Logging.getLoggerInstance(BridgeException.class.getName());
-
-	/**
-	 * Create the exception.
+    /**
+	 * Create the error.
  	 */
 	public BridgeException() {
 	}
 	
 	/**
-	 * Create the exception.
-	 * @param message a description of the exception
+	 * Create the error.
+	 * @param message a description of the error
  	 */
-	public BridgeException (String message) {
+	public BridgeException(String message) {
 		super(message);
-		log.error(message);
 	}
 }

@@ -58,7 +58,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // We solved this here, but this should really be handled in the Transactionmanager.
                 transactionContext = BasicCloudContext.transactionManager.create(account, account+"_"+transactionName);
             } catch (TransactionManagerException e) {
-                throw new BridgeException("TransactionManagerException - "+e);
+                throw new BasicBridgeException("TransactionManagerException - "+e);
             }
         }
     }
@@ -72,7 +72,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     */
     public boolean commit() {
         if (transactionContext==null) {
-            throw new BridgeException("No valid transaction : "+name);
+            throw new BasicBridgeException("No valid transaction : "+name);
         }
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
@@ -84,7 +84,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
-                throw new BridgeException("TransactionManagerException - "+e);
+                throw new BasicBridgeException("TransactionManagerException - "+e);
             }
         }
         // remove the transaction from the parent cloud
@@ -101,7 +101,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     */
     public void cancel() {
         if (transactionContext==null) {
-            throw new BridgeException("No valid transaction : "+name);
+            throw new BasicBridgeException("No valid transaction : "+name);
         }
         // if this is a transaction within a transaction (theoretically possible)
         // call the 'parent' transaction to cancel everything
@@ -112,7 +112,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 	    	    BasicCloudContext.transactionManager.cancel(account, transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
-                throw new BridgeException("TransactionManagerException - "+e);
+                throw new BasicBridgeException("TransactionManagerException - "+e);
             }
         }
         // remove the transaction from the parent cloud
@@ -129,7 +129,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         try {
 		     BasicCloudContext.transactionManager.addNode(transactionContext, account,currentObjectContext);
         } catch (TransactionManagerException e) {
-            throw new BridgeException("TransactionManagerException - "+e);
+            throw new BasicBridgeException("TransactionManagerException - "+e);
         }
     }
 
@@ -141,7 +141,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         try {
 		     BasicCloudContext.transactionManager.removeNode(transactionContext,account,currentObjectContext);
         } catch (TransactionManagerException e) {
-            throw new BridgeException("TransactionManagerException - "+e);
+            throw new BasicBridgeException("TransactionManagerException - "+e);
         }
     }
 
@@ -153,7 +153,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         try {
 		     BasicCloudContext.transactionManager.deleteObject(transactionContext,account,currentObjectContext);
         } catch (TransactionManagerException e) {
-            throw new BridgeException("TransactionManagerException - "+e);
+            throw new BasicBridgeException("TransactionManagerException - "+e);
         }
     }
 
