@@ -1,6 +1,7 @@
 <!-- ===========================================================================
 
 Applications build file
+
 ================= -->
 <project name="MMBase" default="all" basedir=".">
 
@@ -17,14 +18,34 @@ Applications build file
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
 
-  <target name="all" depends="editwizard,media" />
+  <property name="applications.build.dir" location="./build" />
 
-  <target name="media" depends="editwizard">
-     <ant dir="media" target="jar" />
+  <!-- override projects jar dir -->
+  <property name="project.jar.dir"        value="${applications.build.dir}" />
+
+  <target name="init">
+    <mkdir dir="${applications.build.dir}" />
   </target>
 
-  <target name="editwizard">
+  <target name="all" depends="init,editwizard,media" />
+
+  <target name="mmbase">
+    <ant dir="${source.dir}" target="jar" />
+    <ant dir="${source.dir}" target="lib.compile" />
+    <ant dir="${source.dir}" target="expand.hsqldb" />
+  </target>
+
+  <target name="media" depends="mmbase,editwizard">
+     <ant dir="media"      target="jar" />
+  </target>
+
+  <target name="editwizard" depends="mmbase">
      <ant dir="editwizard" target="jar" />
+  </target>
+
+  <target name="clean">
+     <ant dir="media"      target="clean" />
+     <ant dir="editwizard" target="clean" />
   </target>
 
 </project>
