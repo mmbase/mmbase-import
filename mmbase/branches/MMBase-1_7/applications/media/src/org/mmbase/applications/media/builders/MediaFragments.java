@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.31.2.1 2004-11-05 11:54:19 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.31.2.2 2004-11-09 10:57:04 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -89,8 +89,8 @@ public class MediaFragments extends MMObjectBuilder {
         initDone = true;  // because of inheritance we do init-protections
 
         boolean result = super.init();
-        // deprecated:
-        retrieveClassificationInfo();
+        // deprecated: MM: and unused! -> removed.
+        // retrieveClassificationInfo();
 
         return result;
     }
@@ -155,19 +155,25 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_ROOT.equals(function)) {
             return "" + getRootFragment(node).getNumber();
         } else if (FUNCTION_AVAILABLE.equals(function)) {
-            List pt  = node.getRelatedNodes("publishtimes");
-            if (pt.size() == 0) {
-                return Boolean.TRUE;
-            } else {
-                MMObjectNode publishtime = (MMObjectNode) pt.get(0);
-                int now   = (int) (System.currentTimeMillis() / 1000);
-                int begin = publishtime.getIntValue("begin");
-                int end   = publishtime.getIntValue("end");
-                Boolean available = Boolean.TRUE;
-                if (begin > 0 && now < begin) available = Boolean.FALSE;
-                if (end   > 0 && now > end)   available = Boolean.FALSE;
-                return available;
+            if (mmb.getMMObject("publishtimes") == null) {
+                // publishtimes builder not installed. 
+                return Boolean.TRUE;                
+            } else {                
+                List pt  = node.getRelatedNodes("publishtimes");
+                if (pt.size() == 0) {
+                    return Boolean.TRUE;
+                } else {
+                    MMObjectNode publishtime = (MMObjectNode) pt.get(0);
+                    int now   = (int) (System.currentTimeMillis() / 1000);
+                    int begin = publishtime.getIntValue("begin");
+                    int end   = publishtime.getIntValue("end");
+                    Boolean available = Boolean.TRUE;
+                    if (begin > 0 && now < begin) available = Boolean.FALSE;
+                    if (end   > 0 && now > end)   available = Boolean.FALSE;
+                    return available;
+                }
             }
+            
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, translateURLArguments(args, null));
         } else if (FUNCTION_NUDEURL.equals(function)) {
@@ -405,41 +411,7 @@ public class MediaFragments extends MMObjectBuilder {
             source.parent.removeNode(source);
         }
     }
-
-    // --------------------------------------------------------------------------------
-    // These methods are added to be backwards compatible.
-
-
-    private Map               classification     = null;
-
-     /**
-      * For backwards compatibility reasons, the first version of the mediafragment builder
-      * will contain the classification field. This field will contain numbers that are
-      * resolved using the lookup builder. This construction, using classification in
-      * mediafragment, was used for speeding up listings.
-      * @deprecated
-      */
-     private void retrieveClassificationInfo() {
-
-         MMObjectBuilder lookup = (MMObjectBuilder) mmb.getMMObject("lookup");
-         if(lookup == null) {
-             log.debug("Downwards compatible classification code not used.");
-             return;
-         }
-         log.debug("Using downwards compatible classification code.");
-         classification =  new Hashtable();
-         MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
-         Vector nodes = fn.getRelatedNodes("lookup");
-         for (Enumeration e = nodes.elements();e.hasMoreElements();) {
-             MMObjectNode node = (MMObjectNode)e.nextElement();
-             String index = node.getStringValue("index");
-             String value = node.getStringValue("value");
-             log.debug("classification uses: " + index + " -> " + value);
-             classification.put(index,value);
-         }
-         return;
-     }
-
+    
     /**
      * Replace all for frontend code
      * Replace commands available are GETURL (gets mediafile url for an objectnumber),
