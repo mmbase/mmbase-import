@@ -46,12 +46,12 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.7 2003-02-24 20:41:57 kees Exp $
+ * @version $Id: NodeFunction.java,v 1.8 2003-12-16 21:25:00 michiel Exp $
  * @since   MMBase-1.6
  */
 
 public  class NodeFunction {
-    private static Logger log = Logging.getLoggerInstance(NodeFunction.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
     /**
      * Supposes the default cloud 'mmbase'.
