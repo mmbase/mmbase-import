@@ -4,6 +4,7 @@
   <status>inactive</status>
   <classfile>org.mmbase.module.JMSendMail</classfile>
   <properties>
+    <property name="encoding">ISO-8859-1</property>
     <property name="context">java:comp/env</property>
     <property name="datasource">mail/Session</property>
   </properties>
