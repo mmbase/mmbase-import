@@ -35,6 +35,16 @@ public class XMLEntityResolver implements EntityResolver {
     private boolean  validate;  
     private Class    resolveBase;
 
+
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    static void reinitLogger() {
+        log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
+    }
+
+
     /**
      * empty constructor
      */
@@ -105,8 +115,9 @@ public class XMLEntityResolver implements EntityResolver {
                 } 
             }
             if (dtdStream == null) {
-                log.error("Could not find dtd '" + dtdName + "'");
-                return null;
+                log.error("Could not find MMBase dtd '" + dtdName + "' (did you make a typo?), returning an 'empty' DTD.");
+                return new InputSource(new StringReader(""));
+                //return null;
             }
 
 
