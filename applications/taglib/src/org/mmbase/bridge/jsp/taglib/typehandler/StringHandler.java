@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.11 2003-08-05 09:07:01 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.12 2003-08-07 14:35:21 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -116,16 +116,17 @@ public class StringHandler extends AbstractTypeHandler {
     }
     
     protected int getOperator() {
-        return FieldCompareConstraint.LIKE; // how can I do this case insensitive?
+        return FieldCompareConstraint.LIKE;
     }
     protected String getSearchValue(String string) {
         return "%" + string + "%";
     }
-   public void whereHtmlInput(Field field, Query query) throws JspTagException {
-       String value = findString(field);
-       if (value != null) {
-           query.setCaseSensitive(NodeListConstraintTag.addConstraint(query, field.getName(), getOperator(), findString(field)), false);
+   public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+       FieldConstraint cons = (FieldConstraint) super.whereHtmlInput(field, query);
+       if (cons != null) {
+           query.setCaseSensitive(cons, false);
        }
+       return cons;
    }
 
 }

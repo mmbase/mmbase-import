@@ -18,13 +18,14 @@ import org.mmbase.bridge.Node;
 
 import java.util.*;
 import org.mmbase.bridge.Query;
+import org.mmbase.storage.search.Constraint;
 
 /**
  * @javadoc
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.4 2003-08-04 20:19:09 michiel Exp $
+ * @version $Id: TypeHandler.java,v 1.5 2003-08-07 14:35:21 michiel Exp $
  */
 
 public interface TypeHandler {
@@ -43,6 +44,6 @@ public interface TypeHandler {
     /**
      * @since MMBase-1.7
      */
-    public void whereHtmlInput(Field field, Query query) throws JspTagException;
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException;
 
 }
