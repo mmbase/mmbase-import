@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version 18 jan 2001
+ * @version 10 May 2001
  */
 
 public class MMObjectNode {
@@ -177,7 +177,7 @@ public class MMObjectNode {
             while (e.hasMoreElements()) {
                 String key=(String)e.nextElement();
                 int dbtype=getDBType(key);
-                String value=""+values.get(key);
+                String value=""+retrieveValue(key);
                 if (result.equals("")) {
                     result=key+"="+dbtype+":'"+value+"'";
                 } else {
@@ -206,6 +206,26 @@ public class MMObjectNode {
     }
 
     /**
+     * Stores a value in the values hashtable.
+     *
+     * @param fieldname the name of the field to change
+     * @param fieldValue the value to assign
+     */
+    protected void storeValue(String fieldname,Object fieldvalue) {
+        values.put(fieldname,fieldvalue);
+    }
+
+    /**
+     * Retrieves a value from the values hashtable.
+     *
+     * @param fieldname the name of the field to change
+     * @return the value of the field
+     */
+    protected Object retrieveValue(String fieldname) {
+        return values.get(fieldname);
+    }
+
+    /**
      *  Sets a key/value pair in the main values of this node.
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
@@ -216,7 +236,7 @@ public class MMObjectNode {
      */
     public boolean setValue(String fieldname,Object fieldvalue) {
         // put the key/value in the value hashtable
-        values.put(fieldname,fieldvalue);
+        storeValue(fieldname,fieldvalue);
 
         // process the changed value (?)
         if (parent!=null) parent.setValue(this,fieldname);
@@ -259,7 +279,7 @@ public class MMObjectNode {
      *  The fieldname is added to the (public) 'changed' vector to track changes.
      *  @param fieldname the name of the field to change
      *  @param fieldValue the value to assign
-     *  @return <code>false</code> if the value is not of the indicate type, <code>true</code> otherwise
+     *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
      */
 
     public boolean setValue(String fieldName, int type, String value)
@@ -354,7 +374,7 @@ public class MMObjectNode {
     public Object getValue(String fieldname) {
 
         // get the value from the values table
-        Object o=values.get(prefix+fieldname);
+        Object o=retrieveValue(prefix+fieldname);
 
         // routine to check for indirect values
         // this are used for functions for example
@@ -388,7 +408,7 @@ public class MMObjectNode {
                 tmp=""+o;
             }
         }
-//        String tmp=(String)values.get(prefix+fieldname);
+//        String tmp=(String)retrieveValue(prefix+fieldname);
 
         // check if the object is shorted, shorted means that
         // because the value can be a large text/blob object its
@@ -439,7 +459,7 @@ public class MMObjectNode {
                 // or make this programmable per builder ?
                 if (tmp2!=null) {
                     // store the unmapped value (replacing the $SHORTED text)
-                    values.put(prefix+fieldname,tmp2);
+                    storeValue(prefix+fieldname,tmp2);
 
                     // return the found and now unmapped value
                     return tmp2;
@@ -464,7 +484,7 @@ public class MMObjectNode {
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
         // nodes to work (if not duplicate can not be stored)
-        Object obj=values.get(prefix+fieldname);
+        Object obj=retrieveValue(prefix+fieldname);
 
         // well same as with strings we only unmap byte values when
         // we really use them since they mean a extra request to the
@@ -472,9 +492,8 @@ public class MMObjectNode {
 
         // we signal with a empty byte[] that its not obtained yet.
         if (obj instanceof byte[]) {
-
             // was allready unmapped so return the value
-            return (byte[])values.get(prefix+fieldname);
+            return (byte[])obj;
         } else {
 
             byte[] b;
@@ -487,7 +506,7 @@ public class MMObjectNode {
                 }
                 // we could in the future also leave it unmapped in the values
                 // or make this programmable per builder ?
-                values.put(prefix+fieldname,b);
+                storeValue(prefix+fieldname,b);
             } else {
                 if (getDBType(fieldname) == FieldDefs.TYPE_STRING) {
                     String s = getStringValue(fieldname);
@@ -512,7 +531,7 @@ public class MMObjectNode {
         Object i=getValue(fieldname);
         return (i instanceof Number) ? ((Number)i).intValue() : -1;
 
-/*        Integer i=(Integer)values.get(prefix+fieldname);
+/*        Integer i=(Integer)retrieveValue(prefix+fieldname);
         if (i!=null) {
             return i.intValue();
         } else {
@@ -535,7 +554,7 @@ public class MMObjectNode {
         } else
             return new Integer(-1);
 
-/*        Integer i=(Integer)values.get(prefix+fieldname);
+/*        Integer i=(Integer)retrieveValue(prefix+fieldname);
         if (i!=null) {
             return i;
         } else {
@@ -554,7 +573,7 @@ public class MMObjectNode {
     public long getLongValue(String fieldname) {
         Object i=getValue(fieldname);
         return (i instanceof Number) ? ((Number)i).longValue() : -1;
-/*        Long i=(Long)values.get(prefix+fieldname);
+/*        Long i=(Long)retrieveValue(prefix+fieldname);
         if (i!=null) {
             return i.longValue();
         } else {
@@ -573,7 +592,7 @@ public class MMObjectNode {
     public float getFloatValue(String fieldname) {
         Object i=getValue(fieldname);
         return (i instanceof Number) ? ((Number)i).floatValue() : -1;
-/*        Float i=(Float)values.get(prefix+fieldname);
+/*        Float i=(Float)retrieveValue(prefix+fieldname);
         if (i!=null) {
             return i.floatValue();
         } else {
@@ -592,7 +611,7 @@ public class MMObjectNode {
     public double getDoubleValue(String fieldname) {
         Object i=getValue(fieldname);
         return (i instanceof Number) ? ((Number)i).doubleValue() : -1;
-/*        Double i=(Double)values.get(prefix+fieldname);
+/*        Double i=(Double)retrieveValue(prefix+fieldname);
         if (i!=null) {
             return i.doubleValue();
         } else {
