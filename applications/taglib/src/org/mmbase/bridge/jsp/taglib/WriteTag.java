@@ -100,6 +100,9 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
             getContextTag().register(getId(), helper.getValue());
         }
         if (sessionvar != null) {
+            if (pageContext.getSession() == null) {
+                throw new JspTagException("Cannot write to session if session is disabled");
+            }
             pageContext.getSession().setAttribute(sessionvar, helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
