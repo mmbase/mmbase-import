@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.123 2004-11-11 16:45:16 michiel Exp $
+ * @version $Id: MMBase.java,v 1.124 2004-11-25 12:34:34 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -136,10 +136,8 @@ public class MMBase extends ProcessorModule {
 
     /**
      * The (base)path to the builder configuration files
-     * @scope private
      */
-    String builderpath = "";
-    ResourceLoader builderLoader;
+    private ResourceLoader builderLoader;
 
     /**
      * @deprecated-now unused
@@ -356,12 +354,14 @@ public class MMBase extends ProcessorModule {
 
         initializeSharedStorage(getInitParameter("SHAREDSTORAGE"));
 
-        builderpath = getInitParameter("BUILDERFILE");
-        if (builderpath == null || builderpath.equals("")) {
-            builderpath = "builders/";
+        {
+            String builderPath = getInitParameter("BUILDERFILE");
+            if (builderPath == null || builderPath.equals("")) {
+                builderPath = "builders";
+            }
+            log.debug("Builder path: " + builderPath);
+            builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderPath);
         }
-        log.debug("Builder path: " + builderpath);
-        builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderpath);
 
         mmbaseState = STATE_LOAD;
 
@@ -1171,6 +1171,14 @@ public class MMBase extends ProcessorModule {
 
 
     /**
+     * @since MMBase-1.8
+     */
+    public ResourceLoader getBuilderLoader() {
+        return builderLoader;
+    }
+
+
+    /**
      * Locate one specific builder withing the main builder config path, including sub-paths.
      * If the builder already exists, the existing object is returned instead.
      * If the builder cannot be found in this path, a BuilderConfigurationException is thrown.
@@ -1244,7 +1252,7 @@ public class MMBase extends ProcessorModule {
      * this method is called seperately after all builders are loaded).
      * @deprecation-used uses deprecated buidedr methods, contains commented-out code
      * @param builder name of the builder to initialize
-     * @param ipath the path to start searching. The path need be closed with a File.seperator character.
+     * @param ipath the path to start searching. The path need be closed with a '/' character.
      * @return the loaded builder object.
      */
     public MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
@@ -1255,11 +1263,10 @@ public class MMBase extends ProcessorModule {
         }
 
         String objectName = builder; // should this allow override in file ?
-        String path = builderpath + ipath;
         try {
             // register the loading of this builder
             loading.add(objectName);
-            BuilderReader parser = new BuilderReader(ResourceLoader.getConfigurationRoot().getInputSource(path + builder + ".xml"), this);
+            BuilderReader parser = new BuilderReader(builderLoader.getInputSource(ipath + builder + ".xml"), this);
             String status = parser.getStatus();
             if (status.equals("active")) {
                 log.info("Starting builder : " + objectName);
@@ -1520,7 +1527,7 @@ public class MMBase extends ProcessorModule {
         MMObjectBuilder tmp = (MMObjectBuilder)mmobjs.get(buildername);
         BuilderReader bapp;
         try {
-            bapp = new BuilderReader(ResourceLoader.getConfigurationRoot().getInputSource(builderpath + tmp.getXMLPath() + buildername + ".xml"), this);
+            bapp = new BuilderReader(builderLoader.getInputSource(tmp.getXMLPath() + buildername + ".xml"), this);
         } catch (Exception e) {
             log.error(e);
             return false;
