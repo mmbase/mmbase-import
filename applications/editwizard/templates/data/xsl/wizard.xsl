@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.27 2002-06-28 12:48:21 pierre Exp $
+  @version $Id: wizard.xsl,v 1.28 2002-06-28 21:22:57 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -242,7 +242,7 @@
             <xsl:when test="@dttype='image' and not(upload)">
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
-                  <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(', $imagesize, ')'))}" hspace="0" vspace="0" border="0" /><br />
+                  <img src="{node:function(string(@number), concat('cachepath(', $imagesize, ')'))}" hspace="0" vspace="0" border="0" /><br />
                   <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
                   <xsl:call-template name="prompt_image_upload" />
                   </a>
@@ -276,16 +276,16 @@
         </xsl:when>
         <xsl:when test="@ftype='image'">
           <span>
-            <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(', $imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+            <img src="{node:function(string(@number), concat('cachepath(', $imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
           </span>
 
         </xsl:when>
         <xsl:when test="@ftype='realposition'">
-       <span style="width:128; height:168;" >
+       <span style="width:128" >
           <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
               <xsl:apply-templates select="@*" />
             </input><input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();" />
-</span>
+          </span>
         </xsl:when>
         <xsl:otherwise>
           <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
@@ -313,7 +313,7 @@
               <tr>
                 <td>
                   <span>
-                    <img src="{$ew_imgdb}{node:function(string(@destination), concat('cache(',$imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+                    <img src="{node:function(string(@destination), concat('cachepath(',$imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
                   </span>
                 </td>
                 <td width="20"><img src="{$mediadir}nix.gif" width="20" height="1" /></td>
