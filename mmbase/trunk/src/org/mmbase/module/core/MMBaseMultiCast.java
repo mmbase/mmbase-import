@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: MMBaseMultiCast.java,v 1.16 2004-02-11 20:43:22 keesj Exp $
+ * @version $Id: MMBaseMultiCast.java,v 1.17 2004-07-16 10:39:03 pierre Exp $
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 
@@ -34,11 +34,15 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
      * @javadoc
      * @bad-constant should be made configurable
      */
-    public static int dpsize=64*1024;
+    public static int dpsize = 64*1024;
     /**
-     * @javadoc
+     * Port for sending datapackets send by Multicast
      */
-    public static int mport=4243;
+    public static int mport = 4243;
+    /**
+     * Time To Live for datapackets send by Multicast
+     */
+    public static byte mTTL = 1;
 
     private static final Logger log = Logging.getLoggerInstance(MMBaseMultiCast.class);
 
@@ -85,8 +89,9 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
      */
     public MMBaseMultiCast(MMBase parent) {
         this.parent=parent;
-        if (parent.multicasthost!=null) multicastaddress=parent.multicasthost;
-        if (parent.multicastport!=-1) mport=parent.multicastport;
+        if (parent.multicasthost != null) multicastaddress = parent.multicasthost;
+        if (parent.multicastport != -1) mport = parent.multicastport;
+        if (parent.multicastTTL > 0) mTTL = parent.multicastTTL;
         init();
     }
 
