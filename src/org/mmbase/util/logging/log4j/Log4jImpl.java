@@ -210,6 +210,15 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         return Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
+    public static void shutdown() {
+        Log4jImpl err = getLoggerInstance("STDERR");
+        if(err.getLevel() != Log4jLevel.FATAL) {
+            log.service("System stderr now going to stdout");
+            System.setErr(System.out);
+        }
+        log.service("Shutting down log4j");
+        repository.shutdown();
+    }
 
     /**
      * Catches stderr and sends it also to the log file (with category `stderr').
