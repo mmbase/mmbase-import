@@ -13,6 +13,9 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+
 import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.Logger;
@@ -202,9 +205,19 @@ public class EmailBuilder extends MMObjectBuilder {
         long age = (System.currentTimeMillis() / 1000) - expireAge;
         // query database for the nodes
 
-        // should use Query object!
-        return Collections.unmodifiableList(searchVector("WHERE mailedtime < " + age +
-                                                         " and mailstatus = " + STATE_DELIVERED +
-                                                         " and mailtype = " + TYPE_ONESHOT ));
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        BasicCompositeConstraint cons = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+
+        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailstatus")), new Integer(STATE_DELIVERED)));
+        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailtype")),   new Integer(TYPE_ONESHOT)));
+        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new Long(age)).setOperator(FieldValueConstraint.LESS));
+        query.setConstraint(cons);
+        try {
+            return getNodes(query);
+        } catch (SearchQueryException sqe) {
+            log.error(sqe.getMessage());
+            return new ArrayList();
+        }
+
     }
 }
