@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
+	$Id: TransactionResolver.java,v 1.6 2000-11-24 12:15:22 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/11/22 13:11:25  vpro
+	Rico: added deleteObject support
+	
 	Revision 1.4  2000/11/15 12:17:05  vpro
 	Rico: fixed resolver for existing nodes
 	
@@ -33,7 +36,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
+ * @version $Id: TransactionResolver.java,v 1.6 2000-11-24 12:15:22 vpro Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -108,7 +111,7 @@ public class TransactionResolver {
 								if (field.equals("number")) {
 									// test for remove here
 									exists=node.getStringValue("_exists");
-									if (exists!=null && !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
+									if (exists==null || !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
 										node.setValue("_exists",TransactionManager.EXISTS_YES);
 									}
 									key=node.getStringValue(tmpfield);
