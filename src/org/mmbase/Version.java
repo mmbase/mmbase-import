@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.15 2002-05-16 09:00:51 michiel Exp $
+ * @version $Id: Version.java,v 1.16 2002-06-03 15:05:40 michiel Exp $
  */
 public class Version {
    
@@ -76,7 +76,7 @@ public class Version {
      * Returns the version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  getNumber() { return getMajor() +  "." + getMinor() + "." + getPatchLevel() + getBuildDate(); }    
+    public static String  getNumber() { return getMajor() +  "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "" :  getBuildDate()); }    
 
     /**
      * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
@@ -88,7 +88,7 @@ public class Version {
      * Returns the version of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  get()       { return getName() + " " + (isRelease() ? "" : getNumber()); }
+    public static String  get()       { return getName() + " " + getNumber(); }
 
     /**
      * @javadoc
