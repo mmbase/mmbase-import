@@ -22,9 +22,9 @@ import org.mmbase.util.logging.Logging;
 
 public class UriParser {
 
-    private static Logger log = Logging.getLoggerInstance(UriParser.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(UriParser.class);
 
-    final static char separatorChar = '/'; // we are making web-sites!
+    final static char separatorChar = java.io.File.separator.charAt(0); // '\' for windows '/' for other oses.
 
      /**
      * Converts an absolute path into a relative path.
@@ -49,25 +49,20 @@ public class UriParser {
 
         final int maxlen = Math.min( basePathLen, pathLen );
         int pos = 0;
-        for ( ; pos < maxlen && basePath.charAt( pos ) == path.charAt( pos ); pos++ )
-        {
+        for ( ; pos < maxlen && basePath.charAt( pos ) == path.charAt( pos ); pos++ ) {
         }
 
-        if ( pos == basePathLen && pos == pathLen )
-        {
+        if ( pos == basePathLen && pos == pathLen ) {
             // Same names
             return ".";
-        }
-        else if ( pos == basePathLen && pos < pathLen && path.charAt( pos ) == separatorChar )
-        {
+        } else if ( pos == basePathLen && pos < pathLen && path.charAt( pos ) == separatorChar ) {
             // A descendent of the base path
             return path.substring( pos + 1 );
         }
 
         // Strip the common prefix off the path
         final StringBuffer buffer = new StringBuffer();
-        if ( pathLen > 1 && ( pos < pathLen || basePath.charAt( pos ) != separatorChar ) )
-        {
+        if ( pathLen > 1 && ( pos < pathLen || basePath.charAt( pos ) != separatorChar ) ) {
             // Not a direct ancestor, need to back up
             pos = basePath.lastIndexOf( separatorChar, pos );
             buffer.append( path.substring( pos ) );
@@ -77,8 +72,7 @@ public class UriParser {
         // prefix
         buffer.insert( 0, ".." );
         pos = basePath.indexOf( separatorChar, pos + 1 );
-        while ( pos != -1 )
-        {
+        while ( pos != -1 ) {
             buffer.insert( 0, "../" );
             pos = basePath.indexOf( separatorChar, pos + 1 );
         }
