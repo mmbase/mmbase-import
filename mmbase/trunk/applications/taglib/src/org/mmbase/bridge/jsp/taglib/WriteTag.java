@@ -23,9 +23,10 @@ import org.mmbase.util.logging.Logging;
  * This is also more or less the simplest possible implemententation
  * of a 'Writer' tag.
  *
- * @author Michiel Meeuwissen */
+ * @author Michiel Meeuwissen 
+ **/
 
-public class WriteTag extends ContextReferrerTag implements Writer {
+public class WriteTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
@@ -60,6 +61,12 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     public void setValue(String v) throws JspTagException {
         value = getAttributeValue(v);
     }
+    private String writerid = null;
+    public void setWriter(String w) throws JspTagException {
+        writerid = getAttributeValue(w);
+        
+    }
+
     
     
     protected Object getObject() throws JspTagException {
@@ -67,7 +74,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
             log.debug("getting object " + getReferid());
         }
         if (getReferid() == null && value == null) { // get from parent Writer.
-            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
+            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
             return w.getWriterValue();
         }
 
@@ -87,7 +94,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
 
 
     public int doStartTag() throws JspTagException {    
-        helper.setValue(getObject());        
+        helper.setValue(getObject());
         helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());

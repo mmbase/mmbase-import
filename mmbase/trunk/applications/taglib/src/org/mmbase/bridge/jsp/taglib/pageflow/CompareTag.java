@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.Condition;
+import org.mmbase.bridge.jsp.taglib.WriterReferrer;
 import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
 
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen 
  */
 
-public class CompareTag extends PresentTag implements Condition {
+public class CompareTag extends PresentTag implements Condition, WriterReferrer {
 
     private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
 
@@ -33,17 +34,25 @@ public class CompareTag extends PresentTag implements Condition {
         value =  getAttributeValue(v);
     }
 
+    private String writerid = null;
+    public void setWriter(String w) throws JspTagException {
+        writerid = getAttributeValue(w);
+        
+    }
+
+
     protected boolean doCompare(String compare) {
         if (log.isDebugEnabled()) {
             log.debug("comparing '" + value + "' to '" + compare + "'");
         }
         return value.equals(compare);
     }
+
                
     public int doStartTag() throws JspTagException {
         String compare;
         if (getReferid() == null) {
-            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
+            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
             Object o = w.getWriterValue();
             if (o == null) {
                 compare = "";
