@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.262 2004-07-08 12:26:45 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.263 2004-07-09 14:08:30 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1106,6 +1106,27 @@ version: $Id: mmbase-taglib.xml,v 1.262 2004-07-08 12:26:45 michiel Exp $
 			<see tag="list" attribute="offset" />
 			<see tag="offset" />
 		</attribute>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listnodescontainer" attribute="path" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
+		<attribute>
+			<name>element</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listnodescontainer" attribute="element" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
+		<attribute>
+			<name>searchdirs</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listnodescontainer" attribute="searchdirs" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
 		<example>&lt;mm:listnodes type="mags"  &gt;
 	&lt;mm:first&gt;magazine list&lt;/mm:first&gt;
 	&lt;mm:field name="title" /&gt;
@@ -1189,6 +1210,27 @@ version: $Id: mmbase-taglib.xml,v 1.262 2004-07-08 12:26:45 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="list" attribute="role" />
+		</attribute>
+		<attribute>
+			<name>path</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listnodescontainer" attribute="path" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
+		<attribute>
+			<name>element</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listnodescontainer" attribute="element" />
+      <since>MMBase-1.7.1</since>
+		</attribute>
+		<attribute>
+			<name>searchdirs</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listnodescontainer" attribute="searchdirs" />
+      <since>MMBase-1.7.1</since>
 		</attribute>
 		<example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
@@ -4930,7 +4972,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>path</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<see tag="listnodes" attribute="path" />
+			<see tag="listnodescontainer" attribute="path" />
 		</attribute>
 		<attribute>
 			<name>searchdirs</name>
@@ -4942,7 +4984,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>element</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<see tag="listnodes" attribute="element" />
+			<see tag="listnodescontainer" attribute="element" />
 			<see tag="node" attribute="element" />
 		</attribute>
 		<attribute>
@@ -5025,6 +5067,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<info>
 
 			</info>
+      <see tag="listcontainer" attribute="path" />
 		</attribute>
 		<attribute>
 			<name>searchdirs</name>
