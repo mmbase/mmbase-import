@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.85 2003-03-25 13:01:37 vpro Exp $
+ * @version $Id: BasicNode.java,v 1.86 2003-03-25 19:04:30 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -535,12 +535,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (noderef == null) {
             return "*deleted node*";
         }
+        // return noderef.toString();
+
         Object value = noderef.getFunctionValue("gui", null);
         if (value==null) {
             return "*unknown*";
         } else {
             return value.toString();
         }
+
     }
 
     /**
@@ -700,28 +703,25 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * @since MMBase-1.6
      */
-    public NodeList getRelatedNodes(String type, String role, String direction) {
-        if(role==null) role = "insrel";
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
+        if(role == null) role = "insrel";
 
-        log.debug("type("+type+"), role("+role+"), dir("+direction+")");
-
-        NodeManager nodemanager     = cloud.getNodeManager(type);
-        int         dir             = ClusterBuilder.getSearchDir(direction);
-        Vector      mmnodes         = getNode().getRelatedNodes(type, role, dir);
-        Vector      basicnodes      = new Vector();
-
-        // convert MMObjectNodes to BasicNodes
-        Iterator i = mmnodes.iterator();
-        while(i.hasNext()) {
-            basicnodes.add(new BasicNode((MMObjectNode)i.next(), nodemanager));
+        if (log.isDebugEnabled()) {
+            log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+direction+")");
         }
 
-        // convert results in Vector to BasicList
-        if (type != null) {
-            return new BasicNodeList(basicnodes, cloud.getNodeManager(type));
+        int    dir          = ClusterBuilder.getSearchDir(direction);
+        List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
+        List   basicNodes   = new ArrayList();
+
+        if (nodeManager != null) {
+            return new BasicNodeList(basicNodes, nodeManager);
         } else {
-            return new BasicNodeList(basicnodes, cloud);
+            return new BasicNodeList(basicNodes, cloud);
         }
+    }
+    public NodeList getRelatedNodes(String type, String role, String direction) {
+        return getRelatedNodes(cloud.getNodeManager(type), role, direction);
     }
 
     public int countRelatedNodes(String type) {
