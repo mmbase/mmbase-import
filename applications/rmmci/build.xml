@@ -1,4 +1,7 @@
 <project name="MMBase" default="rmmci" basedir=".">
+
+  <property name="project.jar.dir"    value="build" />
+
   <target name="init">
 	  <mkdir dir="build/classes"/>
 	  <available property="dummy" classname="dummy">
@@ -11,7 +14,7 @@
   </target>
 
   <target name="jar.uptodatecheck">
-    <uptodate property="jar.uptodate" targetfile="build/mmbase-rmmci-server.jar" >
+    <uptodate property="jar.uptodate" targetfile="${project.jar.dir}/mmbase-rmmci-server.jar" >
       <srcfiles dir="build/classes" includes="**/*"/>
     </uptodate>
   </target>
@@ -115,7 +118,7 @@ Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
 </echo>
 
-    <jar jarfile="build/mmbase-rmmci-server.jar"
+    <jar jarfile="${project.jar.dir}/mmbase-rmmci-server.jar"
          manifest="build/rmmcitmp/manifest.mf"
     >
        <fileset dir="build/classes">
@@ -123,7 +126,7 @@ Build-compiler: ${build.compiler}
        </fileset>
     </jar>
     <unjar src="../../build/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" dest="build/rmmcitmp" />
-    <jar jarfile="build/rmmci.jar" manifest="build/rmmcitmp/manifest.mf" >
+    <jar jarfile="${project.jar.dir}/rmmci.jar" manifest="build/rmmcitmp/manifest.mf" >
        <fileset dir="build/classes">
         <include name="org/mmbase/bridge/remote/*"/>
         <include name="org/mmbase/bridge/remote/rmi/*Stub.class"/>
