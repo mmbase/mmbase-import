@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.14 2001-07-24 11:04:38 jaco Exp $
+$Id: MMBaseContext.java,v 1.14.2.1 2001-08-16 15:00:43 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2001/07/24 11:04:38  jaco
+jaco: Throw a RunTimeException if a get method is called before the init method.
+
 Revision 1.13  2001/07/16 10:08:08  jaco
 jaco: Moved all configuration stuff to MMBaseContext.
 If needed params not found or incorrect a ServletException with a description isthrown.
@@ -77,7 +80,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.14 $ $Date: 2001-07-24 11:04:38 $
+ * @$Revision: 1.14.2.1 $ $Date: 2001-08-16 15:00:43 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -197,6 +200,15 @@ public class MMBaseContext {
             System.err.println(message);
             throw new Exception(message);
         }
+        if(!new File(configpath + "/security/security.xml").isFile()) {
+            userdir = null;
+            configpath = null;
+            String message = "File 'security/security.xml' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+    /*
         if(!new File(configpath + "/accounts.properties").isFile()) {
             userdir = null;
             configpath = null;
@@ -205,6 +217,7 @@ public class MMBaseContext {
             System.err.println(message);
             throw new Exception(message);
         }
+    */
         if(!new File(configpath + "/builders").isDirectory()) {
             userdir = null;
             configpath = null;
