@@ -39,6 +39,42 @@ public class XMLModuleReader extends XMLBasicReader {
         return getElementValue(e);
     }
 
+
+    /**
+    * get the version of this application
+    */
+    public int getModuleVersion() {
+        Element e = getElementByPath("module");
+        String version = getElementAttributeValue(e,"version");
+        int n = 0;
+        if (version == null) {
+            return n;
+        } else {
+            try {
+                n = Integer.parseInt(version);
+            } catch (Exception f) {
+                n = 0;
+            }
+            return n;
+        }
+    }
+
+
+    /**
+    * get the version of this application
+    */
+    public String getModuleMaintainer() {
+        Element e = getElementByPath("module");
+
+        String tmp=getElementAttributeValue(e,"maintainer");
+	if (tmp!=null && !tmp.equals("")) {
+		return(tmp);	
+	} else {
+		return("mmbase.org");
+	}
+    }
+
+
     /**
     * get the classfile of this builder
     */
