@@ -1,0 +1,673 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<article>
+  <title>Creating webpages with the MMBase Tag Library</title>
+
+  <articleinfo>
+    <date>august 2002</date>
+
+    <copyright>
+      <year>2002</year>
+
+      <holder>MMBase Foundation</holder>
+    </copyright>
+
+    <authorgroup>
+      <author>
+        <firstname>Rogier</firstname>
+
+        <surname>Schaaf</surname>
+      </author>
+    </authorgroup>
+
+    <revhistory>
+      <revision>
+        <revnumber>0.1</revnumber>
+
+        <date>august 2002</date>
+
+        <revremark>First draft</revremark>
+      </revision>
+    </revhistory>
+
+    <abstract>
+      <para>This document offers a tutorial for page designer who want to
+      build web pages using the MMBase Tag Library.</para>
+    </abstract>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>In this tutorial we try to give page designers a hands-on overview
+    of the capabilities of the MMBase Tag Libraries. This technology, shipped
+    with the MMBase content management system, enables page designers in
+    developing web pages that retrieve their content from the MMBase system.
+    After reading this tutorial and working your way through the examples we
+    hope that share our enthusiasm for the MMBase system and the possibilites
+    it offers to page designers.</para>
+
+    <section>
+      <title>Who should read this tutorial?</title>
+
+      <para>This tutorial is aimed at page designers who develop websites
+      using MMBase as the underlying content management system. To succesful
+      complete this tutorial, you must be proficient with HTML and JSP
+      concepts like tags and tag libraries.</para>
+    </section>
+
+    <section>
+      <title>What you need to complete this tutorial?</title>
+
+      <para>This tutorial requires a working instance of MMBase with an empty
+      cloud available. The name of the cloud is [TODO: name of the cloud]. If
+      you don&#39;t have an MMBase instance available in your network, ask
+      your MMBase administrator to set one up for you.</para>
+
+      <para>Next you&#39;ll need sample content in the MMBase cloud to work
+      your way through the tutorial. The sample content is provided in a zip
+      file, together with this tutorial document. In the next chapter the
+      process of adding the sample content to the MMBase cloud is explained.</para>
+
+      <para>To edit your pages you&#39;ll need at least some breed of editor.
+      The tutorial makes no assumptions on your tooling. You can edit your
+      pages with your favorite editor, however the tutorial doesn&#39;t
+      elaborate on using specific tools for page editing.</para>
+    </section>
+
+    <section>
+      <title>Conventions</title>
+
+      <para>We have used a number of styles of text and layout in this
+      tutorial to help differentiate between different kinds of information.
+      The following examples are an example of this markup.</para>
+
+      <example>
+        <title>Example</title>
+
+        <para>All examples in this tutorial are separately headed</para>
+      </example>
+
+      <caution>
+        <para>this indicates a possible problem area</para>
+      </caution>
+
+      <warning>
+        <para>this indicates a warning</para>
+      </warning>
+
+      <important>
+        <para>important notices</para>
+      </important>
+
+      <note>
+        <para>additional information</para>
+      </note>
+
+      <tip>
+        <para>this indicates a valuable tip</para>
+      </tip>
+    </section>
+
+    <section>
+      <title>Tell us what you think</title>
+
+      <para>The MMBase community has worked hard on this tutorial to make it
+      enjoyable and useful. Our best reward would be to hear from you that you
+      liked working through it and it helped you discovering the possibilities
+      of the MMBase tag library.</para>
+
+      <para>Please let us know what you think about it. Tell us what you liked
+      best and what aspects of this tutorial you didn&#39;t like so we improve
+      future releases of this document. The easiest way to give us feedback is
+      to drop an email message at:</para>
+
+      <remark><email>info@mmbase.org</email></remark>
+
+      <para>You can also find more information about MMBase on the MMBase
+      website. There you&#39;ll find sample code, information on latest
+      releases, currently running projects and their participating members and
+      lots of other interesting information. The address of the website is:</para>
+
+      <remark><link>http://www.mmbase.org</link></remark>
+    </section>
+
+    <section>
+      <title>Getting help</title>
+
+      <para>If you find a mistake in this tutorial, please inform us about it
+      [TODO: where, who?].</para>
+
+      <para>If you have additional questions please contact one of the
+      companies that support MMBase. You will find a complete listing of
+      supporting companies on the MMBase website. Point your browser to:</para>
+
+      <remark><link>http://www.mmbase.org</link></remark>
+
+      <para>Furthermore, you can subscribe to several mailing lists where
+      users and developers exchange information. Good chance you&#39;ll find
+      someone there willing to help you out.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Preparing the tutorial</title>
+
+    <para>In this tutorial we are going to build a small news application. Our
+    application will offer the user a list of news items. Each item in the
+    list will present the title of the news item, with a small teaser text
+    beneath it. The title of each item in the list will function as a HTML
+    link to a page which presents the full item text. In this page we will
+    present the title of the news item, the full text of the item and an
+    optional image. Of course there&#39;s a back link on this page that
+    returns us to the list of news items.</para>
+
+    <section>
+      <title>MMBase and the sample content</title>
+
+      <para>To be able to develop this application, you&#39;ll need a running
+      instance of MMBase. Contact your system administrator to setup an
+      instance of MMBase with a content cloud suitable for this tutorial. Your
+      administrator should also provide you with the name of the cloud you
+      should use to access the content.</para>
+
+      <para>With this tutorial comes a sample content cloud that contains all
+      content necessary to complete this tutorial. However one restriction
+      applies here. MMBase supports a lot of different databases. For obvious
+      reasons we could not provide sample content for all possible databases,
+      therefor we supplied sample content in a MySQL database. To load the
+      sample database with content, your system administrator should take the
+      following steps:</para>
+    </section>
+
+    <section>
+      <title>Checking the setup</title>
+
+      <para>[todo]</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Accessing content stored in MMBase</title>
+
+    <para>When you&#39;re developing websites with MMBase as the underlying
+    content management system, your pages will need access to the content that
+    is stored in MMBase. Content in MMBase is stored in a cloud. Within the
+    cloud you&#39;ll find nodes. The nodes are the actual pieces of content in
+    MMBase. Nodes are organized in content types and relations between content
+    types. For example, if you define that every news item you publish on your
+    website would contain the news text and an image, then you would have two
+    content types in your cloud: content type new and content type image.
+    Furthermore you would define a relation between the content types news and
+    image to support displaying images with newsitems.</para>
+
+    <para>For a very basic website you&#39;ll need no more than a handful of
+    node types. The standard MMBase distibution is supplied with all necessary
+    node types for a basic website.</para>
+
+    <para>Every tag library uses it&#39;s own namespace. The namespace is
+    there to help the system distinguish between different tags from different
+    libraries. MMBase tags are all prefixed by default with the string
+    &#34;mm&#34;. You are free to choose another prefix, however this usage is
+    very common across MMBase developers.</para>
+
+    <para>To prepare your pages to work with MMBase tag libraries the first
+    thing you&#39;ll have todo is to declare the MMBase tag library in your
+    page. The MMBase tag library is declared by the following statement:</para>
+
+    <programlisting>&#60;%@ taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;</programlisting>
+
+    <para>In this declaration you tell the JSP compiler that you will be using
+    the MMBase taglibrary and that the tags used by this library are prefixed
+    by &#34;mm&#34;. The value for the uri attribute, in this case
+    &#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; is the identification of
+    the MMBase tag library and should correspond to the entry in the web.xml
+    file of your web container configuration. The entry in your WEB.XML should
+    reflect the following entry</para>
+
+    <programlisting>&#60;!-- MMbase tag library --&#62;
+&#60;taglib&#62;
+  &#60;taglib-uri&#62;http://www.mmbase.org/mmbase-taglib-1.0&#60;/taglib-uri&#62;
+  &#60;taglib-location&#62;/WEB-INF/mmbase-taglib.tld&#60;/taglib-location&#62;
+&#60;/taglib&#62;
+</programlisting>
+
+    <para>Probably your server administrator has configured this for you.
+    However, if you expierence problems when working with the tag libraries,
+    you might want to ask your administrator to check the settings.</para>
+
+    <para>In the next chapters you&#39;ll learn about the cloud and node tags
+    you&#39;ll need to access content.</para>
+
+    <section>
+      <title>Working with cloud tags</title>
+
+      <para>Any webpage that tries to access content from MMBase will first
+      have to initialize access to the cloud. For cloud initialization the
+      &#60;mm:cloud&#62; tag is available. The &#60;mm:cloud&#62; tag always
+      encapsulates all other MMBase tags you want to use. This means that all
+      other MMBase tags you&#39;ll want to use, must appear between the
+      &#60;mm: cloud&#62; and &#60;/mm:cloud&#62; tags. Note that you get
+      compiler errors when you place tags outside the cloud tag.</para>
+
+      <example>
+        <title>Example: the &#60;mm:cloud&#62; tag</title>
+
+        <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+								   // all other mmbase node tags go here...
+&#60;/mm:cloud&#62;
+</programlisting>
+
+        <para>When using the &#60;mm:cloud&#62; tag there are several
+        attributes that you can use. In the above example we only use the
+        &#34;name&#34; attribute. By default MMBase uses the &#34;mmbase&#34;
+        value for this attribute if you omit it. If you want to access a cloud
+        that has another name, you&#39;ll have to supply this name to be able
+        to access that cloud.</para>
+
+        <para>Please refer to the MMBase Tag Library Reference Guide to get a
+        full overview of the possible attributes you can use with this tag.</para>
+
+        <para><tip><para>The &#60;mm:cloud&#62; tag offers far more
+        functionality that presented here. To learn more about the
+        &#60;mm:cloud&#62; tag, please refer to the advanced features section
+        of the tutorial where you can learn about using the authentication
+        features of this tag.</para></tip></para>
+      </example>
+    </section>
+
+    <section>
+      <title>Working with node tags</title>
+
+      <para>From the previous chapter you learned that, to be able to access
+      content in MMBase, you first had to have access to the MMBase content
+      cloud. Within the cloud, content is organized in nodes. Each node
+      belongs to a specific content type. For example if you want to define an
+      article with an image, your cloud would contain three node types: the
+      article node type, the image node type and the relation node type.</para>
+
+      <para>Now to access content, you&#39;ll have to tell MMBase which node
+      you wish to access. To access a certain node you can use its node id as
+      every node is automatically assigned a unique id when it is created in
+      MMBase.</para>
+
+      <tip>
+        <para>To make your content portable between databases, you can use
+        aliases to refer to your nodes, in stead of absolute numerical node
+        id&#39;s. As you transfer content between databases it&#39;s not
+        always garanteed that nodes receive the same id, while they always
+        keep an assigned alias.</para>
+      </tip>
+
+      <para>To retrieve a node from MMBase using the tag libraries, the
+      &#60;mm:node&#62; tag is available.</para>
+
+      <example>
+        <title>Example: the &#60;mm:node&#62; tag</title>
+
+        <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+
+								  &#60;mm:node id=&#34;12&#34;&#62;
+    //other nodes to access content from the node
+  &#60;/mm:node&#62;
+
+&#60;/mm:cloud&#62;
+</programlisting>
+      </example>
+
+      <para>The above example retrieves node with id 12 from the cloud. In
+      this example we use an absolute node id, to retrieve it from the cloud.
+      This is a working solution, however better practice would be to use the
+      alias of the node. If none of your nodes have aliases, your organization
+      should consider using aliases. Between databases, aliases will allways
+      be the same, while absolute node id&#39;s are not. Using aliases will
+      make your application much more portable.</para>
+
+      <para>Of course it might turn up that an editor has deleted a node that
+      you wanted to use. In that case, MMBase will throw an exception and your
+      application will probably stop running. The &#60;mm:node&#62; tag also
+      provides options on how to handle a not found situation for a specific
+      node.</para>
+
+      <example>
+        <title>Example: node not found</title>
+
+        <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+
+								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+    //other nodes to access content from the node
+  &#60;/mm:node&#62;
+
+&#60;/mm:cloud&#62;
+</programlisting>
+      </example>
+
+      <para>In the above example, we will simply skip the body when MMBase
+      cannot find the requested node. Note that default behaviour of the
+      &#60;mm:node&#62; tag is to throw an exception when the node is not
+      found in the cloud.</para>
+
+      <para>As shown in our content model, our simple News application has has
+      to deal with to content types. We distinguish content type NewsItem and
+      content type Image. The cloud design also shows that there can be
+      relations between newsitems and images. This is one of the important
+      features of MMBase. By separating the image from the newsitem, we can
+      reuse the same image over and over again in other newitems or even in
+      other content types, if we want to extend our content model.</para>
+
+      <para>Having said that we have relations between newsitems and images,
+      we want to have means to display an image with our newsitem when the
+      content editor has linked an image to the specific newsitem. For this
+      purpose the MMBase taglibrary supplies the &#60;mm:relatednodes&#62;
+      tag. Using this tag gives our application access to all related nodes of
+      a specific type for our newsitem.</para>
+
+      <example>
+        <title>Example: related nodes</title>
+
+        <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+
+								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+
+    //retrieve all related nodes of type image
+    &#60;mm:relatednodes type=&#34;images&#34;&#62;
+      //work with images related to node with id 12
+    &#60;/mm:relatednodes&#62;
+
+  &#60;/mm:node&#62;
+
+&#60;/mm:cloud&#62;
+</programlisting>
+      </example>
+
+      <para>In the above example we retrieve node with id 12. Then we
+      retrieved all related nodes of type image. Working with nodes and their
+      relations to other nodes is the essential part of working with content
+      in MMBase. If, for example, your newsitem had relations to streaming
+      media, like Real Audiio clips or MP3 files, you could retrieve these
+      nodes the same way you retrieved the images.</para>
+
+      <tip>
+        <para>In our newsitem example the model of our cloud is very simple.
+        For complex websites the cloud design can become populated with a
+        large number of node types and an even larger number of relations.
+        It&#39;s important that, as an MMBase page designer, you maintain an
+        oversight of this model so you can easily determine the necessary node
+        types when building pages. We suggest that you keep a graphical model
+        of your cloud design. One way to achieve this, is to setup an UML
+        class model of your cloud.</para>
+      </tip>
+
+      <screenshot>
+        <graphic fileref="media/model.jpg" />
+      </screenshot>
+
+      <para>Let&#39;s assume that our content model dictates that each
+      newsitem only has one image related to it. So basically, we are only
+      interested in the first related node of type image, as the
+      &#60;mm:relatednodes&#62; tag will probably only find one image. To
+      access this image the taglibrary offers the &#60;mm:first&#62; tag.</para>
+
+      <example>
+        <title>Example: using the first node of the related nodes</title>
+
+        <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+
+								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+
+    //retrieve all related nodes of type image
+    &#60;mm:relatednodes type=&#34;images&#34;&#62;
+      
+      // work with the first related image to node 12
+      &#60;mm:first&#62;
+      &#60;/mm:first&#62;
+
+    &#60;/mm:relatednodes&#62;
+
+  &#60;/mm:node&#62;
+
+&#60;/mm:cloud&#62;
+</programlisting>
+      </example>
+
+      <para>Now we have access to the first (and only!) image that is related
+      to node 12. The next step is to display our image. The taglibrary offers
+      the &#60;mm:image&#62; tag for this operation. Refer to the Tag Library
+      Reference documentation for more information on how to use the
+      &#60;mm:image&#62; tag in your applications.</para>
+
+      <example>
+        <title>Example: showing an image</title>
+
+        <programlisting linenumbering="unnumbered">&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+
+								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+
+    //retrieve all related nodes of type image
+    &#60;mm:relatednodes type=&#34;images&#34;&#62;
+      
+      // work with the first related image to node 12
+      &#60;mm:first&#62;
+        &#60;img align=&#34;left&#34; src=&#34;&#60;mm:image template=&#34;s(150)&#34; /&#62;&#34; border=&#34;0&#34;&#62;
+      &#60;/mm:first&#62;
+
+    &#60;/mm:relatednodes&#62;
+
+  &#60;/mm:node&#62;
+
+&#60;/mm:cloud&#62;
+</programlisting>
+      </example>
+
+      <para>To make our image visible we use the standard HTML tag
+      &#60;image&#62;. However, in stead of referring to a specific location
+      with the src option, we use the &#60;mm:image&#62; tag to retrieve our
+      image from MMBase. This tag will generate the correct reference to the
+      image so MMBase can access it. [TODO: Willen we hier ook uitleggen wat
+      je met de template optie kan doen?].</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Working with field tags</title>
+
+    <para>In the previous chapter we learned how to access nodes contained in
+    an MMBase cloud, how to access their related nodes and how to display
+    images that are related to . In this chapter we will focus on accessing
+    fields that are contained in a node. As the fields contain the actual
+    content of a node, they are a very important part of the content model of
+    MMBase.</para>
+
+    <para>Each content type is capable of storing a number of data elements of
+    a specific type. For example if we want to store news items in our content
+    cloud we could define that news items are made up of a title, a teaser
+    text and a body text. These attributes are called fields in MMBase and can
+    be accessed by using the &#60;mm:field&#62; tag. To access a specific
+    field within a node, you&#39;ll have to use the fieldname inside the tag:</para>
+
+    <example>
+      <title>Example: using the &#60;mm:title&#62; tag</title>
+
+      <programlisting>&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+
+								  &#60;mm:node id=&#34;12&#34; notfound=&#34;skip&#34;&#62;
+													    &#60;mm:field name=&#34;title&#34;/&#62;
+    &#60;mm:field name=&#34;body&#34;/&#62;
+  &#60;/mm:node&#62;
+
+&#60;/mm:cloud&#62;</programlisting>
+
+      <para>The above example shows the title and body fields of a node with
+      id 12.</para>
+
+      <para>When you supply fieldnames that do not exist, the JSP compiler
+      will generate errors.</para>
+
+      <para>Besides having the option to work with fields of nodes, you can do
+      some additional things with the &#60;mm:field&#62; tag, like printing
+      the fieldname. Refer to the Tag Library Reference documentation to get
+      more information ont this.</para>
+    </example>
+  </section>
+
+  <section>
+    <title>Working with lists</title>
+
+    <para>Besides working with individual nodes, the Tag Library supports
+    working with lists.</para>
+
+    <section>
+      <title>Working with lists of a certain type</title>
+
+      <para>If we have a cloud with news items and wish to create a page where
+      fields of all available news items are printed, we use the tag
+      &#60;mm:listnodes&#62;. To use this tag you&#39;ll have to consider the
+      following:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>which content type must appear in the list (in our example we
+          want news items)?</para>
+        </listitem>
+
+        <listitem>
+          <para>do we need any sorting of our list?</para>
+        </listitem>
+
+        <listitem>
+          <para>if we want to sort things, by which field do we want to sort
+          and should it be ascending or descending?</para>
+        </listitem>
+
+        <listitem>
+          <para>is there a maximum to number of nodes we show in our list?</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>If we want the news items to appear in our list we use the
+      &#60;mm:listnodes&#62; tag in following way</para>
+
+      <programlisting>&#60;mm:listnodes type=&#34;newsitem&#34;&#62;
+  &#60;!-- list --&#62;
+&#60;/mm:listnodes&#62;
+</programlisting>
+
+      <para>To sort the list (lets assume we have an entry date field in our
+      news item) with the most recent date in the top of the list and the
+      oldest news item at the bottom, we can tell MMBase to do so by extending
+      our &#60;mm:listnodes&#62; tag with an order by and a directions
+      attribute.</para>
+
+      <programlisting>&#60;mm:listnodes type=&#34;newsitem&#34; orderby=&#34;entry&#34; directions=&#34;down&#34;&#62;
+  &#60;!-- list --&#62;
+&#60;/mm:listnodes&#62;
+</programlisting>
+
+      <para>Note that it&#39;s possible to sort by more than one field, just
+      by supplying more fieldnames, each separated by a comma. If we would add
+      the fieldname &#34;title&#34; to the orderby attribute, our list would
+      be sorted by date and within each date alphabetical on title.</para>
+
+      <tip>
+        <para>Remember that sorting of huge amounts of nodes can easily
+        downgrade the performance of your application. When facing sorted
+        lists from huge numbers of nodes, consider using indexes on the
+        database to speedup processing. If you&#39;re not sure, consult your
+        MMBase administrator or the database administrator.</para>
+      </tip>
+
+      <para>To set a list to a certain maximum, use the max attribute to set
+      the maximum number of nodes that will be returned.</para>
+
+      <programlisting>&#60;mm:listnodes type=&#34;newsitem&#34; orderby=&#34;entry&#34; directions=&#34;down&#34; max=&#34;10&#34;&#62;
+  &#60;!-- list --&#62;
+&#60;/mm:listnodes&#62;
+</programlisting>
+
+      <para>The &#60;mm:listnodes&#62; tag offers some other very powerful
+      attributes that go beyond the scope of this tutorial. Please refer to
+      the Tag Library Reference documentation to get a full overview of the
+      possibilities of this tag.</para>
+    </section>
+
+    <section>
+      <title>Working with lists of cluser nodes</title>
+
+      <para>[todo]</para>
+    </section>
+
+    <section>
+      <title>Working with conditions</title>
+
+      <para>[todo]</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Creating our first pages</title>
+
+    <para>We now have enough information to create our first page. This page
+    should contain all the newsitems from the content cloud. For each item in
+    the cloud, we will print its title as a hyperlink (this link will point to
+    a page showing the full news item) and, below the title, we will print the
+    teaser text of the news item. Call this page the newslist.jsp. As we will
+    use </para>
+
+    <figure>
+      <title>Sample screenshot of the News page</title>
+
+      <screenshot>
+        <graphic fileref="media/temp.gif"
+                 format="GIF" />
+      </screenshot>
+    </figure>
+
+    <example>
+      <title>Example: the list of news items</title>
+
+      <programlisting>[todo: here goes the first sample page]</programlisting>
+    </example>
+
+    <para>Next, we will make our details page, where we show the complete news
+    item, including the accompanying picture.</para>
+
+    <tip>
+      <para>Remember from the previous chapters how used the
+      &#60;mm:image&#62; tag to display an image from the content cloud.</para>
+    </tip>
+
+    <screenshot>
+      <graphic fileref="media/temp.gif" />
+    </screenshot>
+
+    <example>
+      <title>Example: the full news item</title>
+
+      <programlisting>[todo: here goes the second sample page]</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>Advanced features: using transactions</title>
+
+    <para>[todo]</para>
+  </section>
+
+  <section>
+    <title>Advanced features: working with contexts</title>
+
+    <para>[todo]</para>
+  </section>
+
+  <section>
+    <title>Advanced features: security</title>
+
+    <para>[todo]</para>
+  </section>
+
+  <section>
+    <title>Using utility tags</title>
+
+    <para>[todo]</para>
+  </section>
+</article>
