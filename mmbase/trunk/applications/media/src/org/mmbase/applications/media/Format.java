@@ -17,7 +17,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.7 2003-02-19 10:17:37 michiel Exp $
+ * @version $Id: Format.java,v 1.8 2003-02-25 10:18:28 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -66,6 +66,7 @@ public final class Format {   // final class!!
     public static final Format WMP  = new Format(18, "wmp");
     public static final Format HTML  = new Format(19, "html");
     public static final Format SMIL  = new Format(20, "smil");
+    public static final Format QT  = new Format(21, "qt");
     public int toInt()    { return number; }
     public String toString() { return id;     }
     public static Format get(int i) {

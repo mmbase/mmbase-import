@@ -122,4 +122,16 @@
 		<intro></intro>
 	</node>
 
+
+	<node number="6003" owner="media">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Leraarshow</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
 </videofragments>

@@ -27,9 +27,20 @@
 		<host>streams.omroep.nl</host>
 		<state>1</state>
 		<name>Streams server</name>
-		<info>Creates real media URL's</info>
+		<info>Creates real streaming media URL's</info>
     <rootpath></rootpath>
     <protocol>rtsp</protocol>
+	</node>
+
+
+  <!-- for other media -->
+	<node number="3004" owner="media">
+		<host>streams.omroep.nl</host>
+		<state>1</state>
+		<name>Streams server (http)</name>
+		<info>http</info>
+    <rootpath></rootpath>
+    <protocol>http</protocol>
 	</node>
 
 </mediaproviders>
