@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version 28 May 2001
+ * @version $Id: Message.java,v 1.12 2002-04-10 10:57:40 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -115,7 +115,6 @@ public class Message extends MMObjectBuilder {
                 log.warn("Invalid value for property'maxbodysize' :"+maxBody);
             }
         }
-        log.info("Max Body Size = "+maxBodySize);
 
         messageUser=getInitParameter("postas");
         if ((messageUser==null) || (messageUser.length()==0)) {
