@@ -22,6 +22,7 @@ import org.mmbase.storage.search.*;
 import org.w3c.dom.Document;
 
 import org.mmbase.cache.RelatedNodesCache;
+import org.mmbase.cache.NodeCache;
 
 /**
  * MMObjectNode is the core of the MMBase system.
@@ -34,7 +35,7 @@ import org.mmbase.cache.RelatedNodesCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.107 2003-08-27 21:35:22 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.108 2003-09-02 20:04:42 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -47,7 +48,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * use the SetValue and getXXXValue methods instead.
      * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values. 
      * It should then be made private, and methods that change the map (storeValue) be made synchronized. 
-     * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
+     * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private. 
      * @scope private
      */
     public Hashtable values = new Hashtable();
@@ -101,6 +102,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * possible.
      * This is a 'default' value.
      * XXX: specifying the prefix in the fieldName SHOULD override this field.
+     * 
+     * MM: The function of this variable is not very clear. I think a Node should either be
+     *     not a clusternode, in which case it does not need prefixed fields, or it should be a clusternode
+     *     and then fields might be prefixed, but anyway it should be implemented in ClusterNode itself.
+     *     Also in the comments of getStringValue someone said something about this prefix not being needed.
+
      * @scope private
      */
     public String prefix="";
@@ -142,24 +149,43 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * A ClusterNode can in certain case be translated in a real node.
+     * A ClusterNode can in certain cases be translated in a real node.
      * @since MMBase-1.7
      */
     public MMObjectNode(MMObjectBuilder parent, ClusterNode node, String stepAlias) {
         this(parent);
         if (stepAlias == null) {
+            // that's simple
             values = node.values;
         } else {
             // remove prefixed values (which appear in clusternodes with more then one step, but in a real node, they should not appear)
-            int length = stepAlias.length() + 1; //1: the dot
+            String prefix = stepAlias + '.'; 
+            int length    = prefix.length();
             Iterator i = node.values.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
-                values.put(((String) entry.getKey()).substring(length), entry.getValue());
+                String key = (String) entry.getKey();
+                if (key.startsWith(prefix)) {
+                    values.put(key.substring(length), entry.getValue());
+                } else {
+                    if (key.indexOf('.') == -1) {
+                        values.put(key, entry.getValue()); // perhaps a node query
+                    } else {
+                        log.debug("this cannot be  field is not a field of this builder");
+                    }
+                           
+                }
             }
         }
-        
-
+        // so, this given clusternode can be considered a 'real' node, put this realisation into
+        // nodeCache (otherwise it would not make it there, and it will be rerequested often).
+        Integer number = (Integer) values.get("number");
+        if (number != null) {
+            NodeCache cache = NodeCache.getCache();
+            cache.put(number, this);
+        } else {
+            log.warn("Could not find number of wrapped ClusterNode " + node);
+        }
     }
 
     /**
@@ -276,7 +302,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 }
             }
         } catch(Throwable e) {
-            return "" + values; // simpler version...
+            result.append("" + values); // simpler version...
         }
         return result.toString();
     }
@@ -615,7 +641,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
                 // call our builder with the convert request this will probably
                 // map it to the database we are running.
-                String tmp2=bul.getShortedText(fieldName,number);
+                String tmp2=bul.getShortedText(fieldName,  number);
 
                 // did we get a result then store it in the values for next use
                 // and return it.
@@ -816,11 +842,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
     /**
      * Returns the DBType of a field.
-     * @param fieldName the name of the field who's type to return
+     * @param fieldName the name of the field which' type to return
      * @return the field's DBType
      */
     public int getDBType(String fieldName) {
-        if (prefix!=null && prefix.length()>0) {
+        if (prefix != null && prefix.length()>0) {
             // If the prefix is set use the builder contained therein
             int pos=prefix.indexOf('.');
             if (pos==-1) pos=prefix.length();
