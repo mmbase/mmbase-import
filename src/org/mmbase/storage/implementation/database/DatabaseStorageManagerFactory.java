@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.3 2003-08-22 12:34:48 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.4 2003-08-26 08:05:49 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -117,9 +117,15 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         String dataSourceURI = mmbase.getInitParameter("datasource");
         if (dataSourceURI != null) {
             try {
-                Context jndiCntx = new InitialContext();
-                Object o =jndiCntx.lookup(dataSourceURI);
-                dataSource = (DataSource)o;
+                String contextName = mmbase.getInitParameter("datasource-context");
+                if (contextName == null) {                    
+                    contextName = "java:comp/env";
+                }
+                Context initialContext = new InitialContext();
+log.info("look for:"+contextName);                
+                Context environmentContext = (Context) initialContext.lookup(contextName);
+log.info("found:"+environmentContext);                
+                dataSource = (DataSource)environmentContext.lookup(dataSourceURI);
             } catch(NamingException ne) {
                 log.warn("Datasource '"+dataSourceURI+"' not available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
             }
@@ -153,9 +159,6 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
             }
             setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
-            // alter table support options
-            setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_ADD_COLUMN,metaData.supportsAlterTableWithAddColumn());
-            setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_DROP_COLUMN,metaData.supportsAlterTableWithDropColumn());
 
             // create a default disallowedfields list:
             // get the standard sql keywords

@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.4 2003-08-25 12:27:29 pierre Exp $
+ * @version $Id: Schemes.java,v 1.5 2003-08-26 08:05:50 pierre Exp $
  */
 public final class Schemes {
 
@@ -374,4 +374,56 @@ public final class Schemes {
      */
     public static final String READ_SEQUENCE_DEFAULT = "SELECT {1} FROM {0}_numberTable";
 
+    /**
+     *  Name of the scheme for creating (adding) a field.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder of the field</li>
+     *    <li>{2} the field definition (excluding simple index definitions)</li>
+     *    <li>{3} the simple index definition</li>
+     *  </ul>
+     */
+    public static final String CREATE_FIELD_SCHEME = "create-field-scheme";
+
+    /**
+     *  The default scheme for creating (adding) a field.
+     */
+    public static final String CREATE_FIELD_SCHEME_DEFAULT = "ALTER TABLE {1} ADD COLUMN {2} {3}";
+
+    /**
+     *  Name of the scheme for creating (adding) a field.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder of the field</li>
+     *    <li>{2} the field definition (excluding simple index definitions)</li>
+     *    <li>{3} the simple index definition</li>
+     *  </ul>
+     */
+    public static final String CHANGE_FIELD_SCHEME = "supports-change-field-scheme";
+
+    /**
+     *  The default scheme for creating (adding) a field.
+     */
+    public static final String CHANGE_FIELD_SCHEME_DEFAULT = "ALTER TABLE {1} CHANGE COLUMN {2} {3}";
+
+    /**
+     *  Name of the scheme for creating (adding) a field.
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder of the field</li>
+     *    <li>{2} the field</li>
+     *  </ul>
+     */
+    public static final String DELETE_FIELD_SCHEME = "supports-delete-fieldv";
+
+    /**
+     *  The default scheme for creating (adding) a field.
+     */
+    public static final String DELETE_FIELD_SCHEME_DEFAULT = "ALTER TABLE {1} DROP COLUMN {2}";
+
 }
+
+
