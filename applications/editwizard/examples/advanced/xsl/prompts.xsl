@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform" >
 
-  <xsl:import href="i18n:xsl/prompts.xsl" />
+  <xsl:import href="ew:xsl/prompts.xsl" />
 
   <!--
   prompts.xls
@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.1 2003-06-13 13:47:23 pierre Exp $
+  @version $Id: prompts.xsl,v 1.2 2003-08-14 09:10:22 michiel Exp $
   -->
 
 <!-- prompts override -->
