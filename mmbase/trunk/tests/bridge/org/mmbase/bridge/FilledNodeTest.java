@@ -10,10 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Iterator;
-import junit.framework.*;
-import org.mmbase.bridge.*;
-
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
  * a filled node.
@@ -27,12 +23,11 @@ public class FilledNodeTest extends NodeTest {
         super(name);
     }
 
-
     public void setUp() {
         // Create a test node.
         Cloud cloud = getCloud();
         node = cloud.getNodeManager("aa").createNode();
-        byte[] bytes = {72,101,108,108,111,32,119,111,114,108,100,33};
+        byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
         node.setValue("bytefield", bytes);
         node.setValue("doublefield", new Double(Double.MAX_VALUE));
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
@@ -54,17 +49,13 @@ public class FilledNodeTest extends NodeTest {
                 byte[] bytes = (byte[])object;
                 assertTrue("Hello world!".equals(new String(bytes)));
             } else if (fieldTypes[i].equals("double")) {
-                assertTrue(new Double(Double.MAX_VALUE).compareTo((Double)object)
-                       == 0);
+                assertTrue(new Double(Double.MAX_VALUE).compareTo((Double)object) == 0);
             } else if (fieldTypes[i].equals("float")) {
-                assertTrue(new Float(Float.MAX_VALUE).compareTo((Float)object)
-                       == 0);
+                assertTrue(new Float(Float.MAX_VALUE).compareTo((Float)object) == 0);
             } else if (fieldTypes[i].equals("int")) {
-                assertTrue(new Integer(Integer.MAX_VALUE).compareTo((Integer)object)
-                       == 0);
+                assertTrue(new Integer(Integer.MAX_VALUE).compareTo((Integer)object) == 0);
             } else if (fieldTypes[i].equals("long")) {
-                assertTrue(new Long(Long.MAX_VALUE).compareTo((Long)object)
-                       == 0);
+                assertTrue(new Long(Long.MAX_VALUE).compareTo((Long)object) == 0);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue("Bridge testing!".equals((String)object));
             } else {
@@ -77,7 +68,7 @@ public class FilledNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             byte[] bytes = node.getByteValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                byte[] check = {72,101,108,108,111,32,119,111,114,108,100,33};
+                byte[] check = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
                 for (int j = 0; j < bytes.length; j++) {
                     assertTrue(bytes[j] == check[j]);
                 }
@@ -117,7 +108,7 @@ public class FilledNodeTest extends NodeTest {
             }
         }
     }
- 
+
     public void testGetFloatValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             float f = node.getFloatValue(fieldTypes[i] + "field");

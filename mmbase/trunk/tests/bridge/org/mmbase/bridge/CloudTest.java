@@ -10,15 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-//import org.mmbase.bridge.search.*;
-import org.mmbase.bridge.implementation.*;
-//import org.mmbase.bridge.search.implementation.*;
+import org.mmbase.tests.*;
 /**
  * Test class <code>Cloud</code> from the bridge package.
  *
  * @author Jaco de Groot
  */
-public class CloudTest extends org.mmbase.tests.BridgeTest {
+public class CloudTest extends BridgeTest {
     Cloud cloud;
     Node aaNode1;
     Node aaNode2;
