@@ -39,29 +39,7 @@
   </td>
 </tr>
 
-<%--
-<tr>
-  <th class="header">Action</th>
-  <th class="navigate">Confirm</th>
-</tr>
-<tr>
-  <td class="data">Stop/restart Server <br />
-   Note: this method actually stops the JVM in which the application server runs.<br />
-   This means that the server will only restart if you have a script running that starts the server again
-   when it goes down (a simple looping script will work).<br />
-   If you do not have such a script, or do not wish to use restart through this page,
-   we suggest you remove this option from the admin pages (see <%=request.getRealPath(request.getServletPath()) %>)
-  </td>
-  <td class="linkdata">
-<form action="<mm:url page="result.jsp" />" method="POST">
-   <input type="hidden" name="server" value="<%=server%>" />
-   <input type="hidden" name="cmd" value="SERVERRESTART" />
-   <input type="submit" value="YES, STOP THE SERVER" />
-</form>
-  </td>
-</tr>
 
---%>
 <tr class="footer">
 <td class="navigate"><a href="<mm:url page="../servers.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data">Return&nbsp;to&nbsp;Server&nbsp;Overview</td>
