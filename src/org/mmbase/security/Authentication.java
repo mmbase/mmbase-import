@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *  authorization, you have to extend this class.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.14 2002-06-25 12:30:44 michiel Exp $
+ * @version $Id: Authentication.java,v 1.15 2002-07-01 12:58:15 michiel Exp $
  */
 public abstract class Authentication {
     private static Logger log = Logging.getLoggerInstance(Authentication.class.getName());
@@ -56,7 +56,10 @@ public abstract class Authentication {
         if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
 
         fileWatcher.setDelay(10 * 1000);
-        fileWatcher.add(configFile); // add the file.
+
+        if (configFile != null) {
+            fileWatcher.add(configFile); // add the file.
+        }
 
         load();
     }
