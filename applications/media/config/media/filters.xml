@@ -55,6 +55,8 @@
       <maxspeed>96000</maxspeed>
       <minchannels>1</minchannels>
       <maxchannels>2</maxchannels>
+      <defaultspeed>96000</defaultspeed>
+      <defaultchannels>2</defaultchannels>
      </realAudio>
     </config>
 
