@@ -15,7 +15,6 @@ import java.text.DateFormat;
 import java.util.*;
 import java.util.jar.*;
 
-import org.mmbase.util.logging.*;
 
 
 /**
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.17 2002-11-18 13:35:42 michiel Exp $
+ * @version $Id: Version.java,v 1.18 2003-05-06 22:46:19 kees Exp $
  */
 public class Version {
    

@@ -20,7 +20,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
-import javax.xml.parsers.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.*;
@@ -34,7 +33,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.9 2003-05-01 08:25:24 kees Exp $
+ * @version $Id: DoveServlet.java,v 1.10 2003-05-06 22:48:14 kees Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
     
