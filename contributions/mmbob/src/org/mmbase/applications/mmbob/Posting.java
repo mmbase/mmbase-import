@@ -70,7 +70,6 @@ public class Posting {
      * @param body
      */
     public void setBody(String body) {
-        log.info("SETBODY");
         node.setStringValue("body", body);
         String parsed = node.getStringValue("body");
         node.setStringValue("c_body", parsed);
@@ -127,7 +126,6 @@ public class Posting {
      * @return body of this posting
      */
     public String getBody() {
-        log.info("GETBODY");
         return node.getStringValue("c_body");
     }
 
