@@ -40,6 +40,10 @@ public class ForumManager {
     private static String defaultaccount, defaultpassword;
     private static HashMap fieldaliases=new HashMap();
 
+    private static int quotamax = 100;
+    private static int quotasoftwarning = 60;
+    private static int quotawarning = 80;
+
     public static final int FASTSYNC = 1;
     public static final int SLOWSYNC = 2;
 
@@ -344,6 +348,28 @@ public class ForumManager {
                             }
                         }
 
+                        for (Enumeration ns2 = reader.getChildElements(n, "quota"); ns2.hasMoreElements();) {
+                            Element n2 = (Element) ns2.nextElement();
+                            nm = n2.getAttributes();
+                            if (nm != null) {
+                                String max = null;
+                                String softwarning = null;
+                                String warning = null;
+                                n3 = nm.getNamedItem("max");
+                                if (n3 != null) {
+                                   setQuotaMax(n3.getNodeValue());
+                                }
+                                n3 = nm.getNamedItem("softwarning");
+                                if (n3 != null) {
+                                   setQuotaSoftWarning(n3.getNodeValue());
+                                }
+                                n3 = nm.getNamedItem("warning");
+                                if (n3 != null) {
+                                    setQuotaWarning(n3.getNodeValue());
+                                }
+                            }
+                        }
+
                         for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
                                    	Element n2=(Element)ns2.nextElement();
                                         	nm=n2.getAttributes();
@@ -419,4 +445,50 @@ public class ForumManager {
         }
         return null;
    }
+
+   public static void setQuotaMax(String maxs) {
+	try {
+		quotamax=Integer.parseInt(maxs);
+		log.info("SET MAX="+quotamax);
+	} catch (Exception e) {
+		log.error("illegal (non number) value set for quota max");
+	}
+   }
+
+
+   public static void setQuotaMax(int max) {
+	quotamax=max;
+   }
+
+   public static void setQuotaSoftWarning(String sws) {
+	try {
+		quotasoftwarning=Integer.parseInt(sws);
+		log.info("SET quotasoftwarning="+quotasoftwarning);
+	} catch (Exception e) {
+		log.error("illegal (non number) value set for quota softwarning");
+	}
+   }
+
+
+   public static void setQuotaWarning(String ws) {
+	try {
+		quotawarning=Integer.parseInt(ws);
+		log.info("SET quotawarning="+quotawarning);
+	} catch (Exception e) {
+		log.error("illegal (non number) value set for quota warning");
+	}
+   }
+
+   public static int getQuotaMax() {
+	return quotamax;
+   }
+
+   public static int getQuotaSoftWarning() {
+	return quotasoftwarning;
+   }
+
+   public static int getQuotaWarning() {
+	return quotawarning;
+   }
+
 }
