@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.5 2003-05-19 10:52:59 vpro Exp $
+ * @version $Id: Wizard.java,v 1.74.2.6 2003-05-26 11:32:20 vpro Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -735,7 +735,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         createFormField(form, field, fieldDataNode);
                     } else {
                         // throw an exception, but ONLY if the datapath was created from a 'name' attribute
-                        // (only in that case can we be sure that the path is fauklty - in otehr cases
+                        // (only in that case can we be sure that the path is faulty - in otehr cases
                         // the path can be valid but point to a related object that is not present)
                         String fname = Utils.getAttribute(field, "name", null);
                         if (fname!=null) {
@@ -907,7 +907,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             String fdatapath = Utils.getAttribute(singleNode, "fdatapath", null);
             if (fdatapath == null) {
                 if (name == null) {
-                    fdatapath = "object/field[@name='number']";
+                    fdatapath = "@number";
                 } else if ("number".equals(name)) {                    
                     Utils.setAttribute(singleNode, "ftype", "data"); // the number field may of course never be edited
                     fdatapath = "@number";
