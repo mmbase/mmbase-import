@@ -299,7 +299,7 @@ public class RemoteGenerator {
             }
 
             String typeName = xmlMethod.getReturnType().getOriginalName();
-            if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List")) {
+            if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List") || typeName.equals("java.util.SortedSet")) {
                 sb.append("ObjectWrapper.localToRMIObject(originalObject." + xmlMethod.getName() + "(");
             } else {
                 sb.append("originalObject." + xmlMethod.getName() + "(");
@@ -313,7 +313,7 @@ public class RemoteGenerator {
                 paramCounter++;
                 if (parameter.getOriginalName().indexOf("org.mmbase") != -1) {
                     sb.append("(" + parameter.getShortName() + ")StubToLocalMapper.get(param" + paramCounter + " == null ? \"\" + null : param" + paramCounter + ".getMapperCode())");
-                } else if ((parameter.getOriginalName().equals("java.lang.Object") || parameter.getOriginalName().equals("java.util.List")) && !parameter.isArray) {
+                } else if ((parameter.getOriginalName().equals("java.lang.Object") || parameter.getOriginalName().equals("java.util.List")|| parameter.getOriginalName().equals("java.util.SortedSet")) && !parameter.isArray) {
                     sb.append("(" + parameter.getName() + ")ObjectWrapper.rmiObjectToLocal(param" + paramCounter + ")");
                 } else {
                     sb.append(" param" + paramCounter);
@@ -322,7 +322,7 @@ public class RemoteGenerator {
                     sb.append(" ,");
                 }
             }
-            if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List")) {
+            if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List") || typeName.equals("java.util.SortedSet")) {
                 sb.append(")");
             }
             if (!xmlMethod.getReturnType().getOriginalName().equals(xmlMethod.getReturnType().getName())) {
@@ -457,7 +457,7 @@ public class RemoteGenerator {
                 }
 
                 String typeName = xmlMethod.getReturnType().getOriginalName();
-                if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List")) {
+                if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List") ||  typeName.equals("java.util.SortedSet")) {
                     sb.append("ObjectWrapper.rmiObjectToRemoteImplementation(originalObject." + (wrapped ? "wrapped_" : "") + xmlMethod.getName() + "(");
                 } else {
                     sb.append("originalObject." + (wrapped ? "wrapped_" : "") + xmlMethod.getName() + "(");
@@ -473,7 +473,7 @@ public class RemoteGenerator {
 
                         sb.append("(Remote" + parameter.getShortName() + ")( param" + paramCounter + " == null ? null : ((MappedObject) param" + paramCounter + ").getWrappedObject())");
                     } else {
-                        if (parameter.getOriginalName().equals("java.lang.Object") || parameter.getOriginalName().equals("java.util.List")) {
+                        if (parameter.getOriginalName().equals("java.lang.Object") || parameter.getOriginalName().equals("java.util.List") || parameter.getOriginalName().equals("java.util.SortedSet")) {
                             String sss = className.substring(6, className.length() - 9);
                             if (sss.equals("String")) {
                                 sb.append("param" + paramCounter);
@@ -488,7 +488,7 @@ public class RemoteGenerator {
                         sb.append(" ,");
                     }
                 }
-                if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List")) {
+                if (typeName.indexOf("org.mmbase") != -1 || typeName.equals("java.lang.Object") || typeName.equals("java.util.List")||  typeName.equals("java.util.SortedSet")) {
                     sb.append(")");
                 }
                 //sb.append(")");
