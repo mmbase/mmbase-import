@@ -36,7 +36,7 @@ public class XMLBuilderReader  {
             //parser.setErrorHandler(errors);
             parser.parse(filename);
             document = parser.getDocument();
-
+	
 	    /*
 	    System.out.println("*** START XML CONFIG READER FOR : "+filename);	
 	    System.out.println("builder status="+getStatus());	
@@ -160,7 +160,7 @@ public class XMLBuilderReader  {
 				Node n3=n2.getFirstChild();
 				while (n3!=null) {
 					String name2=n3.getNodeName();
-					if (name2.equals("name")) {
+					if (name2.equals("name") || name2.equals("guiname")) {
 						getGUIName(n3,def);
 					} if (name2.equals("type") || name2.equals("guitype")) {
 						def.GUIType=getGUIType(n3);
