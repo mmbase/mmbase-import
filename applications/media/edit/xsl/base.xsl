@@ -5,6 +5,9 @@
 
   <xsl:variable name="mediadir"><xsl:value-of select="$referrerdir" />media/</xsl:variable>
   
+
+  <xsl:param name="SEARCH_LIST_TYPE">IFRAME</xsl:param>
+
   <xsl:template name="extrastyle">
     <link rel="stylesheet" type="text/css" href="{$referrerdir}style/streammanager.css" ></link>
   </xsl:template>

@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" 
-%><mm:content type="text/html">
+%><mm:content type="text/html" expires="0">
 <html>
   <head>
     <title>Media editor</title>

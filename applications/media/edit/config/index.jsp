@@ -9,6 +9,7 @@
 </head>
 
 <mm:cloud jspvar="cloud" method="asis">
+<mm:import id="user"><%=cloud.getUser().getIdentifier()%></mm:import>
 <body class="left">
   <mm:import id="current">config</mm:import>
   <mm:import id="dir">../</mm:import>
@@ -20,7 +21,7 @@
       <tr>
         <td>Streammanager</td>  
         <td>
-          <select name="mediaeditors_origin">
+          <select name="mediaeditors_origin_<mm:write referid="user" />">
             <option value="" <mm:compare referid="config.mediaeditors_origin" value=""> selected="selected" </mm:compare>><%=m.getString("any")%></option>
             <mm:node number="media.allstreams">
               <mm:relatednodes id="origin" searchdir="destination" role="parent" type="pools" orderby="name"> 
@@ -47,6 +48,7 @@
           </nobr>
         </td>
       </tr>
+      <!--
       <tr>
         <td><%=m.getString("quality")%></td>  
         <td>
@@ -72,6 +74,7 @@
           </select>
         </td>
       </tr>
+      -->
      <tr>
        <td /><td><button type="submit" value="config" name="config"><img src="../media/neworg.gif" /></button></td>
      </tr>

@@ -18,9 +18,13 @@
      <mm:node id="origin" number="$config.mediaeditors_origin" notfound="skip">
        <li><a href="javascript:setContentFrame('<mm:url referids="origin" page="pooleditor.jsp" />');"><%=m.getString("categories")%> voor <mm:field name="name" /></a></li>
      </mm:node>
-     <li><a href="javascript:setContentFrame('<mm:url page="pooleditor.jsp?origin=media.allstreams" />');"><%=m.getString("categories")%></a></li>
+     <% if (org.mmbase.security.Rank.getRank(cloud.getUser().getRank()).compareTo(org.mmbase.security.Rank.getRank("administrator")) >= 0) { %>
+     <li><a href="javascript:setContentFrame('<mm:url page="pooleditor.jsp?origin=media.allstreams&subcats=yes" />');"><%=m.getString("categories")%></a></li>
      <li><a href="javascript:setContentFrame('<mm:url page="accounts.jsp" />');">Accounts</a></li>
+     <% } %>
    </ul>  
+   <hr />
+   <%=cloud.getUser().getIdentifier()%>/<%=cloud.getUser().getRank()%>
 </body>
 </html>
 </mm:cloud>
