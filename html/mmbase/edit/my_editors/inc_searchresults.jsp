@@ -21,6 +21,7 @@ int day_found = 0;
 // Query the daymarkers table
 String days_constraint = "daycount >=" + search_day;
 String dm_node = "";			// Daymarker node number
+NodeManager nm = wolk.getNodeManager(ntype);
 %>
 <mm:listnodes type="daymarks" constraints="<%= days_constraint %>" max="1">
 	<mm:field name="mark" jspvar="m_node" vartype="String" write="false">
@@ -54,10 +55,8 @@ if (dm_node.equals("")) {
 		search_str = "number>" + dm_node; 
 	}
 }
-%>
 
-
-<% // ### The results using the search_str ###
+// ### The results using the search_str ###
 // Total found
 int total_found = 0;
 int colspan = 2;		// Colspan for navigation buttons below 
@@ -76,9 +75,9 @@ int list_index = 0;		// Index value of the list
   <td colspan="<%= colspan - 2 %>" class="title-s">	
   	found of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b>  (<mm:write referid="ntype" />) 
   </td>
-  <td align="right">
+  <td align="right" nowrap="nowrap">
 	<a href="#search" title="search"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a>
-	<a href="new_object.jsp?ntype=<mm:write referid="ntype" />" title="new"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
+	<% if (nm.mayCreateNode()) { // may create node of this type? %><a href="new_object.jsp?ntype=<mm:write referid="ntype" />" title="new"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a><% } %>
  </td>
 </tr>
 <mm:listnodes id="node_number" type="$ntype" 
@@ -92,17 +91,17 @@ int list_index = 0;		// Index value of the list
 	  <mm:fieldlist type="list" nodetype="$ntype"><td class="name"> <mm:fieldinfo type="guiname" /> </td></mm:fieldlist>
 	  <td>&nbsp;</td>
 	</tr>
-<!-- the result are here -->
-	</mm:first>
+<!-- results -->
+	</mm:first> <mm:field name="number" id="relnr" write="false" />
 	<tr valign="top"<mm:odd> bgcolor="#EFEFEF"</mm:odd>> 
 	  <td align="center">
 	  <mm:present referid="nr">		<%-- if there is a nr, there is a node and thus we are trying to find another to relate to --%>
-		<mm:compare referid="dir" value="nwchild">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a>
-		</mm:compare>
-		<mm:compare referid="dir" value="nwparent">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-left.gif" alt="-&lt;" width="21" height="20" border="0" /></a>
-		</mm:compare>
+		<mm:compare referid="dir" value="nwchild"><mm:maycreaterelation role="$rkind" source="nr" destination="relnr">
+		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:write referid="relnr" /></mm:param></mm:url>"><img src="img/mmbase-relation-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a>
+		</mm:maycreaterelation></mm:compare>
+		<mm:compare referid="dir" value="nwparent"><mm:maycreaterelation role="$rkind" source="relnr" destination="nr">
+		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:write referid="relnr" /></mm:param></mm:url>"><img src="img/mmbase-relation-left.gif" alt="-&lt;" width="21" height="20" border="0" /></a>
+		</mm:maycreaterelation></mm:compare>
 	  </mm:present>
 	  </td>
   	  <td align="right">
@@ -110,14 +109,14 @@ int list_index = 0;		// Index value of the list
   	    <%= list_index %>
   	  </td>
   	  <% int i = 0; %>
-	  <mm:fieldlist type="list"><td><% if (i==0) { %><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"></mm:maywrite><% } %><mm:fieldinfo type="guivalue" /><% if (i==0) { %><mm:maywrite></a></mm:maywrite><% } %> </td> <% i++; %></mm:fieldlist>
+	  <mm:fieldlist type="list" nodetype="$ntype"><td><% if (i==0) { %><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"></mm:maywrite><% } %><mm:fieldinfo type="guivalue" /><% if (i==0) { %><mm:maywrite></a></mm:maywrite><% } %> </td> <% i++; %></mm:fieldlist>
   	  <td nowrap="nowrap" align="right">
   	    <mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></mm:maywrite>
 		<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete node"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
   	  </td>
-	</tr>
+	</tr> <mm:remove referid="relnr" />
 	<mm:last>
-<!-- results end -->
+<!-- /results -->
 	<tr bgcolor="#FFFFFF">
 	  <td colspan="<%= colspan + 1 %>" align="center">
 	<% // Calculation prev, next

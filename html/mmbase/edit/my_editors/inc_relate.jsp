@@ -50,9 +50,11 @@
 	
 	<mm:notpresent referid="verander_ok">
 		<%-- Create relation: go to edit relation when it has > 1 editable fields (then it is a relation with a value) --%>
-		<mm:createrelation source="source_node" destination="dest_node" role="$rkind" id="the_relation">
-			<mm:fieldlist type="edit"><mm:first><mm:import id="verander">ok</mm:import></mm:first></mm:fieldlist>
-		</mm:createrelation>
+		<mm:maycreaterelation source="source_node" destination="dest_node" role="$rkind">
+			<mm:createrelation source="source_node" destination="dest_node" role="$rkind" id="the_relation">
+				<mm:fieldlist type="edit"><mm:first><mm:import id="verander">ok</mm:import></mm:first></mm:fieldlist>
+			</mm:createrelation>
+		</mm:maycreaterelation>
 	</mm:notpresent>	<%-- end notpresent verander_ok --%>
 
 	<mm:present referid="verander">
@@ -92,6 +94,15 @@
 			</mm:fieldlist>
 		</mm:node>
 	</mm:present>		<%-- end verander_ok --%>
+
+	<mm:notpresent referid="the_relation">
+		<%-- No relation: we were not allowed to do that! --%>
+		<tr bgcolor="#CCCCCC"><td>&nbsp;</td><td class="title-s">No relation</td></tr>
+		<tr>
+		  <td class="name" align="right">Sorry!</td>
+		  <td>You were not allowed to create that relation.</td>
+		</tr>
+	</mm:notpresent>
 
 	</table>
 

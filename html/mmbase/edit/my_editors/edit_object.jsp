@@ -48,9 +48,7 @@ title = "Edit " + ntype + " node";
     <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
   </tr><tr align="left">
     <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td colspan="3">
-	<!- table in table -->
-	  <table width="100%" border="0" cellspacing="0" cellpadding="4">
+    <td colspan="3"><!- table in table --><table width="100%" border="0" cellspacing="0" cellpadding="4">
 		<tr>
 		  <td align="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Search node to relate to </td>
@@ -60,7 +58,7 @@ title = "Edit " + ntype + " node";
 		  <td colspan="2" nowrap="nowrap"> Create new node and relate </td>
 		</tr>
 		<tr>
-		  <td align="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></a></td>
+		  <td align="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Edit relation </td>
 		</tr>
 		<tr>
@@ -71,9 +69,7 @@ title = "Edit " + ntype + " node";
 		  <td align="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Delete node </td>
 		</tr>
-	  </table>
-	<!- end table in table -->
-    </td>
+	  </table><!- end table in table --></td>
     <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
   </tr><tr>
     <td colspan="5" bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
@@ -113,7 +109,8 @@ title = "Edit " + ntype + " node";
 	<p class="message">The node <b><mm:field name="gui()" /></b> (<%= nr %>) is changed.</p>
   </td>
 </tr>
-</mm:present>    
+</mm:present>
+<mm:maywrite>
 <mm:fieldlist type="edit">
 <tr valign="top">
   <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
@@ -124,6 +121,19 @@ title = "Edit " + ntype + " node";
   <td>&nbsp;</td>
   <td><input type="submit" name="change" value="Change" /><p>&nbsp;</p></td>
 </tr>
+</mm:maywrite>
+<mm:maywrite inverse="true">
+<mm:fieldlist type="edit">
+<tr valign="top">
+  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+  <td><mm:fieldinfo type="guivalue" />&nbsp;</td>
+</tr>
+</mm:fieldlist>
+<tr>
+  <td>&nbsp;</td>
+  <td><p class="message">You are not allowed to edit his node.</p><p>&nbsp;</p></td>
+</tr>
+</mm:maywrite>
 <%-- Aliases --%>
 <tr bgcolor="#CCCCCC" valign="top">
   <td align="right" class="title-s">Aliases</td>
@@ -132,7 +142,6 @@ title = "Edit " + ntype + " node";
 	<mm:aliaslist id="alias">
 		<b><mm:write referid="alias" jspvar="the_alias"><% my_constr = "name='" + (String)the_alias + "'"; %></mm:write></b>
 		<mm:listnodes type="oalias" constraints="<%= my_constr %>">
-			<%-- <a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit alias"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a> --%>
 			<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete alias"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete> 
 		</mm:listnodes> 
 		<mm:last inverse="true"><br /></mm:last>

@@ -3,10 +3,14 @@
 <mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
 <%
 // Twee nieuwe strings 
-String ntype = "";			// Type of node
+// String ntype = "";			// Type of node
 String node_gui = "";		// GUI variable set in builder
 String node_man = "";		// Nodemanager?
 %>
+
+<mm:import externid="ntype" jspvar="ntype" vartype="String" />
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
+<%@ include file="inc_head.jsp" %>
 
 <mm:context id="edit_relation">
 <%-- Import the relation node into this context --%>
@@ -19,8 +23,6 @@ String node_man = "";		// Nodemanager?
 <mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% ntype = n_type; %></mm:nodeinfo>
 <mm:nodeinfo type="guinodemanager" jspvar="n_gui" vartype="String" write="false"><% node_gui = n_gui; %></mm:nodeinfo>
 
-<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
-<%@ include file="inc_head.jsp" %>
 
 <!-- main table -->
 <table border="0" cellspacing="0" cellpadding="3">
@@ -100,6 +102,7 @@ String node_man = "";		// Nodemanager?
 </mm:present>
 
 <mm:notpresent referid="delete">
+	<mm:maywrite>
 	<mm:fieldlist type="edit">
 		<tr valign="top">
 		  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
@@ -108,8 +111,23 @@ String node_man = "";		// Nodemanager?
 	</mm:fieldlist>
 	<tr>
 	  <td align="right"><input type="submit" name="change" value="Change" /></td>
-	  <td>Change relation  &nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" name="delete" value="Delete" /> Remove relation</td>
+	  <td>Change relation  &nbsp;&nbsp;&nbsp;&nbsp; 
+	    <mm:maydelete><input type="submit" name="delete" value="Delete" /> Remove relation</mm:maydelete>
+	  </td>
 	</tr>
+	</mm:maywrite>
+	<mm:maywrite inverse="true">
+	<mm:fieldlist type="edit">
+		<tr valign="top">
+		  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+		  <td><mm:fieldinfo type="guivalue" />&nbsp;</td>
+		</tr>
+	</mm:fieldlist>
+	<tr>
+	  <td align="right">&nbsp;</td>
+	  <td><p class="message">You are not allowed to change or delete this relation.</p></td>
+	</tr>
+	</mm:maywrite>
 </mm:notpresent>
 
 

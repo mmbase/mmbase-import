@@ -74,8 +74,12 @@ Added 'About the icons'.<br />
 18-05-2003 (v.0.6b3): More adjustments to lay-out.<br />
 Relations are created with the proper direction in mind. Relate buttons should point in the direction of the relation.<br />
 26-05-2003 (v.0.6b4): Made includes: inc_search.jsp &amp; inc_relate.jsp for searching and relating nodes.<br />
-06-08-2003 (v.0.6r1): Fixed bug #5998 (i hope, needs to be tested).
-<br/>Some lay-out fixes.<br />
+06-08-2003 (v.0.6r1): Fixed bug #5998.<br/>Some lay-out fixes.<br />
+12-12-2003 (v.0.7b): Made non-editable nodetypes (nodetypes for relations) hidden in listing on homepage. 
+Can be configured using <a href="config.jsp">config.jsp</a>.<br />
+Implemented security tags. Buttons giving access to nodes and relation nodes a user is not allowed to edit are hidden.<br />
+Changed breadcrum path of 'edit relation': no longer directs you to the overview with relation nodes.<br /> 
+Changed the lay-out of the search box 'edit node #'.<br />
 </p>
 
 <%@ include file="inc_foot.jsp" %>
