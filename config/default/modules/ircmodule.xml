@@ -21,7 +21,7 @@
 	<property name="ircServer">irc.xs4all.nl</property>
 	<property name="channel">mmbase2</property>
 	<property name="nickname">mmbase2</property>
-	<property name="refreshUrl">www.mmbase.org:8080</refreshUrl>
-	<property name="refreshTime">200</refreshTime>
+	<property name="refreshUrl">www.mmbase.org:8080</property>
+	<property name="refreshTime">200</property>
   </properties>
 </module>
