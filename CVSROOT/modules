@@ -27,4 +27,4 @@
 
 
 # this will enable you to check out 'src'
-src -d src/org mmbase
+src -d src/org/mmbase mmbase
