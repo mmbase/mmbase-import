@@ -33,8 +33,6 @@ import org.mmbase.util.logging.Logging;
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
-    private static final int NO_TYPE = -100;
-
     private static Logger log = Logging.getLoggerInstance(FieldListTag.class.getName());
 
     private FieldList     returnList;
@@ -45,7 +43,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     private String nodeManagerString = null;
     private NodeProvider nodeProvider = null;
 
-    private int type = NO_TYPE;
+    private int type = NodeManager.ORDER_NONE;
 
     public int size(){
         return returnList.size();
@@ -80,12 +78,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else if ("search".equals(t)) {
             type = NodeManager.ORDER_SEARCH;
         } else if ("all".equals(t)) {
-            type = NO_TYPE;
+            type = NodeManager.ORDER_NONE;
         } else {
             throw new JspTagException("Unknown field order type " + t);
         }
     }
-    
+
     private java.util.List fields = null;
 
     public void setFields(String f) throws JspTagException {
@@ -119,7 +117,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     **/
     public int doStartTag() throws JspTagException{
         if (getReferid() != null) {
-            if (nodeManagerString != null || type != NO_TYPE) {
+            if (nodeManagerString != null || type != NodeManager.ORDER_NONE) {
                 throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
             }
             Object o =  getObject(getReferid());
@@ -136,12 +134,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 nodeManager = getCloud().getNodeManager(nodeManagerString);
             }
 
-            if (type != NO_TYPE) {           
-                returnList = nodeManager.getFields(type);            
+            if (type != NodeManager.ORDER_NONE) {
+                returnList = nodeManager.getFields(type);
                 if (fields != null) {
-                    throw new JspTagException ("Cannot specify fields and type attribute both at the same time fiels = " + fields + " type = " + type);
+                    throw new JspTagException ("Cannot specify fields and type attribute both at the same time. Fields = " + fields + " type = " + type);
                 }
-                
+
             } else {
                 returnList = nodeManager.getFields();
                 if (fields != null) {
@@ -149,7 +147,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                     java.util.Iterator i = fields.iterator();
                     while (i.hasNext()) {
                         returnList.add(nodeManager.getField((String) i.next()));
-                    }                
+                    }
                 }
             }
         }
