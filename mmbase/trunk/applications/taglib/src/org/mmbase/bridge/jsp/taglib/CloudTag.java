@@ -631,7 +631,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         String from = request.getRequestURI();
         String reference = from;
         if(request.getQueryString() != null) {
-            reference += request.getQueryString();
+            reference += "?" + request.getQueryString();
         }
         reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
         from = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", from);
