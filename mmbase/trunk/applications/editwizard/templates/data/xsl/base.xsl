@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.20 2002-10-29 10:57:37 michiel Exp $
+  @version $Id: base.xsl,v 1.21 2003-05-28 11:45:38 pierre Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -79,7 +79,7 @@
       <xsl:with-param name="nodes" select="/*/title" />
       </xsl:call-template>
     </xsl:variable>
-
+  <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
   <!-- ================================================================================
        General appearance

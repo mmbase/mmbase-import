@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.29 2003-05-21 11:55:26 pierre Exp $
+  @version $Id: list.xsl,v 1.30 2003-05-28 11:45:38 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -18,8 +18,6 @@
 
   <xsl:param name="deleteprompt"><xsl:call-template name="prompt_delete_confirmation" /></xsl:param>
   <xsl:param name="deletedescription"><xsl:value-of select="$tooltip_delete" /></xsl:param>
-
-  <xsl:param name="title"><xsl:value-of select="list/object/@guitype" /></xsl:param>
 
 	<xsl:param name="age"></xsl:param>
 	<xsl:param name="searchvalue"></xsl:param>
