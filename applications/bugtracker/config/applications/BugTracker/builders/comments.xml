@@ -48,7 +48,7 @@
       </gui>
       <db>
         <name>posttime</name>
-        <type key="false" state="persistent" notnull="false">INTEGER</type>
+        <type key="false" state="persistent" notnull="false">LONG</type>
       </db>
     </field>
   </fieldlist>
