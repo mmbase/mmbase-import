@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.81 2003-02-10 12:14:31 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.82 2003-02-17 09:01:26 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -535,7 +535,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (noderef == null) {
             return "*deleted node*";
         }
-        return noderef.getFunctionValue("gui",null).toString();
+        Object value=noderef.getFunctionValue("gui",null);
+        if (value==null) {
+            return "*unknown*";
+        } else {
+            return value.toString();
+        }
     }
 
     /**
