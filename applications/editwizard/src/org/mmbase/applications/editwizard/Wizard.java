@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.121.2.7 2004-09-30 08:44:06 michiel Exp $
+ * @version $Id: Wizard.java,v 1.121.2.8 2004-12-14 13:53:27 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -245,7 +245,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     public String getDataId() {
         return dataId;
     }
-
     public Document getData() {
         return data;
     }
@@ -549,24 +548,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         String formEncoding = req.getCharacterEncoding();
         boolean hasEncoding = formEncoding != null;
         if (!hasEncoding) {
-            log.debug("request did not mention encoding");
-            // The form encoding was not known, so probably  ISO-8859-1 was supposed (as required by HTTP)
-            // lets make sure it is right though, because wizard pages posted UTF-8:
-            if (cloud != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
-                }
-                formEncoding = cloud.getCloudContext().getDefaultCharacterEncoding();
-            } else { 
-                // no cloud? I don't know how to get default char encoding then.
-                // suppose it utf-8
-                if (log.isDebugEnabled()) {
-                    log.debug("No cloud found, supposing parameter in UTF-8");
-                }
-                formEncoding = "UTF-8";
-            }
-        }
-        else {
+            log.debug("Request did not mention encoding, supposing UTF-8, as JSP's are");
+            formEncoding = "UTF-8";
+        } else {            
             log.debug("found encoding in the request: " + formEncoding);
         }
         
