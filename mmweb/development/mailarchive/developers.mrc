@@ -6,9 +6,13 @@
 <!--    Specify date sorting.
   -->
 <Sort>
-<title>Developers mail</title>
+<title>
+Developers mail
+</title>
 
-<ttitle>Developers mail (by thread)</ttitle>
+<ttitle>
+Developers mail (by thread)
+</ttitle>
 
 <idxsize>
 300
@@ -48,11 +52,11 @@ html
 <HEAD>
 <TITLE>$IDXTITLE$</TITLE>
 </HEAD>
-<link rel="stylesheet" type="text/css" href="/css/mmbase-dev.css">
+<link rel="stylesheet" href="/css/mmbase-dev.css" type="text/css">
 <body>
 
 <BR>
-<H1>$IDXTITLE$</H1>
+<span class="grz">$IDXTITLE$</span>
 <BR><BR>
 </IdxPgBegin>
 
@@ -60,9 +64,11 @@ html
   -->
 <ListBegin>
 <UL>
-<LI><H2><A HREF="$TIDXFNAME$">Thread Index</A></H2></LI>
+<LI><span class="miz"><A HREF="$TIDXFNAME$">Thread Index</A></span></LI>
 </UL>
+<span class="miz">
 $PGLINK(PREV)$$PGLINK(NEXT)$
+</span>
 <HR>
 <table border=0>
 </ListBegin>
@@ -71,7 +77,7 @@ $PGLINK(PREV)$$PGLINK(NEXT)$
 	is started.
   -->
 <DayBegin>
-<tr><td colspan=4><strong>$MSGLOCALDATE$</strong></td></tr>
+<tr><td colspan=4><span class="miz"><strong>$MSGLOCALDATE$</strong></span></td></tr>
 </DayBegin>
 
 <!--	DAYBEND defines the markup to be printed when a day group
@@ -87,10 +93,10 @@ $PGLINK(PREV)$$PGLINK(NEXT)$
   -->
 <LiTemplate>
 <tr valign=top>
-<td>$MSGLOCALDATE(CUR;%H:%M)$</td>
-<td>$SUBJECT$</td>
-<td>$FROMNAME$</td>
-<td>$NOTE$</td>
+<td><span class="miz">$MSGLOCALDATE(CUR;%H:%M)$</span></td>
+<td><span class="miz">$SUBJECT$</span></td>
+<td><span class="miz">$FROMNAME$</span></td>
+<td><span class="miz">$NOTE$</span></td>
 </tr>
 </LiTemplate>
 
@@ -115,12 +121,13 @@ $PGLINK(PREV)$$PGLINK(NEXT)$
 <HEAD>
 <TITLE>$TIDXTITLE$</TITLE>
 </HEAD>
-<link rel="stylesheet" type="text/css" href="/css/mmbase-dev.css">
+<link rel="stylesheet" href="/css/mmbase-dev.css" type="text/css">
 <body>
 
 <BR>
-<H3>$TIDXTITLE$</H3>
+<span class="grz">$TIDXTITLE$</span>
 <BR><BR>
+<span class="miz">
 </TIdxPgBegin>
 
 <TIdxPgEnd>
@@ -137,21 +144,24 @@ $PGLINK(PREV)$$PGLINK(NEXT)$
 <HEAD>
 <TITLE>$SUBJECTNA:72$</TITLE>
 </HEAD>
-<link rel="stylesheet" type="text/css" href="/css/mmbase-dev.css">
+<link rel="stylesheet" href="/css/mmbase-dev.css" type="text/css">
 <body>
 
 </MsgPgBegin>
 
 <TopLinks>
+<span class="miz">
 $BUTTON(PREV)$$BUTTON(NEXT)$$BUTTON(TPREV)$$BUTTON(TNEXT)$[<A
 HREF="$IDXFNAME$#$MSGNUM$">Date Index</A>][<A
 HREF="$TIDXFNAME$#$MSGNUM$">Thread Index</A>]
+</span>
 </TopLinks>
 
 <SubjectHeader>
 <BR><BR>
-<H3>$SUBJECTNA$</H3>
+<span class="grz">$SUBJECTNA$</span>
 <BR>
+<span class="miz">
 </SubjectHeader>
 
 <MsgPgEnd>
