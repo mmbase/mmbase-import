@@ -7,7 +7,9 @@ function showSearchScreen(cmd, url) {
 }
 
 function showPopup(url) {
-	var windowPopup = window.open("","Search", "width=400,height=400,scrollbars=yes,toolbar=no,status=yes,resizable=yes");
+	var left = (screen.width - 400)/2;
+	var top = (screen.height - 400)/2;
+	var windowPopup = window.open("","Search", "width=400,height=400,left=" + left + ",top=" + top + "scrollbars=yes,toolbar=no,status=yes,resizable=yes");
 	try {
 		windowPopup.document.writeln('<span>...searching...</span>');
 	} catch (e) {
@@ -20,7 +22,7 @@ function showPopup(url) {
 // override doOnloadSearch() from search.js
 function doOnloadSearch() {
     window.onresize = function(e){ resizeSelectTable(); };
-    centerWindow();
+//    centerWindow();
 }
 
 // override addItem(selected) from search.js
