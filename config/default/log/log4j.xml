@@ -8,6 +8,9 @@
    or somewhere on the web:
    SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
    
+   It seems to work better in Orion if you put the log4j.dtd in
+   WEB-INF/classes/org/apache/log4j/xml/log4j.dtd
+   
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
@@ -46,7 +49,7 @@
     <param name="File"   value="&logdir;mmbase.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p - %m%n" />
+      <param name="ConversionPattern" value="%d{ABSOLUTE} %-7p %c{4} - %m%n" />
     </layout>
   </appender>
 
@@ -71,7 +74,7 @@
 
 
   <!-- results from the log tag go to a different file -->
-  <category name="MMBASE-PAGE" class ="&logger;" additivity="false" >
+  <category name="org.mmbase.PAGE.LOGTAG" class ="&logger;" additivity="false" >
     <priority class="&priority;" value ="service" />
     <appender-ref ref="pagedebug" />
   </category>
@@ -82,8 +85,10 @@
     <priority class="&priority;" value ="trace" />
   </category>
   
-  <!-- STDERR is a special Category, to wich stderr will be written
-  (always with priority 'warn' or higher)  -->
+  <!-- 
+  STDERR is a special Category, to wich stderr will be written
+  (always with priority 'warn' or higher)  
+  -->
   
   <category name="STDERR" class ="&logger;">
     <priority class="&priority;" value ="info" />	
