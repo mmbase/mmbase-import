@@ -1094,14 +1094,6 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>declare</name>
-        <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-	<info>
-	If the jspvar must be declared first.
-	</info>
-    </attribute>
-    <attribute>
         <name>type</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
@@ -1144,6 +1136,36 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <name>key</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>	
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>url</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <info>
+    Returns an URL with parameters from the context.
+    </info>
+    <attribute>
+        <name>keys</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>	
+	Specify which parameters, otherwise all parameters.
+	</info>
+    </attribute>
+    <attribute>
+        <name>file</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>	
+	</info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
 	<info>	
 	</info>
     </attribute>
