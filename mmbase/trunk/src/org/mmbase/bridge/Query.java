@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.7 2003-07-25 20:44:30 michiel Exp $
+ * @version $Id: Query.java,v 1.8 2003-07-28 09:39:04 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -170,7 +170,7 @@ public interface Query extends SearchQuery, Cloneable {
      * fields are removed (but the contraints on them remain), and you can add aggregated fields
      * then.
      */
-    Query aggregatedClone();
+    Query aggregatingClone();
 
 
 }

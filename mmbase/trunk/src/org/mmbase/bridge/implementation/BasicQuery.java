@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.8 2003-07-25 20:44:31 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.9 2003-07-28 09:39:04 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -56,6 +56,11 @@ public class BasicQuery implements Query  {
         return query;
     }
 
+    protected void createNewQuery() {
+        query = new BasicSearchQuery();
+    }
+
+
     // SearchQuery impl:
 
     public List getSteps() {
@@ -84,7 +89,7 @@ public class BasicQuery implements Query  {
     public Object clone() {
         try {
             BasicQuery clone = (BasicQuery) super.clone();
-            clone.query = new BasicSearchQuery(query); 
+            clone.query = (BasicSearchQuery) query.clone();
             clone.used = false;
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -92,7 +97,7 @@ public class BasicQuery implements Query  {
             throw new InternalError(e.toString());
         }
     }
-    public Query aggregatedClone() {
+    public Query aggregatingClone() {
         try {
             BasicQuery clone = (BasicQuery) super.clone();
             clone.query = new BasicSearchQuery(query, true); 
