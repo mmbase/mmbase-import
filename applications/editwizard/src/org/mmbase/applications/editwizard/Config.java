@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.32 2003-05-26 11:25:59 pierre Exp $
+ * @version $Id: Config.java,v 1.33 2003-05-27 11:17:09 pierre Exp $
  */
 
 public class Config {
@@ -76,8 +76,8 @@ public class Config {
                 wizard = "file://" + configurator.getRequest().getRealPath(wizard);
             }
             setAttribute("origin",configurator.getParam("origin"));
-            // max upload size for files
-            debug = configurator.getParam("debug",  false);
+            // debug parameter
+            debug = configurator.getParam("debug",  debug);
         }
 
         public void setAttribute(String name, String value) {
@@ -86,6 +86,17 @@ public class Config {
                 attributes.put(name,value);
             }
         }
+        
+        /** 
+         * Returns available attributes in a map, so they can be passed to the list stylesheet
+         */
+        public Map getAttributes() {
+            Map attributeMap = new HashMap(attributes);
+            if (wizard!=null) attributeMap.put("wizard", wizard);
+            attributeMap.put("debug", ""+debug);
+            return attributeMap;
+        }
+
     }
 
     static public class WizardConfig extends SubConfig {
@@ -114,6 +125,17 @@ public class Config {
             popupId = configurator.getParam("popupid",  "");
             objectNumber = configurator.getParam("objectnumber");
         }
+
+        /** 
+         * Returns available attributes in a map, so they can be passed to the list stylesheet
+         */
+        public Map getAttributes() {
+            Map attributeMap = super.getAttributes();
+            attributeMap.put("popupid", popupId);
+            if (objectNumber!=null) attributeMap.put("objectnumber", objectNumber);
+            
+            return attributeMap;   
+        }
     }
 
     static public class ListConfig extends SubConfig {
@@ -138,6 +160,12 @@ public class Config {
         public boolean distinct = false;
         public int pagelength   = 50;
         public int maxpagecount = 10;
+        
+        public boolean multilevel = false;
+        public String mainObjectName = null;
+        public List fieldList = null;
+        
+        private boolean parsed = false;
         
         /**
          * Configure a list page. The configuration object passed is updated with information retrieved 
@@ -173,15 +201,36 @@ public class Config {
             pagelength   = configurator.getParam("pagelength", new Integer(pagelength)).intValue();
             maxpagecount   = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
             startNodes  = configurator.getParam("startnodes", startNodes);
-            nodePath    = configurator.getParam("nodepath", nodePath);
+            
+            // Get nodepath parameter. if a (new) parameter was passed,
+            // re-parse the node path and field list
+            // This allows for custom list stylesheets to make a query more or less complex through 
+            // user interaction
+            String parameter  = configurator.getParam("nodepath");
+            if (parameter!=null) {
+                nodePath=parameter;
+                parsed=false;
+            }
             if (nodePath == null) {
                 throw new WizardException("The parameter 'nodepath' is required but not given.");
             }
-            fields      = configurator.getParam("fields", fields);
+            
+            // Get fields parameter. if a (new) parameter was passed,
+            // re-parse the node path and field list
+            // This allows for custom list stylesheets to make a query more or less complex through 
+            // user interaction
+            parameter  = configurator.getParam("fields");
+            if (parameter!=null) {
+                fields=parameter;
+                parsed=false;
+            }
             if (fields==null) {
                 throw new WizardException("The parameter 'fields' is required but not given."); 
             }
+            
             age         = configurator.getParam("age", new Integer(age)).intValue();
+            if (age>=99999) age=-1;
+            
             start       = configurator.getParam("start", new Integer(start)).intValue();
             searchType=configurator.getParam("searchtype", searchType);
             searchFields=configurator.getParam("searchfields", searchFields);
@@ -252,12 +301,85 @@ public class Config {
             orderBy     = configurator.getParam("orderby", orderBy);
             distinct    = configurator.getParam("distinct", new Boolean(true)).booleanValue();
             
-            if (template==null) { // only set if template was unset - don't switch templates between lists 
+            // only perform the following is there was no prior parsing
+            if (!parsed) {
+
                 String templatePath = configurator.getParam("template","xsl/list.xsl");
                 template = configurator.resolveToFile(templatePath);
+
+                // determine mainObjectName from main parameter
+                mainObjectName = configurator.getParam("main",mainObjectName);
+    
+                // create fieldlist
+                StringTokenizer stok = new StringTokenizer(fields, ",");
+                int fieldcount = stok.countTokens();
+                if (fieldcount == 0) {
+                    throw new WizardException("The parameter 'fields' should be passed with a comma-separated list of fieldnames.");
+                }
+            
+                fieldList = new ArrayList();
+                while (stok.hasMoreTokens()) {
+                    String token = stok.nextToken();
+                    fieldList.add(token);
+                    // Check if the number field for a multilevel object was specified 
+                    // (determine mainObjectName from fieldlist)
+                    if (mainObjectName == null && token.endsWith(".number")) {
+                        mainObjectName = token.substring(0,token.length() - 7);
+                    }
+                }
+    
+                stok = new StringTokenizer(nodePath, ",");
+                int nodecount = stok.countTokens();
+                if (nodecount == 0) {
+                    throw new WizardException("The parameter 'nodepath' should be passed with a comma-separated list of nodemanagers.");
+                }
+                multilevel = nodecount>1;
+                if (mainObjectName == null) {
+                    // search last manager - default 'main' object.
+                    while (stok.hasMoreTokens()) {
+                        mainObjectName = stok.nextToken();
+                    }
+                }
+    
+                // add the main object's numberfield to fields
+                // this ensures the field is retrieved even if distinct weas specified
+                String numberField = "number"; 
+                if (multilevel) {
+                    numberField = mainObjectName+".number";
+                }
+                if (fieldList.indexOf(numberField) == -1) {
+                    fields = numberField + "," + fields;
+                }
+                parsed=true;
             }
+
         }
-        
+
+        /** 
+         * Returns available attributes in a map, so they can be passed to the list stylesheet
+         */
+        public Map getAttributes() {
+            Map attributeMap = super.getAttributes();
+            // mandatory attributes
+            attributeMap.put("nodepath", nodePath);
+            attributeMap.put("fields", fields);
+            // optional attributes
+            if (title != null) attributeMap.put("title", title);
+            attributeMap.put("age", age+"");
+            if (multilevel) attributeMap.put("objecttype",mainObjectName);
+            if (startNodes!=null) attributeMap.put("startnodes", startNodes);
+            if (orderBy!=null) attributeMap.put("orderby", orderBy);
+            if (directions!=null) attributeMap.put("directions", directions);
+            attributeMap.put("distinct", distinct+"");
+            if (searchDir!=null) attributeMap.put("searchdir", searchDir);
+            if (baseConstraints!=null) attributeMap.put("constraints", baseConstraints);
+            // search attributes
+            if (searchType!=null) attributeMap.put("searchtype", searchType);
+            if (searchFields!=null) attributeMap.put("searchfields", searchFields);
+            if (searchValue!=null) attributeMap.put("searchvalue", searchValue);
+            
+            return attributeMap;   
+        }
     }
 
     /**
@@ -291,7 +413,7 @@ public class Config {
             
 
             if (config.language == null) {
-                config.language = getParam("language", org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale().getLanguage());
+                config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the

@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.36 2003-05-26 14:54:36 pierre Exp $
+     * @version  $Id: list.jsp,v 1.37 2003-05-27 11:18:54 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -66,75 +66,6 @@ if (listConfig==null) {
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
 
-// decide what kind of query: multilevel or single?
-boolean multilevel = listConfig.nodePath.indexOf(",") > -1;
-
-List fieldList     = new Vector();
-String numberField = null;
-
-StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");
-String mainObjectName =null;
-
-// Check if the number field was specified
-while (stok.hasMoreTokens()) {
-    String token = stok.nextToken();
-    fieldList.add(token);
-    int nrpos = token.indexOf(".number");
-    if (nrpos > -1) { // specified as <table>.number
-        numberField = token;
-        mainObjectName = token.substring(0,nrpos);
-    } else {
-        if (token.indexOf("number") == 0 && numberField == null) { // specified as number
-            numberField = token;
-        }
-    }
-}
-
-int nodecount=0;
-
-stok = new StringTokenizer(listConfig.nodePath, ",");
-
-nodecount = stok.countTokens();
-String lastObjectName=null;
-
-
-while (stok.hasMoreTokens()) {
-    lastObjectName = stok.nextToken();
-}
-
-if (lastObjectName == null) {
-    throw new JspException("No nodepath (" + listConfig.nodePath + ") was specified on URL, nor could it be found in the session");
-}
-
-if (mainObjectName==null) mainObjectName=lastObjectName;
-
-if (numberField==null || listConfig.fields.indexOf(numberField)==-1) {
-    // no numberField supplied. Let's add it ourselves and place in in front of the fields list.
-    String addfield="number";
-    if (multilevel) {
-        addfield = mainObjectName+"."+addfield;
-        listConfig.fields = addfield + "," + listConfig.fields;
-    } else {
-        listConfig.fields = "number," + listConfig.fields;
-    }
-    fieldList.add(0, addfield);
-}
-
-
-int fieldcount = fieldList.size();
-// check syntax of params....
-if (nodecount==0 || fieldcount==0) {
-    String s = "MMCI returned an error. You probably did not supply the right parameters for the MMCI getList routines.<br /><br />";
-    s += "Please fill in the following params:<br />";
-    s += "wizard, nodepath, fields<br /><br />";
-    s += "and optional:<br />";
-    s += "startnodes, constraints, orderby, directions, distinct";
-    throw new JspException(s + "<br /><br />No valid nodePath or fields are supplied.");
-}
-
-
-// expand query depending on wether or not an age param is given.
-if (listConfig.age==99999) listConfig.age=-1;
 if (listConfig.age > -1) {
     // maxlistConfig.age is set. pre-query to find objectnumber
     long daymarker = (new java.util.Date().getTime() / (60*60*24*1000)) - listConfig.age;
@@ -151,7 +82,7 @@ if (listConfig.age > -1) {
         ageconstraint = "number>"+n.getStringValue("mark");
     }
 
-    if (multilevel && mainObjectName!=null) ageconstraint=mainObjectName+"."+ageconstraint;
+    if (listConfig.multilevel) ageconstraint=listConfig.mainObjectName+"."+ageconstraint;
 
     if (listConfig.constraints == null || listConfig.constraints.equals("")) {
         listConfig.constraints = ageconstraint;
@@ -165,7 +96,6 @@ boolean deletable = false;
 boolean creatable = false;
 String deletedescription = "";
 String deleteprompt = "";
-String title = "editwizard list";
 org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
 
@@ -183,9 +113,9 @@ if (listConfig.wizard != null) {
 NodeList results;
 
 // do not list anything if search is forced and no searchvalue given
-if (listConfig.forceSearch && listConfig.searchFields!=null &&"".equals(listConfig.searchValue)) {
+if (listConfig.forceSearch && listConfig.searchFields!=null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();    
-} else if (multilevel) {
+} else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
     results = cloud.getList(listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
                             listConfig.orderBy,
@@ -225,7 +155,7 @@ if (titles != null) {
 
 log.trace("hoi");
 
-String mainManager=mainObjectName;
+String mainManager=listConfig.mainObjectName;
 if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.substring(0,mainManager.length()-1);
 
 NodeManager manager=cloud.getNodeManager(mainManager);
@@ -233,13 +163,17 @@ if (!manager.mayCreateNode()) creatable=false;
 
 for (int i=start; i< end; i++) {
     Node item = results.getNode(i);
-    org.w3c.dom.Node obj = addObject(docel, item.getStringValue((String)fieldList.get(0)), (i+1)+"",
-                                     manager.getName(), manager.getGUIName(2));
-    for (int j=1; j < fieldList.size(); j++) {
-        String fieldname = (String)fieldList.get(j);
+    org.w3c.dom.Node obj;
+    if (listConfig.multilevel) {
+        obj = addObject(docel, item.getIntValue(listConfig.mainObjectName+".number"), i+1,
+                                         mainManager, manager.getGUIName(2));
+    } else {
+        obj = addObject(docel, item.getNumber(), i+1, mainManager, manager.getGUIName(2));
+    }
+    for (int j=0; j < listConfig.fieldList.size(); j++) {
+        String fieldname = (String)listConfig.fieldList.get(j);
         String fieldguiname=fieldname;
-
-        if (multilevel) {
+        if (listConfig.multilevel) {
             int period=fieldname.indexOf('.');
             String nmname=fieldname.substring(0,period);
             if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
@@ -249,8 +183,8 @@ for (int i=start; i< end; i++) {
         }
         addField(obj, fieldguiname, item.getStringValue("gui("+fieldname+")"));
     }
-    if (multilevel) {
-        item=item.getNodeValue(mainObjectName);
+    if (listConfig.multilevel) {
+        item=item.getNodeValue(listConfig.mainObjectName);
     }
     Utils.setAttribute(obj, "mayedit", ""+item.mayWrite());
     Utils.setAttribute(obj, "maydelete", ""+item.mayDelete());
@@ -281,8 +215,8 @@ for (int i=0; i<pagecount && i<maxpages; i++) {
 }
 
 log.trace("Setting xsl parameters");
-java.util.Map params = new java.util.Hashtable(listConfig.attributes);
-if (listConfig.wizard != null) params.put("wizard", listConfig.wizard);
+java.util.Map params = listConfig.getAttributes();
+
 params.put("start",      String.valueOf(start));
 params.put("referrer",   ewconfig.backPage);
 if (ewconfig.templates != null) params.put("templatedir",  ewconfig.templates);
@@ -291,35 +225,14 @@ params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("creatable",  creatable+"");
-params.put("debug",  ""+listConfig.debug);
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
-if (multilevel) { params.put("objecttype",mainObjectName); }
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
-if (title != null) params.put("wizardtitle", title);
-if (listConfig.title != null) {
-    params.put("title", listConfig.title);
-} else {
+if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
 }
-
-// is all of this really needed?
-params.put("age", listConfig.age+"");
-if (listConfig.startNodes!=null) params.put("startnodes", listConfig.startNodes);
-if (listConfig.nodePath!=null) params.put("nodepath", listConfig.nodePath);
-if (listConfig.fields!=null) params.put("fields", listConfig.fields);
-if (listConfig.orderBy!=null) params.put("orderby", listConfig.orderBy);
-if (listConfig.directions!=null) params.put("directions", listConfig.directions);
-params.put("distinct", listConfig.distinct+"");
-if (listConfig.searchDir!=null) params.put("searchdir", listConfig.searchDir);
-if (listConfig.baseConstraints!=null) params.put("constraints", listConfig.baseConstraints);
-
-// search data
-if (listConfig.searchType!=null) params.put("searchtype", listConfig.searchType);
-if (listConfig.searchFields!=null) params.put("searchfields", listConfig.searchFields);
-if (listConfig.searchValue!=null) params.put("searchvalue", listConfig.searchValue);
 
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
@@ -333,10 +246,10 @@ if (log.isDebugEnabled()) log.trace("ready: " + ewconfig.subObjects);
 
 %><%!
 
-private org.w3c.dom.Node addObject(org.w3c.dom.Node el, String number, String index, String type, String guitype) {
+private org.w3c.dom.Node addObject(org.w3c.dom.Node el, int number, int index, String type, String guitype) {
     org.w3c.dom.Node n = el.getOwnerDocument().createElement("object");
-    Utils.setAttribute(n, "number", number);
-    Utils.setAttribute(n, "index", index);
+    Utils.setAttribute(n, "number", ""+number);
+    Utils.setAttribute(n, "index", ""+index);
     Utils.setAttribute(n, "type", type);
     Utils.setAttribute(n, "guitype", guitype);
     el.appendChild(n);
