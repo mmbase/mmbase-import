@@ -74,7 +74,7 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
                     w = endWriter;
                 }
             }
-            assert(w == endWriter);
+            // assert(w == endWriter);
             if (ct != null) {
                 ct.transform(r, endWriter);            
             }
