@@ -19,6 +19,7 @@ import org.mmbase.bridge.*;
  * @version $Id: MMFunction.java
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
+ * @since MMBase-1.7
  */
 public class NodeFunction extends Function {
 

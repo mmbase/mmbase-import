@@ -14,13 +14,17 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * An abstract representation of a piece of functionality.
+ * An abstract representation of a piece of functionality (a 'function'). A function as a name, a
+ * return type, and an parameter-definition (a Parameter array).
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MMFunction.java
+ * @version $Id: Function.java,v 1.3 2003-11-21 22:01:50 michiel Exp $
+ * @since MMBase-1.7
+ * @see Parameter
+ * @see Parameters
  */
-public class Function {
+abstract public class Function {
 
     private static final Logger log = Logging.getLoggerInstance(Function.class);
 
@@ -42,6 +46,9 @@ public class Function {
      */
 
     public Parameters getNewParameters() {
+        if (parameterDefinition == null) {
+            throw new IllegalStateException("Definition is not set yet");
+        }
         return new Parameters(parameterDefinition);
     }
 
@@ -50,9 +57,12 @@ public class Function {
      * @see #getNewParameters
      */
 
-    public Object getFunctionValue(Parameters arguments) {
+    abstract public Object getFunctionValue(Parameters arguments); 
+    /*
+    {
         throw new UnsupportedOperationException("This is only an abstract representation of a function with name and cannot be actually executed. Use an extension of this class if you want that.");
     }
+    */
 
     public void setDescription(String description)   { 
         this.description = description;
@@ -67,6 +77,12 @@ public class Function {
     }
     public Parameter[] getParameterDefinition() {
         return parameterDefinition;
+    }
+    public void setParameterDefinition(Parameter[] params) {
+        if (parameterDefinition != null) {
+            throw new IllegalStateException("Definition is set already");
+        }
+        parameterDefinition = params;
     }
     public ReturnType getReturnType() {
         return returnType;

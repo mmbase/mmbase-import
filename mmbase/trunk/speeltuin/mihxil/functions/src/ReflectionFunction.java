@@ -15,11 +15,18 @@ import org.mmbase.util.logging.*;
 import java.lang.reflect.*;
 /**
  * MMBase Function
+
+ * A reflection funcion is defined in XML, but executed with reflection (using class-name,
+ * method-name, and arguments defined in that XML).
+ *
+ * It serves a kind of 'static' function since it is not directly associated with any object. 
  *
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MMFunction.java
+ * @version $Id: ReflectionFunction.java,v 1.3 2003-11-21 22:01:50 michiel Exp $
+ * @since MMBase-1.7
+ * @todo should be fixed, because I commented most out...
  */
 public class ReflectionFunction extends Function {
 

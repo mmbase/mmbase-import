@@ -16,19 +16,23 @@ import java.util.*;
 
 /**
  * Arguments for functions, a way to make variable arguments in Java. In fact this class does
- * nothing more then providing a convenient way to create a List. This List is backed by a HashMap.
+ * nothing more then providing a convenient way to create a List, by the use of 'named
+ * parameters'. This List is therefore backed by a HashMap, but it behaves as a list. So if you set
+ * a parameter with a certain name, it always appears in the same location of the List.
  *
  * This List is modifiable but not resizeable. It is always the size of the definition array.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.3 2003-11-21 20:29:52 michiel Exp $
+ * @version $Id: Parameters.java,v 1.4 2003-11-21 22:01:50 michiel Exp $
  * @see Parameter
  */
 
 public class Parameters extends AbstractList implements List  {
     //private static Logger log = Logging.getLoggerInstance(Parameters.class);
 
+
+    public static final Parameters VOID = new Parameters(new Parameter[0]);
 
 
     /**
@@ -57,6 +61,10 @@ public class Parameters extends AbstractList implements List  {
     protected  Parameter[] definition = null;
 
 
+    Parameters() {
+
+    }
+
     /**
      * Constructor, taking an Parameter[] array argument. The Parameter may also be Parameter.Wrapper
      * (to impelmente overriding of functions).  The idea is that these array arguments are defined
@@ -75,6 +83,7 @@ public class Parameters extends AbstractList implements List  {
     }
     /**
      * If you happen to have a List of arguments, then you can wrap it into an Parameters with this constructor
+     * @throws NullPointerException if definition is null
      */
     public Parameters(Parameter [] def, List values) {
         this(def);
@@ -88,6 +97,7 @@ public class Parameters extends AbstractList implements List  {
 
     /**
      * When using reflection, you might need the Parameters as a Class[]. This function provides it.
+     * @throws NullPointerException if definition is null
      */
     public Class[] toClassArray() {
         Class[] array = new Class[definition.length];
@@ -114,16 +124,19 @@ public class Parameters extends AbstractList implements List  {
 
 
     // implementation of List
+    // @throws NullPointerException if definition not set
     public int size() {
         return definition.length;
     }
 
     // implementation of List
+    // @throws NullPointerException if definition not set
     public Object get(int i) {
         return backing.get(definition[i].key);
     }
 
     // implementation of (modifiable) List
+    // @throws NullPointerException if definition not set
     public Object set(int i, Object value) {
         Parameter a = definition[i];
         a.checkType(value);
@@ -132,7 +145,7 @@ public class Parameters extends AbstractList implements List  {
 
 
     /**
-     * 
+     * @throws NullPointerException if definition not set 
      */
     public boolean hasParameter(Parameter arg) {
         for (int i = 0; i < definition.length; i++) {
@@ -146,6 +159,7 @@ public class Parameters extends AbstractList implements List  {
     /**
      * Sets the value of an argument. 
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
+     * @throws NullPointerException if definition not set 
      */
     public Parameters set(String arg, Object value) {
         for (int i = 0; i < definition.length; i++) {
@@ -174,6 +188,7 @@ public class Parameters extends AbstractList implements List  {
 
     /**
      * Sets the value of an argument, if the argument is defined, otherwise do nothing.
+     * @throws NullPointerException if definition not set 
      */
 
     public Parameters setIfDefined(String arg, Object value) {

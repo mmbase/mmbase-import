@@ -17,9 +17,15 @@ import org.mmbase.util.logging.*;
 /**
  * MMBase FunctionSet
  *
+ * Perhaps this can be done by dom objects (for persistance and parsing).
+ *
+ * It maintains a groups of ReflectionFunction instances.
+ *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: MMFunctionSet.java
+ * @version $Id: FunctionSet.java,v 1.2 2003-11-21 22:01:50 michiel Exp $
+ * @since MMBase-1.7
+
  */
 public class FunctionSet {
 

@@ -18,21 +18,36 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
+ * This I use now to instantiate function objects, but perhaps it is silly. (Can perhaps add static methods to the impelentation themselves or so).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.2 2003-11-21 20:29:52 michiel Exp $
+ * @version $Id: FunctionFactory.java,v 1.3 2003-11-21 22:01:50 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionFactory.class);
 
+
+    /**
+     * Gets a function from given set, with given name
+     */
     public static Function getFunction(String set, String name) {
-        /// get instasnce from XML
-        throw new UnsupportedOperationException("");
+        /// get instance from MMFunctions?
+        throw new UnsupportedOperationException("don't know yet how to do this..");
     }
 
+    
 
+
+    /**
+     * Trying to determin Parameter[] constants using a Class. It considers all static fields of
+     * type Parameter[]. The name of the field is lowercased and everything after and including the
+     * first underscore is removed. This gives a key (which is supposed to equal to the 'execute' function name).
+     *
+     * @return a map, with function name -> Parameter[] pairs.
+     * 
+     */
     private static Map getParameterConstants(Class clazz) {
         return getParameterConstants(clazz, new HashMap());
     }
@@ -80,6 +95,9 @@ public class FunctionFactory {
     private static Map parameterConstants = new HashMap(); 
 
          
+    /**
+     * Gets a function object for a certain Node.
+     */
     public static Function getFunction(Node node, String name) {
         // find the MMObjectBuilder belong to this node.
         String nodeManager = node.getNodeManager().getName();
@@ -94,7 +112,9 @@ public class FunctionFactory {
 
         Parameter[] parameters = (Parameter[]) functions.get(name);
         if (parameters == null) {
-            throw new IllegalArgumentException("The function 'name' cannot be found on the builder '" + nodeManager + "'");
+            // can set later.
+            log.debug("Trying to use unknown function '" + name + "' on builder '" + nodeManager + "'");            
+            //throw new IllegalArgumentException("The function 'name' cannot be found on the builder '" + nodeManager + "'");
         }
         
         NodeFunction function = new NodeFunction(name, parameters, new ReturnType(Object.class, null), node);
@@ -102,18 +122,23 @@ public class FunctionFactory {
         return function;
     }
 
+    /**
+     * Gets a function object for a certain NodeManager
+     */
     public static Function getFunction(NodeManager nodeManager, String name) {
         // defined in Builder XML?
         throw new UnsupportedOperationException("");
     }
+
+
+    /**
+     * Gets a function object for a certain Module
+     */
 
     public static Function getFunction(Module module, String name) {
         // defined in Module XML?
         throw new UnsupportedOperationException("");
     }
 
-    public static Function getFunction(String name) {
-        return new Function(name, null, new ReturnType(Object.class, null));
-    }
 
 }
