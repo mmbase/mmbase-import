@@ -10,8 +10,12 @@ import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+				    
 class XMLParseResult {
-    private static boolean debug = false;
+
+    private static Logger log = Logging.getLoggerInstance(XMLParseResult.class.getName()); 
     
     Vector warningList, errorList, fatalList,resultList;
     boolean hasDTD;
@@ -56,8 +60,8 @@ class XMLParseResult {
 	    resultList = new Vector();
 	    resultList.addElement(err);
 	    
-	    if (debug) {
-		debug("ParseResult error: "+e.getMessage());
+	    if (log.isDebugEnabled()) {
+		log.debug("ParseResult error: "+e.getMessage());
 	    }
 	}
     }
@@ -86,8 +90,4 @@ class XMLParseResult {
 	return dtdpath;
     }
 
-    // --- private methods --------------------------------------------------------
-    private void debug(String message) {
-	System.out.println(this.getClass().getName()+": "+message);
-    }
 }

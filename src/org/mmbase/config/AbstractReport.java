@@ -20,20 +20,27 @@ import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Case Roole, cjr@dds.nl
  * 
- * $Id: AbstractReport.java,v 1.2 2000-10-07 17:06:07 case Exp $
+ * $Id: AbstractReport.java,v 1.3 2001-04-10 11:02:07 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/07 17:06:07  case
+ * cjr: Added checking of mmbase JVM options and some minor bugfixes
+ *
  */
 public abstract class AbstractReport implements ReportInterface {
     protected String mode,encoding;
     protected Hashtable specialChars;
     protected String configpath;
 
-    protected String classname = getClass().getName();
-    protected boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(AbstractReport.class.getName()); 
+    //protected String classname = getClass().getName();
+    //protected boolean debug = false;
 
     // --- public methods ------------------------------------------
     public void init(String mode, String encoding) {
@@ -71,10 +78,6 @@ public abstract class AbstractReport implements ReportInterface {
 	} else {
 	    return s;
 	}
-    }
-
-    protected void debug( String msg ) {
-        System.out.println( classname +":"+msg );
     }
 
     /**
@@ -115,11 +118,11 @@ public abstract class AbstractReport implements ReportInterface {
 	    parser.setFeature("http://xml.org/sax/features/validation",false);
 	    parser.setFeature("http://xml.org/sax/features/namespaces",false);
 	} catch (SAXNotSupportedException ex) {
-	    debug("Config::databaseIsActive: failed because parser doesn't support feature");
+	    log.debug("Config::databaseIsActive: failed because parser doesn't support feature");
 	    ex.printStackTrace();
 	}
 	catch (SAXNotRecognizedException ex) {
-	    debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
+	    log.debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
 	    ex.printStackTrace();
 	}
 	// create new ContentHandler and let the parser use it
@@ -139,7 +142,7 @@ public abstract class AbstractReport implements ReportInterface {
 	    parser.parse(new InputSource(filename));
 	    mods = xmlReader.getProperties();
 	} catch (Exception e) {
-	    debug("Error reading xml properties file "+path+". Returning empty hashtable.");
+	    log.error("Error reading xml properties file " + path + ". Returning empty hashtable.");
 	    mods = new Hashtable();
 	}
 	return mods;
