@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.33 2004-05-06 12:34:41 keesj Exp $
+ * @version $Id: NodeManager.java,v 1.34 2004-06-08 08:45:16 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -163,7 +163,7 @@ public interface NodeManager extends Node {
      * Tests whether the field with the specified name exists in this nodemanager.
      *
      * @since MMBase-1.6
-     * @param name  the name of the field to be returned
+     * @param fieldName  the name of the field to be returned
      * @return      <code>true</code> if the field with the requested name exists
      */
     public boolean hasField(String fieldName);
