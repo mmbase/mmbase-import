@@ -11,15 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.io.*;
 import java.sql.*;
-import java.sql.Types;
 
-import javax.servlet.http.*;
+import org.mmbase.module.database.MultiConnection;
+import org.mmbase.module.core.*;
 
 import org.mmbase.util.*;
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -31,11 +28,11 @@ import org.mmbase.util.logging.*;
  * @sql in various methods
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.18 $ $Date: 2002-01-07 15:58:45 $
- * V2
+ * @version $Id: Teasers.java,v 1.19 2002-01-28 14:59:41 pierre Exp $
  */
 public class Teasers extends MMObjectBuilder {
 
+    //logging
     private static Logger log = Logging.getLoggerInstance(Teasers.class.getName());
 
     /**
@@ -61,6 +58,7 @@ public class Teasers extends MMObjectBuilder {
 
     /**
      * Generate a list of values from a command to the processor
+     * @javadoc
      */
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
         Vector results=new Vector();
@@ -70,11 +68,13 @@ public class Teasers extends MMObjectBuilder {
                 results=getKeyWords(tagger);
             }
         }
-        return(results);
+        return results;
     }
 
-    private Vector getKeyWords(StringTagger tagger)
-    {
+    /**
+     * @javadoc
+     */
+    private Vector getKeyWords(StringTagger tagger) {
         String nodeNr = tagger.Value("NODE");
         MMObjectNode node = getNode(nodeNr);
         if (node==null)
@@ -100,6 +100,9 @@ public class Teasers extends MMObjectBuilder {
         return super.getValue( node, field );
     }
 
+    /**
+     * @javadoc
+     */
     public String getDefaultUrl(int src) {
 
         log.debug("getDefaultUrl("+src+")");
@@ -108,7 +111,7 @@ public class Teasers extends MMObjectBuilder {
         String url=getUrl(src); // returns the url related to this teaser or null if none
 
         if (url!=null)
-            return(url);
+            return url;
 
         // No url related to teaser, now walk through all related objects
         // and ask their builders for a url through builder.getDefaultUrl(relatedNodeNr)
@@ -135,15 +138,16 @@ public class Teasers extends MMObjectBuilder {
             url=bul.getDefaultUrl(numbie);
 
             if (url!=null)
-                return(url);
+                return url;
         }
-        return(null);
+        return null;
     }
 
-    /** @return the url related to this teaser or null if none
+    /**
      * @javadoc
      * @vpro '8' as url otype
      * @bad-literal url otype
+     * @return the url related to this teaser or null if none
      */
     private String getUrl(int src) {
         Enumeration e=mmb.getInsRel().getRelated(src,8); // 8 = objectNr URL
@@ -169,8 +173,9 @@ public class Teasers extends MMObjectBuilder {
      * body			char(29000)		eetx index composed of lowercase title and body
      * @javadoc
      * @vpro
-     * @sql
+     * @sql qyerying for numbers should be done with search()
      * @bad-literal value of othertype,sort and state should be set/determined using constants
+     * @performance querying for number if the number is known?
      */
     private synchronized boolean fillTeaserSearchTable(int where) {
         MMObjectNode node2,other;
@@ -281,16 +286,17 @@ public class Teasers extends MMObjectBuilder {
 
                 }
             }
-            return(true);
+            return true;
         } catch (SQLException e) {
             log.error("fillTeaserSearchTable("+where+"): ERROR: ");
-            e.printStackTrace();
-            return(false);
+            log.error(Logging.stackTrace(e));
+            return false;
         }
     }
 
     /**
      * @javadoc
+     * @deprecated tsearchcache table is not used?
      * @sql
      * @bad-literal body.length
      */
@@ -299,38 +305,40 @@ public class Teasers extends MMObjectBuilder {
         PreparedStatement statement;
         log.info("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
 
-            if (body!=null && body.length()>29000) {
-                body=body.substring(0,28999);
-            }
+        if (body!=null && body.length()>29000) {
+            body=body.substring(0,28999);
+        }
 
-            // got some issues with this routine.
-            // seems users are able to trigger a 'java.sql.SQLException: Unique constraint' each second
-            // print out what teaser its doing it
+        // got some issues with this routine.
+        // seems users are able to trigger a 'java.sql.SQLException: Unique constraint' each second
+        // print out what teaser its doing it
 
-            try {
-                MultiConnection con=mmb.getConnection();
-                statement=con.prepareStatement("insert into "+mmb.baseName+"_tsearchcache values(?,?,?,?,?,?,?,?)");
-                statement.setInt(1,number);
-                statement.setInt(2,ttarget);
-                statement.setInt(3,ttype);
-                statement.setInt(4,value);
-                statement.setInt(5,image);
-                statement.setString(6,title);
-                statement.setString(7,tbody);
-                statement.setString(8,body);
-                statement.executeUpdate();
-                statement.close();
-                con.close();
-            } catch (SQLException e) {
-                log.error("addTeaserSearchElementInformix("+number+","+ttarget+","+ttype+","+value+","+image+","+title+"): Exception: ");
-                log.error("addTeaserSearchElementInformix(): ERROR: SQL processing error: " + e);
-                e.printStackTrace();
-            }
-        return(true);
+        try {
+            MultiConnection con=mmb.getConnection();
+            statement=con.prepareStatement("insert into "+mmb.baseName+"_tsearchcache values(?,?,?,?,?,?,?,?)");
+            statement.setInt(1,number);
+            statement.setInt(2,ttarget);
+            statement.setInt(3,ttype);
+            statement.setInt(4,value);
+            statement.setInt(5,image);
+            statement.setString(6,title);
+            statement.setString(7,tbody);
+            statement.setString(8,body);
+            statement.executeUpdate();
+            statement.close();
+            con.close();
+        } catch (SQLException e) {
+            log.error("addTeaserSearchElementInformix("+number+","+ttarget+","+ttype+","+value+","+image+","+title+")");
+            log.error("SQL processing error: " + e);
+            log.error(Logging.stackTrace(e));
+        }
+        return true;
     }
 
-    /** Remove teaser number from tsearchcache
+    /**
+     * Remove teaser number from tsearchcache
      * @javadoc
+     * @deprecated tsearchcache table is not used?
      * @sql
      */
     private boolean delTeaserSearchElement(int number) {
@@ -342,9 +350,10 @@ public class Teasers extends MMObjectBuilder {
             stmt.close();
             con.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e);
+            log.error(Logging.stackTrace(e));
         }
-        return(true);
+        return true;
     }
 
     /**
@@ -392,7 +401,7 @@ public class Teasers extends MMObjectBuilder {
      * Return a vector of teasers with the realtions flattened into the result
      * Called by Pool builder
      * @javadoc
-     * @sql
+     * @sql retrieve images linked with getrelatednodes()
      * @bad-literal ctype
      */
     public Vector insertRelations(Vector nodes) {
@@ -441,8 +450,9 @@ public class Teasers extends MMObjectBuilder {
             return (results);
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            e.printStackTrace();
-            return(null);
+            log.error(e);
+            log.error(Logging.stackTrace(e));
+            return null;
         }
     }
 
@@ -468,7 +478,6 @@ public class Teasers extends MMObjectBuilder {
             return(true);
         } catch (SQLException e) {
             log.error("createTeaserSearchTable(): ERROR: can't create teaser search table ");
-            //e.printStackTrace();
         }
         return(false);
     }
@@ -510,7 +519,8 @@ public class Teasers extends MMObjectBuilder {
             stmt.close();
             con.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e);
+            log.error(Logging.stackTrace(e));
         }
         Jumpers bul=(Jumpers)mmb.getMMObject("jumpers");
         bul.delJumpCache(""+number);
@@ -577,7 +587,8 @@ public class Teasers extends MMObjectBuilder {
                 con2=null;
                 oke=true;
                 } catch (SQLException f) {
-                    f.printStackTrace();
+                    log.error(f);
+                    log.error(Logging.stackTrace(f));
                     log.error("Teasers -> Database error doing a wait");
                     try {Thread.sleep(1000);} catch (InterruptedException e){}
                     //return(false);
@@ -588,7 +599,8 @@ public class Teasers extends MMObjectBuilder {
             }
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            e.printStackTrace();
+            log.error(e);
+            log.error(Logging.stackTrace(e));
             return(false);
         }
         return(false);
@@ -613,7 +625,8 @@ public class Teasers extends MMObjectBuilder {
                 stmt2.executeUpdate(query);
                 con.close();
             } catch (SQLException f) {
-                f.printStackTrace();
+                log.error(f);
+                log.error(Logging.stackTrace(f));
                 return(false);
             }
         }
@@ -634,7 +647,8 @@ public class Teasers extends MMObjectBuilder {
             stmt.close();
             con.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e);
+            log.error(Logging.stackTrace(e));
         }
         return(b);
     }
