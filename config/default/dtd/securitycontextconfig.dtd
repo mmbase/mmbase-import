@@ -1,0 +1,37 @@
+<!ELEMENT config ( loginmodules, accounts, groups, contexts ) > 
+    <!ELEMENT loginmodules ( module+ ) > 
+    	<!ELEMENT module ( property? ) >
+    	 <!ATTLIST module class NMTOKEN #REQUIRED >
+    	 <!ATTLIST module name CDATA #REQUIRED >     
+	    <!ELEMENT property ( #PCDATA ) >
+    	     <!ATTLIST property name NMTOKEN #REQUIRED >	 
+
+    <!ELEMENT accounts ( user+ ) >
+    	<!ELEMENT user ( identify ) >
+    	 <!ATTLIST user context NMTOKEN #REQUIRED >
+    	 <!ATTLIST user name NMTOKEN #REQUIRED >
+    	    <!ELEMENT identify ( #PCDATA ) >
+    	     <!ATTLIST identify rank CDATA #REQUIRED >
+    	     <!ATTLIST identify type CDATA #REQUIRED > 
+
+    <!ELEMENT groups ( group+ ) > 
+    	<!ELEMENT group ( contains+ ) >
+    	 <!ATTLIST group name NMTOKEN #REQUIRED > 
+
+
+    <!ELEMENT contexts ( context+ ) >
+     <!ATTLIST contexts default NMTOKEN #REQUIRED > 
+    	<!ELEMENT context ( operation+, possible ) >
+    	 <!ATTLIST context name NMTOKEN #REQUIRED > 
+    	    <!ELEMENT operation ( contains ) >
+    	     <!ATTLIST operation type CDATA #REQUIRED > 
+
+    	
+	    <!ELEMENT possible EMPTY >
+    	     <!ATTLIST possible context NMTOKEN #REQUIRED > 
+	     
+<!ELEMENT contains EMPTY >
+ <!ATTLIST contains named NMTOKEN #IMPLIED >
+ <!ATTLIST contains type NMTOKEN #IMPLIED > 
+ <!ATTLIST contains group ( administrators | everyone | users ) #IMPLIED >	 
+	     
