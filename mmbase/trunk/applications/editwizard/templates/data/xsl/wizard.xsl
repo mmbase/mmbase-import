@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.11 2002-05-15 15:00:17 pierre Exp $
+  @version $Id: wizard.xsl,v 1.12 2002-05-16 12:14:55 pierre Exp $
   -->
 
 
@@ -383,18 +383,7 @@
       <xsl:if test="item">
         <br />
         <div style="position:relative; top:0; left:0;">
-          <xsl:choose>
-            <xsl:when test="@ordertype='number'">
-              <xsl:apply-templates select="item" >
-                <xsl:sort select="@orderby" data-type="number" />
-              </xsl:apply-templates>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:apply-templates select="item" >
-                <xsl:sort select="@orderby" />
-              </xsl:apply-templates>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:apply-templates select="item" />
         </div><br />
       </xsl:if>
 
