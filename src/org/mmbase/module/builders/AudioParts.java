@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.12 2000-05-26 12:09:28 wwwtech Exp $
+$Id: AudioParts.java,v 1.13 2000-07-03 09:32:47 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/05/26 12:09:28  wwwtech
+davzev: Reduced debug from doGetUrl getSongInfo and getStartStopTimes
+
 Revision 1.11  2000/05/22 13:21:21  wwwtech
 Rico: removed cdtrack references
 
@@ -66,7 +69,7 @@ import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.12 2000-05-26 12:09:28 wwwtech Exp $
+ * @version $Id: AudioParts.java,v 1.13 2000-07-03 09:32:47 vpro Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
@@ -77,6 +80,9 @@ public class AudioParts extends MMObjectBuilder {
 	public final static int AUDIOSOURCE_CD=6;
 	public final static int AUDIOSOURCE_JAZZ=7;
 	public final static int AUDIOSOURCE_VWM=8;
+
+	// Define LRU Cache for audio urls.
+	LRUHashtable urlCache = new LRUHashtable(1024);
 
 	/**
 	* pre commit from the editor
@@ -273,7 +279,9 @@ public class AudioParts extends MMObjectBuilder {
             // debug("replace: The nextToken = "+token);
 
             if (token.equals("GETURL")) {
-				return doGetUrl(sp, command);
+				// Url retrieving goes via an urlcache.
+				String url = getFromUrlCache(sp,command);
+				return url;
             } else {
   				debug("replace: Unknown command used: "+token);
 		  		return("Unknown command used: "+token+" ,says the AudioParts builder");
@@ -284,8 +292,95 @@ public class AudioParts extends MMObjectBuilder {
   		return("No command defined, says the AudioParts builder.");
     }
 
+	/**
+	 * getFromUrlCache: This method retrieves the url from a cache if available.
+	 * Else it wil generate it first and put it in the cache and return.
+	 * If the url generation method returns null, no cache entry will be made and null will be returned.
+	 * 
+	 * @param sp The scanpage object used when retrieving the users' settings.
+	 * @param command A StringTokenizer object containing the rest of the $MOD cmd string.
+	 * @return A String containing the Url to the audiofile or null.
+	 */
+	String getFromUrlCache(scanpage sp, StringTokenizer command) {
+		if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 ) 
+			debug("getFromUrlCache: "+urlCache.getStats());
 
+		if (!command.hasMoreTokens()) {
+			System.out.println("Audioparts:getFromUrlCache: No AudioParts ObjectNumber defined.");
+			return null;
+		} else {
+			int apNumber = 0;
+			String url = null;
+			String token = command.nextToken();
+			// debug("getFromUrlCache: The nextToken = "+token);
+			try {
+				apNumber = Integer.parseInt(token);
+			} catch(Exception e) {
+				System.out.println("Audioparts:getFromUrlCache: "+e);
+				System.out.println("Audioparts:getFromUrlCache: Invalid AudioPartnumber used -> number="+token);
+				return null;
+			}
 
+			url = (String) urlCache.get(new Integer(apNumber));
+			if (url == null) {
+				debug("getFromUrlCache : MISS for audiopartnr: "+apNumber);
+				// NOT IN CACHE retrieving & putting in cache now and returning.
+				url =  doGetUrl(sp,command,apNumber);
+				if (url==null) {
+					System.out.println("Audioparts:getFromUrlCache: doGetUrl returns null, no cache put returning null");
+					return null;
+				} else if (url.startsWith("r")) {
+						// debug("getFromUrlCache : Putting Cache entry: "+url);
+						urlCache.put(new Integer(apNumber),url);
+						return url;
+				} else if (url.startsWith("p")) {
+						int pos = 0;
+						StringBuffer urlsb = new StringBuffer(url);
+						pos = url.indexOf(".ra");
+						String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
+						// debug("getFromUrlCache : Putting Cache entry: "+cachedUrl);
+						urlCache.put(new Integer(apNumber),cachedUrl);
+						return url; //Return original result url from method doGetUrl.
+				} else {
+					System.out.println("Audioparts:getFromUrlCache: Invalid Url string: "+url+" , returning null");
+					return null;
+				}
+			} else if (url.startsWith("r")) {
+				// IN CACHE and Audiopart is RealPlayer format G2 or higher.
+				debug("getFromUrlCache : HIT Returning entry: "+url);
+				return url;		
+			} else if (url.startsWith("p")) {
+				// IN CACHE and Audiopart is RealPlayer format RA5 or lower.
+				// Retrieve speed & channels from command args , default value = 16kbit mono.
+				int delim = '%';
+				int pos = 0;
+				String userSpeed = "16000";
+				String userChannels = "1";
+				StringBuffer urlsb = new StringBuffer(url);
+				
+				if (command.hasMoreTokens()) {
+					userSpeed = command.nextToken();
+					userChannels = command.nextToken();
+				} else {
+					System.out.println("Audioparts:getFromUrlCache: No speed & channels given, using 16000 & 1");
+				}
+				pos = url.indexOf(delim);
+				urlsb.setCharAt(pos,userSpeed.charAt(0));
+				url = ""+urlsb;
+				pos = url.indexOf(delim);
+				urlsb.setCharAt(pos,userSpeed.charAt(1));
+				url = ""+urlsb;
+				pos = url.indexOf(delim);
+				urlsb.setCharAt(pos,userChannels.charAt(0));
+				url = ""+urlsb;
+				debug("getFromUrlCache : HIT Returning entry: "+url);
+				return url;
+			} else {
+				System.out.println("Audioparts:getFromUrlCache: Invalid UrlCache entry: "+url+" , returning null");
+				return null;
+			}
+		}
+	}
 
 	/*
 		------------------------------------------------------------
@@ -298,6 +393,7 @@ public class AudioParts extends MMObjectBuilder {
 	 * This method first checks to see if the related RawAudios node uses a SureStream format.
 	 * If so And the file is available, then it builds the Url using RawAudios.getHostname .getFileName
 	 * .getProtocolName and returns it.
+	 * If the RawAudios node isn't ready yet (status!= 'done') then a null value is returned.
 	 *
 	 * If it uses a RA format and is available it adds it to a availableRaNodes vector.
 	 * After adding, it selects the bestRaNode from this vector relying on the users' settings
@@ -307,81 +403,64 @@ public class AudioParts extends MMObjectBuilder {
 	 *
 	 * @param sp The scanpage object used when retrieving the users' settings.
 	 * @param command A StringTokenizer object containing the rest of the $MOD cmd string.
-	 * @return A String containing the Url to the audiofile.
+	 * @param apNumber The current audiopart Number as an integer value.
+	 * @return A String containing the Url to the audiofile or null.
 	 */
-	String doGetUrl(scanpage sp, StringTokenizer command) {
-		int apNumber  = 0;  //The value of the AudioParts node .
+	String doGetUrl(scanpage sp, StringTokenizer command, int apNumber) {
 		Vector availableRaNodes = new Vector();
 
-		if (command.hasMoreTokens()) {
-			String token=command.nextToken();
-			// debug("doGetUrl: The nextToken = "+token);
-
-			// debug("doGetUrl: Session name = "+sp.sname);
-			try {
-				apNumber = Integer.parseInt(token);
-			} catch(Exception e) {
-				debug("doGetUrl: "+e);
-				debug("doGetUrl: Invalid AudioPartnumber used -> number="+token+" returning null");
-				return ("");
-			}
-
-			// First select the RawAudio node and determine format and status.
-			MMObjectBuilder raBuilder = mmb.getMMObject("rawaudios");
-			Enumeration e = raBuilder.search("where id="+apNumber);
-			while (e.hasMoreElements()) {
-				MMObjectNode raNode = (MMObjectNode) e.nextElement();
-				int format = raNode.getIntValue("format");
-				int status = raNode.getIntValue("status");
-				if (format == RawAudios.SURESTREAM_FORMAT) {
-					if (status == RawAudios.GEDAAN) {
-						String protName = RawAudios.getProtocolName(format);
-						String hostName = RawAudios.getHostName(raNode.getStringValue("url"));
-						// Since a surestream controls the speed & channels himself, the other 2 args I give value 0.
-						String fileName = RawAudios.getFileName(format,0,0);
-						// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
-						String songInfo = getSongInfo(apNumber);
-						String startstopTimes = getStartStopTimes(apNumber);
-						debug("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
-						return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
-					} else {
-						debug("doGetUrl: This rawaudio isn't ready yet status="+status);
-						return ("");
-					}
-				} else if (format == RawAudios.RA_FORMAT) {
-					if (status == RawAudios.GEDAAN) availableRaNodes.addElement(raNode);
-				}
-			}
-
-			// Retrieve the best RA file if one was found else return nothing.
-			// NOTE: If only other formats were found (eg WAVS MP3 etc.) then do nothing and return.
-			if (availableRaNodes != null) {
-				// debug("doGetUrl: The availableRanodes Vector contains: "+availableRaNodes);
-				// Retrieve the best RawAudios node.
-				MMObjectNode bestNode = getBestRaNode(sp, command, availableRaNodes);
-				if (bestNode != null) {
-					int speed    = bestNode.getIntValue("speed");
-					int channels = bestNode.getIntValue("channels");
-					String protName = RawAudios.getProtocolName(RawAudios.RA_FORMAT);
-					String hostName = RawAudios.getHostName(bestNode.getStringValue("url"));
-					String fileName = RawAudios.getFileName(RawAudios.RA_FORMAT,speed,channels);
+		// First select the RawAudio node and determine format and status.
+		MMObjectBuilder raBuilder = mmb.getMMObject("rawaudios");
+		Enumeration e = raBuilder.search("where id="+apNumber);
+		while (e.hasMoreElements()) {
+			MMObjectNode raNode = (MMObjectNode) e.nextElement();
+			int format = raNode.getIntValue("format");
+			int status = raNode.getIntValue("status");
+			if (format == RawAudios.SURESTREAM_FORMAT) {
+				if (status == RawAudios.GEDAAN) {
+					String protName = RawAudios.getProtocolName(format);
+					String hostName = RawAudios.getHostName(raNode.getStringValue("url"));
+					// Since a surestream controls the speed & channels himself, the other 2 args I give value 0.
+					String fileName = RawAudios.getFileName(format,0,0);
 					// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
 					String songInfo = getSongInfo(apNumber);
 					String startstopTimes = getStartStopTimes(apNumber);
-					debug ("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
+					// debug("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
 					return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
 				} else {
-					debug("doGetUrl: There isn't any rawaudio available at this moment.");
-					return ("");
+					debug("doGetUrl: This rawaudio isn't ready yet status="+status);
+					return null;
 				}
-			} else {
-				debug("doGetUrl: There isn't any rawaudio available at this moment at all.");
-				return ("");
+			} else if (format == RawAudios.RA_FORMAT) {
+				if (status == RawAudios.GEDAAN) availableRaNodes.addElement(raNode);
 			}
 		}
 
-		debug("doGetUrl: No AudioParts ObjectNumber defined.");
-		return("No AudioParts ObjectNumber defined, says the AudioParts builder.");
+		// Retrieve the best RA file if one was found else return nothing.
+		// NOTE: If only other formats were found (eg WAVS MP3 etc.) then do nothing and return.
+		if (availableRaNodes != null) {
+			// debug("doGetUrl: The availableRanodes Vector contains: "+availableRaNodes);
+			// Retrieve the best RawAudios node.
+			MMObjectNode bestNode = getBestRaNode(sp, command, availableRaNodes);
+			if (bestNode != null) {
+				int speed    = bestNode.getIntValue("speed");
+				int channels = bestNode.getIntValue("channels");
+				String protName = RawAudios.getProtocolName(RawAudios.RA_FORMAT);
+				String hostName = RawAudios.getHostName(bestNode.getStringValue("url"));
+				String fileName = RawAudios.getFileName(RawAudios.RA_FORMAT,speed,channels);
+				// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
+				String songInfo = getSongInfo(apNumber);
+				String startstopTimes = getStartStopTimes(apNumber);
+				// debug ("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
+				return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
+			} else {
+				debug("doGetUrl: There isn't any rawaudio available at this moment.");
+				return null;
+			}
+		} else {
+			debug("doGetUrl: There isn't any rawaudio available at this moment at all.");
+			return null;
+		}
 	}
 
 	/**
@@ -391,7 +470,7 @@ public class AudioParts extends MMObjectBuilder {
 	 * @param sp The scanpage object used when retrieving the users' settings.
 	 * @param command A StringTokenizer object containing the rest of the $MOD cmd string.
 	 * @param availableRaNodes
-	 * @return The bestRaNode as an MMObjectNode.
+	 * @return A MMObjectNode containing the bestRaNode or null.
 	 */
 	MMObjectNode getBestRaNode(scanpage sp, StringTokenizer command, Vector availableRaNodes) {
 		int userSpeed    = 0;
@@ -557,8 +636,7 @@ public class AudioParts extends MMObjectBuilder {
 		if (starttime != null) startstoptimes += "&start="+starttime;
 		if (stoptime  != null) startstoptimes += "&end="+stoptime;
 
-		if ( (starttime != null) || (stoptime != null) )
-			debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
+		// if ( (starttime != null) || (stoptime != null) ) debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
 		return startstoptimes;
 	}
 
