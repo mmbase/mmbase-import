@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>The Storage Layer</title>
+
+    <date>6 july 2003</date>
+
+    <edition>$Id: storage.xml,v 1.1 2003-06-27 14:43:34 pierre Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+		<para>TODO: intro</para>
+  </section>
+	
+  <section id="interfaces">
+    <title>Interfaces</title>
+		<para>TODO: explain packages and interfaces</para>
+		<section id="Transaction">
+			<title>Transaction Interface</title>
+			<para>The Transaction object is used as a means to maintain state information regarding a transaction.</para>
+			<para>A transaction comprises off all storage commands between creating (opening) a transaction object, and either closing or canceling the transaction. In databases implementations, a Transaction is equal to a database connection. In other storages, it could hold a reference to a temporary file, or a memory-based cache.</para>
+			<para>The intention of the Transaction object is to allow - for those implementations that can - to roll back changes when the transaction fails. To do this, you need to pass the Transaction object to each and every method called in the storage layer. Once all changes have been made, you can make the changes permanent by committing the transaction.</para>
+			<note><para>Using a Transaction by no means garantees rollback is possible, as not all implementations will allow for rollback. You can check whether rollback is supported by callign the <methodname>supportsRollback()</methodname> method.</para></note>
+			<programlisting format="linespecific"><![CDATA[
+public interface Transaction {
+
+	public boolean supportsRollback();
+
+	public boolean commit();
+
+	public boolean rollback();
+
+}]]></programlisting>
+			<formalpara>
+				<title>Transaction Methods:</title>
+				<para><variablelist>
+						<varlistentry>
+							<term><methodname>public boolean supportsRollback();</methodname></term>
+							<listitem>
+								<para>This method returns <constant>true</constant> if the transaction object supports rollback.</para>
+								<note><para>This method generally retrieves it's data by calling the <methodname>supportsRollback</methodname> method of the Storage class. Useful for when you do not have a reference to Storage, but otherwise a bit superfluous. However it is possible for individual transactions to turn rollback on or off (i.e. when querying data, rollback will likely be turned off as it makes the transaction quicker), so this method may still yield different results.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean commit();</methodname></term>
+							<listitem>
+								<para>This method closes the transaction and commits all changes. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, committing or closing fails.</para>
+								<para>You should call this method only after all changes for this transaction have been made. The commit() actually closes the transaction (i.e. it closes the database connection), making it inaccessible after the call. Any further attempts to us ethe Transaction will throw a StorageException.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean rollback();</methodname></term>
+							<listitem>
+								<para>This method cancels the transaction. If the transaction supports rollback, all changes made to the storage through the transaction are undone. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, canceling fails.</para>
+								<para>You should call not use the transaction any more after this method is caleld, as, similar to commit, it closes the transaction and makes it inaccessible, soa ny further use will throw a StorageException.</para>
+							</listitem>
+						</varlistentry>
+					</variablelist></para>
+			</formalpara>
+		</section>
+	
+		<section id="Storage">
+			<title>Storage Interface</title>
+			<para>...</para>
+			<programlisting format="linespecific"><![CDATA[
+public interface Storage extends SearchQueryHandler {
+
+	public boolean isAllowedParentBuilder(MMObjectBuilder builder);
+
+	public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child) throws StorageException;
+
+	public boolean supportsRollback();
+
+	public String getText(MMObjectNode node,String fieldname);
+
+	public byte[] getBytes(MMObjectNode node,String fieldname);
+
+	public Transaction createTransaction() throws StorageException;
+
+	public int createKey();
+
+	public int createKey(Transaction trans) throws StorageException;
+
+	public int insert(MMObjectNode node);
+
+	public int insert(MMObjectNode node, Transaction trans) throws StorageException;
+
+	public boolean commit(MMObjectNode node);
+
+	public boolean commit(MMObjectNode node, Transaction trans) throws StorageException;
+
+	public boolean delete(MMObjectNode node);
+
+	public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;
+
+	public MMObjectNode getNode(MMObjectBuilder builder, int number);
+
+	public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;
+
+	public int getNodeType(int number);
+
+	public int getNodeType(int number, Transaction trans) throws StorageException;
+
+	public boolean create(MMObjectBuilder builder);
+
+	public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;
+
+	public boolean createObjectStorage();
+
+	public boolean createObjectStorage(Transaction trans) throws StorageException;
+
+	public boolean created(MMObjectBuilder builder);
+
+	public int size(MMObjectBuilder builder);
+
+	public boolean drop(MMObjectBuilder builder);
+
+	public boolean addField(MMObjectBuilder builder,String fieldname);
+
+	public boolean removeField(MMObjectBuilder builder,String fieldname);
+
+	public boolean changeField(MMObjectBuilder builder,String fieldname);
+
+	public boolean updateStorage(MMObjectBuilder builder);
+
+}]]></programlisting>
+			<formalpara>
+				<title>Storage Methods:</title>
+				<para><variablelist>
+						<varlistentry>
+							<term><methodname>boolean isAllowedParentBuilder(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Returns whether this storage layer allows for the specified builder to be a parent builder (that is, other builders can 'extend' this builder and its storage device). 'Object' and 'Insrel' should always be allowed parent buidlers. Wether other builders are allowed depends on the storage implementation (which may or may not implement means for builder tables to extend each other).</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
+					throws StorageException;</methodname></term>
+							<listitem>
+								<para>Registers a builder as a parent builder (that is, other builders can 'extend' this builder and its storage device). At the least, this code should check whether the builder is allowed as a parent builder, and throw an exception if this is not possible.</para>
+								<note><para>This method will probably be dropped from the interface. Knowledge on whether a builder extends other builders should likely be done in the builder itself, not in the storage layer. In current implementations the method does not do anything useful anyway.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean supportsRollback();</methodname></term>
+							<listitem>
+								<para>Returns whether rollback on storage level is supported. This method determines whether <link linkend="Transaction" >Transaction</link> objects for this layer can rollback changes.</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term><methodname>String getText(MMObjectNode node,String fieldname);</methodname></term>
+							<listitem>
+								<para>Retrieve a large text for a specified object field. While this would normally be retrieved using getNode(), for purposes of performance and memory preservation, you migth not want to load large texts in memory until you actually uses this. If you want to preserve memory in your storage, you can implement this method to return texts on demand. Ina dditon, when you assemble a Node from storage, you will need to fill the text fields that you do NOT want to load directly with an indicator value (currently the text "$SHORTED").
+								</para>
+								<note><para>It may be useful to define a specific Indicator object/value rather than a text. The Indicator object would need to be defined in the Storage Interface.</para></note>
+								<note><para>There should probably be a Transactional version of this method.</para></note>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term><methodname>byte[] getBytes(MMObjectNode node,String fieldname);</methodname></term>
+							<listitem>
+								<para>Retrieve a large binary object (byte array) for a specified object field. See getText() above for more details. The Indicator for an unloaded Binary field is the same as for an unloaded text field.</para>
+								<note><para>There should probably be a Transactional version of this method.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>Transaction createTransaction() throws StorageException;</methodname></term>
+							<listitem>
+								<para>Returns a newly created <link linkend="Transaction" >Transaction</link> object. The Transaction object should be passed to most transaction-sensitive Storage methods (such as delete(), create(), etc). Note that most 'non-transactional' methods will actually create and use a transaction (though invisible to those outside the Storage class).</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int createKey();</methodname></term>
+							<listitem><para>Gives an unique number for a node to be inserted. This method is non-transactional (does not require a Transaction object), and should work properly even if multiple mmbase servers use the same storage. Currently this method actually calls the transactional version of the createKey method, but that method will likely be dropped. </para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int createKey(Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Gives an unique number for a node to be inserted, using the given Transaction to access the Storage. This method should work properly even if multiple mmbase servers use the same storage.</para>
+								<note><para>Since obtaining a key should work cross- server, it should also work cross-transaction. Using a transaction to obtain the key does not actually add functionality. So it is likely this method will be dropped, unless merits can be found to trace the Transaction that created the key.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int insert(MMObjectNode node);</methodname></term>
+							<listitem>
+								<para>This method inserts a new object, and registers the change. Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns a new node number or -1 depending on success.</para>
+								<note><para>It is probably interesting to determine whether non-transactional methods should be included in the Interface. While it is useful as it simplifies calls to Storage, it also complicates the interface. It should be determined whether these methods are to be included in the Storage interface or not. Alternate solutions are to create a TransactionalStorage interface and move all transactional versions of methods there, or to simply drop the non-transactional methods from Storage and - for backward compatibility -include them in the Support2Storage class. This notice applies to all transactional methods, including <methodname>commit</methodname>, <methodname>delete</methodname>, <methodname>create</methodname>, <methodname>getNode</methodname>, <methodname>getNodeType</methodname>, and <methodname>createObjectStorage</methodname></para></note>
+								<note><para>It should be concidered to rename <methodname>insert()</methodname> to <methodname>createNode()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int insert(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>This method inserts a new object within a transaction, and registers the change.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean commit(MMObjectNode node);</methodname></term>
+							<listitem>
+								<para>Commit this node to the specified builder. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
+								<note><para>See insert() for notes on non-transactional method.</para></note>
+								<note><para>It should be concidered to rename <methodname>commit()</methodname> to <methodname>commitNode()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean commit(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Commit this node to the specified builder within a transaction.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean delete(MMObjectNode node);</methodname></term>
+							<listitem>
+								<para>Delete a node. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
+								<note><para>See insert() for notes on non-transactional method.</para></note>
+								<note><para>It should be concidered to rename <methodname>delete()</methodname> to <methodname>deleteNode()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean delete(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Delete a node within a transaction.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>MMObjectNode getNode(MMObjectBuilder builder, int number);</methodname></term>
+							<listitem>
+								<para>Select a node from a specified builder. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred.</para>
+								<note><para>Changes in other transactons may - depending on implementation - not be visible when using this method.</para></note>
+								<note><para>See insert() for notes on non-transactional method.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Select a node from a specified builder within a transaction. This method guarantees to incorporate any changes made during the transaction.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int getNodeType(int number);</methodname></term>
+							<listitem>
+								<para>Returns the nodetype for a specified node number. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred.</para>
+								<note><para>Changes in other transactons may - depending on implementation - not be visible when using this method.</para></note>
+								<note><para>See insert() for notes on non-transactional method.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int getNodeType(int number, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Returns the nodetype for a specified nodereference within a transaction. This method guarantees to incorporate any changes made during the transaction.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean create(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
+								<note><para>See insert() for notes on non-transactional method, but see also the transactional method.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Create a storage for the specified builder within a transaction.</para>
+								<note><para>It is probably wise to concider whether defining a storage (craeting, deleting, or altering it) should be done within a transaction (as it generally works on database tables). It may be useful to only define this method as non-transactional, so that calling this method assures the storage is there, so that when you use multiple servers you will not run into confict (or sugegs fucntionality that may not be there). This also counts for <methodname>createObjectStorage</methodname>, <methodname>addField</methodname>, <methodname>removeField</methodname>, <methodname>ChangeField</methodname>, and <methodname>updateStorage</methodname>.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean createObjectStorage();</methodname></term>
+							<listitem>
+								<para>Create the object storage (the storage where to register all objects).</para>
+								<note><para>See insert() and create() for notes on non-transactional vs transactional method.</para></note>
+								<note><para>It should be concidered to rename <methodname>createObjectStorage()</methodname> to <methodname>createStorage()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean createObjectStorage(Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Create the object storage (the storage where to register all objects) within a transaction.</para>
+								<note><para>See create() for notes on transactional methods pertaining the creation of storages.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean created(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Tells if a storage for the builder already exists.</para>
+								<note><para>There is currently no non-transactional method for created(). Whether there should be one is dependent on whether the transactional method for create() is dropped or not.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int size(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Return the number of objects in a builder.</para>
+								<note><para>Should have a transactional version, as transactional methods can affect the size of builder.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean drop(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Drops the storage of this builder.</para>
+								<note><para>There is currently no non-transactional method for drop(). Whether there should be one is dependent on whether the transactional method for create() is dropped or not.</para></note>
+								<note><para>It should be concidered to rename <methodname>drop()</methodname> [database specific] to <methodname>delete()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean addField(MMObjectBuilder builder,String fieldname);</methodname></term>
+							<listitem>
+								<para>Adds a field to the storage of this builder.</para>
+								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
+								<note><para>Should probably be renamed to <methodname>createField()</methodname> (in accordance with code conventions)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean removeField(MMObjectBuilder builder,String fieldname);</methodname></term>
+							<listitem>
+								<para>Deletes a field from the storage of this builder.</para>
+								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
+								<note><para>Should probably be renamed to deleteField (in accordance with code conventions)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean changeField(MMObjectBuilder builder,String fieldname);</methodname></term>
+							<listitem>
+								<para>Changes a field to the storage of this builder.</para>
+								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean updateStorage(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Changes the storage of a builder to match its new configuration.</para>
+								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
+							</listitem>
+						</varlistentry>
+					</variablelist></para>
+			</formalpara>
+		</section>
+		
+		<section id="DatabaseStorage">
+			<title>DatabaseStorage Interface</title>
+			<para>...</para>
+			<programlisting format="linespecific"><![CDATA[
+	public interface DatabaseStorage extends Storage  {
+	
+			public static final int KEY_NONE = 0;
+			public static final int KEY_PRIMARY = 1;
+			public static final int KEY_SECONDARY = 2;
+			public static final int KEY_FOREIGN = 3;
+			public static final int KEY_NOTNULL = 4;
+	
+			public void init(MMBase mmb, XMLDatabaseReader reader);
+	
+			public boolean getStoreBinaryAsFile();
+	
+			public void setStoreBinaryAsFile(boolean value);
+	
+			public File getBinaryFilePath();
+
+			public void setBinaryFilePath(File path);
+	
+			public void setFieldNameMap(Map fieldmap);
+	
+			public Map getFieldNameMap();
+	
+			public void setTypeMap(Map typeMap);
+	
+			public Map getTypeMap();
+	
+			public void setPrimaryKeyScheme(String scheme);
+	
+			public String getPrimaryKeyScheme();
+	
+			public void setNotNullScheme(String scheme);
+	
+			public String getNotNullScheme();
+	
+			public void setKeyScheme(String scheme);
+	
+			public String getKeyScheme();
+	
+			public void setForeignKeyScheme(String scheme);
+	
+			public String getForeignKeyScheme();
+	
+			public void setCreateScheme(String scheme);
+	
+			public String getCreateScheme();
+	
+			public void setCreateExtendedScheme(String scheme);
+	
+			public String getCreateExtendedScheme();
+	
+			public void setMaxDropSize(int value);
+	
+			public int getMaxDropSize();
+	
+			public boolean supportsExtendedTables();
+	
+			public String mapToTableFieldName(String fieldName);
+	
+			public String mapToMMBaseFieldName(String fieldName);
+	
+			public JDBCInterface getJDBC();
+	
+			public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);
+	
+			public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
+					throws SQLException;
+	
+			public void registerChanged(MMObjectNode node, String change);
+	
+	}
+	]]></programlisting>
+			<formalpara>
+				<title>DatabaseStorage Methods:</title>
+				<para><variablelist>
+						<varlistentry>
+							<term><methodname>void init(MMBase mmb, XMLDatabaseReader reader);</methodname></term>
+							<listitem>
+								<para>...</para>
+							</listitem>
+						</varlistentry>
+					</variablelist></para>
+			</formalpara>
+		</section>
+	</section>
+
+	<section id="classes">
+    <title>Classes</title>
+		<para>TODO: explain classes</para>
+
+		<section id="AbstractDatabaseStorage">
+			<title>AbstractDatabaseStorage Class</title>
+			<para>TODO: explain class</para>
+		</section>
+	
+		<section id="SQL92DatabaseStorage">
+			<title>SQL92DatabaseStorage Class</title>
+			<para>TODO: explain class</para>
+		</section>
+	
+		<section id="OODatabaseStorage">
+			<title>OODatabaseStorage Class</title>
+			<para>TODO: explain class</para>
+		</section>
+	
+		<section id="RelationalDatabaseStorage">
+			<title>RelationalDatabaseStorage Class</title>
+			<para>TODO: explain class</para>
+		</section>
+		
+		<section id="Support2Storage">
+			<title>Support2Storage Class</title>
+			<para>TODO: explain class</para>
+		</section>
+	</section>
+		
+	<section id="exceptions">
+    <title>Exceptions</title>
+		<para>TODO: explain exceptions</para>
+
+		<section id="StorageException">
+			<title>StorageException</title>
+			<para>TODO: explain exception</para>
+		</section>
+		
+		<section id="UnsupportedDatabaseOperationException">
+			<title>UnsupportedDatabaseOperationException</title>
+			<para>TODO: explain exception</para>
+		</section>
+	</section>
+
+</article>
