@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
@@ -44,14 +44,14 @@ public class FieldTag extends NodeReferrerTag {
         head = h;
     }
     
-    public int doStartTag() throws JspException{
+    public int doStartTag() throws JspTagException{
         return EVAL_BODY_TAG;
     }
     
     /**
     * write the value of the field.
     **/
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         
         // firstly, search the node:
         Node node;
@@ -65,30 +65,29 @@ public class FieldTag extends NodeReferrerTag {
             log.trace("using name " + name );
             show = "" + node.getValue(name);
             if (head != null) {
-                throw new JspException ("Could not indicate both  'name' and 'head' attribute");  
+                throw new JspTagException ("Could not indicate both  'name' and 'head' attribute");  
             }
         } else if (head !=null) { // name null, head isn't.
             log.trace("using head " + head);
             Field f = node.getNodeManager().getField(head);
             if (f == null) {
-                throw new JspException ("Could not find field " + head);  
+                throw new JspTagException ("Could not find field " + head);  
             }
             show = "" + f.getGUIName();
         } else { // both null
-            throw new JspException ("Should use  'name' or 'head' attribute");  
+            throw new JspTagException ("Should use  'name' or 'head' attribute");  
         }
         
         if (show == null) {
-            throw new JspException ("Could not find field " + name + " /"  +  head);  
+            throw new JspTagException ("Could not find field " + name + " /"  +  head);  
         }
         
         try {         
-            BodyContent bodyOut = getBodyContent();
-            bodyOut.clearBody();
-            bodyOut.print(show);
-            bodyOut.writeOut(bodyOut.getEnclosingWriter());
+            // bodyContent.clearBody();
+            bodyContent.print(show);
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (java.io.IOException e) {
-            throw new JspException (e.toString());            
+            throw new JspTagException (e.toString());            
         }
         
         return SKIP_BODY;

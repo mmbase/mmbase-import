@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.macro;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.mmbase.bridge.jsp.taglib.NodeListTag;
@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.NodeProvider;
 * FIXME: cannot indicate from which node ('node' attribute is already occupied...)
 */
 public class RelatedTag extends NodeListTag {
-    public int doStartTag() throws JspException {
+    public int doStartTag() throws JspTagException {
  
 
         // Hmm, well, we are repeating a little code from NodeReferrer
@@ -34,11 +34,11 @@ public class RelatedTag extends NodeListTag {
         try {
             NodeProvider nodeProvider = (NodeProvider) findAncestorWithClass((Tag)this, Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider")); 
             if (nodeProvider == null) {
-                throw new JspException ("Could not find parent nodeProvider");  
+                throw new JspTagException ("Could not find parent nodeProvider");  
             } 
             setNode(nodeProvider.getNodeVar().getStringValue("number"));
         }catch (java.lang.ClassNotFoundException e) {
-            throw new JspException ("Could not find NodeProvider class");  
+            throw new JspTagException ("Could not find NodeProvider class");  
         }
 
         return super.doStartTag();
