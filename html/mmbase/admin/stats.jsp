@@ -1,4 +1,4 @@
-<%@page import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache"
+<%@page session="false" import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/plain" postprocessor="reducespace" expires="10">
 
