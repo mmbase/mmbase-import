@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools.MMAppTool;
 
@@ -18,10 +18,11 @@ import org.mmbase.util.xml.BuilderReader;
 /**
  * Class AppCanvas
  *
+ * @application MMAppTool
  * @javadoc
  */
 public class AppCanvas extends Canvas implements MouseMotionListener,MouseListener {
-    
+
     private Display parent;
     private Vector builders=new Vector();
     private Vector relations=new Vector();
@@ -39,7 +40,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
     private long lastclicked=-1;
     private BuilderRect openbuilder;
     private XMLApplicationReader app;
-    
+
     /**
      * @javadoc
      */
@@ -48,7 +49,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
     }
-    
+
     /**
      * @javadoc
      */
@@ -60,14 +61,14 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
             System.out.println("Unknown="+cmd);
         }
     }
-    
-    
+
+
     /**
      * @javadoc
      */
     public final synchronized void update(Graphics theG) {
         Dimension d = getSize();
-        
+
         if ((offScreenImage == null)
         || (d.width != offScreenSize.width)
         || (d.height != offScreenSize.height)) {
@@ -80,7 +81,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         paint(offScreenGraphics);
         theG.drawImage(offScreenImage, 0, 0, null);
     }
-    
+
     /**
      * @javadoc
      */
@@ -96,7 +97,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
                 RelationLine r=(RelationLine)e.nextElement();
                 r.paint(g);
             }
-            
+
             // draw the BuilderOvals
             for (Enumeration e=builders.elements();e.hasMoreElements();) {
                 BuilderOval b=(BuilderOval)e.nextElement();
@@ -117,13 +118,13 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         }
         setSize(maxX, maxY);
     }
-    
+
     /**
      * @javadoc
      */
     public void setApplication(XMLApplicationReader app) {
         Random rnd=new Random();
-        
+
         this.app=app;
         // takes all the info out of a reader
         // and sets up the display objects;
@@ -135,14 +136,14 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
             //String maintainer=(String)bset.get("maintainer");
             //String version=(String)bset.get("version");
             //System.out.println("maintainer=\""+maintainer+"\" version=\""+version+"\">"+name+"</builder>");
-            
+
             int rx=40+Math.abs(rnd.nextInt()%(600));
             int ry=40+Math.abs(rnd.nextInt()%(400));
             //System.out.println("rx="+rx+" ry="+ry);
             BuilderOval b=new BuilderOval(this,name,textsize,rx,ry);
             builders.addElement(b);
         }
-        
+
         // create the relatons between the builders
         relations=new Vector();
         Vector ar=app.getAllowedRelations();
@@ -151,12 +152,12 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
             String from=(String)bset.get("from");
             String to=(String)bset.get("to");
             String type=(String)bset.get("type");
-            
+
             BuilderOval fb=getBuilderOval(from);
             if (fb==null) System.out.println("missing datasource : "+from);
             BuilderOval tb=getBuilderOval(to);
             if (tb==null) System.out.println("missing datasource : "+to);
-            
+
             if (fb!=null && tb!=null) {
                 // Check for an already existing RelationLine.
                 boolean exists = false;
@@ -174,7 +175,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
             }
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -204,33 +205,33 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         }
         if (changed || drag) repaint();
     }
-    
+
     /**
      * @javadoc
      */
     public void mouseDragged(MouseEvent e) {
         checkMouseAreas(e.getX(),e.getY(),true);
     }
-    
+
     /**
      * @javadoc
      */
     public void mouseMoved(MouseEvent e) {
         checkMouseAreas(e.getX(),e.getY(),false);
     }
-    
+
     public void mousePressed(MouseEvent e) {
     }
-    
+
     public void mouseReleased(MouseEvent e) {
     }
-    
+
     public void mouseExited(MouseEvent e) {
     }
-    
+
     public void mouseEntered(MouseEvent e) {
     }
-    
+
     /**
      * @javadoc
      */
@@ -253,7 +254,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         }
         lastclicked=newt;
     }
-    
+
     /**
      * @javadoc
      */
@@ -264,47 +265,47 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         }
         return null;
     }
-    
+
     public void setLineColor(Color c) {
         linecolor=c;
     }
-    
+
     public Color getLineColor() {
         return linecolor;
     }
-    
+
     public Color getBackGroundColor() {
         return bgcolor;
     }
-    
+
     public void setBackGroundColor(Color c) {
         bgcolor=c;
     }
-    
+
     public Color getActiveColor() {
         return activecolor;
     }
-    
+
     public void setActiveColor(Color c) {
         activecolor=c;
     }
-    
+
     public Color getTextColor() {
         return textcolor;
     }
-    
+
     public void setTextColor(Color c) {
         textcolor=c;
     }
-    
+
     public Color getObjectColor() {
         return objectcolor;
     }
-    
+
     public void setObjectColor(Color c) {
         objectcolor=c;
     }
-    
+
     public Vector getBuilderOvals() {
         return builders;
     }
