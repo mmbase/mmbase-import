@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<groups exportsource="mmbase://127.0.0.1/flex/one" timestamp="20030415121632">
-	<node number="1000" owner="admin" alias="Bugtracker.Interested">
-		<name>BugTracker pool</name>
+<groups exportsource="mmbase://127.0.0.1/mmbase/install" timestamp="20030731153742">
+	<node number="96" owner="admin" alias="BugTracker.Admins">
+		<name>BugTrackerAdmins</name>
+		<description></description>
+	</node>
+
+	<node number="116" owner="admin" alias="Bugtracker.Interested">
+		<name>BugTracker users</name>
+		<description></description>
+	</node>
+
+	<node number="99" owner="admin" alias="BugTracker.Commitors">
+		<name>BugTrackerCommitors</name>
 		<description></description>
 	</node>
 
