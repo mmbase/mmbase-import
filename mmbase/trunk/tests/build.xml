@@ -1,0 +1,210 @@
+<project name="MMBaseTest" default="usage" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties" />
+  <!-- Default values for properties that can be customized -->
+  <property name="source.dir"   location="../../1.6/mmbase" />
+  <property file="${source.dir}/build.properties" />
+
+  <property name="build.dir"    value="${source.dir}/build" />
+  <property name="download.dir" value="${build.dir}/download" />
+  <property name="expand.dir"   value="${download.dir}/expanded" />
+
+  <property name="tests.source.dir"   value="." />
+  <property name="tests.build.dir" value="${tests.source.dir}/build" />
+
+  <property name="tests.lib" value="${tests.source.dir}/build/lib" />
+
+  <property name="ui.class" value="junit.textui.TestRunner" />
+
+
+  <target name="init" depends="jar,expand.junit">
+    <copy file="${junit.jar}" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
+    <copy todir="${tests.lib}">
+      <fileset dir="${build.dir}/lib">
+        <include name="*.jar"/>
+        <include name="*.zip"/>
+      </fileset>
+    </copy>
+
+    <available property="dummy" classname="dummy">
+      <classpath id="compile.classpath">
+        <fileset dir="${tests.lib}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+      </classpath>
+      
+      <classpath id="run.classpath">
+        <fileset dir="${tests.lib}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+        <pathelement location="${tests.build.dir}/classes"/>
+      </classpath>
+    </available>  
+  </target>
+
+  <target name="jar">
+    <!-- ant dir="${source.dir}" target="jar" /-->
+  </target>
+  
+
+  <!-- =================================================================== -->
+  <!-- Build the JUnit test environment                                    -->
+  <!-- =================================================================== -->
+  <!--
+  <target name="junit"
+          description="Build the JUnit test environment"
+          depends="init,lib.release,lib.compile,jar,expand.hsql">
+    <mkdir dir="${build.dir}/junit"/>
+    <mkdir dir="${build.dir}/junit/config"/>
+    <mkdir dir="${build.dir}/junit/lib"/>
+    <copy todir="${build.dir}/junit/config">
+      <fileset dir="${source-config.dir}"/>
+    </copy>
+    <copy todir="${build.dir}/junit/config/builders">
+      <fileset dir="${source-config.dir}/applications/BridgeTest/builders">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <replace file="${build.dir}/junit/config/applications/BridgeTest.xml">
+      <replacetoken>auto-deploy=&quot;false&quot;</replacetoken>
+      <replacevalue>auto-deploy=&quot;true&quot;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/mmbaseroot.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
+    </replace>
+    <copy file="${junit.jar}"   todir="${build.dir}/junit/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${mmbase.jar}"  todir="${build.dir}/junit/lib"/>
+    <copy file="${hsql.jar}"    todir="${build.dir}/junit/lib"/>
+    <copy file="${xalan.jar}"   todir="${build.dir}/junit/lib"/>
+    <copy file="${xerces.jar}"  todir="${build.dir}/junit/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${jai_core.jar}"  todir="${build.dir}/junit/lib"/>
+    <copy file="${log4j.jar}"     todir="${build.dir}/junit/lib"/>
+  </target>
+
+   -->
+  <!-- =================================================================== -->
+  <!-- Clean the JUnit test environment                                    -->
+  <!-- =================================================================== -->
+  <target name="clean" description="Clean the test environment">
+    <delete dir="${tests.build.dir}"/>
+  </target>
+
+
+
+
+  <target name="init.get">
+    <!-- JUnit -->
+    <property name="junit.version" value="junit3.8.1"/>
+    <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
+    <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
+    <available property="junit.present" 
+      file="${download.dir}/${junit.version}.zip"/>
+    <available property="junit.expanded"
+               file="${expand.dir}/${junit.version}"/>
+
+  </target>
+
+
+  <target name="get.junit" depends="init.get" unless="junit.present">
+    <get src="${junit.url}"
+         dest="${download.dir}/${junit.version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.junit" depends="get.junit" unless="junit.expanded">
+    <unzip src="${download.dir}/${junit.version}.zip" dest="${expand.dir}"/>
+  </target>
+
+
+  <target name="compile" description="Compile the source directory" depends="init">
+
+    <mkdir dir="${tests.build.dir}/classes"/>
+    <echo message="java version: ${ant.java.version}" />
+
+    <echo message="copying" />
+
+    <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" >
+      <fileset dir="${tests.source.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <exclude name="build/**"/>
+      </fileset>
+    </copy>
+
+    <echo message="compiling" />
+
+    <javac srcdir ="${tests.source.dir}"
+           destdir="${tests.build.dir}/classes"
+           debug="true"
+           optimize="false"
+           classpathref="compile.classpath"
+           deprecation="true"
+      >
+      <include name="**/*.java"/>
+    </javac>
+  </target>
+
+
+  <target name="run.typerel" depends="compile,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
+    </java>
+  </target>
+
+  <target name="run.bridgetest" depends="compile,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.bridge.AllTests" />
+    </java>
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Run the tests -->
+  <!-- =================================================================== -->
+  <target name="run.junit" description="Run the test"
+          depends="run.typerel">
+
+  </target>
+
+</project>
