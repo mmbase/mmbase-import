@@ -5,20 +5,20 @@
 <!ELEMENT builder (status,classfile,searchage,names,descriptions,fieldlist)>
 <!ELEMENT descriptions (description*)>
 <!ELEMENT description (#PCDATA)>
-<!ATTLIST description xml:lang NMTOKEN "en">
+<!ATTLIST description xml:lang NMTOKEN "us">
 <!ELEMENT classfile (#PCDATA)>
 <!ELEMENT searchage (#PCDATA)>
 <!ELEMENT singular (#PCDATA)>
-<!ATTLIST singular xml:lang NMTOKEN "en">
+<!ATTLIST singular xml:lang NMTOKEN "us">
 <!ELEMENT plural (#PCDATA)>
-<!ATTLIST plural xml:lang NMTOKEN "en">
+<!ATTLIST plural xml:lang NMTOKEN "us">
 <!ELEMENT status (#PCDATA)>
 <!ELEMENT fieldlist (field*)>
 <!ELEMENT field (gui,editor,db)>
 <!ELEMENT names (singular*,plural*)>
 <!ELEMENT gui (name+,gtype)>
 <!ELEMENT name (#PCDATA)>
-<!ATTLIST name xml:lang NMTOKEN "en">
+<!ATTLIST name xml:lang NMTOKEN "us">
 <!ELEMENT gtype (#PCDATA)>
 <!ELEMENT db (name,dbtype)>
 <!ELEMENT editor (positions*)>
