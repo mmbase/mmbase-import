@@ -925,7 +925,7 @@ one or more examplevalue tags is you want to give some example values.
     <example>
 &lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)
 only to user kamer --&gt;
-&lt;mm:cloud logon="kamer" method="http"&gt;
+&lt;mm:cloud jspvar="cloud" logon="kamer" method="http"&gt;
 logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br /&gt;
 &lt;mm:node number="kamer_pool" id="my_node"&gt;
   &lt;mm:related paths="news" orderby="number" directions="DOWN"&gt;
@@ -1823,8 +1823,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>image</name>
     <extends>nodereferrer</extends>
     <extends>writer</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
      <p>
      Returns an URL to the image servlet. This is a NodeReferrer and
