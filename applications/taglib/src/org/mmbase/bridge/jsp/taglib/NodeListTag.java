@@ -221,7 +221,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                 }
                 action = "command " + commandString + " on NodeManager " + typeString;
                 log.debug(action);
-                nodes = getDefaultCloud().getNodeManager(typeString).getList(commandString, null);
+                nodes = getCloudProviderVar().getNodeManager(typeString).getList(commandString, null);
                 if (searchSorted != null) {
                     throw new JspTagException ("Cannot do a sort on a command");
                 }
@@ -232,7 +232,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
             }
             else if (stringSplitter(typeString,",").size() > 1){ // multilevel
                 action = "multilevel search";
-                nodes = getDefaultCloud().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchSearch,searchDistinct);
+                nodes = getCloudProviderVar().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchSearch,searchDistinct);
             } else {
                 action = "no multilevel search";
                 boolean hasSearch = (searchWhere != null);
@@ -247,11 +247,11 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                         //to resctrict the search on the node given
                         
                         //keesj@Thu May 17 05:54:08 CEST 2001-> is this still true?
-                        searchWhere = "(" + searchWhere +") and ( number = " + getDefaultCloud().getNode(nodesString).getNumber() + " )";
+                        searchWhere = "(" + searchWhere +") and ( number = " + getCloudProviderVar().getNode(nodesString).getNumber() + " )";
                     }
                     action = "search relations with start node (" + nodesString + ") using a search " + searchWhere;
                     log.debug(action);
-                    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
+                    NodeManager nodeManager = getCloudProviderVar().getNodeManager(nodeManagers);
                     
                     //            boolean direction = ("UP".equals(searchDirection))? true: false;
                     //            nodes= nodeManager.getList(searchWhere,null,direction);
@@ -266,7 +266,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                     if (hasSort) { // a not-so-nice hack.
                         log.warn("Trying to sort on non-multilevel list. Bad for performance.");
                         // get the type of this one node:
-                        Node baseNode = getDefaultCloud().getNode(searchNodes);
+                        Node baseNode = getCloudProviderVar().getNode(searchNodes);
                         NodeManager baseNodeManager = baseNode.getNodeManager();
                         
                         // look which types are wanted:
@@ -302,21 +302,21 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                                 throw new JspTagException("Indicated wrong nodemanager in search " + searchSorted + ", must be " + nodeManagersVector.get(1)); 
                             }
                         }
-                        nodes = getDefaultCloud().getList("" + baseNode.getNumber(), nodeManagers, numbers, null, searchSorted, searchDirection, null, false); 
+                        nodes = getCloudProviderVar().getList("" + baseNode.getNumber(), nodeManagers, numbers, null, searchSorted, searchDirection, null, false); 
                         
                         // now make normal nodes of it.                       
                         NodeIterator i = nodes.nodeIterator();
                         while(i.hasNext()){
-                            i.set(getDefaultCloud().getNode(i.nextNode().getStringValue(numbers))); 
+                            i.set(getCloudProviderVar().getNode(i.nextNode().getStringValue(numbers))); 
                         }
                     } else {
-                        nodes = getDefaultCloud().getNode(searchNodes).getRelatedNodes(typeString);
+                        nodes = getCloudProviderVar().getNode(searchNodes).getRelatedNodes(typeString);
                     
                     }
                 
                 } else {
                     action = "list all objects of type("+ typeString + ")";
-                    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
+                    NodeManager nodeManager = getCloudProviderVar().getNodeManager(nodeManagers);
                     //            boolean direction = ("UP".equals(searchDirection))? true: false;
                     //            nodes= nodeManager.getList(null,null,direction);
                     nodes= nodeManager.getList(searchWhere, searchSorted, searchDirection);
@@ -470,13 +470,13 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                 String nodeString = (String)nodeList.nextElement();
                 try {
                     int nodeNumber = Integer.parseInt(nodeString);
-                    Node node = getDefaultCloud().getNode(nodeNumber);
+                    Node node = getCloudProviderVar().getNode(nodeNumber);
                     if (node == null){
                         sb.append("ERROR: node(" + nodeString +") does not exist\n");
                     }
                 } catch (NumberFormatException e){
                     //the node is probabely a alias
-                    Node node = getDefaultCloud().getNodeByAlias(nodeString);
+                    Node node = getCloudProviderVar().getNodeByAlias(nodeString);
                     if (node == null){
                         sb.append("ERROR: node with alias("+ nodeString +") does not exist\n");
                     }
@@ -488,7 +488,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
         while(managerList.hasMoreElements()){
             String managerName = (String)managerList.nextElement();
             try {//note nodeManager sould  realy not throw a nullPointerException
-                NodeManager nodeManager = getDefaultCloud().getNodeManager(managerName);
+                NodeManager nodeManager = getCloudProviderVar().getNodeManager(managerName);
                 if (nodeManager == null){
                     sb.append("ERROR: NodeManager with name("+ managerName +") does not exist\n");
                 }
