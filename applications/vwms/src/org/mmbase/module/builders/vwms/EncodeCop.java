@@ -1,5 +1,5 @@
 /*
-$Id: EncodeCop.java,v 1.4 2000-03-27 15:10:17 wwwtech Exp $
+$Id: EncodeCop.java,v 1.5 2000-03-27 16:01:01 wwwtech Exp $
 
 VPRO (C)
 
@@ -27,7 +27,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.4 $ $Date: 2000-03-27 15:10:17 $
+ * @version $Revision: 1.5 $ $Date: 2000-03-27 16:01:01 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -83,10 +83,10 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			int num = Integer.parseInt( number );
 			if( getEncodeHandler( num ) == null ) {
 				debug("encoderChanged("+number+","+ctype+"): ERROR: No handler found, machine crashed/rebooted !?!");
-			} else
-				debug("encoderChanged("+number+","+ctype+"): handler found, everything ok!");
-				parent.signalEncoderFree( number );
-				
+			} else {
+				debug("encoderChanged("+number+","+ctype+"): handler found, everything ok, signaling free()!");
+				signalEncoderFree( num );
+			}
 		} catch (NumberFormatException e ) {
 			debug("encoderChanged("+number+","+ctype+"): ERROR: while converting to int:"+e);
 		}	
@@ -160,7 +160,9 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		if( e.hasMoreElements() ) {
 			h = (EncodeHandler)e.nextElement();
 			if( h.node.getIntValue("number") != num )	// just to be sure..
-				h.
+				h.notifyG2Free();
+			else
+				debug("signalEncoderFree("+num+"): ERROR: SEVERE: this node is waiting for free encoder, but got signal that it has finished!!!");
 		}		
 	}
 }

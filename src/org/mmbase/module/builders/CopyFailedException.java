@@ -14,8 +14,8 @@ package org.mmbase.module.builders;
  * @version 5 Jan 1999
  */
 public class CopyFailedException extends Exception {
-	String errval;
-	String explanation;
+	public String errval;
+	public String explanation;
 
 	public CopyFailedException(String errval,String explanation){
 		this.errval = errval;

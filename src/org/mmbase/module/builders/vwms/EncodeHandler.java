@@ -1,5 +1,5 @@
 /*
-$Id: EncodeHandler.java,v 1.6 2000-03-27 15:10:18 wwwtech Exp $
+$Id: EncodeHandler.java,v 1.7 2000-03-27 16:01:02 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/27 15:10:18  wwwtech
+Rico: moved VPRO specific objects to nl.vpro
+
 Revision 1.5  2000/03/24 14:34:04  wwwtech
 Rico: total recompile
 
@@ -33,7 +36,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.6 $ $Date: 2000-03-27 15:10:18 $
+ * @version $Revision: 1.7 $ $Date: 2000-03-27 16:01:02 $
  */
 public class EncodeHandler implements Runnable {
 
@@ -289,10 +292,12 @@ public class EncodeHandler implements Runnable {
 				if( e.hasMoreElements() ) {
 					result = (MMObjectNode)e.nextElement();
 				} else {
+					debug("getFreeG2Node(): no free node found.. waiting 60 secs.. goodbye!");
 					parent.addWaitingEncodeHandler( this );
 					wait( (60*1000) ); 
 					parent.removeWaitingEncodeHandler( this );
 					i++;
+					debug("getFreeG2Node(): checking for "+i+" time for free enoder..");
 				}	
 			}
 		} catch( InterruptedException e ) {

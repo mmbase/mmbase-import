@@ -14,8 +14,8 @@ package org.mmbase.module.builders;
  * @version 11 Dec 1998
  */
 public class DrivePropsNotFoundException extends Exception {
-	String errval;
-	String explanation;
+	public String errval;
+	public String explanation;
 
 	public DrivePropsNotFoundException(String errval,String explanation){
 		this.errval = errval;
