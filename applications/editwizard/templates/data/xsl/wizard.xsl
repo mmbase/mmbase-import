@@ -9,7 +9,8 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.133 2004-08-23 09:52:46 pierre Exp $
+    @author   Robin van Meteren
+    @version $Id: wizard.xsl,v 1.134 2004-08-26 17:29:00 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -559,6 +560,12 @@
       <xsl:when test="@ftype=&apos;file&apos;">
         <xsl:call-template name="ftype-file"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;radio&apos;">
+         <xsl:call-template name="ftype-radio"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;checkbox&apos;">
+         <xsl:call-template name="ftype-checkbox"/>
+      </xsl:when>
       <xsl:when test="@ftype=&apos;realposition&apos;">
         <xsl:call-template name="ftype-realposition"/>
       </xsl:when>
@@ -974,6 +981,35 @@
 
   <xsl:template name="ftype-realposition">
     <xsl:call-template name="realposition"/>
+  </xsl:template>
+
+  <xsl:template name="ftype-radio">
+     <xsl:for-each select="optionlist/option">
+       <input type="radio" name="{../../@fieldname}" value="{@id}" id="{@id}">
+         <xsl:apply-templates select="../../@*" />
+         <xsl:if test="@selected=&apos;true&apos;">
+           <xsl:attribute name="checked">true</xsl:attribute>
+         </xsl:if>
+         <xsl:value-of select="."/>
+       </input><br/>
+     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="ftype-checkbox">
+    <input type="hidden" name="{@fieldname}" value="{value}" fid="{@fid}" id="{@fieldname}" dttype="boolean">
+      <xsl:apply-templates select="@dtrequired" />
+      <xsl:apply-templates select="@dtdepends" />
+      <xsl:apply-templates select="@dtunless" />
+      <xsl:apply-templates select="@dtaction" />
+      <xsl:apply-templates select="@dthasvalues" />
+    </input>
+    <!-- onChange event is needed to update the hidden input element when the checkbox changes -->
+    <input type="checkbox" name="cb_{@fieldname}" id="cb_{@fieldname}" value="1"
+      onChange="var hid = document.getElementById(this.getAttribute('id').substr(3)); if (this.checked) hid.value = '1'; else hid.value = '0';">
+      <xsl:if test="value=1">
+        <xsl:attribute name="checked">true</xsl:attribute>
+      </xsl:if>
+    </input>
   </xsl:template>
 
   <xsl:template name="ftype-unknown">
