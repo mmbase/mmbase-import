@@ -20,7 +20,6 @@ response.setDateHeader("Date",  now);
 
 <mm:import id="config" externid="mmeditors_config" from="session" />
 
-<mm:log><mm:write referid="config" /></mm:log>
 <mm:context id="config" referid="config">
   <mm:import externid="page_size" from="parameters,this">20</mm:import>
   <mm:import id="style_sheet" externid="mmjspeditors_style"     from="parameters,cookie,this">mmbase.css</mm:import>
@@ -30,10 +29,7 @@ response.setDateHeader("Date",  now);
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
 </mm:context>
 
-<mm:log><mm:write referid="config" /></mm:log>
 <mm:write referid="config" session="mmeditors_config" />
-<mm:log><mm:write referid="config" /></mm:log>
-
 
 <% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; %>
