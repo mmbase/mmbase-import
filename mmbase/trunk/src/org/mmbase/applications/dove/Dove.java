@@ -14,6 +14,7 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.ClusterBuilder;
 
 
 /**
@@ -47,7 +48,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.32 2003-03-05 10:49:10 pierre Exp $
+ * @version $Id: Dove.java,v 1.33 2003-04-02 14:30:09 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -245,15 +246,17 @@ public class Dove extends AbstractDove {
                 } else {
                     data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
                 }
-                int othernumber=nrel.getIntValue("dnumber");
-                if (thisNumber==nrel.getIntValue("snumber")) {
-                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("snumber"));
-                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("dnumber"));
+                int othernumber = nrel.getIntValue("dnumber");
+                //if (thisNumber == nrel.getIntValue("snumber")) {
+                data.setAttribute(ELM_SOURCE,      "" + nrel.getValue("snumber"));
+                data.setAttribute(ELM_DESTINATION, "" + nrel.getValue("dnumber"));
+                /*
                 } else {
                     data.setAttribute(ELM_SOURCE, ""+nrel.getValue("dnumber"));
                     data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("snumber"));
                     othernumber=nrel.getIntValue("snumber");
                 }
+                */
                 data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
                 out.appendChild(data);
                 getDataNode(relation,data,nrel);
@@ -416,6 +419,9 @@ public class Dove extends AbstractDove {
         String source = in.getAttribute(ELM_SOURCE); // check source;
         String destinationType = in.getAttribute(ELM_DESTINATIONTYPE); // check destination type;
         String sourceType = in.getAttribute(ELM_SOURCETYPE); // check source type;
+
+        int createDir = ClusterBuilder.getSearchDir(in.getAttribute(ELM_CREATEDIR));
+
         if (rolename.equals("")) {
             Element err=addContentElement(ERROR,"role required for getrelations",out);
             err.setAttribute(ELM_TYPE,IS_PARSER);
@@ -436,8 +442,15 @@ public class Dove extends AbstractDove {
                     Element data=doc.createElement(RELATION);
                     int number=java.lang.Math.abs(n.getNumber());
                     data.setAttribute(ELM_NUMBER, "n"+number);
-                    data.setAttribute(ELM_DESTINATION, destination);
-                    data.setAttribute(ELM_SOURCE, source);
+                    if (createDir == ClusterBuilder.SEARCH_SOURCE) {
+                        log.info("Creating relatin in the INVERSE direction");
+                        data.setAttribute(ELM_DESTINATION, source);
+                        data.setAttribute(ELM_SOURCE, destination);
+                    } else {
+                        log.info("Creating relatin in the NORMAL direction");
+                        data.setAttribute(ELM_DESTINATION, destination);
+                        data.setAttribute(ELM_SOURCE, source);
+                    }
                     data.setAttribute(ELM_ROLE,rolename);
                     out.appendChild(data);
                     getDataNode(null,data,n);
