@@ -20,7 +20,7 @@
 
   <fieldlist>
     <field>
-      <descriptons>
+      <descriptions>
         <description xml:lang="en">Frames per second</description>
         <description xml:lang="nl">Frames per seconde</description>
       </descriptions>
@@ -43,7 +43,7 @@
 
     <!-- <field> 'height'  -->
     <field>
-      <descriptons>
+      <descriptions>
         <description xml:lang="en">Height in pixels</description>
         <description xml:lang="nl">Hoogte in pixel</description>
       </descriptions>
@@ -65,7 +65,7 @@
 
     <!-- <field> 'width'  -->
     <field>
-      <descriptons>
+      <descriptions>
         <description xml:lang="en">Width in pixels</description>
         <description xml:lang="nl">Breedte in pixel</description>
       </descriptions>
