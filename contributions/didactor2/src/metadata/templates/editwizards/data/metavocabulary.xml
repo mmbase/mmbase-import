@@ -2,9 +2,10 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
   <title>Metadata Editor</title>
+
   <action type="load">
   </action>
-  
+
   <action type="create">
     <object type="metadata"/>
   </action>
@@ -34,7 +35,7 @@
       <relation destinationtype="metavocabulary" role="posrel"/>
     </action>
 
-    <command name="search" nodepath="metavocabulary" fields="value" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
       <prompt>Zoeken naar metavocabulary</prompt>
         <search-filter>
             <name>Waarde bevat</name>
