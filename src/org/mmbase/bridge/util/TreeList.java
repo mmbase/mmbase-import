@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.1 2003-12-17 20:55:23 michiel Exp $
+ * @version $Id: TreeList.java,v 1.2 2003-12-18 12:17:12 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -181,7 +181,7 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
 
     // javadoc inherited
     public ListIterator listIterator(int ind) {
-        return  new TreeIterator(ind);
+        return new TreeItr(ind);
     }
 
     public NodeIterator nodeIterator() {
@@ -226,7 +226,7 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
     /**
      * The TreeIterator!
      */
-    public class TreeIterator implements NodeIterator {
+    public class TreeItr implements TreeIterator {
 
         private List nodeIterators     = new ArrayList(); // an iterator for each query result
         private NodeList nextNodes     = TreeList.this.cloud.getCloudContext().createNodeList();
@@ -237,7 +237,7 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
         private int  nextIndex;
 
 
-        TreeIterator(int i) {
+        TreeItr(int i) {
 	    if (i < 0 || (i > 0 && i > TreeList.this.size())) {
 		throw new IndexOutOfBoundsException("Index: " + i +  ", Size: " + TreeList.this.size());
             }
@@ -439,23 +439,28 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
      */
     public static final void  main(String[] args) {
 
-        String bindName;
-        if (args.length > 1) {
-            bindName = args[1];
-        } else {
-            bindName = "remotecontext";
-        }
-        String port;
+
+        String startNodes = "";
         if (args.length > 0) {
-            port = args[0];
-        } else {
-            port = "1111";
-        }
+            startNodes = args[0];
+        } 
+
+
+        String port = "1111";
+        if (args.length > 1) {
+            port = args[1];
+        } 
+
+        String bindName = "remotecontext";
+        if (args.length > 2) {
+            bindName = args[2];
+        } 
        
         Cloud cloud =  ContextProvider.getCloudContext("rmi://127.0.0.1:" + port + "/" + bindName).getCloud("mmbase");
         NodeManager object = cloud.getNodeManager("object");
 
         NodeQuery q = object.createQuery();
+        Queries.addStartNodes(q, startNodes);
         TreeList tree = new TreeList(q, new TreeList.PathElement [] {new TreeList.PathElement(object, null, "destination")}, 5);
 
         Iterator i = tree.iterator();
