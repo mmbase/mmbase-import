@@ -44,16 +44,9 @@ public class servdb extends JamesServlet {
 	 * when set to true you can use yourhost/xml.db?objectnumber to get the XML representation of that object
 	 */
 	private boolean provideXML = false;
-    private		Date 				lastmod 	= null, tempdate;
-    private		String 				templine,templine2,templine3,templine4;
-    private		int 				y,m,d,u,mi,se;
     private		cacheInterface 		cache;
     private		filebuffer 			buffer;
-    private		boolean 			cached;
-    private		int 				filesize;
-    private		FileInputStream 	scan;
     private		Hashtable 			Roots 		= new Hashtable();
-    private		LRUHashtable 		numrabuf 	= new LRUHashtable(200);
     //	private		imagesInterface 	images;
     private		MMBase 	mmbase;
     private		PlaylistsInterface 	playlists;
@@ -84,6 +77,7 @@ public class servdb extends JamesServlet {
     public void shutdown() {}
 
     public void init(ServletConfig config) throws ServletException {
+
         super.init(config);
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servdb.class.getName());
@@ -101,11 +95,15 @@ public class servdb extends JamesServlet {
         if (sessions == null) {
             log.debug("Could not find session module, proceeding without sessions");
         }
-        lastmod = new Date();
     }
 
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
+		Date lastmod;
+		String templine,templine2;
+		int filesize;
+
         incRefCount(req);
+		
         try {
             scanpage sp = getscanpage( req, res );
 
@@ -460,6 +458,7 @@ public class servdb extends JamesServlet {
                         filesize=len;
                     } else {
                         len=0;
+						filesize=0;
                     }
 
                     if (len!=-1)  {
