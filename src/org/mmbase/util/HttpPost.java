@@ -388,7 +388,6 @@ public class HttpPost {
                         break;
                     } else {
                         totallength+=index1;
-                        System.out.print("+");
                     }
                 }
                 debug(" written("+totallength+")");
@@ -541,10 +540,8 @@ public class HttpPost {
                             } catch (Exception e) {
                                 debug("readPostFormData(): ERROR: Cannot write into file (2)"+e);
                             }
-//                            System.out.print("-");
                             } while (end2==-1);
                         start2=end2+marker.length;
-                        System.out.println();
                         raf.close();
                     } else {
                         dest = new byte[(end2-i2)-6];
