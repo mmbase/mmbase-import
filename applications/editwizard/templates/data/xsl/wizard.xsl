@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.92 2003-05-28 11:45:39 pierre Exp $
+  @version $Id: wizard.xsl,v 1.93 2003-06-12 13:01:18 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -48,7 +48,7 @@
       </span>
       <span class="form">
         <nobr>
-          <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}" target="_blank">[debug]</a><br /></xsl:if>
+          <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}&amp;popupid={$popupid}" target="_blank">[debug]</a><br /></xsl:if>
           <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="form[@id=/wizard/curform]/title" /></xsl:call-template>
         </nobr>
       </span>
