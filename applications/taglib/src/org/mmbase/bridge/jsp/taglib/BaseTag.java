@@ -41,7 +41,7 @@ public abstract class BaseTag extends TagExtraInfo implements Tag, TagIdentifier
     
     // michiel: all tags can have an attribute 'id'.
     private String id;
-    public  void setId(String i){
+    public  void setId(String id){
         this.id = id;
     }   
     
@@ -187,49 +187,4 @@ public abstract class BaseTag extends TagExtraInfo implements Tag, TagIdentifier
         return SKIP_BODY;
     }
     
-    
-    //where does this belong
-    /**
-    * This method tries to find a parent object of type NodeProvider
-    * @param id the id of the parent we are looking for , this id might be null or ""
-    * in that case the first node provider found will be taken
-    * @return the NodeProvider if found else null
-    **/
-    public static NodeProvider findNodeProvider(Tag tag,String id) {
-        //this has become quite a long story
-        //the basic idea was:
-    /*
-        if (id == null) id = "";
-        do {
-           tag = tag.getParent();
-        } while(tag != null && (tag instanceof NodeProvider && id.equals(((NodeProvider)tag).getId())));
-        return (NodeProvider)tag;
-    */
-
-        Tag retval = null;
-        boolean found = false;
-        while (!found){
-            tag = tag.getParent();
-            if (tag != null){
-                if (tag instanceof NodeProvider){
-                    if (id == null || id.equals("")){
-                                                retval = tag;
-                                                found = true;
-
-                    } else {
-                        if ( ((NodeProvider)tag).getId() != null){
-                            if (((NodeProvider)tag).getId().equals(id)){
-                                retval = tag;
-                                found = true;
-                            }
-                        }
-                    }
-                } 
-            }
-        }
-        if (tag == null)
-            System.err.println("no NodeProvider found");
-        return (NodeProvider)retval;
-    }
-
 }
