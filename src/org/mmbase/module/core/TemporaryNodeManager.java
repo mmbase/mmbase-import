@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.31 2003-03-04 14:19:02 nico Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.32 2003-03-21 11:53:44 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -42,13 +42,17 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String createTmpNode(String type,String owner,String key) {
-        log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
+        if (log.isDebugEnabled()) {
+            log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
+        }
         if (owner.length()>12) owner=owner.substring(0,12);
         MMObjectBuilder builder=mmbase.getMMObject(type);
         MMObjectNode node;
-        if (builder!=null) {
-            node=builder.getNewTmpNode(owner,getTmpKey(owner,key));
-            log.debug("New tmpnode " + node);
+        if (builder !=null) {
+            node = builder.getNewTmpNode(owner,getTmpKey(owner,key));
+            if (log.isDebugEnabled()) {
+                log.debug("New tmpnode " + node);
+            }
         } else {
             log.error("Can't find builder " + type);
         }
