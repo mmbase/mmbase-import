@@ -8,14 +8,13 @@
   <names>
     <singular xml:lang="en">Media provider</singular>
     <singular xml:lang="nl">Mediaprovider</singular>
-
     <plural xml:lang="en">Media providers</plural>
     <plural xml:lang="nl">Mediaproviders</plural>
   </names>
 
   <descriptions>
     <description xml:lang="en">Describes the system that is providing media files.</description>
-    <description xml:lang="nl">Beschrijft het systeem dat media bestanden beschikbaar steld.</description>
+    <description xml:lang="nl">Beschrijft het systeem dat mediabestanden beschikbaar stelt.</description>
   </descriptions>
 
   <properties>

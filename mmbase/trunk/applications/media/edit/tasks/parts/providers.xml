@@ -5,14 +5,14 @@
    <item>
      <field name="name" ftype="data" />
    </item>
-   <command name="search" nodepath="mediaproviders" fields="name,rooturl,rootpath" orderby="name" age="-1" >
+   <command name="search" nodepath="mediaproviders" fields="name,host,rootpath" orderby="name" age="-1" >
      <search-filter>
        <name>Name</name>
        <search-fields>name</search-fields>
      </search-filter>
      <search-filter>
        <name>Server</name>
-       <search-fields>rooturl</search-fields>
+       <search-fields>host</search-fields>
      </search-filter>
    </command>
    <action type="create">
