@@ -38,6 +38,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
+	private static String version = "0.8";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -62,7 +63,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * initialize the transactionhandler
 	 */
 	public void init(){
-		if (_debug) debug(">> init TransactionHandler Module ", 0);
+		if (_debug) debug(">> init TransactionHandler Module version = "+version, 0);
 		mmbase=(MMBase)getModule("MMBASEROOT");
 		tmpObjectManager = new TemporaryNodeManager(mmbase);
 		transactionManager = new TransactionManager(mmbase,tmpObjectManager);
