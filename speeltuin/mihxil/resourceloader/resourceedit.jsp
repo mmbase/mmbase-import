@@ -1,18 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=utf-8" session="true" import="org.mmbase.util.*,java.io.*,java.net.*,org.w3c.dom.*,java.util.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content type="text/html">
+%><mm:content type="text/html" expires="0">
 <html>
   <head>
     <title><mm:write id="title" value="MMBase Resource Editor" /></title>
     <link rel="stylesheet" href="mmbase/style/css/mmbase.css" type="text/css" />
     <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
-    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
-
+    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />    
   </head>
-<body >
-<%!  ResourceLoader resourceLoader = ResourceLoader.getRoot(); %>
-<form method="post">
+<body>
+  <%!  ResourceLoader resourceLoader = ResourceLoader.getRoot(); %>
+  <form method="post" name="resource">
 <table>
   <mm:cloud>
   <tr>
@@ -20,17 +19,37 @@
     <th class="main" colspan="1">Root: <%= resourceLoader.findResource("") %></th>
   </tr>
   <mm:import externid="resource" vartype="string" jspvar="resource" />
-  <mm:import externid="keepsearch">.*\.xml$</mm:import>
+  <mm:import externid="keepsearch"><%=ResourceLoader.XML_PATTERN%></mm:import>
   <mm:import externid="search" vartype="string" jspvar="search" ><mm:write referid="keepsearch" escape="none" /></mm:import>
   <input type="hidden" name="keepsearch" value="<mm:write referid="search" />" />
   <mm:notpresent referid="resource">
-    <tr><td>Search (regular expression):</td><td><input type="text" name="search" value="<mm:write referid="search" />" /><input type="submit" name="s" value="search" /></td><td /></tr>
+    <tr>
+      <td>Search (regular expression):</td>
+      <td colspan="2">
+        <input type="text" name="search" value="<mm:write referid="search" />" />
+        <select name="examples" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">         
+          <mm:write value=".*\.xml$$">
+            <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xml's</option>
+           </mm:write>
+           <mm:write value=".*\.dtd$$">
+             <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >dtd's</option>
+           </mm:write>
+          <mm:write value=".*\.xsl[t]?$$">
+             <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xslt's</option>
+           </mm:write>
+          <mm:write value=".*\.properties$$">
+             <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >properties</option>
+           </mm:write>
+        </select>
+        <input type="submit" name="s" value="search" />
+      </td>
+    </tr>
     <tr><th>&nbsp;</th><th>Resource-name</th><th>External URL</th></tr>
     <%
     Iterator i = resourceLoader.getResourcePaths(search == null || search.equals("") ? null : java.util.regex.Pattern.compile(search), true).iterator();
 
     while (i.hasNext()) {
-      String res = (String) i.next();
+    String res = (String) i.next();
 %>
 <tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="<%=res%>" /></mm:url>">Edit</a></td>
 <%

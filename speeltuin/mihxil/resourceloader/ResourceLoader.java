@@ -89,7 +89,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.2 2004-09-30 07:56:18 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.3 2004-09-30 19:47:16 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -370,7 +370,7 @@ public class ResourceLoader extends ClassLoader {
      * Can be used as an argument for {@link #getResourcePaths(Pattern, boolean)}. MMBase works mainly
      * with xml configuration files, so this comes in handy.
      */
-    public static final Pattern XML_PATTERN = Pattern.compile(".*\\.xml");
+    public static final Pattern XML_PATTERN = Pattern.compile(".*\\.xml$");
 
     /**
      * Returns a set of 'sub resources' (read: 'files in the same directory'), which can succesfully be be loaded by the ResourceLoader.
@@ -550,6 +550,15 @@ public class ResourceLoader extends ClassLoader {
         }
     }
 
+
+
+    /**
+     * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
+     * configuration in in XML.
+     *
+     * @param name The name of the resource to be loaded
+     * @return The Document if succesfull, <code>null</code> otherwise.
+     */
     public Document getDocument(String name) {
         InputSource source = getInputSource(name);
         if (source == null) return null;
@@ -567,14 +576,19 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Store XML.
+     * Give a StreamResult for resource with given name. This can be used to write XML to a resource.
+     *
      */
-    public StreamResult getStreamResult(String name)  throws IOException {
+    protected StreamResult getStreamResult(String name)  throws IOException {
         OutputStream stream = createResourceAsStream(name);
         StreamResult streamResult = new StreamResult(stream);
         return streamResult;
     }
 
+    /**
+     * Creates a resource with given name for given Source.
+     *
+     */
     public void storeSource(Source source, String name) throws IOException {
         try {
             StreamResult streamResult = getStreamResult(name);
@@ -593,6 +607,9 @@ public class ResourceLoader extends ClassLoader {
         }
     }
 
+    /**
+     * Creates a resource for a given Document.
+     */
     public void  storeDocument(Document doc, String name) throws IOException {
         storeSource(new DOMSource(doc), name);
     }
@@ -651,6 +668,7 @@ public class ResourceLoader extends ClassLoader {
     protected static class MMURLConnection extends URLConnection {           
 
         private URL url;
+        private boolean determinedDoOutput = false;
 
         MMURLConnection(URL url) {
             super(url);
@@ -710,11 +728,8 @@ public class ResourceLoader extends ClassLoader {
                     }
                 }
                 if (writeable && ! file.exists()) {
-                    try {
-                        if (file.createNewFile()) {
-                            return file;
-                        }
-                    } catch (IOException ioe) {
+                    if (file.getParentFile().canWrite()) {
+                        return file;
                     }
                 }
             }
@@ -856,6 +871,36 @@ public class ResourceLoader extends ClassLoader {
                     }
                 };
         }
+
+        /**
+         * Returns <code>true</true> if you can successfully use getOutputStream();
+         */
+        public boolean getDoOutput() {
+            while (! determinedDoOutput) {
+                if (getResourceFile(false, true) != null) {
+                    setDoOutput(true);
+                    break;
+                } 
+                if (ResourceBuilder.resourceBuilder != null) {
+                    setDoOutput(true);
+                    break;
+                }
+                URL u = getServletContextResource();
+                if (u != null && u.openConnection().getDoOutput()) {
+                    setDoOutput(true);
+                    break;
+                }
+                u = getClassResource();
+                if (u != null && u.openConnection().getDoOutput()) {
+                    setDoOutput(true);
+                    break;
+                }
+                determinedDoOutput = true;
+                // todo, this assumes that ser
+            }
+            return super.getDoOutput();
+                            
+        }
         /**
          * {@inheritDoc}
          */
@@ -869,6 +914,7 @@ public class ResourceLoader extends ClassLoader {
             { // if already a file, change that
                 File file = getResourceFile(true, true);
                 if (file != null) { // already a file, rewrite this file
+                    
                     return new FileOutputStream(file);
                 }
             } 
@@ -897,6 +943,9 @@ public class ResourceLoader extends ClassLoader {
             { 
                 File file = getResourceFile(false, true);
                 if (file != null) { // that would succeed!
+                    if (! file.exists()) {
+                        file.createNewFile();
+                    }
                     return new FileOutputStream(file);
                 }
             }
