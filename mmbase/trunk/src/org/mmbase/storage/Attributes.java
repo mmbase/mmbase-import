@@ -15,7 +15,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.2 2003-08-22 12:34:47 pierre Exp $
+ * @version $Id: Attributes.java,v 1.3 2004-11-30 08:30:57 pierre Exp $
  */
 public final class Attributes {
 
@@ -38,7 +38,7 @@ public final class Attributes {
      * Note that you can specify this attribute seperately, but the "enforce" attribute
      * of the "disallowedfields" tag overrides this attribute.
      */
-    public static final String ENFORCE_DISALLOWED_FIELDS = "enforce.disallowed.fields";
+    public static final String ENFORCE_DISALLOWED_FIELDS = "enforce-disallowed-fields";
 
     /**
      * Attribute: <code>storage-identifier-case</code>.
@@ -55,7 +55,7 @@ public final class Attributes {
 
     /**
      * Attribute: <code>default-storage-identifier-prefix</code>.
-     * A default prefix to place in front of diallowedf fieldnames to make them suitabel for use in a storage layer.
+     * A default prefix to place in front of diallowed fieldnames to make them suitabel for use in a storage layer.
      * By default, this option is not set.
      */
     public static final String DEFAULT_STORAGE_IDENTIFIER_PREFIX = "default-storage-identifier-prefix";
