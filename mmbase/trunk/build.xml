@@ -73,8 +73,8 @@ several MMBase-checkouts.
   <property name="javadoc.cleaning" value="true"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
-  <property name="version"      value="MMBase 1.7.0"/>
-  <property name="distro"      value="MMBase ${version}"/>
+  <property name="distro.version"   value="1.7.0"/>
+  <property name="distro"           value="MMBase ${distro.version}"/>
 
   <!-- documentation related settings -->
   <property name="documentation.home" value="${source.dir}/documentation" />
@@ -167,8 +167,7 @@ build.compiler=modern
 optimize=on
 debug=on
 deprecation=on
-distro=${distro}
-version=${version}
+distro.version=${distro.version}
 builddate=${builddate}
     </echo>
 
@@ -739,7 +738,7 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase build ${version}.${builddate}">
+             bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
@@ -795,7 +794,7 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase build ${version}.${builddate}">
+             bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
