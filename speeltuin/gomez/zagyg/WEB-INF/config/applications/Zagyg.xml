@@ -25,12 +25,6 @@
     <builder maintainer="mmbase.org" version="0">editorrel</builder>
     <builder maintainer="mmbase.org" version="0">templaterel</builder>
 
-    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseusers</builder>
-    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasegroups</builder>
-    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasecontexts</builder>
-    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseranks</builder>
-    <builder maintainer="mmbase://security.mmbase.org/" version="1">rightsrel</builder>
-
   </neededbuilderlist>
 
   <neededreldeflist>
@@ -43,11 +37,6 @@
     <reldef source="templaterel"  target="templaterel" direction="bidirectional" guisourcename="Templaterelatie"  guitargetname="Templaterelatie" builder="templaterel" />
 
     <reldef source="parent" target="child" direction="bidirectional" guisourcename="Parent" guitargetname="Child" builder="insrel" />
-
-    <reldef source="contains" target="containedBy"  direction="bidirectional" guisourcename="contains" guitargetname="contained by" builder="insrel" />
-    <reldef source="grants"   target="grantedBy"    direction="bidirectional" guisourcename="grants"   guitargetname="granted by"   builder="rightsrel" />
-    <reldef source="rank"     target="rank"         direction="bidirectional" guisourcename="Rank"     guitargetname="User"         builder="insrel" />
-    <reldef source="allowed"  target="allowed"      direction="bidirectional" guisourcename="Allowed to change to" guitargetname="Allowed to change from" builder="insrel" />
 
   </neededreldeflist>
 
@@ -94,12 +83,6 @@
 
     <relation from="templates"   	   to="typedef"       type="editor" />
 
-    <relation from="mmbasegroups"   to="mmbaseusers"    type="contains" />
-    <relation from="mmbasegroups"   to="mmbasegroups"   type="contains" />
-    <relation from="mmbasecontexts" to="mmbasegroups"   type="grants" />
-    <relation from="mmbasecontexts" to="mmbaseusers"    type="grants" />
-    <relation from="mmbasecontexts" to="mmbasecontexts" type="allowed" />
-    <relation from="mmbaseusers"    to="mmbaseranks"    type="rank" />
   </allowedrelationlist>
 
   <datasourcelist>
@@ -118,12 +101,6 @@
     <datasource builder="templates"      path="Zagyg/templates.xml" />
     <datasource builder="typedef"        path="Zagyg/typedef.xml" />
     <datasource builder="urls"      	 path="Zagyg/urls.xml" />
-
-    <datasource builder="mmbaseranks"    path="Zagyg/mmbaseranks.xml" />
-    <datasource builder="mmbasecontexts" path="Zagyg/mmbasecontexts.xml" />
-    <datasource builder="mmbasegroups"   path="Zagyg/mmbasegroups.xml" />
-    <datasource builder="mmbaseusers"    path="Zagyg/mmbaseusers.xml" />
-
   </datasourcelist>
 
   <relationsourcelist>
@@ -131,9 +108,6 @@
     <relationsource builder="insrel"      path="Zagyg/insrel.xml" />
     <relationsource builder="posrel"      path="Zagyg/posrel.xml" />
     <relationsource builder="templaterel" path="Zagyg/templaterel.xml" />
-
-    <relationsource builder="rightsrel"   path="Zagyg/rightsrel.xml" />
-
   </relationsourcelist>
 
   <contextsourcelist>
