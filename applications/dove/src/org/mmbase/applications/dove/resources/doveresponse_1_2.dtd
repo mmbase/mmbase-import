@@ -84,6 +84,7 @@
 
 <!ELEMENT field (#PCDATA | (guiname,description,guitype,maxlength,required))>
 <!ATTLIST field name NMTOKEN #REQUIRED >
+<!ATTLIST field size NMTOKEN #IMPLIED >
 
 <!ELEMENT guiname (#PCDATA) >
 <!ATTLIST guiname xml:lang NMTOKEN "en" >

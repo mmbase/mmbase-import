@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.16 2003-11-19 13:05:35 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.17 2004-09-23 09:49:49 pierre Exp $
  */
 
 public abstract class AbstractDove {
@@ -118,6 +118,7 @@ public abstract class AbstractDove {
     public static final String ELM_MAYWRITE = "maywrite";
     public static final String ELM_MAYDELETE = "maydelete";
     public static final String ELM_CONTEXT = "context";
+    public static final String ELM_SIZE = "size";
 
     // values
     public static final String IS_PARSER = "parser";
