@@ -64,7 +64,7 @@ public class MarkupURLComposer extends FragmentURLComposer {
         MMObjectNode template = getTemplate();
         if (template != null) {
             String url = template.getStringValue("url");
-            StringBuffer buf = new StringBuffer(url + "fragment=" + fragment.getNumber() + "&format=" +  Format.get(source.getIntValue("format")));
+            StringBuffer buf = new StringBuffer(url + "fragment=" + fragment.getNumber() + "&format=" +  Format.get(source.getIntValue("format")) + "&source=" + source.getNumber());
             if (url.indexOf("://") < 0) {
                 if (! url.startsWith("/")) {
                     buf.insert(0, Config.templatesDir);
