@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.61 2003-03-18 13:30:08 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.62 2003-03-18 16:21:47 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -202,7 +202,7 @@ public class MMAdmin extends ProcessorModule {
             } else if (token.equals("LOAD") && !kioskmode) {
                 ApplicationResult result=new ApplicationResult(this);
                 String appname=(String)cmds.get(cmdline);
-                if (installApplication(appname,result,new HashSet(),false)) {
+                if (installApplication(appname, -1,null,result,new HashSet(),false)) {
                     lastmsg=result.getMessage();
                 } else {
                     lastmsg="Problem installing application : "+appname+"\n"+result.getMessage();
@@ -539,7 +539,7 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * Installs the application
-     * @param applicationname Name of the application file, without the xml extension
+     * @param applicationName Name of the application file, without the xml extension
      *                        This is also assumed to be the name of teh application itself
      *                        (if not, a warning will be issued)
      * @param result the result object, containing error messages when the installation fails,
@@ -549,51 +549,89 @@ public class MMAdmin extends ProcessorModule {
      * @param autoDeploy if true, the installation is only installed if the application is set to autodeploy
      * @return true if succesfull, false otherwise
      */
-    private boolean installApplication(String applicationname, ApplicationResult result,
-                                       Set installationSet, boolean autoDeploy) {
-        if (installationSet.contains(applicationname)) {
-            return result.error("Circular reference to application with name "+applicationname);
+     private boolean installApplication(String applicationName, int requiredVersion, String requiredMaintainer,
+                                       ApplicationResult result, Set installationSet,
+                                       boolean autoDeploy) {
+        if (installationSet.contains(applicationName)) {
+            return result.error("Circular reference to application with name "+applicationName);
         }
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-        XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
-        Versions ver=(Versions)mmb.getMMObject("versions");
-        if (app!=null) {
+        String path = MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path+applicationName+".xml");
+        Versions ver = (Versions)mmb.getMMObject("versions");
+        if (app != null) {
             // test autodeploy
             if (autoDeploy && !app.getApplicationAutoDeploy()) {
                 return true;
             }
-            String name=app.getApplicationName();
-            String maintainer=app.getApplicationMaintainer();
+            String name = app.getApplicationName();
+            String maintainer = app.getApplicationMaintainer();
+            if (requiredMaintainer != null && !maintainer.equals(requiredMaintainer)) {
+                return result.error("Install error: "+name+" requires maintainer '"+requiredMaintainer+"' but found maintainer '"+maintainer+"'");
+            }
             int version=app.getApplicationVersion();
-            int installedversion=ver.getInstalledVersion(name,"application");
-            if (installedversion==-1 || version>installedversion) {
-                if(!name.equals(applicationname)) {
-                    result.warn("Application name "+name+" not the same as the base filename "+applicationname+".\n"+
+            if (requiredVersion != -1 && version != requiredVersion) {
+                return result.error("Install error: "+name+" requires version '"+requiredVersion+"' but found version '"+version+"'");
+            }
+            int installedVersion = ver.getInstalledVersion(name,"application");
+            if (installedVersion == -1 || version > installedVersion) {
+                if(!name.equals(applicationName)) {
+                    result.warn("Application name "+name+" not the same as the base filename "+applicationName+".\n"+
                                 "This may cause problems when referring to this application.");
                 }
+                // We should possibly check whether the maintainer is valid here (see sample code below).
+                // There is currently no way to do this, though, unless we use awful queries.
+                // what we need is a getInstalledMaintainer() method on the Versions builder
+                /* sample code
+                String installedMaintainer=ver.getInstalledMaintainer(name,"application");
+                if (!maintainer.equals(installedAppMaintainer)) {
+                    return result.error("Install error: "+name+" is of maintainer '"+maintainer+"' but installed application is of maintainer '"+installedMaintainer+"'");
+                }
+                */
                 // should be installed - add to installation set
-                installationSet.add(applicationname);
-                List requires=app.getRequirements();
-                for (Iterator i=requires.iterator(); i.hasNext();) {
-                    Map reqapp= (Map)i.next();
-                    String appname= (String)reqapp.get("name");
-                    log.service("Application '"+applicationname+"' requires : "+appname);
-                    if (!installApplication(appname,result,installationSet,false)) {
-                        return false;
+                installationSet.add(applicationName);
+                List requires = app.getRequirements();
+                for (Iterator i = requires.iterator(); i.hasNext();) {
+                    Map reqapp = (Map)i.next();
+                    String reqType = (String)reqapp.get("type");
+                    if (reqType == null || reqType.equals("application")) {
+                        String appName = (String)reqapp.get("name");
+                        int installedAppVersion = ver.getInstalledVersion(appName,"application");
+                        String appMaintainer = (String)reqapp.get("maintainer");
+                        int appVersion = -1;
+                        try {
+                          String appVersionAttr = (String)reqapp.get("version");
+                          if (appVersionAttr != null) appVersion = Integer.parseInt(appVersionAttr);
+                        } catch (Exception e) {}
+                        if (installedAppVersion == -1 || appVersion > installedAppVersion) {
+                            log.service("Application '"+applicationName+"' requires : "+appName);
+                            if (!installApplication(appName,appVersion,appMaintainer,result,installationSet,false)) {
+                                return false;
+                            }
+                        } else if (appMaintainer != null) {
+                            // we should possibly check whether the maintainer is valid here (see sample code below).
+                            // There is currently no way to do this, though, unless we use awful queries.
+                            // what we need is a getInstalledMaintainer() method on the Versions builder
+                            /* sample code
+                            String installedAppMaintainer=ver.getInstalledMaintainer(name,"application");
+                            if (!appMaintainer.equals(installedAppMaintainer)) {
+                                return result.error("Install error: "+name+" requires maintainer '"+appMaintainer+"' but found maintainer '"+installedAppMaintainer+"'");
+                            }
+                            */
+                        }
                     }
                 }
                 // note: currently name and application file name should be the same
-                if (installedversion==-1) {
+                if (installedVersion == -1) {
                     log.info("Installing application : "+name);
                 } else {
-                    log.info("installing application : "+name+" new version from "+installedversion+" to "+version);
+                    log.info("installing application : "+name+" new version from "+installedVersion+" to "+version);
                 }
-                if (installBuilders(app.getNeededBuilders(), path + applicationname,result) &&
+                if (installBuilders(app.getNeededBuilders(), path + applicationName,result) &&
                     installRelDefs(app.getNeededRelDefs(),result) &&
                     installAllowedRelations(app.getAllowedRelations(),result) &&
-                    installDataSources(app.getDataSources(),applicationname, result) &&
+                    installDataSources(app.getDataSources(),applicationName, result) &&
                     installRelationSources(app.getRelationSources(), result)) {
-                    if (installedversion==-1) {
+                    if (installedVersion == -1) {
                         ver.setInstalledVersion(name,"application",maintainer,version);
                     } else {
                         ver.updateInstalledVersion(name,"application",maintainer,version);
@@ -604,18 +642,18 @@ public class MMAdmin extends ProcessorModule {
                                    app.getInstallNotice());
                 }
                 // installed or failed - remove from installation set
-                installationSet.remove(applicationname);
+                installationSet.remove(applicationName);
             } else {
                 // only return this message if the application is the main (first) application
                 // and if it was not auto-deployed (as in that case messages would not be deemed very useful)
-                if (installationSet.size()==1) {
+                if (installationSet.size() == 1) {
                     result.success("Application was allready loaded (or a higher version)\n\n"+
                                    "To remind you here is the install notice for you again : \n\n"+
                                    app.getInstallNotice());
                 }
             }
         } else {
-            result.error("Install error: can't find xml file: "+path+applicationname+".xml");
+            result.error("Install error: can't find xml file: "+path+applicationName+".xml");
         }
         return result.isSuccess();
     }
@@ -1097,7 +1135,7 @@ public class MMAdmin extends ProcessorModule {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
                     ApplicationResult result= new ApplicationResult(this);
-                    if (!installApplication(aname.substring(0,aname.length()-4),result,new HashSet(),true)) {
+                    if (!installApplication(aname.substring(0,aname.length()-4),-1,null,result,new HashSet(),true)) {
                         log.error("Problem installing application : "+aname);
                     }
                 }
