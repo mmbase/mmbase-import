@@ -7,12 +7,15 @@
 
 <% request.getSession().invalidate();	// start all over again %>
 
-<h2>Log out</h2>
+<p>&nbsp;</p>
 <p class="message">You were logged out.</p>
-<p><a href="index.jsp">Back to the homepage of my_editors</a></p>
-
-<p>Vreemd, maar dit werkt nog niet goed (op mijn Mac OS X met IE 5.2 dan, en misschien op wel meer masjientjes). 
-Nog eens naar kijken...</p>
+<p>&nbsp;</p>
+<table border="0" cellspacing="0" cellpadding="4" class="table-left">
+<tr bgcolor="#EFEFEF">
+  <td><a href="login.jsp"><img src="img/mmbase-cancel.gif" alt="Log in" width="21" height="20" hspace="4" vspace="4" border="0" /></a></td>
+  <td><a href="login.jsp">Log back in again</a></td>
+</tr>
+</table>
 
 <%@ include file="inc_foot.jsp" %>
 </mm:cloud>

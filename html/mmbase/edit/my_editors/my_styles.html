@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl" lang="nl">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Styles.html</title>
+<title>my_editors - css styles example</title>
 <link rel="stylesheet" href="my_editors.css" type="text/css" />
 </head>
 <body bgcolor="#FFFFFF" link="#CC0000" alink="#00FF00" vlink="#000066">
@@ -12,8 +12,8 @@
   <tr> 
     <td width="50"><img src="img/mmbase-edit-40.gif" alt="edit" width="41" height="40" hspace="5" vspace="5" border="0" /></td>
     <td><div class="top-title">my_editors - Dit onderdeel heet</div>
-      <a class="top-links" href="#">home</a> - <a class="top-links" href="my_styles.html">help</a> 
-      - je bent ingelogd als flip (rank: basic user) - <a href="#">log uit</a></td>
+      <a class="top-links" href="index.jsp">home</a> - <a class="top-links" href="help.jsp">help</a> 
+      - je bent ingelogd als flip (rank: basic user) - <a href="logoff.jsp">log off</a></td>
   </tr>
   <tr bgcolor="#CCCCCC"> 
     <td colspan="2">&nbsp; <a href="index.jsp">editors</a> &gt; news &gt; image</td>
@@ -48,15 +48,15 @@ and every cell rejoice!</p>
       </tr>
       <tr> 
         <td align="right" class="name">Naam</td>
-        <td><input name="Naam" type="text" class="form-entry" value="Waarde" /></td>
+        <td><input name="Naam" type="text" class="small" value="Waarde" /></td>
       </tr>
       <tr> 
         <td align="right" class="name">Naam 2</td>
-        <td><input name="Naam2" type="text" class="form-entry" value="Waarde nog 's" /></td>
+        <td><input name="Naam2" type="text" class="small" value="Waarde nog 's" /></td>
       </tr>
       <tr> 
         <td align="right" class="name">En bold</td>
-        <td><input name="Naam3" type="text" class="form-entry" value="Waarde nog 's" /></td>
+        <td><input name="Naam3" type="text" class="small" value="Waarde nog 's" /></td>
       </tr>
       <tr> 
         <td align="right">&nbsp;</td>
@@ -87,8 +87,57 @@ and every cell rejoice!</p>
     </table>
     <p>&nbsp;</p>
   </form>
+
+<!-- table about the icons -->
+<table border="0" cellpadding="0" cellspacing="0" class="zoektabel">
+  <tr>
+    <td colspan="2">&nbsp;</td>
+    <td rowspan="3" nowrap="nowrap">&nbsp;<b class="title-ss">About the icons</b>
+    <td colspan="2">&nbsp;</td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000" colspan="2"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+    <td bgcolor="#000000" colspan="2"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+    <td width="20">&nbsp;</td>
+    <td width="20">&nbsp;</td>
+    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+    <td colspan="3">
+<!- table in table -->
+  <table width="100%" border="0" cellspacing="0" cellpadding="4">
+	<tr>
+	  <td align="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
+	  <td nowrap="nowrap"> Search object </td>
+	</tr>
+	<tr>
+	  <td align="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
+	  <td nowrap="nowrap"> Create new object </td>
+	</tr>
+	<tr>
+	  <td align="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+	  <td nowrap="nowrap"> Edit node </td>
+	</tr>
+	<tr>
+	  <td align="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
+	  <td nowrap="nowrap"> Delete node </td>
+	</tr>
+  </table>
+<!- end table in table -->
+    </td>
+    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+  </tr>
+  <tr>
+    <td colspan="5" bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
+  </tr>
+</table>
+<!-- end about the icons -->
 <hr noshade>
-<div class="footer"><strike>&copy; 2002 <a href="http://www.toly.nl/">andr&eacute;</a></strike></div>
+<div class="footer">Last updated: 5 april 2003</div>
 </div>
 </body>
 </html>
