@@ -53,6 +53,36 @@
 	<td><table border="0" width="100%" cellspacing="0" cellpadding="0" class="breadcrumbar">
 	  <tr>
 	    <td width="100%"><span class="breadcrum"><%@ include file="/includes/breadcrums.jsp" %></span></td>
+
+<!-- tab menu -->
+<mm:compare referid="portal" value="home" inverse="true">
+	<mm:node number="home">
+	<mm:field name="number" id="thisportal" write="false">
+	<mm:compare referid="portal" value="$thisportal">
+		<!-- selected -->
+		<td style="background-color: rgb(255, 255, 255);">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</td>
+        </mm:compare>
+	<mm:compare referid="portal" value="$thisportal" inverse="true">
+<td><a href="<mm:url page="/index.jsp"><mm:param name="portal"><mm:field name="number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</a></td>
+        </mm:compare>
+	</mm:field>
+	<mm:remove referid="thisportal"/>
+	</mm:node>
+</mm:compare>
+
+<mm:list nodes="home" path="portals1,posrel,portals2" searchdir="destination" orderby="posrel.pos" directions="UP">
+	<mm:field name="portals2.number" id="thisportal" write="false">
+	<mm:compare referid="portal" value="$thisportal">
+<td style="background-color: rgb(255, 255, 255);">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</td>
+	</mm:compare>
+	<mm:compare referid="portal" value="$thisportal" inverse="true">
+<td><a href="<mm:url page="/index.jsp"><mm:param name="portal"><mm:field name="portals2.number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</a></td>
+	</mm:compare>
+	</mm:field>
+	<mm:remove referid="thisportal"/>
+</mm:list>
+<!-- end tab menu -->
+
 <%  String rightContent = "";
     if(userFullName != null) {
       rightContent = "<a style=\"color: black;\" href=\""+request.getContextPath()+response.encodeURL("/login/mmaccount.jsp")+"\">Welcome&nbsp;" + org.apache.commons.lang.StringUtils.replace(userFullName, " ", "&nbsp;") + "</a>&nbsp;";
@@ -61,10 +91,10 @@
       orgLocation = java.net.URLEncoder.encode(orgLocation);
 String myUrl = request.getContextPath() + "/login/mmlogin.jsp?orgLocation="+orgLocation;
       String encUrl = response.encodeURL(myUrl);
-      rightContent = "<a style=\"color: black;\" href=\"" +encUrl+ "\">login</a>";
+      rightContent = "<a style=\"color: black;\" href=\"" +encUrl+ "\">Login</a>";
     }
 %>
-<td align="right"><%=rightContent%></td>
+<td align="right">&nbsp;&nbsp;<%=rightContent%>&nbsp;&nbsp;</td>
 	  </tr>
 	</table></td>
 </tr>
