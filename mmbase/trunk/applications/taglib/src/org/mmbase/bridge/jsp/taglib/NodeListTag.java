@@ -37,6 +37,7 @@ import org.mmbase.util.logging.Logging;
 public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, ListItemInfo{
     //this class is growing to big.. 
     //need to look at the MMCI again. I am shure MMCI can handle more nows
+
     
     private static Logger log = Logging.getLoggerInstance(NodeListTag.class.getName());
     
