@@ -323,6 +323,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     private CharArrayWriter caw;
     private PrintWriter writer;
     private MyServletOutputStream msos;
+    private String characterEncoding = "text/html; charset=utf-8";
  
     /**
      * Public constructor
@@ -355,6 +356,26 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     public String toString() {
         writer.flush();
         return caw.toString();
+    }
+    
+    /**
+     * Sets the content type of the response being sent to the client. The content type may include the type of character encoding used, for example, text/html; charset=ISO-8859-4.
+     * If obtaining a PrintWriter, this method should be called first.
+     */
+    public void setContentType(String encoding) {
+        log.debug("setting content of include page, we need better routine here(to coding : " +  encoding + ")");
+        this.characterEncoding = encoding;
+    }
+    
+    /**
+     * Returns the name of the charset used for the MIME body sent in this response.
+     * If no charset has been assigned, it is implicitly set to ISO-8859-1 (Latin-1).
+     * See RFC 2047 (http://ds.internic.net/rfc/rfc2045.txt) for more information about character encoding and MIME.
+     * returns the encoding
+     */    
+    public String getCharacterEncoding() {
+        log.debug(characterEncoding);
+        return characterEncoding;
     }
 }
 
