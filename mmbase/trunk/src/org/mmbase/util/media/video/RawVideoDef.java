@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecation-used CompareInterface and Sortable are deprecated, use java.lang.Comparable
  * @javadoc
  * @author vpro
- * @version $Id: RawVideoDef.java,v 1.7 2002-02-20 11:45:19 pierre Exp $
+ * @version $Id: RawVideoDef.java,v 1.8 2002-07-23 14:05:13 vpro Exp $
  */
 public class RawVideoDef implements Comparable, CompareInterface, Sortable {
     /**
@@ -272,7 +272,11 @@ public class RawVideoDef implements Comparable, CompareInterface, Sortable {
 
         if (status == STATUS_DONE) {
             if (format == FORMAT_R5) {
-                result = "pnm://" + VideoUtils.getBestMirrorUrl(sp, url);
+                //result = "pnm://" + VideoUtils.getBestMirrorUrl(sp, url);
+                // DONT use pnm for old ra streams anymore since annoying buffer probs occur.
+				// Especially when using start and end offsets.
+				// Instead use rtsp.
+				result = "rtsp://" + VideoUtils.getBestMirrorUrl(sp, url);
             } else
                 if (format == FORMAT_G2) {
                 result = "rtsp://" + VideoUtils.getBestMirrorUrl(sp, url);
