@@ -8,7 +8,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicLegacyConstraintTest extends TestCase {
     
@@ -46,7 +46,13 @@ public class BasicLegacyConstraintTest extends TestCase {
             fail("Null constraint, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        BasicLegacyConstraint instance = new BasicLegacyConstraint("");
+        try {
+            // Empty constraint, should throw InvalidArgumentException.
+            new BasicLegacyConstraint("");
+            fail("Null constraint, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+        
+        BasicLegacyConstraint instance = new BasicLegacyConstraint("xxx");
         for (int i = 0; i < TEST_CONSTRAINTS.length; i++) {
             String constraint = TEST_CONSTRAINTS[i];
             BasicLegacyConstraint result = instance.setConstraint(constraint);
