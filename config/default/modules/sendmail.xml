@@ -12,7 +12,8 @@
         <property name="mailhost">smtp</property>
         <!-- for JMSendMail (j2ee way). Can also use mailhost, then
         comment the following two away. And tolerate some warnings in
-        the log :-) -->
+        the log :-) It's nicer to comment the 'mailhost' property away
+        then. -->
         <property name="context">java:comp/env</property>
         <property name="datasource">mail/MMBase</property>
     </properties>
