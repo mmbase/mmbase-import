@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.74 2004-02-23 19:01:01 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.75 2004-02-26 22:07:20 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -275,9 +275,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         try {
             boolean checked = cloud.setSecurityConstraint(query);
 
-
-
-
             List resultList = (List) nodeListCache.get(query);
 
             if (resultList == null) {
@@ -286,9 +283,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 nodeListCache.put(query, resultList);
             }
 
+            BasicNodeList resultNodeList;
 
-
-            BasicNodeList resultNodeList = new BasicNodeList(resultList, cloud);
+            if (query.getNodeManager() instanceof RelationManager) {                
+                resultNodeList = new BasicRelationList(resultList, cloud);
+            } else {
+                resultNodeList = new BasicNodeList(resultList, cloud);
+            }
 
             resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
 
