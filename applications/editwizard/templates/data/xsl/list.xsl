@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.34 2003-12-19 11:09:34 nico Exp $
+    @version $Id: list.xsl,v 1.35 2004-01-05 11:12:35 nico Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -45,9 +45,7 @@
     </script>
   </xsl:template>
 
-  <xsl:template name="htmltitle">
-    <xsl:value-of select="$wizardtitle" />
-  </xsl:template>
+  <xsl:template name="htmltitle"><xsl:value-of select="$wizardtitle" /></xsl:template>
 
   <xsl:template name="style">
     <link rel="stylesheet" type="text/css" href="{$cssdir}layout/list.css" />
@@ -113,7 +111,7 @@
         <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}">
           <xsl:call-template name="prompt_index" />
         </a>
-        -
+        <xsl:text> - </xsl:text>
         <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}">
           <xsl:call-template name="prompt_logout" />
         </a>

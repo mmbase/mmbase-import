@@ -7,7 +7,7 @@
     @author Pierre van Rooden
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: debug.xsl,v 1.6 2003-12-19 11:09:34 nico Exp $
+    @version $Id: debug.xsl,v 1.7 2004-01-05 11:12:35 nico Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -28,9 +28,7 @@
 
   <xsl:variable name="BodyOnLoad" >init();</xsl:variable>
 
-  <xsl:template name="htmltitle">
-    Editwizard session inspector (debugging)
-  </xsl:template>
+  <xsl:template name="htmltitle">Editwizard session inspector (debugging)</xsl:template>
   
   <xsl:template name="style">
     <link rel="stylesheet" type="text/css" href="{$cssdir}layout/debug.css" />
