@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.55 2002-07-23 14:44:20 pierre Exp $
+ * @version $Id: Wizard.java,v 1.56 2002-07-24 12:07:58 pierre Exp $
  *
  */
 public class Wizard {
@@ -291,13 +291,11 @@ public class Wizard {
      * @param wizardConfig the config with the parameters
      */
     protected void storeConfigurationAttributes(Config.WizardConfig wizardConfig) {
-        log.info("Store attributes");
         variables.put("wizardname", wizardName);
         if (dataId != null) variables.put("objectnumber", dataId);
         // set attributes from config
         for (Iterator i = wizardConfig.attributes.entrySet().iterator(); i.hasNext();) {
             Map.Entry en = (Map.Entry)i.next();
-            log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString());
             variables.put(en.getKey().toString(),en.getValue().toString());
         }
     }
