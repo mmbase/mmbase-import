@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  authorization, you have to extend this class.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.13 2002-07-26 08:47:33 vpro Exp $
+ * @version $Id: Authorization.java,v 1.14 2003-06-16 17:23:23 michiel Exp $
  */
 public abstract class Authorization {
     private static Logger log=Logging.getLoggerInstance(Authorization.class.getName());
@@ -103,25 +103,25 @@ public abstract class Authorization {
      *	This method could be overrided by an extending class.
      *	This method checks if an operation is permitted on a certain node done
      *	by a certain user.
-     *	@param user The UserContext, containing the information
-     *	    about the user.
+     *	@param user The UserContext, containing the information the user.
      *	@param nodeid The id of the MMObjectNode, which has to be checked.
+     *                It the action is CREATE then this will be interpreted as a typedef node.
      *	@param operation The operation which will be performed.
      *	@return <code>true</code> if the operation is permitted,
      *	    	<code>false</code> if the operation is not permitted,
      */
     public abstract boolean check(UserContext user, int nodeid, Operation operation);
 
+
+
     /**
-     *	This method could be overrided by an extending class.
-     *	This method asserts that an operation is permitted on a
-     *	certain node done by a certain user. If not, a exception is thrown
-     *	@param user The UserContext, containing the information
-     *	    about the user.
-     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
-     *	@param operation The operation which will be performed.
-     *	@exception org.mmbase.SecurityException
-     *	    If the assertion fails
+     * This method wraps the check-method with the same arguments. The only difference being that it
+     * throws on exception if the specified operation is not permitted. 
+     *
+     * It is wise to override check, and not verify (And I wonder why this method is not simply final).
+     *
+     * @exception org.mmbase.SecurityException  If the assertion fails
+     * @see #check(UserContext, int, Operation)
      */
     public void verify(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (!check(user, nodeid, operation)) {
@@ -135,8 +135,10 @@ public abstract class Authorization {
      * the source or destination of a certain relation done by a certain
      * user is permitted.
      *
-     * @param user The UserContext, containing the information about the user.
-     * @param nodeid The id of the relation which has to be checked.
+     * @param user      The UserContext, containing the information about the user.
+     * @param nodeid    The id of the relation which has to be checked.  If the operation is CREATE
+     * then this will be interpreted as the typedef node (extending insrel) for the relation to be
+     * created.
      * @param srcnodeid The id of the (new) source node of the relation.
      * @param dstnodeid The id of the (new) destination node of the relation.
      * @param operation The operation which will be performed (CREATE (create
@@ -148,19 +150,13 @@ public abstract class Authorization {
     public abstract boolean check(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation);
 
     /**
-     * This method could be overrided by an extending class.
-     * This method asserts that creation of a certain relation or changing
-     * the source or destination of a certain relation done by a certain
-     * user is permitted. If not, an exception is thrown
+     * This method wraps the check-method with the same arguments. The only difference being that it
+     * throws on exception if the specified operation is not permitted. 
      *
-     * @param user The UserContext, containing the information about the user.
-     * @param nodeid The id of the relation which has to be asserted.
-     * @param srcnodeid The id of the (new) source node of the relation.
-     * @param dstnodeid The id of the (new) destination node of the relation.
-     * @param operation The operation which will be performed (CREATE (create
-     *                  relation) or CHANGE_RELATION (source and/or destination
-     *                  are changed).
+     * It is wise to override check, and not verify (And I wonder why this method is not simply final).
+     *
      * @exception org.mmbase.SecurityException  If the assertion fails
+     * @see #check(UserContext, int, int, int, Operation)
      */
     public void verify(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (!check(user, nodeid, srcnodeid, dstnodeid, operation)) {
