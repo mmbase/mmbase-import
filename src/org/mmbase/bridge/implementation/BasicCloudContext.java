@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
-import org.mmbase.security.UserContext;
-import org.mmbase.security.AuthenticationData;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.39 2005-03-01 14:57:48 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.40 2005-03-15 10:43:07 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -184,7 +183,12 @@ public class BasicCloudContext implements CloudContext {
 
     public AuthenticationData getAuthentication() throws NotFoundException {
         // checkExists(cloudName);
-        return mmb.getMMBaseCop().getAuthentication();
+        MMBaseCop cop = mmb.getMMBaseCop();
+        if (cop == null) {
+            throw new NotFoundException("MMBase not yet initialized");
+        } else {
+            return cop.getAuthentication();
+        }
     }
 
 }
