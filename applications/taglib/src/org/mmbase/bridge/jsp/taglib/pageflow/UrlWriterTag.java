@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.6 2005-01-05 22:25:05 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.7 2005-01-10 10:23:39 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -35,12 +35,14 @@ public class UrlWriterTag extends UrlTag  implements Writer {
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
-        helper.setValue(
-                        new Comparable() {
+        helper.setValue(new Comparable() {
                             final UrlWriterTag t = UrlWriterTag.this;
                             public String toString() {
                                 try {
                                     String string = t.getUrl();
+                                    // this means that it is written to page by ${_} and that consequently there _must_ be a body.
+                                    // this is needed when body is not buffered.
+                                    haveBody();
                                     return string;  
                                 } catch (Throwable e){
                                     return e.toString();
