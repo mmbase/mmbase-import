@@ -137,7 +137,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                     show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
                     if (node != null) {
-                        show += Encode.XMLEscape(decode(node.getStringValue(field.getName()), node));
+                        show += Encode.encode("ESCAPE_XML", decode(node.getStringValue(field.getName()), node));
                     }                    
                     show += "</textarea>";                
                     break;                    
@@ -145,17 +145,14 @@ public class FieldInfoTag extends NodeReferrerTag {
                 if(field.getMaxLength() > 255 )  {                
                     show = "<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
                     if (node != null) {
-                        show += Encode.XMLEscape(decode(node.getStringValue(field.getName()), node));
+                        show += Encode.encode("ESCAPE_XML", decode(node.getStringValue(field.getName()), node));
                     }                    
                     show += "</textarea>";
                     break;
                 }
                 show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
     	    	if (node != null) {
-		    // show += Encode.XMLAttributeEscape(decode(node.getStringValue(field.getName()), node));
-		    // ERROR : NEXT LINE HAS TO BE FIXED ! (or the class Encode should be checked in !! )
-    	    	    show += Encode.XMLEscape(decode(node.getStringValue(field.getName()), node));
-		    		    
+    	    	    show += Encode.encode("ESCAPE_XML_ATTRIBUTE", decode(node.getStringValue(field.getName()), node));		    		    
 		}
 		show += "\" />";
     	    	break;
