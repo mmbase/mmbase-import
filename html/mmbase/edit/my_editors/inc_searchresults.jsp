@@ -1,30 +1,31 @@
 <mm:present referid="ntype">
 <mm:import externid="search" />
 <mm:listnodescontainer type="$ntype">
-  <mm:size id="totsize" write="false" /><mm:ageconstraint minage="0" maxage="$conf_days" />
   <% 
   int span = 0;			// # of fields
   int tot_found = 0;	
   int list_index = 0;		// Index value of the list
   NodeManager nm = wolk.getNodeManager(ntype);
   %>
+  <mm:size id="totsize" write="false" jspvar="l_size" vartype="Integer"><% tot_found = l_size.intValue(); %></mm:size>
+  <mm:ageconstraint minage="0" maxage="$conf_days" />
   <mm:present referid="search">
 	<mm:context>
 	  <mm:fieldlist nodetype="$ntype" type="search">
 		<mm:fieldinfo type="usesearchinput" /><%-- 'usesearchinput' can add constraints to the surrounding container --%>
 	  </mm:fieldlist>             
 	</mm:context>
-	<mm:size write="false" jspvar="l_size" vartype="Integer"><% tot_found = l_size.intValue(); %></mm:size>
+  	<mm:size write="false" jspvar="l_size" vartype="Integer"><% tot_found = l_size.intValue(); %></mm:size>
   </mm:present>
   <%-- calculate # fields --%>
   <mm:fieldlist type="list" nodetype="$ntype"><% span++; %></mm:fieldlist>
-  <!-- table with search results -->
-  <table width="100%" border="0" cellspacing="0" cellpadding="4" class="table-search">
   <mm:listnodes	id="node_number"
   	max="<%= conf_max %>" offset="<%= ofs_str %>"
   	directions="DOWN" orderby="number">
   	<% if (tot_found == 0) { %><mm:size write="false" jspvar="l_size" vartype="Integer"><% tot_found = l_size.intValue(); %></mm:size><%}%>
 	<mm:first>
+	<!-- table with search results -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="4" class="table-results">
 	<tr bgcolor="#CCCCCC">
 	  <td colspan="<%= span + 2 %>" class="title-s">
 		<%= tot_found %> out of <mm:write referid="totsize" /> of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b>  (<mm:write referid="ntype" />) 
@@ -118,9 +119,9 @@
 	<% } %>
 	  </td>
 	</tr>
+    </table>
     </mm:last>
   </mm:listnodes>
-  </table>
   <!-- /table with search results -->
 </mm:listnodescontainer>
 </mm:present>
