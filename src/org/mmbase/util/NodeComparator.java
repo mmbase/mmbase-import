@@ -19,14 +19,20 @@ import org.mmbase.module.core.*;
  * these fields may not have a null value.
  *
  * @author Pierre van Rooden
- * @version $Id: NodeComparator.java,v 1.3 2003-03-10 11:51:08 pierre Exp $
+ * @version $Id: NodeComparator.java,v 1.4 2004-05-03 12:16:53 michiel Exp $
  */
 public class NodeComparator implements Comparator {
 
     public final static String UP = "UP";
     public final static String DOWN = "DOWN";
 
+    /**
+     * @todo Should be List, not Vector
+     */
     private Vector fields;
+    /**
+     * @todo Should be List, not Vector
+     */
     private Vector sortDirs;
 
     /**
