@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
 public class packageStep {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(packageStep.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(packageStep.class); 
 
    private String userfeedback;
 

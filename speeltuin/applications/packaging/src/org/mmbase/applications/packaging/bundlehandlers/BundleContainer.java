@@ -39,7 +39,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class BundleContainer implements BundleInterface {
-    private static Logger log = Logging.getLoggerInstance(BundleContainer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BundleContainer.class);
 
     private ShareInfo shareinfo;
 

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
 public class installThread implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(installThread.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(installThread.class); 
 
     // Thread
     Thread kicker = null;

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
 public class installStep {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(installStep.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(installStep.class); 
 
    private String userfeedback;
 

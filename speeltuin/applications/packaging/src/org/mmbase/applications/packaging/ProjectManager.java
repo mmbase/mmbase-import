@@ -38,7 +38,7 @@ import org.w3c.dom.*;
 public class ProjectManager {
 
     // create a logger for this class
-    private static Logger log = Logging.getLoggerInstance(ProjectManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ProjectManager.class);
 
     // state of this manager is running or not
     private static boolean state=false;

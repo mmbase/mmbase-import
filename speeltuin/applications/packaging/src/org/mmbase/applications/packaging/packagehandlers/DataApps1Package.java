@@ -39,7 +39,7 @@ import org.xml.sax.*;
 public class DataApps1Package extends BasicPackage implements PackageInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(DataApps1Package.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DataApps1Package.class);
 
 
     public static final String DTD_DATASET_1_0 = "dataset_1_0.dtd";

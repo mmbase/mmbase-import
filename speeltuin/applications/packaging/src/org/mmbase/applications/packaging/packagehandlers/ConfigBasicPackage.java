@@ -37,7 +37,7 @@ import org.xml.sax.*;
 public class ConfigBasicPackage extends BasicPackage implements PackageInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(ConfigBasicPackage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ConfigBasicPackage.class);
 
     public ConfigBasicPackage() {
     }

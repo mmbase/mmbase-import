@@ -31,7 +31,7 @@ import java.util.*;
 public class BundleManager {
 
     // create a logger for this class
-    private static Logger log = Logging.getLoggerInstance(BundleManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BundleManager.class);
 
     // state if this manager is running or not.
     private static boolean state=false;

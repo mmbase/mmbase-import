@@ -37,7 +37,7 @@ import org.xml.sax.*;
 public class FunctionSetPackage extends BasicPackage implements PackageInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(DisplayHtmlPackage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DisplayHtmlPackage.class);
 
     /** DTD resource filename of the functionsets DTD version 1.0 */
     public static final String DTD_FUNCTIONSETS_1_0 = "functionsets_1_0.dtd";

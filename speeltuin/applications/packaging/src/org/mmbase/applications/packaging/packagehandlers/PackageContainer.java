@@ -40,7 +40,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class PackageContainer implements PackageInterface {
-    private static Logger log = Logging.getLoggerInstance(PackageContainer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(PackageContainer.class);
 
     private ShareInfo shareinfo;
 

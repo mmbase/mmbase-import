@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class InstallManager {
-    private static Logger log = Logging.getLoggerInstance(InstallManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(InstallManager.class);
 
     // is the install manager active (for dependencies reasons)
     private static boolean active=false;

@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  */
 public class BundleBasicCreator extends BasicCreator implements CreatorInterface {
 
-    private static Logger log = Logging.getLoggerInstance(BundleBasicCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BundleBasicCreator.class);
 
 
     public static final String DTD_PACKAGING_BUNDLE_BASIC_1_0 = "packaging_bundle_basic_1_0.dtd";

@@ -37,7 +37,7 @@ import org.w3c.dom.*;
 public class DisplayHtmlPackage extends BasicPackage implements PackageInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(DisplayHtmlPackage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DisplayHtmlPackage.class);
 
 
     public DisplayHtmlPackage() {
