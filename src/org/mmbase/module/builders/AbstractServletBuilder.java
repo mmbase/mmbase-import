@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.3 2002-06-29 14:26:23 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.4 2002-06-30 19:30:13 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -133,6 +133,39 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
     /**
+     * 'Servlet' builders need a way to transform security to the servlet, in the gui functions, so
+     * they have to implement the 'SGUIIndicators'
+     */
+
+    abstract protected String getSGUIIndicator(String session, MMObjectNode node);
+    abstract protected String getSGUIIndicator(String session, String field, MMObjectNode node);
+
+
+    /**
+     * Gets the GUI indicator of the super class of this class, to avoid circular references in
+     * descendants, which will occur if they want to call super.getGUIIndicator().
+     */
+
+    final protected String getSuperGUIIndicator(String field, MMObjectNode node) {
+        return super.getGUIIndicator(field, node);
+    }
+
+    /**
+     * This is final, because getSGUIIndicator has to be overridden in stead
+     */
+    final public String getGUIIndicator(MMObjectNode node) {              
+        return getSGUIIndicator("", node);
+    }
+    /**
+     * This is final, because getSGUIIndicator has to be overridden in stead
+     */
+
+    final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
+        return getSGUIIndicator("", field, node);
+    }
+
+
+    /**
      * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
      * associated with this builder. The field can optionally be the number field to obtain a full
      * path to the served object.
@@ -161,10 +194,21 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         } else if (function.equals("servletpathof")) { 
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
             return getServletPathWithAssociation(field, MMBaseContext.getHtmlRootUrlPath());
-        }
-        return super.executeFunction(node, function, field);
+        } else if (function.equals("format")) { // don't issue a warning, builders can override this. 
+            // images e.g. return jpg or gif
+        } else if (function.equals("mimetype")) { // don't issue a warning, builders can override this. 
+            // images, attachments and so on
+        } else if (function.equals("sgui")) {
+            int comma = field.indexOf(',');
+            if (comma == -1) {
+                return getGUIIndicator(field, node);
+            } else {
+                return getSGUIIndicator("session=" + field.substring(0, comma) + "+", field.substring(comma + 1), node);
+            }
+        } else {                   
+            return super.executeFunction(node, function, field);
+        }    
+        return null;
     }
-    
 
 }
-

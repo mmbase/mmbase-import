@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.20 2002-06-28 20:55:04 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.21 2002-06-30 19:30:13 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -52,17 +52,17 @@ public class ImageCaches extends AbstractImages {
      *
      * @since MMBase-1.6
      **/
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title) {
-        String servlet    = getServletPath();
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName) {
+        String servlet    = getServletPath() + sessionName;
         MMObjectNode origNode = originalImage(node);
         String imageThumb = (origNode != null ? servlet + origNode.getIntValue("cache(s(100x60))") : "");
         String image      = servlet + node.getNumber();
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
-    public String getGUIIndicator(MMObjectNode node) {
+    protected String getSGUIIndicator(MMObjectNode node, String session) {
         MMObjectNode origNode = originalImage(node);
-        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""));
+        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), session);
     }
 
     /*

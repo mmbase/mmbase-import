@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.14 2002-06-29 14:29:05 michiel Exp $ 
+ * @version $Id: Attachments.java,v 1.15 2002-06-30 19:30:13 michiel Exp $ 
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -62,18 +62,16 @@ public class Attachments extends AbstractServletBuilder {
         return false;
     }
 
-    public String getGUIIndicator(MMObjectNode node) {
-        return getGUIIndicator("handle", node);
+    public String getSGUIIndicator(String session, MMObjectNode node) {
+        return getSGUIIndicator(session, "handle", node);
     }
 
-    public String getGUIIndicator(String field, MMObjectNode node) {
+    public String getSGUIIndicator(String session, String field, MMObjectNode node) {
         if (field.equals("handle") || field.equals("title")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
             String filename = node.getStringValue("filename");
-
-
             String title;
 
             if (field.equals("handle")) {
@@ -89,10 +87,10 @@ public class Attachments extends AbstractServletBuilder {
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
                 return title;
             } else {
-                return "<a href=\"" + getServletPath(filename) + num + "\" target=\"extern\">" + title + "</a>";
+                return "<a href=\"" + getServletPath(filename) + session + num + "\" target=\"extern\">" + title + "</a>";
             }            
         }
-        return super.getGUIIndicator(field, node);
+        return super.getSuperGUIIndicator(field, node);
     }
 
     /**

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.10 2002-06-28 22:36:11 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.11 2002-06-30 19:31:38 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -40,21 +40,21 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * An image's gui-indicator is of course some &lt;img src&gt;, but it depends on what kind of image
      * (cached, original) what excactly it must be.
      */
-    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title);
+    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName);
 
     /**
      * Gui indicator of a whole node.
      */
-    public String getGUIIndicator(MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, "*");
+    protected String getSGUIIndicator(String session, MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, "*", session);
     }
 
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("handle")) {
-            return getGUIIndicatorWithAlt(node, "*");
+    protected String getSGUIIndicator(String session, String field, MMObjectNode node) {
+        if (field.equals("handle") || field.equals("")) {
+            return getGUIIndicatorWithAlt(node, "*", session);
         }
-        // other fields can be handled by the gui function...
-        return null;
+        // other fields can be handled by the orignal gui function...
+        return getSuperGUIIndicator(field, node);
     }
 
     /**
