@@ -14,6 +14,8 @@ import org.mmbase.module.builders.Properties;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.util.*;
 
+import nl.vpro.mmbase.util.*;
+
 /**
  * @author Arjan Houtman
  * @author Daniel Ockeloen
