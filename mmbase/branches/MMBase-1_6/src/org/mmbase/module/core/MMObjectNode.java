@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.17 2003-05-08 11:14:16 vpro Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.18 2003-08-13 08:55:00 vpro Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1068,9 +1068,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                         nodetype=parent.getNodeType(snumber);
                     }
                     MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
-                     if (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType)) {
+                    if (nodeType!=null && (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType))) {
                          count++;
-                     }
+                    }
                 }
             }
         } else {
