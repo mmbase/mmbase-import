@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.7 2004-07-14 07:07:41 keesj Exp $;
+ @version $Id: mmbase.css,v 1.8 2004-07-14 12:41:31 keesj Exp $;
 */
 
 
@@ -52,6 +52,9 @@ th {
 
 th.header,th.navigate { 
   border-top: solid white 2ex;
+}
+tr.even{
+  background-color: #eee;
 }
 
 tr.footer td {
