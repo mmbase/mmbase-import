@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -44,7 +44,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     = Logging.getLoggerInstance(MySqlSqlHandler.class.getName());
     
     /**
-     * Default constructor.
+     * Constructor.
      *
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *        to allowed alternatives.

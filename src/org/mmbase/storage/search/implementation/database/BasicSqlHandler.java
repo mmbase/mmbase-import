@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 // TODO: invalid tablenames should not be replaced like fieldnames, the must be left untouched.
@@ -90,7 +90,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
     
     /**
-     * Default constructor.
+     * Constructor.
      *
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *        to allowed alternatives.

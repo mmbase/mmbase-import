@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import org.mmbase.storage.search.SearchQuery;
-import org.mmbase.storage.search.SearchQueryException;
-import org.mmbase.storage.search.Constraint;
+import java.util.Map;
+import org.mmbase.storage.search.*;
 /**
  * Interface for handler classes that are used to create SQL string 
  * representations of {@link SearchQuery SearchQuery} objects.
@@ -37,9 +36,27 @@ import org.mmbase.storage.search.Constraint;
  * in a way similar to subclassing. The chained design 
  * enables a chain of handlers to be configured and created
  * at runtime. 
+ * <p>
+ * In addition to the methods defined in the interface, the concrete 
+ * <code>SqlHandler</code> class for the last element in the chain
+ * is required to have a constructor with this signature:
+ * <blockquote><code>
+    public &lt;constructor&gt;(Map disallowedValues) { .. }
+ * </code></blockquote>
+ * where <code>disallowedValues</code> is a map that maps disallowed 
+ * table/fieldnames to allowed alternatives.
+ * <p>
+ * The concrete <code>SqlHandler</code> class for the other, chained, 
+ * elements in the chain are required to have a constructor 
+ * with this signature:
+ * <blockquote><code>
+    public &lt;constructor&gt;(SqlHandler successor) { .. }
+ * </code></blockquote>
+ * where <code>successor</code> is the successor in the chain 
+ * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface SqlHandler {
