@@ -8,22 +8,23 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.module.builders.media;
+package org.mmbase.module.builders;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.io.*;
 
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.StringObject;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.media.MediaProviderFilter;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -43,26 +44,29 @@ public class MediaSource extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaSource.class.getName());
     
     // Audio formats
-    private final static int MP3_FORMAT         = 1;
-    private final static int RA_FORMAT          = 2;
-    private final static int WAV_FORMAT         = 3;
-    private final static int PCM_FORMAT         = 4;
-    private final static int MP2_FORMAT         = 5;
-    private final static int SURESTREAM_FORMAT  = 6;
+    public final static int MP3_FORMAT         = 1;
+    public final static int RA_FORMAT          = 2;
+    public final static int WAV_FORMAT         = 3;
+    public final static int PCM_FORMAT         = 4;
+    public final static int MP2_FORMAT         = 5;
+    public final static int SURESTREAM_FORMAT  = 6;
     
     // Video formats
-    private final static int MPG_FORMAT = 11;
-    private final static int RM_FORMAT = 12;
-    private final static int MOV_FORMAT = 13;
+    public final static int MPG_FORMAT = 11;
+    public final static int RM_FORMAT  = 12;
+    public final static int MOV_FORMAT = 13;
     
     // Status
-    private final static int REQUEST = 1;
-    private final static int BUSY = 2;
-    private final static int DONE = 3;
-    private final static int SOURCE = 4;
+    public final static int REQUEST = 1;
+    public final static int BUSY = 2;
+    public final static int DONE = 3;
+    public final static int SOURCE = 4;
     
     private final static int MONO = 1;
     private final static int STEREO = 2;
+    
+    // MediaProviderFilter helps by resolving the best media provider
+    private MediaProviderFilter mediaproviderfilter = new MediaProviderFilter(this);
 
 
     private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
@@ -260,7 +264,7 @@ public class MediaSource extends MMObjectBuilder {
     public void remove() {
     }
     
-    public static String getProtocolName(int format) {
+    public static String getProtocol(int format) {
         String protName = new String();
         
         if (format == SURESTREAM_FORMAT) {
@@ -271,5 +275,25 @@ public class MediaSource extends MMObjectBuilder {
             protName = "http";
         }
         return protName;
+    }
+    
+    public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+        // Find out the best media provider
+        String protocol = getProtocol(mediasource.getIntValue("format")); 
+        MMObjectNode mediaprovider = mediaproviderfilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
+               
+        // convert the url (response) to a wanted one, with extra information in the url etc.etc.
+        // For the url the mediafragment is important....
+        // Also pluggable ???
+        return protocol+mediaprovider.getStringValue("url")+"uri iets";
+    }
+    
+     /**
+     * get all mediaproviders belonging to this mediasource
+     * @param mediasource the mediasource
+     * @return All mediaproviders related to the given mediasource
+     */
+    public Vector getMediaProviders(MMObjectNode mediasource) {
+        return mediasource.getRelatedNodes("mediaproviders");
     }
 }
