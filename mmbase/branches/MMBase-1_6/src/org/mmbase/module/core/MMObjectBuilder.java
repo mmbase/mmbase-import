@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.30 2003-05-22 11:27:17 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.31 2003-07-09 08:47:40 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2771,7 +2771,12 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Obtains a string value by performing the provided command.
-     * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
+     * The command can be called:
+     * <ul>
+     *   <li>by SCAN : $MOD-MMBASE-BUILDER-[buildername]-[command]</li>
+     *   <li>in jsp : cloud.getNodeManager(buildername).getInfo(command);</li>
+     * </lu>
+     * This method is SCAN related and some commands may fail if called outside the context of the SCAN servlet.
      * @param sp The scanpage (containing http and user info) that calls the function
      * @param tok a list of strings that describe the (sub)command to execute
      * @return the result value as a <code>String</code>
