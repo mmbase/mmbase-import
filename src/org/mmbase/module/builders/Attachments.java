@@ -25,10 +25,12 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.34 2004-10-09 13:54:11 pierre Exp $
+ * @version $Id: Attachments.java,v 1.35 2004-11-11 17:13:47 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
+
+    private static final String MIMETYPE_FIELD = "mimetype";
 
 
     protected String getAssociation() {
@@ -92,7 +94,7 @@ public class Attachments extends AbstractServletBuilder {
      * can try to do smart things.
      */
     protected void checkHandle(MMObjectNode node) {
-        String mimetype = node.getStringValue("mimetype");
+        String mimetype = node.getStringValue(MIMETYPE_FIELD);
         if (mimetype == null || mimetype.equals("")) {
             log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determine it automaticly.");
             Object h = node.getValue("handle");
@@ -119,10 +121,10 @@ public class Attachments extends AbstractServletBuilder {
                         mime = magic.getMimeType(handle, extension);
                     }
                     log.service("Found mime-type: " + mime);
-                    node.setValue("mimetype", mime);
+                    node.setValue(MIMETYPE_FIELD, mime);
                 } catch (Throwable e) {
                     log.warn("Exception in MagicFile  for " + node);
-                    node.setValue("mimetype", "application/octet-stream");                    
+                    node.setValue(MIMETYPE_FIELD, "application/octet-stream");                    
                 }            
             }
         }
@@ -135,10 +137,10 @@ public class Attachments extends AbstractServletBuilder {
     public boolean commit(MMObjectNode node) {
         Collection changed = node.getChanged();
         if (changed.contains("handle")) {
-            node.setValue("mimetype", "");
+            node.setValue(MIMETYPE_FIELD, "");
             checkHandle(node);
         }
-        if (changed.contains("mimetype") && "".equals(node.getStringValue("mimetype"))) {
+        if (changed.contains(MIMETYPE_FIELD) && "".equals(node.getStringValue(MIMETYPE_FIELD))) {
             checkHandle(node);
         }
         return super.commit(node);
@@ -153,9 +155,9 @@ public class Attachments extends AbstractServletBuilder {
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executeFunction of attachments builder");
         if ("mimetype".equals(function)) {
-            return node.getStringValue("mimetype");
+            return node.getStringValue(MIMETYPE_FIELD);
         } else if (function.equals("format")) {
-            String mimeType = node.getStringValue("mimetype");
+            String mimeType = node.getStringValue(MIMETYPE_FIELD);
             if (mimeType.length() > 0) {
                 MagicFile mf = MagicFile.getInstance();
                 String ext = mf.mimeTypeToExtension(mimeType);
