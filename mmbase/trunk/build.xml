@@ -68,7 +68,7 @@ several MMBase-checkouts.
 
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
-  <property name="debug" value="off"/>
+  <property name="debug" value="on"/>
   <property name="deprecation" value="on"/>
   <property name="javadoc.cleaning" value="true"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
@@ -164,7 +164,7 @@ source-documentation.dir=src/documentation
 build.dir=build
 build.compiler=modern
 optimize=on
-debug=off
+debug=on
 deprecation=on
 distro=${distro}
 version=${version}
