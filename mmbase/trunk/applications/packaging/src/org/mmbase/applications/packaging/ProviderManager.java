@@ -336,5 +336,9 @@ public class ProviderManager {
     public static HashMap getProviderHandlers() {
         return providerhandlers;
     }
+
+    public static void discoverPackages() {
+	packagediscovery.getPackages();
+    }
     
 }
