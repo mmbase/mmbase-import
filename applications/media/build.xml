@@ -4,10 +4,6 @@
 >
 
 <project name="MMBase media project" default="jar" basedir=".">
-  <property name="project.name"   value="mmbase-media" />
+  <property name="project.name"   value="media" />
   &base;
 </project>
-
-
-
-
