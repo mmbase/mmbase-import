@@ -18,7 +18,6 @@ import org.mmbase.util.*;
 import org.mmbase.util.media.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import javax.servlet.http.*;
 
 /**
  * The MediaFragment builder describes a piece of media. This can be audio, or video.
@@ -30,7 +29,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.14 2003-06-17 12:24:30 rob Exp $
+ * @version $Id: MediaFragments.java,v 1.15 2003-06-24 09:04:48 vpro Exp $
  * @since MMBase-1.7
  */
 
