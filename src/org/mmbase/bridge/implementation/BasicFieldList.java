@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.5 2002-01-31 10:05:11 pierre Exp $
+ * @version $Id: BasicFieldList.java,v 1.6 2002-09-23 14:31:03 pierre Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
     private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
@@ -29,8 +29,13 @@ public class BasicFieldList extends BasicList implements FieldList {
     NodeManager nodemanager=null;
 
     /**
-    * ...
-    */
+     * ...
+     */
+    BasicFieldList(Cloud cloud) {
+        super();
+        this.cloud=cloud;
+    }
+
     BasicFieldList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c);
         this.cloud=cloud;
@@ -38,8 +43,8 @@ public class BasicFieldList extends BasicList implements FieldList {
     }
 
     /**
-    *
-    */
+     *
+     */
     public Object convert(Object o, int index) {
         if (o instanceof Field) {
             return o;
@@ -49,49 +54,29 @@ public class BasicFieldList extends BasicList implements FieldList {
         return f;
     }
 
+    protected Object validate(Object o) throws ClassCastException {
+        if (o instanceof FieldDefs) {
+            return o;
+        } else {
+            return (Field)o;
+        }
+    }
+
     public Field getField(int index) {
         return (Field)get(index);
     }
 
     /**
-    *
-    */
+     *
+     */
     public FieldIterator fieldIterator() {
         return new BasicFieldIterator(this);
-    };
-
+    }
 
     public class BasicFieldIterator extends BasicIterator implements FieldIterator {
 
         BasicFieldIterator(BasicList list) {
             super(list);
-        }
-
-
-        public void set(Object o) {
-            if (! (o instanceof Field)) {
-                String message;
-                message = "Object must be of type Field.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.set(index, o);
-        }
-        public void add(Object o) {
-            if (! (o instanceof Field)) {
-                String message;
-                message = "Object must be of type Field.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.add(index, o);
-        }
-
-        public void set(Field f) {
-            list.set(index, f);
-        }
-        public void add(Field f) {
-            list.add(index, f);
         }
 
         public Field nextField() {

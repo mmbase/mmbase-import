@@ -19,22 +19,33 @@ import org.mmbase.util.logging.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.6 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.7 2002-09-23 14:31:04 pierre Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
 
     /**
-    * ...
-    */
+     * ...
+     */
+    BasicRelationManagerList(Cloud cloud) {
+        super(cloud);
+    }
+
     BasicRelationManagerList(Collection c, Cloud cloud) {
         super(c,cloud);
     }
 
+    protected Object validate(Object o) throws ClassCastException {
+        if (o instanceof MMObjectNode) {
+            return o;
+        } else {
+            return (RelationManager)o;
+        }
+    }
 
     /**
-    *
-    */
+     *
+     */
     public Object convert(Object o, int index) {
         if (o instanceof RelationManager) {
             return o;
@@ -63,33 +74,6 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         BasicRelationManagerIterator(BasicList list) {
             super(list);
         }
-
-        public void set(Object o) {
-            if (! (o instanceof RelationManager)) {
-                String message;
-                message = "Object must be of type RelationManager.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.set(index, o);
-        }
-        public void add(Object o) {
-            if (! (o instanceof RelationManager)) {
-                String message;
-                message = "Object must be of type RelationManager.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.add(index, o);
-        }
-
-        public void set(RelationManager n) {
-            list.set(index, n);
-        }
-        public void add(RelationManager n) {
-            list.add(index, n);
-        }
-        // in fact also set(NodeManager) and add(NodeManager) must be overrided....
 
         public RelationManager nextRelationManager() {
             return (RelationManager)next();

@@ -11,11 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.List;
-import java.util.Collection;
-import java.util.NoSuchElementException;
+import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,22 +19,56 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.7 2002-06-17 10:49:47 eduard Exp $
+ * @version $Id: BasicList.java,v 1.8 2002-09-23 14:31:03 pierre Exp $
  */
-public class BasicList extends ArrayList  {
+public class BasicList extends ArrayList implements BridgeList  {
+
     private static Logger log = Logging.getLoggerInstance(BasicList.class.getName());
-    /**
-    * ...
-    */
+  
+    BasicList() {
+         super();
+    }
+    
     BasicList(Collection c) {
          super(c);
     }
-    protected Object convert(Object o, int index) { // 'virtual' method
+
+    /*
+     * converts the object in teh list to the excpected format  
+     */    
+    protected Object convert(Object o, int index) {
         return o;
     }
 
+    /*
+     * validates that an object can be converted to the excpected format  
+     */    
+    protected Object validate(Object o) throws ClassCastException {
+        return o;
+    }
+    
     public Object get(int index) {
         return convert(super.get(index), index);
+    }
+
+    public void sort() {
+        Collections.sort(this);
+    }
+
+    public void sort(Comparator comparator) {
+        Collections.sort(this,comparator);
+    }
+
+    public Object set(int index, Object o) {
+        return super.set(index,validate(o));
+    }
+
+    public void add(int index, Object o) {
+        super.add(index,validate(o));
+    }
+
+    public boolean add(Object o) {
+        return super.add(validate(o));
     }
 
     public Object[] toArray() { // needed when you e.g. want to sort the list.
@@ -48,10 +78,6 @@ public class BasicList extends ArrayList  {
         }
         return super.toArray();
     }
-
-    // depending on how functions like 'indexOf' and 'lastIndexOf' are implemented (if they use get),
-    // perhaps also those functions must be overrided like toArray.
-
 
     public abstract class BasicIterator implements ListIterator {        
         protected BasicList list;
@@ -64,6 +90,7 @@ public class BasicList extends ArrayList  {
         public boolean hasNext() {
             return  index < (list.size()-1);
         }
+
         public boolean hasPrevious() {
             return index > 0;
         }
@@ -81,17 +108,11 @@ public class BasicList extends ArrayList  {
 
         // These have to be implemented with a check if o is of the right type.
         public void set(Object o) {
-            String message;
-            message = "Object must be of type Node.";
-            log.error(message);
-            throw new BridgeException(message);
+            list.set(index, o);
         }
 
         public void add(Object o) {
-            String message;
-            message = "Object must be of type Node.";
-            log.error(message);
-            throw new BridgeException(message);
+            list.add(index, o);
         }
         
         // normally also e.g. set(Node n); and add(Node n) will be created in
@@ -102,8 +123,7 @@ public class BasicList extends ArrayList  {
             if (index>=list.size()) {
                 index = list.size()+1;
                 throw new NoSuchElementException("Object does not exist in this list");
-            } 
-            else {
+            } else {
                 return list.get(index);
             }
         }
