@@ -41,7 +41,7 @@ public class MMUsers extends ProcessorModule {
 	private MMObjectBuilder users; // Users
 	private Properties properties;
 
-
+	//Strings for composing an email
 	private String emailFrom;
 	private String emailReturnPath;
 	private String emailSubject;
@@ -225,21 +225,30 @@ public class MMUsers extends ProcessorModule {
 
 		// get email config and check it
    		emailFrom = getInitParameter("from");
-		if (emailFrom == null || emailFrom.equals("")) debug ("missing init param from");
-		if(emailFrom.equals("youremail@yourcompany.nl")) debug ("from init parameter is still default, please change!!!!");
+		if (emailFrom == null || emailFrom.equals("")) 
+			debug ("missing init param from");
+		if (emailFrom.equals("youremail@yourcompany.nl")) 
+			debug ("from init parameter is still default, please change!!!!");
 		emailReturnPath = getInitParameter("returnpath");
-		if (emailReturnPath == null || emailReturnPath.equals("")) debug (" missing init param returnpath");
-		if(emailReturnPath.equals("youremail@yourcompany.nl")) debug (" returnpath init parameter is still default, please change!!!!");
+		if (emailReturnPath == null || emailReturnPath.equals("")) 
+			debug (" missing init param returnpath");
+		if (emailReturnPath.equals("youremail@yourcompany.nl")) 
+			debug (" returnpath init parameter is still default, please change!!!!");
 		emailSubject = getInitParameter("subject");
-		if (emailSubject == null || emailSubject.equals("")) debug ("missing init param subject");              
+		if (emailSubject == null || emailSubject.equals("")) 
+			debug ("missing init param subject");              
 		emailBodyBegin = getInitParameter("bodybegin"); 
-		if (emailBodyBegin == null || emailBodyBegin.equals("")) debug ("missing init param bodybegin");
+		if (emailBodyBegin == null || emailBodyBegin.equals("")) 
+			debug ("missing init param bodybegin");
 		emailBodyLogin = getInitParameter("bodylogin");
-		if (emailBodyLogin == null || emailBodyBegin.equals("")) debug ("missing init param bodylogin");
+		if (emailBodyLogin == null || emailBodyBegin.equals("")) 
+			debug ("missing init param bodylogin");
 		emailBodyPasswd = getInitParameter("bodypasswd"); 
-		if (emailBodyPasswd == null || emailBodyPasswd.equals("")) debug ("missing init param bodypasswd");
+		if (emailBodyPasswd == null || emailBodyPasswd.equals("")) 
+			debug ("missing init param bodypasswd");
 		emailBodyEnd = getInitParameter("bodyend");
-		if (emailBodyEnd == null || emailBodyEnd.equals("")) debug ("missing init param bodyend");
+		if (emailBodyEnd == null || emailBodyEnd.equals("")) 
+			debug ("missing init param bodyend");
 
 	}
 
@@ -396,17 +405,6 @@ public class MMUsers extends ProcessorModule {
 		}
 
 		Hashtable headers = new Hashtable( 3 );
-		//headers.put( "From", "webmaster@vpro.nl");
-		//headers.put( "Return-path", "webmaster@vpro.nl");
-		//headers.put( "Subject", "Uw login bevestiging");
-
-		//String body = "Hierbij ontvangt u de bevestiging plus uw wachtwoord bij uw VPRO login.\n\n"
-		//	+ "Login: " + loginname + "\n"
-		//	+ "Wachtwoord: " + password + "\n\n"
-		//	+ "Bewaar dit bericht goed!\n\n"
-		//	+ "VPRO";
-		//
-		//sendMail.sendMail("webmaster@vpro.nl", address, body, headers);
 
 		headers.put("From", emailFrom);
 		headers.put("Return-path", emailReturnPath);
