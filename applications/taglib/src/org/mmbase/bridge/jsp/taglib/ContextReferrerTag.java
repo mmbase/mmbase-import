@@ -156,6 +156,16 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         result += attribute.substring(endpos);
         return result;
     }
+    protected Boolean getAttributeBoolean(String b) throws JspTagException {
+        String r = getAttributeValue(b);
+        if ("true".equalsIgnoreCase(r)) {
+            return Boolean.TRUE;
+        } else if ("false".equalsIgnoreCase(r)) {
+            return Boolean.FALSE;
+        } else {
+            throw new JspTagException("'" + r + "' cannot be converted to a boolean");
+        }
+    }
 
     /**
      * Finds a parent tag by class and id. This is a base function for
@@ -167,7 +177,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @param exception if it has to throw an exception if the parent can not be found (default: yes).  */
 
     final protected TagSupport findParentTag(String classname, String id, boolean exception) throws JspTagException {
-        log.debug("Finding a tag " + classname);
         Class clazz ;
         try {
             clazz = Class.forName(classname);
@@ -186,7 +195,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
 
         if (id != null) { // search further, if necessary
-            log.debug(" with id ("  + id + ")");
+            if (log.isDebugEnabled()) {
+                log.debug(" with id ("  + id + ")");
+            }
             while (! id.equals(cTag.getId())) {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
@@ -273,12 +284,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     // utils
 
     /**
-    * Simple util method to split comma separated values
-    * to a vector. Useful for attributes.
-    * @param string the string to split
-    * @param delimiter
-    * @return a Vector containing the elements, the elements are also trimed
-    */
+     * Simple util method to split comma separated values
+     * to a vector. Useful for attributes.
+     * @param string the string to split
+     * @param delimiter
+     * @return a Vector containing the elements, the elements are also trimed
+     */
 
     static public Vector stringSplitter(String attribute, String delimiter) {
         Vector retval = new Vector();
