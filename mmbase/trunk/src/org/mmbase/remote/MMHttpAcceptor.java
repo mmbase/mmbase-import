@@ -8,33 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.16 2001-04-20 14:15:48 michiel Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.15  2001/04/11 15:31:23  michiel
-michiel: new logging system
-
-Revision 1.14  2001/03/29 13:17:55  install
-Rob added shared secret checks
-
-Revision 1.13  2001/03/26 13:00:12  vpro
-Davzev: Changed exception error debug in getNode.
-
-Revision 1.12  2000/12/20 16:31:45  vpro
-Davzev: added changed some debug stuff
-
-Revision 1.11  2000/12/19 17:10:54  vpro
-Davzev: Still managed to add some debug and comment
-
-Revision 1.10  2000/12/19 10:57:07  vpro
-Davzev: Added some debug in commitNode
-
-Revision 1.9  2000/11/29 13:57:22  vpro
-davzev: Added more debug and comments
-
-Revision 1.8  2000/11/28 16:41:12  vpro
-davzev: Added some method comments and debug.
-
+$Id: MMHttpAcceptor.java,v 1.17 2001-07-02 16:56:09 vpro Exp $
 */
 package org.mmbase.remote;
 
@@ -48,7 +22,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.16 $ $Date: 2001-04-20 14:15:48 $
+ * @version $Revision: 1.17 $ $Date: 2001-07-02 16:56:09 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver { 
@@ -286,6 +260,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			out.print("GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
+			out.print("sharedSecret: "+startRemoteBuilders.getSharedSecret()+"\r\n");
 			out.print("\r\n");
 			out.flush();
 			DataInputStream in=new DataInputStream(connect.getInputStream());
