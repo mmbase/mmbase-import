@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.21 2003-09-24 14:38:39 michiel Exp $
+ * @version  $Id: validator.js,v 1.22 2003-11-12 13:57:53 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -312,6 +312,7 @@ function doValidateAndUpdateButtons(valid) {
 
     var curform = document.forms[0].elements['curform'].value;
     var savebut = document.getElementById("bottombutton-save");
+    var saveonlybut = document.getElementById("bottombutton-saveonly");
     var stepbut = document.getElementById("step-" + curform);
     var otherforms = savebut.getAttribute("otherforms");
     var allvalid = valid && otherforms == 'valid';
@@ -334,14 +335,18 @@ function doValidateAndUpdateButtons(valid) {
 
     if (allvalid) {
         savebut.className = "bottombutton";
-        var usetext = getToolTipValue(savebut,"titlesave",
-                         "Stores all changes.");
+        var usetext = getToolTipValue(savebut, "titlesave", "Stores all changes.");
         savebut.title = usetext;
+        saveonlybut.className = "bottombutton";
+        var usetext = getToolTipValue(saveonlybut, "titlesave", "Stores all changes.");
+        saveonlybut.title = usetext;
     } else {
         savebut.className = "bottombutton-disabled";
-        var usetext = getToolTipValue(savebut,"titlenosave",
-                          "You cannot save because one or more forms are invalid.");
+        var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
         savebut.title = usetext;
+        saveonlybut.className = "bottombutton-disabled";
+        var usetext = getToolTipValue(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
+        saveonlybut.title = usetext;
     }
 
     return allvalid;

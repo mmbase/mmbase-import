@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.107 2003-10-24 14:34:02 pierre Exp $
+ * @version $Id: Wizard.java,v 1.108 2003-11-12 13:54:40 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -186,8 +186,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       sizeof.sizeof(constraints);
    }
 
-   private void initialize(String c, URIResolver uri,
-      Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
+   private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
       context = c;
       uriResolver = uri;
       constraints = Utils.parseXML("<constraints/>");
@@ -350,8 +349,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     *
     * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
     */
-   protected void loadWizard(Config.WizardConfig wizardConfig)
-      throws WizardException {
+   protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException {
       if (wizardConfig.wizard == null) {
          throw new WizardException("Wizardname may not be null");
       }
@@ -370,30 +368,27 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       // load wizard schema
       loadSchema(wizardSchemaFile); // expanded filename of the wizard
 
-      // setup original data
-      originalData = Utils.emptyDocument();
 
       // If the given dataid=new, we have to create a new object first, given
       // by the object definition in the schema.
       // If dataid equals null, we don't need to do anything. Wizard will not be used to show or save data;
       // just to load schema information.
       if (dataId != null) {
+          // setup original data
+          originalData = Utils.emptyDocument();
+
          if (dataId.equals("new")) {
             log.debug("Creating new xml");
 
             // Get the definition and create a copy of the object-definition.
-            Node objectdef = Utils.selectSingleNode(schema,
-                  "./wizard-schema/action[@type='create']");
+            Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
 
             if (objectdef == null) {
-               throw new WizardException(
-                  "You tried to start a create action in the wizard, but no create action was defined in the wizard schema. Please supply a <action type='create' /> section in the wizard.");
+               throw new WizardException("You tried to start a create action in the wizard, but no create action was defined in the wizard schema. Please supply a <action type='create' /> section in the wizard.");
             }
 
             objectdef = objectdef.cloneNode(true);
-            log.debug("Going to creating a new object " +
-               objectdef.getNodeName() + " type " +
-               Utils.getAttribute(objectdef, "type"));
+            log.debug("Going to creating a new object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef, "type"));
 
             // We have to add the object to the data, so first determine to which parent it belongs.
             data = Utils.parseXML("<data />");
@@ -401,12 +396,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             Node parent = data.getDocumentElement();
 
             // Ask the database to create that object, ultimately to get the new id.
-            Node newobject = databaseConnector.createObject(data, parent,
-                  objectdef, variables);
+            Node newobject = databaseConnector.createObject(data, parent, objectdef, variables);
 
             if (newobject == null) {
-               throw new WizardException(
-                  "Could not create new object. Did you forget to add an 'object' subtag?");
+               throw new WizardException("Could not create new object. Did you forget to add an 'object' subtag?");
             }
 
             parent.appendChild(newobject);
@@ -414,30 +407,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             dataId = Utils.getAttribute(newobject, "number");
 
             if (log.isDebugEnabled()) {
-               log.debug("Created object " + newobject.getNodeName() +
-                  " type " + Utils.getAttribute(newobject, "type") + ", id " +
-                  dataId);
+               log.debug("Created object " + newobject.getNodeName() + " type " + Utils.getAttribute(newobject, "type") + ", id " + dataId);
             }
          } else {
-            // - load data.
-            // - tags the datanodes
-            try {
-               data = databaseConnector.load(schema.getDocumentElement(), dataId);
-
-               if (data == null) {
-                  throw new WizardException(
-                     "The requested object could not be loaded from MMBase. ObjectNumber:" +
-                     dataId +
-                     ". Does the object exists and do you have enough rights to load this object.");
-               }
-
-               // store original data, so that the put routines will know what to save/change/add/delete
-               originalData.appendChild(originalData.importNode(
-                     data.getDocumentElement().cloneNode(true), true));
-            } catch (WizardException e) {
-               throw new WizardException("Wizard could not be initialized. (" +
-                  e.toString() + ")");
-            }
+             loadData();
          }
       }
 
@@ -446,6 +419,26 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          currentFormId = determineNextForm("first");
       }
    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected void loadData() throws WizardException {
+        // - load data.
+        // - tags the datanodes
+        data = databaseConnector.load(schema.getDocumentElement(), dataId);
+        
+        if (data == null) {
+            throw new WizardException("The requested object could not be loaded from MMBase. ObjectNumber:" + dataId +
+                                      ". Does the object exists and do you have enough rights to load this object.");
+        }
+        // setup original data
+        originalData = Utils.emptyDocument();
+
+        
+        // store original data, so that the put routines will know what to save/change/add/delete
+        originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
+    }
 
    /**
     * Processes an incoming request (usually passed on by a jsp code).
@@ -489,8 +482,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       Map params = new HashMap(variables);
       params.put("ew_context", context);
 
-      // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
-      params.put("sessionid", sessionId);
+      // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));      params.put("sessionid", sessionId);
       params.put("sessionkey", sessionKey);
       params.put("referrer", referrer);
       params.put("language", cloud.getLocale().getLanguage());
@@ -529,9 +521,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             String[] ids = processFormName(name);
 
             if (log.isDebugEnabled()) {
-               log.debug("found ids: " +
-                  ((ids == null) ? "null" : (" " +
-                  java.util.Arrays.asList(ids))));
+               log.debug("found ids: " + ((ids == null) ? "null" : (" " + java.util.Arrays.asList(ids))));
             }
 
             if (ids != null) {
@@ -615,8 +605,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          nextformid = Utils.getAttribute(nextstep, "form-schema");
       } else {
          if (stepDirection.equals("previous")) {
-            nextstep = Utils.selectSingleNode(laststep,
-                  "./preceding-sibling::step");
+            nextstep = Utils.selectSingleNode(laststep, "./preceding-sibling::step");
          } else if (stepDirection.equals("last")) {
             nextstep = Utils.selectSingleNode(laststep,
                   "../step[position()=last()]");
@@ -1718,8 +1707,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
       Element command = field.getOwnerDocument().createElement("command");
       command.setAttribute("name", commandname);
-      command.setAttribute("cmd",
-         "cmd/" + commandname + "/" + Utils.getAttribute(field, "fid") + "/" +
+      command.setAttribute("cmd", "cmd/" + commandname + "/" + Utils.getAttribute(field, "fid") + "/" +
          Utils.getAttribute(datanode, "did") + "/" + otherdid + "/");
       command.setAttribute("value", Utils.getAttribute(datanode, "did"));
       field.appendChild(command);
@@ -1860,18 +1848,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
             // this is a command.
             String commandValue = req.getParameter(commandName);
-
-            try {
-               WizardCommand wc = new WizardCommand(commandName, commandValue);
-               processCommand(wc);
-            } catch (RuntimeException e) {
-               // Have to accumulate the exceptions and report them at the end.
-               // Michiel XXX Why? What's the point?
-               // I think the code can be simplied by taking away all exception handling in this function.
-               String errorMessage = Logging.stackTrace(e);
-               log.error(errorMessage);
-               errors.add(new WizardException("* Could not process command:" + commandName + "=" + commandValue + "\n" + errorMessage));
-            }
+            WizardCommand wc = new WizardCommand(commandName, commandValue);
+            processCommand(wc);
          } else {
             if (log.isDebugEnabled()) {
                log.trace("ignoring non-command " + commandName);
@@ -1879,14 +1857,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          }
       }
 
-      if (errors.size() > 0) {
-         StringBuffer errorMessage = new StringBuffer("Errors during command processing:");
-
-         for (int i = 0; i < errors.size(); i++) {
-            errorMessage.append('\n').append(((Exception) errors.get(i)).toString());
-         }
-         throw new WizardException(errorMessage.toString());
-      }
    }
 
    /**
@@ -1907,6 +1877,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     *
     */
    public void processCommand(WizardCommand cmd) throws WizardException {
+       log.service("Processing command " + cmd);
       // processes the given command
       switch (cmd.getType()) {
       case WizardCommand.DELETE_ITEM: {
@@ -2123,11 +2094,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
          break;
       }
+      case WizardCommand.SAVE : {
+          log.service("Wizard " + objectNumber + " will be saved (but not closed)");
+      }
 
-      /*
-      case WizardCommand.SAVE :
-      log.service("Wizard " + objectNumber + " will be saved but not closed");
-      */
       case WizardCommand.COMMIT: {
          log.service("Committing wizard " + objectNumber);
 
@@ -2148,7 +2118,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             log.debug("found old number " + oldNumber);
          }
 
-         // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this
+         // in the result set the new objects are just siblings, so the new 'wizard number' must be found with this
          // xpath
          String newNumber = Utils.selectSingleNodeText(results, ".//object[@oldnumber='" + oldNumber + "']/@number", null);
 
@@ -2164,22 +2134,31 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          mayBeClosed = (cmd.getType() == WizardCommand.COMMIT);
 
          if (!mayBeClosed) {
-            if (log.isDebugEnabled()) {
-               log.trace("Using data was " + Utils.getSerializedXML(originalData));
-               log.trace("is " + Utils.getSerializedXML(data));
-            }
 
-            originalData = Utils.emptyDocument();
-            originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
-
-            if (newNumber != null) {
-               Utils.setAttribute(originalData.getDocumentElement()
-                                              .getElementsByTagName("object")
-                                              .item(0), "number", objectNumber);
+             // if we continue editing the xml's documents should be fixed for the new situation.
+             if (log.isDebugEnabled()) {
+                log.trace("Using data was " + Utils.getSerializedXML(originalData));
+                log.trace("is " + Utils.getSerializedXML(data));
             }
+             
+             // copy data to original data. 
+             // makes sense but we don't get the new object numbers like that.
+
+
+             if (newNumber != null) {
+                 dataId = newNumber;
+             }
+
+             // try reload:
+             loadData();
+
+
          }
 
          break;
+      }
+      default: {
+          log.warn("Received an unknown wizard command '" + cmd.getValue() + "'");
       }
       }
    }
