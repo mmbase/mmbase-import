@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.65 2002-06-26 12:01:27 michiel Exp $
+ * @version $Id: MMBase.java,v 1.66 2002-07-05 12:56:18 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -209,6 +209,12 @@ public class MMBase extends ProcessorModule  {
      * @scope private
      */
     String cookieDomain=null;
+
+    /**
+     * Reference to the Root builder (the most basic builder, aka 'object').
+     * This can be null (does not exist) in older systems
+     */
+    private MMObjectBuilder root;
 
     /**
      * Base url for the location of the DTDs. obtained using getDTDBase()
@@ -393,7 +399,7 @@ public class MMBase extends ProcessorModule  {
                 }
             }
         }
-        
+
         // try to load security...
         try {
             mmbaseCop = new
@@ -405,7 +411,7 @@ public class MMBase extends ProcessorModule  {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
-        
+
         // signal that MMBase is up and running
         mmbasestate=STATE_UP;
         log.info("MMBase is up and running");
@@ -584,6 +590,29 @@ public class MMBase extends ProcessorModule  {
      */
     public OAlias getOAlias() {
         return OAlias;
+    }
+
+    /**
+     * Returns a reference to the Object builder.
+     * The Object builder is the builder from which all other builders eventually extend.
+     * @return the <code>Object</code> builder if defined, <code>null</code> otherwise
+     * @since MMBase1,6
+     */
+    public MMObjectBuilder getRootBuilder() {
+        return root;
+    }
+
+    /**
+     * Returns the otype of the Object builder, or -1 if it is not known.
+     * The Object builder is the builder from which all other builders eventually extend.
+     * @since MMBase1,6
+     */
+    public int getRootType() {
+        if (root==null) {
+            return -1;
+        } else {
+            return root.oType;
+        }
     }
 
     /**
@@ -890,6 +919,7 @@ public class MMBase extends ProcessorModule  {
      * @return Always <code>true</code>
      */
     boolean initBuilders() {
+
         // first load the builders
         TypeDef=(TypeDef)loadCoreBuilder("typedef");
         TypeDef.init();
@@ -913,6 +943,10 @@ public class MMBase extends ProcessorModule  {
         // new code checks all the *.xml files in builder dir, recursively
         String path = "";
         loadBuilders(path);
+
+        // determine Object builder
+        // Note: can be null
+        root=getMMObject("object");
 
         log.debug("Starting MultiRelations Builder");
         MultiRelations = new MultiRelations(this);
@@ -938,13 +972,13 @@ public class MMBase extends ProcessorModule  {
         log.debug("**** end of initBuilders");
         return true;
     }
-    
+
 
     /**
      * inits a builder
      * @param builder The builder which has to be initialized
      */
-    public void initBuilder(MMObjectBuilder builder) {        
+    public void initBuilder(MMObjectBuilder builder) {
         if (!builder.isVirtual()) {
             builder.init();
             TypeDef.loadTypeDef(builder.getTableName());
@@ -953,18 +987,18 @@ public class MMBase extends ProcessorModule  {
                 checkBuilderVersion(builder.getTableName(),versions);
             }
         }
-    }    
+    }
 
     /**
      * Unloads a builders from MMBase. After this, the builder is gone
      * @param builder the builder which has to be unloaded
      */
-    public void unloadBuilder(MMObjectBuilder builder) {    
+    public void unloadBuilder(MMObjectBuilder builder) {
         if(mmobjs.remove(builder.getTableName()) == null) {
             String msg = "builder with name: " + builder.getTableName() + " could not be unloaded, since it was not loaded.";
             log.error(msg);
-            throw new RuntimeException(msg);            
-        }        
+            throw new RuntimeException(msg);
+        }
         if (!builder.isVirtual()) {
             TypeDef.unloadTypeDef(builder.getTableName());
             log.info("unloaded builder with name:" + builder.getTableName());
