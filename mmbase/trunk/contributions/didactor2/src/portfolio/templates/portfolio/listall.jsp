@@ -42,26 +42,9 @@
 
   <div class="contentBodywit">
   <mm:listnodes type="people" orderby="lastname,firstname">
-    <mm:import id="visible" reset="true">false</mm:import>
-    <mm:field write="false" id="person" name="number"/> 
-    <mm:list nodes="$person" path="people,portfolios,folders" orderby="people.lastname, people.firstname">
-        <mm:field id="folder" name="folders.number" write="false"/>
-        <mm:list nodes="$folder" path="folders,attachments,portfoliopermissions" constraints="portfoliopermissions.readrights=4" max="1">
-            <mm:import id="visible" reset="true">true</mm:import>
-        </mm:list>
-        <mm:list nodes="$folder" path="folders,urls,portfoliopermissions" constraints="portfoliopermissions.readrights=4" max="1">
-            <mm:import id="visible" reset="true">true</mm:import>
-        </mm:list>
-        <mm:list nodes="$folder" path="folders,chatlogs,portfoliopermissions" constraints="portfoliopermissions.readrights=4" max="1">
-            <mm:import id="visible" reset="true">true</mm:import>
-        </mm:list>
-    </mm:list>
-    <mm:compare referid="visible" value="true">
-        <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+       <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="contact"><mm:field name="number"/></mm:param>
         </mm:treefile>"><mm:field name="firstname"/> <mm:field name="lastname"/></a><br>
-    </mm:compare>
-            
    </mm:listnodes>
   </div>
 </div>
