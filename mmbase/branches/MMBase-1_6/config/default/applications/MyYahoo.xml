@@ -6,7 +6,7 @@
     <builder maintainer="mmbase.org" version="0">pools</builder>
     <builder maintainer="mmbase.org" version="0">urls</builder>
     <builder maintainer="mmbase.org" version="0">jumpers</builder>
-  </neededbuilderlist>	
+  </neededbuilderlist>
 
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel"/>
@@ -25,7 +25,7 @@
   </datasourcelist>
 
   <relationsourcelist>
-    <relationsource builder="insrel" path="MyYahoo/insrel.xml" />	
+    <relationsource builder="insrel" path="MyYahoo/insrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>
@@ -34,15 +34,31 @@
 
 
   <description>
-  MyYahoo is a small application to show you how easy it is to create
-  a program something like the topic/url/search kind of interface
-  first shown on yahoo. It depends on the resources application,
-  please install that one before installing this one.
-  </description>
+	 <![CDATA[MyYahoo is a small application to show you how easy it is to create a program like the topic/url/search
+kind of interface first shown on yahoo.<br />
+It depends on the <strong>resources</strong> application, please install that one before installing this one.]]></description>
 
   <install-notice>
-  Example urls/topics/etc are installed, see the mmexamples page for
-  the example pages.
+	  <![CDATA[Example urls/topics/etc are installed, see the mmexamples page for the example pages.<br />
+This application also installed the <strong>jumpers</strong> builder. The jumpers servlet uses
+this builder to define url shortcuts.<br />
+In order to install the jumpers servlet, you need to add the following code to your web.xml:<br />
+<pre>
+  &lt;filter&gt;
+    &lt;filter-name&gt;Jumpers Filter&lt;/filter-name&gt;
+    &lt;display-name&gt;Jumpers Filter&lt;/display-name&gt;
+    &lt;description&gt;Filter used for jumpers&lt;/description&gt;
+    &lt;filter-class&gt;org.mmbase.servlet.JumpersFilter&lt;/filter-class&gt;
+  &lt;/filter&gt;
+
+  &lt;filter-mapping&gt;
+    &lt;filter-name&gt;Jumpers Filter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+  &lt;/filter-mapping&gt;
+</pre>
+And restart your server.<br />
+Note that this may not work in Orion 1.5.2 or lower.
+See the release notes for more information on installing the jumpers servlet.]]>
   </install-notice>
 
 </application>
