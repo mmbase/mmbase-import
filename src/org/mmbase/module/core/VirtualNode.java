@@ -70,10 +70,10 @@ public class VirtualNode extends MMObjectNode {
     /**
      * Return the relations of this node.
      * A virtual node never has relations.
-     * @return <code>null</code>
+     * @return empty <code>Enumeration</code>
      */
-    public Enumeration getRelations() {
-        return null;
+    public Enumeration getRelations() {    
+        return new java.util.Vector().elements();
     }
 
     /**

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.5 2002-03-04 12:35:15 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.6 2002-03-18 13:57:29 eduard Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -476,8 +476,9 @@ public class ClusterBuilder extends VirtualBuilder {
                 // store a filter on rnumber.
                 int rnumber = mmb.getRelDef().getNumberByName(curtable);
                 if (rnumber==-1) {
-                    log.error("getAllTables() : Specified builder "+curtable+" does not exist.");
-                    return null;
+                    String msg = "Specified builder "+curtable+" does not exist.";
+                    log.error(msg);
+                    throw new RuntimeException(msg);
                 } else {
                     bul=mmb.getInsRel(); // dummy
                     roles.put(orgtable,new Integer(rnumber));
