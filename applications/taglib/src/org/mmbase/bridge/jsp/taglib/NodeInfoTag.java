@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.util.Arguments;
+import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -93,20 +95,18 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             show = nodeManager.getGUIName();
             break;
         case TYPE_GUI: {
+            helper.useEscaper(false); // gui produces html
             String sessionName = "";
             CloudTag ct = null;
             ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
-
-            java.util.List args = new java.util.Vector();
-            args.add("");
-            args.add(getCloud().getLocale().getLanguage());
-            args.add(sessionName);
-            args.add(pageContext.getResponse());
-            args.add(pageContext.getRequest());
-
+            Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
+            args.set("language", getCloud().getLocale().getLanguage());
+            args.set("session",  sessionName);
+            args.set("response", pageContext.getResponse());
+            args.set("request",  pageContext.getRequest());
             show = getNode().getFunctionValue("gui", args).toString();
             break;
         }
