@@ -52,7 +52,7 @@ public class servflash extends JamesServlet {
      * service call will be called by the server when a request is done
      * by a user.
      */
-    public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         incRefCount(req);
         try {
             pageLog.service("Parsing FLASH page: " + req.getRequestURI());
