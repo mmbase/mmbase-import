@@ -33,7 +33,7 @@ public class AllTests {
     }
 
     public static Test suite() throws Exception {
-        BridgeTest.startMMBase();
+        org.mmbase.tests.BridgeTest.startMMBase();
 
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");

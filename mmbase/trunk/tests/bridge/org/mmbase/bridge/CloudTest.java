@@ -16,7 +16,7 @@ package org.mmbase.bridge;
  *
  * @author Jaco de Groot
  */
-public class CloudTest extends BridgeTest {
+public class CloudTest extends org.mmbase.tests.BridgeTest {
     Cloud cloud;
     Node aaNode1;
     Node aaNode2;
@@ -67,11 +67,11 @@ public class CloudTest extends BridgeTest {
 
     public void tearDown() {
         // Remove test nodes.
-        aaNode1.delete();
-        aaNode2.delete();
-        bbNode.delete();
+        aaNode1.delete(true);
+        aaNode2.delete(true);
+        bbNode.delete(true);
         for (int i = 0; i < nrOfBBNodes; i++) {
-            bbNodes[i].delete();
+            bbNodes[i].delete(true);
         }
     }
 

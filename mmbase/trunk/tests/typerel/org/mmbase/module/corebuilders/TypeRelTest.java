@@ -8,9 +8,9 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.2 2003-03-12 19:18:12 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.3 2003-03-13 10:53:38 michiel Exp $
  */
-public class TypeRelTest extends BridgeTest {
+public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
     static protected String  UNIDIR_ROLE = "unidirectionalrelation";
     static protected String  BIDIR_ROLE  = "bidirectionalrelation";
