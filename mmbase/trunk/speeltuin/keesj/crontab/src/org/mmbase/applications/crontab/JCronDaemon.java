@@ -10,7 +10,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @todo   Should we user java.util.Timer?
+ * @todo   Should we use java.util.Timer?
  */
 public class JCronDaemon implements Runnable {
 

@@ -62,7 +62,11 @@ public class JCrontabModule extends ReloadableModule {
             String configString = null;
             if (tokens.length > 2) {
                 description = tokens[2].trim();
+            } 
+            if (description == null || description.length() == 0) {
+                description = (String) entry.getKey();
             }
+
             if (tokens.length > 3) {
                 configString = tokens[3].trim();
             }
