@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.134 2002-04-18 14:31:36 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.135 2002-04-18 14:42:58 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -232,11 +232,6 @@ public class MMObjectBuilder extends MMTable {
     // Version information for builder registration
     // Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
     private int version=0;
-
-    /**
-     * determines whether builders are created using xml, accessible through {@link #getXMLConfig}
-     */
-    private boolean isXmlConfig=false;
 
     /**
      * Determines whether a builder is virtual (data is not stored in a database).
@@ -2824,22 +2819,6 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Sets whether configuration is based on xml files.
-     * @deprecated will be removed
-     */
-    public void setXmlConfig(boolean state) {
-        isXmlConfig=state;
-    }
-
-    /**
-     * Retrieves whether configuration is based on xml files.
-     * @deprecated will be removed
-     */
-    public boolean isXMLConfig() {
-        return isXmlConfig;
-    }
-
-    /**
      * Sets the subpath of the builder's xml configuration file.
      */
     public void setXMLPath(String m) {
@@ -2852,6 +2831,15 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getXMLPath() {
          return xmlPath;
+    }
+
+    /**
+     * Gets the file that contains the configuration of this builder
+     * @return the builders configuration File object
+     */
+    public File getConfigFile() {
+        // what is the location of our builder?
+        return new File(MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + getXMLPath() + File.separator + getTableName() + ".xml");
     }
 
     /**
