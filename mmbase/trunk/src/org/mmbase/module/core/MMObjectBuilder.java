@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.203 2003-01-16 20:06:14 kees Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.204 2003-02-03 15:50:12 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -195,10 +195,12 @@ public class MMObjectBuilder extends MMTable {
     // contains the builder's field definitions
     protected Hashtable fields;
 
+
     /**
-     * Reference to the builder that this builder extends.
+     * Reference to the builders that this builder extends.
+     * @since MMBase-1.6.2 (parentBuilder in 1.6.0)
      */
-    private MMObjectBuilder parentBuilder = null;
+    private Stack ancestors = new Stack();
 
     // Version information for builder registration
     // Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
@@ -267,6 +269,13 @@ public class MMObjectBuilder extends MMTable {
      */
     public MMObjectBuilder() {}
 
+    private void initAncestors() {
+        if (! ancestors.empty()) {
+            ((MMObjectBuilder) ancestors.peek()).init();
+        }
+    }
+
+
     /**
      * Initializes this builder
      * The property 'mmb' needs to be set for the builder before this method can be called.
@@ -281,9 +290,8 @@ public class MMObjectBuilder extends MMTable {
         if (oType!=-1) return true;
 
         // first make sure parent builder is initalized
-        if (parentBuilder!=null) {
-            parentBuilder.init();
-        }
+        initAncestors();
+
         if (!created()) {
             log.info("Creating table for builder " + tableName);
             if (!create() ) {
@@ -318,9 +326,7 @@ public class MMObjectBuilder extends MMTable {
                 node.insert("system");
                 // for typedef, call it's parents init again, as otype is only now set
                 if (this == typeDef) {
-                    if (parentBuilder!=null) {
-                        parentBuilder.init();
-                    }
+                    initAncestors();
                 }
             }
         } else {
@@ -520,6 +526,8 @@ public class MMObjectBuilder extends MMTable {
         return;
     }
 
+
+
     /**
      * Returns the builder that this builder extends.
      *
@@ -527,9 +535,19 @@ public class MMObjectBuilder extends MMTable {
      * @return the extended (parent) builder, or null if not available
      */
     public MMObjectBuilder getParentBuilder() {
-        return parentBuilder;
+        if (ancestors.empty()) return null;
+        return (MMObjectBuilder) ancestors.peek();
     }
-
+    /**
+     * Gives the list of parent-builders.
+     *
+     * @since MMBase-1.6.2
+     
+     */
+    protected List  getAncestors() {
+        return ancestors;
+    }
+    
     /**
      * Sets the builder that this builder extends, and registers it in the database layer.
      * @param parent the extended (parent) builder, or null if not available
@@ -537,34 +555,18 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      */
     public void setParentBuilder(MMObjectBuilder parent) throws StorageException {
-        mmb.getDatabase().registerParentBuilder(parent,this);
-        parentBuilder=parent;
+        mmb.getDatabase().registerParentBuilder(parent, this);
+        ancestors.addAll(parent.getAncestors());
+        ancestors.push(parent);
     }
-
-
+    
     /**
-     * checks if the attribute buildername is an instance of this builder.
-     * @param buildername a builder name
-     * @return <true> if the buildername is an instance of this builder, <false> otherwise.
+     * Checks wether this builder is an extension of the argument builder
      *
-     * @since MMBase-1.6
+     * @since MMBase-1.6.2
      */
-    public boolean isInstanceOfBuilder(String builderName) {
-        String bn = builderName; // Only used for logging.
-
-        while(!builderName.equals(tableName)) {
-
-            // See if builderName has a parent builderName
-            MMObjectBuilder builder = mmb.getMMObject(builderName);
-            if (builder.parentBuilder==null) {
-                log.debug(bn+" isInstanceOfBuilder "+tableName+" == false");
-                 return false;
-            }
-
-            builderName = builder.parentBuilder.tableName;
-        }
-        log.debug(bn+" isInstanceOfBuilder "+tableName+" == true");
-        return true;
+    public boolean isExtensionOf(MMObjectBuilder o) {    
+        return ancestors.contains(o);
     }
 
     /**
@@ -2839,8 +2841,9 @@ public class MMObjectBuilder extends MMTable {
             o.nodeRemoteChanged(machine,number,builder,ctype);
         }
 
+        MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
-        if(pb!=null && isInstanceOfBuilder(builder)) {
+        if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeRemoteChanged(machine, number, builder, ctype);
         }
@@ -2890,8 +2893,9 @@ public class MMObjectBuilder extends MMTable {
             o.nodeLocalChanged(machine,number,builder,ctype);
         }
 
+        MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
-        if(pb!=null && isInstanceOfBuilder(builder)) {
+        if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeLocalChanged(machine, number, builder, ctype);
         }
@@ -3855,6 +3859,28 @@ public class MMObjectBuilder extends MMTable {
                 return value;
             }
         }
+    }
+
+    /**
+     * Implmenting a sensible toString is usefull for debugging.
+     *
+     * @since MMBase-1.6.2
+     */
+
+    public String toString() {
+        return getSingularName();
+    }
+    /**
+     * Equals must be implemented because of the list of MMObjectBuilder which is used for ancestors
+     *
+     * @since MMBase-1.6.2
+     */
+    public boolean equals(Object o) {
+        if (o instanceof MMObjectBuilder) {
+            MMObjectBuilder b = (MMObjectBuilder) o;
+            return tableName.equals(b.tableName);
+        }
+        return false;
     }
 }
 

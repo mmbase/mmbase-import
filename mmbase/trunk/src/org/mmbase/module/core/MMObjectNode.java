@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.91 2003-01-06 13:01:34 kees Exp $
+ * @version $Id: MMObjectNode.java,v 1.92 2003-02-03 15:50:13 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -348,8 +348,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return setValue(fieldName,new Integer(fieldValue));
     }
 
-    public boolean setValue(String fieldName, long fieldValue) {
-        return setValue(fieldName, new Long(fieldValue));
+
+    public boolean setValue(String fieldName,long fieldValue) {
+        return setValue(fieldName,new Long(fieldValue));
     }
 
     /**
@@ -565,9 +566,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * Executes getFunctionValue of MMOBjectBuilder
      * @since MMBase-1.6
-     * @see MMObjectBuilder#getFunctionValue
      */
     public Object getFunctionValue(String function, List args) {
         return  parent.getFunctionValue(this, function, args);
@@ -1024,10 +1023,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param wantedtype the 'type' of related nodes (NOT the relations!).
      * @return An <code>int</code> indicating the number of nodes found
      */
-    public int getRelationCount(String wantedtype) {
+    public int getRelationCount(String wt) {
         int count = 0;
-        MMObjectBuilder type = parent.mmb.getBuilder(wantedtype);
-        if (type != null) {
+        MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
+        if (wantedType != null) {
+
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
                 relation_cache_miss++;
@@ -1036,7 +1036,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             if (relations!=null) {
                 for(Enumeration e=relations.elements();e.hasMoreElements();) {
-                    MMObjectNode tnode=(MMObjectNode)e.nextElement();
+                    MMObjectNode tnode = (MMObjectNode)e.nextElement();
                     int snumber=tnode.getIntValue("snumber");
                     int nodetype =0;
                     if (snumber==getNumber()) {
@@ -1044,13 +1044,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     } else {
                         nodetype=parent.getNodeType(snumber);
                     }
-                    if (type.isInstanceOfBuilder(parent.mmb.getTypeDef().getValue(nodetype))) {                        
+                    MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
+                    if (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType)) {
                         count++;
                     }
                 }
             }
         } else {
-            log.warn("getRelationCount is requested with an invalid Builder name (otype "+wantedtype+" does not exist)");
+            log.warn("getRelationCount is requested with an invalid Builder name (otype " + wt + " does not exist)");
         }
         return count;
     }
@@ -1129,16 +1130,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
-        MMObjectBuilder bul = parent.mmb.getMMObject(type);
-        if (bul == null) {
-            log.error("getRelatedNodes: "+type+" is not a valid builder");
+        MMObjectBuilder wantedType = parent.mmb.getMMObject(type);
+        if (wantedType == null) {
+            log.error("getRelatedNodes: " + type + " is not a valid builder");
             return null;
         }
         Vector allNodes = getRelatedNodes();
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
             MMObjectNode node = (MMObjectNode) e.nextElement();
-            if (bul.isInstanceOfBuilder(node.parent.getTableName())) {
+            
+            if (parent.equals(wantedType) || parent.isExtensionOf(wantedType)) {
                 result.add(node);
             }
         }
