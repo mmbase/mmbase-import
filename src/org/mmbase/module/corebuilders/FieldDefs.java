@@ -7,60 +7,14 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: FieldDefs.java,v 1.17 2001-03-04 00:24:47 daniel Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.16  2000/12/28 09:27:36  daniel
-added a few set methods
-
-Revision 1.15  2000/12/16 20:42:42  daniel
-added several set calls
-
-Revision 1.14  2000/11/16 15:21:58  pierre
-pierre: added public static final TYPE_UNKNOWN
-
-Revision 1.13  2000/11/07 14:28:55  vpro
-Rico: removed TYPE_TEXT
-
-Revision 1.12  2000/07/15 09:47:26  daniel
-Changed getDBType to int
-
-Revision 1.11  2000/07/12 13:29:05  daniel
-Daniel added isKey to FieldDefs
-
-Revision 1.10  2000/06/28 14:44:58  daniel
-Daniel.. added method to get all GUINames
-
-Revision 1.9  2000/06/20 09:28:25  wwwtech
-new fielddefs for xml config
-
-Revision 1.8  2000/06/06 20:23:20  wwwtech
-multi lang support
-
-Revision 1.7  2000/05/07 20:20:07  wwwtech
-daniel: upgrades for XML configs
-
-Revision 1.6  2000/03/31 16:15:37  wwwtech
-davzev: Added DBSTATE_UNKNOWN=-1 constant.
-
-Revision 1.5  2000/03/30 13:11:41  wwwtech
-Rico: added license
-
-Revision 1.4  2000/03/29 10:46:34  wwwtech
-Rob: Licenses changed
-
-Revision 1.3  2000/03/20 14:23:27  wwwtech
-davzev: Added constant DBSTATE_SYSTEM=3
-
-Revision 1.2  2000/03/17 14:53:42  wwwtech
-davzev: Added DBSTATE constants
-
-*/
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
 import java.sql.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
+
 
 /**
  * One of the core objects, Defines one field of a object type / builder, has its
@@ -68,178 +22,434 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.17 $ $Date: 2001-03-04 00:24:47 $
+ * @author Pierre van Rooden
+ * @$Revision: 1.18 $ $Date: 2001-10-18 12:45:17 $
  */
 public class FieldDefs  {
-	public final static int DBSTATE_VIRTUAL = 0;
-	public final static int DBSTATE_PERSISTENT = 2;
-	public final static int DBSTATE_SYSTEM = 3;
-	public final static int DBSTATE_UNKNOWN = -1;
+    public final static int DBSTATE_MINVALUE = 0;
+    public final static int DBSTATE_VIRTUAL = 0;
+    public final static int DBSTATE_PERSISTENT = 2;
+    public final static int DBSTATE_SYSTEM = 3;
+    public final static int DBSTATE_MAXVALUE = 3;
+    public final static int DBSTATE_UNKNOWN = -1;
 
+    public final static int TYPE_MINVALUE = 1;
+    public final static int TYPE_STRING = 1;
+    public final static int TYPE_INTEGER = 2;
+    public final static int TYPE_BYTE = 4;
+    public final static int TYPE_FLOAT = 5;
+    public final static int TYPE_DOUBLE = 6;
+    public final static int TYPE_LONG = 7;
+    public final static int TYPE_MAXVALUE = 7;
+    public final static int TYPE_UNKNOWN = -1;
 
-	public final static int TYPE_STRING = 1;
-	public final static int TYPE_INTEGER = 2;
-	public final static int TYPE_TEXT = 3; // not used anymore
-	public final static int TYPE_BYTE = 4;
-	public final static int TYPE_FLOAT = 5;
-	public final static int TYPE_DOUBLE = 6;
-	public final static int TYPE_LONG = 7;
-	public final static int TYPE_UNKNOWN = -1;
+    // logger
+    private static Logger log = Logging.getLoggerInstance(FieldDefs.class.getName());
 
-	private String GUIName; 
-	public Hashtable GUINames = new Hashtable(); 
-	public String GUIType; 
-	public int    GUISearch; 
-	public int    GUIList; 
-	public String DBName;
-	public int    DBType;
-	public int	  GUIPos;
-	public int	  DBState=-1;
-	public boolean	  DBNotNull=false;
-	public boolean	  isKey=false;
-	public int    DBPos;
-	public int    DBSize=-1;
-	public int SearchAge=30;
+    private final static String[] DBSTATES =
+        { "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM" };
 
+    private final static String[] DBTYPES =
+        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG" };
 
-	public FieldDefs() {
-	}
+    // following fields will become private
+    public String GUIName;
+    public Hashtable GUINames = new Hashtable();
+    public String GUIType;
+    public int GUISearch;
+    public int GUIList;
+    public String DBName;
+    public int DBType = TYPE_UNKNOWN;
+    public int GUIPos;
+    public int DBState = DBSTATE_UNKNOWN;
+    public boolean DBNotNull=false;
+    public boolean isKey=false;
+    public int DBPos;
+    public int DBSize=-1;
+    public MMObjectBuilder parent = null;
 
-	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, int DBType) {
-		this.GUIName=GUIName;
-		this.GUIType=GUIType;
-		this.GUISearch=GUISearch;
-		this.GUIList=GUIList;
-		this.DBName=DBName;
-		this.DBType=DBType;
-		this.GUIPos=2;
-		this.DBState=2;
-	}
+    /**
+     * Constructor for default FieldDef.
+     */
+    public FieldDefs() {
+    }
 
+    /**
+     * Constructor for FieldDefs with partially initialized fields.
+     * @param GUIName the default GUIName for a field
+     * @param GUIType  the GUI type (i.e. "integer' or 'field')
+     * @param GUISearch position in the editor for this field when searching
+     * @param GUIList position in the editor for this field when listing
+     * @param DBName the actual name of the field in the database
+     * @param DBType the basic MMBase type of the field
+     */
+    public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName,
+                     int DBType) {
+        this.GUIName=GUIName;
+        this.GUIType=GUIType;
+        this.GUISearch=GUISearch;
+        this.GUIList=GUIList;
+        this.DBName=DBName;
+        this.DBType=DBType;
+        this.GUIPos=2;
+        this.DBState=DBSTATE_PERSISTENT;
+    }
 
-	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, int DBType, int GUIPos, int DBState) {
-		this.GUIName=GUIName;
-		this.GUIType=GUIType;
-		this.GUISearch=GUISearch;
-		this.GUIList=GUIList;
-		this.DBName=DBName;
-		this.DBType=DBType;
-		this.GUIPos=GUIPos;
-		this.DBState=DBState;
-	}
+    /**
+     * Constructor for FieldDefs with partially initialized fields.
+     * @param GUIName the default GUIName for a field
+     * @param GUIType  the GUI type (i.e. "integer' or 'field')
+     * @param GUISearch position in the editor for this field when searching
+     * @param GUIList position in the editor for this field when listing
+     * @param DBName the actual name of the field in the database
+     * @param DBType the basic MMBase type of the field
+     * @param GUIPos position in the editor for this field when editing
+     * @param DBState the state of the field (persistent, virtual, etc.)
+     */
+    public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName,
+                     int DBType, int GUIPos, int DBState) {
+        this.GUIName=GUIName;
+        this.GUIType=GUIType;
+        this.GUISearch=GUISearch;
+        this.GUIList=GUIList;
+        this.DBName=DBName;
+        this.DBType=DBType;
+        this.GUIPos=GUIPos;
+        this.DBState=DBState;
+    }
 
+    /**
+     * Provide a description for the specified type.
+     * Useful for debugging, errors or presenting GUI info.
+     * @param type the type to get the description of
+     * @return the description of the type.
+     */
+    public static String getDBTypeDescription(int type) {
+       if (type<TYPE_MINVALUE || type>TYPE_MAXVALUE) {
+            return DBTYPES[0];
+       }
+       return DBTYPES[type-TYPE_MINVALUE+1];
+    }
 
-	public String getGUIName(String country) {
-		String tmp=(String)GUINames.get(country);
-		if (tmp!=null) return(tmp);
-		tmp=(String)GUINames.get("us");
-		if (tmp!=null) return(tmp);
-		return (GUIName);
-	}
+    /**
+     * Provide a description for the specified state.
+     * Useful for debugging, errors or presenting GUI info.
+     * @param state the state to get the description of
+     * @return the description of the state.
+     */
+    public static String getDBStateDescription(int state) {
+       if (state<DBSTATE_MINVALUE || state>DBSTATE_MAXVALUE) {
+            return DBSTATES[0];
+       }
+       return DBSTATES[state-DBSTATE_MINVALUE+1];
+    }
 
+    /**
+     * Provide an id for the specified mmbase type description
+     * @param type the type description to get the id of
+     * @return the id of the type.
+     */
+    public static int getDBTypeId(String type) {
+        if (type == null) return DBSTATE_UNKNOWN;
+        // XXX: deprecated VARCHAR
+        if (type.equals("VARCHAR")) return TYPE_STRING;
+        if (type.equals("STRING")) return TYPE_STRING;
+        if (type.equals("INTEGER")) return TYPE_INTEGER;
+        if (type.equals("BYTE")) return TYPE_BYTE;
+        if (type.equals("FLOAT")) return TYPE_FLOAT;
+        if (type.equals("DOUBLE")) return TYPE_DOUBLE;
+        if (type.equals("LONG")) return TYPE_LONG;
+        return TYPE_UNKNOWN;
+    }
 
-	public Hashtable getGUINames() {
-		return (GUINames);
-	}
+    /**
+     * Provide an id for the specified mmbase state description
+     * @param type the state description to get the id of
+     * @return the id of the state.
+     */
+    public static int getDBStateId(String state) {
+        if (state == null) return DBSTATE_UNKNOWN;
+        if (state.equals("persistent"))  return DBSTATE_PERSISTENT;
+        if (state.equals("virtual")) return DBSTATE_VIRTUAL;
+        if (state.equals("system")) return DBSTATE_SYSTEM;
+        return DBSTATE_UNKNOWN;
+    }
 
-	public String getGUIName() {
-		String tmp=(String)GUINames.get("us");
-		if (tmp!=null) return(tmp);
-		return (GUIName);
-	}
+    /**
+     * Provide a description for the current type.
+     * @return the description of the type.
+     */
+    public String getDBTypeDescription() {
+        return FieldDefs.getDBTypeDescription(DBType);
+    }
 
-	public String getGUIType() {
-		return (GUIType);
-	}
+    /**
+     * Provide a description for the current state.
+     * @return the description of the state.
+     */
+    public String getDBStateDescription() {
+        return FieldDefs.getDBStateDescription(DBState);
+    }
 
-	public String getDBName() {
-		return (DBName);
-	}
+    /**
+     * Retrieve the GUI name of the field depending on specified langauge.
+     * If the language is not available, the "us" value is returned instead.
+     * If that one is unavailable a 'default' is returned.
+     * @param lang the language to return the name in
+     * @return the GUI Name
+     */
+    public String getGUIName(String lang) {
+        String tmp=(String)GUINames.get(lang);
+        if (tmp!=null) {
+            return tmp;
+        } else {
+            return getGUIName();
+        }
+    }
 
-	public int getDBType() {
-		return (DBType);
-	}
+    /**
+     * Retrieve the GUI name of the field.
+     * If possible, the "us" value is returned.
+     * If that one is unavailable a 'default' is returned.
+     * @param lang the language to return the name in
+     * @return the GUI Name
+     */
+    public String getGUIName() {
+        String tmp=(String)GUINames.get("us");
+        if (tmp!=null) return tmp;
+        return GUIName;
+    }
 
-	public int getDBSize() {
-		return (DBSize);
-	}
+    /**
+     * Retrieve a Hashtable with all GUI names for this field,
+     * accessible by language.
+     */
+    public Hashtable getGUINames() {
+        return GUINames;
+    }
 
-	public boolean getDBNotNull() {
-		return (DBNotNull);
-	}
+    /**
+     * Retrieve the GUI type of the field.
+     */
+    public String getGUIType() {
+        return GUIType;
+    }
 
-	public int getDBState() {
-		return (DBState);
-	}
+    /**
+     * Retrieve the database name of the field.
+     */
+    public String getDBName() {
+        return DBName;
+    }
 
-	public boolean isKey() {
-		return (isKey);
-	}
+    /**
+     * Retrieve the basic MMBase type of the field.
+     */
+    public int getDBType() {
+        return DBType;
+    }
 
-	public int getGUISearch() {
-		return (GUISearch);
-	}
+    /**
+     * Retrieve size of the field.
+     * This may not be specified for some field types.
+     */
+    public int getDBSize() {
+        return DBSize;
+    }
 
-	public int getGUIList() {
-		return (GUIList);
-	}
+    /**
+     * Retrieve whether the field can be left blank.
+     */
+    public boolean getDBNotNull() {
+        return DBNotNull;
+    }
 
-	public int getGUIPos() {
-		return (GUIPos);
-	}
+    /**
+     * Retrieve the state of the field (persistent, system, or virtual).
+     */
+    public int getDBState() {
+        return DBState;
+    }
 
-	public void setGUIName(String country,String value) {
-		GUINames.put(country,value);
-	}
+    /**
+     * Retrieve whether the field is a key and thus need be unique.
+     */
+    public boolean isKey() {
+        return isKey;
+    }
 
-	public void setGUIType(String value) {
-		GUIType=value;
-	}
+    /**
+     * Retrieve the position of the field when searching.
+     * A value of -1 indicates teh field is unavailable during search.
+     */
+    public int getGUISearch() {
+        return GUISearch;
+    }
 
-	public void setDBName(String value) {
-		DBName=value;
-	}
+    /**
+     * Retrieve the position of the field when listing.
+     * A value of -1 indicates the field is unavailable in a list.
+     */
+    public int getGUIList() {
+        return GUIList;
+    }
 
-	public void setGUIList(int value) {
-		GUIList=value;
-	}
+    /**
+     * Retrieve the position of the field when editing.
+     * A value of -1 indicates the field cannot be edited.
+     */
+    public int getGUIPos() {
+        return GUIPos;
+    }
 
-	public void setGUIPos(int value) {
-		GUIPos=value;
-	}
+    /**
+     * Retrieve the position of the field in the database table.
+     */
+    public int getDBPos() {
+        return DBPos;
+    }
 
-	public void setGUISearch(int value) {
-		GUISearch=value;
-	}
+    /**
+     * Set the GUI name of the field for a specified langauge.
+     * @param lang the language to set the name for
+     * @param value the value to set
+     */
+    public void setGUIName(String country,String value) {
+        GUINames.put(country,value);
+    }
 
-	public void setDBSize(int value) {
-		DBSize=value;
-	}
+    /**
+     * Set the GUI type of the field.
+     * @param value the value to set
+     */
+    public void setGUIType(String value) {
+        GUIType=value;
+    }
 
-	public void setDBType(int value) {
-		DBType=value;
-	}
+    /**
+     * Set the database name of the field.
+     * @param value the value to set
+     */
+    public void setDBName(String value) {
+        DBName=value;
+    }
 
-	public void setDBPos(int value) {
-		DBPos=value;
-	}
+    /**
+     * Set the position of the field when listing.
+     * A value of -1 indicates teh field is unavailable in a list.
+     * @param value the value to set
+     */
+    public void setGUIList(int value) {
+        GUIList=value;
+    }
 
-	public int getDBPos() {
-		return(DBPos);
-	}
+    /**
+     * Set the position of the field when editing.
+     * A value of -1 indicates the field cannot be edited.
+     * @param value the value to set
+     */
+    public void setGUIPos(int value) {
+        GUIPos=value;
+    }
 
-	public void setDBState(int value) {
-		DBState=value;
-	}
+    /**
+     * Set the position of the field when searching.
+     * A value of -1 indicates teh field is unavailable during search.
+     * @param value the value to set
+     */
+    public void setGUISearch(int value) {
+        GUISearch=value;
+    }
 
-	public void setDBKey(boolean value) {
-		isKey=value;
-	}
+    /**
+     * Set size of the field.
+     * @param value the value to set
+     */
+    public void setDBSize(int value) {
+        DBSize=value;
+    }
 
-	public void setDBNotNull(boolean value) {
-		DBNotNull=value;
-	}
-	public String toString() {
-		return("DEF GUIName="+getGUIName()+" GUIType="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+" isKey="+isKey);
-	}
+    /**
+     * Set the basic MMBase type of the field.
+     * @param value the id of the type
+     */
+    public void setDBType(int value) {
+        DBType=value;
+    }
+
+    /**
+     * Set the basic MMBase type of the field, using the type description
+     * @param value the name of the type
+     */
+    public void setDBType(String value) {
+        DBType=getDBTypeId(value);
+    }
+
+    /**
+     * Set the position of the field in the database table.
+     * @param value the value to set
+     */
+    public void setDBPos(int value) {
+        DBPos=value;
+    }
+
+    /**
+     * Set the state of the field (persistent, system, or virtual).
+     * @param value the value to set
+     */
+    public void setDBState(int value) {
+        DBState=value;
+    }
+
+    /**
+     * Set the basic MMBase state of the field, using the state description
+     * @param value the name of the state
+     */
+    public void setDBState(String value) {
+        DBState=getDBStateId(value);
+    }
+
+    /**
+     * Set whether the field is a key and thus need be unique.
+     * @param value the value to set
+     */
+    public void setDBKey(boolean value) {
+        isKey=value;
+    }
+
+    /**
+     * Set whether the field can be left blank.
+     * @param value the value to set
+     */
+    public void setDBNotNull(boolean value) {
+        DBNotNull=value;
+    }
+
+    /**
+     * Retrieves the parent builder for this field
+     */
+    public MMObjectBuilder getParent() {
+        return parent;
+    }
+
+    /**
+     * Set the parent builder for this field
+     * @param parent the fielddefs parent
+     */
+    public void setParent(MMObjectBuilder parent) {
+        this.parent=parent;
+    }
+
+    /**
+     * Returns a description for this field.
+     */
+    public String toString() {
+        return("DEF GUIName="+getGUIName()+" GUIType="+GUIType+
+               " Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+
+               " DBname="+DBName+
+               " DBType="+getDBTypeDescription()+
+               " DBSTATE="+getDBTypeDescription()+
+               " DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+
+               " isKey="+isKey);
+    }
 }
