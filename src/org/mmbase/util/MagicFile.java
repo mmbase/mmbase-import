@@ -20,7 +20,7 @@ import org.mmbase.util.magicfile.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.11 2003-06-18 15:19:58 kees Exp $
+ * @version $Id: MagicFile.java,v 1.12 2003-10-15 07:30:27 keesj Exp $
  */
 public class MagicFile {
     private static Logger log = Logging.getLoggerInstance(MagicFile.class);
@@ -52,8 +52,9 @@ public class MagicFile {
     private MagicFile() {
         DetectorProvider d = MagicXMLReader.getInstance();
         // default, read from XML
-        if (d == null)
+        if (d == null) {        	
             d = new MagicParser();
+        }
         detectors = d;
     }
 
