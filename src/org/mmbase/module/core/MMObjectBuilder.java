@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.247 2003-09-05 10:52:12 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.248 2003-09-16 20:18:48 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -177,7 +177,7 @@ public class MMObjectBuilder extends MMTable {
      * Seems useless, as this value is never changed (always true)
      * @see #processSearchResults
      */
-    public boolean REPLACE_CACHE=true;
+    public static final boolean REPLACE_CACHE = true;
 
     /**
      * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
@@ -855,54 +855,51 @@ public class MMObjectBuilder extends MMTable {
      * This method will make real nodes of those virtual nodes.
      *
      * @param List containing virtual nodes
-     * @return List containing real nodes
+     * @return List containing real nodes, directly from this Builders
      * @since MMBase-1.6.2
      */
-    public List getNodes(List virtuals) {
+    protected List getNodes(Collection virtuals)  {
         List            result  = new ArrayList();
-        StringBuffer    numbers = new StringBuffer();
-        boolean         first   = true;
 
-        Iterator        i       = virtuals.iterator();
-        while(i.hasNext()) {
-            MMObjectNode node    = (MMObjectNode) i.next();
-            Integer      number  = new Integer(node.getIntValue("number"));
-
-            // check if this node is already in cache
-            if(nodeCache.containsKey(number)) {
-                result.add(nodeCache.get(number));
-                // else seek it with a search on builder in db
-            } else {
-                if (first) {
-                    first = false;
+        try {
+            int numbersSize = 0;
+            NodeSearchQuery query = new NodeSearchQuery(this);
+            BasicStep       step  = (BasicStep) query.getSteps().get(0);
+            
+            Iterator        i       = virtuals.iterator();
+            while(i.hasNext()) {
+                MMObjectNode node    = (MMObjectNode) i.next();
+                
+                // check if this node is already in cache
+                Integer number = new Integer(node.getNumber());
+                if(nodeCache.containsKey(number)) {
+                    result.add(nodeCache.get(number));
+                    // else seek it with a search on builder in db
                 } else {
-                    numbers.append(",");
+                    numbersSize +=  ("," + number).length();
+                    step.addNode(number.intValue());
                 }
-                numbers.append(number);
+                
+                if(numbersSize > MAX_QUERY_SIZE) {
+                    result.addAll(getRawNodes(query));
+                    query = new NodeSearchQuery(this);
+                    step  = (BasicStep) query.getSteps().get(0);
+                    numbersSize  = 0;
+                }
             }
-
-            if(numbers.length() > MAX_QUERY_SIZE) {
-                result.addAll(basicSearch("SELECT " + getNonByteArrayFields() + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
-                numbers = new StringBuffer();
-                first = true;
-            }
+            
+            // now that we have a comma seperated string of numbers, we can
+            // the search with a where-clause containing this list
+            if(numbersSize > 0) {
+                result.addAll(getRawNodes(query));
+            } // else everything from cache
+            
+        } catch (SearchQueryException sqe) {
+            log.error(Logging.stackTrace(sqe));
         }
-
-        // now that we have a comma seperated string of numbers, we can
-        // the search with a where-clause containing this list
-        if(! numbers.toString().equals("")) {
-            result.addAll(basicSearch("SELECT " + getNonByteArrayFields() + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
-        } // else everything from cache
-
         // check that we didnt loose any nodes
+        assert(virtuals.size() == result.size());
 
-        // Java 1.4
-        // assert(virtuals.size() == result.size());
-
-        // Below Java 1.4
-        if(virtuals.size() != result.size()) {
-            log.error("We lost a few nodes during conversion from virtualsnodes("+virtuals.size()+") to realnodes("+result.size()+")");
-        }
         return result;
     }
 
@@ -1547,7 +1544,7 @@ public class MMObjectBuilder extends MMTable {
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
-    private List getList(String query) throws SQLException {
+    private List getList(String query) {
         MultiConnection con=null;
         Statement stmt=null;
         Vector results = new Vector();
@@ -1599,13 +1596,16 @@ public class MMObjectBuilder extends MMTable {
      * a specified type, which must be the nodetype corresponding
      * to this builder.
      *
+     * Cache is used, but not filled (because this function is used to calculate subresults)
+     *
      * @param query The query.
      * @return The nodes.
      * @throws IllegalArgumentException When the nodetype specified
      *         by the query is not the nodetype corresponding to this builder.
      * @since MMBase-1.7
      */
-    public List getNodes(NodeSearchQuery query) throws SearchQueryException {
+
+    protected List getRawNodes(NodeSearchQuery query)  throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         if (query.getBuilder() != this) {
             throw new IllegalArgumentException("Wrong builder for query on '" + query.getBuilder().getTableName() + "'-table: " + this.getTableName());
@@ -1617,12 +1617,34 @@ public class MMObjectBuilder extends MMTable {
         if (results == null) {
             log.debug("result list is null, getting from database");
             results = mmb.getDatabase().getNodes(query, this);
+
+        }
+        return results;
+
+    }
+
+    /**
+     * Returns nodes matching a specified constraint.
+     * The constraint is specified by a query that selects nodes of
+     * a specified type, which must be the nodetype corresponding
+     * to this builder.
+     *
+     * @param query The query.
+     * @return The nodes.
+     * @throws IllegalArgumentException When the nodetype specified
+     *         by the query is not the nodetype corresponding to this builder.
+     * @since MMBase-1.7
+     */
+    public List getNodes(NodeSearchQuery query) throws SearchQueryException {
+ 
+        List results = (List) listCache.get(query);
+        if (results == null) {
+            results = getRawNodes(query);
+            // TODO (later): implement maximum set by maxNodesFromQuery?
+            // Perform necessary postprocessing.
+            processSearchResults(results);
             listCache.put(query, results);
         }
-
-        // TODO (later): implement maximum set by maxNodesFromQuery?
-        // Perform necessary postprocessing.
-        processSearchResults(results);
 
         return results;
     }
@@ -1937,7 +1959,7 @@ public class MMObjectBuilder extends MMTable {
      * <ul>
      * <li>Stores retrieved nodes in the {@link #nodeCache nodecache}, or
      * <li>Replaces nodes by cached nodes (if cached node available, and
-     *     {@link #REPLACE_CACHE REPLACE_CACHE} is set to false).
+     *     {@link #REPLACE_CACHE REPACE_CACHE} is set to false).
      * <li>Replace partially retrieved nodes in the result by complete nodes.
      *     Nodes are partially retrieved when their type is a inheriting type
      *     of this builder's type, having additional fields. For these nodes
@@ -1976,9 +1998,9 @@ public class MMObjectBuilder extends MMTable {
             if(oType != -1 && oType != node.getOType()){
                 // try to retrieve the correct node from the
                 // nodecache
-                MMObjectNode cachenode = (MMObjectNode) nodeCache.get(number);
-                if(cachenode != null) {
-                    node = cachenode;
+                MMObjectNode cachedNode = (MMObjectNode) nodeCache.get(number);
+                if(cachedNode != null) {
+                    node = cachedNode;
                     iResults.set(node);
                     fromCache = true;
                     cacheGetCount ++;
@@ -2019,7 +2041,7 @@ public class MMObjectBuilder extends MMTable {
                 // can someone tell me what this has to do?
                 // clear the changed signal
                 node.clearChanged(); // huh?
-                safeCache(number,node);
+                safeCache(number, node);
                 cachePutCount++;
             }
         }
@@ -2053,25 +2075,12 @@ public class MMObjectBuilder extends MMTable {
                     log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
                     continue;
                 }
-                Iterator i = nodes.iterator();
-                String numbers = null;
-                // TODO: research: is there an upper limit for a sql query?
-                while(i.hasNext()) {
-                    MMObjectNode current = (MMObjectNode)i.next();
-                    if(numbers == null) numbers = "" + current.getNumber();
-                    else numbers +=  ", " + current.getNumber();
+                Iterator converted = getNodes(nodes).iterator();
+
+                while(converted.hasNext()) {
+                    MMObjectNode current = (MMObjectNode) converted.next();
+                    convertedNodes.put(new Integer(current.getNumber()), current);
                 }
-                if(numbers != null) {
-                    if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
-                    // now query the correct builder  for the missing nodes...
-                    // TODO RvM: use getNodes(NodeSearchQuery) instead.
-                    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
-                    while(enum.hasMoreElements()) {
-                        MMObjectNode current = (MMObjectNode)enum.nextElement();
-                        convertedNodes.put(new Integer(current.getNumber()), current);
-                    }
-                }
-                else throw new RuntimeException("how can the numbers string be null?");
             }
 
             // insert all the corrected nodes that were found into the list..
@@ -2085,23 +2094,21 @@ public class MMObjectBuilder extends MMTable {
                 }
                 current = (MMObjectNode) results.get(i);
                 if(current.getNumber() < 0) {
-                    // never happend to me, and never should!
+                    // never happened to me, and never should!
                     throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());
                 }
             }
-        }
-        else if(convert.size() != 0) {
-            String msg = "we still need to convert " + convertCount + " of the " + results.size() + " nodes";
-            msg += "(number of different types:"+ convert.size()  +")";
-            log.warn(msg);
+        } else if(convert.size() != 0) {
+            log.warn("we still need to convert " + convertCount + " of the " + results.size() + " nodes"
+                     + "(number of different types:"+ convert.size()  +")");
         }
         if(log.isDebugEnabled()) {
             log.debug("retrieved " + results.size() +
-            " nodes, converted " + convertedCount +
-            " of the " + convertCount +
-            " invalid nodes(" + convert.size() +
-            " types, " + cacheGetCount +
-            " from cache, " + cachePutCount + " to cache)");
+                      " nodes, converted " + convertedCount +
+                      " of the " + convertCount +
+                      " invalid nodes(" + convert.size() +
+                      " types, " + cacheGetCount +
+                      " from cache, " + cachePutCount + " to cache)");
         }
     }
 
@@ -2848,7 +2855,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector getRelations_main(int src) {
         InsRel bul=mmb.getInsRel();
-        if (bul==null) {
+        if (bul == null) {
             log.error("getMMObject(): InsRel not yet loaded");
             return null;
         }
