@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.util;
 
@@ -29,14 +29,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger; 
+import org.mmbase.util.logging.Logger;
 
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: XMLBasicReader.java,v 1.9 2001-07-09 19:24:07 eduard Exp $
+ * @version $Id: XMLBasicReader.java,v 1.10 2001-07-11 13:22:40 pierre Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2001/07/09 19:24:07  eduard
+ * eduard: added a static function, which provides a DocumentBuilder object, so that there is a handle, to get all xml documents in the same way.
+ * Also some code, to enable it for old stuff, but i commented it out, since i didnt dare to change the original code.
+ *
  * Revision 1.8  2001/05/18 11:46:14  daniel
  * Added printout of filename on error
  *
@@ -60,11 +64,11 @@ public class XMLBasicReader  {
 
     /** for the document builder of javax.xml. */
     private static DocumentBuilder documentBuilder = null;
-    /** set this one to true, and parser will be loaded...  */   
-    private static boolean useJavaxXML = false;    
+    /** set this one to true, and parser will be loaded...  */
+    private static boolean useJavaxXML = false;
     /** set this one to true, when all document pars */
     private static boolean validateJavaxXML = true;
-    
+
     Document document;
     Hashtable 	languageList; // Hashtable from languagecode to Hashtables with dictionaries
 
@@ -74,12 +78,9 @@ public class XMLBasicReader  {
 
     public XMLBasicReader(String path) {
         try {
-// SHOULD THIS CODE BE UNCOMMENTED? I DIDNT DARE TO DO IT
-// IF SOMEONE DOES, PLEASE DO SO...  
-//    	    if(useJavaxXML) {
-//            	document = getDocumentBuilder().parse(path);
-//	    }
-//    	    else {
+    	    if(useJavaxXML) {
+            	document = getDocumentBuilder().parse(path);
+	    } else {
             	DOMParser parser = new DOMParser();
             	parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             	parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
@@ -89,8 +90,8 @@ public class XMLBasicReader  {
 	    	loadedfile=path; // save for debug
             	parser.parse(path);
             	document = parser.getDocument();
-//	    }
-        } 
+	    }
+        }
 	catch(Exception e) {
             e.printStackTrace();
         }
@@ -100,14 +101,14 @@ public class XMLBasicReader  {
     	// if we already had one, return this one...
     	if(documentBuilder!=null) return documentBuilder;
 	log.debug("gonna retrieve a new documentBuilder");
-    	try {	    	
+    	try {
 	    // get a new one...
     	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-    	    // turn validating on..    	 
+    	    // turn validating on..
     	    dfactory.setValidating(validateJavaxXML);
-	    
+
 	    documentBuilder = dfactory.newDocumentBuilder();
-	    
+
             EntityResolver resolver = new XMLEntityResolver();
             documentBuilder.setEntityResolver(resolver);
 	    ErrorHandler handler = new XMLErrorHandler();
@@ -121,13 +122,13 @@ public class XMLBasicReader  {
 	    log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
 	    log.error(Logging.stackTrace(pce));
 	    return null;
-	}			
+	}
 	return documentBuilder;
-    }    
+    }
 
 
     /**
-     * @param path Dot-separated list of tags describing path from root element to requested element. 
+     * @param path Dot-separated list of tags describing path from root element to requested element.
      *             NB the path starts with the name of the root element.
      * @return Leaf element of the path
      */
@@ -136,7 +137,7 @@ public class XMLBasicReader  {
     }
 
     /**
-     * @param e Element from which the "relative" path is starting. 
+     * @param e Element from which the "relative" path is starting.
      *          NB the path starts with the name of the root element.
      * @param path Dot-separated list of tags describing path from root element to requested element
      * @return Leaf element of the path
