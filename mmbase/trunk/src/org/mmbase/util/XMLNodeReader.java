@@ -15,6 +15,8 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.ResourceLoader;
+
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -26,29 +28,20 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.28 2004-11-11 16:52:57 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.29 2004-12-20 12:14:53 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
-    private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
-    String applicationpath;
+    private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
 
-    /**
-     * Constructor
-     * @param filename from the file to read from
-     * @param applicationpath the path where this application was exported to
-     * @param mmbase
-     */
-    public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
-        super(filename, false);
-        this.applicationpath = applicationpath;
-    }
+    
+    private ResourceLoader path;
 
     /**
      * @since MMBase-1.8
      */
-    public XMLNodeReader(InputSource is, String applicationpath) {
+    public XMLNodeReader(InputSource is, ResourceLoader path) {
         super(is, false);
-        this.applicationpath = applicationpath;
+        this.path = path;
     }
 
     /**
@@ -189,7 +182,11 @@ public class XMLNodeReader extends XMLBasicReader {
                                         } else if (type == FieldDefs.TYPE_BYTE) {
                                             NamedNodeMap nm2 = n5.getAttributes();
                                             Node n7 = nm2.getNamedItem("file");
-                                            newnode.setValue(key, readBytesFile(applicationpath + n7.getNodeValue()));
+                                            try {
+                                                newnode.setValue(key, readBytesStream(n7.getNodeValue()));
+                                            } catch (IOException ioe) {
+                                                log.warn("Could not set field " + key + " " + ioe);
+                                            }
                                         } else {
                                             log.error("FieldDefs not found for #" + type + " was not known for field with name: '"
                                                       + key + "' and with value: '" + value + "'");
@@ -211,19 +208,14 @@ public class XMLNodeReader extends XMLBasicReader {
         return nodes;
     }
 
-    byte[] readBytesFile(String filename) {
-        File bfile = new File(filename);
-        int filesize = (int)bfile.length();
-        byte[] buffer = new byte[filesize];
-        try {
-            FileInputStream scan = new FileInputStream(bfile);
-            int len = scan.read(buffer, 0, filesize);
-            scan.close();
-        } catch (FileNotFoundException e) {
-            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
-        } catch (IOException e) {
-            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+    private byte[] readBytesStream(String resourceName) throws IOException {
+        InputStream stream = path.getResourceAsStream(resourceName);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int c = stream.read();
+        while (c != -1) {
+            buffer.write(c);
+            c = stream.read();
         }
-        return (buffer);
+        return buffer.toByteArray();
     }
 }
