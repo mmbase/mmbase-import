@@ -53,6 +53,14 @@ public class XMLApplicationWriter  {
 	// write the contextsources
 	body+=getContextSources(app);
 
+
+	// write the description
+	body+=getDescription(app);
+
+	// write the install-notice
+	body+=getInstallNotice(app);
+
+	
 	// close the application file
 	body+="</application>\n";
 	saveFile(targetpath+"/"+app.getApplicationName()+".xml",body);
@@ -138,6 +146,20 @@ public class XMLApplicationWriter  {
 	return(body);	
     }
 
+    static String getDescription(XMLApplicationReader app) {
+	String body="\t<description>\n";
+	body+=app.getDescription();
+	body+="\t</description>\n";
+	return(body);
+    }
+
+
+    static String getInstallNotice(XMLApplicationReader app) {
+	String body="\t<install-notice>\n";
+	body+=app.getInstallNotice();
+	body+="\t</install-notice>\n";
+	return(body);
+    }
 
     static String getContextSources(XMLApplicationReader app) {
 	String body="\t<contextsourcelist>\n";
