@@ -1,4 +1,4 @@
-<application name="MyNews" maintainer="mmbase.org" version="1" auto-deploy="false">
+<application name="MyNews" maintainer="mmbase.org/mmexamples/mynews" version="1" auto-deploy="false">
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="1">mags</builder>
 		<builder maintainer="mmbase.org" version="1">urls</builder>
