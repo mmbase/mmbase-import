@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.87 2002-11-22 20:55:35 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.88 2002-12-04 20:51:49 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -348,8 +348,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return setValue(fieldName,new Integer(fieldValue));
     }
 
-    public boolean setValue(String fieldName,long fieldValue) {
-        return setValue(fieldName,new Long(fieldValue));
+    public boolean setValue(String fieldName, long fieldValue) {
+        return setValue(fieldName, new Long(fieldValue));
     }
 
     /**
@@ -1113,7 +1113,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 number = relNode.getIntValue("snumber");
             }
             MMObjectNode destNode = (MMObjectNode)parent.getNode(number);
-            result.addElement(destNode);
+            result.add(destNode);
         }
         return result;
     }
@@ -1127,7 +1127,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
-        MMObjectBuilder bul=parent.mmb.getMMObject(type);
+        MMObjectBuilder bul = parent.mmb.getMMObject(type);
         if (bul == null) {
             log.error("getRelatedNodes: "+type+" is not a valid builder");
             return null;
@@ -1135,9 +1135,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         Vector allNodes = getRelatedNodes();
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
-            MMObjectNode node = (MMObjectNode)e.nextElement();
-            if (node.parent.oType==bul.oType) {
-                result.addElement(node);
+            MMObjectNode node = (MMObjectNode) e.nextElement();
+            if (bul.isInstanceOfBuilder(node.parent.getTableName())) {
+                result.add(node);
             }
         }
         return result;
