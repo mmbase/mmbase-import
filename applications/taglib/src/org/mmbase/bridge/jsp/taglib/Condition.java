@@ -24,4 +24,5 @@ public interface Condition {
      *
      **/
     public void setInverse(String b) throws JspTagException;
+    // public void setInverse(Boolean b) throws JspTagException;
 }

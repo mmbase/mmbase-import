@@ -40,7 +40,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
@@ -128,8 +128,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         default:
         }
 
+        helper.setTag(this);
         helper.setValue(show);
-        helper.setJspvar(pageContext);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -137,8 +137,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     }
 
     public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
 
     /**

@@ -97,9 +97,8 @@ public class ImageTag extends FieldTag {
         } else {
             url = root + servletPath + fileName + "?" + number;
         }
+        helper.setTag(this);
         helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(url));
-        helper.setPageContext(pageContext);
-        helper.setJspvar();
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }

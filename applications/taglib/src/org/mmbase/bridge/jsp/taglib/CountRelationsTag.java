@@ -33,7 +33,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
@@ -52,6 +52,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     }
 
     public int doStartTag() throws JspTagException {
+        helper.setTag(this);
         if (getReferid() != null) {
             helper.setValue(getContextTag().getObject(getReferid()));
         } else {
@@ -63,7 +64,6 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
                 helper.setValue(new Integer(node.countRelatedNodes(type.getString(this))));
             }
         }
-        helper.setJspvar(pageContext);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -71,8 +71,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     }
 
     public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
 
     public int doEndTag() throws JspTagException {
