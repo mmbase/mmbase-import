@@ -29,13 +29,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
-    private String parentNodeId = null;
-    private String number    = null;
     protected String typeString = null;
-
-    public void setNode(String node) throws JspTagException {
-        parentNodeId=node;
-    }
 
     /**
      * @param type a nodeManager
@@ -44,44 +38,42 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         typeString = getAttributeValue(type);
     }
 
-    public void setNumber(String number) throws JspTagException {
-        this.number = getAttributeValue(number);
-    }
-
     /**
      * Performs the search
      */
     public int doStartTag() throws JspTagException {
 
-        // obtain a reference to the node through a parent tag
-        Node node = null;
-        if ((number!=null) && !number.equals("")) {
-            node=getCloudProviderVar().getNode(number);
-        } else {
-            String classname = "org.mmbase.bridge.jsp.taglib.NodeProvider";
-            NodeProvider nodeProvider = (NodeProvider)findParentTag(classname,parentNodeId);
-            node=nodeProvider.getNodeVar();
+        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
         }
-
+        // obtain a reference to the node through a parent tag
+        Node node = getNode();
+        if (node == null) {
+            throw new JspTagException("Could not find parent node!!");
+        }
+        
         NodeList nodes;
-        if ((whereString != null && !whereString.equals(""))
-                || (sortedString != null && !sortedString.equals(""))) {
-            NodeManager manager=getCloudProviderVar().getNodeManager(typeString);
+        if ( (whereString != null && !whereString.equals(""))
+             || 
+             (sortedString != null && !sortedString.equals(""))
+             ) {
+            NodeManager manager = getCloudProviderVar().getNodeManager(typeString);
             NodeList initialnodes = node.getRelatedNodes(typeString);
-            String where=null;
+            String where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
-                Node n=i.nextNode();
-                if (where==null) {
-                    where=""+n.getNumber();
+                Node n = i.nextNode();
+                if (where == null) {
+                    where = "" + n.getNumber();
                 } else {
-                    where+=","+n.getNumber();
+                    where += "," + n.getNumber();
                 }
             }
-            if (where==null) { // empty list, so use that one.
-                nodes=initialnodes;
+            if (where == null) { // empty list, so use that one.
+                nodes = initialnodes;
             } else {
-                where="number in ("+where+")";
-                if (whereString!=null) where="("+whereString+") AND "+where;
+                where = "number in (" + where + ")";
+                if (whereString!=null) where= "(" + whereString + ") AND " + where;
                 nodes = manager.getList(where,sortedString,directionString);
             }
         } else {
@@ -91,7 +83,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 nodes = node.getRelatedNodes(typeString);
             }
         }
-        return setReturnValues(nodes,true);
+        return setReturnValues(nodes, true);
     }
 
 }
