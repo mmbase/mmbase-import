@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  * these fields may not have a null value.
  *
  * @author Pierre van Rooden
- * @version 5 Jan 2001
+ * @version $Id: NodeComparator.java,v 1.3 2003-03-10 11:51:08 pierre Exp $
  */
 public class NodeComparator implements Comparator {
 

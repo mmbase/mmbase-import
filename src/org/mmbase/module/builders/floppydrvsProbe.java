@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  * there load and info from the config module).
  *
  * @rename FloppydrvsProbe
- * @version 22 Jan 1999
+ * @version $Id: floppydrvsProbe.java,v 1.9 2003-03-10 11:50:21 pierre Exp $
  * @author Daniel Ockeloen
  * @author David V van Zeventer
  */

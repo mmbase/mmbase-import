@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Id: NodeSearchQuery.java,v 1.6 2003-03-10 11:50:58 pierre Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {

@@ -18,8 +18,8 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @author  $Author: nico $
- * @version $Revision: 1.19 $ $Date: 2003-03-04 14:12:21 $
+ * @author  $Author: pierre $
+ * @version $Id: MMServers.java,v 1.20 2003-03-10 11:50:20 pierre Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 

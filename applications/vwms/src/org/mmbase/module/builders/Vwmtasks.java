@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version 5-Apr-2001
+ * @version $Id: Vwmtasks.java,v 1.12 2003-03-10 11:50:21 pierre Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**

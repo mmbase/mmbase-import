@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: CDs.java,v 1.8 2003-03-10 11:50:16 pierre Exp $
  */
 public class CDs extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(CDs.class.getName());

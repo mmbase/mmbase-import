@@ -17,7 +17,7 @@ import org.xml.sax.*;
 /**
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Id: XmlVtsIndicesReader.java,v 1.2 2003-03-10 11:51:04 pierre Exp $
  * @since MMBase-1.7
  */
 public class XmlVtsIndicesReader extends XMLBasicReader {

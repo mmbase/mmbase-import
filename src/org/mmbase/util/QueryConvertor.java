@@ -42,7 +42,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 13 Apr 2001
+ * @version $Id: QueryConvertor.java,v 1.20 2003-03-10 11:51:10 pierre Exp $
  */
 public class QueryConvertor {
 

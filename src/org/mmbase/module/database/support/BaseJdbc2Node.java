@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * based on the database configuration XML file..
  * 
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Id: BaseJdbc2Node.java,v 1.2 2003-03-10 11:50:38 pierre Exp $
  * @since MMBase-1.7
  */
 public abstract class BaseJdbc2Node implements SearchQueryHandler {

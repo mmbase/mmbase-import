@@ -33,7 +33,7 @@ import org.mmbase.cache.Cache;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 24 Apr 2001
+ * @version $Id: Jumpers.java,v 1.23 2003-03-10 11:50:19 pierre Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 

@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version 21 May 2001
+ * @version $Id: Channel.java,v 1.15 2003-03-10 11:50:16 pierre Exp $
  */
 
 public class Channel extends MMObjectBuilder {

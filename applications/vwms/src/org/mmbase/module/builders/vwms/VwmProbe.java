@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version 27 Mar 1997 current version $Id: VwmProbe.java,v 1.7 2003-03-04 14:12:27 nico Exp $
+ * @version $Id: VwmProbe.java,v 1.8 2003-03-10 11:50:26 pierre Exp $ current version $Id: VwmProbe.java,v 1.8 2003-03-10 11:50:26 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class VwmProbe implements Runnable {

@@ -13,7 +13,7 @@ package org.mmbase.module.core;
  * Builds a MultiCast Thread to receive  and send 
  * changes from other MMBase Servers.
  *
- * @version 10 Aug 2000
+ * @version $Id: MMBaseChangeInterface.java,v 1.3 2003-03-10 11:50:30 pierre Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {

@@ -18,7 +18,7 @@ package org.mmbase.module.builders.vwms;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rodoen (javadocs)
- * @version 5 Apr 2001
+ * @version $Id: VwmServiceInterface.java,v 1.6 2003-03-10 11:50:27 pierre Exp $
  */
 public interface VwmServiceInterface extends VwmInterface {
 

@@ -55,7 +55,7 @@ import org.mmbase.storage.search.*;
  * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Id: SqlHandler.java,v 1.5 2003-03-10 11:51:01 pierre Exp $
  * @since MMBase-1.7
  */
 public interface SqlHandler {

@@ -22,7 +22,7 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 5-Apr-2001
+ * @version $Id: VwmInterface.java,v 1.6 2003-03-10 11:50:26 pierre Exp $
  */
 
 public interface VwmInterface extends MMBaseObserver {

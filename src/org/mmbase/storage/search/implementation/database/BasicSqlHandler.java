@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.14 $
+ * @version $Id: BasicSqlHandler.java,v 1.15 2003-03-10 11:50:59 pierre Exp $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?

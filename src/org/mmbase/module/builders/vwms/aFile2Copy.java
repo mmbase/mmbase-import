@@ -19,7 +19,7 @@ import java.lang.String;
  * @rename AFile2Copy
   * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 5 Apr 2001
+ * @version $Id: aFile2Copy.java,v 1.8 2003-03-10 11:50:27 pierre Exp $
  */
 
 public class aFile2Copy {

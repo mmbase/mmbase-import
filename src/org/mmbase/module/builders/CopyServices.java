@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Rico Jansen
- * @version 27 Apr 1999
+ * @version $Id: CopyServices.java,v 1.7 2003-03-10 11:50:18 pierre Exp $
  */
 public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 

@@ -13,7 +13,7 @@ import org.mmbase.module.core.*;
 
 /**
  * @author Rob Vermeulen  
- * @version March 22, 1998
+ * @version $Id: RAStatistics.java,v 1.7 2003-03-10 11:50:20 pierre Exp $
  */
 public class RAStatistics extends MMObjectBuilder {
 

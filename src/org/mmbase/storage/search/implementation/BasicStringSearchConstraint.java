@@ -18,7 +18,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Id: BasicStringSearchConstraint.java,v 1.5 2003-03-10 11:50:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {

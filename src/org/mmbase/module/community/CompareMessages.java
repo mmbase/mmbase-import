@@ -16,7 +16,7 @@ import java.util.Vector;
 
 /**
  * @author Dirk-Jan Hoekstra
- * @version 5 Jan 2001
+ * @version $Id: CompareMessages.java,v 1.3 2003-03-10 11:50:28 pierre Exp $
  *
  * CompareMessages implements the CompareInterface used by SortedVector.
  * At forhand you've to specify on which fields the message nodes should be compared,

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version 10 Dec 2000
+ * @version $Id: Users.java,v 1.7 2003-03-10 11:50:21 pierre Exp $
  */
 public class Users extends MMObjectBuilder {
 

@@ -11,7 +11,7 @@ package org.mmbase.module.builders.protocoldrivers;
 
 /**
  * @rename Jini
- * @version 27 Mar 1997
+ * @version $Id: jini.java,v 1.6 2003-03-10 11:50:23 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class jini implements ProtocolDriver {

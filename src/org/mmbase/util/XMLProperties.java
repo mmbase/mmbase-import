@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 * This is a flexible Properties version, it can handle saving of Properties with
 * the comments that will stay in your file.   
 * @author Jan van Oosterom
-* @version 28-Oct-1996
+* @version $Id: XMLProperties.java,v 1.3 2003-03-10 11:51:15 pierre Exp $
 */
 public class XMLProperties extends Properties implements ContentHandler {
 

@@ -14,8 +14,8 @@ import org.mmbase.util.*;
 /**
  * interface for TransactionHandler
  *
- * @author  $Author: install $ 
- * @version $Revision: 1.3 $ $Date: 2000-10-25 14:47:05 $
+ * @author  $Author: pierre $ 
+ * @version $Id: TransactionHandlerInterface.java,v 1.4 2003-03-10 11:50:12 pierre Exp $
  */
 public interface TransactionHandlerInterface {
 	

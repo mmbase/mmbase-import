@@ -101,7 +101,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Id: ConstraintParser.java,v 1.11 2003-03-10 11:51:04 pierre Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {

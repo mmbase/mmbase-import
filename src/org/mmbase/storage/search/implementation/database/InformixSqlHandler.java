@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Id: InformixSqlHandler.java,v 1.4 2003-03-10 11:51:00 pierre Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {

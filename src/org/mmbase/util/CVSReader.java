@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 11 Apr 2001
+ * @version $Id: CVSReader.java,v 1.9 2003-03-10 11:51:05 pierre Exp $
  */
 public class CVSReader {
 

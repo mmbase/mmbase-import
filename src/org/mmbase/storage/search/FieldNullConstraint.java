@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds to IS NULL in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Id: FieldNullConstraint.java,v 1.2 2003-03-10 11:50:47 pierre Exp $
  * @since MMBase-1.7
  */
 public interface FieldNullConstraint extends FieldConstraint {

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * </PRE>
  *
  * @author Rico Jansen
- * @version 12 Mar 1997
+ * @version $Id: Strip.java,v 1.6 2003-03-10 11:51:14 pierre Exp $
  */
 public class Strip {
 

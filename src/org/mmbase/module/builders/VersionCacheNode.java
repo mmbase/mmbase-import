@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: VersionCacheNode.java,v 1.3 2003-03-10 11:50:21 pierre Exp $
  */
 public class VersionCacheNode extends Object {
 

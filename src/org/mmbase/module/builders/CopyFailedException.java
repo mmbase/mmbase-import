@@ -11,7 +11,7 @@ package org.mmbase.module.builders;
 
 /**
  * &author David V van Zeventer
- * @version 5 Jan 1999
+ * @version $Id: CopyFailedException.java,v 1.5 2003-03-10 11:50:17 pierre Exp $
  */
 public class CopyFailedException extends Exception {
 	public String errval;

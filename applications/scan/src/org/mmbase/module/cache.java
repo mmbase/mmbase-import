@@ -23,8 +23,8 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  * @move org.mmbase.cache.implementation
  * @rename Cache
- * @author  $Author: nico $
- * @version $Revision: 1.11 $ $Date: 2003-03-04 15:26:33 $
+ * @author  $Author: pierre $
+ * @version $Id: cache.java,v 1.12 2003-03-10 11:50:13 pierre Exp $
  */
 public class cache extends Module implements cacheInterface {
 
