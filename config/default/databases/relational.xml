@@ -9,7 +9,7 @@
         Defines the database driver that handles the abstraction between
         mmbase and the given jdbs/database we are using.
     -->
-  <mmbasedriver>org.mmbase.module.database.support.RelationalDatabaseStorage</mmbasedriver>
+  <mmbasedriver>org.mmbase.storage.database.RelationalDatabaseStorage</mmbasedriver>
   <!-- <scheme>
         Defines the strings for the different scheme database
         statements.
