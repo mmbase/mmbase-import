@@ -61,8 +61,8 @@
       with mmevents (a publication date) and people (such as the article's author).
     </td>
     <td>
-      <a href="../share/images/mynews_cloud.jpg" target="img">
-        <img src="../share/images/mynews_cloud.jpg" width="300" />
+      <a href="share/images/mynews_cloud.jpg" target="img">
+        <img src="share/images/mynews_cloud.jpg" width="300" />
       </a>
     </td>
   </tr>
@@ -76,7 +76,7 @@
       With the object cloud design described above you can create webpages like the one you see on the right (By clicking the MyNews url you can see the MyNews magazine in real action). The MyNews magazine consists of a couple of news items. 
       The Title of the newsitems are visualized in this picture. If you click on one of the 'next' images, you will be taken to a new template that shows the complete article.
     </td>
-    <td><a href="../share/images/mynews_manual.jpg" target="img"><img src="../share/images/mynews_manual.jpg" width="300" /></a></td>
+    <td><a href="share/images/mynews_manual.jpg" target="img"><img src="share/images/mynews_manual.jpg" width="300" /></a></td>
   </tr>
 </table>
 </body>
