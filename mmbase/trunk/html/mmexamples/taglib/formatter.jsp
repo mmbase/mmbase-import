@@ -1,0 +1,121 @@
+<%@page language="java" contentType="text/html;charset=UTF-8" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ taglib uri="http://mmbase.omroep.nl/omroep-taglib-1.0" prefix="nos"
+%><% response.setContentType("text/html; charset=UTF-8");
+	java.util.Locale utf = new java.util.Locale("nl", "NL");
+	java.util.Locale.setDefault(utf);
+ %><html>
+<head>
+<title>The formatter tag mm:formatter</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+</head>
+<body>
+
+<%@ include file="menu.jsp"%>
+<mm:import id="node">xmltest</mm:import>
+<mm:cloud>
+
+<mm:node id="ok" referid="node" notfound="skip" />
+
+
+<mm:notpresent referid="ok">
+  <mm:cloud method="http">
+     Creating the test node.
+	 <mm:createnode id="ok" type="xmlnews">
+       <mm:setfield name="title">XML Test Node</mm:setfield>
+       <mm:setfield name="body">XML Test Node</mm:setfield>
+     </mm:createnode>
+     <mm:node referid="ok">
+			<mm:createalias>xmltest</mm:createalias>
+     </mm:node>
+  </mm:cloud>
+</mm:notpresent>
+<mm:present referid="ok">
+
+<% System.err.println("hieerr");%>
+
+<mm:node referid="ok">
+<h1>The formatter tag mm:formatter</h1>
+<p>
+  The formatter tag is meant to do basic formatting tasks. It's main
+  use is to do XSL transformations, but it can do more.
+</p>
+<p>
+  In this page we demonstrate how to use it, and what it can do. On the left you see
+  the code. And on the right to what it results.
+
+</p>
+<mm:timer>
+<table border="1" width="100%">
+<tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/date.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/date.jsp" %></td>
+</tr>
+<tr><td colspan="2">Rich text fields. These fields can contain some basic structure information in XML. We can show XML with the formatter tag.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showrichfield.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><pre><%@include file="codesamples/showrichfield.jsp" %></pre></td>
+</tr>
+<tr><td colspan="2">Rich text fields receive their meaning when you convert this XML format to XHTML.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfield.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/userichfield.jsp" %></td>
+</tr>
+<tr><td colspan="2">In the previous example the default presentation was overridden (by placing a '2xhtml.xslt' in this directory). It is possible to specify the XSLT by hand.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfieldorg.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/userichfieldorg.jsp" %></td>
+</tr>
+<tr><td colspan="2">You don't like html? Output it as plain text then. The plain text is `enriched' with newlines and so on.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfieldascii.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/userichfieldascii.jsp" %></td>
+</tr>
+<tr><td colspan="2">You can also format a whole node in this way.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownode.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/shownode.jsp" %></td>
+</tr>
+<tr><td colspan="2">It is also possible to specify the XSLT inline. Here we imitate the 'shorted' function.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shorted.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/shorted.jsp" %></td>
+</tr>
+<tr><td colspan="2">Of course you can also extend inline XSLT from other XSLT's</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/xsltinline.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/xsltinline.jsp" %></td>
+</tr>
+<tr><td colspan="2">It can treat relations to the node too. We demonstrate here how the 'a' tags in the mmxf field are used. 'Descrel' relations are pointing to them, and we get links in the text like this. We have added a image and some urls to a paragraph as well.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelations.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/shownoderelations.jsp" %></td>
+</tr>
+<tr><td colspan="2">Treating relations is also possible on a field.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showfieldrelations.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/showfieldrelations.jsp" %></td>
+</tr>
+<tr><td colspan="2">Perhaps you only want to urls? Then simply only list the relations to that type.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelations2.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/shownoderelations2.jsp" %></td>
+</tr>
+<tr><td colspan="2">Perhaps you are curious about the intermediate XML which was generated in the last step? No problem.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelationsxml.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/shownoderelationsxml.jsp" %></td>
+</tr>
+<tr><td colspan="2">Want to try some XSL yourself?</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/tryyourself.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/tryyourself.jsp" %></td>
+</tr>
+</table>
+</mm:timer>
+</mm:node>
+</mm:present>
+</mm:cloud>
+</body>
+</html>
