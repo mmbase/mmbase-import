@@ -1,4 +1,4 @@
-/*
+/* 
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.28 2001-07-16 10:08:10 jaco Exp $
+* @version $Id: JamesServlet.java,v 1.29 2001-08-16 12:47:31 install Exp $
 */
 
 
