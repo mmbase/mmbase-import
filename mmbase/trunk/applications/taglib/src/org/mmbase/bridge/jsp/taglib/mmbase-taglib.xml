@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.252 2004-05-10 12:51:00 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1522,7 +1522,7 @@ version: $Id: mmbase-taglib.xml,v 1.252 2004-05-10 12:51:00 michiel Exp $
 				<value>sessionlogon</value>
 				<info>
           <p>
-            Thie method can be used together with "password" attribute, to indicate that the
+            This method can be used together with "password" attribute, to indicate that the
             resulting cloud must be written in the session, and can be picked up with method="asis"
             in another page. Visitors of the page using the login-method should be trusted, because
             they could perhaps exploit this cloud-object in the session.
@@ -1538,9 +1538,36 @@ version: $Id: mmbase-taglib.xml,v 1.252 2004-05-10 12:51:00 michiel Exp $
           </p>
 				</info>
         <see tag="cloud" attribute="password" />
-        <see tag="content" />
         <since>MMBase-1.7</since>
 			</possiblevalue>
+
+			<possiblevalue>
+				<value>delegate</value>
+				<info>
+          <p>
+            Delegates logging in to the security's authentication implemenation itself. The current
+            request and response objects are given as credentials (e.g. to redirect to an external
+            authentication server). You can also be authenticated only based on class (if in
+            classauthentication.xml this jsp's class was mentioned).
+          </p>
+				</info>
+        <see tag="cloud" attribute="authenticate" />
+        <since>MMBase-1.7</since>
+			</possiblevalue>
+
+			<possiblevalue>
+				<value>sessiondelegate</value>
+				<info>
+          <p>
+            As delegate, only the resulting cloud is written to the session (and can be picked up
+            with 'asis'). This should only be used if the user is trusted (and not e.g. when using
+            'class' security, because then the class is trusted, rather then the user).
+          </p>
+				</info>
+        <since>MMBase-1.7</since>
+			</possiblevalue>
+
+
 		</attribute>
 		<attribute>
 			<name>sessionname</name>
@@ -1562,6 +1589,30 @@ version: $Id: mmbase-taglib.xml,v 1.252 2004-05-10 12:51:00 michiel Exp $
 				system. The default is "name/password", which will do in most
 				cases.
 			</info>
+			<possiblevalue>
+				<value>name/password</value>
+				<info>
+          <p>
+            The most common authentication method. You somehow have to supply a name/password combination.
+          </p>
+				</info>
+        <since>MMBase-1.7</since>
+			</possiblevalue>
+
+			<possiblevalue>
+				<value>class</value>
+				<info>
+          <p>
+            This can be used in combination with method="delegate". The 1.8 class security (which
+            can be installed in 1.7) feature can recognize this, and supply a cloud based on the class name of
+            this jsp.
+          </p>
+				</info>
+        <see tag="cloud" attribute="method"/>
+        <since>MMBase-1.7</since>
+			</possiblevalue>
+
+
 		</attribute>
 		<attribute>
 			<name>uri</name>

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.94 2004-03-29 09:09:21 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.95 2004-05-10 17:29:44 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -50,8 +50,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static final int METHOD_LOGINPAGE = 4;
     // private static final int METHOD_GIVEN_OR_ANONYMOUS = 5;
     private static final int METHOD_DELEGATE = 6;
-    private static final int METHOD_PAGELOGON = 7;
-    private static final int METHOD_SESSIONLOGON = 8;
+    private static final int METHOD_SESSIONDELEGATE = 7;
+    private static final int METHOD_PAGELOGON = 8;
+    private static final int METHOD_SESSIONLOGON = 9;
 
     /**
      * Constants needed for the loginpage attribute functionality
@@ -234,6 +235,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return METHOD_LOGINPAGE;
         } else if ("delegate".equals(m)) {
             return METHOD_DELEGATE;
+        } else if ("sessiondelegate".equals(m)) {
+            return METHOD_SESSIONDELEGATE;
         } else if ("pagelogon".equals(m)) {
             return METHOD_LOGINPAGE;
         } else if ("sessionlogon".equals(m)) {
@@ -911,48 +914,45 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         // did not succeed, so problably the password was wrong.
         if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
             switch (reason) {
-                case DENYREASON_RANKTOOLOW :
-                    return denyHTTP("<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
-                case DENYREASON_FAIL :
-                default :
-                    return denyHTTP("<h2>This page requires authentication</h2>");
+            case DENYREASON_RANKTOOLOW :
+                return denyHTTP("<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
+            case DENYREASON_FAIL :
+            default :
+                return denyHTTP("<h2>This page requires authentication</h2>");
             }
         } else if (method == METHOD_LOGINPAGE || (method == METHOD_UNSET && loginpage != Attribute.NULL)) {
             switch (reason) {
-                case DENYREASON_RANKTOOLOW :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW, exactReason);
-                case DENYREASON_FAIL :
-                default :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_FAIL, exactReason);
+            case DENYREASON_RANKTOOLOW :
+                return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW, exactReason);
+            case DENYREASON_FAIL :
+            default :
+                return denyLoginPage(LOGINPAGE_DENYREASON_FAIL, exactReason);
             }
-        } else if (method == METHOD_DELEGATE) {
+        } else if (method == METHOD_DELEGATE || method == METHOD_SESSIONDELEGATE) {
             switch (reason) {
-                case DENYREASON_RANKTOOLOW :
-                    throw new JspTagException("Rank too low");
-                case DENYREASON_FAIL :
-                default :
-                    return SKIP_BODY;
+            case DENYREASON_RANKTOOLOW :
+                throw new JspTagException("Rank too low");
+            case DENYREASON_FAIL :
+            default :
+                return SKIP_BODY;
             }
         } else { // strange, no method given, password wrong (or missing), that's really wrong.
             switch (reason) {
-                case DENYREASON_FAIL :
-                    {
-                        if ("name/password".equals(getAuthenticate())) {
-                            throw new JspTagException(
-                                "Logon of with "
-                                    + (logon != null && logon.size() > 0 ? "'" + logon.get(0) + "'" : "''")
-                                    + " failed."
-                                    + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
-                        } else {
-                            throw new JspTagException("Authentication ('" + getAuthenticate() + "') failed");
-                        }
-                    }
-                case DENYREASON_RANKTOOLOW :
-                    {
-                        throw new JspTagException("Rank too low");
-                    }
-                default :
-                    throw new JspTagException("Denied for unknown reason");
+            case DENYREASON_FAIL : {
+                if ("name/password".equals(getAuthenticate())) {
+                    throw new JspTagException("Logon of with "
+                                              + (logon != null && logon.size() > 0 ? "'" + logon.get(0) + "'" : "''")
+                                              + " failed."
+                                              + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
+                } else {
+                    throw new JspTagException("Authentication ('" + getAuthenticate() + "') failed");
+                }
+            }
+            case DENYREASON_RANKTOOLOW : {
+                throw new JspTagException("Rank too low");
+            }
+            default :
+                throw new JspTagException("Denied for unknown reason");
             }
         }
     }
@@ -1005,12 +1005,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         int method = getMethod();
 
         // check how to log on:
-        if (method == METHOD_DELEGATE) {
+        if (method == METHOD_DELEGATE || method == METHOD_SESSIONDELEGATE) {
             user = new HashMap();
             user.put("request", request);
             user.put("response", response);
             user.put("usernames", logon);
-            sessionCloud = true;
+            sessionCloud = method == METHOD_SESSIONDELEGATE;
         } else if (method == METHOD_HTTP) {
             user = new HashMap();
             sessionCloud = true;
