@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
@@ -27,13 +28,13 @@ import org.mmbase.util.logging.Logging;
 public class ListNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
 
-    protected String typeString=null;
+    protected Attribute type = Attribute.NULL;
 
     /**
      * @param type a nodeManager
      */
-    public void setType(String type) throws JspTagException {
-        typeString = getAttributeValue(type);
+    public void setType(String t) throws JspTagException {
+        type = getAttribute(t);
     }
 
     /**
@@ -44,13 +45,13 @@ public class ListNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        if (typeString == null) {
+        if (type == Attribute.NULL) {
             throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given)");
         }
 
-        NodeManager manager=getCloud().getNodeManager(typeString);
-        NodeList nodes = manager.getList(constraints, orderby, directions);
-        return setReturnValues(nodes,true);
+        NodeManager manager=getCloud().getNodeManager(type.getString(this));
+        NodeList nodes = manager.getList(constraints.getString(this), orderby.getString(this), directions.getString(this));
+        return setReturnValues(nodes, true);
     }
 
 }

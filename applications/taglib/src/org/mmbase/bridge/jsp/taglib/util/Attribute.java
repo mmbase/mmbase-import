@@ -26,36 +26,9 @@ import org.mmbase.util.logging.Logging;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.5 2003-03-07 09:45:30 pierre Exp $
- * @since   MMBase-1.6.1
+ * @version $Id: Attribute.java,v 1.6 2003-03-24 18:15:13 michiel Exp $
+ * @since   MMBase-1.7
  */
-
-
-/**
- * Exception related to errors in tag-attributes
- */
-class AttributeException extends JspTagException {
-    AttributeException(String s) { super(s); }
-}
-
-/**
- * Cache which relates unparsed Attribute Strings with parsed `Attribute' objects.
- */
-class AttributeCache extends Cache {
-    AttributeCache() {
-        super(1000);
-    }
-    public String getName()        { return "TagAttributeCache"; }
-    public String getDescription() { return "Cache for parsed Tag Attributes"; }
-    public Attribute getAttribute(Object att) throws AttributeException {
-        Attribute res;
-        res = (Attribute) super.get(att);
-        if (res == null) res = new Attribute(att);
-        super.put(att, res);
-        return res;
-    }
-
-}
 
 public class Attribute {
     private static Logger log = Logging.getLoggerInstance(Attribute.class.getName());
@@ -122,7 +95,7 @@ public class Attribute {
     }
 
     /**
-     * Returns the evaluated Attribute as an Object.
+     * Returns the evaluated Attribute as an Object. Can also be null.
      */
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (log.isDebugEnabled()) {
@@ -138,12 +111,34 @@ public class Attribute {
         return result.toString();
     }
 
+
     /**
-     * Returns the evaluated Attribute as a String
+     * Returns the evaluated Attribute as a String. This is never null (empty string in that case)..
      */
     public String getString(ContextReferrerTag tag) throws JspTagException {
-        return getValue(tag).toString();
+        return org.mmbase.util.Casting.toString(getValue(tag));
     }
+
+    /** 
+     * Returns the evaluated Attribute as a int
+     */
+
+    public int getInt(ContextReferrerTag tag, int def) throws JspTagException {
+        return org.mmbase.util.Casting.toInt(getValue(tag), def);
+    }
+
+    public List getList(ContextReferrerTag tag) throws JspTagException {
+        return StringSplitter.split(getString(tag));
+    }
+
+    public boolean getBoolean(ContextReferrerTag tag, boolean def) throws JspTagException {
+        String val = getString(tag).toLowerCase();
+        if ("true".equals(val)) return true;
+        if ("false".equals(val)) return false;
+        return def;
+    }
+
+    /**
 
     /**
      * String representation of this Attribute object (for debugging)
@@ -355,13 +350,40 @@ public class Attribute {
     }
 }
 
+
+/**
+ * Cache which relates unparsed Attribute Strings with parsed `Attribute' objects.
+ */
+class AttributeCache extends Cache {
+    AttributeCache() {
+        super(1000);
+    }
+    public String getName()        { return "TagAttributeCache"; }
+    public String getDescription() { return "Cache for parsed Tag Attributes"; }
+    public Attribute getAttribute(Object att) throws AttributeException {
+        Attribute res;
+        res = (Attribute) super.get(att);
+        if (res == null) res = new Attribute(att);
+        super.put(att, res);
+        return res;
+    }
+
+}
+
+/**
+ * Exception related to errors in tag-attributes
+ */
+class AttributeException extends JspTagException {
+    AttributeException(String s) { super(s); }
+}
+
 /**
  * The attribute containing 'null' is special. No parsing needed, nothing needed.
  */
 class NullAttribute extends Attribute {
     NullAttribute() { }
     public Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
-    public String getString(ContextReferrerTag tag) throws JspTagException { return null; }
+    public String getString(ContextReferrerTag tag) throws JspTagException { return ""; }
     public void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
     public String toString() { return "NULLATTRIBUTE"; }
 }

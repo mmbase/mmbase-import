@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
@@ -27,19 +28,17 @@ import org.mmbase.util.logging.Logging;
 public class ListTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListTag.class.getName());
 
-    protected String nodesString=null;
-    protected String pathString=null;
-    protected String distinctString=null;
-    protected String searchString=null;
-
-
-    protected String fields = null;
+    protected Attribute nodes    = Attribute.NULL;
+    protected Attribute path     = Attribute.NULL;
+    protected Attribute distinct = Attribute.NULL;
+    protected Attribute search   = Attribute.NULL;
+    protected Attribute fields   = Attribute.NULL;
 
     /**
      * @param fields a comma separated list of fields of the nodes.
      **/
     public void setFields(String fields) throws JspTagException {
-        this.fields = getAttributeValue(fields);
+        this.fields = getAttribute(fields);
     }
 
 
@@ -54,27 +53,14 @@ public class ListTag extends AbstractNodeListTag {
     public void setNodes(String nodes) throws JspTagException {
         // parse/map the nodes they can be params, sessions or aliases
         // instead of just numbers
-        nodesString=parseNodes(nodes);
-    }
-
-    protected String parseNodes(String nodes) throws JspTagException {
-        // should be a StringTokenizer ?
-        return getAttributeValue(nodes);
+        this.nodes = getAttribute(nodes);
     }
 
     /**
      * @param type a comma separated list of nodeManagers
      */
     public void setPath(String path) throws JspTagException {
-        this.pathString = getAttributeValue(path);
-    }
-
-    /**
-     * @param type a comma separated list of nodeManagers
-     * @deprecated use setPath instead
-     */
-    public void setType(String type) throws JspTagException {
-        this.pathString = getAttributeValue(type);
+        this.path = getAttribute(path);
     }
 
     /**
@@ -84,28 +70,36 @@ public class ListTag extends AbstractNodeListTag {
      * @param search the swerach value
      */
     public void setSearchdir(String search) throws JspTagException {
-        searchString = getAttributeValue(search).toUpperCase().trim();
-        if (log.isDebugEnabled()) log.debug("Setting search dir to " + searchString);
-        if (searchString.length()==0) {
-            searchString="BOTH";
-        } else if ( !searchString.equals("BOTH") &&
-                    !searchString.equals("SOURCE") &&
-                    !searchString.equals("DESTINATION") &&
-                    !searchString.equals("ALL"))  {
-            throw new JspTagException("Search should be one of BOTH, SOURCE, "+
-                        "DESTINATION, or ALL (value found was "+searchString+")");
-        }
+        this.search = getAttribute(search);
+        if (log.isDebugEnabled()) log.debug("Setting search dir to " + this.search);
     }
 
     /**
      * @param distinct the selection query for the object we are looking for
      */
-    public void setDistinct(String distinct){
-        this.distinctString = distinct;
+    public void setDistinct(String distinct) throws JspTagException {
+        this.distinct = getAttribute(distinct);
     }
 
 
-    protected String searchNodes = null;
+    /**
+     * To be overrided by related-tag
+     */
+    protected String getSearchNodes() throws JspTagException {
+        if (nodes != Attribute.NULL) {
+            return nodes.getString(this);
+        } else {
+            return "-1";
+        }
+    }
+
+    /**
+     * To be overrided by related-tag
+     */
+    protected String getPath() throws JspTagException {
+        return (String) path.getValue(this);
+    }
+
     /**
      * Performs the search
      */
@@ -114,29 +108,40 @@ public class ListTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-
-        if (searchNodes == null) {
-            searchNodes = (nodesString == null)? "-1" : nodesString;
+        if (path == Attribute.NULL) {
+            throw new JspTagException("Path attribute is mandatory if referid not speficied");
         }
+
+        String searchString = search.getString(this);
+        if (searchString.equals("")) {
+            searchString="BOTH";
+        } else if ( !searchString.equals("BOTH") &&
+                    !searchString.equals("SOURCE") &&
+                    !searchString.equals("DESTINATION") &&
+                    !searchString.equals("ALL"))  {
+            throw new JspTagException("Search should be one of BOTH, SOURCE, "+
+                        "DESTINATION, or ALL (value found was " + searchString + ")");
+        }
+
+        String distinctString = distinct.getString(this);
         boolean searchDistinct = false;
         if ("true".equals(distinctString) || "yes".equals(distinctString)) {
             searchDistinct = true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pathstring " + pathString);
+            log.debug("pathstring " + path.getString(this));
             log.debug("directions " + directions);
             log.debug("searchString " + searchString);
         }
-        NodeList nodes = getCloud().getList(searchNodes,
-                                            pathString,
-                                            fields,
-                                            constraints,
-                                            orderby,
-                                            directions,
+        NodeList nodes = getCloud().getList(getSearchNodes(),
+                                            getPath(),
+                                            fields.getString(this),
+                                            (String) constraints.getValue(this),
+                                            (String) orderby.getValue(this),
+                                            (String) directions.getValue(this),
                                             searchString,
                                             searchDistinct);
-        searchNodes = null;
-        return setReturnValues(nodes,true);
+        return setReturnValues(nodes, true);
     }
 
 }

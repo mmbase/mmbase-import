@@ -1581,6 +1581,36 @@ access the value of title:
     <example>See the example for tag 'node'.</example>
   </tag>
   <tag>
+    <name>function</name>
+    <extends>writer</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FunctionTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <info>
+      Gets the function value of function `name' from node `node' (can also be list).
+    </info>
+    <see tag="fieldinfo" />
+    <see tag="fieldlist" />
+    <see tag="node" />
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          The name of the function to evaluate.
+        </p>
+      </info>
+      <examplevalue>
+        <value>gui</value>
+        <info>Returns the value of the field `title'</info>
+      </examplevalue>
+    </attribute>
+  </tag>
+  <tag>
     <name>createalias</name>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateAliasTag</tagclass>

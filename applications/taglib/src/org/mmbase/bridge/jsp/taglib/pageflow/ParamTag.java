@@ -35,7 +35,7 @@ public class ParamTag extends ContextReferrerTag {
     }
 
     public int doStartTag() throws JspException {
-        paramHandler = (ParamHandler) findParentTag("org.mmbase.bridge.jsp.taglib.pageflow.ParamHandler", null);
+        paramHandler = (ParamHandler) findParentTag(ParamHandler.class.getName(), null);
         handled = false;
         return super.doStartTag();
     }

@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -32,14 +33,14 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(FieldReferrerTag.class.getName()); 
 
-    private String parentFieldId = null;
+    private Attribute parentFieldId = Attribute.NULL;
     //private NodeProvider nodeProvider = null;
 
     /**
      **/
 
-    public void setField(String field){
-        parentFieldId = field;
+    public void setField(String field) throws JspTagException {
+        parentFieldId = getAttribute(field);
     }
 
     /**
@@ -48,7 +49,7 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
     *
     */	
     public FieldProvider findFieldProvider() throws JspTagException {        
-        return (FieldProvider) findParentTag("org.mmbase.bridge.jsp.taglib.FieldProvider", parentFieldId);
+        return (FieldProvider) findParentTag("org.mmbase.bridge.jsp.taglib.FieldProvider", (String) parentFieldId.getValue(this));
     }
 
 

@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +25,6 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  **/
 public class WhoTag extends AbstractNodeListTag {
-    //this class is growing to big..
     private static Logger log = Logging.getLoggerInstance(WhoTag.class.getName());
 
     private String channel= null;
@@ -59,8 +59,8 @@ public class WhoTag extends AbstractNodeListTag {
 
         if (orderby != null)   params.put("SORTFIELDS",orderby);
         if (directions !=null) params.put("SORTDIRS",  directions);
-        if (offset > 0)        params.put("FROMCOUNT", "" + offset);
-        if (max > -1)          params.put("MAX", "" + max);
+        if (offset != Attribute.NULL)        params.put("FROMCOUNT", "" + offset.getInt(this, 0));
+        if (max    != Attribute.NULL)        params.put("MAX", max.getString(this));
         NodeList nodes = community.getList("WHO", params, pageContext.getRequest(), pageContext.getResponse());
         return setReturnValues(nodes,false);
     }

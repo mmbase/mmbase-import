@@ -20,6 +20,7 @@ import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -39,13 +40,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Holds the list of fields to sort the list on.
      * The sort itself is implementation specific.
      */
-    protected String orderby = null;
+    protected Attribute orderby = Attribute.NULL;
 
     /**
      * Holds the direction to sort the list on (per field in {@link #orderby}).
      * The sort itself is implementation specific.
      */
-    protected String directions = null;
+    protected Attribute directions = Attribute.NULL;
 
     /**
      * Holds the clause used to filter the list.
@@ -54,19 +55,19 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * a MMBase database node search, preceded with the keyord MMNODE.
      * The filter itself is implementation specific (not all lists may implement this!).
      */
-    protected String constraints = null;
+    protected Attribute constraints = Attribute.NULL;
 
     /**
      * The maximum number of elements in a list.
      * Setting the list size to conform to this maximum is implementation specific.
      */
-    protected int max = -1;
+    protected Attribute  max = Attribute.NULL;
 
     /**
      * The offset of the elements that are returned in a list.
      * Setting the list to conform to this ofsset is implementation specific.
      */
-    protected int offset   = 0;
+    protected Attribute offset = Attribute.NULL;
 
     /**
      * Determines whether a field in {@link #orderby} changed
@@ -108,7 +109,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * nodes should be sorted
      */
     public void setOrderby(String orderby) throws JspTagException {
-        this.orderby = getAttributeValue(orderby);
+        this.orderby = getAttribute(orderby);
     }
 
     /**
@@ -117,7 +118,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * direction
      */
     public void setDirections(String directions) throws JspTagException {
-        this.directions = getAttributeValue(directions);
+        this.directions = getAttribute(directions);
     }
 
     /**
@@ -125,7 +126,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setMax(String m) throws JspTagException {
-        max = getAttributeInteger(m, -1).intValue();
+        max = getAttribute(m);
     }
 
     /**
@@ -144,7 +145,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setOffset(String o) throws JspTagException {
-        offset = getAttributeInteger(o).intValue();
+        offset = getAttribute(o);
     }
     /*
     public void setOffset(int o) { // also need with integer argument for Tomcat.
@@ -157,8 +158,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param where the selection query
      */
     public void setConstraints(String where) throws JspTagException {
-        constraints = getAttributeValue(where);
-        if ("".equals(constraints)) constraints = null; // this means: no constraints
+        constraints = getAttribute(where);
     }
 
 
@@ -176,19 +176,19 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (! (o instanceof NodeList)) {
                 throw new JspTagException("Context variable " + getReferid() + " is not a NodeList");
             }
-            if (orderby != null) {
+            if (orderby != Attribute.NULL) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
             }
-            if (offset != 0) {
+            if (offset != Attribute.NULL) {
                 throw new JspTagException("'offset' attribute does not make sense with 'referid' attribute");
             }
-            if (max != -1) {
+            if (max != Attribute.NULL) {
                 throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
             }
-            if (directions != null) {
+            if (directions != Attribute.NULL) {
                 throw new JspTagException("'directions' attribute does not make sense with 'referid' attribute");
             }
-            if (constraints != null) {
+            if (constraints != Attribute.NULL) {
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
@@ -224,21 +224,25 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  @link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        if (trim && (max > -1 || offset > 0)) {
+        if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
             int currentSize = nodes.size();
-            int maxx = (max > currentSize ? currentSize : max);
-            if (max == -1 ) maxx = currentSize;
-            int to = maxx + offset;
+
+            int maxi = max.getInt(this, currentSize);
+            int maxx = (maxi > currentSize ? currentSize : maxi);
+
+            int offseti = offset.getInt(this, 0);
+
+            int to = maxx + offseti;
             if (to >= currentSize) {
                 to = currentSize;
             }
-            if (offset >= currentSize) {
-                offset = currentSize;
+            if (offseti >= currentSize) {
+                offseti = currentSize;
             }
-            if (offset < 0) {
-                offset = 0;
+            if (offseti < 0) {
+                offseti = 0;
             }
-            nodes = nodes.subNodeList(offset, to);
+            nodes = nodes.subNodeList(offseti, to);
 
         }
         returnList   = nodes;
