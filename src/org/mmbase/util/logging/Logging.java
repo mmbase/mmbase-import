@@ -179,6 +179,9 @@ public class Logging {
 
        
         System.out.println("Class to use for logging " + classToUse);
+        System.out.println("*** Warning depending on your selected logging system no more loglines ***");
+        System.out.println("*** will be written to this file, See the selected logging systems ***");
+        System.out.println("*** config file(s) for more hints where they are now ***");
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             //System.out.println("classloader1: " + ClassLoader.getSystemClassLoader().getClass().getName());
