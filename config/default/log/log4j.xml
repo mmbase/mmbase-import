@@ -46,8 +46,7 @@
     <param name="File"   value="&logdir;mmlog4j.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
-         <param name="ConversionPattern" value="%d %-5p %c{4} %M.%L %x - %m%n" />
-		 <!-- very slow! Don't use for production!! -->
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p - %m%n" />
     </layout>
 </appender>
 
@@ -55,10 +54,10 @@
 
 <!-- examples: different priority for a few subtrees -->
 <category name="org.mmbase.bridge" class ="&logger;">
-    <priority class="&priority;" value ="debug" />
+    <priority class="&priority;" value ="info" />
 </category>
 <category name="org.mmbase.security" class ="&logger;">
-    <priority class="&priority;" value ="debug" />
+    <priority class="&priority;" value ="info" />
 </category>
 
 <!-- perhaps you use your own extensions to MMBase -->
@@ -70,7 +69,7 @@
      (always with priority 'warn' or higher)  -->
 
 <category name="STDERR" class ="&logger;">
-    <priority class="&priority;" value ="debug" />	
+    <priority class="&priority;" value ="info" />	
 </category>
 
 <root>
