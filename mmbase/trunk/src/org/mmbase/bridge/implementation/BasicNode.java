@@ -346,14 +346,14 @@ public class BasicNode implements Node {
     public void delete(boolean deleteRelations) {
         edit(ACTION_DELETE);
         if (isnew) {
-            // remove a temporary node (no true instantion yet, no relations)
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             // remove from the Transaction
             // note that the node is immediately destroyed !
             // possibly older edits will fail if they refernce this node
             if (cloud instanceof Transaction) {
                 ((BasicTransaction)cloud).remove(""+temporaryNodeId);
             }
+            // remove a temporary node (no true instantion yet, no relations)
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
         } else {
             // remove a node that is edited, i.e. that already exists
             // check relations first!
