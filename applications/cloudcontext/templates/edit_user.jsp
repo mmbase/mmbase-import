@@ -19,12 +19,14 @@
   <form action="commit_user.jsp" method="post">
    <table>
     <mm:fieldlist type="edit">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
     </mm:fieldlist>
+    <mm:field name="username">
+    <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
     <tr>
      <td>Groups</td>
      <td>
-      <select name="_groups" size="4" multiple="multiple">
+      <select name="_groups"  size="15" multiple="multiple">
         <mm:relatednodes id="ingroups" type="mmbasegroups">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>       
         </mm:relatednodes>
@@ -38,11 +40,9 @@
        </mm:relatednodes>
       </mm:url>">View groups</a>
      </td>
-    </tr>
-    <tr>
      <td>Rank</td>
      <td>
-      <select name="_rank" size="4">
+      <select name="_rank" size="15">
         <mm:relatednodes type="mmbaseranks">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:relatednodes>
@@ -52,6 +52,8 @@
       </select>
      </td>
     </tr>
+    </mm:compare>
+    </mm:field>
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
     <input type="hidden" name="user" value="<mm:field name="number" />" />
    </table>

@@ -23,6 +23,8 @@
  <div id="navigate">
    <p class="current"><a href="<mm:url page="index.jsp" />">Users</a></p>
    <p><a href="<mm:url page="index_groups.jsp" />">Groups</a></p>
+   <p><a href="<mm:url page="index_contexts.jsp" />">Contexts</a></p>
+   <p><a target="_new" href="<mm:url page="help.jsp" />">Help</a></p>
  </div>
  
 
