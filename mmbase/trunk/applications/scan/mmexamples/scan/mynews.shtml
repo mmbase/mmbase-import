@@ -46,7 +46,7 @@ On your filesystem in the directory /mmexamples/scan/mynews you will find the te
 				<CENTER>MyNews application NOT installed please install before using it.<BR>
 You can install the MyNews application by going to ADMIN -> APPLICATIONS </CENTRER>
 			<ELSE>
-				This url will show the MyNews magazine: <A HREF="/mynews" TARGET="mynews">http://yourhost:port/mynews</A>
+				This url will show the MyNews magazine: <A HREF="mynews" TARGET="mynews">mynews</A>
 			</IF>
 			<LISTLOOP>
 			</LISTLOOP>
