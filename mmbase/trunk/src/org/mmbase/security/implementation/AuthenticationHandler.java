@@ -112,11 +112,8 @@ public class AuthenticationHandler extends Authentication {
 	return loginModulesAvailable;
     }
 
-    /** 
-     * this method does nothing..
-     */        
     public Rank getRank(UserContext usercontext) throws org.mmbase.security.SecurityException {
-    	return Rank.ANONYMOUS;
+    	return ((NameContext)usercontext).getRank();
     }       
     
 }
