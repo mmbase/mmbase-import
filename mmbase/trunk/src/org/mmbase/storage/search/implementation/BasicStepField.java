@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -154,6 +154,15 @@ public class BasicStepField implements StepField {
         }
         this.alias = alias;
         return this;
+    }
+    
+    /**
+     * Gets the associated fieldDefs.
+     *
+     * @return The fieldDefs.
+     */
+    public FieldDefs getFieldDefs() {
+        return fieldDefs;
     }
     
     // javadoc is inherited
