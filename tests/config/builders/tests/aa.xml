@@ -129,6 +129,17 @@
       </db>
     </field>
 
+    <field>
+      <gui>
+        <guiname xml:lang="en">NodeField</guiname>
+        <guitype>typedef</guitype>
+      </gui>
+      <db>
+        <name>nodefield</name>
+        <type key="false" notnull="false" state="persistent">NODE</type>
+      </db>
+    </field>
+
   </fieldlist>
 
 </builder>
