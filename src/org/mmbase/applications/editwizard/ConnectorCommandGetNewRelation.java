@@ -17,19 +17,28 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.4 2002-03-18 17:13:07 eduard Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.5 2002-10-31 08:23:19 pierre Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {
 
     /**
-     * @javadoc
+     * Constructs a command to craete a new temporarily relation.
+     *
+     * @param role                    The name of the role the new relation should have.
+     * @param sourceObjectNumber      the number of the sourceobject
+     * @param sourceType              the type of the sourceobject
+     * @param destinationObjectNumber the number of the destination object
+     * @param destinationType         the type of the destination object
      */
-     public ConnectorCommandGetNewRelation(String role, String sourceobjectnumber, String destinationobjectnumber) throws WizardException {
+     public ConnectorCommandGetNewRelation(String role, String sourceObjectNumber, String sourceType,
+                                           String destinationObjectNumber, String destinationType) throws WizardException {
          super("getnewrelation");
          addCommandAttr("role", role);
-         addCommandAttr("source", sourceobjectnumber);
-         addCommandAttr("destination", destinationobjectnumber);
+         addCommandAttr("source", sourceObjectNumber);
+         addCommandAttr("sourcetype", sourceType);
+         addCommandAttr("destination", destinationObjectNumber);
+         addCommandAttr("destinationtype", destinationType);
      }
 
 }

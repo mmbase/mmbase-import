@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.22 2002-10-25 12:57:24 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.23 2002-10-31 08:23:20 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -238,10 +238,8 @@ public class WizardDatabaseConnector {
      */
     public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws Exception {
         // fires getData command and places result in targetNode
-        Node objectNode=getDataRaw(objectnumber, restrictions);
+        Node objectNode=getDataNode(targetNode.getOwnerDocument(), objectnumber, restrictions);
         // place object in targetNode
-        objectNode = targetNode.getOwnerDocument().importNode(objectNode.cloneNode(true),true);
-        tagDataNode(objectNode);
         targetNode.appendChild(objectNode);
         return objectNode;
     }
@@ -249,19 +247,23 @@ public class WizardDatabaseConnector {
     /**
      * This method retrieves data (objectdata) from mmbase.
      *
+     * @param     document      Results are imported in this document
      * @param     objectnumber    The number of the object to load.
      * @param     restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
      * @return   The resulting node with the objectdata.
      */
-    public Node getDataRaw(String objectnumber, NodeList restrictions) throws Exception {
-
+    public Node getDataNode(Document document, String objectnumber, NodeList restrictions) throws Exception {
         // fires getData command and places result in targetNode
         ConnectorCommandGetData cmd = new ConnectorCommandGetData(objectnumber, restrictions);
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
             // place object in targetNode
-            return Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
+            Node objectNode=Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
+            // not sure if all of this is really necessary?
+            objectNode = document.importNode(objectNode.cloneNode(true),true);
+            tagDataNode(objectNode);
+            return objectNode;
         } else {
             throw new Exception("Could not fire getData command for object " + objectnumber);
         }
@@ -323,15 +325,19 @@ public class WizardDatabaseConnector {
     /**
      * This method creates a new temporarily relation.
      *
-     * @param     targetNode      The place where the results should be appended.
-     * @param     role            The name of the role the new relation should have.
-     * @param     sourceobjectnumber      the number of the sourceobject
-     * @param     destinationobjectnumber the number of the destination object
-     * @return   The resulting relation node.
+     * @param targetNode              The place where the results should be appended.
+     * @param role                    The name of the role the new relation should have.
+     * @param sourceObjectNumber      the number of the sourceobject
+     * @param sourceType              the type of the sourceobject
+     * @param destinationObjectNumber the number of the destination object
+     * @param destinationType         the type of the destination object
+     * @return The resulting relation node.
      */
-    public Node getNewRelation(Node targetNode, String role, String sourceobjectnumber, String destinationobjectnumber) throws WizardException, SecurityException {
+    public Node getNewRelation(Node targetNode, String role,
+                              String sourceObjectNumber, String sourceType,
+                              String destinationObjectNumber, String destinationType) throws WizardException, SecurityException {
         // fires getNewRelation command and places result in targetNode
-        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceobjectnumber, destinationobjectnumber);
+        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceObjectNumber, sourceType, destinationObjectNumber, destinationType);
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
@@ -340,7 +346,9 @@ public class WizardDatabaseConnector {
             targetNode.appendChild(objectNode);
             return objectNode;
         } else {
-            throw new WizardException("getNewRelation command returned an error. role="+role + ", source="+sourceobjectnumber+", dest="+destinationobjectnumber);
+            throw new WizardException("getNewRelation command returned an error. role="+role +
+                        ", source="+sourceObjectNumber+" ("+sourceType+")"+
+                        ", destination="+destinationObjectNumber+" ("+destinationType+")");
         }
     }
 
@@ -469,58 +477,63 @@ public class WizardDatabaseConnector {
 
         for (int i=0; i < relations.getLength(); i++) {
             Node relation = relations.item(i);
+            // create the relation now we can get all needed params
+            String role = Utils.getAttribute(relation, "role", "related");
+            String snumber = Utils.getAttribute(objectNode, "number");
+            String stype = Utils.getAttribute(objectNode, "type");
+            // determine destination
+            // dnumber can be null
             String dnumber = Utils.getAttribute(relation, "destination", null);
             dnumber=Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
-            String role="related";
-            String snumber="";
-            Node relationNode = null;
+            String dtype = "";
             Node inside_object = null;
-            // create the relation now we can get all needed params
-            role = Utils.getAttribute(relation, "role", "related");
-            snumber = Utils.getAttribute(objectNode, "number");
-            // dnumber can be null
-            relationNode = getNewRelation(objectNode, role, snumber, dnumber);
+            Node inside_objectdef = Utils.selectSingleNode(relation, "object");
+            if (dnumber!=null) {
+                // dnumber is given (direct reference to an existing mmbase node)
+                // obtain the object.
+                // we can do this here as it is a single retrieval
+                try {
+                    inside_object = getDataNode(targetParentNode.getOwnerDocument(), dnumber, null);
+                } catch (Exception e) {
+                    throw new WizardException("Could not load object ("+dnumber+"). Message: "+Logging.stackTrace(e));
+                }
+                // but annotate that this one is loaded from mmbase. Not a new one
+                Utils.setAttribute(inside_object, "already-exists", "true");
+                // grab the type
+                dtype=Utils.getAttribute(inside_object, "type", "");
+            } else {
+                // type should be determined from the destinationtype
+                dtype=Utils.getAttribute(relation, "destinationtype", "");
+                // OR the objectdefiniton
+                if (dtype.equals("")) {
+                    if (inside_objectdef!=null) {
+                        dtype = Utils.getAttribute(inside_objectdef, "type");
+                    }
+                }
+            }
+
+            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype);
             fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
 
             tagDataNode(relationNode);
             lastCreatedRelation = relationNode;
 
-            if (dnumber==null) {
+            if (inside_object==null) {
                 // no dnumber given! create the object
-                Node inside_objectdef = Utils.selectSingleNode(relation, "object");
                 if (inside_objectdef==null) {
                     // no destination is given AND no object to-be-created-new is placed.
                     // so, no destination should be added...
-//                    tempobjectholder = Utils.parseXML("<object number=\"\" type=\"" + Utils.getAttribute(relation, "destinationtype", "") + "\" disposable=\"true\"/>");
-//                    inside_object = tempobjectholder.getDocumentElement();
                     inside_object=data.createElement("object");
                     ((Element)inside_object).setAttribute("number","");
                     ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
                     ((Element)inside_object).setAttribute("disposable","true");
                 } else {
-//                    tempobjectholder = Utils.parseXML("<tmpdata/>");
                     inside_object = createObject(data,relationNode, inside_objectdef, params);
                     dnumber = Utils.getAttribute(inside_object, "number");
                     ((Element)relationNode).setAttribute("destination",dnumber);
                 }
-                relationNode.appendChild(inside_object);
             }
-
-            try {
-                // now check if we need to load the inside object...
-                if (inside_object==null) {
-                    // yep. we don't have it yet. Let's load it
-                    inside_object = getData(relationNode, dnumber);
-                    // but annotate that thisone is loaded from mmbase. Not a new one
-                    Utils.setAttribute(inside_object, "already-exists", "true");
-                } else {
-                    // we already have it. Let's copy/clone and place it.
-//                    inside_object = relationNode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
-//                    relationNode.appendChild(inside_object);
-                }
-            } catch (Exception e) {
-                throw new WizardException("Could NOT place inside object in createObject. Message: "+e.getMessage());
-            }
+            relationNode.appendChild(inside_object);
         }
         if (nodename.equals("relation")) {
             return lastCreatedRelation;
