@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.1 2000-06-02 10:57:49 wwwtech Exp $
+	$Id: ConvertImageMagick.java,v 1.2 2000-06-08 18:00:11 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/06/02 10:57:49  wwwtech
+	Rico: seperated conversion from the builder
+	
 */
 package org.mmbase.module.builders;
 
@@ -24,12 +27,12 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.1 2000-06-02 10:57:49 wwwtech Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.2 2000-06-08 18:00:11 wwwtech Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug(String msg) { System.out.println(classname+":"+msg); }
 
 	// Currenctly only ImageMagick works
@@ -251,7 +254,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 			dip.close();
 			byte[] res=new byte[len2];
 	    	System.arraycopy(result, 0, res, 0, len2);
-			debug("ConvertImage(): ok "+cmd+" len "+len2);
+			if (debug) debug("ConvertImage(): ok "+cmd+" len "+len2);
 			return(res);
         } catch (Exception e) {
 			debug("ConvertImage(): convert failed ! img("+cmd+")");

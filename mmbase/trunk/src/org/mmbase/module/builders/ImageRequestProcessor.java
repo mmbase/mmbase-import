@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ImageRequestProcessor.java,v 1.2 2000-06-06 21:31:58 wwwtech Exp $
+	$Id: ImageRequestProcessor.java,v 1.3 2000-06-08 18:00:11 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/06/06 21:31:58  wwwtech
+	Rico: fixed a serious bug in which incorrect icaches entries where created
+	
 	Revision 1.1  2000/06/05 14:42:15  wwwtech
 	Rico: image queuing built in plus parallel converters
 	
@@ -24,11 +27,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.2 2000-06-06 21:31:58 wwwtech Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.3 2000-06-08 18:00:11 wwwtech Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug(String msg) { System.out.println(classname+":"+msg);}
 	Thread kicker=null;
 
