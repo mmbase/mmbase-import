@@ -1348,6 +1348,12 @@ Version: MMBase build ${version}
       >
       <include name="**/*.xml" />
     </style>
+    <!-- copy also the images and resources -->
+    <copy todir="${mmdocs.dir}/html" >
+      <fileset dir="${source-documentation.dir}" >
+        <exclude name="**/*.xml"/>
+      </fileset>
+    </copy>
   </target>
 
   <!-- =================================================================== -->
