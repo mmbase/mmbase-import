@@ -42,7 +42,7 @@ public class BasicCloudContext implements CloudContext {
     static TransactionManager transactionManager = null;
 	
     // map of clouds by name
-    private static HashMap localClouds = new HashMap();
+    private static Set localClouds = new HashSet();
 
     // map of modules by name
     private static HashMap localModules = new HashMap();
@@ -55,6 +55,7 @@ public class BasicCloudContext implements CloudContext {
         Iterator i=org.mmbase.module.Module.getModules();
         if (i!=null) {
             mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
+
 		
             // create transaction manager and temporary node manager
             tmpObjectManager = new TemporaryNodeManager(mmb);
@@ -66,8 +67,9 @@ public class BasicCloudContext implements CloudContext {
                 localModules.put(mod.getName(),mod);
             }
 	    
-            Cloud cloud = new BasicCloud("mmbase",this);
-            localClouds.put(cloud.getName(),cloud);
+	    // set all the names of all accessable clouds..
+	    localClouds.add("mmbase");
+	    
         } 
 	else {
 	    // why dont we start mmbase, when there isnt a running instance, just change the check...
@@ -88,41 +90,21 @@ public class BasicCloudContext implements CloudContext {
         return mod;
     }
 
-    public CloudList getClouds() {
-        Vector v=new Vector();
-        for (Iterator i=localClouds.values().iterator(); i.hasNext();) {
-            v.add((Cloud)i.next());
-        }
-	return new BasicCloudList(v,this);
-    }
-
     public Cloud getCloud(String cloudName) {
-    	return getCloud(cloudName,false);
+    	return getCloud(cloudName, "", getNewUser());
     }
-    
+        
     public Cloud getCloud(String name, String application, User user) {
-    	throw new BasicBridgeException("Not yet implemented");
-	//  this will set the new User supplied by the authentication
-	//  and set it as the User of the Cloud, it is not certain if
-	//  this new user object contains certain value's which it con-
-	//  taned before,.. This shouldn't be nessecary, since there is
-	//  only information which is related to the authentication/
-	//  authorization stored inside this object.
-	
-    	//  return getCloud(cloudName,false);    
-    }
-    
-    public Cloud getCloud(String cloudName, boolean readonly) {
-        Cloud cloud = (Cloud)localClouds.get(cloudName);
-        if (cloud==null) {
-            throw new BasicBridgeException("Cloud "+cloudName+" does not exist.");
-        }
-	if (!readonly) {
-            cloud = ((BasicCloud)cloud).getCopy();
+    	if ( !localClouds.contains(name) ) {
+	     throw new BasicBridgeException("Cloud "+name+" does not exist.");
 	}
-	return cloud;
+	return new BasicCloud(name, application, user,this);
     }
 
+    public User getNewUser(){
+    	return new org.mmbase.security.UserContext();
+    }    
+    
     /**
      * Create a temporary scanpage object.
      */
