@@ -25,7 +25,7 @@ Create a build.xml with a DOCTYPE like this:
   <!-- Read customized values if available -->
   <property file="../../build.properties" />
   <property file="build.properties" />
-  <property name="build.compiler" value="classic" />
+  <property name="build.compiler" value="modern" />
   <property name="optimize" value="on" />
   <property name="debug" value="off" />
   <property name="deprecation" value="on" />
