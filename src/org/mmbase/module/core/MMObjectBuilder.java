@@ -17,6 +17,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.util.*;
+import org.mmbase.module.ParseException;
 import org.mmbase.module.database.*;
 import org.mmbase.module.gui.html.*;
 import org.mmbase.module.builders.*;
@@ -1288,9 +1289,8 @@ public class MMObjectBuilder extends MMTable {
 	/**
 	* getList all for frontend code
 	*/
-	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
-		debug("getList(): getlist called should be overridden");
-		return(null);
+	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
+		throw new ParseException(classname +" does not implement the LIST command");
 	}
 
 

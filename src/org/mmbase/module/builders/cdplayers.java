@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.4 2000-03-30 13:11:35 wwwtech Exp $
+$Id: cdplayers.java,v 1.5 2000-03-31 13:27:52 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/30 13:11:35  wwwtech
+Rico: added license
+
 Revision 1.3  2000/03/29 10:59:26  wwwtech
 Rob: Licenses changed
 
@@ -25,6 +28,7 @@ import java.sql.*;
 import java.io.*;
 import java.net.*;
 
+import org.mmbase.module.ParseException;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -33,7 +37,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.4 $ $Date: 2000-03-30 13:11:35 $ 
+ * @version $Revision: 1.5 $ $Date: 2000-03-31 13:27:52 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
@@ -81,7 +85,7 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 		} else return super.getValue( node, field );
 	}
 	
-	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
 			if (cmd.equals("getdir")) return(getHTMLDir(tagger,tok));
