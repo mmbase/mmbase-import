@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.76 2003-04-02 16:34:14 michiel Exp $
+ * @version $Id: Wizard.java,v 1.77 2003-04-02 19:20:24 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -936,7 +936,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (role        != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'role' attributes");
                 if (destination != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'destination' attributes");
             } else {
-                if (role ==  null)     role = "insrel";
+                if (role ==  null)     role = "insrel"; // should this not be 'related'? 'insrel' is not a role!
 
                 int searchDir;
                 if (searchString == null) { 
