@@ -570,7 +570,6 @@ public class MMObjectNode {
 	* returns the DBType (as defined in JDBC mostly, needs some work)
 	*/
 	public int getDBType(String fieldname) {
-		System.out.println("PREFIX="+prefix);
 		if (prefix!=null && prefix.length()>0) {
 			// If the prefix is set use the builder contained therein
 			int pos=prefix.indexOf('.');
