@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.5 2004-02-09 17:58:05 michiel Exp $
+ * @version $Id: Parameters.java,v 1.6 2004-02-09 18:08:44 michiel Exp $
  * @see Parameter
  */
 
@@ -255,6 +255,10 @@ public class Parameters extends AbstractList implements List  {
     }
 
     public String getString(String arg) {
+        return Casting.toString(get(arg));
+    }
+
+    public String getString(Parameter arg) {
         return Casting.toString(get(arg));
     }
 
