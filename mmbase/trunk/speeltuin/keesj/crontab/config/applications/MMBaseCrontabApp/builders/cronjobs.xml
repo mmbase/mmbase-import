@@ -94,5 +94,20 @@
         <type size="127" key="false" state="persistent" notnull="false">STRING</type>
       </db>
     </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">cronjob type(1= short, 2= singleton jobs,3= multiple threads possible)</description>
+        <description xml:lang="nl">het tiepe job (1 = kort, 2= enkelvoudig, 3= meerdere gelijktijdige jobs mogelijk)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Tiepe jobs</guiname>
+        <guiname xml:lang="en">job type</guiname>
+        <guitype>org.mmbase.applications.crontab.builders.resources.jobtypes</guitype>
+      </gui>
+      <db>
+        <name>type</name>
+        <type state="persistent" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
   </fieldlist>
 </builder>
