@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import java.util.Vector;
+import java.util.StringTokenizer;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.LocalContext;
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * If you want to have attributes which obtain the value from a
- *  parameter, extend from this.
+ * parameter, extend from this.
  *
  * @author Michiel Meeuwissen 
  */
@@ -61,13 +63,35 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             }
         } else if (attribute.startsWith("context:")) {
             String param = attribute.substring(8);
-            attributeValue = getString(param);
+            attributeValue = getContextTag().getString(param);
             if (attributeValue == null) {
                 throw new JspTagException("Context attribute " + param + " could not be found");
             }
         }
 
         return attributeValue;        
+    }
+
+
+    /**
+    * Simple util method to split comma separated values
+    * to a vector. Usefull for attributes.
+    * @param string the string to split
+    * @param delimiter
+    * @return a Vector containing the elements, the elements are also trimed
+    */
+
+    static public Vector stringSplitter(String attribute, String delimiter) { 
+        Vector retval = new Vector();
+        StringTokenizer st = new StringTokenizer(attribute, delimiter);
+        while(st.hasMoreTokens()){
+            retval.addElement(st.nextToken().trim());
+        }
+        return retval;
+    }
+
+    static public Vector stringSplitter(String string) {
+        return stringSplitter(string, ",");
     }
 
     
@@ -98,19 +122,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     }
 
-    protected ContextTag findContext() throws JspTagException {
-        return (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextId);
-    }
-
-    protected Object getObject(String id) throws JspTagException {
+    protected ContextTag getContextTag() throws JspTagException {
         if (contextTag == null) {
-            contextTag = findContext();
+            contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextId);
         }
-        return contextTag.getObject(id);
+        return contextTag;
     }
-    protected String getString(String id) throws JspTagException {
-        return (String) getObject(id);
-    }
-
 
 }
