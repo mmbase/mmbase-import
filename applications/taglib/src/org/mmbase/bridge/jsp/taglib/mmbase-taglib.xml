@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.243 2004-02-25 14:21:43 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.244 2004-02-26 22:11:49 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3709,6 +3709,20 @@ like the parameter list or the session (where ever it is available) --&gt;
 			<info>Only list the relations in this direction.</info>
 			<since>MMBase-1.7</since>
 		</attribute>
+		<attribute>
+			<name>max</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="list" attribute="max" />
+			<since>MMBase-1.7</since>
+		</attribute>
+		<attribute>
+			<name>offset</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="list" attribute="offset" />
+			<since>MMBase-1.7</since>
+		</attribute>
 		<example>
 &lt;mm:listnodes type="news"&gt;
 		&lt;mm:field name="title" /&gt;
@@ -3719,6 +3733,37 @@ like the parameter list or the session (where ever it is available) --&gt;
 		&lt;br/&gt;
 &lt;/mm:listnodes&gt;
 		</example>
+	</tag>
+	<tag>
+		<name>listrelationscontainer</name>
+		<type>mmbase.list</type>
+		<extends>querycontainer</extends>
+		<extends>nodereferrer</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.containers.ListRelationsContainerTag</tagclass>
+		<info>
+      The query container for the listrelations tag.
+		</info>
+    <since>MMBase-1.7</since>
+		<see tag="listrelations" />
+		<see tag="relatednode" />
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listrelations" attribute="type" />
+		</attribute>
+		<attribute>
+			<name>role</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <see tag="listrelations" attribute="role" />
+		</attribute>
+		<attribute>
+			<name>searchdir</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="listrelations" attribute="searchdir" />
+		</attribute>
 	</tag>
 	<tag>
 		<name>relatednode</name>
