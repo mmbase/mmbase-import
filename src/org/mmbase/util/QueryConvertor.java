@@ -42,7 +42,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.22 2003-11-27 12:46:24 robmaris Exp $
+ * @version $Id: QueryConvertor.java,v 1.23 2003-12-17 18:14:12 michiel Exp $
  */
 public class QueryConvertor {
 
@@ -113,6 +113,7 @@ public class QueryConvertor {
      *
      * @param query The query.
      * @param where The constraint.
+     * @since MMBase-1.7
      */
     public static void setConstraint(BasicSearchQuery query, String where) {
 
