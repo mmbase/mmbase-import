@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.94.2.4 2004-06-29 09:21:40 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.94.2.5 2004-07-05 14:56:32 pierre Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -238,7 +238,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } else if ("sessiondelegate".equals(m)) {
             return METHOD_SESSIONDELEGATE;
         } else if ("pagelogon".equals(m)) {
-            return METHOD_LOGINPAGE;
+            return METHOD_PAGELOGON;
         } else if ("sessionlogon".equals(m)) {
             return METHOD_SESSIONLOGON;
             //} else if ("given_or_anonymous".equals(m)) {
@@ -872,7 +872,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
 
             /*
-            if (1 == 0) { 
+            if (1 == 0) {
                 // XXXXX hmm, should test this in freeze
                 // making relative urls'.
 
@@ -1131,7 +1131,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         if (checkAnonymous()) { // check if requested, and create
             if (cloud == null) { // could not be created!
-                // what can we do now?                
+                // what can we do now?
                 return SKIP_BODY;
             } else {
                 // yes, found
@@ -1160,7 +1160,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) { 
+        if (checkLogoutMethod()) {
             return evalBody();
         }
 
