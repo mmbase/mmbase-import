@@ -244,7 +244,12 @@ public class PostThread {
 			pnode.setIntValue("posternumber",p.getId());
 		}
 
-    	pnode.setStringValue("body",body);
+		// snap er niets van hoe moet dit nu Gerard ?
+		if (body.indexOf("<")!=-1) {
+	    		pnode.setStringValue("body","<body>"+body+"</body>");
+		} else {
+	    		pnode.setStringValue("body",body);
+		}
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();

@@ -371,4 +371,11 @@ public class ForumManager {
        return config.getLogoutModeType();
    }
 
+   public static String getGuestReadModeType() {
+       return config.getGuestReadModeType();
+   }
+
+   public static String getGuestWriteModeType() {
+       return config.getGuestWriteModeType();
+   }
 }

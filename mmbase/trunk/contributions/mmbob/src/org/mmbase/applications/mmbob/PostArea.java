@@ -728,4 +728,26 @@ public class PostArea {
             }
         }
     }
+
+
+   public String getGuestReadModeType() {
+	if (config != null) {
+		String tmp = config.getGuestReadModeType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return parent.getGuestReadModeType();
+   }
+
+
+   public String getGuestWriteModeType() {
+	if (config != null) {
+		String tmp = config.getGuestWriteModeType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return parent.getGuestWriteModeType();
+   }
 }
