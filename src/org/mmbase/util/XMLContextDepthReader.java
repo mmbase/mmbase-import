@@ -40,11 +40,11 @@ public class XMLContextDepthReader  {
             document = parser.getDocument();
 
 		/*
-	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
-	    System.out.println("ExportSource="+getExportSource());	
-	    System.out.println("TimeStamp="+getTimeStamp());	
-	    System.out.println("Nodes nodes="+getNodes(mmbase));	
-	    System.out.println("*** END XML APPLICATION READER FOR : "+filename);	
+	    log.debug("*** START XML APPLICATION READER FOR : "+filename);	
+	    log.debug("ExportSource="+getExportSource());	
+	    log.debug("TimeStamp="+getTimeStamp());	
+	    log.debug("Nodes nodes="+getNodes(mmbase));	
+	    log.debug("*** END XML APPLICATION READER FOR : "+filename);	
 		*/
 	} catch(Exception e) {
 	    e.printStackTrace();

@@ -19,11 +19,18 @@ import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.corebuilders.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.4 2000-08-20 10:53:44 case Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.5 2001-04-19 12:00:25 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2000/08/20 10:53:44  case
+ * cjr: minor changes, this class is now actually used
+ *
  *
  * XMLLanguageReader parses the .xml file in its argument in its constructor.
  * This .xml file should be formatted according to mmlanguage.dtd.
@@ -38,6 +45,8 @@ import org.mmbase.module.corebuilders.*;
  *
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
+
+    private static Logger log = Logging.getLoggerInstance(XMLMMLanguageReader.class.getName());
 
     Hashtable languageList; // Hashtable from languagecode to Hashtables with dictionaries
 
