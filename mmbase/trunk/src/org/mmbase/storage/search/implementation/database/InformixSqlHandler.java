@@ -34,7 +34,7 @@ import org.mmbase.module.core.MMBase;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.7 2004-02-23 19:01:04 pierre Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8 2004-04-02 08:17:36 rob Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -121,7 +121,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         // DISTINCT
-        if (query.isDistinct()) {
+        if (query.isDistinct() && !query.isAggregating()) {
             sbQuery.append("DISTINCT ");
         }
 
