@@ -16,7 +16,8 @@ import java.io.File;
  * @see CompareInterface
  *
  * @author David V van Zeventer
- * @version $Id: FileCompare.java,v 1.6 2003-03-10 11:51:07 pierre Exp $
+ * @version $Id: FileCompare.java,v 1.7 2004-05-03 11:25:27 michiel Exp $
+ * @todo   Should be named FileLastModifiedComparator and implement java.util.Comparator
  */
 public class FileCompare implements CompareInterface {
 
