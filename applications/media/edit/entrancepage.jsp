@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.4 2002-11-19 21:32:09 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.5 2002-11-19 21:49:52 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -141,7 +141,7 @@
   <mm:context>
   <mm:import id="langs" vartype="list">en,nl</mm:import>
   <mm:aliaslist id="language" referid="langs">
-     <a href="<mm:url referids="language" />" ><mm:locale language="$_" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></a><br />
+     <a href="<mm:url referids="language,origin" />" ><mm:locale language="$_" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></a><br />
   </mm:aliaslist>
   </mm:context>
   </p>
