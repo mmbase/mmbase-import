@@ -24,7 +24,7 @@ import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 import org.mmbase.module.core.MMObjectBuilder;
 
 
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.74 2004-06-28 21:39:07 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.75 2004-12-06 15:25:19 pierre Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -260,7 +260,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = new ParametersImpl(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    field.getName());
             args.set("language",   locale.getLanguage());
             args.set("locale",   locale);

@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.38 2004-09-17 09:23:15 pierre Exp $
+ * @version $Id: Contexts.java,v 1.39 2004-12-06 15:25:19 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -917,15 +917,6 @@ public class Contexts extends MMObjectBuilder {
         return groupOrUser;
     }
 
-
-    public Parameter[] getParameterDefinition(String function) {
-        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Contexts.class, function);
-        if (params == null) return super.getParameterDefinition(function);
-        return params;
-
-    }
-
-
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
             log.trace("executefunction of contexts " + function + " " + args);
@@ -947,49 +938,49 @@ public class Contexts extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (function.equals("allows")) {
-            Parameters a = Parameters.get(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
+            Parameters a = Functions.buildParameters(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             if (allows(node, getNode(a.getString(PARAMETER_GROUPORUSER)), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
-            Parameters a = Parameters.get(PARENTSALLOW_PARAMETERS, args);
+            Parameters a = Functions.buildParameters(PARENTSALLOW_PARAMETERS, args);
             if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("grant")) {
-            Parameters a = Parameters.get(GRANT_PARAMETERS, args);
+            Parameters a = Functions.buildParameters(GRANT_PARAMETERS, args);
             if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("revoke")) {
-            Parameters a = Parameters.get(REVOKE_PARAMETERS, args);
+            Parameters a = Functions.buildParameters(REVOKE_PARAMETERS, args);
             if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("maygrant")) {
-            Parameters a = Parameters.get(MAYGRANT_PARAMETERS, args);
+            Parameters a = Functions.buildParameters(MAYGRANT_PARAMETERS, args);
             if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("mayrevoke")) {
-            Parameters a = Parameters.get(MAYREVOKE_PARAMETERS, args);
+            Parameters a = Functions.buildParameters(MAYREVOKE_PARAMETERS, args);
             if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("may")) {
-            Parameters a = Parameters.get(MAY_PARAMETERS, args);
+            Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);
             MMObjectNode checkingUser = getUserNode((org.mmbase.bridge.User) a.get(Parameter.USER));
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");

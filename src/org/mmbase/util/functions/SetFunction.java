@@ -9,11 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-
 import org.mmbase.module.core.*;
-import org.mmbase.bridge.*;
 import java.lang.reflect.*;
-import java.lang.reflect.Field;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -23,105 +20,76 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
- * @version $Id: SetFunction.java,v 1.3 2004-11-02 18:35:32 michiel Exp $
+ * @author Pierre van Rooden
+ * @version $Id: SetFunction.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
  * @since MMBase-1.8
  */
-public class SetFunction extends Function {
+public class SetFunction extends AbstractFunction {
     private static final Logger log = Logging.getLoggerInstance(SetFunction.class);
 
-    private String type       = "unknown";
     private String className  = "unknown";
     private String methodName = "unknown";
-    private String description = "unknown";
-    // private String returntype="unknown";
+
     private Class functionClass;
     private Method functionMethod;
-    private Object functionInstance; 
-    private List params = new ArrayList();
+    private Object functionInstance;
 
-
-    /**
-     * {@link FunctionFactory#getFunction(String, String)} 
-     * 
-     * This static factory method is delegated to {@link FunctionSets#getFunction(String, String)}.
-     */
-    public static Function getFunction(String set, String name) {        
-	return FunctionSets.getFunction(set, name);
-    }
-
-
-    SetFunction(String name, Parameter[] def, ReturnType returnType) {
+    public SetFunction(String name, Parameter[] def, ReturnType returnType) {
         super(name, def, returnType);
     }
 
-
     /**
      * {@inheritDoc}
      */
-    public Object getFunctionValue(Parameters arguments) {
-	if (functionMethod == null) {
-            if (!initFunction()) {
-                return null;
-            }
-	}		
-	try {
-            return functionMethod.invoke(functionInstance, arguments.toArray());			
-	} catch(Exception e) {
-            log.error("function call : " + name);
-            log.error("functionMethod="  + functionMethod);
-            log.error("functionInstance=" + functionInstance);
-            log.error("arglist=" + arguments);
-	}
-
-	return null;
+    public Object getFunctionValue(Parameters parameters) {
+        try {
+            return functionMethod.invoke(functionInstance, parameters.toArray());
+        } catch (IllegalAccessException iae) {
+            log.error("Function call failed (method not available) : " + name +", method: " + functionMethod +
+                       ", instance: " + functionInstance +", parameters: " + parameters);
+            return null;
+        } catch (InvocationTargetException ite) {
+            throw new RuntimeException(ite.getTargetException()); // throw the actual exception that occurred
+        }
     }
 
-    void setType(String type)   { 
-        this.type = type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setDescription(String description)   { 
-        this.description = description;
-    }
-
-    void setName(String name)   { 
-        this.name = name;
-    }
-
-    void setClassName(String className)   { 
+    public void setClassName(String className)   {
         this.className = className;
     }
 
-    void setMethodName(String methodName)   { 
+    public void setMethodName(String methodName)   {
         this.methodName = methodName;
     }
 
     /**
-     * @javadoc
+     * Initializes the function by creating an instance of the function class, and
+     * locating the method to call.
+     * This method should be called after setting the class and method name, and before calling
+     * the {@link #getFunctionValue} method.
      */
-    private  boolean initFunction() {
+    public void initialize() {
         if (className != null) {
             try {
                 functionClass = Class.forName(className);
             } catch(Exception e) {
-                log.error("Can't create an application function class : " + className + " " + e.getMessage());
+                String errormessage = "Can't create an application function class : " + className + " " + e.getMessage();
+                log.error(errormessage);
+                throw new RunTimeException(errormessage,e);
             }
-
             try {
                 functionInstance = functionClass.newInstance();
             } catch(Exception e) {
-                log.error("Can't create an function instance : " + className);
+                String errormessage = "Can't create an function instance : " + className;
+                log.error(errormessage);
+                throw new RunTimeException(errormessage,e);
             }
-
             try {
-                functionMethod = functionClass.getMethod(methodName, getNewParameters().toClassArray());
+                functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
             } catch(NoSuchMethodException f) {
-                log.error("Function method  not found : " + className + "." + methodName + "(" + getParameterDefinition()+")");
+                String errormessage = "Function method  not found : " + className + "." + methodName + "(" + getParameterDefinition()+")";
+                log.error(errormessage);
+                throw new RunTimeException(errormessage,e);
             }
         }
-        return true;
     }
 }

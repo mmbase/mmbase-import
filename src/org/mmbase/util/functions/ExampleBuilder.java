@@ -9,10 +9,10 @@ import org.mmbase.util.logging.*;
 
 /**
  * Example builder implementation implementing functions. Lots of people are sooner or earlier
- * trying to make their own builder implementation. Especially whith the advent the 'function' tags in 
+ * trying to make their own builder implementation. Especially whith the advent the 'function' tags in
  * 1.7 it would be nice that people could seen an example of how that could be done.
  *
- * To try it out, take a builder xml and add 
+ * To try it out, take a builder xml and add
  * <code>&lt;classfile&gt;org.mmbase.util.functions.ExampleBuilder&lt;/classfile&gt; </code>
  * and e.g. a jsp like this:
  * <code>
@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * </code>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.3 2004-02-11 20:43:21 keesj Exp $
+ * @version $Id: ExampleBuilder.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
@@ -39,24 +39,9 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
     };
 
     /**
-     * A very crude way to implement getParameterDefinition, using the utitily function in NodeFunction, which uses
-     * reflection to find the constant(s) defined in this class.
-     * 
-     * If you prefer you could also use an explicit if/else tree to reach the same goal.
-     */
-    // overridden from MMObjectBuilder
-    public Parameter[] getParameterDefinition(String function) {
-        Parameter[] params = NodeFunction.getParametersByReflection(ExampleBuilder.class, function);
-        if (params == null) return super.getParameterDefinition(function);
-        return params;
-        
-    }
-
-    /**
      * A 'function' implementation which ignores the 'node' and does something with a 'Cloud' object.
      * @todo this might be interpreted as a function on the builder, somehow!
      */
-
     private NodeList function1Implementation(MMObjectNode node, Parameters p) {
         Integer max = (Integer) p.get("max");
         Cloud cloud = (Cloud) p.get(Parameter.CLOUD);
@@ -65,7 +50,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
         NodeQuery q = thisManager.createQuery();
         q.setMaxNumber(max.intValue());
         q.addSortOrder(q.getStepField(thisManager.getField("number")), SortOrder.ORDER_DESCENDING);
-        return thisManager.getList(q);        
+        return thisManager.getList(q);
 
     }
 
@@ -84,7 +69,7 @@ public final class ExampleBuilder extends MMObjectBuilder { // final to avoid th
                 return info.get(args.get(0));
             }
         } else if (function.equals("function1")) {
-            Parameters p = Parameters.get(FUNCTION1_PARAMETERS, args);  
+            Parameters p = Functions.buildParameters(FUNCTION1_PARAMETERS, args);
             return function1Implementation(node, p);
 
             // more examples should be implemented here.

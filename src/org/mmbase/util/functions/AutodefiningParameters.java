@@ -17,22 +17,22 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.4 2004-11-15 10:53:18 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.5 2004-12-06 15:25:19 pierre Exp $
  * @see Parameter
  */
 
-public class AutodefiningParameters extends Parameters {
+public class AutodefiningParameters extends ParametersImpl {
     //private static Logger log = Logging.getLoggerInstance(Parameters.class);
 
 
     public AutodefiningParameters() {
-        definition = new Parameter[0];
+        super(new DataType[0]);
     }
     /**
      * Sets the value of an argument, and grows the definition array.
      */
     public Parameters set(String arg, Object value) {
-        Parameter[] newDef = new Parameter[definition.length + 1];
+        DataType[] newDef = new DataType[definition.length + 1];
         for (int i = 0; i < definition.length; i++) {
             newDef[i] = definition[i];
         }
@@ -43,7 +43,7 @@ public class AutodefiningParameters extends Parameters {
         return this;
     }
 
-    public boolean hasParameter(Parameter param) {
+    public boolean containsParameter(Parameter param) {
         return true;
     }
 

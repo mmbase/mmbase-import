@@ -51,7 +51,7 @@
             object can be filled by parameter name, and checks for correctness before calling the
             function, so likely it is more conventient.
           </p>
-        </li>                
+        </li>
       </ul>
     </p>
     <h2>How to implement functions</h2>
@@ -77,10 +77,10 @@
           of the builder of the node.
         </li>
         <li>
-          To make the parameter definition array accessible, implement it in 
-          {@link org.mmbase.module.core.MMObjectBuilder#getParameterDefinition(String)}. A utility method to implement this last method by use of reflection and class constants, is staticly available  as {@link org.mmbase.util.functions.NodeFunction#getParametersByReflection(Class, String)}.           
+          To make the parameter definition array accessible, implement it in
+          {@link org.mmbase.module.core.MMObjectBuilder#getParameterDefinition(String)}. A utility method to implement this last method by use of reflection and class constants, is staticly available  as {@link org.mmbase.util.functions.NodeFunction#getParametersByReflection(Class, String)}.
         </li>
-      </ul>      
+      </ul>
     </p>
     <p>
       An example of this way of working is {@link org.mmbase.util.functions.ExampleBuilder}.
@@ -90,7 +90,7 @@
       compatible with 'executeFunction' which was traditionally used. We may add a simpler way in
       MMBase-1.8 (e.g. by allowing you to create a Function object yourself).
     </p>
-    <!-- version of package description $Id: package.html,v 1.2 2004-11-03 17:43:39 michiel Exp $ -->
+    <!-- version of package description $Id: package.html,v 1.3 2004-12-06 15:25:19 pierre Exp $ -->
     @since MMBase-1.7
   </body>
 </html>

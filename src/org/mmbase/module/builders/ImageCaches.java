@@ -11,7 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.UriParser;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.40 2004-08-26 12:10:38 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.41 2004-12-06 15:25:19 pierre Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -59,7 +59,7 @@ public class ImageCaches extends AbstractImages {
 
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters a) {
         StringBuffer servlet = new StringBuffer();
-        HttpServletRequest req = (HttpServletRequest) a.get("request");
+        HttpServletRequest req = (HttpServletRequest) a.get(Parameter.REQUEST);
         if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
@@ -69,16 +69,16 @@ public class ImageCaches extends AbstractImages {
         servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
-        HttpServletResponse res = (HttpServletResponse) a.get("response");
+        HttpServletResponse res = (HttpServletResponse) a.get(Parameter.RESPONSE);
         String heightAndWidth = "";
         if (origNode != null) {
 
-            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);           
+            List cacheArgs =  new ParametersImpl(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
             MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
             //heightAndWidth = "heigth=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
             heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
             imageThumb = servlet.toString() + thumb.getNumber();
-            if (res != null) { 
+            if (res != null) {
                 imageThumb = res.encodeURL(imageThumb);
             }
         } else {
@@ -103,7 +103,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     protected MMObjectNode getCachedNode(String ckey) {
-        log.debug("Getting cached noded for " + ckey);        
+        log.debug("Getting cached noded for " + ckey);
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -156,9 +156,9 @@ public class ImageCaches extends AbstractImages {
         log.debug("getting ckey node with " + ckey);
         if(handleCache.contains(ckey)) {
             // found the node in the cache..
-            log.debug("Found in handleCache!");            
+            log.debug("Found in handleCache!");
             ByteFieldContainer result = (ByteFieldContainer) handleCache.get(ckey);
-            log.debug("Found number " + result.number);            
+            log.debug("Found number " + result.number);
         }
         log.debug("not found in handle cache, getting it from database.");
         MMObjectNode node = getCachedNode(ckey);
@@ -184,7 +184,7 @@ public class ImageCaches extends AbstractImages {
         if (data.length< (100 * 1024))  {
             handleCache.put(ckey, result);
         }
-        return result;        
+        return result;
     }
 
     /**
@@ -253,13 +253,13 @@ public class ImageCaches extends AbstractImages {
     }
 
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) {            
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
-        }        
-        if (ctype.equals("d")) {            
+        if (log.isDebugEnabled()) {
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
+        }
+        if (ctype.equals("d")) {
             handleCache.removeCacheNumber(Integer.parseInt(number));
         }
-        return super.nodeLocalChanged(machine, number, builder, ctype);        
+        return super.nodeLocalChanged(machine, number, builder, ctype);
     }
 
 

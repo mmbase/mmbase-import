@@ -22,11 +22,11 @@ import org.mmbase.util.logging.*;
 /**
  * A function tag for functions returning a NodeList. The result is iterated.
  *
- * This is one of the most straightforward ListProvider/NodeProvider implementations, you could use it as a template. 
+ * This is one of the most straightforward ListProvider/NodeProvider implementations, you could use it as a template.
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.6 2004-09-14 17:59:38 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.7 2004-12-06 15:25:19 pierre Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
     //cannot extend AbstractNodeList because we extend AbstractFunctionTag alreeady. Sigh, stupid java.
@@ -40,7 +40,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     private NodeListHelper     listHelper = new NodeListHelper(this, nodeHelper);
 
 
-    // implementation of NodeProvider 
+    // implementation of NodeProvider
 
     public Node getNodeVar() throws JspTagException {
         return nodeHelper.getNodeVar();
@@ -102,21 +102,27 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
 
         NodeList list;
         Object value = getFunctionValue();
+
+        /* should be something like:
+
+        NodeList list = Casting.toNodeList(getCloudVar(), value);
+
+        */
         if (value instanceof NodeList) {
             list = (NodeList) value;
         } else {
             list = getCloudVar().getCloudContext().createNodeList();
-            
+
             if (value != null) {
                 // the Collection must contain "Nodes" only, no MMObjectNodes otherwise Exception from BasicNodeList, because it cannot convert without Cloud
-                list.addAll((Collection) value); 
+                list.addAll((Collection) value);
             }
 
         }
         return listHelper.setReturnValues(list, true);
     }
-    
-    
+
+
     public int doAfterBody() throws JspException {
         log.debug("doafterbody");
         nodeHelper.doAfterBody();

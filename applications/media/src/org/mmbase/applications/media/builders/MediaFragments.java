@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
- */
+*/
 package org.mmbase.applications.media.builders;
 
 import org.mmbase.applications.media.filters.MainFilter;
@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.39 2004-11-05 11:48:22 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.40 2004-12-06 15:25:19 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -64,10 +64,9 @@ public class MediaFragments extends MMObjectBuilder {
     public final static Parameter[] ROOT_PARAMETERS          = {};
     public final static Parameter[] ISSUBFRAGMENT_PARAMETERS = {};
     public final static Parameter[] SUBFRAGMENT_SPARAMETERS  = {};
-    public final static Parameter[] AVAILABLE_PARAMETERS     = URLS_PARAMETERS;    
+    public final static Parameter[] AVAILABLE_PARAMETERS     = URLS_PARAMETERS;
     public final static Parameter[] FORMAT_PARAMETERS        = URLS_PARAMETERS;
     public final static Parameter[] DURATION_PARAMETERS      = {};
-
 
 
     // This filter is able to find the best mediasource by a mediafragment.
@@ -109,12 +108,6 @@ public class MediaFragments extends MMObjectBuilder {
         return info;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaFragments.class, function);
-    }
     /**
      * {@inheritDoc}
      */
@@ -279,7 +272,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else {
             log.debug("No cache hit, key = " + key);
         }
-        
+
         Set cacheExpireObjects = new HashSet();
         List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
         String result = "";
@@ -408,7 +401,6 @@ public class MediaFragments extends MMObjectBuilder {
     // --------------------------------------------------------------------------------
     // These methods are added to be backwards compatible.
 
-
     private Map               classification     = null;
 
      /**
@@ -507,7 +499,7 @@ log.info("store value in seconds: "+val);
      * Stack.contains is used, so make sure equal node are equal.
      */
 
-    public boolean equals(MMObjectNode o1, MMObjectNode o2) {        
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         int n1 = o1.getNumber();
         int n2 = o2.getNumber();
         if (n1 > 0 && n2 > 0) { // both 'real' nodes.

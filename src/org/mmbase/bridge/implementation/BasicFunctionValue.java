@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.InsRel;
 import org.w3c.dom.Document;
@@ -22,26 +23,45 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.8 2004-10-09 09:37:33 nico Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.9 2004-12-06 15:25:19 pierre Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
 
     static private BridgeException CANNOTCHANGE =  new BridgeException("Cannot change function value");
 
-    private   Node node = null;
-    private   MMObjectNode mmobjectnode = null;
-    private   Object value = null;
+    private Node node = null;
+    private Object value = null;
+    private Cloud cloud = null;
 
-    BasicFunctionValue (Node n, MMObjectNode node, Object value) {
-        this.node         = n;
-        this.mmobjectnode = node;
-        this.value        = value; 
+    /**
+     * Constructor for a function value returned by a Node.
+     * @since MMBase-1.8
+     * @param node the node that called the function
+     * @param value the function value
+     */
+    BasicFunctionValue(Node node, Object value) {
+        this(node.getCloud(), value);
+        this.node  = node;
+    }
+
+    /**
+     * Constructor for a function value returned by a Module or NodeManager.
+     * @since MMBase-1.8
+     * @param cloud the cloud under which the call was run, used to instantiate NodeList values
+     * @param value the function value
+     */
+    BasicFunctionValue(Cloud cloud, Object value) {
+        this.value = value;
+        this.cloud = cloud;
         if (this.value instanceof List) { // might be a collection of MMObjectNodes
             List list  = (List) this.value;
             if (list.size() > 0) {
                 if (list.get(0) instanceof MMObjectNode) { // if List of MMObjectNodes, make NodeList
-                    this.value = new BasicNodeList(list, n.getCloud());
+                    if (cloud == null) {
+                        throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
+                    }
+                    this.value = new BasicNodeList(list, cloud);
                 }
             }
         }
@@ -92,16 +112,10 @@ public class BasicFunctionValue implements FieldValue {
     }
 
     public Node toNode() {
-        MMObjectNode noderes = Casting.toNode(value, mmobjectnode.parent);
-        if (noderes != null) {
-            if (noderes.parent instanceof InsRel) {
-                return new BasicRelation(noderes, node.getCloud()); //.getNodeManager(noderes.parent.getTableName()));
-            } else {
-                return new BasicNode    (noderes, node.getCloud()); //.getNodeManager(noderes.parent.getTableName()));
-            }
-        } else {
-            return null;
+        if (cloud == null) {
+            throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
         }
+        return Casting.toNode(value, cloud);
     }
 
     public String toString() {

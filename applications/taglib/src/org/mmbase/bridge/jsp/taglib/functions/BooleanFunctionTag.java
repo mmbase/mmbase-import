@@ -11,9 +11,11 @@ package org.mmbase.bridge.jsp.taglib.functions;
 
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.bridge.FieldValue;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.2 2004-11-03 18:19:32 michiel Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.3 2004-12-06 15:25:19 pierre Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 
@@ -40,19 +42,9 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
     }
 
     public int doStartTag() throws JspTagException {
-
         Object value = getFunctionValue();
-        
-        if ("true".equals(value))  {
-            value = Boolean.TRUE;
-        } else if ("false".equals(value)) {
-            value = Boolean.FALSE;
-        }
-
-        if (! (value instanceof Boolean)) {
-            throw new JspTagException("Function result '" + value + "' is not of type Boolean but " + (value == null ? value : value.getClass().getName()));
-        }
-        return (((Boolean) value).booleanValue() != getInverse()) ? EVAL_BODY_BUFFERED : SKIP_BODY;
+        boolean booleanValue = Casting.toBoolean(value);
+        return (booleanValue != getInverse()) ? EVAL_BODY_BUFFERED : SKIP_BODY;
     }
 
 

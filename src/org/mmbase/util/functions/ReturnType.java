@@ -19,52 +19,87 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.3 2004-11-02 18:35:32 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
  * @since MMBase-1.7
  */
-public class ReturnType {
+public class ReturnType extends AbstractDataType {
 
     /**
-     * Describing the return type of function that does not return a thing.
+     * The return type of a function that does not return a thing.
      */
     public static final ReturnType VOID = new ReturnType(null, "Does not return anything");
+
+    /**
+     * The return type of a function that returns a String.
+     */
+    public static final ReturnType STRING = new ReturnType(String.class, "String");
+
+    /**
+     * The return type of a function that returns a Integer.
+     */
+    public static final ReturnType INTEGER = new ReturnType(Integer.class, "Integer");
+
+    /**
+     * The return type of a function that returns a Long.
+     */
+    public static final ReturnType LONG = new ReturnType(Long.class, "Long");
+
+    /**
+     * The return type of a function that returns a Double.
+     */
+    public static final ReturnType DOUBLE = new ReturnType(Double.class, "Double");
+
+    /**
+     * The return type of a function that returns a Boolean.
+     */
+    public static final ReturnType BOOLEAN = new ReturnType(Boolean.class, "Boolean");
+
+    /**
+     * The return type of a function that returns a List.
+     */
+    public static final ReturnType LIST = new ReturnType(List.class, "List");
+
+    /**
+     * The return type of a function that returns a Set.
+     */
+    public static final ReturnType SET = new ReturnType(Set.class, "Set");
+
+    /**
+     * The return type of a function is unknown.
+     */
+    public static final ReturnType UNKNOWN = new ReturnType(Object.class, "unknown");
 
     /**
      * Can be return by functions that don't want to return anything. (The function framework
      * requires you to return <em>something</em>).
      */
-    public static final Object     VOID_VALUE = new Object();
+    public static final Object VOID_VALUE = new Object();
 
-    private Class type;
-    private String description;
-    private Map   typeStruct = new HashMap(); // key -> ReturnType
+    private Map typeStruct = new HashMap(); // key -> ReturnType
 
     public  ReturnType(Class type, String description) {
-        this.type = type;
-        this.description = description;
-    }  
-
-    /**
-     * @return The 'Class' object which this object is wrapping.
-     */
-    public Class getType() {
-        return type;
+        super("RETURN_VALUE", type);
+        setDescription(description);
     }
-    
-    /**
-     * @return A description of the return value. For documentation purposes.
-     */
-    public String getDescription() {
-        return description;
+
+    public Object getDefaultValue() {
+        return null;
+    }
+
+    public void setDefaultValue(Object def) {
+        throw new UnsupportedOperationException("You cannot define a default value for a return type");
+    }
+
+    public boolean isRequired() {
+        return false;
     }
 
     /**
-     * If the return type is like a map or struct (key-values pairs), then you might want to describe the 
+     * If the return type is like a map or struct (key-values pairs), then you might want to describe the
      * types of the values seperately too.
      */
-
-    ReturnType addSubType(String name,  ReturnType type) {
-        return (ReturnType) typeStruct.put(name, type); 
+    public ReturnType addSubType(String name,  ReturnType type) {
+        return (ReturnType) typeStruct.put(name, type);
     }
 
     /**
@@ -73,8 +108,5 @@ public class ReturnType {
     public Map getSubTypes() {
         return Collections.unmodifiableMap(typeStruct);
     }
-
-
-
 
 }
