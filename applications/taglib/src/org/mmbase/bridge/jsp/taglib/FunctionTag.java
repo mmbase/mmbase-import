@@ -27,19 +27,25 @@ import java.util.*;
  * The Function tag can be used as a child of a 'NodeProvider' tag (but not on clusternodes?). It
  * can call functions on the node.
  *
- * @author Michiel Meeuwissen
- * @since  MMBase-1.7
+ * @author  Michiel Meeuwissen
+ * @since   MMBase-1.7
+ * @version $Id: FunctionTag.java,v 1.2 2003-06-27 12:58:27 michiel Exp $
  */
-public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler {
+public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler, FunctionContainerReferrer {
 
     private static Logger log = Logging.getLoggerInstance(FunctionTag.class);
 
+    protected Attribute container = Attribute.NULL;
+    protected Attribute name      = Attribute.NULL;
 
-    protected Attribute name = Attribute.NULL;
     protected List      parameters;
 
     public void setName(String n) throws JspTagException {
         name = getAttribute(n);
+    }
+
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c); // not yet implemented
     }
 
     /**
