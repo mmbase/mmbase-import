@@ -132,6 +132,7 @@ public class MMUsers extends ProcessorModule {
 				
 				if (userid < 0) debug ("Couldn't create a new user!");
 				else sendConfirmationEMail (address, loginname, password);
+				rtn = rtn+userid;
 			} else {
 				rtn="EMAIL";
 				debug("Email address is already in use");
@@ -169,7 +170,7 @@ public class MMUsers extends ProcessorModule {
 
 	private boolean deleteSIDs(String usernumber) {
 		if (properties == null) properties = (Properties)mmbase.getMMObject("properties");
-		Enumeration e = properties.search("where parent="+usernumber+" AND key='SID'");
+		Enumeration e = properties.search("parent=E"+usernumber+" + key=='SID'");
 		while (e.hasMoreElements()) {
 			MMObjectNode node = (MMObjectNode) e.nextElement();
 			//properties.removeRelations(node);// Beetje overdreven, alleen in theorie kan ie rels hebbe
@@ -180,7 +181,7 @@ public class MMUsers extends ProcessorModule {
 
 	private boolean deleteSessionSIDs(String sessionname) {
 		if (properties == null) properties = (Properties)mmbase.getMMObject("properties");
-		Enumeration e = properties.search("where key='SID' AND value='"+sessionname+"'");
+		Enumeration e = properties.search("key=='SID'+ value=='"+sessionname+"'");
 		while (e.hasMoreElements()) {
 			MMObjectNode node = (MMObjectNode)e.nextElement();
 			//properties.removeRelations(node);// Beetje overdreven, alleen in theorie kan ie rels hebbe
@@ -191,13 +192,13 @@ public class MMUsers extends ProcessorModule {
 	
 	public String doSearchUserNumber(String value) {
         if (properties == null) properties = (Properties)mmbase.getMMObject("properties");
-		Enumeration e = properties.search("where key='LID' AND value='"+value+"'");
+		Enumeration e = properties.search("key=='LID' + value=='"+value+"'");
 		if (e.hasMoreElements()) {
 			MMObjectNode node = (MMObjectNode) e.nextElement();
 			return (node.getValueAsString("parent"));
 		}
 
-		e = properties.search("where key='EMAIL' AND value='"+value+"'");
+		e = properties.search("key=='EMAIL' + value=='"+value+"'");
 		if (e.hasMoreElements()) {
 			MMObjectNode node = (MMObjectNode) e.nextElement();
 			return(node.getValueAsString("parent"));
@@ -246,6 +247,7 @@ public class MMUsers extends ProcessorModule {
 				pnode.setValue ("value", value);
 				pnode.setValue ("ptype", "string");
 				properties.insert ("system", pnode);
+				usernode.delPropertiesCache();
 				debug ("storeValue() storing '" + value + "' in '" + key + "' for user "+userid);
 			}
 			else
@@ -450,6 +452,7 @@ public class MMUsers extends ProcessorModule {
 		if (usernode == null)
 			return error("MOD-MMUSERS-" + userid + "-GET: usernode not found");
 				
+		usernode.getProperties();
 		// we have the user node, get the properties node for this key
 		MMObjectNode pnode=usernode.getProperty(key);
 		if (pnode == null)
