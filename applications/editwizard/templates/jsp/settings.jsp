@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.18 2002-07-17 11:31:05 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.19 2002-07-19 08:55:43 eduard Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -33,6 +33,7 @@
             c.pagelength   = getParam("pagelength", new Integer(c.pagelength)).intValue();
             c.maxpagecount   = getParam("maxpagecount", new Integer(c.maxpagecount)).intValue();
             c.wizard      = getParam("wizard", c.wizard);
+            if(c.wizard == null) throw new RuntimeException("Wizard was null in config(Config.ListConfig c)");
 
             c.setAttribute("origin",getParam("origin"));
 
@@ -92,6 +93,7 @@
         // which parameter to use to configure a wizard page
         public void config(Config.WizardConfig c) {
             c.wizard      = getParam("wizard", c.wizard);
+            if(c.wizard == null) throw new RuntimeException("Wizard was null in config(Config.WizardConfig c)");
             c.setAttribute("origin",getParam("origin"));
             c.objectNumber = getParam("objectnumber");
         }
