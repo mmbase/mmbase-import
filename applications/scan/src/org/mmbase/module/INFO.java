@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.31 2001-03-06 16:18:50 pierre Exp $
+$Id: INFO.java,v 1.32 2001-03-19 22:28:16 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.31  2001/03/06 16:18:50  pierre
+pierre: getList() method now set its own ITEMS property (no need to specify these anymore)
+
 Revision 1.30  2001/02/07 16:22:49  daniel
 small fixes on times
 
@@ -31,6 +34,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import javax.servlet.http.*;
+import java.text.*;
 import java.text.SimpleDateFormat;
 
 import org.mmbase.util.*;
@@ -47,7 +51,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.31 $ $Date: 2001-03-06 16:18:50 $
+ * @$Revision: 1.32 $ $Date: 2001-03-19 22:28:16 $
  */
 public class INFO extends ProcessorModule {
 
@@ -146,6 +150,7 @@ public class INFO extends ProcessorModule {
 	 * RELTIME : convert (relative) time values
 	 * TIME : return a specific time value
 	 * TIMEFORMAT/TIMEFORMATSEC : format a timevalue
+	 * PARSETIME : parse time to seconds
 	 * STRING :
 	 * USER :
 	 * @param sp the current page context
@@ -168,13 +173,58 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("RELTIME")) return doRelTime(tok);
 			if (cmd.equals("STRING")) return doString(tok);
 			if (cmd.equals("STRINGCMP")) return toYesNo(doString(tok).equals(""+true));
-            if (cmd.equals("TIME")) return doTime(tok);
+	                if (cmd.equals("TIME")) return doTime(tok);
 			if (cmd.equals("TIMEFORMAT")) return doTimeFormat(tok, false);
 			if (cmd.equals("TIMEFORMATSEC")) return doTimeFormat(tok, true);
+			if (cmd.equals("PARSETIME")) return doParseTime(tok);
+
 			if (cmd.equals("USER")) return doUser(sp,tok);
 			
 		}
 		return "No command defined";
+	}
+
+
+	/**
+	* takes a time in several formats and creates a time from it
+	 * @param tok the processing command's arguments
+	*/
+	String doParseTime(StringTokenizer tok) {
+		String rawstr=tok.nextToken();
+		String formatstr="";
+		if (tok.hasMoreTokens()) {
+			formatstr=tok.nextToken();
+			formatstr.replace('_',' ');
+		} else {
+			int len=rawstr.length();
+			if (len==8) formatstr="ddMMyyyy";
+			if (len==6) formatstr="HHmmss";
+			if (len==14) formatstr="HHmmssddMMyyyy";
+		}
+
+		SimpleDateFormat df = (SimpleDateFormat)DateFormat.getDateTimeInstance();
+		TimeZone tz;
+		//df.applyLocalizedPattern("yyyyMMdd");
+		df.applyLocalizedPattern(formatstr);
+
+		tz=TimeZone.getDefault() ;
+		df.setTimeZone(tz);
+
+		Date date = null;
+		try
+		{
+			date = df.parse(rawstr); 
+		}
+		catch( java.text.ParseException e )
+		{
+			System.out.println(e.toString());
+		}
+
+		if( date != null) {
+			return(""+(int)((date.getTime()-DateSupport.getMilliOffset())/1000));
+		} else {
+			return("");
+		}
 	}
 	
 	/**
