@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  * 
  * @rename Servscan
- * @version $Id: servscan.java,v 1.28 2002-03-21 12:21:48 johannes Exp $
+ * @version $Id: servscan.java,v 1.29 2002-04-10 13:56:33 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -100,7 +100,7 @@ public class servscan extends JamesServlet {
         incRefCount(req);
         try {
             
-            log.service("Parsing SCAN page: " + req.getRequestURI());
+            pageLog.service("Parsing SCAN page: " + req.getRequestURI());
 
             scanpage sp = new scanpage(this, req, res, sessions);
     
@@ -182,7 +182,7 @@ public class servscan extends JamesServlet {
                 }
             } while (sp.rstatus == 2);    
             // End of page parser
-            log.service("END parsing SCAN page");
+            pageLog.debug("END parsing SCAN page");
             out.flush();
             out.close();
         } catch(NotLoggedInException e) {
