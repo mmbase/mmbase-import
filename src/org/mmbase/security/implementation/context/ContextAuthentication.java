@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.11 2002-10-25 13:09:53 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.12 2002-10-29 23:19:47 michiel Exp $
  */
 public class ContextAuthentication extends Authentication {
     private static Logger log=Logging.getLoggerInstance(ContextAuthentication.class.getName());
@@ -114,10 +114,14 @@ public class ContextAuthentication extends Authentication {
         ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
         // and we do the login...
         UserContext user = module.login(loginInfo, parameters);
-        if(user == null) {
-            log.info("login on module with name:" + moduleName + "failed");
-        } else {
-            log.info("login on module with name:" + moduleName + " was succesfull for user with id:" + user.getIdentifier());
+        if (log.isServiceEnabled()) {
+            if(user == null) {
+                log.debug("login on module with name:" + moduleName + "failed");
+            } else {
+                if (user.getRank().getInt() > Rank.ANONYMOUS_INT) {
+                    log.service("login on module with name:" + moduleName + " was succesfull for user with id:" + user.getIdentifier());
+                }
+            }
         }
         return user;
     }
