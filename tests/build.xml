@@ -107,7 +107,47 @@
     <echo message="copying" />
 
     <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
-      <fileset dir="${tests.source.dir}" >
+      <fileset dir="${tests.source.dir}/dbsq" >
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.jpg"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
+      <fileset dir="${tests.source.dir}/dbsq" >
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.jpg"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
+      <fileset dir="${tests.source.dir}/convertimage" >
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.jpg"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
+      <fileset dir="${tests.source.dir}/taglib" >
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.jpg"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
+      <fileset dir="${tests.source.dir}/typerel" >
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
