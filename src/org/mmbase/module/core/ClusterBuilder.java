@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.34 2003-03-25 19:40:25 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.35 2003-04-03 17:06:42 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -950,28 +950,29 @@ public class ClusterBuilder extends VirtualBuilder {
                 // the typdef number of the destination-type
                 int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));
 
-                // check if  a definite rnumber was requested...
+                // try to find an optimal way to query the relation
+                // by determining the possible allowed relations, we can simplify the
+                // needed query.
+                // A full qyery for 'a,rel,b' looks like:
+                //   (a.number=rel.snumber and b.number=rel.dnumber) or (a.number=rel.dnumber and b.number=rel.snumber and rel.dir<>1)
+                // If the 'allowed' relations limit how teh relation can be made,
+                // this can be simplified to
+                //   a.number=rel.snumber and b.number=rel.dnumber
+                // or
+                //   a.number=rel.dnumber and b.number=rel.snumber and rel.dir<>1
+                //
+                // In order to determine whether things can be simplified, we need to determine that a
+                // certain combo a-rel->b or b-rel->a is possible or not.
+                // In this, we have to take into account that 'a' or 'b' may also be the parent of an objecttype that
+                // has this relation. i.e. a relation news-related->images also validates object-related->images,
+                // news-related->object, and object-related->object.
+                int rnumber=-1;
                 if (rnum != null) {
                     result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
-                    srctodest = (searchdir != SEARCH_SOURCE)      && typerel.reldefCorrect(s, d, rnum.intValue());
-                    desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.reldefCorrect(d, s, rnum.intValue());
-                } else {
-                    for (Enumeration e = typerel.getAllowedRelations(s, d); e.hasMoreElements(); ) {
-                        // get the allowed relation definitions
-                        MMObjectNode typenode = (MMObjectNode) e.nextElement();
-                        desttosrc = (searchdir != SEARCH_DESTINATION) &&
-                                    (desttosrc ||
-                                        (d == rootnr) || // ignore root 'object' type
-                                         typenode.getIntValue("snumber") == d
-                                     );
-                        srctodest = (searchdir != SEARCH_SOURCE) &&
-                                    (srctodest ||
-                                         (s == rootnr) || // ignore root 'object' type
-                                          typenode.getIntValue("snumber") == s
-                                    );
-                        if (desttosrc && srctodest) break;
-                    }
+                    rnumber=rnum.intValue();
                 }
+                srctodest = (searchdir != SEARCH_SOURCE)      && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS);
+                desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS);
             }
 
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old

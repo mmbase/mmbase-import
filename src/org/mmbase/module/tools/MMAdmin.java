@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.62 2003-03-18 16:21:47 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.63 2003-04-03 17:06:43 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1053,7 +1053,7 @@ public class MMAdmin extends ProcessorModule {
                 return result.error("No builder with name '"+dname+"' defined");
             }
 
-            if (!typerel.contains(snumber,dnumber,rnumber,false)) {
+            if (!typerel.contains(snumber,dnumber,rnumber,TypeRel.STRICT)) {
                 MMObjectNode node=typerel.getNewNode("system");
                 node.setValue("snumber",snumber);
                 node.setValue("dnumber",dnumber);
