@@ -14,7 +14,6 @@ package org.mmbase.applications.bugtracker;
  *
  * @mmbase-nodemanager-name catrel
  * @mmbase-nodemanager-extends insrel
- * @mmbase-nodemanager-classfile PosRel
  * @mmbase-nodemanager-field pos INTEGER
  *
  * @mmbase-relationmanager-name subcategoryrel

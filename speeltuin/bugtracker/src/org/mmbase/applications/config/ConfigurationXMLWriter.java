@@ -166,10 +166,12 @@ public abstract class ConfigurationXMLWriter{
         builder.addProperty("version",nodeManagerConfiguration.getVersion());
         builder.addProperty("extends",nodeManagerConfiguration.getExtends());
         
-        XMLElement classFileElement = new XMLElement();
-        classFileElement.setTagName("classfile");
-        classFileElement.setContent(nodeManagerConfiguration.getClassFile());
-        builder.addChild(classFileElement);
+	if (nodeManagerConfiguration.getClassFile() != null){
+		XMLElement classFileElement = new XMLElement();
+		classFileElement.setTagName("classfile");
+		classFileElement.setContent(nodeManagerConfiguration.getClassFile());
+		builder.addChild(classFileElement);
+        }
         
         XMLElement searchAge = new XMLElement();
         searchAge.setTagName("searchage");
