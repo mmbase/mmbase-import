@@ -16,7 +16,6 @@
     <property name="readall">false</property><!-- if true, read rights never need a check -->
   </properties>
   <fieldlist>
-    <!-- field definition for field 4 : name -->
     <field>
       <gui>
         <guiname xml:lang="en">Name</guiname>
@@ -25,9 +24,7 @@
       </gui>
       <editor>
         <positions>
-          <input>1</input>
           <list>1</list>
-          <search>1</search>
         </positions>
       </editor>
       <db>
@@ -35,23 +32,15 @@
         <type state="persistent" size="32" notnull="true" key="true">STRING</type>
       </db>
     </field>
-    <!-- field definition for field 4 : description -->
     <field>
       <gui>
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guitype>field</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>2</input>
-          <list>-1</list>
-          <search>2</search>
-        </positions>
-      </editor>
       <db>
         <name>description</name>
-        <type state="persistent" size="1024" notnull="true">STRING</type>
+        <type state="persistent" size="1024" notnull="false">STRING</type>
       </db>
     </field>
   </fieldlist>

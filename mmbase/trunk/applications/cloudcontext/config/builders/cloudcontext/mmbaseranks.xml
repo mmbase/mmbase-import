@@ -26,7 +26,7 @@
       </gui>
       <editor>
         <positions>
-          <input>1</input><list>2</list><search>1</search>
+          <list>2</list>
         </positions>
       </editor>
       <db>
@@ -42,7 +42,7 @@
       </gui>
       <editor>
         <positions>
-          <input>2</input><list>1</list><search>2</search>
+          <list>1</list>
         </positions>
       </editor>
       <db>
@@ -57,14 +57,9 @@
         <guiname xml:lang="eo">Priskribo</guiname>
         <guitype>field</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>2</input><list>-1</list><search>2</search>
-        </positions>
-      </editor>
       <db>
         <name>description</name>
-        <type state="persistent" size="1024" notnull="true">STRING</type>
+        <type state="persistent" size="1024" notnull="false">STRING</type>
       </db>
     </field>
   </fieldlist>
