@@ -269,7 +269,7 @@ var MTMuseScrollbarCSS, MTMscrollbarBaseColor, MTMscrollbarFaceColor, MTMscrollb
 var MTMUseCookies, MTMCookieName, MTMCookieDays, MTMTrackedCookieName;
 var MTMCodeFrame = "code", MTMenuFrame = "menu", MTMTableWidth = "100%", MTMenuImageDirectory = "menu-images/";
 var MTMUseToolTips = true, MTMEmulateWE, MTMAlwaysLinkIfWE = true, MTMSubsGetPlus = "Submenu", MTMSubsAutoClose;
-var MTMBackground = "", MTMBGColor = "#ffffff", MTMTextColor = "#000000", MTMLinkColor = "#000000", MTMTrackColor = "#000000", MTMAhoverColor = "#4D4D4D", MTMSubExpandColor = "#666699", MTMSubClosedColor = "#666699", MTMSubTextColor = "#000000";
+var MTMBackground = "", MTMBGColor = "#ffffff", MTMTextColor = "#000000", MTMLinkColor = "#000000", MTMTrackColor = "#ff0000", MTMAhoverColor = "#4D4D4D", MTMSubExpandColor = "#666699", MTMSubClosedColor = "#666699", MTMSubTextColor = "#000000";
 var MTMenuText = "Site contents:", MTMRootIcon = imgMenuRoot, MTMRootColor = "#000000";
 var MTMRootFont = MTMenuFont = "Arial, Helvetica, sans-serif";
 var MTMRootCSSize = MTMenuCSSize = "84%";
@@ -820,7 +820,9 @@ function MTMakeLink(thisItem, voidURL, addName, addTitle, clickEvent, mouseOverE
 		if(MTMTrackedCookieName) {
 			MTMTCArray = new Array(thisItem.number, thisItem.target, thisItem.url);
 		}
-		tempString += 'class="tracked"';
+//		tempString += 'class="tracked"';
+                tempString += 'style="font-weight: bold"';
+//		alert("Tracked item found: "+tempString);
 	}
 	if(thisItem.target != "") {
 		tempString += 'target="' + thisItem.target + '" ';
