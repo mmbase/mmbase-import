@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.227 2003-04-11 21:29:06 kees Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.228 2003-05-19 08:53:09 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -72,6 +72,17 @@ public class MMObjectBuilder extends MMTable {
     /** Default replacements for method getHTML() */
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
+
+    public final static Argument[] GUI_ARGUMENTS = { 
+        new Argument("field",    String.class),
+        new Argument("language", String.class), // should add Locale
+        new Argument("session",  String.class),
+        new Argument("response", javax.servlet.http.HttpServletResponse.class),
+        new Argument("request",  javax.servlet.http.HttpServletRequest.class)
+    //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+
+    };
+
 
     /**
      * The cache that contains the last X types of all requested objects
@@ -1656,12 +1667,11 @@ public class MMObjectBuilder extends MMTable {
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String in) {
-        if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
+        if (in != null && in.length() > 5 && in.substring(0, 5).equalsIgnoreCase("SELECT")) {
             // Nodenumbers specified as query:
             // do the query on the database
             // TODO RvM: phase this out, subquery should not be supported.
-            if (in==null || in.equals("")) return new Vector();
-            String query="SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+            String query = "SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
             return basicSearch(query);
         }
 
@@ -1691,12 +1701,11 @@ public class MMObjectBuilder extends MMTable {
      * @sql
      */
     public Vector searchVectorIn(String where, String in) {
-        if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
+        if (in != null && in.length() > 5 && in.substring(0, 5).equalsIgnoreCase("SELECT")) {
             // Nodenumbers specified as query:
             // do the query on the database
             // TODO RvM: phase this out, subquery should not be supported.
             // do the query on the database
-            if (in==null || in.equals("")) return new Vector();
             String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
             return basicSearch(query);
         }
@@ -1745,14 +1754,13 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
 
-        if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
+        if (in != null && in.length() > 5 && in.substring(0, 5).equalsIgnoreCase("SELECT")) {
             // Nodenumbers specified as query:
             // do the query on the database
             // TODO RvM: phase this out, subquery should not be supported.
             // temp mapper hack only works in single order fields
             sorted=mmb.getDatabase().getAllowedField(sorted);
             // do the query on the database
-            if (in==null || in.equals("")) return new Vector();
             if (direction) {
                 String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
                 return basicSearch(query);
@@ -2088,7 +2096,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a comma-seperated list of values, as a <code>String</code>
      */
     public String buildSet(Vector nodes, String fieldName) {
-        String result = "(";
+        StringBuffer result = new StringBuffer("(");
         Enumeration enum = nodes.elements();
         MMObjectNode node;
 
@@ -2096,14 +2104,14 @@ public class MMObjectBuilder extends MMTable {
             node = (MMObjectNode)enum.nextElement();
 
             if(enum.hasMoreElements()) {
-                result += node.getValue(fieldName) + ", ";
+                result.append(node.getValue(fieldName)).append(", ");
             } else {
-                result += node.getValue(fieldName);
+                result.append(node.getValue(fieldName));
             }
 
         }
-        result += ")";
-        return result;
+        result.append(')');
+        return result.toString();
     }
 
     /**
@@ -2111,13 +2119,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>Vector</code> with the tables fields (FieldDefs)
      */
     public Vector getFields() {
-        Vector results=new Vector();
-        FieldDefs node;
-        for (Enumeration e=fields.elements();e.hasMoreElements();) {
-            node=(FieldDefs)e.nextElement();
-            results.addElement(node);
-        }
-        return results;
+        return new Vector(fields.values());
     }
 
 
@@ -2126,13 +2128,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>Vector</code> with the tables field anmes (String)
      */
     public Vector getFieldNames() {
-        Vector    results=new Vector();
-        FieldDefs node;
-        for (Enumeration e=fields.elements();e.hasMoreElements();) {
-            node=(FieldDefs)e.nextElement();
-            results.addElement(node.getDBName());
-        }
-        return results;
+        return new Vector(fields.keySet());
     }
 
     /**
@@ -2537,7 +2533,7 @@ public class MMObjectBuilder extends MMTable {
         if (function.equals("info")) {
             Map info = new HashMap();
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
-            info.put("gui",  "(field, language, session, response) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+            info.put("gui",  "" + GUI_ARGUMENTS + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
             // language is only implemented in TypeDef now, session in AbstractServletBuilder
             // if needed on more place, then it can be generalized to here.
 
