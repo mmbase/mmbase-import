@@ -28,21 +28,21 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.13 2002-05-22 11:58:20 vpro Exp $
+ * @version $Id: Message.java,v 1.14 2002-08-15 06:52:15 mark Exp $
  */
 
 public class Message extends MMObjectBuilder {
 
     // errors
-    public final static int POST_OK                       = 0;
-    public final static int POST_ERROR_UNKNOWN            = -1;
-    public final static int POST_ERROR_BODY_EXCEEDS_SIZE  = -2;
-    public final static int POST_ERROR_NO_USER            = -3;
-    public final static int POST_ERROR_NEED_LOGIN         = -4;
-    public final static int POST_ERROR_RELATION_CHANNEL   = -5;
-    public final static int POST_ERROR_RELATION_USER      = -6;
-    public final static int POST_ERROR_NO_BODY_TEXT       = -7;
-    public final static int POST_ERROR_NO_SUBJECT         = -8;
+    public final static int POST_OK = 0;
+    public final static int POST_ERROR_UNKNOWN = -1;
+    public final static int POST_ERROR_BODY_EXCEEDS_SIZE = -2;
+    public final static int POST_ERROR_NO_USER = -3;
+    public final static int POST_ERROR_NEED_LOGIN = -4;
+    public final static int POST_ERROR_RELATION_CHANNEL = -5;
+    public final static int POST_ERROR_RELATION_USER = -6;
+    public final static int POST_ERROR_NO_BODY_TEXT = -7;
+    public final static int POST_ERROR_NO_SUBJECT = -8;
 
     // logger
     private static Logger log = Logging.getLoggerInstance(Message.class.getName());
@@ -105,20 +105,20 @@ public class Message extends MMObjectBuilder {
 
     public boolean init() {
         boolean result = super.init();
-        channelBuilder = (Channel)mmb.getMMObject("channel");
+        channelBuilder = (Channel) mmb.getMMObject("channel");
 
-        String maxBody=getInitParameter("maxbodysize");
-        if ((maxBody!=null) && (maxBody.length()>0)) {
+        String maxBody = getInitParameter("maxbodysize");
+        if ((maxBody != null) && (maxBody.length() > 0)) {
             try {
-               maxBodySize=Integer.parseInt(maxBody);
+                maxBodySize = Integer.parseInt(maxBody);
             } catch (Exception e) {
-                log.warn("Invalid value for property'maxbodysize' :"+maxBody);
+                log.warn("Invalid value for property'maxbodysize' :" + maxBody);
             }
         }
 
-        messageUser=getInitParameter("postas");
-        if ((messageUser==null) || (messageUser.length()==0)) {
-            messageUser="system";
+        messageUser = getInitParameter("postas");
+        if ((messageUser == null) || (messageUser.length() == 0)) {
+            messageUser = "system";
         }
         tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
@@ -144,20 +144,20 @@ public class Message extends MMObjectBuilder {
      * @return the error description
      */
     public String getMessageError(int error) {
-        switch(error) {
-            case POST_ERROR_BODY_EXCEEDS_SIZE :
+        switch (error) {
+            case POST_ERROR_BODY_EXCEEDS_SIZE:
                 return "Message body size exceeds " + maxBodySize + " bytes";
-            case POST_ERROR_NO_USER :
+            case POST_ERROR_NO_USER:
                 return "User name or object needed";
-            case POST_ERROR_NEED_LOGIN :
+            case POST_ERROR_NEED_LOGIN:
                 return "User needs to be logged on to post";
-            case POST_ERROR_RELATION_CHANNEL :
+            case POST_ERROR_RELATION_CHANNEL:
                 return "Could not create temporary relations between message and channel.";
-            case POST_ERROR_RELATION_USER :
+            case POST_ERROR_RELATION_USER:
                 return "Could not create temporary relations between message and user.";
-            case POST_ERROR_NO_BODY_TEXT :
+            case POST_ERROR_NO_BODY_TEXT:
                 return "No message body text specified.";
-            case POST_ERROR_NO_SUBJECT :
+            case POST_ERROR_NO_SUBJECT:
                 return "No subject specified.";
             default :
                 return "Could not post message.";
@@ -178,11 +178,11 @@ public class Message extends MMObjectBuilder {
      *         The number can be used with getPostError() to get the errormessage.
      */
     public int post(String subject, String body, int channel, int thread, int chatter, String chatterName) {
-        if (body.length()==0) {
+        if (body.length() == 0) {
             log.error("post(): no body text");
             return POST_ERROR_NO_BODY_TEXT;
         }
-        if (subject.length()==0) {
+        if (subject.length() == 0) {
             log.error("post(): no subject");
             return POST_ERROR_NO_SUBJECT;
         }
@@ -194,10 +194,10 @@ public class Message extends MMObjectBuilder {
         if (chatterName != null) {
             if (chatterName.length() == 0) {
                 log.error("post(): CHATTERNAME must be larger than 0 tokens");
-                chatterName=null;
+                chatterName = null;
             }
         }
-        if ((chatterName==null) && (chatter==-1)) {
+        if ((chatterName == null) && (chatter == -1)) {
             return POST_ERROR_NO_USER;
         }
 
@@ -205,8 +205,8 @@ public class Message extends MMObjectBuilder {
         // test write login
         // if write-login is true, and no 'chatter' node is specified,
         // the user has not logged on - so the post should fail
-        if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN)>0) {
-            if (chatter==-1)
+        if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN) > 0) {
+            if (chatter == -1)
                 return POST_ERROR_NEED_LOGIN;
         }
 
@@ -228,21 +228,21 @@ public class Message extends MMObjectBuilder {
         }
         InsRel insrel = mmb.getInsRel();
         if (chatterName != null) {
-            setInfoField(node,"name",chatterName);
+            setInfoField(node, "name", chatterName);
 //            node.setValue(F_INFO, "name=\"" + chatterName + "\"");
         }
-        int id=insert(messageUser, node);
+        int id = insert(messageUser, node);
         if (chatter > 0) {
-            MMObjectNode chattertomsg=insrel.getNewNode(messageUser);
-            chattertomsg.setValue("snumber",chatter);
-            chattertomsg.setValue("dnumber",id);
-            chattertomsg.setValue("rnumber",getCreatorRole());
-            insrel.insert(messageUser,chattertomsg);
+            MMObjectNode chattertomsg = insrel.getNewNode(messageUser);
+            chattertomsg.setValue("snumber", chatter);
+            chattertomsg.setValue("dnumber", id);
+            chattertomsg.setValue("rnumber", getCreatorRole());
+            insrel.insert(messageUser, chattertomsg);
         }
-        MMObjectNode msgtothread=insrel.getNewNode(messageUser);
-        msgtothread.setValue("snumber",id);
-        msgtothread.setValue("dnumber",thread);
-        msgtothread.setValue("rnumber",getParentChildRole());
+        MMObjectNode msgtothread = insrel.getNewNode(messageUser);
+        msgtothread.setValue("snumber", id);
+        msgtothread.setValue("dnumber", thread);
+        msgtothread.setValue("rnumber", getParentChildRole());
         insrel.insert(messageUser, msgtothread);
         insrel.deleteRelationCache(thread);
         return id;
@@ -272,7 +272,7 @@ public class Message extends MMObjectBuilder {
      *         The number can be used with getPostError() to get the errormessage.
      */
     public int post(String body, int channel, int chatter, String chatterName) {
-        if (body.length()==0) {
+        if (body.length() == 0) {
             return POST_ERROR_NO_BODY_TEXT;
         }
         if (body.length() > maxBodySize) {
@@ -283,37 +283,37 @@ public class Message extends MMObjectBuilder {
         // test write login
         // if write-login is true, and no 'chatter' node is specified,
         // the user has not logged on - so the post should fail
-        if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN)>0) {
-            if (chatter==-1)
+        if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN) > 0) {
+            if (chatter == -1)
                 return POST_ERROR_NEED_LOGIN;
         }
 
         // Build a temporary message node.
         String key = tmpNodeManager.createTmpNode("message", messageUser, getNewTemporaryKey());
         MMObjectNode message = tmpNodeManager.getNode(messageUser, key);
-        message.parent=this;
+        message.parent = this;
 
         // Set the fields.
         int sequence = channelBuilder.getNewSequence(channelNode);
 
-        if (chatterName==null) {
-            chatterName="unknown" ;
-            if (chatter!=-1) {
-                MMObjectNode chatternode=getNode(chatter);
-                if (chatternode!=null) {
-                    chatterName=chatternode.getStringValue("gui()");
+        if (chatterName == null) {
+            chatterName = "unknown";
+            if (chatter != -1) {
+                MMObjectNode chatternode = getNode(chatter);
+                if (chatternode != null) {
+                    chatterName = chatternode.getStringValue("gui()");
                 } else {
-                    chatterName="chatter_"+chatter;
+                    chatterName = "chatter_" + chatter;
                 }
             }
         }
 
         // we have a reference to the temporary node,
         // so we can change it directly
-        message.setValue(F_BODY,body);
-        message.setValue(F_THREAD,channel);
-        message.setValue(F_SEQUENCE,sequence);
-        boolean useTimeStamp=(getField(F_TIMESTAMP)!=null);
+        message.setValue(F_BODY, body);
+        message.setValue(F_THREAD, channel);
+        message.setValue(F_SEQUENCE, sequence);
+        boolean useTimeStamp = (getField(F_TIMESTAMP) != null);
         if (useTimeStamp) {
             message.setValue(F_TIMESTAMP, System.currentTimeMillis());
         } else {
@@ -321,41 +321,41 @@ public class Message extends MMObjectBuilder {
             message.setValue("timestampl", timeStamp.lowIntegerValue());
             message.setValue("timestamph", timeStamp.highIntegerValue());
         }
-        setInfoField(message,"name",chatterName);
+        setInfoField(message, "name", chatterName);
 
-        Writer recorder= channelBuilder.getRecorder(channel);
-        if (recorder!=null) {
+        Writer recorder = channelBuilder.getRecorder(channel);
+        if (recorder != null) {
             try {
-                recorder.write(chatterName+" : "+body+"\n");
-            } catch(IOException e) {
-                log.error(""+e);
+                recorder.write(chatterName + " : " + body + "\n");
+            } catch (IOException e) {
+                log.error("" + e);
             }
         }
 
         /* Make the relation with the channel in which this Message get listed.
          * And make the relation between message and the user who posted the message.
          */
-        int result=POST_OK;
+        int result = POST_OK;
         try {
             String tmp = tmpNodeManager.createTmpRelationNode("parent", messageUser, getNewTemporaryKey(), "realchannel", key);
             tmpNodeManager.setObjectField(messageUser, tmp, "snumber", new Integer(channel));
             // add the message relation to the relation breaker
             chatboxMessages.add(messageUser + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
-        } catch(Exception e) {
-            result=POST_ERROR_RELATION_CHANNEL;
+        } catch (Exception e) {
+            result = POST_ERROR_RELATION_CHANNEL;
         }
-        if (chatter!=-1) {
+        if (chatter != -1) {
             try {
                 String tmp = tmpNodeManager.createTmpRelationNode("creator", messageUser, getNewTemporaryKey(), "realuser", key);
-                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", (Object)new Integer(chatter));
+                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", (Object) new Integer(chatter));
                 // add the message relation to the relation breaker
                 chatboxMessages.add(messageUser + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
                 MMObjectNode node = tmpNodeManager.getNode(messageUser, tmp);
                 if (log.isDebugEnabled()) {
-                    log.debug ("just set " + tmp + " snumber to " + node.getIntValue("snumber"));
+                    log.debug("just set " + tmp + " snumber to " + node.getIntValue("snumber"));
                 }
-            } catch(Exception e) {
-                result=POST_ERROR_RELATION_USER;
+            } catch (Exception e) {
+                result = POST_ERROR_RELATION_USER;
             }
         }
         // add the message itself to the relation breaker
@@ -371,19 +371,19 @@ public class Message extends MMObjectBuilder {
      */
     public int insert(String owner, MMObjectNode node) {
         // determine how the timestamp is stored (as a long or as two integers)
-        if (node.getIntValue(F_TIMESTAMP) == -1 ) {
-            boolean useTimeStamp=(getField(F_TIMESTAMP) != null);
-            if (useTimeStamp) {
-                node.setValue(F_TIMESTAMP, new Long(System.currentTimeMillis()));
-            } else {
-                TimeStamp timeStamp = new TimeStamp();
-                node.setValue("timestampl", timeStamp.lowIntegerValue());
-                node.setValue("timestamph", timeStamp.highIntegerValue());
-            }
+
+        boolean useTimeStamp = (getField(F_TIMESTAMP) != null);
+        if (useTimeStamp) {
+            node.setValue(F_TIMESTAMP, new Long(System.currentTimeMillis()));
+        } else {
+            TimeStamp timeStamp = new TimeStamp();
+            node.setValue("timestampl", timeStamp.lowIntegerValue());
+            node.setValue("timestamph", timeStamp.highIntegerValue());
         }
+
         InsRel insrel = mmb.getInsRel();
         insrel.deleteRelationCache(node.getIntValue(F_THREAD));
-        return(super.insert(owner, node));
+        return (super.insert(owner, node));
     }
 
     /**
@@ -416,7 +416,7 @@ public class Message extends MMObjectBuilder {
      *         The number can be used with getPostError() to get the errormessage.
      */
     public int update(String chatterName, int chatter, String subject, String body, int number) {
-        if (body.length()==0) {
+        if (body.length() == 0) {
             return POST_ERROR_NO_BODY_TEXT;
         }
         if (body.length() > maxBodySize) {
@@ -425,21 +425,21 @@ public class Message extends MMObjectBuilder {
 
         MMObjectNode node = getNode(number);
         Vector channels = node.getRelatedNodes("channel");
-        if (channels.size()>0) {
-            MMObjectNode channelNode = (MMObjectNode)channels.get(0);
+        if (channels.size() > 0) {
+            MMObjectNode channelNode = (MMObjectNode) channels.get(0);
             // test write login
             // if write-login is true, and no 'chatter' node is specified,
             // the user has not logged on - so the post should fail
-            if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN)>0) {
-                if (chatter==-1)
+            if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN) > 0) {
+                if (chatter == -1)
                     return POST_ERROR_NEED_LOGIN;
             }
         }
-        log.info("Message:CHATTERNAME="+chatterName);
+        log.info("Message:CHATTERNAME=" + chatterName);
         if (chatterName != null) {
-            log.info("Message:Info pre="+node.getStringValue("info"));
-            setInfoField(node,"name", chatterName);
-            log.info("Message:Info post="+node.getStringValue("info"));
+            log.info("Message:Info pre=" + node.getStringValue("info"));
+            setInfoField(node, "name", chatterName);
+            log.info("Message:Info post=" + node.getStringValue("info"));
         }
         node.setValue(F_SUBJECT, subject);
         node.setValue(F_BODY, body);
@@ -524,13 +524,13 @@ public class Message extends MMObjectBuilder {
                 openTag = LIST_HEAD_TAG;
                 closeTag = LIST_TAIL_TAG;
             } else {
-                openTag = "<" + openTag.replace('\'','"').replace('#','=') + ">";
+                openTag = "<" + openTag.replace('\'', '"').replace('#', '=') + ">";
                 closeTag = "</" + closeTag + ">";
             }
         }
 
         // Put in params the number of fields that will get returned.
-        params.setValue("ITEMS","" + fields.size());
+        params.setValue("ITEMS", "" + fields.size());
 
         // Get fromCount and maxCount.
         String tmp = params.Value("FROMCOUNT");
@@ -540,7 +540,7 @@ public class Message extends MMObjectBuilder {
         tmp = params.Value("MAXCOUNT");
         // MAXCOUNT was maxCount (now really!) line below is to allow support for 'old'
         // communities, but should be dropped!
-        if (tmp==null) tmp = params.Value("maxCount");
+        if (tmp == null) tmp = params.Value("maxCount");
 
         if (tmp != null) maxCount = Integer.decode(tmp).intValue(); else maxCount = Integer.MAX_VALUE;
         int maxDepth;
@@ -548,8 +548,8 @@ public class Message extends MMObjectBuilder {
         if (tmp != null) maxDepth = Integer.decode(tmp).intValue(); else maxDepth = Integer.MAX_VALUE;
 
         // Get startAfterNode / startAfterSequence
-        String nodeselectfield="number";
-        int startAfterNode=-1;
+        String nodeselectfield = "number";
+        int startAfterNode = -1;
 
         tmp = params.Value("STARTAFTERNODE");
         try {
@@ -559,11 +559,11 @@ public class Message extends MMObjectBuilder {
                 tmp = params.Value("STARTAFTERSEQUENCE");
                 if (tmp != null) {
                     startAfterNode = Integer.decode(tmp).intValue();
-                    nodeselectfield=F_SEQUENCE;
+                    nodeselectfield = F_SEQUENCE;
                 }
             }
         } catch (NumberFormatException e) {
-            log.error(""+e);
+            log.error("" + e);
         }
 
         /* Create a NodeComparator. If no SORTFIELDS or DBSORT are specified in
@@ -587,25 +587,25 @@ public class Message extends MMObjectBuilder {
             compareMessages = new NodeComparator(sortFields, sortDirs);
         }
 
-        Vector result=null;
+        Vector result = null;
 
-        if (maxCount==Integer.MAX_VALUE) {
+        if (maxCount == Integer.MAX_VALUE) {
             // no max, grab everything
             result = getListMessages(node, fields, compareMessages, maxCount, 0,
-                                     maxDepth, startAfterNode, nodeselectfield);
+                    maxDepth, startAfterNode, nodeselectfield);
         } else {
             // limit list to given max of items
             result = getListMessages(node, fields, compareMessages, fromCount + maxCount, 0,
-                                     maxDepth, startAfterNode, nodeselectfield);
-            int realCount = (fromCount + maxCount)*fields.size();
-            int realFromCount = (fromCount)*fields.size();
+                    maxDepth, startAfterNode, nodeselectfield);
+            int realCount = (fromCount + maxCount) * fields.size();
+            int realFromCount = (fromCount) * fields.size();
             if (result.size() > realCount) {
                 result = new Vector(result.subList(realFromCount, realCount));
-            } else if (realFromCount>0) {
-                if (realFromCount>=result.size()) {
+            } else if (realFromCount > 0) {
+                if (realFromCount >= result.size()) {
                     result = new Vector();
                 } else {
-                    result = new Vector(result.subList(realFromCount,result.size()));
+                    result = new Vector(result.subList(realFromCount, result.size()));
                 }
             }
         }
@@ -636,8 +636,8 @@ public class Message extends MMObjectBuilder {
      * @return A <code>Vector</code> containing the requested fields.
      */
     public Vector getListMessages(MMObjectNode thread, Vector fields, Comparator ci,
-                     int maxCount, int depth, int maxDepth, int startAfterNode,
-                     String nodeselectfield) {
+                                  int maxCount, int depth, int maxDepth, int startAfterNode,
+                                  String nodeselectfield) {
         Vector result = new Vector(), childMsgs;
         Vector relatedMessages = getRelatedMessages(thread, ci);
 
@@ -650,14 +650,14 @@ public class Message extends MMObjectBuilder {
         boolean startAfterNodePassed = (startAfterNode == -1);
 
         while ((msgPointer >= 0) && (added < maxCount)) {
-            relmsg = (MMObjectNode)relatedMessages.elementAt(msgPointer);
+            relmsg = (MMObjectNode) relatedMessages.elementAt(msgPointer);
 
             startAfterNodePassed = startAfterNodePassed ||
-                                   (startAfterNode == relmsg.getIntValue(nodeselectfield));
+                    (startAfterNode == relmsg.getIntValue(nodeselectfield));
 
             if (depth < maxDepth) {
                 childMsgs = getListMessages(relmsg, fields, ci, maxCount - added, depth + 1,
-                                            maxDepth, startAfterNode, nodeselectfield);
+                        maxDepth, startAfterNode, nodeselectfield);
                 replycount = childMsgs.size() / fieldsCount;
                 added += replycount;
 
@@ -678,13 +678,13 @@ public class Message extends MMObjectBuilder {
                 /* Add the fields of the relmsg to the result and then of his children.
                 */
                 for (int i = 0; i < fieldsCount; i++) {
-                    cmd = ((String)fields.elementAt(i)).trim();
+                    cmd = ((String) fields.elementAt(i)).trim();
                     if (cmd.equals("depth")) {
                         item = "" + depth;
                     } else if (cmd.equals("replycount")) {
                         item = "" + replycount;
                     } else if ((cmd.equals("listhead")) ||
-                               (cmd.equals("listtail"))) {
+                            (cmd.equals("listtail"))) {
                         item = "";
                     } else {
                         item = "" + relmsg.getValue(cmd);
@@ -713,7 +713,7 @@ public class Message extends MMObjectBuilder {
 
         MMObjectNode channel = isPostedInChannel(node);
         MMObjectNode community = channelBuilder.communityParent(channel);
-        String kind = (String)community.getValue("kind");
+        String kind = (String) community.getValue("kind");
 
         if (kind.equalsIgnoreCase("chatbox"))
             relatedMessages = getTemporaryRelated(node, "message").elements();
@@ -727,11 +727,11 @@ public class Message extends MMObjectBuilder {
         while (relatedMessages.hasMoreElements()) {
             // XXX: Tempory hack: test if the related message is indeed
             // a child by his thread field.
-            relmsg = (MMObjectNode)relatedMessages.nextElement();
+            relmsg = (MMObjectNode) relatedMessages.nextElement();
             if (relmsg.getIntValue(F_THREAD) == parent)
-            result.add(relmsg);
+                result.add(relmsg);
         }
-        Collections.sort(result,ci);
+        Collections.sort(result, ci);
         return result;
     }
 
@@ -741,9 +741,9 @@ public class Message extends MMObjectBuilder {
      */
     private int addRelatedNode(MMObjectNode node, int otypeWanted, int count, int offset, Vector result) {
         if ((node != null) &&
-            (node.getIntValue("otype") == otypeWanted)) {
-            count+=1;
-            if (count>offset) {
+                (node.getIntValue("otype") == otypeWanted)) {
+            count += 1;
+            if (count > offset) {
                 result.add(node);
             }
         }
@@ -756,8 +756,8 @@ public class Message extends MMObjectBuilder {
      * offset of the resultlist.
      */
     private int addRelated(int number, int otypeWanted, int count, int offset, Vector result) {
-        MMObjectNode node=getNode(number);
-        return addRelatedNode(node,otypeWanted, count, offset, result);
+        MMObjectNode node = getNode(number);
+        return addRelatedNode(node, otypeWanted, count, offset, result);
     }
 
     /**
@@ -766,9 +766,9 @@ public class Message extends MMObjectBuilder {
      * offset of the resultlist.
      */
     private int addRelated(Object key, int otypeWanted, int count, int offset, Vector result) {
-        if (key!=null) {
-            MMObjectNode node=(MMObjectNode)TemporaryNodes.get(""+key);
-            count=addRelatedNode(node,otypeWanted, count, offset, result);
+        if (key != null) {
+            MMObjectNode node = (MMObjectNode) TemporaryNodes.get("" + key);
+            count = addRelatedNode(node, otypeWanted, count, offset, result);
         }
         return count;
     }
@@ -781,6 +781,7 @@ public class Message extends MMObjectBuilder {
     public Vector getTemporaryRelated(MMObjectNode node, String wtype) {
         return getTemporaryRelated(node, wtype, 0, Integer.MAX_VALUE);
     }
+
     /**
      * Get temporary MMObjectNodes related to a specified MMObjectNode
      * @param sourceNode this is the source MMObjectNode
@@ -789,24 +790,24 @@ public class Message extends MMObjectBuilder {
     public Vector getTemporaryRelated(MMObjectNode node, String wtype,
                                       int offset, int max) {
         Vector result = new Vector();
-        if (max<=0) return result;
+        if (max <= 0) return result;
         MMObjectNode relatedNode;
         MMObjectNode tmpInsRel;
         boolean found;
         String _dnumber;
         String _snumber;
         int otypewanted = mmb.getTypeDef().getIntValue(wtype);
-        int count=0;
+        int count = 0;
 
         // Get the node's number or _number.
-        int number=-1;
-        String _number = (String)node.getValue("_number");
+        int number = -1;
+        String _number = (String) node.getValue("_number");
         if (_number == null) number = node.getNumber();
 
         // Get all temporary nodes and filter out all insrels.
         Enumeration tmpInsRels = TemporaryNodes.keys();
-        while ((count<(offset+max))  && tmpInsRels.hasMoreElements()) {
-            tmpInsRel = (MMObjectNode)TemporaryNodes.get(tmpInsRels.nextElement());
+        while ((count < (offset + max)) && tmpInsRels.hasMoreElements()) {
+            tmpInsRel = (MMObjectNode) TemporaryNodes.get(tmpInsRels.nextElement());
             if (tmpInsRel != null) {
                 if (tmpInsRel.parent instanceof InsRel) {
                     found = false;
@@ -817,12 +818,12 @@ public class Message extends MMObjectBuilder {
                         found = (number == tmpInsRel.getIntValue("snumber"));
                     }
                     if (found) { // snumbers are equal
-                        int dnumber=tmpInsRel.getIntValue("dnumber");
-                        if (dnumber>-1) {
-                            count=addRelated(dnumber,otypewanted,count,offset,result);
+                        int dnumber = tmpInsRel.getIntValue("dnumber");
+                        if (dnumber > -1) {
+                            count = addRelated(dnumber, otypewanted, count, offset, result);
                         } else {
-                            count=addRelated(tmpInsRel.getValue("_dnumber"),
-                                             otypewanted,count,offset,result);
+                            count = addRelated(tmpInsRel.getValue("_dnumber"),
+                                    otypewanted, count, offset, result);
                         }
                     } else {
                         if (_number != null) {
@@ -831,12 +832,12 @@ public class Message extends MMObjectBuilder {
                             found = (number == tmpInsRel.getIntValue("dnumber"));
                         }
                         if (found) { // (_)dumbers are equal.
-                            int snumber=tmpInsRel.getIntValue("snumber");
-                            if (snumber>-1) {
-                                count=addRelated(snumber,otypewanted,count,offset,result);
+                            int snumber = tmpInsRel.getIntValue("snumber");
+                            if (snumber > -1) {
+                                count = addRelated(snumber, otypewanted, count, offset, result);
                             } else {
-                                count=addRelated(tmpInsRel.getValue("_snumber"),
-                                             otypewanted,count,offset,result);
+                                count = addRelated(tmpInsRel.getValue("_snumber"),
+                                        otypewanted, count, offset, result);
                             }
                         }
                     }
@@ -864,14 +865,14 @@ public class Message extends MMObjectBuilder {
      *      message is the last in the list.
      */
     private void addListTags(Vector items, int listheadItemNr, int listtailItemNr,
-                            int depthItemNr, int fieldsCount, String openTag, String closeTag) {
+                             int depthItemNr, int fieldsCount, String openTag, String closeTag) {
         int depth;
         int previousDepth = 0;
         int itemNr = 0;
         int itemsCount = items.size();
         String prefix, postfix;
         while (itemNr < itemsCount) {
-            depth = (Integer.decode((String)items.elementAt(itemNr + depthItemNr))).intValue();
+            depth = (Integer.decode((String) items.elementAt(itemNr + depthItemNr))).intValue();
             if (itemNr == 0) {
                 prefix = openTag; // begin of the list
                 while (previousDepth < depth) {
@@ -891,7 +892,7 @@ public class Message extends MMObjectBuilder {
                 }
             }
             if (itemNr == itemsCount - fieldsCount) {
-                while (depth>0) {
+                while (depth > 0) {
                     postfix += closeTag; // end of one ore more sublists
                     depth--;
                 }
@@ -926,7 +927,7 @@ public class Message extends MMObjectBuilder {
 
         // Make sure we got a Message node, else abort the remove operation.
         if (!(node.parent instanceof Message)) {
-            log.error(node.getNumber() + " is of type "+node.getName()+" instead of Message");
+            log.error(node.getNumber() + " is of type " + node.getName() + " instead of Message");
             return;
         }
 
@@ -934,7 +935,7 @@ public class Message extends MMObjectBuilder {
         // else abort on any childmessages.
         MMObjectNode relmsg;
         for (Enumeration messages = getReplies(node); messages.hasMoreElements();) {
-            relmsg = (MMObjectNode)messages.nextElement();
+            relmsg = (MMObjectNode) messages.nextElement();
             // Before doing all this hot stuff, there should be
             // a check preventing recorded messages get deleted!
             // (not an issue right now, as session is not implemented)
@@ -959,16 +960,16 @@ public class Message extends MMObjectBuilder {
     }
 
     public ThreadStats getNrMsgAndHighSeq(MMObjectNode node) {
-      /* PRE:  A message or channel node.
-       * POST: A ThreadStats object which contains the number of messages
-       *       and the highest sequence in this thread.
-       */
+        /* PRE:  A message or channel node.
+         * POST: A ThreadStats object which contains the number of messages
+         *       and the highest sequence in this thread.
+         */
         int sequence = -1;
         int highestSequence = -1;
         int messageCount = 0;
         MMObjectNode msg;
-        for (Enumeration messages = getReplies(node); messages.hasMoreElements(); ) {
-            msg = (MMObjectNode)messages.nextElement();
+        for (Enumeration messages = getReplies(node); messages.hasMoreElements();) {
+            msg = (MMObjectNode) messages.nextElement();
             if (msg.getIntValue(F_THREAD) == node.getNumber()) {
                 sequence = msg.getIntValue(F_SEQUENCE);
                 if (sequence > highestSequence) highestSequence = sequence;
@@ -979,7 +980,7 @@ public class Message extends MMObjectBuilder {
                 if (cs.highestSequence > highestSequence) highestSequence = cs.highestSequence;
             }
         }
-        return new ThreadStats(node.getNumber(),messageCount, highestSequence);
+        return new ThreadStats(node.getNumber(), messageCount, highestSequence);
     }
 
     /**
@@ -988,7 +989,7 @@ public class Message extends MMObjectBuilder {
      * @return <code>true</code> if the node has related messages.
      */
     public boolean hasReplies(MMObjectNode node) {
-        return getNrMsgAndHighSeq(node).messageCount>0;
+        return getNrMsgAndHighSeq(node).messageCount > 0;
     }
 
     /**
@@ -1031,7 +1032,7 @@ public class Message extends MMObjectBuilder {
         // so retrieve the values using the two integer fields
         if (field.equals(F_TIMESTAMP)) {
             TimeStamp ts = new TimeStamp(); // default, return current time
-            if (super.getValue(node, F_TIMESTAMP) == null ) { // no value to be found.
+            if (super.getValue(node, F_TIMESTAMP) == null) { // no value to be found.
                 if (getField(F_TIMESTAMP) == null) { // field does not exist
                     ts = getTimeStamp(node);
                 }
@@ -1039,7 +1040,7 @@ public class Message extends MMObjectBuilder {
             return "" + ts.getTime();
         }
         if (field.equals(F_TIMESTAMPSEC)) {
-            long ts=node.getLongValue(F_TIMESTAMP)/1000;
+            long ts = node.getLongValue(F_TIMESTAMP) / 1000;
             return new Long(ts);
         }
         if (field.equals(F_RE_SUBJECT)) {
@@ -1065,18 +1066,18 @@ public class Message extends MMObjectBuilder {
              */
             int commaPos = field.lastIndexOf('x');
             String realField = field.substring(10, commaPos); // 10 is the beginning of the first character after '('.
-            String value = (String)node.getValue(realField);
+            String value = (String) node.getValue(realField);
             int size = Integer.decode(field.substring(commaPos + 1, field.length() - 1)).intValue();
             if (size < value.length())
                 return value.substring(0, size);
             else
                 return value;
         }                         // ??? Must still cut for new word!
-        
+
         Object o = super.getValue(node, field);
         if (o instanceof String) {
-            if ((field.indexOf("html(")<0) && (field.indexOf("html_")<0))
-                    o = getHTML((String)o);
+            if ((field.indexOf("html(") < 0) && (field.indexOf("html_") < 0))
+                o = getHTML((String) o);
         }
         return o;
     }
@@ -1089,11 +1090,11 @@ public class Message extends MMObjectBuilder {
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
-    protected Object executeFunction(MMObjectNode node,String function,String field) {
+    protected Object executeFunction(MMObjectNode node, String function, String field) {
         if (function.equals(F_GET_INFO_VALUE)) {
-            return getInfoField(node,field);
+            return getInfoField(node, field);
         } else {
-            return super.executeFunction(node,function,field);
+            return super.executeFunction(node, function, field);
         }
     }
 
@@ -1110,9 +1111,9 @@ public class Message extends MMObjectBuilder {
         String tmp = tok.nextToken();
         MMObjectNode message = getNode(tmp);
         //tmp = tmp.substring(tmp.indexOf("_") + 1);
-        if (message == null) message = (MMObjectNode)TemporaryNodes.get(tmp.trim());
+        if (message == null) message = (MMObjectNode) TemporaryNodes.get(tmp.trim());
         if (message == null) {
-            log.error("Message with id '"+tmp+"' cannot be found.");
+            log.error("Message with id '" + tmp + "' cannot be found.");
             return "";
         }
 
@@ -1139,28 +1140,28 @@ public class Message extends MMObjectBuilder {
     private void setInfoField(MMObjectNode message, String field, String value) {
         value = remove(value, "\n=,\"");
         String info = message.getStringValue(F_INFO);
-        StringTagger tagger = new StringTagger(info,'\n', '=', ',', '\"');
+        StringTagger tagger = new StringTagger(info, '\n', '=', ',', '\"');
         tagger.setValue(field, value);
-        String key="";
-        String content="";
-        for(Iterator i=tagger.keySet().iterator(); i.hasNext();) {
-            key=(String)i.next();
-            content+=key+"="+tagger.Value(key)+"\n";
+        String key = "";
+        String content = "";
+        for (Iterator i = tagger.keySet().iterator(); i.hasNext();) {
+            key = (String) i.next();
+            content += key + "=" + tagger.Value(key) + "\n";
         }
         message.setValue(F_INFO, content);
     }
 
-    private String remove( String s, String r) {
-        if (s==null) return null;
+    private String remove(String s, String r) {
+        if (s == null) return null;
         String result = "";
-        for(int i=0; i<s.length(); i++) {
+        for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (r.indexOf(c)<0)
+            if (r.indexOf(c) < 0)
                 result = result + c;
         }
         return result;
     }
-    
+
     /**
      * Obtain a value from the multi-purpose <code>info</code> field.
      * The info field of the message node contains a StringTagger.
@@ -1171,7 +1172,7 @@ public class Message extends MMObjectBuilder {
      */
     private String getInfoField(MMObjectNode message, String field) {
         String info = message.getStringValue(F_INFO);
-        StringTagger tagger = new StringTagger(info,'\n', '=', ',', '\"');
+        StringTagger tagger = new StringTagger(info, '\n', '=', ',', '\"');
         return getHTML(tagger.Value(field));
     }
 
@@ -1179,7 +1180,7 @@ public class Message extends MMObjectBuilder {
      * Get the nodes timestampl and timestamph and return them as a TimeStamp.
      */
     public TimeStamp getTimeStamp(MMObjectNode node) {
-        return new TimeStamp((Integer)node.getValue("timestampl"), (Integer)node.getValue("timestamph"));
+        return new TimeStamp((Integer) node.getValue("timestampl"), (Integer) node.getValue("timestamph"));
     }
 
     /**
@@ -1211,7 +1212,7 @@ class ThreadStats {
     /** The number of messages in this thread */
     public int messageCount = 0;
     /** The highest sequence number in this thread */
-    public int highestSequence=0;
+    public int highestSequence = 0;
 
     /**
      * Create a statistics object for a thread
@@ -1221,7 +1222,7 @@ class ThreadStats {
      */
     public ThreadStats(int thread, int messageCount, int highestSequence) {
         this.thread = thread;
-        this.messageCount= messageCount;
+        this.messageCount = messageCount;
         this.highestSequence = highestSequence;
     }
 }
