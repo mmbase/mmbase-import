@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.72 2002-10-11 13:03:13 eduard Exp $
+ * @version $Id: MMSQL92Node.java,v 1.73 2002-11-06 15:40:11 rob Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -120,8 +120,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @return true if the builder can be extended
      */
     public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
-        String buildername=builder.getTableName();
-        return buildername.equals("object") || buildername.equals("insrel");
+        return true;
     }
 
     /**
