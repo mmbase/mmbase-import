@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.5 2001-04-11 11:41:22 michiel Exp $
+$Id: MMOORel2Node.java,v 1.6 2001-07-09 12:30:03 jaco Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2001/04/11 11:41:22  michiel
+michiel: new logging system
+
 Revision 1.4  2000/07/20 08:14:02  daniel
 removed methods that did not compile (not patched yet)
 
@@ -66,7 +69,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.5 $ $Date: 2001-04-11 11:41:22 $
+* @$Revision: 1.6 $ $Date: 2001-07-09 12:30:03 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -92,7 +95,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 			// load the properties file of this server
 
-			String root=System.getProperty("mmbase.config");
+			String root = MMBaseContext.getConfigPath();
 		
 			if (log.isDebugEnabled()) {
                 log.debug("create(): reading defines from '" + root + "/defines/" + tableName + ".def'");

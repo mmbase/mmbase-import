@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.11 2001-04-11 11:41:23 michiel Exp $
+$Id: MMPostgres42Node.java,v 1.12 2001-07-09 12:30:03 jaco Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2001/04/11 11:41:23  michiel
+michiel: new logging system
+
 Revision 1.10  2000/07/20 08:14:41  daniel
 removed methods that did not compile (not patched yet)
 
@@ -67,7 +70,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.11 $ $Date: 2001-04-11 11:41:23 $
+* @$Revision: 1.12 $ $Date: 2001-07-09 12:30:03 $
 */
 public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -106,7 +109,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
 		// load the properties file of this server
 
-		String root=System.getProperty("mmbase.config");
+		String root = MMBaseContext.getConfigPath();
 		Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
 		
 		String createtable=(String)prop.get("CREATETABLE_PG");

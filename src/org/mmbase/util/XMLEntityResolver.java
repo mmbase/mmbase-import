@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.8 $ $Date: 2001-07-04 08:42:48 $
+ * @version $Revision: 1.9 $ $Date: 2001-07-09 12:30:06 $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -62,7 +62,7 @@ public class XMLEntityResolver implements EntityResolver {
                         }
                         configpath=curdir+"/config";
                 } else {
-                        configpath=System.getProperty("mmbase.config");
+                        configpath = MMBaseContext.getConfigPath();
                 }
 
 

@@ -18,17 +18,20 @@ import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * @author Case Roole, cjr@dds.nl
  * 
- * $Id: AbstractReport.java,v 1.3 2001-04-10 11:02:07 michiel Exp $
+ * $Id: AbstractReport.java,v 1.4 2001-07-09 12:30:02 jaco Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2001/04/10 11:02:07  michiel
+ * michiel: new logging system
+ *
  * Revision 1.2  2000/10/07 17:06:07  case
  * cjr: Added checking of mmbase JVM options and some minor bugfixes
  *
@@ -241,9 +244,8 @@ public abstract class AbstractReport implements ReportInterface {
 	    }
 	    configpath=curdir+File.separator+"config";
 	} else {
-	    configpath=System.getProperty("mmbase.config");
+	    configpath = MMBaseContext.getConfigPath();
 	}
-        //configpath = System.getProperty("mmbase.config");
 	if (configpath != null && configpath.endsWith(File.separator)) {
 	    configpath = configpath.substring(0,configpath.length()-1);
 	}

@@ -78,7 +78,7 @@ public class Cameras extends MMObjectBuilder implements MMBaseObserver {
 
 		// This is very ugly, but I don't want to change the class Directorylistner.
 		// This code removes the htmlroot from the 3th argument
-		String htmlroot = System.getProperty("mmbase.htmlroot");
+		String htmlroot = MMBaseContext.getHtmlRoot();
 		for(int i=2; i<= result.size(); i+=3) {
 			String s = (String)result.remove(i);
 			s="/"+s.substring(htmlroot.length());

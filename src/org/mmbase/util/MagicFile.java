@@ -16,6 +16,7 @@ import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
 
 /**
@@ -1037,7 +1038,7 @@ public class MagicFile  {
      * Constructor: reads detection data from magic file
      */
     public MagicFile() {
-        String configpath = System.getProperty("mmbase.config");
+        String configpath = MMBaseContext.getConfigPath();
         if (configpath.endsWith(File.separator)) {
             magicxml = configpath+MAGICXMLFILE;
         } else {
