@@ -29,11 +29,11 @@
 >-->
 <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="en">Net File</singular>
-    <singular xml:lang="nl">Netwerk Bestand</singular>
+    <singular xml:lang="en">netfile</singular>
+    <singular xml:lang="nl">netfile</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="en">Net Files</plural>
-    <plural xml:lang="nl">Netwerk Bestanden</plural>
+    <plural xml:lang="en">netfiles</plural>
+    <plural xml:lang="nl">netfiles</plural>
 </names>
 
 <!-- <descriptions>
@@ -41,8 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="en">A netfile is a node in networked based filesystem</description>
-    <description xml:lang="nl">Een erferentie naar ene bestand op een netwerk</description>
+<description xml:lang="en">A netfile describes a task</description>
+<description xml:lang="nl">Een netfile beschrijft een opdracht</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -55,8 +55,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Name of the file which is used by the task</description>
+	  <description xml:lang="nl">Naam van bestand waar de taak over gaat</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -88,8 +88,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">The name of the server that is handeling the netfile.</description>
+	  <description xml:lang="nl">De naam van de server die de netfile verwerkt.</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -121,13 +121,13 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Describes the task</description>
+	  <description xml:lang="nl">Beschrijft de taak</description>
         </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Service</guiname>
-            <guiname xml:lang="nl">Taak</guiname>
+	    <guiname xml:lang="nl">Taak</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -154,8 +154,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Describes the sub task</description>
+          <description xml:lang="nl">Beschijft de subtaak</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -187,8 +187,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Field is not used</description>
+	  <description xml:lang="nl">Veld wordt niet gebruikt</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -220,8 +220,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Field is not used</description>
+          <description xml:lang="nl">Veld wordt niet gebruikt</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -253,8 +253,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Field is not used</description>
+          <description xml:lang="nl">Veld wordt niet gebruikt</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -286,8 +286,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The state of the task</description>
+	  <description xml:lang="nl">De status van de opdracht</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -319,8 +319,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Field is not used</description>
+	  <description xml:lang="nl">Veld wordt niet gebruikt</description>
         </descriptions>
         <!-- gui related -->
         <gui>
