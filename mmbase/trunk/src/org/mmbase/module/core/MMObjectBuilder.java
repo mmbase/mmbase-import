@@ -52,7 +52,7 @@ public class MMObjectBuilder extends MMTable {
     Vector sortedEditFields = null;
     Vector sortedListFields = null;
     Vector sortedFields = null;
-    int version=0;
+    private int version=0;
     String maintainer="mmbase.org";
 
     public Vector sortedDBLayout = null;
@@ -1482,7 +1482,7 @@ public class MMObjectBuilder extends MMTable {
 
 
     public String toXML(MMObjectNode node) {
-        String body="<?xml version=\"1.0\"?>\n";
+        String body="<?xml version=\""+version+"\"?>\n";
         body+="<!DOCTYPE mmnode."+tableName+" SYSTEM \""+mmb.getDTDBase()+"/mmnode/"+tableName+".dtd\">\n";
         body+="<"+tableName+">\n";
         body+="<number>"+node.getIntValue("number")+"</number>\n";
