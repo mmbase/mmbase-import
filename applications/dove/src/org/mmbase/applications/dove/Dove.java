@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.55 2004-09-24 09:17:36 mark Exp $
+ * @version $Id: Dove.java,v 1.56 2004-09-27 15:18:08 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -119,13 +119,13 @@ public class Dove extends AbstractDove {
      *           The childnodes should describe the nodes to retrieve.
      * @param out the element that described the <code>getdata</code> result.
      *           Retrieved nodes should be added as childs to this element.
-     * @param nd The node to store in out.
+     * @param node The node to store in out.
      */
-    public void getDataNode(Element in, Element out, org.mmbase.bridge.Node nd) {
-        NodeManager nm = nd.getNodeManager();
+    public void getDataNode(Element in, Element out, org.mmbase.bridge.Node node) {
+        NodeManager nm = node.getNodeManager();
         out.setAttribute(ELM_TYPE, nm.getName());
-        out.setAttribute(ELM_MAYWRITE, "" + nd.mayWrite());
-        out.setAttribute(ELM_MAYDELETE, "" + nd.mayDelete());
+        out.setAttribute(ELM_MAYWRITE, "" + node.mayWrite());
+        out.setAttribute(ELM_MAYDELETE, "" + node.mayDelete());
         // load fields
         Element field = getFirstElement(in, FIELD);
         if (field == null) {
@@ -133,51 +133,45 @@ public class Dove extends AbstractDove {
                 Field f = i.nextField();
                 String fname = f.getName();
                 if (isDataField(nm,f)) {
-                    String val="";
+                    Element fel;
                     if (f.getType() != Field.TYPE_BYTE) {
-                        val = nd.getStringValue(fname);
+                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
+                    } else {
+                        fel = addContentElement(FIELD, "", out);
+                        byte[] bytes = node.getByteValue(fname);
+                        fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
                     }
-                    Element fel=addContentElement(FIELD,val,out);
-                    fel.setAttribute(ELM_NAME,fname);
-                    if (f.getType() == Field.TYPE_BYTE) {
-                        int byteSize = 0;
-                        byte[] bytes = nd.getByteValue(fname);
-                        if (bytes != null) byteSize = bytes.length;
-                        fel.setAttribute(ELM_SIZE, ""+byteSize);
-                    }
+                    fel.setAttribute(ELM_NAME, fname);
                 }
             }
         } else {
             while (field != null) { // select all child tags, should be 'field'
                 String fname = (String)field.getAttribute(ELM_NAME);
                 if ((fname == null) || (fname.equals(""))) {
-                    Element err = addContentElement(ERROR,"name required for field",out);
+                    Element err = addContentElement(ERROR, "name required for field",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else if (isDataField(nm,fname)) {
-                    String val = "";
+                    Element fel;
                     if (nm.getField(fname).getType() != Field.TYPE_BYTE) {
-                        val = nd.getStringValue(fname);
+                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
+                    } else {
+                        fel = addContentElement(FIELD, "", out);
+                        byte[] bytes = node.getByteValue(fname);
+                        fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
                     }
-                    Element fel=addContentElement(FIELD,val,out);
-                    fel.setAttribute(ELM_NAME,fname);
-                    if (nm.getField(fname).getType() == Field.TYPE_BYTE) {
-                        int byteSize = 0;
-                        byte[] bytes = nd.getByteValue(fname);
-                        if (bytes != null) byteSize = bytes.length;
-                        fel.setAttribute(ELM_SIZE, ""+byteSize);
-                    }
+                    fel.setAttribute(ELM_NAME, fname);
                 } else {
-                    Element err = addContentElement(ERROR,"field with name "+fname+" does not exist",out);
+                    Element err = addContentElement(ERROR, "field with name " + fname + " does not exist", out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
                 }
-                field=getNextElement(field,FIELD);
+                field = getNextElement(field,FIELD);
             }
         }
         // load relations
-        Element relation=getFirstElement(in,RELATION);
-        while (relation!=null) { // select all child tags, should be 'relation'
-            addRelationNodes(relation,out,nd);
-            relation=getNextElement(relation,RELATION);
+        Element relation = getFirstElement(in, RELATION);
+        while (relation != null) { // select all child tags, should be 'relation'
+            addRelationNodes(relation, out, node);
+            relation = getNextElement(relation, RELATION);
         }
     }
 
