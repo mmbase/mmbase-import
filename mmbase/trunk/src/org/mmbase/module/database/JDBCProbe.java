@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * remove bad connections works using a callback into JDBC.
  *
  *
- * @version $Id: JDBCProbe.java,v 1.7 2003-03-04 14:40:03 nico Exp $
+ * @version $Id: JDBCProbe.java,v 1.8 2003-05-03 09:49:09 kees Exp $
  * @author Daniel Ockeloen
 
 */
@@ -39,7 +39,9 @@ public class JDBCProbe implements Runnable {
     public JDBCProbe(JDBC parent, int ct) {
         this.parent=parent;
         checkTime = ct * 1000;
-	new Thread(this,"JDBCProbe").start();
+	Thread t = new Thread(this,"JDBCProbe");
+	t.setDaemon(true);
+	t.start();
     }
     
     /**
