@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.12 2003-08-27 21:41:33 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.13 2003-09-02 21:33:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -256,6 +256,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;            
+        } else if (c instanceof LegacyConstraint) {
+            LegacyConstraint constraint = (LegacyConstraint) c;
+            BasicLegacyConstraint newConstraint = new BasicLegacyConstraint(constraint.getConstraint());
+            return newConstraint;
         }
         throw new RuntimeException("Could not copy constraint " + c);
     }
