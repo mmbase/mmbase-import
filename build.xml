@@ -73,7 +73,7 @@ NetComponents can be found at:
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
-  <property name="distro"      value="MMBase 1.7.0"/>
+  <property name="distro"      value="MMBase 1.6.0"/>
   <property name="documentation.builders.language" value="en" />
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
   <!-- Don't change the following properties unless you know what you're doing -->
@@ -124,31 +124,35 @@ NetComponents can be found at:
     <!-- copy the java-sources -->
     <mkdir dir="${build.dir}/mmbase-src/src"/>
     <copy todir="${build.dir}/mmbase-src/src">
-      <fileset dir="${source-src.dir}">
-        <exclude name="**/CVS/*"/>
-      </fileset>
+      <fileset dir="${source-src.dir}" defaultexcludes="yes"/>
     </copy>
     <!-- copy the config files -->
     <mkdir dir="${build.dir}/mmbase-src/config"/>
     <copy todir="${build.dir}/mmbase-src/config">
-      <fileset dir="${source-config.dir}">
-        <exclude name="**/CVS/*"/>
-      </fileset>
+      <fileset dir="${source-config.dir}" defaultexcludes="yes"/>
     </copy>
     <!-- copy the html files -->
     <mkdir dir="${build.dir}/mmbase-src/html"/>
     <copy todir="${build.dir}/mmbase-src/html">
-      <fileset dir="${source-html.dir}">
-        <exclude name="**/CVS/*"/>
-      </fileset>
+      <fileset dir="${source-html.dir}" defaultexcludes="yes"/>
     </copy>
     <!-- copy the build file -->
-    <copy file="${source-src.dir}/org/mmbase/scripts/build.xml"
+    <copy file="${source.dir}/build.xml"
           todir="${build.dir}/mmbase-src"/>
-    <copy file="${source-src.dir}/org/mmbase/scripts/build-from-srcdist.properties"
-          tofile="${build.dir}/mmbase-src/build.properties"/>
-    <!-- copy the readme -->
-    <!-- not in cvs yet -->
+    <copy file="${source.dir}/build-example.properties"
+          tofile="${build.dir}/mmbase-src/build-example.properties"/>
+
+    <!-- copy a readme and other basic docs from documentation dir -->
+    <copy todir="${build.dir}/mmbase-src" >
+      <fileset dir="${source-documentation.dir}/releases"
+               defaultexcludes="yes">
+        <exclude name="legal"/>
+        <include name="*.txt"/>
+      </fileset>
+    </copy>
+    <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
+          tofile="${build.dir}/mmbase-src/LICENSE"/>
+
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-src-${version}.zip"
          basedir="${build.dir}/mmbase-src"/>
@@ -176,7 +180,7 @@ NetComponents can be found at:
         <include name="*.txt"/>
       </fileset>
     </copy>
-   <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
+    <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
           tofile="${build.dir}/mmbase/LICENSE"/>
     <!-- copy the config -->
     <mkdir dir="${web.dir}/config"/>
@@ -193,7 +197,11 @@ NetComponents can be found at:
     <!-- copy the libraries -->
     <copy todir="${release.lib.dir}">
       <fileset dir="${compile.lib.dir}"
-               defaultexcludes="yes"/>
+               defaultexcludes="yes">
+        <exclude name="oracle-jdbc.zip"/>
+        <exclude name="ifxjdbc.jar"/>
+      </fileset>
+    
     </copy>
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip"
