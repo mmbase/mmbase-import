@@ -5,7 +5,7 @@
  * (c) Q42, 2001
  *
  * @since    MMBase-1.6
- * @version  $Id: wysiwyg.js,v 1.5 2002-07-08 10:03:43 michiel Exp $
+ * @version  $Id: wysiwyg.js,v 1.6 2002-07-18 09:23:22 michiel Exp $
  * @author   Kars Veling
  */
 
@@ -22,9 +22,6 @@ var browserutils=new BrowserUtils();
 
 var wysiwyg=null;
 
-if (browserutils.ie5560win) {
-    window.attachEvent("onload",start_wysiwyg);
-}
 
 function start_wysiwyg() {
     wysiwyg=new Wysiwyg();
@@ -201,7 +198,7 @@ Wysiwyg.prototype.checkButtons = function () {
 }
 
 Wysiwyg.prototype.createEditBar = function () {
-    var s='<table border="0" cellpadding="0" cellspacing="0"><tr>';
+    var s='<table class="wysiwyg"><tr>';
     for (var i=0;i<this.editBarButtons.length;i++) {
         var cmd = this.editBarButtons[i];
         var hint = this.editBarButtonHints[i];
