@@ -24,6 +24,8 @@ import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * servscan is the 'extened html language' (parsing *.shtml) provided for MMbase its a system like
@@ -31,13 +33,15 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.17 2000-11-20 13:36:43 install Exp $
+ * @version $Id: servscan.java,v 1.18 2001-02-20 18:21:54 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
  * @author Rob Vermeulen
  */
 public class servscan extends JamesServlet {
+
+	static Logger log =Logging.getLoggerInstance(servscan.class.getName()); 
 
 	private String classname = getClass().getName();
 
@@ -190,7 +194,9 @@ public class servscan extends JamesServlet {
 	
 				if (stime!=-1) {
 					stime=System.currentTimeMillis()-stime;
-					debug("service("+getRequestURL(req)+"): STIME "+stime+"ms "+(stime/1000)+"sec");
+					if(log.isDebugEnabled()) {
+						log.debug("service("+getRequestURL(req)+"): STIME "+stime+"ms "+(stime/1000)+"sec");
+					}
 				}
 			} while (sp.rstatus==2);	
 			// End of page parser
@@ -198,10 +204,10 @@ public class servscan extends JamesServlet {
 			out.flush();
 			out.close();
 		} catch(NotLoggedInException e) {
-				if (debug) debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: " + e );
+			log.debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: " + e );
 		} catch(Exception a) {
-				debug( "service(): exception on page: "+getRequestURL(req));
-				a.printStackTrace();
+			log.debug( "service(): exception on page: "+getRequestURL(req));
+			a.printStackTrace();
 		} finally { decRefCount(req); }
 	}// service
 
@@ -275,12 +281,12 @@ public class servscan extends JamesServlet {
 			String sec = poster.getPostParameter("SECURE");
 
 				if (sec!=null) {
-					if( debug ) debug("handlePost("+sp.getUrl()+"): Secure tag found, displaying username/password window at client-side.");
+					if( log.isDebugEnabled()) log.debug("handlePost("+sp.getUrl()+"): Secure tag found, displaying username/password window at client-side.");
 					name=getAuthorization(req,res);
-					if( debug ) debug("handlePost("+sp.getUrl()+"): getting cookie to check name");
+					if( log.isDebugEnabled()) log.debug("handlePost("+sp.getUrl()+"): getting cookie to check name");
 					String sname=getCookie(req,res);
 					if (name==null) { 
-						debug("handlePost(): Warning Username is null");
+						log.debug("handlePost(): Warning Username is null");
 						return;
 					}
 				}
@@ -305,7 +311,7 @@ public class servscan extends JamesServlet {
 						//aaaa name=getRemoteUser();
 						//name check
 						if (name==null) { 
-							debug("handlePost(): Warning Username is null");
+							log.debug("handlePost(): Warning Username is null");
 							return;
 						}
 						if (name!=null && name.length()>1) {
@@ -370,17 +376,17 @@ public class servscan extends JamesServlet {
 					sp.wantCache="HENK";
 //					debug("handleCache(): CACHE="+parser.scancache);
 					String rst=parser.scancache.get(sp.wantCache,req_line, sp.body.substring(start,end+1));
-					if (debug) debug("handleCache: sp.reload: "+sp.reload);
+					if (log.isDebugEnabled()) log.debug("handleCache: sp.reload: "+sp.reload);
 					if (rst!=null && !sp.reload) {
 						setHeaders(sp,res,rst.length());
 						// org.mmbase res.writeHeaders();
 						out.print(rst);
 						out.flush();
 						out.close();
-						if (debug) debug("handleCache(): cache.hit("+req_line+")");
+						if (log.isDebugEnabled()) log.debug("handleCache(): cache.hit("+req_line+")");
 						return(true);
 					} else {
-						debug("handleCache(): cache.miss("+req_line+")");
+						log.debug("handleCache(): cache.miss("+req_line+")");
 					}
 				}
 			}
@@ -388,17 +394,17 @@ public class servscan extends JamesServlet {
 			if (sp.body!=null && sp.body.indexOf("<CACHE PAGE>")!=-1) {
 				sp.wantCache="PAGE";
 				String rst=parser.scancache.get(sp.wantCache,req_line);
-				if (debug) debug("handleCache: sp.reload: "+sp.reload);
+				if (log.isDebugEnabled()) log.debug("handleCache: sp.reload: "+sp.reload);
 				if (rst!=null && !sp.reload) {
 					setHeaders(sp,res,rst.length());
 					// org.mmbase res.writeHeaders();
 					out.print(rst);
 					out.flush();
 					out.close();
-					if (debug) debug("handleCache(): cache.hit("+req_line+")");
+					if (log.isDebugEnabled()) log.debug("handleCache(): cache.hit("+req_line+")");
 					return(true);
 				} else {
-					debug("handleCache(): cache.miss("+req_line+")");
+					log.debug("handleCache(): cache.miss("+req_line+")");
 				}
 			}
 
@@ -418,16 +424,16 @@ public class servscan extends JamesServlet {
 		String name=null;
 		if (sp.body!=null && sp.body.indexOf("<SECURE>")!=-1) {
 
-			if( debug ) debug("doSecure("+sp.getUrl()+"): Secure tag found, calling getAuthorization()...");
+			if( log.isDebugEnabled()) log.debug("doSecure("+sp.getUrl()+"): Secure tag found, calling getAuthorization()...");
 			name=getAuthorization(sp.req,res);
-			if( debug ) debug("doSecure("+sp.getUrl()+"): getting cookie from user...");
+			if( log.isDebugEnabled()) log.debug("doSecure("+sp.getUrl()+"): getting cookie from user...");
 			String sname=getCookie(sp.req,res);
 
 			// check name
 			// ----------
 
 			if (name==null) { 
-				if( debug ) debug("doSecure("+sp.getUrl()+"): WARNING: no username found!");
+				log.warn("doSecure("+sp.getUrl()+"): WARNING: no username found!");
 				return(null);
 			}
 		}
@@ -436,7 +442,7 @@ public class servscan extends JamesServlet {
 
 	void doEditorReload(scanpage sp,HttpServletResponse res) {
 		int EXPIRE = 120;
-		if (debug) debug("doEditorReload called, sp.reload:"+sp.reload);
+		if (log.isDebugEnabled()) log.debug("doEditorReload called, sp.reload:"+sp.reload);
 		
 		if (sessions!=null) {
 			String sname=getCookie(sp.req,res);
@@ -456,13 +462,15 @@ public class servscan extends JamesServlet {
 						if ((now-then)<EXPIRE) {
 							//sp.loadmode="no-cache";
 							sp.reload=true;
-							debug("doEditorReload: sp.reload:"+sp.reload+", remote user:"+HttpAuth.getRemoteUser(sp.req));
-							if (debug) debug("doEditorReload: sp.reload:"+sp.reload+", expire time not reached: "+(now-then)+"<"+EXPIRE+" sec");
+							if (log.isDebugEnabled()) {
+								log.debug("doEditorReload: sp.reload:"+sp.reload+", remote user:"+HttpAuth.getRemoteUser(sp.req));
+								log.debug("doEditorReload: sp.reload:"+sp.reload+", expire time not reached: "+(now-then)+"<"+EXPIRE+" sec");
+							}
 						} else {
 							session.setValue("RELOAD","N");
 							//sp.loadmode="cache";
 							sp.reload=false;
-							if (debug) debug("doEditorReload: Reload expired "+(now-then)+">="+EXPIRE+" , sp.reload:"+sp.reload);
+							if (log.isDebugEnabled()) log.debug("doEditorReload: Reload expired "+(now-then)+">="+EXPIRE+" , sp.reload:"+sp.reload);
 						}
 					} catch(Exception e) {
 						session.setValue("RELOAD","N");
