@@ -12,6 +12,8 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Replace 1 or more spaces by 1 space, and 1 or more newlines by 1
  * newline. Any other combination of newlines and spaces is replaced
@@ -19,19 +21,27 @@ import java.io.Writer;
  * "</pre>". (Note: perhaps this last behaviour should be made
  * configurable.
  *
+ * @todo 'pre' stuff not yet implemented
+ *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  */
 
 public class SpaceReducer extends AbstractCharTransformer implements CharTransformer {
 
+    private static Logger log = Logging.getLoggerInstance(SpaceReducer.class.getName());
 
     public Writer transform(Reader r, Writer w) {
-        int space = 0;
-        int nl = 0;
-        StringBuffer indent = new StringBuffer();
-        int l = 0;
+
+        int space = 0;  // 'open' spaces
+        int nl = 0;     // 'open' newlines
+        
+        StringBuffer indent = new StringBuffer();  // 'open' indentation of white-space
+        int l = 0; // number of non-white-space (letter) on the current line
+
+        int lines = 0; // for debug: the total number of lines read.
         try {
+            log.debug("Starting spacereducing");
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
@@ -49,13 +59,14 @@ public class SpaceReducer extends AbstractCharTransformer implements CharTransfo
                         w.write(indent.toString());
                         indent.setLength(0);
                     }
-                    space = 0; nl = 0; l++;
+                    space = 0; lines += nl; nl = 0; l++;
                     
                     w.write(c);
                 }
-            }            
+            }
+            log.debug("Finished: read " + lines + " lines");
         } catch (java.io.IOException e) {
-            // System.out.println("w" + e.toString());
+            log.error(e.toString());
         }
         return w;
     }

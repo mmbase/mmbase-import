@@ -12,6 +12,8 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.mmbase.util.logging.*;
+
 /**
  * A 'hello world' for CharTransformers.
  *
@@ -20,17 +22,19 @@ import java.io.Writer;
  */
 
 public class UpperCaser extends AbstractCharTransformer implements CharTransformer {
-
+    private static Logger log = Logging.getLoggerInstance(UpperCaser.class.getName());
 
     public Writer transform(Reader r, Writer w) {
         try {
+            log.debug("Starting uppercasing");
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
                 w.write(Character.toUpperCase((char) c));
             }            
+            log.debug("Finished uppercasing");
         } catch (java.io.IOException e) {
-            //System.out.println("u" + e.toString());
+            log.error(e.toString());
         }
         return w;
     }
