@@ -14,32 +14,29 @@
 	<!--
 		tag authentication:
 			attribute class: The class which should be used for
-			authentication, must be an instance of
-			org.mmbase.security.Authentication of a class derived
-			from this class
+			authentication, must be an derived instance of class
+			org.mmbase.security.Authentication.
 
 			attribute url: The url of the configfile which should
 			be used for configuration of of the authentication
 			class.
 
 	 -->
-  	<authentication class="org.mmbase.security.Authentication" url="" />
-  	<!-- <authentication class="org.mmbase.security.implementation.AuthenticationHandler" 
+  	<authentication class="org.mmbase.security.implementation.AuthenticationHandler" 
 			url="authentication.xml" /> -->
 
 	<!--
 		tag authorization:
 			attribute class: The class which should be used for
-			authentication, must be an instance of
-			org.mmbase.security.Authorization of a class derived
-			from this class
-
+			authentication, must be an derived instance of
+			class org.mmbase.security.Authorization.
+			
 			attribute url: The url of the configfile which should
 			be used for configuration of of the authorization
 			class.
 	 -->
-  	<authorization class="org.mmbase.security.Authorization" url="" />
-    	<!--   	<authorization class="org.mmbase.security.implementation.OwnerAuthorization" url="../accounts.properties" /> -->
+    	<authorization  class="org.mmbase.security.implementation.OwnerAuthorization" 
+	    	    	url="../accounts.properties" />
 
 	<!--
             shared secret:
