@@ -307,24 +307,19 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 			    }
 			} else if (type==FieldDefs.TYPE_BYTE) {
            		String filename=n2.getAttribute("file");
-			log.info("FILENAME="+filename);
    	   		JarEntry je = jf.getJarEntry("data/"+filename);
 			if (je!=null) {
-				log.info("JARFILE="+je);
 				int buffersize=(int)je.getSize();
-				log.info("SIZE="+buffersize);
                     		byte[] buffer = new byte[buffersize];
 				try {
-                        		InputStream in=jf.getInputStream(je);
-		                        in.read(buffer, 0, buffersize);
-				} catch (Exception e) { }
+                        		DataInputStream in = new DataInputStream(jf.getInputStream(je));
+		                        in.readFully(buffer, 0, buffersize);
+				} catch (Exception e) { 
+					log.error("Jar file (handle) read error");
+					e.printStackTrace();
+				}
 			    	newnode.setValue(field,buffer);
 			}
-				/*
-			    NamedNodeMap nm2=n5.getAttributes();
-			    Node n7=nm2.getNamedItem("file");
-			    newnode.setValue(field,readBytesFile(applicationpath+n7.getNodeValue()));
-				*/
 			} else {
 			    log.error("FieldDefs not found for #" + type + " was not known for field with name: '"+field+"' and with value: '"+value+"'");
 			}
