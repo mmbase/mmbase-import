@@ -90,7 +90,7 @@
 </tr>
 <!-- the real searchpart -->
 
-<mm:url id="pagingurl" referids="portal?,page?,base,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority" write="false" />
+<mm:url id="pagingurl" referids="portal?,page?,base,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer" write="false" />
 
 <mm:write referid="smaintainer">
   <mm:compare value="-1">
