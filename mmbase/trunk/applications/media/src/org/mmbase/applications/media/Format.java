@@ -12,17 +12,18 @@ package org.mmbase.applications.media;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import java.util.*;
+import org.mmbase.util.ConstantsBundle;
 
 /**
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.9 2003-02-25 23:54:31 michiel Exp $
+ * @version $Id: Format.java,v 1.10 2003-07-04 17:23:40 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
 public final class Format {   // final class!!
-    private static Logger log = Logging.getLoggerInstance(Format.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Format.class);
 
     public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
     // in case you want i18ed format strings.
@@ -66,7 +67,7 @@ public final class Format {   // final class!!
     public static final Format WMP  = new Format(18, "wmp");
     public static final Format HTML  = new Format(19, "html");
     public static final Format SMIL  = new Format(20, "smil");
-    public static final Format QT  = new Format(21, "qt");
+    public static final Format QT    = new Format(21, "qt");
     public int toInt()    { return number; }
     public String toString() { return id;     }
     public static Format get(int i) {
@@ -96,8 +97,7 @@ public final class Format {   // final class!!
     
     public String getGUIIndicator(Locale locale) {
         try {
-            ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
-            return m.getString("" + number);
+            return  ConstantsBundle.get(RESOURCE, this.getClass(), number, locale);
         } catch (Exception e) {
             return "UNKNOWN";
         }
@@ -113,17 +113,17 @@ public final class Format {   // final class!!
     public List getSimilar() {
         if (isReal()) {
             if (this == RM) {
-                return Arrays.asList(new Format[]{this, RA, RAM});
+                return Arrays.asList(new Format[] {this, RA, RAM});
             } else if (this == RA) {
-                return Arrays.asList(new Format[]{this, RM, RAM});
+                return Arrays.asList(new Format[] {this, RM, RAM});
             } else if (this == RAM) {
-                return Arrays.asList(new Format[]{this, RM, RA});
+                return Arrays.asList(new Format[] {this, RM, RA});
             }
         } else if (isWindowsMedia()) {
             if (this == ASF) {
-                return Arrays.asList(new Format[]{this, WMP});
+                return Arrays.asList(new Format[] {this, WMP});
             } else if (this == WMP) {
-                return Arrays.asList(new Format[]{this, ASF});
+                return Arrays.asList(new Format[] {this, ASF});
             }
         }
         return Arrays.asList(new Format[]{this});
