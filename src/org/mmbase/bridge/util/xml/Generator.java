@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.2 2002-04-03 11:19:27 eduard Exp $
+ * @version $Id: Generator.java,v 1.3 2002-04-05 12:55:23 eduard Exp $
  */
 public  class Generator {
 
@@ -284,17 +284,19 @@ public  class Generator {
                     Field field = i.nextField();
                     if (log.isDebugEnabled()) log.debug("getting field " + field.getName());
                     if (getXMLElement(object, "field[@name='" + field.getName() + "']") == null) {
-                        Element elem = node.getXMLValue(field.getName(), object.getOwnerDocument());
-                        if(elem!=null) {
-                            object.appendChild(elem);
-                        }
+                        // Element elem = node.getXMLValue(field.getName(), object.getOwnerDocument());                        
+                        //if(elem!=null) {
+                        //   object.appendChild(elem);
+                        //}
+                        object.appendChild(object.getOwnerDocument().createTextNode(node.getStringValue(field.getName())));
                     }
                 }
             } else {
                 String fieldName = ((Field) fields).getName();
                 log.debug("getting field " + fieldName);
                 if (getXMLElement(object, "field[@name='" + fieldName + "']") == null) {
-                    object.appendChild(node.getXMLValue(fieldName, object.getOwnerDocument()));
+                    //object.appendChild(node.getXMLValue(fieldName, object.getOwnerDocument()));
+                    object.appendChild(object.getOwnerDocument().createTextNode(node.getStringValue(fieldName)));
                 }
 
             }
@@ -339,5 +341,144 @@ public  class Generator {
         }
     }
 
+/*
+    Element sophisticateField(Field type, Element field) {
 
+        String fieldName = type.getName(); //or : String fieldName = field.getAttribute("name");
+        String guiType   = type.getGUIType();
+        
+
+        if (log.isDebugEnabled()) log.debug("sophisticating " + fieldName + " (" + guiType + ")");
+        Document tree = field.getOwnerDocument();
+        
+        switch(type.getType()) {
+        case Field.TYPE_XML : {
+            
+            // is already in XML;
+            
+            break;
+        }
+        case Field.TYPE_STRING :
+            field.setAttribute("format", "string");
+            break;
+        case Field.TYPE_INTEGER :
+            // was it a builder?
+            if(fieldName.equals("otype")) {
+                field = tree.createElement("builder");
+                // the name...
+                org.w3c.dom.Attr attr = tree.createAttribute("object");
+                attr.setValue(getStringValue(fieldName));
+                field.setAttributeNode(attr);
+                break;
+            }
+            // was source in relation?
+            if(fieldName.equals("snumber")) {
+                field = tree.createElement("source");
+                // the name...
+                org.w3c.dom.Attr attr = tree.createAttribute("object");
+                attr.setValue(getStringValue(fieldName));
+                field.setAttributeNode(attr);
+                break;
+            }
+            // was destination in relation?
+            if(fieldName.equals("dnumber")) {
+                field = tree.createElement("destination");
+                // the name...
+                org.w3c.dom.Attr attr = tree.createAttribute("object");
+                attr.setValue(getStringValue(fieldName));
+                field.setAttributeNode(attr);
+                break;
+            }
+            // was role in relation?
+            if(fieldName.equals("rnumber")) {
+                field = tree.createElement("role");
+                // the name...
+                org.w3c.dom.Attr attr = tree.createAttribute("object");
+                attr.setValue(getStringValue(fieldName));
+                field.setAttributeNode(attr);
+                break;
+            }
+            //	uh, what do we do here?
+            if(guiType.equals("reldefs")) {
+                field = tree.createElement("NoNaMeYeT");
+                // the name...
+                org.w3c.dom.Attr attr = tree.createAttribute("object");
+                attr.setValue(getStringValue(fieldName));
+                field.setAttributeNode(attr);
+                break;
+            }
+            // was it a date?
+            if(guiType.equals("eventtime")) {
+                String value;
+                if(getLongValue("date") == -1) value = "";
+                java.text.SimpleDateFormat dateFormat = (java.text.SimpleDateFormat) java.text.SimpleDateFormat.getDateInstance();
+                // iso 8601 for date/time
+                dateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
+                java.util.Date datum = new java.util.Date(getLongValue("date") * 1000);
+                value = dateFormat.format(datum);
+                
+
+                ((org.w3c.dom.Text) field.getFirstChild()).setData(value);
+
+                field.setAttribute("format", "date");
+                break;
+            }
+            // well then it WAS a integer i assume.. then resume to numeric part...
+        case Field.TYPE_FLOAT:
+        case Field.TYPE_DOUBLE:
+        case Field.TYPE_LONG:
+            // all the numeric thingies
+            field.setAttribute("format", "numeric");
+            break;
+        case Field.TYPE_BYTE :
+            // return tree.createCDATASection(org.mmbase.util.Encode.encode("BASE64", getByteValue(fieldName)));
+            field = tree.createElement("resource");
+            org.w3c.dom.Attr attr = tree.createAttribute("id");
+            attr.setValue(fieldName+"@"+getNumber());
+            field.setAttributeNode(attr);
+            break;
+        default :
+            field.setAttribute("format", "unknown");
+            break;
+        }
+        return field;
+    }
+
+    Element getXMLValue(Field field, Document tree) {
+        // create the field
+        Element fieldElem = tree.createElement("field");
+
+        org.w3c.dom.Attr attr;
+        // the name...
+        attr = tree.createAttribute("name");
+        attr.setValue(field.getName());
+        fieldElem.setAttributeNode(attr);
+
+        // guilist, necessary to make generic presenter of the node:
+        attr = tree.createAttribute("guilist");
+        attr.setValue("" + ((BasicField)field).field.getGUIList());
+        fieldElem.setAttributeNode(attr);
+
+        // the format
+        attr = tree.createAttribute("format");
+        attr.setValue(((BasicField)field).field.getDBTypeDescription().toLowerCase());
+        fieldElem.setAttributeNode(attr);
+
+        org.w3c.dom.Node subField = null;
+        if(field.getType() == Field.TYPE_XML) {
+            Document doc = getXMLValue(field.getName());
+            if(doc == null) {
+                return null;
+            }
+            subField = tree.importNode(doc.getDocumentElement(), true);
+        }
+        else {
+            subField = tree.createTextNode(getStringValue(field.getName()));
+        }
+        fieldElem.appendChild(subField);
+
+        // do some additional thingies...
+        return sophisticateField(field, fieldElem);
+    }
+*/
 }
