@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.125 2004-05-08 17:44:59 nico Exp $
+ * @version $Id: Wizard.java,v 1.126 2004-05-09 09:55:05 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -523,7 +523,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("referrer", referrer);
         params.put("referrer_encoded", java.net.URLEncoder.encode(referrer));
         params.put("language", cloud.getLocale().getLanguage());
-        params.put("timezonee", timezone);
+        params.put("timezone", timezone);
         params.put("cloud", cloud);
 
         if (templatesDir != null) {
