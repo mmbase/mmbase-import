@@ -28,7 +28,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.57.2.4 2004-11-08 14:00:15 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.5 2005-03-14 18:33:24 michiel Exp $
  * @see ContextTag
  */
 
@@ -197,6 +197,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     public int doEndTag() throws JspTagException {
+        helper.release();
+        pageContextTag = null;
         return EVAL_PAGE;
     }
 
@@ -212,7 +214,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
-        pageContextTag = null;
+
         /*
         id = null;
         referid   = Attribute.NULL;

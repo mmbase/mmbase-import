@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.41.2.5 2004-12-15 14:55:43 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.41.2.6 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -173,7 +173,7 @@ public class ImportTag extends ContextReferrerTag {
         }
         if (externid != Attribute.NULL) {
             if (! found ) {
-                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found");
+                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found, using " + bodyContent);
                 // try to find a default value in the body.
                 Object body = bodyContent != null ? bodyContent.getString() : "";
                 if (! "".equals(body)) { // hey, there is a body content!

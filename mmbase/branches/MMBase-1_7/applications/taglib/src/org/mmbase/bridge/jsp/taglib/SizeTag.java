@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.21 2003-12-18 11:52:42 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.21.2.1 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
@@ -94,7 +94,8 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
      *
      **/
     public int doEndTag() throws JspTagException {
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 
 }

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.2 2004-02-11 20:40:12 keesj Exp $
+ * @version $Id: FunctionTag.java,v 1.2.2.1 2005-03-14 18:33:24 michiel Exp $
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
@@ -35,7 +35,8 @@ public class FunctionTag extends AbstractFunctionTag implements Writer, Function
         return helper.doAfterBody();
     }       
     public int doEndTag() throws JspTagException {
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();        
     }
 
 }
