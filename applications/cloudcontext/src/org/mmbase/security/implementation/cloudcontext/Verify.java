@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: Verify.java,v 1.1 2003-05-22 17:14:03 michiel Exp $
+ * @version $Id: Verify.java,v 1.2 2003-06-16 17:16:16 michiel Exp $
  */
 public class Verify extends Authorization {
     private static Logger    log = Logging.getLoggerInstance(Verify.class.getName());
@@ -30,46 +30,46 @@ public class Verify extends Authorization {
     }
 
     // javadoc inherited
-    public void create(UserContext usercontext, int i) {
-        User user = (User) usercontext;
-        MMObjectNode mmobjectnode = Contexts.getBuilder().setContext(user, i, user.getDefaultContext());
+    public void create(UserContext userContext, int nodeId) {
+        User user = (User) userContext;
+        Contexts.getBuilder().setContext((User) user, nodeId, user.getDefaultContext());
     }
 
     // javadoc inherited
-    public void update(UserContext usercontext, int i)  {
+    public void update(UserContext userContext, int nodeId)  {
     }
 
 
     // javadoc inherited
-    public void remove(UserContext usercontext, int i)  {
+    public void remove(UserContext userContext, int nodeId)  {
     }
 
     // javadoc inherited
-    public boolean check(UserContext usercontext, int i, Operation operation)  {
-        return Contexts.getBuilder().mayDo((User)usercontext, operation, i);
+    public boolean check(UserContext userContext, int nodeId, Operation operation)  {
+        return Contexts.getBuilder().mayDo((User) userContext, nodeId, operation);
     }
 
     // javadoc inherited
-    public boolean check(UserContext usercontext, int i, int j, int k, Operation operation)   {
-        //log.debug("check if operation: " + operation + " is valid for: " + usercontext + " for node with number # " + i + "(between 2 nodes..)");
-        return Contexts.getBuilder().mayDo((User)usercontext, operation, i);
+    public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
+        //log.debug("check if operation: " + operation + " is valid for: " + usercontext + " for node with number # " + i + "(between 2 nodes..)");        
+        return Contexts.getBuilder().mayDo((User) userContext, nodeId, sourceNodeId, destinationNodeId, operation);
     }
 
     // javadoc inherited
-    public String getContext(UserContext usercontext, int i) throws org.mmbase.security.SecurityException {
+    public String getContext(UserContext userContext, int i) throws org.mmbase.security.SecurityException {
         //log.debug("check if we may read the node with # " + i + " nodeid?");
-        return Contexts.getBuilder().getContext((User)usercontext, i);
+        return Contexts.getBuilder().getContext((User) userContext, i);
     }
 
 
     // javadoc inherited
-    public void setContext(UserContext usercontext, int i, String s) throws org.mmbase.security.SecurityException {
+    public void setContext(UserContext userContext, int i, String s) throws org.mmbase.security.SecurityException {
         //log.debug("[node #" + i + "] changed to context: " + s + " by [" + usercontext.getIdentifier() + "]");
-        Contexts.getBuilder().setContext((User)usercontext, i, s);
+        Contexts.getBuilder().setContext((User) userContext, i, s);
     }
 
     // javadoc inherited
-    public Set getPossibleContexts(UserContext usercontext, int i)  throws org.mmbase.security.SecurityException {
-        return Contexts.getBuilder().getPossibleContexts((User)usercontext, i);
+    public Set getPossibleContexts(UserContext userContext, int i)  throws org.mmbase.security.SecurityException {
+        return Contexts.getBuilder().getPossibleContexts((User) userContext, i);
     }
 }

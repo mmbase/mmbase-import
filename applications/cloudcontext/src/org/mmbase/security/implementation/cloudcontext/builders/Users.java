@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.4 2003-06-16 13:07:17 michiel Exp $
+ * @version $Id: Users.java,v 1.5 2003-06-16 17:16:17 michiel Exp $
  * @since MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -39,7 +39,7 @@ public class Users extends MMObjectBuilder {
     public final static String FIELD_STATE     = "state";
     public final static String STATES_RESOURCE = "org.mmbase.security.states";
 
-    protected static Cache rankCache = new Cache(10) {
+    protected static Cache rankCache = new Cache(20) {
             public String getName()        { return "RankCache"; }
             public String getDescription() { return "Caches the rank of users"; }
         };
@@ -88,17 +88,29 @@ public class Users extends MMObjectBuilder {
     public Rank getRank(MMObjectNode node) {
         Rank rank = (Rank) rankCache.get(node);
         if (rank == null) {
-            List ranks =  node.getRelatedNodes("mmbaseranks");
-            if (ranks.size() != 1) {
-                throw new SecurityException("Not excactly one rank related to mmbase-user " + node.getNumber() + " (but " + ranks.size() + ")");
+            List ranks =  node.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
+            if (ranks.size() > 1) {
+                throw new SecurityException("More then one rank related to mmbase-user " + node.getNumber() + " (but " + ranks.size() + ")");
             }
-        
-            Ranks rankBuilder = Ranks.getBuilder();
-            rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
+            if (ranks.size() == 0) {
+                log.debug("No ranks related to this user");
+                rank = Rank.ANONYMOUS;
+            } else {        
+                Ranks rankBuilder = Ranks.getBuilder();
+                rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
+            }
             rankCache.put(node, rank);
         } 
         return rank;
     }        
+
+    /**
+     * Notify the cache that the rank of user node changed
+     * this is fixed by CacheInvalidator alreayd ?
+    public void rankChanged(MMObjectNode node) {
+        rankCache.remove(node);
+    }
+    */
 
 
     //javadoc inherited
@@ -182,7 +194,7 @@ public class Users extends MMObjectBuilder {
      * @javadoc
      */
     public String getUserName(MMObjectNode node) {
-        return node.getStringValue("username");
+         return node.getStringValue("username");
     }
 
     /**
@@ -252,7 +264,9 @@ public class Users extends MMObjectBuilder {
                 }
             }
         }
-        log.debug("Function not matched in users");
+        if (log.isDebugEnabled()) {
+            log.debug("Function '" + function + "'  not matched in users");
+        }
         return super.executeFunction(node, function, args);
 
     }
