@@ -99,6 +99,9 @@ General Bug Fixes:
 ------------------
 
 [1.6.1]
+- Fixed bug causing connections to be closed prematurely: #5097
+- XML importer handles binary values using Base64 decoding: #5087
+- More efficient Base64 encoding/decoding: #5073
 - attachment-tag attachment-servlet bugs: #4895, #4876 
 - builder inheritance: #4864
 [1.6.0]
