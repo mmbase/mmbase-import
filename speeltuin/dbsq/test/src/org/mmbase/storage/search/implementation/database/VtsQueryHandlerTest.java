@@ -1,4 +1,4 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
 import org.mmbase.module.core.MMObjectBuilder;

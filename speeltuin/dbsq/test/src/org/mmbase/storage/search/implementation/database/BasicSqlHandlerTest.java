@@ -1,10 +1,11 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import junit.framework.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
@@ -76,7 +77,7 @@ public class BasicSqlHandlerTest extends TestCase {
      */
     public void tearDown() throws Exception {}
     
-    /** Test of toSqlString method, of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of toSqlString method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testToSqlString() throws Exception {
         assert(BasicSqlHandler.toSqlString(null) == null);
         assert(BasicSqlHandler.toSqlString("'").equals("''"));
@@ -88,7 +89,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(BasicSqlHandler.toSqlString("qwerty").equals("qwerty"));
     }
     
-    /** Test of toSql method, of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testToSql() throws Exception{
         BasicSearchQuery query = new BasicSearchQuery();
         
@@ -371,7 +372,7 @@ public class BasicSqlHandlerTest extends TestCase {
     }
     
     
-    /** Test of appendQueryBodyToSql method, of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of appendQueryBodyToSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendQueryBodyToSql() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
         
@@ -686,19 +687,19 @@ public class BasicSqlHandlerTest extends TestCase {
         + "ORDER BY m_imageTitle ASC,name ASC,rnumber ASC"));
     }
     
-    /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendConstraintToSql() {
         
-        SearchQuery query = null;
+        BasicSearchQuery query = new BasicSearchQuery();
         StringBuffer sb = new StringBuffer();
-        Step step1 = new BasicStep(images);
+        Step step1 = query.addStep(images);
         FieldDefs imagesTitle = images.getField("title");
-        StepField field1 = new BasicStepField(step1, imagesTitle);
+        StepField field1 = query.addField(step1, imagesTitle);
         FieldDefs imagesNumber = images.getField("number");
-        StepField field2 = new BasicStepField(step1, imagesNumber);
-        Step step2 = new BasicStep(pools);
+        StepField field2 = query.addField(step1, imagesNumber);
+        Step step2 = query.addStep(pools);
         FieldDefs poolsNumber = pools.getField("number");
-        StepField field3 = new BasicStepField(step2, poolsNumber);
+        StepField field3 = query.addField(step2, poolsNumber);
         
         // Test for BasicFieldNullConstraint
         BasicFieldNullConstraint constraint1 
@@ -933,7 +934,7 @@ public class BasicSqlHandlerTest extends TestCase {
         } catch (IllegalArgumentException e) {}
     }
     
-    /** Test of getSupportLevel(int,SearchQuery), of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of getSupportLevel(int,SearchQuery), of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
         
@@ -958,7 +959,7 @@ public class BasicSqlHandlerTest extends TestCase {
         == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
-    /** Test of getSupportLevel(Constraint,SearchQuery), of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of getSupportLevel(Constraint,SearchQuery), of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testGetSupportLevel2() throws Exception {
         // Should return basic support level of constraint.
         SearchQuery query = new BasicSearchQuery();
@@ -972,7 +973,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
-    /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testGetAllowedValue() {
         Set entries = disallowedValues.entrySet();
         Iterator iEntries = entries.iterator();
@@ -997,16 +998,16 @@ public class BasicSqlHandlerTest extends TestCase {
         } catch (IllegalArgumentException e) {}
     }
     
-    /** Test of appendCompositeConstraintToSql method, of class org.mmbase.storage.search.implementation.BasicSqlHandler. */
+    /** Test of appendCompositeConstraintToSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendCompositeConstraintToSql() throws Exception {
-        SearchQuery query = null;
+        BasicSearchQuery query = new BasicSearchQuery();
         StringBuffer sb = new StringBuffer();
-        Step step1 = new BasicStep(images);
+        Step step1 = query.addStep(images);
         FieldDefs imagesNumber = images.getField("number");
-        StepField field1 = new BasicStepField(step1, imagesNumber);
-        Step step2 = new BasicStep(pools);
+        StepField field1 = query.addField(step1, imagesNumber);
+        Step step2 = query.addStep(pools);
         FieldDefs poolsNumber = pools.getField("number");
-        StepField field2 = new BasicStepField(step2, poolsNumber);
+        StepField field2 = query.addField(step2, poolsNumber);
         
         BasicFieldValueConstraint constraint1 
         = new BasicFieldValueConstraint(field1, new Integer(9876));

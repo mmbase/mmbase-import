@@ -4,13 +4,13 @@
  * Created on October 18, 2002, 5:36 PM
  */
 
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.storage.search.*;
 
 /**
  * Baseclass for <em>chained sql handlers</em>, these are 
- * {@link org.mmbase.storage.search.SqlHandler SqlHandler}
+ * {@link org.mmbase.storage.search.implementation.database.SqlHandler SqlHandler}
  * implementations that wrap <code>SqlHandler</code> objects to create a chain
  * of handlers, following the <em>Chain Of Responsibility</em> design pattern.
  * <p>
@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Rob van Maris
  * @version $Revision: 1.1 $
- * @see org.mmbase.storage.search.SqlHandler 
+ * @see org.mmbase.storage.search.implementation.database.SqlHandler 
  */
 public class ChainedSqlHandler implements SqlHandler {
     

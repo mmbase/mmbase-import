@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the table name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicStep implements Step {
     

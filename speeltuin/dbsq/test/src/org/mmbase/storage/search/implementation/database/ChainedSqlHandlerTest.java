@@ -1,8 +1,10 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
-import junit.framework.*;
+import junit.textui.TestRunner;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import junit.framework.*;
+
 
 /**
  * JUnit tests.
@@ -28,7 +30,7 @@ public class ChainedSqlHandlerTest extends TestCase {
     }
     
     public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
+        TestRunner.run(suite());
     }
     
     /**
@@ -45,14 +47,14 @@ public class ChainedSqlHandlerTest extends TestCase {
      */
     public void tearDown() throws Exception {}
     
-    /** Test of toSql method, of class org.mmbase.storage.search.implementation.ChainedSqlHandler. */
+    /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testToSql() throws Exception {
         String sql = instance.toSql(query, instance); 
         assert(sql != null);
         assert(sql.equals(testSuccessor.toSql(query, instance)));
     }
     
-    /** Test of appendQueryBodyToSql method, of class org.mmbase.storage.search.implementation.ChainedSqlHandler. */
+    /** Test of appendQueryBodyToSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testAppendQueryBodyToSql() throws Exception {
         StringBuffer sb = new StringBuffer();
         instance.appendQueryBodyToSql(sb, query, instance);
@@ -64,7 +66,7 @@ public class ChainedSqlHandlerTest extends TestCase {
         assert(queryBody.equals(queryBody2));
     }
     
-    /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.ChainedSqlHandler. */
+    /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testAppendConstraintToSql() throws Exception {
         StringBuffer sb = new StringBuffer();
         Constraint constraint 
@@ -78,7 +80,7 @@ public class ChainedSqlHandlerTest extends TestCase {
         assert(strConstraint.equals(queryBody2));
     }
     
-    /** Test of both getSupportLevel methods, of class org.mmbase.storage.search.implementation.ChainedSqlHandler. */
+    /** Test of both getSupportLevel methods, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         // test method getSupport(int,SearchQuery)
         assert(instance.getSupportLevel(
@@ -92,14 +94,14 @@ public class ChainedSqlHandlerTest extends TestCase {
         == TEST_SUPPORT_LEVEL);
     }
     
-    /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.ChainedSqlHandler. */
+    /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testGetAllowedValue() {
         String result = instance.getAllowedValue(TEST);
         assert(result.length() > 0);
         assert(result.equals(testSuccessor.getAllowedValue(TEST)));
     }
     
-    /** Test of getSuccessor method, of class org.mmbase.storage.search.implementation.ChainedSqlHandler. */
+    /** Test of getSuccessor method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testGetSuccessor() {
         assert(instance.getSuccessor() == testSuccessor);
     }
