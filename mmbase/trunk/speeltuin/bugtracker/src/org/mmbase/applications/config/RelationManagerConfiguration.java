@@ -1,5 +1,8 @@
 package org.mmbase.applications.config;
-
+/**
+ * @author Kees Jongenbuger
+ * @version $Id: RelationManagerConfiguration.java,v 1.3 2002-06-27 19:20:31 kees Exp $
+ **/
 public interface RelationManagerConfiguration{
     /**
      * @return the name/role of the relation manager

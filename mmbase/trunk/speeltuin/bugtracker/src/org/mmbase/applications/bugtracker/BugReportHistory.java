@@ -11,7 +11,6 @@ package org.mmbase.applications.bugtracker;
  * @author  mmbase
  * @mmbase-nodemanager-name bughistory
  * @mmbase-nodemanager-field message STRING
- * @mmbase-nodemanager-field date INTEGER
  */
 public class BugReportHistory {
     

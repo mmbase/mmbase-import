@@ -15,12 +15,12 @@ package org.mmbase.applications.bugtracker;
  * @mmbase-nodemanager-name bugtracker
  * @mmbase-nodemanager-field name string 50
  *
- * @mmbase-relationmanager-name maintainer
- * @mmbase-relationmanager-nodemanager insrel
+ * @mmbase-relationmanager-name maintainerrel
  * @mmbase-relationmanager-source bugtracker
  * @mmbase-relationmanager-destination bugtrackeruser
  *
  * @mmbase-relationmanager-name subcategoryrel
+ * @mmbase-relationmanager-nodemanager catrel
  * @mmbase-relationmanager-directionality unidirectional
  * @mmbase-relationmanager-source bugtracker
  * @mmbase-relationmanager-destination bugcategory
@@ -45,5 +45,9 @@ public class Bugtracker {
      **/
     public BugtrackerUsers getBugtrackerMaintainers(){
         return new BugtrackerUsers();
+    }
+    
+    public String getVersion(){
+        return "$Id: Bugtracker.java,v 1.4 2002-06-27 19:20:29 kees Exp $";
     }
 }

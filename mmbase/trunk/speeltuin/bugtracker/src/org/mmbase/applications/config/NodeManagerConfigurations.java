@@ -1,14 +1,9 @@
-/*
- * NodeManagerConfigurations.java
- *
- * Created on June 13, 2002, 10:57 PM
- */
-
 package org.mmbase.applications.config;
 
 /**
- *
- * @author  mmbase
+ * list of nodemanager configurations
+ * @author Kees Jongenburger
+ * @version $Id: NodeManagerConfigurations.java,v 1.2 2002-06-27 19:20:30 kees Exp $
  */
 public class NodeManagerConfigurations extends java.util.Vector {
     
