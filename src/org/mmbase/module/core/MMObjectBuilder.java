@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.238 2003-07-14 21:04:24 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.239 2003-08-06 13:44:53 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -137,10 +137,7 @@ public class MMObjectBuilder extends MMTable {
      */
     private static int cacheLocked=0;
 
-    /**
-     * Logger routine
-     */
-    private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
 
     /**
      * The current builder's object type
@@ -294,10 +291,10 @@ public class MMObjectBuilder extends MMTable {
      */
     private int maxNodesFromQuery = -1;
 
-        /**
-        * Max length of a query, informix = 32.0000 so we assume a bit less for other databases
-        */
-        private static final int MAX_QUERY_SIZE = 20000;
+    /**
+     * Max length of a query, informix = 32.0000 so we assume a bit less for other databases
+     */
+    private static final int MAX_QUERY_SIZE = 20000;
 
     /**
      * The string that can be used inside the builder.xml as property,
@@ -1593,8 +1590,7 @@ public class MMObjectBuilder extends MMTable {
      *         by the query is not the nodetype corresponding to this builder.
      * @since MMBase-1.7
      */
-    public List getNodes(NodeSearchQuery query)
-    throws SearchQueryException {
+    public List getNodes(NodeSearchQuery query) throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         if (query.getBuilder() != this) {
             throw new IllegalArgumentException("Wrong builder for query on '" + query.getBuilder().getTableName() + "'-table: " + this.getTableName());
@@ -2306,7 +2302,11 @@ public class MMObjectBuilder extends MMTable {
         FieldDefs fieldDef = getField(field);
         if (fieldDef.getDBType() == FieldDefs.TYPE_NODE && ! field.equals("number")) {
             MMObjectNode otherNode = node.getNodeValue(field);
-            return otherNode.parent.getGUIIndicator(otherNode);
+            if (otherNode == null || otherNode == MMObjectNode.VALUE_NULL) {
+                return "NULL";
+            } else {
+                return otherNode.parent.getGUIIndicator(otherNode);
+            }
         } else {
             return null;
         }
