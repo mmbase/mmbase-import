@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.6 2001-01-05 14:12:33 vpro Exp $
+$Id: cdplayers.java,v 1.7 2001-01-24 13:42:30 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2001/01/05 14:12:33  vpro
+Davzev: Changed var classname in getConfig() to implClassName cause our debug also uses a var name classname.
+
 Revision 1.5  2000/11/27 12:35:09  vpro
 davzev: Removed debug method now uses super, added comments
 
@@ -27,13 +30,12 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version $Revision: 1.6 $ $Date: 2001-01-05 14:12:33 $
+ * @version $Revision: 1.7 $ $Date: 2001-01-24 13:42:30 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {
 
 	private cdplayerInterface impl;
-	StringTagger tagger;
  	private boolean debug = true;
 
 	public void init(MMProtocolDriver con,String servicefile) {
@@ -185,6 +187,7 @@ public class cdplayers extends RemoteBuilder {
 				}
 			} catch(Exception e){
 				debug("doRecord(): ERROR: Got exception: " + e);
+				e.printStackTrace();
 			}
 		} else {
 			debug("doRecord(): ERROR: no implementation!");
@@ -207,6 +210,7 @@ public class cdplayers extends RemoteBuilder {
 			impl = (cdplayerInterface)newclass.newInstance();
 		} catch (Exception f) {
 			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
+			f.printStackTrace();
 		}
 	}
 }
