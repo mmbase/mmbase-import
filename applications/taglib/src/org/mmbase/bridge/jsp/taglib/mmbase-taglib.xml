@@ -103,7 +103,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	Reuses a previously defined tag of the same type.
+		Reuses a previously defined tag of the same type.
       </info>
     </attribute>
   </taginterface>
@@ -117,8 +117,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	Which list to use, if the tag is in the body of more than one list, and you don't need the
-	direct parent.
+		Which list to use, if the tag is in the body of more than one list, and you don't need the
+		direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -1570,7 +1570,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <name>write</name>
     <extends>writer</extends>
     <extends>writerreferrer</extends>
-    <extends>contextreferrer</extends>
+    <extends>contextwriter</extends>
 
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
@@ -1847,9 +1847,20 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <info>
-      Does an include. This tag is rather similar to mm:url, but in
-      stead of returing the url, it returns the page itself. In that
-      respect it is also very similar to jsp:include.
+	  <p>
+		Does an include. This tag is rather similar to mm:url, but in
+		stead of returing the url, it returns the page itself. In that
+		respect it is also very similar to jsp:include. The advantage
+		above jsp:include is that this tag is aware of the context
+		parameters and knows the 'param' sub tag.
+	  </p>
+	  <p>
+		You can also consider using the jsp &lt;%@include file=""
+		%&gt;. This will include the code of that page in place and
+		compile it together with your page. So in that aspect it is
+		much different from this tag, which "includes" a stand-alone
+		page.
+	  </p>
     </info>
     <see>param</see>
     <see>url</see>
@@ -2122,4 +2133,5 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         </info>
     </attribute>
    </tag>
+
 </taglib>
