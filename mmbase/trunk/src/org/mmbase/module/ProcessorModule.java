@@ -138,7 +138,5 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     public void unload() {
     }
 
-    public void shutdown() {
-    }
 
 }
