@@ -94,7 +94,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
         }
         doConfigure(configurationFile);
-
+        configWatcher.clear();
         configWatcher.add(configurationFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
