@@ -107,8 +107,10 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
             java.util.List args = new java.util.Vector();
             args.add("");
-            args.add(sessionName);
             args.add(getCloud().getLocale().getLanguage());
+            args.add(sessionName);
+            args.add(pageContext.getResponse());
+
             show = getNode().getFunctionValue("gui", args).toString();
             break;
         }
