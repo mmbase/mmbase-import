@@ -23,7 +23,7 @@ import org.mmbase.applications.thememanager.*;
  * It uses the thememanager for defining the smilies.
  *
  * @author Gerard van Enk 
- * @version $Id: Smilies.java,v 1.2 2005-02-22 15:29:12 gerard Exp $
+ * @version $Id: Smilies.java,v 1.3 2005-03-04 13:48:35 mark Exp $
  * @since MMBob-1.0
  */
 public class Smilies extends StringTransformer implements CharTransformer {
@@ -155,8 +155,9 @@ public class Smilies extends StringTransformer implements CharTransformer {
         ImageSet smileySet;
         //get theme
         String assignedID = ThemeManager.getAssign(themeID);
-        Theme theme = ThemeManager.getTheme(assignedID);
+        Theme theme = ThemeManager.getTheme(themeID);
         String smileySetID = "default";
+        
         if (theme != null) {
             Map imageSets = theme.getImageSets("smilies");
             Iterator i = imageSets.entrySet().iterator();
@@ -169,12 +170,14 @@ public class Smilies extends StringTransformer implements CharTransformer {
             //get default imageset somewhere?
             log.error("theme not found");
         }
-        String smileyKey = assignedID + "." + smileySetID;
+        String smileyKey = themeID + "." + smileySetID;
         log.debug("smileyKey = " +smileyKey);
+
+
         Matcher[] matchers;
         //get matcher or init it
         if (!smileyMatchers.containsKey(smileyKey)) {
-            initMatchers(assignedID, smileySetID, smileyKey);
+            initMatchers(themeID, smileySetID, smileyKey);
         }
         smileySet = (ImageSet)smileySets.get(smileyKey);
         matchers = (Matcher[])smileyMatchers.get(smileyKey);
@@ -192,7 +195,7 @@ public class Smilies extends StringTransformer implements CharTransformer {
                 }
                 found = true;
                 //replace smiley with graphical version
-                matchers[i].appendReplacement(resultBuffer,"<img src=\"" + imagecontext +"/" + assignedID + "/" + smileySetID + "/"  + (String)smileySet.getImage(matchers[i].group()) + "\" />");
+                matchers[i].appendReplacement(resultBuffer,"<img src=\"" + imagecontext +"/" + themeID + "/" + smileySetID + "/"  + (String)smileySet.getImage(matchers[i].group()) + "\" />");
             }
 
             if (found) {
