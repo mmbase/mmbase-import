@@ -355,6 +355,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		for (int j = 0; j < objectContextList.getLength(); j++) {
 			String id = null, type = null, oMmbaseId = null;
 			String relationSource = null, relationDestination = null;
+			String deleteRelations = "false";
 			currentObjectContext = null;
 			
 				
@@ -381,6 +382,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				// destination relation
 				currentObjectArgumentNode = nm2.getNamedItem("destination");
 				if (currentObjectArgumentNode != null) relationDestination = currentObjectArgumentNode.getNodeValue();
+				// have to delete relations?
+				currentObjectArgumentNode = nm2.getNamedItem("deleteRelations");
+				if (currentObjectArgumentNode != null) deleteRelations = currentObjectArgumentNode.getNodeValue();
 			}
 			if (id == null) {
 				id = uniqueId();
@@ -464,7 +468,6 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					continue;
 				} else {
 				if (oName.equals("markObjectDelete")) {
-					debug("markObjectDelete , if an object has any relations markObjectDelete will fail.",0);
 					if (oMmbaseId==null) { 
 						throw new TransactionHandlerException(oName + " no mmbaseId specified");
 					}
@@ -472,11 +475,30 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					transactionManager.deleteObject(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+
 					// destroy
 					//tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
 					if(transactionInfo.knownObjectContexts.containsKey(id)) {
 						transactionInfo.knownObjectContexts.remove(id);
 					}
+		
+					// Check relations attached to object to delete
+					Vector relations = mmbase.getInsRel().getRelations_main(new Integer(oMmbaseId).intValue());
+					if(relations.size()!=0) {
+						if (deleteRelations.equals("true")) {	
+							Iterator iterator=relations.iterator();
+							while (iterator.hasNext()) {
+								MMObjectNode node = (MMObjectNode)iterator.next();
+								oMmbaseId = ""+node.getValue("number"); 
+								id = uniqueId();
+								currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
+								transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+								transactionManager.deleteObject(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+							}
+						} else {
+							throw new TransactionHandlerException("object has "+relations.size()+" relation(s) attached to it. (use deleteRelations=\"true\")");
+						}
+					} 
 					continue;
 				} else {
 					throw new TransactionHandlerException("object operator "+ oName + " doesn't exist");
