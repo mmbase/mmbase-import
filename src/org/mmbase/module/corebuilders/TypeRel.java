@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.41 2003-04-03 17:06:43 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.42 2003-04-03 17:19:59 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -54,6 +54,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * with a builder or its parents
      */
     public static int INCLUDE_PARENTS = 2;
+
+    /**
+     * Constant for {@link #contains}: return typerels where source/destination match
+     * with a builder, its descendants, or its parents
+     */
+    public static int INCLUDE_PARENTS_AND_DESCENDANTS = 3;
 
     /**
      * TypeRel should contain only a limited amount of nodes, so we
@@ -155,7 +161,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             }
 
             // seek all parents and store typerels for them
-            // this cache is used by contains(INCLUDE_PARENTS);
+            // this cache is used by contains(INCLUDE_PARENTS / INCLUDE_PARENTS_AND_DESCENDANTS));
             MMObjectBuilder sourceParent=sourceBuilder;
             while (sourceParent!=null) {
                 MMObjectBuilder destinationParent=destinationBuilder;
@@ -414,9 +420,11 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *          r can only be -1 if virtual is <code>true</code>
      * @param restriction if {@link #STRICT}, contains only returns true if the typerel occurs as-is in the database.
      *                    if {@link #INCLUDE_DESCENDANTS}, contains returns true if the typerel occurs as a virtual
-     *                    (derived) node, wgher source or destination are descendants of the specified type.
+     *                    (derived) node, where source or destination may also be descendants of the specified type.
      *                    if {@link #INCLUDE_PARENTS}, contains returns true if the typerel occurs as a virtual
-     *                    (derived) node, wgher source or destination are parents of the specified type.
+     *                    (derived) node, where source or destination may also be parents of the specified type.
+     *                    if {@link #INCLUDE_PARENTS_AND_DESCENDANTS}, contains returns true if the typerel occurs as a virtual
+     *                    (derived) node, where source or destination may also be descendants or parents of the specified type.
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      * @since MMBase-1.6.2
@@ -426,6 +434,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
         } else if (restriction==INCLUDE_PARENTS) {
             return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else if (restriction==INCLUDE_PARENTS_AND_DESCENDANTS) {
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) ||
+                   parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
         } else { // STRICT
             SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
             return (existingNodes.size()>0 && !((MMObjectNode)existingNodes.first()).isVirtual());
