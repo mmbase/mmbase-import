@@ -25,7 +25,7 @@ import java.util.*;
  * between two values (configured in mediasourcefilter.xml).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.5 2003-01-08 22:20:25 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.6 2003-01-21 23:04:00 michiel Exp $
  */
 public class RealComparator extends  ChainComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
@@ -37,8 +37,8 @@ public class RealComparator extends  ChainComparator {
      */
 
     class RealFormatComparator extends PreferenceComparator {        
-        protected int getPreference(ResponseInfo ri) {
-            if (ri.getSource().getIntValue("format") != Format.RM.toInt()) return 0; 
+        protected int getPreference(ResponseInfo ri) {           
+            if (ri.getFormat() != Format.RM) return 0; 
             return 1;
         }
     }

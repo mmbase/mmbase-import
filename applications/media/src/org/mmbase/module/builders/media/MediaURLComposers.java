@@ -21,28 +21,35 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaURLComposers.java,v 1.6 2003-01-21 17:46:24 michiel Exp $
+ * @version $Id: MediaURLComposers.java,v 1.7 2003-01-21 23:04:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaURLComposers extends MMObjectBuilder {    
     private static Logger log = Logging.getLoggerInstance(MediaURLComposers.class.getName());
     
-    protected class RamResponseInfo extends FragmentResponseInfo {
+    protected class RamResponseInfo extends FragmentResponseInfo { // also for wmp/asx
         protected  String          url;
-        RamResponseInfo(String url, MMObjectNode source, MMObjectNode fragment, Map info) {
+        protected  Format          format;
+        RamResponseInfo(String url, MMObjectNode source, MMObjectNode fragment, Format format, Map info) {
             super(source, fragment, info);
+            this.format = format;
             this.url = url;
         }
         public String  getURL() {
-            return url + "?fragment=" + fragment.getNumber() + "&source=" + source.getNumber();
+            return url + "." + format.toString() + "?fragment=" + fragment.getNumber() + "&format=" + format;
         }
         public Format  getFormat()   { 
-            return Format.RAM; 
+            if (format == Format.RM) return Format.RAM; 
+            if (format == Format.ASF) return Format.WMP; 
+            return format;
         } 
         public boolean equals(Object o) {
             if (o instanceof RamResponseInfo) {
                 RamResponseInfo r = (RamResponseInfo) o;
-                return url.equals(r.url) && fragment.getNumber() == r.fragment.getNumber() && source.getNumber() == r.source.getNumber() && info.equals(r.info);
+                return url.equals(r.url) && 
+                    (fragment == null ? r.fragment == null : fragment.getNumber() == r.fragment.getNumber()) &&
+                    format.equals(r.format) &&
+                    info.equals(r.info);
             }
             return false;
         }
@@ -59,7 +66,10 @@ public class MediaURLComposers extends MMObjectBuilder {
         }
         public String       getURL() {
             StringBuffer args = new StringBuffer(composer.getStringValue("protocol") + "://" + provider.getStringValue("host") + composer.getStringValue("rootpath") + source.getStringValue("url"));
-            return getArgs(args).toString();
+            if (getFormat() == Format.RM) {
+                getRMArgs(args);
+            }
+            return args.toString();
         }
         public boolean      isAvailable() { 
             boolean res = super.isAvailable();
@@ -101,8 +111,9 @@ public class MediaURLComposers extends MMObjectBuilder {
          if (source   == null) throw new IllegalArgumentException("Cannot create URL without a source");
          List result       = new ArrayList();
          result.add(createResponseInfo(composer, provider, source, fragment, info));
-         if ( ((MediaSources) source.parent).getFormat(source) == Format.RM) {
-             ResponseInfo r = new RamResponseInfo("/rams", source, fragment, info);
+         Format format = ((MediaSources) source.parent).getFormat(source);
+         if (format == Format.RM || format == Format.ASF) { // the mediafragments servlet (jsp) can do something with this.
+             ResponseInfo r = new RamResponseInfo("/mediafragment", source, fragment, format, info);
              if (! result.contains(r)) result.add(r);
          }
          return result;
