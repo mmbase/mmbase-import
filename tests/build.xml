@@ -33,6 +33,8 @@
     <mkdir dir="${tests.work.dir}"/>
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci.jar" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci-server.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
       <fileset dir="${build.dir}/lib">
         <include name="*.jar"/>
@@ -196,6 +198,25 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
+  <!-- 
+  Test for rmmci, this tests is not 100% since both 
+  the client and server run in the same classloader/jvm.
+  errors when bridge code call the core directely are not 
+  detected
+  -->
+  <target name="run.bridge.rmmci" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.bridge.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
+    </java>
+  </target>
+
 
   <target name="run.convertimage" depends="jar,init">
     <java 
@@ -240,7 +261,7 @@ Build-compiler: ${build.compiler}
   <!-- Run the tests -->
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge">
+          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci">
 
   </target>
 
