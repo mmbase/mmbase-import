@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.36.2.1 2004-06-15 21:09:56 robmaris Exp $
+ * @version $Id: MultiRelations.java,v 1.36.2.2 2005-03-03 10:21:31 michiel Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -468,7 +468,6 @@ public class MultiRelations extends MMObjectBuilder {
             }
         } catch (Exception e) {
             // something went wrong print it to the logs
-            log.error("searchMultiLevelVector(): ERROR: ");
             log.error(e + Logging.stackTrace(e));
             return null;
         }
