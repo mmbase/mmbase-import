@@ -101,7 +101,11 @@ public class BasicCloudContext implements CloudContext {
 	return new BasicCloud(name, application, user,this);
     }
 
-    public User getNewUser(){
+    public StringList getCloudNames() {
+    	return new BasicStringList(localClouds);
+    }
+
+    public User getNewUser() {
     	return new org.mmbase.security.UserContext();
     }    
     
