@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.1 2003-08-11 15:26:35 michiel Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.2 2003-08-15 19:35:46 michiel Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 
@@ -48,7 +48,7 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
         if ("false".equals(value)) value = Boolean.FALSE;
 
         if (! (value instanceof Boolean)) {
-            throw new JspTagException("Function result '" + value + "' is not of type Boolean but " + value.getClass().getName());
+            throw new JspTagException("Function result '" + value + "' is not of type Boolean but " + (value == null ? value : value.getClass().getName()));
         }
         return (((Boolean) value).booleanValue() != getInverse()) ? EVAL_BODY_BUFFERED : SKIP_BODY;
     }
