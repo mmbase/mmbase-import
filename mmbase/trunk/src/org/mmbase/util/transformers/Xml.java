@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.11 2004-01-05 17:40:52 michiel Exp $
+ * @version $Id: Xml.java,v 1.12 2004-10-13 11:14:23 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -27,6 +27,14 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
     public final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
+
+
+    public Xml() {
+        super();
+    }
+    public Xml(int c) {
+        super(c);
+    }
 
     //public final static int BODYTAG = 20;
 
