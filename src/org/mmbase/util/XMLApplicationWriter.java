@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.io.*;
 import java.util.*;
+import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.module.core.*;
 
 import org.mmbase.module.corebuilders.*;
@@ -30,7 +31,7 @@ public class XMLApplicationWriter  {
     private static Logger log = Logging.getLoggerInstance(XMLApplicationWriter.class.getName());
 
     public static Vector writeXMLFile(XMLApplicationReader app, String targetpath, String goal, MMBase mmb) {
-	Vector resultmsgs=new Vector();
+    Vector resultmsgs=new Vector();
 
         // again this is a stupid class generating the xml file
         // the second part called the extractor is kind of neat
@@ -39,33 +40,33 @@ public class XMLApplicationWriter  {
         String  maintainer =app.getApplicationMaintainer();
         int     version    =app.getApplicationVersion();
         boolean deploy     =app.getApplicationAutoDeploy();
-        
-        String body = 
+
+        String body =
             "<?xml version=\"1.0\"?>\n" +
-            "<!DOCTYPE application PUBLIC \"//MMBase - application//\" \"http://www.mmbase.org/dtd/application.dtd\">\n" +            
+            "<!DOCTYPE application PUBLIC \"//MMBase - application//\" \"http://www.mmbase.org/dtd/application.dtd\">\n" +
             "<application name=\""+name+"\" maintainer=\""+maintainer+"\" version=\""+version+"\" auto-deploy=\""+deploy+"\">\n";
-        
+
         // write the needed builders
         body+=getNeededBuilders(app);
-        
+
         // write the needed reldefs
         body+=getNeededRelDefs(app);
-        
+
         // write the allowed relations
         body+=getAllowedRelations(app);
-        
+
         // write the datasources
         body+=getDataSources(app);
-        
+
         // write the relationsources
         body+=getRelationSources(app);
-        
+
         // write the contextsources
         body+=getContextSources(app);
-        
+
         // write the description
         body+=getDescription(app);
-        
+
         // write the install-notice
         body+=getInstallNotice(app);
 
@@ -84,7 +85,7 @@ public class XMLApplicationWriter  {
         writeBuilders(app,targetpath,mmb);
 
         resultmsgs.addElement("Writing Application file : "+targetpath+"/"+app.getApplicationName()+".xml");
-        
+
         return(resultmsgs);
     }
 
@@ -99,7 +100,7 @@ public class XMLApplicationWriter  {
             body+="\t\t<builder maintainer=\""+maintainer+"\" version=\""+version+"\">"+name+"</builder>\n";
         }
         body+="\t</neededbuilderlist>\n\n";
-        return(body);    
+        return(body);
     }
 
 
@@ -113,14 +114,14 @@ public class XMLApplicationWriter  {
             String dir=(String)bset.get("direction");
             String guisourcename=(String)bset.get("guisourcename");
             String guitargetname=(String)bset.get("guitargetname");
-            body+="\t\t<reldef source=\""+source+"\" target=\""+target+"\" direction=\""+dir+"\" guisourcename=\""+guisourcename+"\" guitargetname=\""+guitargetname+"\"";        
+            body+="\t\t<reldef source=\""+source+"\" target=\""+target+"\" direction=\""+dir+"\" guisourcename=\""+guisourcename+"\" guitargetname=\""+guitargetname+"\"";
             String builder=(String)bset.get("builder");
             if (builder!=null)
-                body+=" builder=\""+builder+"\"";        
-            body+=" />\n";        
+                body+=" builder=\""+builder+"\"";
+            body+=" />\n";
         }
         body+="\t</neededreldeflist>\n\n";
-        return(body);    
+        return(body);
     }
 
 
@@ -135,7 +136,7 @@ public class XMLApplicationWriter  {
             body+="\t\t<relation from=\""+from+"\" to=\""+to+"\" type=\""+type+"\" />\n";
         }
         body+="\t</allowedrelationlist>\n\n";
-        return(body);    
+        return(body);
     }
 
 
@@ -150,7 +151,7 @@ public class XMLApplicationWriter  {
         }
         body+="\t</datasourcelist>\n\n";
 
-        return(body);    
+        return(body);
     }
 
 
@@ -164,7 +165,7 @@ public class XMLApplicationWriter  {
             body+="\t\t<relationsource builder=\""+builder+"\" path=\""+path+"\" />\n";
         }
         body+="\t</relationsourcelist>\n\n";
-        return(body);    
+        return(body);
     }
 
     static String getDescription(XMLApplicationReader app) {
@@ -195,7 +196,7 @@ public class XMLApplicationWriter  {
             body+="\t\t<contextsource path=\""+path+"\" type=\""+type+"\" goal=\""+goal+"\"/>\n";
         }
         body+="\t</contextsourcelist>\n\n";
-        return(body);    
+        return(body);
     }
 
 
@@ -259,7 +260,7 @@ public class XMLApplicationWriter  {
             file.mkdirs();
         } catch(Exception e) {
             log.error("Can't create dir : "+targetpath+"/"+app.getApplicationName()+"/builders");
-        } 
+        }
 
         Vector builders=app.getNeededBuilders();
         for (Enumeration e=builders.elements();e.hasMoreElements();) {
@@ -267,7 +268,14 @@ public class XMLApplicationWriter  {
             String name=(String)bset.get("name");
             MMObjectBuilder bul=mmb.getMMObject(name);
             if (bul!=null) {
-                XMLBuilderWriter.writeXMLFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml",bul);
+                try {
+                    BuilderWriter builderOut=new BuilderWriter(bul);
+                    builderOut.setIncludeComments(true);
+                    builderOut.setExpandBuilder(true);
+                    builderOut.writeToFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml");
+                } catch (Exception ex) {
+                    log.error(Logging.stackTrace(ex));
+                }
             }
         }
     }
