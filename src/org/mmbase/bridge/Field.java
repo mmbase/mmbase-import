@@ -17,19 +17,19 @@ import org.mmbase.module.core.*;
  */
 public interface Field {
 
-	public final static int FIELDSTATE_VIRTUAL = 0;
-	public final static int FIELDSTATE_PERSISTENT = 2;
-	public final static int FIELDSTATE_SYSTEM = 3;
-	public final static int FIELDSTATE_UNKNOWN = -1;
+	public final static int STATE_VIRTUAL = 0;
+	public final static int STATE_PERSISTENT = 2;
+	public final static int STATE_SYSTEM = 3;
+	public final static int STATE_UNKNOWN = -1;
 
 
-	public final static int FIELDTYPE_STRING = 1;
-	public final static int FIELDTYPE_INTEGER = 2;
-	public final static int FIELDTYPE_BYTE = 4;
-	public final static int FIELDTYPE_FLOAT = 5;
-	public final static int FIELDTYPE_DOUBLE = 6;
-	public final static int FIELDTYPE_LONG = 7;
-	public final static int FIELDTYPE_UNKNOWN = -1;
+	public final static int TYPE_STRING = 1;
+	public final static int TYPE_INTEGER = 2;
+	public final static int TYPE_BYTE = 4;
+	public final static int TYPE_FLOAT = 5;
+	public final static int TYPE_DOUBLE = 6;
+	public final static int TYPE_LONG = 7;
+	public final static int TYPE_UNKNOWN = -1;
     /**
      * Gets the NodeManager this field belongs to
      * @return the <code>NodeType</code> object for this field
@@ -61,4 +61,10 @@ public interface Field {
 	 */
 	public int getState();
 
+	
+	/**
+	* retrieve the size of the field (i.e. the maximum length for a String)
+	*/
+	public int getSize();
+	
 }
