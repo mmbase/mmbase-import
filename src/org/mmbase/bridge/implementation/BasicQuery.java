@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.17 2003-08-07 14:33:38 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.18 2003-08-07 14:50:47 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -193,7 +193,9 @@ public class BasicQuery implements Query  {
         if (role == null) {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
             BasicRelationStep step = addRelationStep(insrel, otherNodeManager, relationDir);
-            typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, searchDir);
+            if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, searchDir)) {
+                log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+            }
             return step;
         } else {
             RelDef relDef = BasicCloudContext.mmb.getRelDef();
@@ -205,7 +207,9 @@ public class BasicQuery implements Query  {
             InsRel insrel = ((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
             BasicRelationStep step =  addRelationStep(insrel, otherNodeManager, relationDir);
             step.setRole(new Integer(r));
-            typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, searchDir);
+            if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, searchDir)) {
+                log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
+            }
             return step;
         }
     }
