@@ -5,13 +5,13 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.6 2002-05-17 07:43:49 pierre Exp $
+  @version $Id: list.xsl,v 1.7 2002-05-17 11:09:43 michiel Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
 
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
-  <xsl:param name="title"><xsl:value-of select="list/object/@type" /></xsl:param>
+  <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
   <xsl:param name="deletable">false</xsl:param>
   <xsl:param name="creatable">true</xsl:param>
   <xsl:param name="deleteprompt">Are you sure you want to delete this item?</xsl:param>
