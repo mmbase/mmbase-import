@@ -19,10 +19,10 @@ import org.mmbase.util.logging.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.11 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.12 2003-08-27 21:30:35 michiel Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
-    private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BasicFieldList.class);
 
     NodeManager nodemanager=null;
 
