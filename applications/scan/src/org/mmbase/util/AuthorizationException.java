@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 
 /**
  * This exception gets thrown if the user has an invalid password
+ * @deprecated only used by HttpAuth.
  */
 public class AuthorizationException extends ServletException {
 
