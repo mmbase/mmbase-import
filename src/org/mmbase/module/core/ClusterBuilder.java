@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18.2.8 2003-08-14 14:35:28 vpro Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.9 2003-08-28 15:08:37 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -91,7 +91,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else if ("EITHER".equals(search)) {
             return SEARCH_EITHER;
         } else {
-            throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
+            throw  new IllegalArgumentException("'" + search + "' cannot be converted to a search-direction constant");
         }
 
     }
@@ -320,8 +320,8 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         // Get ALL tables (including missing reltables)
+        if (tables==null || tables.size()==0) throw new IllegalArgumentException("Nodepath was not specified or invalid.");
         alltables=getAllTables(tables,roles);
-        if (alltables==null) return null;
 
         // Get the destination select string;
         // if the requested set is not DISTINCT, the
@@ -329,11 +329,11 @@ public class ClusterBuilder extends VirtualBuilder {
         // involved.
         // Possibly, we want to turn this off or on, i.e. by using another
         // value for the distinct parameter (such as "BYREFERENCE")
-        // Note that due to teh problems with distinct result sets, this is not
-        // yet an optimal sollution for the multilevel authorization problem
+        // Note that due to the problems with distinct result sets, this is not
+        // yet an optimal solution for the multilevel authorization problem
 
         select=getSelectString(alltables,tables,fields,!isdistinct);
-        if (select==null) return null;
+        if (select==null) throw new IllegalArgumentException("Fields were not specified or invalid.");
 
         // Get the tables names corresponding to the fields (for the mapping)
         selectTypes=getSelectTypes(alltables,select);
@@ -356,35 +356,36 @@ public class ClusterBuilder extends VirtualBuilder {
                 str = ((String)snodes.elementAt(i)).trim();
                 // '-1' means no node, so skip
                 if (!str.equals("-1")) {
-                basenode=getNode(str);
-                if (basenode==null) {
-                    throw new RuntimeException("Cannot find node: "+str);
+                    basenode=getNode(str);
+                    if (basenode==null) {
+                        throw new IllegalArgumentException("Cannot find node: "+str);
+                    }
+                    snodes.setElementAt(""+basenode.getNumber(), i);
                 }
-                snodes.setElementAt(""+basenode.getNumber(), i);
             }
-        }
 
-        int sidx;
-        StringBuffer bb=new StringBuffer();
+            int sidx;
+            StringBuffer bb=new StringBuffer();
 
-        // if a basenode is given (i.e. node is not -1)
-        if (basenode!=null) {
-            // not very neat... but it works
-            sidx=alltables.indexOf(basenode.parent.tableName);
-            if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
+            // if a basenode is given (i.e. node is not -1)
+            if (basenode!=null) {
+                // not very neat... but it works
+                sidx=alltables.indexOf(basenode.parent.tableName);
+                if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
                 // if we can't find the real parent assume object
                 if (sidx<0) sidx=alltables.indexOf("object");
                 if (sidx<0) sidx=0;
                 str=idx2char(sidx);
                 bb.append(getNodeString(str,snodes));
                 // Check if we got a relation to ourself
-                    basenodestring=bb.toString();
+                basenodestring=bb.toString();
             } else {
                 basenodestring="";
             }
         } else {
             basenodestring="";
         }
+
         // get the relation string
         relstring=getRelationString(alltables, searchdir, roles);
         // check if this is an 'invalid' condition (one which never produces results,
@@ -423,24 +424,28 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (log.isDebugEnabled()) log.debug("Query "+query);
 
                 ResultSet rs=stmt.executeQuery(query);
-                ClusterNode node;
-                Vector results=new Vector();
-                String tmp,prefix;
-                while(rs.next()) {
-                    // create a new VIRTUAL object and add it to the result vector
-                    node=new ClusterNode(this,tables.size());
-                    ResultSetMetaData rd=rs.getMetaData();
-                    String fieldname;
-                    for (int i=1;i<=rd.getColumnCount();i++) {
-                        prefix=selectTypes.elementAt(i-1)+".";
-                        fieldname=rd.getColumnName(i);
-                        database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                try {
+                    ClusterNode node;
+                    Vector results=new Vector();
+                    String tmp,prefix;
+                    while(rs.next()) {
+                        // create a new VIRTUAL object and add it to the result vector
+                        node=new ClusterNode(this,tables.size());
+                        ResultSetMetaData rd=rs.getMetaData();
+                        String fieldname;
+                        for (int i=1;i<=rd.getColumnCount();i++) {
+                            prefix=selectTypes.elementAt(i-1)+".";
+                            fieldname=rd.getColumnName(i);
+                            database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        }
+                        node.initializing=false;
+                        results.addElement(node);
                     }
-                    node.initializing=false;
-                    results.addElement(node);
+                    //  return the results
+                    return results;
+                } finally {
+                    rs.close();
                 }
-                //  return the results
-                return results;
             } finally {
                 mmb.closeConnection(con,stmt);
             }
@@ -494,7 +499,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (rnumber==-1) {
                     String msg = "Specified builder "+curtable+" does not exist.";
                     log.error(msg);
-                    throw new RuntimeException(msg);
+                    throw new IllegalArgumentException(msg);
                 } else {
                     bul=mmb.getInsRel(); // dummy
                     roles.put(orgtable,new Integer(rnumber));
@@ -713,8 +718,10 @@ public class ClusterBuilder extends VirtualBuilder {
             val=(String)direction.elementAt(pos);
             if (val.equalsIgnoreCase("DOWN")) {
                 direction.setElementAt("DESC",pos); // DOWN is DESC
-            } else {
+            } else if (val.equalsIgnoreCase("UP")) {
                 direction.setElementAt("ASC",pos);  // UP is ASC
+            } else {
+                throw new IllegalArgumentException("Parameter directions contains an invalid value ("+direction+"), should be UP or DOWN.");
             }
         }
 
@@ -872,6 +879,8 @@ public class ClusterBuilder extends VirtualBuilder {
 
             boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
             boolean srctodest = false; // And from 'destination' to 'source'.
+
+
             { // determine desttosrc and srctodest
 
                 // the typedef number of the source-type
@@ -881,34 +890,37 @@ public class ClusterBuilder extends VirtualBuilder {
                 // the typdef number of the destination-type
                 int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));
 
-                // check if  a definite rnumber was requested...
+                // try to find an optimal way to query the relation
+                // by determining the possible allowed relations, we can simplify the
+                // needed query.
+                // A full qyery for 'a,rel,b' looks like:
+                //   (a.number=rel.snumber and b.number=rel.dnumber) or (a.number=rel.dnumber and b.number=rel.snumber and rel.dir<>1)
+                // If the 'allowed' relations limit how the relation can be made,
+                // this can be simplified to
+                //   a.number=rel.snumber and b.number=rel.dnumber
+                // or
+                //   a.number=rel.dnumber and b.number=rel.snumber and rel.dir<>1
+                //
+                // In order to determine whether things can be simplified, we need to determine that a
+                // certain combo a-rel->b or b-rel->a is possible or not.
+                // In this, we have to take into account that 'a' or 'b' may also be the parent of an objecttype that
+                // has this relation. i.e. a relation news-related->images also validates object-related->images,
+                // news-related->object, and object-related->object.
+                int rnumber=-1;
                 if (rnum != null) {
                     result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
-                    srctodest = (searchdir != SEARCH_SOURCE)      && typerel.reldefCorrect(s, d, rnum.intValue());
-                    desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.reldefCorrect(d, s, rnum.intValue());
-                } else {
-                    for (Enumeration e = typerel.getAllowedRelations(s, d); e.hasMoreElements(); ) {
-                        // get the allowed relation definitions
-                        MMObjectNode typenode = (MMObjectNode) e.nextElement();
-                        desttosrc = (searchdir != SEARCH_DESTINATION) &&
-                                    (desttosrc ||
-                                        (d == rootnr) || // ignore root 'object' type
-                                         typenode.getIntValue("snumber") == d
-                                     );
-                        srctodest = (searchdir != SEARCH_SOURCE) &&
-                                    (srctodest ||
-                                         (s == rootnr) || // ignore root 'object' type
-                                          typenode.getIntValue("snumber") == s
-                                    );
-                        if (desttosrc && srctodest) break;
-                    }
+                    rnumber=rnum.intValue();
                 }
+                srctodest = (searchdir != SEARCH_SOURCE)      && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+                desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
             }
 
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
                 desttosrc = false;
             }
 
+            String sourceNumber = numberOf(idx2char(i));
+            String destNumber   = numberOf(idx2char(i + 2));
             if (desttosrc) {
                 // check for directionality if supported
                 String dirstring;
@@ -919,40 +931,34 @@ public class ClusterBuilder extends VirtualBuilder {
                 }
                 // there is a typed relation from destination to src
                 if (srctodest) {
-                    String sourceNumber = numberOf(idx2char(i));
-                    String destNumber   = numberOf(idx2char(i + 2));
                     // there is ALSO a typed relation from src to destination - make a more complex query
-                    // result.append(
-                    //        "(("+numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
-                    //             numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber ) OR ("+
-                    //             numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
-                    //             numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring+"))");
-
-                    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
-                                numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring);
+                    result.append(
+                           "(("+ sourceNumber     + "=" + relChar + ".snumber AND "+
+                                 destNumber       + "=" + relChar + ".dnumber ) OR ("+
+                                 sourceNumber     + "=" + relChar + ".dnumber AND "+
+                                 destNumber       + "=" + relChar + ".snumber" + dirstring + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".dnumber AND "+
-                                  numberOf(idx2char(i + 2)) + "=" + relChar + ".snumber" + dirstring);
+                    result.append(sourceNumber     + "=" + relChar + ".dnumber AND "+
+                                  destNumber + "=" + relChar + ".snumber" + dirstring);
                 }
             } else {
                 if (srctodest) {
                     // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".snumber AND "+
-                              numberOf(idx2char(i + 2)) + "=" + relChar + ".dnumber");
+                    result.append(sourceNumber     + "=" + relChar + ".snumber AND "+
+                                  destNumber + "=" + relChar + ".dnumber");
                 } else {
                     // no results possible
                     // terminate, return null!
                     log.warn("There are no relations possible (no typerel specified) between "+
-                    getTableName((String) alltables.elementAt(i)) + " and "+
-                    getTableName((String) alltables.elementAt(i + 2)) + " using "+
+                               getTableName((String) alltables.elementAt(i)) + " and "+
+                               getTableName((String) alltables.elementAt(i + 2)) + " using "+
                                alltables.elementAt(i + 1)+ " in "+
                                getSearchDirString(searchdir) + " direction(s)"
                                );
                     return null;
                 }
             }
-
         }
         return result.toString();
     }
