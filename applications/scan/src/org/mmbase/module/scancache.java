@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.sql.Date;
 import java.util.Hashtable;
 
@@ -21,13 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.mmbase.module.builders.NetFileSrv;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.gui.html.scanparser;
-import org.mmbase.util.DateSupport;
-import org.mmbase.util.LRUHashtable;
-import org.mmbase.util.RFC1123;
-import org.mmbase.util.fileInfo;
-import org.mmbase.util.scanpage;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * File cache system.
@@ -42,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @rename Scancache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.38 2003-03-10 11:50:14 pierre Exp $
+ * @version $Id: scancache.java,v 1.39 2003-06-11 09:09:49 kees Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 

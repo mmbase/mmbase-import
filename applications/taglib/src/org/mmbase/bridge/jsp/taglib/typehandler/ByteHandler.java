@@ -14,8 +14,6 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import java.util.List;
-import java.util.ArrayList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.Arguments;
@@ -28,7 +26,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.4 2003-06-06 10:03:35 pierre Exp $
+ * @version $Id: ByteHandler.java,v 1.5 2003-06-11 09:09:10 kees Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
