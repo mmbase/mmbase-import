@@ -16,11 +16,11 @@
       issub: <mm:field name="subfragment()" /><br />
       <a href="<mm:field name="url()" />">url</a>,
       <a href="<mm:field name="url(rm)" />">rm-url</a>,
-      <a href="<mm:field name="url(asf)" />">asf-url</a>    
+      <a href="<mm:field name="url(asf)" />">asf-url</a>,   
      <hr />
   </mm:listnodes>
   <mm:listnodes type="mediasources">
-    <mm:field name="mimetype()" />: <br />
+    <mm:field name="mimetype()" />:     <mm:field name="format()" />   <br />
   </mm:listnodes> 
   </mm:cloud>
   </mm:locale>

@@ -18,17 +18,6 @@
 
 <body onLoad="showInfo();">
 <mm:cloud>
-<%-- determin source --%>
-<mm:node number="$fragment" notfound="skip">
-  <mm:relatednodes type="videosources" constraints="format = 6" max="1">
-      <mm:node id="source" />
-  </mm:relatednodes>
-  <mm:notpresent referid="source">
-    <mm:relatednodes type="audiosources" constraints="format = 6" max="1">
-      <mm:node id="source" />
-  </mm:relatednodes>
-  </mm:notpresent>
-</mm:node>
 
 <mm:present referid="source">
   		<table width="350" height="300" border="0" class="movie" background="images/bck_movie.gif" class="movie">

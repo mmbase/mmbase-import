@@ -31,18 +31,7 @@
       <mm:nodeinfo id="actualtype" type="type" write="false" />
       <img src="<mm:url page="media/${actualtype}.gif" />" alt="" />
       <mm:relatednodes id="fragment" type="$actualtype">
-          <mm:field name="available()">
-            <mm:compare value="true">
-             <a href="<mm:url referids="fragment,language" page="demo/index.jsp" />" target="new">
-            </mm:compare>
-            <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field>
-            <mm:compare value="true">
-              </a>
-            </mm:compare>
-          </mm:field>
-          <br />
-          showurl <mm:field name="showurl()" /><br />
-          longurl <mm:field name="longurl()" /><br />
+          <mm:field name="gui()" />
        </mm:relatednodes>
       </td>
       <td>
