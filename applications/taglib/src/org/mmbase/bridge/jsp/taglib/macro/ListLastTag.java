@@ -14,9 +14,9 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
 *  shortcut for listContdition last
 */
-public class ListTailTag extends ListConditionTag{
-	public int doStartTag() throws JspTagException{
-		setValue("last");
-		return super.doStartTag();
-	}
+public class ListLastTag extends ListConditionTag {
+    public int doStartTag() throws JspTagException {
+        setValue("last");
+        return super.doStartTag();
+    }
 }

@@ -246,14 +246,14 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
 
   <tag>
-    <name>head</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListHeadTag</tagclass>
+    <name>first</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListFirstTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is the fist item in the list.</info>
   </tag>
   <tag>
-    <name>tail</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListTailTag</tagclass>
+    <name>last</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is the fist item in the list.</info>
   </tag>
@@ -417,7 +417,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>    
   </tag>
   <tag>
-    <name>field</name>
+    <name>field</name>    
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
     <info>
       Gets the field 'name' from node 'node' (can also be
