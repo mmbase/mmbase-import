@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.22 2005-01-26 10:23:13 pierre Exp $
+ * @version $Id: URIResolver.java,v 1.23 2005-03-13 18:57:55 nico Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
@@ -348,11 +348,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         }
 
         /**
-         *
-         * @throws ClassCastException If you don't add an Entry.
+         * @throws IllegalArgumentException If you don't add an Entry.
          */
         public boolean add(Object o) {
-            return super.add((Entry) o);
+            if (!(o instanceof Entry)) {
+                throw new IllegalArgumentException("object must be of type Entry");
+            }
+            return super.add(o);
         }
 
         /**
