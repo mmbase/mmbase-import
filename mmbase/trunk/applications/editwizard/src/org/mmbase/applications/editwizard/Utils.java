@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.13 2002-05-28 15:28:01 michiel Exp $
+ * @version $Id: Utils.java,v 1.14 2002-06-28 11:21:56 pierre Exp $
  */
 public class Utils {
 
@@ -110,7 +110,7 @@ public class Utils {
      * @param        writer  The writer where the stream should be written to.
      */
     public static void printXML(Node node, Writer writer) {
-        try {                   
+        try {
             Transformer serializer = FactoryCache.getCache().getDefaultFactory().newTransformer();
             // shouldn't this tranformer be cached?
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -290,6 +290,7 @@ public class Utils {
      * This method clones, imports and places all nodes in the list and places it
      */
     public static void appendNodeList(NodeList list, Node dest) {
+        if (list==null) return;
         Document ownerdoc = dest.getOwnerDocument();
         for (int i=0; i<list.getLength(); i++) {
             Node n = list.item(i).cloneNode(true);
@@ -412,7 +413,7 @@ public class Utils {
             setStylesheetParams(transformer, params);
         }
         if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
-        transformer.transform(new DOMSource(node), result);        
+        transformer.transform(new DOMSource(node), result);
     }
 
 

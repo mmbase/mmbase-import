@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.34 2002-06-27 15:45:17 pierre Exp $
+ * @version $Id: Wizard.java,v 1.35 2002-06-28 11:21:56 pierre Exp $
  *
  */
 public class Wizard {
@@ -1433,7 +1433,7 @@ public class Wizard {
         if (!isCreate) {
             objectdef = Utils.selectSingleNode(listnode, "action[@type='add']/relation");
         }
-        // action=craete is for craete command
+        // action=create is for create command
         // (this should be an 'else', but is supported for 'search' for old xsls)
         if (objectdef==null)  {
             objectdef = Utils.selectSingleNode(listnode, "action[@type='create']/relation");
@@ -1578,10 +1578,12 @@ public class Wizard {
             guitype=guitype.substring(pos+1);
         }
         String required = Utils.selectSingleNodeText(con, "required", "false");
+        String guiname = Utils.selectSingleNodeText(con, "guiname", "");
 
         // dttype?
         String ftype = Utils.getAttribute(fielddef, "ftype", null);
         String dttype = Utils.getAttribute(fielddef, "dttype", null);
+        Node prompt = Utils.selectSingleNode(fielddef, "prompt");
         if (dttype==null) {
             // import xmlSchemaType (dttype)
             // note :
@@ -1637,6 +1639,11 @@ public class Wizard {
         if (!ftype.equals("date") && !ftype.equals("data") && dttype.equals("date")) {
             // datatype is date, but no valid ftype is given. We'd better adjust.
             ftype = "date";
+        }
+
+        // add guiname as prompt
+        if (prompt==null) {
+            Utils.createAndAppendNode(fielddef, "prompt", guiname);
         }
 
         // process requiredness
