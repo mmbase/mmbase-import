@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.250 2003-09-22 11:48:52 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.251 2003-11-07 11:07:50 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -833,7 +833,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public int getNodeType(int number) {
         // assertment
-        if(number < 0 ) throw new RuntimeException("node number was invalid("+ number+")" );
+        if(number < 0 ) throw new RuntimeException("node number was invalid(" + number + ")" );
         // check the cache
         Integer numberValue = new Integer(number);
         Integer otypeValue = (Integer)typeCache.get(numberValue);
@@ -860,18 +860,18 @@ public class MMObjectBuilder extends MMTable {
                     // first get the otype to select the correct builder
                     con   = mmb.getConnection();
                     stmt2 = con.createStatement();
-                    String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
-                    ResultSet rs=stmt2.executeQuery(sql);
+                    String sql = "SELECT " + mmb.getDatabase().getOTypeString() + " FROM " + mmb.baseName + "_object WHERE " + mmb.getDatabase().getNumberString() + "=" + number;
+                    ResultSet rs = stmt2.executeQuery(sql);
                     try {
                         if (rs.next()) {
-                            otype=rs.getInt(1);
+                            otype = rs.getInt(1);
                             // hack hack need a better way
-                            if (otype!=0) {
+                            if (otype != 0) {
                                 typeCache.put(numberValue,new Integer(otype));
                             }
                         } else {
                             // throw new NotFoundException(msg);
-                            log.debug("Could not find the otype (no records) using following query:" + sql);
+                            log.error("Could not find the otype for node " + number + " (no records) using following query:" + sql);
                             return -1;
                         }
                     } finally {
@@ -949,7 +949,7 @@ public class MMObjectBuilder extends MMTable {
             } // else everything from cache
             
         } catch (SearchQueryException sqe) {
-            log.error(Logging.stackTrace(sqe));
+            log.error(sqe.getMessage() + Logging.stackTrace(sqe));
         }
         // check that we didnt loose any nodes
         assert(virtuals.size() == result.size());
