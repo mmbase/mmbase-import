@@ -22,14 +22,14 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.30 2002-04-12 08:39:55 pierre Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.31 2002-04-16 12:49:29 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
 
     // Currently only ImageMagick works, this are the default value's
-    private static String converterRoot    = "/usr/local/";
-    private static String converterCommand = "bin/convert";
+    private static String converterPath    = "convert"; // in the path.
+
     private static int colorizeHexScale    = 100;
     // The modulate scale base holds the builder property to specify the scalebase.
     // If ModulateScaleBase property is not defined, then value stays max int.
@@ -46,40 +46,43 @@ public class ConvertImageMagick implements ImageConvertInterface {
      *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root....
      */
     public void init(Map params) {
+        String converterRoot    = "";
+        String converterCommand = "convert";
+
         String tmp;
         tmp=(String)params.get("ImageConvert.ConverterRoot");
         if (tmp!=null) converterRoot = tmp;
 
-        // now check if the specified ImageConvert.converterRoot does exist and is a directory
-        File checkConvDir = new File(converterRoot);
-        if(!checkConvDir.exists()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot(" + converterRoot + ") does not exist");
-        }
-        if(!checkConvDir.isDirectory()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot(" + converterRoot + ") is not a directory");
-        }
         tmp=(String)params.get("ImageConvert.ConverterCommand");
         if (tmp!=null) converterCommand=tmp;
-
-        // now check if the specified ImageConvert.Command does exist and is a file..
-        String command = converterRoot + converterCommand;
-        File checkConvCom = new File(command);
-        if(!checkConvCom.exists()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " does not exist");
+                
+        String converterPath = converterCommand; // default.
+        if (! converterRoot.equals("")) { // also a root was indicated, add it..
+            // now check if the specified ImageConvert.converterRoot does exist and is a directory
+            File checkConvDir = new File(converterRoot).getAbsoluteFile();
+            if(!checkConvDir.exists()) {
+                log.error("ImageConvert.ConverterRoot " + converterRoot + " in images.xml does not exist");
+            } else if(!checkConvDir.isDirectory()) {
+                log.error("ImageConvert.ConverterRoot " + converterRoot + " in images.xml is not a directory");            
+            } else {
+                // now check if the specified ImageConvert.Command does exist and is a file..
+                File checkConvCom = new File(converterRoot, converterCommand);
+                converterPath = checkConvCom.toString();
+                if(!checkConvCom.exists()) {
+                    log.error(converterPath + " specified by images.xml does not exist");
+                } else if(!checkConvCom.isFile()) {
+                    log.error(converterPath + " specified by images.xml is not a file");
+                } else if(!checkConvCom.canRead()) {
+                    log.error(converterPath + " specified by images.xml is not readable");
+                }
+            }
         }
-        if(!checkConvCom.isFile()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " is not a file");
-        }
-        if(!checkConvCom.canRead()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " is not readable");
-        }
-
         // do a test-run, maybe slow during startup, but when it is done this way, we can also output some additional info in the log about version..
         // and when somebody has failure with converting images, it is much earlier detectable, when it wrong in settings, since it are settings of
         // the builder... TODO: on error switch to jai????
         try {
             log.debug("Starting convert");
-            Process process = Runtime.getRuntime().exec(command);
+            Process process = Runtime.getRuntime().exec(converterPath);
             InputStream in = null;
             in=process.getInputStream();
 
@@ -93,12 +96,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
             // make stringtokenizer, with nextline as new token..
             StringTokenizer tokenizer = new StringTokenizer(outputstream.toString(),"\n\r");
             if(tokenizer.hasMoreTokens()) {
-                log.info("Will use: " + command+", " + tokenizer.nextToken());
+                log.info("Will use: " + converterPath+", " + tokenizer.nextToken());
             } else {
-                log.error("converter from location " + command + ", gave strange result: " + outputstream.toString() + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+                log.error("converter from location " + converterPath + ", gave strange result: " + outputstream.toString() + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
             }
         } catch (Exception e) {
-            log.error("images.xml(ConvertImageMagick): " + command + " could not be executed("+ e.toString() +")conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+            log.error(converterPath + " could not be executed ("+ e.toString() +")conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
         }
         // Cant do more checking then this, i think....
         tmp=(String)params.get("ImageConvert.ColorizeHexScale");
@@ -386,7 +389,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
      */
     private byte[] convertImage(byte[] pict, List cmd, String format) {
         cmd.add(0, "-");
-        cmd.add(0, converterRoot + converterCommand);
+        cmd.add(0, converterPath);
         cmd.add(format + ":-");
 
         String command = cmd.toString(); // only for debugging.
