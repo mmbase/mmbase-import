@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      'step' tag
 -->
 <section id="step">
@@ -9,7 +9,7 @@
 	</formalpara>
 	<formalpara>
 		<title>Usage</title>
-		<para>A step in a wizard, defining a form to run. the position of a step in the parent staps tag determines the place of the form in the wizard.
+		<para>A step in a wizard, defining a form to run. the position of a step in the parent steps tag determines the place of the form in the wizard.
 		</para>
 	</formalpara>
 	<formalpara>

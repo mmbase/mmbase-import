@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      'action' tag
 -->
 <section id="action">
@@ -14,7 +14,7 @@
 	</formalpara>
 	<para>
 		Actions in lists define what object structures to create or delete when operations are issued on a list's contents.
-		The content of the action is generally an objectstructure (with the excepton of the top-level delete action), which defines the data that is to be handled.
+		The content of the action is generally an objectstructure (with the exception of the top-level delete action), which defines the data that is to be handled.
 		More info can be found in the reference for the individual action types.
 	</para>
 	<formalpara>
