@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.46 2002-07-08 15:21:12 pierre Exp $
+ * @version $Id: Wizard.java,v 1.47 2002-07-09 18:45:26 michiel Exp $
  *
  */
 public class Wizard {
@@ -1087,7 +1087,7 @@ public class Wizard {
             addBinaryData(newfield);
         }
 
-        NodeList list = Utils.selectNodeList(field, "optionlist|prompt|description|action");
+        NodeList list = Utils.selectNodeList(field, "optionlist|prompt|description|action|prefix|postfix");
         Utils.appendNodeList(list, newfield);
         // place value
         // by default, theValue is the text of the node.
@@ -1652,8 +1652,8 @@ public class Wizard {
             xmlSchemaType=guitype.substring(0,pos);
             guitype=guitype.substring(pos+1);
         }
-        String required = Utils.selectSingleNodeText(con, "required", "false");
-        String guiname = Utils.selectSingleNodeText(con, "guiname", "");
+        String required = Utils.selectSingleNodeText(con,  "required", "false");
+        String guiname = Utils.selectSingleNodeText(con,   "guiname", "");
         String maxlength = Utils.selectSingleNodeText(con, "maxlength", "-1");
 
         // dttype?
@@ -1693,11 +1693,11 @@ public class Wizard {
             dttype = xmlSchemaType;
         }
 
-        if (ftype==null) {
+        if (ftype == null) {
             // import guitype or ftype
             // this is a qualifier, not a real type
             //
-            ftype=guitype;
+            ftype = guitype;
         }
 
         // backward compatibility.
@@ -1742,7 +1742,7 @@ public class Wizard {
         }
 
         // add guiname as prompt
-        if (prompt==null) {
+        if (prompt == null) {
             Utils.createAndAppendNode(fielddef, "prompt", guiname);
         }
 
