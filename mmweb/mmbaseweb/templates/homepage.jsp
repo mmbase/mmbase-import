@@ -136,10 +136,18 @@
 		  <h5>Coming soon</h5>
 		</mm:first>
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field><br />
-		<a href="<mm:url page="index.jsp" referids="portal"><mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present><mm:param name="item"><mm:field name="event.number" /></mm:param></mm:url>"><mm:field name="event.title" /></a>
+		<a href="<mm:url page="index.jsp" referids="portal">
+		  <mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present>
+		  <mm:param name="item"><mm:field name="event.number" /></mm:param>
+		</mm:url>"><mm:field name="event.title" /></a>
 		<mm:last inverse="true"><br /></mm:last>
+	    <mm:last>
+	      <p><a href="<mm:url page="index.jsp" referids="portal">
+			<mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present>
+			<mm:notpresent referid="event_page"><mm:param name="page">page_agenda</mm:param></mm:notpresent>
+		  </mm:url>">Agenda &raquo;&raquo;</a></p>
+		</mm:last>
 	</mm:list>
-	    <p><a href="<mm:url page="index.jsp" referids="portal"><mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present></mm:url>">Agenda &raquo;&raquo;</a></p>
 	  </td>
 	</tr><tr>
 	  <td>
