@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.7 2002-11-01 13:48:48 pierre Exp $
+ * @version $Id: MagicFile.java,v 1.8 2003-01-21 12:30:37 kees Exp $
  */
 public class MagicFile  {
     private static Logger log = Logging.getLoggerInstance(MagicFile.class.getName());
@@ -107,7 +107,16 @@ public class MagicFile  {
      * @return The found mime-type or FAILED
      */
 
-    public String getMimeType(byte[] lithmus) {
+    public String getMimeType(byte[] input) {
+	byte[] lithmus;
+
+	if (input.length > BUFSIZE){
+	    lithmus = new byte[BUFSIZE];
+	    System.arraycopy(input,0,lithmus,0,BUFSIZE);
+	} else {
+	    lithmus = input;
+	}
+
         Iterator i = getDetectors().iterator();
         while (i.hasNext()) {
             Detector detector = (Detector) i.next();
