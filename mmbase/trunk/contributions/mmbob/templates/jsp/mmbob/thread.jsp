@@ -198,20 +198,6 @@
 </mm:compare>
 <p />
 <p />
-<%-- Administrative / Moderative functions --%>
-<mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
-   <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
-</mm:nodefunction>
-
-<p />
-<mm:compare referid="ismoderator" value="true">
-        <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-left : 20px;" width="95%" align="left">
-        <tr><th align="lef">Moderator Functies</th></tr>
-        <td>
-           <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid,postthreadid" />">Thread aanpassen</a><br />
-        </td></tr>
-</table>
-</mm:compare> 
 <p />
 <p />
 </mm:cloud>
