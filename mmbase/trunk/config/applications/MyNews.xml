@@ -21,12 +21,15 @@
 
 	<neededreldeflist>
 		<reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
-		<reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+		<reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+		<reldef source="sorted"  target="sorted" direction="bidirectional" guisourcename="Sorted" guitargetname="Sorted" builder="posrel" />
+    <!-- sorted is used for tests where the role-name not equals builder name -->
 	</neededreldeflist>
 
 	<allowedrelationlist>
 		<relation from="mags"   to="news"     type="posrel" />
 		<relation from="news"   to="urls"     type="posrel" />
+		<relation from="news"   to="urls"     type="sorted" />
 		<relation from="news"   to="images"   type="posrel" />
 		<relation from="news"   to="attachments"  type="posrel" />
 		<!-- relation from="news"   to="mmevents" type="related" /-->
