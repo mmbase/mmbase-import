@@ -41,7 +41,7 @@ Change the property build.compiler to 'modern' for JDK1.3 or to 'jikes' for Jike
 Ant
 ===
 
-This build file is tested with Ant 1.3. See <http://jakarta.apache.org/> for
+This build file is tested with Ant 1.4. See <http://jakarta.apache.org/> for
 more information about the Ant build tool.
 
 
@@ -1251,8 +1251,8 @@ Change directory to ${build.dir}/orion and run:
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
   <target name="init.get">
-    <property name="servlet.version" value="jakarta-servletapi-4-20020220"/>
-    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-servletapi-4/nightly/${servlet.version}.tar.gz"/>
+    <property name="servlet.version" value="jakarta-servletapi-4"/>
+    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat-4.0/release/v4.0/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
     <available property="servlet.present"
                file="${download.dir}/${servlet.version}.tar.gz"/>
