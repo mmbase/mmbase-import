@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.47 2002-10-18 08:40:06 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.48 2002-10-18 09:02:06 eduard Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -86,15 +86,31 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * and fills the fields list.
      */
     protected void initManager() {
-        if (builder==null) {
-            builder=((TypeDef)noderef.getBuilder()).getBuilder(noderef);
+        if (builder == null) {
+	    if(noderef == null) {
+		String msg = "node reference was null, could not continue";
+		log.error(msg);
+		throw new BridgeException(msg);
+	    }
+	    // look which node we represent, and 
+	    // what the builder is that this
+	    // node is representing
+	    TypeDef typedef = (TypeDef) noderef.getBuilder();
+            builder = typedef.getBuilder(noderef);
+	    if(builder == null) {
+		String msg = "could not find nodenmanager for node #" + noderef.getNumber() + "("+noderef.getStringValue("gui()")+")";
+		log.error(msg);
+		throw new BridgeException(msg);
+	    }
         }
-        List fields=builder.getFields();
-        if (fields!=null) {
+	// clear the list of fields..
+	// why is this needed?
+        List fields = builder.getFields();
+        if (fields != null) {
             fieldTypes.clear();
-            for(Iterator i=fields.iterator(); i.hasNext();){
-                FieldDefs f=(FieldDefs)i.next();
-                Field ft= new BasicField(f,this);
+            for(Iterator i = fields.iterator(); i.hasNext();){
+                FieldDefs f = (FieldDefs) i.next();
+                Field ft = new BasicField(f,this);
                 fieldTypes.put(ft.getName(),ft);
             }
         }
