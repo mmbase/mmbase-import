@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.27 2000-12-15 12:46:26 vpro Exp $
+$Id: INFO.java,v 1.28 2001-02-05 17:01:55 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.27  2000/12/15 12:46:26  vpro
+Davzev: Corrected comment for doUser() DOMAIN cmd, added doUser() ISINTERNALVPROADDRESS.
+
 */
 package org.mmbase.module;
 
@@ -35,7 +38,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.27 $ $Date: 2000-12-15 12:46:26 $
+ * @$Revision: 1.28 $ $Date: 2001-02-05 17:01:55 $
  */
 public class INFO extends ProcessorModule {
 
@@ -681,7 +684,13 @@ public class INFO extends ProcessorModule {
 			
 			int days = calendar.get(Calendar.DAY_OF_YEAR);
 
-			if (cmd.equals("CURTIME")) return ""+System.currentTimeMillis()/1000;
+			if (cmd.equals("CURTIME")) {
+				if (tok.hasMoreTokens()) {
+					return(nextCurTime(tok));
+				} else {
+					return(""+System.currentTimeMillis()/1000);
+				}
+			}
 			if (cmd.equals("DCURTIME")) return ""+DateSupport.currentTimeMillis()/1000;
 			if (cmd.equals("CURTIME10")) return ""+System.currentTimeMillis()/(10*1000);
 			if (cmd.equals("CURTIME20")) return ""+System.currentTimeMillis()/(20*1000);
@@ -1404,5 +1413,17 @@ public class INFO extends ProcessorModule {
 	// returns true if a string value is not equal to  NO or FALSE
 	private boolean isNotNo(String value) {
 	    return !(value.equals("NO") || value.equals("FALSE"));
+	}
+
+	
+	private String nextCurTime(StringTokenizer tok) {
+		int curtime=(int)(System.currentTimeMillis()/1000);
+		String cmd=tok.nextToken();
+		if (cmd.equals("NEXTHOUR")) {
+			int hours=curtime/3600;
+			hours++;
+			return(""+(hours*3600));
+		}
+		return("");
 	}
 }
