@@ -29,13 +29,13 @@
 >-->
 <names>
 	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="nl">URL</singular>
 	<singular xml:lang="fr">URL</singular>
+	<singular xml:lang="nl">URL</singular>
 	<singular xml:lang="en">URL</singular>
 	<singular xml:lang="us">URL</singular>
 	<!-- multiple per language as defined by ISO 639 -->
-	<plural xml:lang="nl">URL</plural>
 	<plural xml:lang="fr">URL</plural>
+	<plural xml:lang="nl">URL</plural>
 	<plural xml:lang="en">URL</plural>
 	<plural xml:lang="us">URL</plural>
 </names>
@@ -112,10 +112,6 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -145,10 +141,6 @@ a key/value system. Its a optional tag.
 				<search>1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -178,16 +170,12 @@ a key/value system. Its a optional tag.
 				<search>2</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">512</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>description</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="512" notnull="true" key="false">STRING</type>
+			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
