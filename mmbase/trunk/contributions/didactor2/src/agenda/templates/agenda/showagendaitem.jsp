@@ -54,9 +54,7 @@
 <div class="mainContent">
 
   <div class="contentHeader">
-    <mm:write referid="year"/>
-    <mm:write referid="month"/>
-    <mm:write referid="day"/>
+    <mm:write referid="day"/>/<mm:write referid="month"/>/<mm:write referid="year"/>
   </div>
 
   <div class="contentSubHeader">
@@ -70,13 +68,11 @@
                <mm:param name="day"><mm:write referid="day"/></mm:param>
              </mm:treefile>">
       <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETEAGENDAITEM" />"/></a>
-    <fmt:message key="DELETEAGENDAITEM" />
       </mm:first>
     </mm:list>
   </div>
 
-  <div class="contentBody">
-
+  <div class="contentBodywit">
     <%-- Show the form --%>
     <form name="showagendaitem" method="post" action="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids"/>">
     <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>">
@@ -87,7 +83,7 @@
         <mm:fieldlist nodetype="items" fields="title,body">
 
  	      <tr>
-	      <td><mm:fieldinfo type="guiname"/></td>
+	      <th><mm:fieldinfo type="guiname"/></th>
 	      <td><mm:fieldinfo type="value"/></td>
 	      </tr>
 
@@ -99,7 +95,7 @@
   	      <mm:fieldlist nodetype="mmevents" fields="start,stop">
 
 	      <tr>
-	      <td><mm:fieldinfo type="guiname"/></td>
+	      <th><mm:fieldinfo type="guiname"/></th>
 	      <td><mm:fieldinfo type="value"><mm:time format="d/M/yyyy HH:mm:ss"/></mm:fieldinfo></td>
 	      </tr>
 	      </mm:fieldlist>
@@ -109,7 +105,7 @@
 	    <tr>
    	    <mm:fieldlist nodetype="items" fields="repeatinterval">
  	      <tr>
-	      <td><mm:fieldinfo type="guiname"/></td>
+	      <th><mm:fieldinfo type="guiname"/></th>
 	      <td>
 	          <mm:import id="interval"><mm:field name="repeatinterval"/></mm:import>
 	          <mm:compare referid="interval" value="0">geen</mm:compare>
@@ -121,7 +117,7 @@
 	    </tr>
    	    <mm:fieldlist nodetype="items" fields="repeatuntil">
  	      <tr>
-	      <td><mm:fieldinfo type="guiname"/></td>
+	      <th><mm:fieldinfo type="guiname"/></th>
 	      <td><mm:fieldinfo type="value" options="date"><mm:time format="d/M/yyyy"/></mm:fieldinfo></td>
 	      </tr>
 	    </mm:fieldlist>
@@ -136,11 +132,11 @@
  
       <mm:list nodes="$currentitem" path="items,invitationrel,people" constraints="invitationrel.status!=1 AND people.number=$user" max="1">
 	    <tr>
-		<td><di:translate id="sender">Afzender</di:translate></td>
+		<th><di:translate id="sender">Afzender</di:translate></th>
 		<td><mm:write referid="sendername"/></td>
 	    </tr>
 	    <tr>
-		<td><di:translate id="invitationstatus">Status</di:translate></td>
+		<th><di:translate id="invitationstatus">Status</di:translate></th>
 		<td>
 		    <%-- Check for update --%>
 		    <mm:import id="mystatus" externid="status"/>
@@ -218,7 +214,7 @@
     </form>
 
   </div>
-</div>
+  </div>
 </div>
 
 

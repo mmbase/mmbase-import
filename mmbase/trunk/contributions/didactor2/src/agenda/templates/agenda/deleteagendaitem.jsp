@@ -141,6 +141,7 @@
       
       <mm:present referid="hasseries">
 	  <fmt:message key="SERIESFOUND"/>
+          <p>
        <input type="submit" class="formbutton" name="action0" value="<fmt:message key="DELETEONE" />"/>
        
       <input type="submit" class="formbutton" name="action1" value="<fmt:message key="DELETEALL" />"/>

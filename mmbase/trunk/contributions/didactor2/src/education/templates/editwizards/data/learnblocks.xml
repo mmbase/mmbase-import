@@ -113,7 +113,7 @@
                     <name>Naam bevat</name>
                     <search-fields>name</search-fields>
                 </search-filter>
-            </command>
+           </command>
         </list>
         <list role="related" extends="list/online.xml" />
     </form-schema>

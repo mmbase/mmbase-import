@@ -96,9 +96,9 @@
       <img src="<mm:treefile page="/chat/gfx/shareddocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate id="addchatlogpublic">Add chatlog to public workspace</di:translate>"/></a>
   </div>
 
-  <div class="contentBody">
+  <div class="contentBodywit">
     <mm:node number="$chatlog" notfound="skip">
-      <mm:field name="text" escape="p" />
+            <mm:field name="text" escape="p" />
     </mm:node>
   </div>
 
