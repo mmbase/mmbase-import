@@ -20,7 +20,7 @@ simple so that the page sources are as clear as possible.
 </p>
 
 <p>
-Some of the examples require the presence of a ceretain builders (i.e. 'news').
+Some of the examples require the presence of a certain builders (i.e. 'news').
 You can install these builders and there relations by installing the MyNews application.
 </p>
 
