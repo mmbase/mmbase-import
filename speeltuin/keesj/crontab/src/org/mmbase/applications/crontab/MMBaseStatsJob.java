@@ -13,7 +13,7 @@ import org.mmbase.util.logging.*;
 /**
  * An example cron-job. 
  *
- * A Job to log MMBase statistics to a logger. (By means of logj4j you can configure the time stamp and logfile location).
+ * A Job to log MMBase statistics to a logger. (By means of logj4 you can configure the time stamp and logfile location).
  * The configuration string is one of the following
  <ul>
   <li>MEMORY: Logs free and total memory</li>
@@ -37,7 +37,7 @@ and:
   &lt;/logger&gt;
 </pre> 
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.1 2004-09-23 13:44:22 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.2 2004-09-23 13:58:59 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -54,7 +54,7 @@ public class MMBaseStatsJob extends AbstractCronJob  {
             String cacheName = what.substring(6);
             Cache  cache     = Cache.getCache(cacheName);
             if (cache != null) {
-                statsLogger.service("" +  cache.getHits() + "\t" + cache.getHits() + "\t" + cache.getMisses());
+                statsLogger.service("" +  cache.getHits() + "\t" + (cache.getHits() + cache.getMisses()));
             } else {
                 log.error("No cache with name " + cacheName  + " found");
             }
