@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.124 2004-05-02 15:02:00 nico Exp $
+ * @version $Id: Wizard.java,v 1.125 2004-05-08 17:44:59 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -614,13 +614,31 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
     
+    /** 
+     * @return Calendar with timezone parameter
+     */
+    private Calendar getCalendar() {
+        if (timezone != null) {
+            TimeZone tz = TimeZone.getTimeZone(timezone);
+            if (tz.getID().equals(timezone)) {
+                return Calendar.getInstance(tz);
+            }
+            else {
+                return Calendar.getInstance();
+            }
+        }
+        else {
+            return Calendar.getInstance();
+        }
+    }
+    
     private String buildDate(ServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
             int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
             
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = getCalendar();
             cal.set(year, month - 1, day, 0, 0, 0);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -637,7 +655,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
             
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = getCalendar();
             cal.set(year, month - 1, day, hours, minutes, 0);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -653,7 +671,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
             int seconds = Integer.parseInt(req.getParameter("internal_" + name + "_seconds"));
     
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = getCalendar();
             cal.set(1970, 0, 1, hours, minutes, seconds);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
