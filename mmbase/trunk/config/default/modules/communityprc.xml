@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd" -->
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
 <module maintainer="vpro.nl" version="1">
 
   <!-- <status>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- DOCTYPE mmusers PUBLIC "//MMBase - mmusers module//" "http://www.mmbase.org/dtd/mmusers.dtd" -->
+<!DOCTYPE module PUBLIC "//MMBase - mmusers module//" "http://www.mmbase.org/dtd/module.dtd">
 <module>
 
   <!-- <status>
