@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="Codings" maintainer="codings.mmbase.omroep.nl" version="1" auto-deploy="false">
   <neededbuilderlist>
 	<builder maintainer="mmbase.org" version="1">news</builder>
