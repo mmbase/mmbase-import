@@ -4,7 +4,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.11 2002-11-08 19:55:35 michiel Exp $
+#  $Id: cvsmail,v 1.12 2002-11-08 19:58:44 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -16,23 +16,19 @@ my @files = split(" ", $files);
 
 my $dir = shift @files;
 
-my $basedir = "/home/michiel/";
-my $toaddress     = "cvs\@mmbase.org";
-my $cvs     = "/usr/local/bin/cvs";
+my $basedir     = "/home/michiel/";
+my $toaddress   = "cvs\@mmbase.org";
+my $cvs         = "/usr/local/bin/cvs";
 
-# mail too
 my $child;
 if ($child = fork()) {
     exit 1; # be 'ready' immediatiely, don't let the commiter wait
 } else { 
     sleep 5;
-    # mesagxoj estas je STDIN:
+    # mesages are on  STDIN:
     my @message = <stdin>;
     
-
-
-    # determin user:
-    
+    # determin user:    
     my $cvsuser = $user;
     {
 	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
@@ -42,12 +38,18 @@ if ($child = fork()) {
 	}
     }
 
+	
+    # mail subject:
     my $subject = "[MMBASE CVS] ".$dir." ";
     for my $file (@files) {
 	$subject .= (split(",", $file))[0] . " ";
     }
-           
+
+    # mail message           
     my $message = "From: $cvsuser <$user\@mmbase.org>\nSubject: $subject\n".join("", @message);
+
+
+    # also log this message:
     my $logfile = new FileHandle(">>$log_filename");
     
     print $logfile "--------------------------------------------------------\n";
@@ -57,6 +59,7 @@ if ($child = fork()) {
     $logfile->close();
     
 
+    # do the mailing
     my $mail = new FileHandle("|mail -s \"$subject\" $toaddress");
     
     print $mail $message."\n";
