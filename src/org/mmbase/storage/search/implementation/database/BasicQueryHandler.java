@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.32 2005-01-26 15:00:42 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.33 2005-01-27 12:44:11 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -100,7 +100,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         rs.next();
                     }
                 }
-                
+
                 // Now store results as cluster-/real nodes.
                 StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
                 int maxNumber = query.getMaxNumber();
@@ -113,11 +113,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 } else {
                     results = readNodes(builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
                 }
-                // TODO: (later) use alternative to decodeDBnodeField, to
-                // circumvent the code in decodeDBnodeField that tries to
-                // reverse replacement of "disallowed" fieldnames.
-
-
             } finally {
                 rs.close();
             }
@@ -207,24 +202,34 @@ public class BasicQueryHandler implements SearchQueryHandler {
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
-            ClusterNode node = new ClusterNode(builder, numberOfSteps);
-            node.start();
-            for (int i = 0; i < fields.length; i++) {
-                String fieldName = fields[i].getFieldName(); // why not getAlias first?
-                Step step = fields[i].getStep();
-                String alias = step.getAlias();
-                if (alias == null) {
-                    // Use tablename as alias when no alias is specified.
-                    alias = step.getTableName();
+        try {
+            while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
+                try {
+                    ClusterNode node = new ClusterNode(builder, numberOfSteps);
+                    node.start();
+                    for (int i = 0; i < fields.length; i++) {
+                        String fieldName = fields[i].getFieldName(); // why not getAlias first?
+                        Step step = fields[i].getStep();
+                        String alias = step.getAlias();
+                        if (alias == null) {
+                            // Use tablename as alias when no alias is specified.
+                            alias = step.getTableName();
+                        }
+                        FieldDefs field = builder.getField(alias +  '.' + fieldName);
+                        Object value = storageManager.getValue(rs, i + 1, field);
+                        node.setValue(alias +  '.' + fieldName, value);
+                    }
+                    node.clearChanged();
+                    node.finish();
+                    results.add(node);
+                } catch (Exception e) {
+                    // log error, but continue with other nodes
+                    log.error(e);
                 }
-                FieldDefs field = builder.getField(alias +  '.' + fieldName);
-                Object value = storageManager.getValue(rs, i + 1, field);
-                node.setValue(alias +  '.' + fieldName, value);
             }
-            node.clearChanged();
-            node.finish();
-            results.add(node);
+        } catch (SQLException sqe) {
+            // log error, but return results.
+            log.error(sqe);
         }
         return results;
     }
@@ -237,21 +242,31 @@ public class BasicQueryHandler implements SearchQueryHandler {
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
-            ResultNode node = new ResultNode((ResultBuilder) builder);
-            node.start();
-            for (int i = 0; i < fields.length; i++) {
-                String fieldName = fields[i].getAlias();
-                if (fieldName == null) {
-                    fieldName = fields[i].getFieldName();
+        try {
+            while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
+                try {
+                    ResultNode node = new ResultNode((ResultBuilder) builder);
+                    node.start();
+                    for (int i = 0; i < fields.length; i++) {
+                        String fieldName = fields[i].getAlias();
+                        if (fieldName == null) {
+                            fieldName = fields[i].getFieldName();
+                        }
+                        FieldDefs field = builder.getField(fieldName);
+                        Object value = storageManager.getValue(rs, i + 1, field);
+                        node.setValue(fieldName, value);
+                    }
+                    node.clearChanged();
+                    node.finish();
+                    results.add(node);
+                } catch (Exception e) {
+                    // log error, but continue with other nodes
+                    log.error(e);
                 }
-                FieldDefs field = builder.getField(fieldName);
-                Object value = storageManager.getValue(rs, i + 1, field);
-                node.setValue(fieldName, value);
             }
-            node.clearChanged();
-            node.finish();
-            results.add(node);
+        } catch (SQLException sqe) {
+            // log error, but return results.
+            log.error(sqe);
         }
         return results;
     }
@@ -263,39 +278,49 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results= new ArrayList();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
-        if (! rs.next()) return results;
-        
-        // Truncate results to provide weak support for maxnumber.
-        while (maxNumber > results.size() || maxNumber==-1) {
-            try {                
-                MMObjectNode node = new MMObjectNode(builder);
-                node.start();
-                Step nodeStep = fields[0].getStep();
-                for (int i = 0; i < fields.length; i++) {
-                    if (fields[i].getStep() != nodeStep) continue;
-                    String fieldName =  fields[i].getFieldName();
-                    FieldDefs field = builder.getField(fieldName);
-                    if (field.getDBType() == FieldDefs.TYPE_BYTE) {
-                        node.setValue(fieldName, "$SHORTED");
-                    } else {
-                        Object value = storageManager.getValue(rs, i + 1, field);
-                        node.setValue(fieldName, value);
-                    }
+        // determine indices of queried fields
+        Map fieldIndices = new HashMap();
+        Step nodeStep = fields[0].getStep();
+        for (int i = 0; i < fields.length; i++) {
+            if (fields[i].getStep() == nodeStep) {
+                String fieldName =  fields[i].getFieldName();
+                FieldDefs field = builder.getField(fieldName);
+                if (field != null) {
+                    fieldIndices.put(field, new Integer(i+1));
                 }
-                node.clearChanged();
-                node.finish();
-                results.add(node);
-            } catch (Throwable t) { // this arrangement should perhaps also be ported to the two other readNodes in this class
-                log.error(t);
-                //break;
-            }         
-            try {                
-                if (! rs.next()) break;            
-            } catch (SQLException sqe) {
-                    // there are results already, don't mess up those.
-                log.error(sqe);
-                break;                
-            }   
+            }
+        }
+
+        // Truncate results to provide weak support for maxnumber.
+        try {
+            while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
+                try {
+                    MMObjectNode node = new MMObjectNode(builder);
+                    node.start();
+                    for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext(); ) {
+                        FieldDefs field = (FieldDefs)i.next();
+                        Integer index = (Integer)fieldIndices.get(field);
+                        String fieldName = field.getDBName();
+                        if (index == null) {
+                            if (field.getDBType() == FieldDefs.TYPE_BYTE) {
+                                node.setValue(fieldName, "$SHORTED");
+                            }
+                        } else  {
+                            Object value = storageManager.getValue(rs, index.intValue(), field);
+                            node.setValue(fieldName, value);
+                        }
+                    }
+                    node.clearChanged();
+                    node.finish();
+                    results.add(node);
+                } catch (Exception e) {
+                    // log error, but continue with other nodes
+                    log.error(e);
+                }
+            }
+        } catch (SQLException sqe) {
+            // log error, but return results.
+            log.error(sqe);
         }
         return results;
     }
