@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>2003-02-12</date>
-    <edition>$Id: security-framework.xml,v 1.11 2003-07-27 17:47:50 henk Exp $</edition>
+    <edition>$Id: security-framework.xml,v 1.12 2003-12-18 15:15:41 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -57,7 +57,7 @@
     <title>Introduction</title>
     <section id="requirements">
       <title>Requirements</title>
-      <para>MMBase uses a security framework in which different security implementations can be used. This means that is possible to developer various types of security systems, adapting MMBase to the needs of the environment in which it runs. A number of default implementations are available in MMBase (such as the context security, documented elsewhere), but new ones can be developed and easily substituted using the security configuration files.</para>
+      <para>MMBase uses a security framework in which different security implementations can be used. This means that it is possible to developer various types of security systems, adapting MMBase to the needs of the environment in which it runs. A number of default implementations are available in MMBase (such as the context security, documented elsewhere), but new ones can be developed and easily substituted using the security configuration files.</para>
       <para>This document focuses on the security framework. It falls in four parts.</para>
       <para>The first part explains the general architecture, and the way security is used by MMBase. It explains what is possible in the approach we use and what isn't. It also comments on where security is used, and how it can be circumvented.</para>
       <para>The second part explains how to configure the security framework, such as when you want to install an alternate security system.</para>
@@ -94,7 +94,7 @@
     </section>
     <section>
       <title>Authorization</title>
-      <para>Authorization takes place on object level: for each object, the authorization system determines the rights for a specified user. How these rights are determine dis not specified - a system can actually maintain(and store) rights per user/object, but it is also possible to determine access per object type, or (as is the case with the context security system), by granting user groups access to object groups (generally objects with the same 'context' or 'owner').</para>
+      <para>Authorization takes place on object level: for each object, the authorization system determines the rights for a specified user. How these rights are determined is not specified - a system can actually maintain(and store) rights per user/object, but it is also possible to determine access per object type, or (as is the case with the context security system), by granting user groups access to object groups (generally objects with the same 'context' or 'owner').</para>
       <para>Forthcoming...</para>
     </section>
     <section>
