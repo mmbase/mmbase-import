@@ -1569,15 +1569,15 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <possiblevalue>
         <value>value</value>
         <info>
-	  The value of this field. Can only be used if the parent FieldProvider also provides a
-	  Node.
+          The value of this field. Can only be used if the parent FieldProvider also provides a
+          Node.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>guivalue</value>
         <info>
-	  The guivalue of this field. Can only be used if the parent FieldProvider also provides a
-	  Node.
+          The guivalue of this field. Can only be used if the parent FieldProvider also provides a
+          Node.
         </info>
       </possiblevalue>
     </attribute>
@@ -2659,10 +2659,20 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   <tag>   
     <name>log</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.debug.LogTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.debug.LogTEI</teiclass>
     <info>
-      You can log to the MMBase log with this. It logs its body on 'service'
-      with within the category 'MMBASE-PAGE', followed by the request
-      URI.
-    </info>	
+      Logs the body or creates a Logger variable in it.  You can log
+      to the MMBase log with this. It logs its body on 'service' with
+      within the category 'MMBASE-PAGE', followed by the request URI.
+    </info>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        If this attribute is present, the body will not be logged, but
+        in the body this jspvar is available.
+      </info>
+    </attribute>
    </tag>
 </taglib>
