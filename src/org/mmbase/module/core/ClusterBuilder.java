@@ -30,8 +30,8 @@ import org.mmbase.util.logging.Logging;
  * <br />
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
  * which is in turn based on the relations that exist between nodes.<br>
- * The builder supplies a method to retrieve these virtual nodes: {@link 
- * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int) 
+ * The builder supplies a method to retrieve these virtual nodes: {@link
+ * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
  * searchMultiLevelVector()}.
  * Other public methods in this builder function to handle the requests for data obtained from this particular node.
  * Individual nodes in a 'cluster' node can be retrieved by calling the getNodeValue() method, with the builder name
@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.29 2003-02-16 15:38:29 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.30 2003-02-20 13:46:19 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -158,7 +158,7 @@ public class ClusterBuilder extends VirtualBuilder {
         if (s!=null) {
             return s;
         }
-        
+
         // Else "name"-fields of contained nodes.
         s = "";
         for (Enumeration i=node.values.keys(); i.hasMoreElements(); ) {
@@ -180,7 +180,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * For a multilevel node, the builder tries to determine
      * the original builder of a field, and invoke the method using
      * that builder.
-     * 
+     *
      * @param node The node to display
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
@@ -315,7 +315,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
-     * @param searchDir Specifies in which direction relations are to be 
+     * @param searchDir Specifies in which direction relations are to be
      *      followed, this must be one of the values defined by this class.
      * @return a <code>Vector</code> containing all matching nodes
      */
@@ -323,7 +323,7 @@ public class ClusterBuilder extends VirtualBuilder {
             Vector snodes,Vector fields,String pdistinct,
             Vector tables,String where, Vector orderVec,Vector direction,
             int searchdir) {
-        
+
         // Try to handle using the SearchQuery framework.
         try {
             SearchQuery query =
@@ -342,7 +342,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     + "\nFalling back to legacy code in ClusterBuilder...");
             }
         }
-        
+
         // Legacy code starts here.
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
@@ -386,38 +386,33 @@ public class ClusterBuilder extends VirtualBuilder {
         // Note that node number -1 is seen as no source node
         if ((snodes!=null) && (snodes.size()>0)) {
             String str;
-            snode = -1;
+            basenode=null;
 
             // go trough the whole list and verify that it are all integers
             // from last to first,,... since we want snode to be the one that contains the first..
             for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
-                str = (String)snodes.elementAt(i);
-                try {
-                    snode=Integer.parseInt(str);
+                str = ((String)snodes.elementAt(i)).trim();
+                // '-1' means no node, so skip
+                if (!str.equals("-1")) {
+                    basenode=getNode(str);
+                    if (basenode==null) {
+                        throw new RuntimeException("Cannot find node: "+str);
+                    }
+                    snodes.setElementAt(""+basenode.getNumber(), i);
                 }
-                catch(NumberFormatException e) {
-                    // maybe it was not an integer, hmm lets look in OAlias table then
-                    snode = mmb.OAlias.getNumber(str);
-                    if (snode<0) snode=0;
-                }
-                snodes.setElementAt(""+snode, i);
             }
 
             int sidx;
             StringBuffer bb=new StringBuffer();
 
-            if (snode>0) {
-                basenode=getNode(""+snode);
-                if (basenode!=null) {
-                    // not very neat... but it works
-                    sidx=alltables.indexOf(basenode.parent.tableName);
-                    if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
-                    // if we can't find the real parent assume object
-                    if (sidx<0) sidx=alltables.indexOf("object");
-                    if (sidx<0) sidx=0;
-                } else {
-                    sidx=0;
-                }
+            // if a basenode is given (i.e. node is not -1)
+            if (basenode!=null) {
+                // not very neat... but it works
+                sidx=alltables.indexOf(basenode.parent.tableName);
+                if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
+                // if we can't find the real parent assume object
+                if (sidx<0) sidx=alltables.indexOf("object");
+                if (sidx<0) sidx=0;
                 str=idx2char(sidx);
                 bb.append(getNodeString(str,snodes));
                 // Check if we got a relation to ourself
@@ -501,19 +496,19 @@ public class ClusterBuilder extends VirtualBuilder {
      *
      * @param query The query.
      * @return The clusternodes.
-     * @throws org.mmbase.storage.search.SearchQueryException 
+     * @throws org.mmbase.storage.search.SearchQueryException
      *         When an exception occurred while retrieving the results.
      * @since MMBase-1.7
      * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
      */
     public List getClusterNodes(SearchQuery query) throws SearchQueryException {
-        
+
         // TODO (later): implement maximum set by maxNodesFromQuery?
-        
+
         // Execute query, return results.
         return mmb.getDatabase().getNodes(query, this);
     }
-    
+
     /**
      * Stores the tables/builder names used in the request for each field to return.
      * @param fields the list of requested fields
@@ -604,7 +599,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Returns the name part of a tablename.
-     * The name part is the table name minus the numeric digit appended 
+     * The name part is the table name minus the numeric digit appended
      * to a name (if appliable).
      * @param table name of the original table
      * @return A <code>String</code> containing the table name
@@ -651,10 +646,10 @@ public class ClusterBuilder extends VirtualBuilder {
             return null;
         }
     }
-    
+
     /**
      * Determines the SQL-query version of a prefixed field name.
-     * This means: replacing the table name prefix in the specified field name 
+     * This means: replacing the table name prefix in the specified field name
      * by the table alias created for the query, and replacing the fieldname by
      * a so-called 'allowed' fieldname.
      *
@@ -684,7 +679,7 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Retrieves fieldnames from an ezpression, and adds these to a set of
      * fieldnames.
-     * The expression may be either a fieldname or a a functionname with a 
+     * The expression may be either a fieldname or a a functionname with a
      * parameterlist between parenthesis.
      *
      * @param alltables List of tablenames, used for deriving a SQL table name
@@ -713,7 +708,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
     }
-    
+
     /**
      * Creates a select string for the Multi level query.
      * This consists of a list of fieldnames, preceded by a tablename.
@@ -747,7 +742,7 @@ public class ClusterBuilder extends VirtualBuilder {
             val=(String)r.nextElement();
             obtainSelectField(alltables,val,realfields);
         }
-        
+
         // optionally add "number" fields for all originally specified tables
         if (includeAllReferences) {
             for (Enumeration r=originaltables.elements();r.hasMoreElements();) {
@@ -765,7 +760,7 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return result;
     }
-    
+
     /**
      * Creates an order string for the Multi level query.
      * This consists of a list of fieldnames (preceded by a tablename), with an ascending or descending order.
@@ -812,7 +807,7 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return result;
     }
-    
+
     /**
      * Creates a WHERE clause for the Multi level query.
      * This involves replacing fieldnames in the clouse with those fit for the SQL query.
@@ -1090,32 +1085,32 @@ public class ClusterBuilder extends VirtualBuilder {
      * Creates search query that selects all the objects that match the
      * searchkeys.
      *
-     * @param snodes The numbers of the nodes to start the search with. 
-     *        These have to be present in the first table listed in the 
+     * @param snodes The numbers of the nodes to start the search with.
+     *        These have to be present in the first table listed in the
      *        tables parameter.
-     * @param fields The fieldnames to return. 
-     *        These should be formatted as <em>stepalias.field</em>. 
+     * @param fields The fieldnames to return.
+     *        These should be formatted as <em>stepalias.field</em>.
      *        Examples: 'people.lastname'
-     * @param pdistinct 'YES' indicates the records returned need to be 
-     *        distinct. 
+     * @param pdistinct 'YES' indicates the records returned need to be
+     *        distinct.
      *        Any other value indicates double values can be returned.
-     * @param tables The builder chain. 
+     * @param tables The builder chain.
      *        A list containing builder names.
-     *        The search is formed by following the relations between 
-     *        successive builders in the list. 
-     *        It is possible to explicitly supply a relation builder by 
+     *        The search is formed by following the relations between
+     *        successive builders in the list.
+     *        It is possible to explicitly supply a relation builder by
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
-     * @param where The contraint. 
-     *        This is in essence a SQL where clause, using the NodeManager 
+     * @param where The contraint.
+     *        This is in essence a SQL where clause, using the NodeManager
      *        names from the nodes as tablenames.
      *        The syntax is either sql (if preceded by "WHERE') or
-     *        Examples: "WHERE people.email IS NOT NULL", 
+     *        Examples: "WHERE people.email IS NOT NULL",
      *        "(authrel.creat=1) and (people.lastname='admin')"
      * @param sortFields the fieldnames on which you want to sort.
-     * @param directions A list of values containing, for each field in the 
+     * @param directions A list of values containing, for each field in the
      *        order parameter, a value indicating whether the sort is
-     *        ascending (<code>UP</code>) or descending (<code>DOWN</code>). 
+     *        ascending (<code>UP</code>) or descending (<code>DOWN</code>).
      *        If less values are supplied then there are fields in order,
      *        the first value in the list is used for the remaining fields.
      *        Default value is <code>'UP'</code>.
@@ -1143,28 +1138,28 @@ public class ClusterBuilder extends VirtualBuilder {
         // Get ALL tables (including missing reltables)
         Map roles= new HashMap();
         Map fieldsByAlias = new HashMap();
-        Map stepsByAlias 
+        Map stepsByAlias
             = addSteps(query, tables, roles, !distinct, fieldsByAlias);
-        
+
         // Add fields.
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             addFields(
                 query, (String) iFields.next(), stepsByAlias, fieldsByAlias);
         }
-        
+
         // Add sortorders.
         addSortOrders(query, sortFields, directions, fieldsByAlias);
-        
+
         // Supporting more then 1 source node or no source node at all
         // Note that node number -1 is seen as no source node
         if (snodes != null && snodes.size() > 0) {
             Integer nodeNumber = new Integer(-1);
-            
+
             // Copy list, so the original list is not affected.
             snodes = new ArrayList(snodes);
- 
-            // Go trough the whole list of strings (each representing 
+
+            // Go trough the whole list of strings (each representing
             // either a nodenumber or an alias), convert all to Integer objects.
             // from last to first,,... since we want snode to be the one that
             // contains the first..
@@ -1182,8 +1177,8 @@ public class ClusterBuilder extends VirtualBuilder {
                 }
                 snodes.set(i, nodeNumber);
             }
-            
-            BasicStep nodesStep 
+
+            BasicStep nodesStep
                 = getNodesStep(query.getSteps(), nodeNumber.intValue());
             if (nodesStep != null) {
                 Iterator iNodeNumbers = snodes.iterator();
@@ -1193,7 +1188,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 }
             }
         }
-        
+
         addRelationDirections(query, searchdir, roles);
 
         // Add constraint for the where part.
@@ -1204,7 +1199,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Creates a full chain of steps, adds these to the specified query.
-     * This includes adding necessary relation tables when not explicitly 
+     * This includes adding necessary relation tables when not explicitly
      * specified, and generating unique table aliases where necessary.
      * Optionally adds "number"-fields for all tables in the original chain.
      *
@@ -1214,21 +1209,21 @@ public class ClusterBuilder extends VirtualBuilder {
      *        representing the nodenumber of a corresponing RelDef node.
      *        This method adds entries for table aliases that specify a role,
      *        e.g. "related" or "related2".
-     * @param includeAllReference Indicates if the "number"-fields must 
+     * @param includeAllReference Indicates if the "number"-fields must
      *        included in the query for all tables in the original chain.
-     * @param fieldsByAlias Map, mapping aliases (fieldname prefixed by table 
-     *        alias) to the stepfields in the query. An entry is added for 
+     * @param fieldsByAlias Map, mapping aliases (fieldname prefixed by table
+     *        alias) to the stepfields in the query. An entry is added for
      *        each stepfield added to the query.
      * @return Map, maps original table names to steps.
      * @since MMBase-1.7
      */
     // package access!
-    Map addSteps(BasicSearchQuery query, List tables, 
+    Map addSteps(BasicSearchQuery query, List tables,
             Map roles, boolean includeAllReference, Map fieldsByAlias) {
-                
+
         Map stepsByAlias = new HashMap(); // Maps original table names to steps.
         Set tableAliases = new HashSet(); // All table aliases that are in use.
-        
+
         Iterator iTables = tables.iterator();
         if (iTables.hasNext()) {
             // First table.
@@ -1330,12 +1325,12 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Resolved table alias \"" + tableAlias 
+            log.debug("Resolved table alias \"" + tableAlias
                 + "\" to builder \"" + bul.getTableName() + "\"");
         }
         return bul;
     }
-    
+
     /**
      * Returns unique table alias, must be tablename/rolename, optionally
      * appended with a digit.
@@ -1343,7 +1338,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * table alias if the provided alias is already in use.
      *
      * @param tableAlias The table alias.
-     * @param tableAliases The table aliases that are already in use. The 
+     * @param tableAliases The table aliases that are already in use. The
      *        resulting table alias is added to this collection.
      * @param originalAliases The originally supplied aliases - generated
      *        aliases should not match any of these.
@@ -1351,14 +1346,14 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    String getUniqueTableAlias(String tableAlias, Set tableAliases, 
+    String getUniqueTableAlias(String tableAlias, Set tableAliases,
             Collection originalAliases) {
-            
+
         // If provided alias is not unique, try alternatives,
         // skipping alternatives that are already in originalAliases.
         if (tableAliases.contains(tableAlias)) {
             tableName = getTableName(tableAlias);
-            
+
             tableAlias = tableName;
             char ch = '0';
             while (originalAliases.contains(tableAlias)
@@ -1367,24 +1362,24 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (ch > '9') {
                     throw new IndexOutOfBoundsException(
                         "Failed to create unique table alias, because there "
-                        + "are already 11 aliases for this tablename: \"" 
+                        + "are already 11 aliases for this tablename: \""
                         + tableName + "\"");
                 }
                 tableAlias = tableName + ch;
                 ch++;
             }
         }
-        
+
         // Unique table alias: add to collection, return as result.
         tableAliases.add(tableAlias);
         return tableAlias;
     }
-    
+
     /**
-     * Retrieves fieldnames from an expression, and adds these to a search 
+     * Retrieves fieldnames from an expression, and adds these to a search
      * query.
-     * The expression may be either a fieldname or a a functionname with a 
-     * (commaseparated) parameterlist between parenthesis 
+     * The expression may be either a fieldname or a a functionname with a
+     * (commaseparated) parameterlist between parenthesis
      * (parameters being expressions themselves).
      * <p>
      * Fieldnames must be formatted as <em>stepalias.field</em>.
@@ -1392,16 +1387,16 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param query The query.
      * @param expression The expression.
      * @param stepsByAlias Map, mapping step aliases to the steps in the query.
-     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
-     *        table alias) to the stepfields in the query. 
+     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by
+     *        table alias) to the stepfields in the query.
      *        An entry is added for each stepfield added to the query.
      * @since MMBase-1.7
      */
     // package access!
-    void addFields(BasicSearchQuery query, 
+    void addFields(BasicSearchQuery query,
             String expression, Map stepsByAlias, Map fieldsByAlias) {
-        
-        // TODO RvM: stripping functions is this (still) necessary?.        
+
+        // TODO RvM: stripping functions is this (still) necessary?.
         // Strip function(s).
         int pos1 = expression.indexOf('(');
         int pos2 = expression.indexOf(')');
@@ -1436,21 +1431,21 @@ public class ClusterBuilder extends VirtualBuilder {
             addField(query, step, fieldName, fieldsByAlias);
         }
     }
-    
+
     /**
      * Adds field to a search query, unless it is already added.
      *
      * @param query The query.
      * @param step The non-null step corresponding to the field.
      * @param fieldName The fieldname.
-     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
-     *        table alias) to the stepfields in the query. 
+     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by
+     *        table alias) to the stepfields in the query.
      *        An entry is added for each stepfield added to the query.
      * @since MMBase-1.7
      */
-    private void addField(BasicSearchQuery query, BasicStep step, 
+    private void addField(BasicSearchQuery query, BasicStep step,
             String fieldName, Map fieldsByAlias) {
-                
+
         // Fieldalias = stepalias.fieldname.
         // This value is used to store the field in fieldsByAlias.
         // The actual alias of the field is not set.
@@ -1459,7 +1454,7 @@ public class ClusterBuilder extends VirtualBuilder {
             // Added already.
             return;
         }
-            
+
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
         FieldDefs fieldDefs = builder.getField(fieldName);
         if (fieldDefs == null) {
@@ -1469,37 +1464,37 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         // Add the stepfield.
-        BasicStepField stepField 
+        BasicStepField stepField
             = query.addField(step, fieldDefs);
         fieldsByAlias.put(fieldAlias, stepField);
     }
-            
+
     /**
      * Adds sorting orders to a search query.
      *
      * @param query The query.
      * @param fieldNames The fieldnames prefixed by the table aliases.
      * @param directions The corresponding sorting directions ("UP"/"DOWN").
-     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
-     *        table alias) to the stepfields in the query. 
+     * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by
+     *        table alias) to the stepfields in the query.
      * @since MMBase-1.7
      */
     // package visibility!
-    void addSortOrders(BasicSearchQuery query, List fieldNames, 
+    void addSortOrders(BasicSearchQuery query, List fieldNames,
             List directions, Map fieldsByAlias) {
-                
+
         // Test if fieldnames are specified.
         if (fieldNames == null || fieldNames.size() == 0) {
             return;
         }
-        
+
         int defaultSortOrder = SortOrder.ORDER_ASCENDING;
         if (directions != null && directions.size() != 0) {
             if (((String) directions.get(0)).trim().equalsIgnoreCase("DOWN")) {
                 defaultSortOrder = SortOrder.ORDER_DESCENDING;
             }
         }
-        
+
         Iterator iFieldNames = fieldNames.iterator();
         Iterator iDirections = directions.iterator();
         while (iFieldNames.hasNext()) {
@@ -1513,10 +1508,10 @@ public class ClusterBuilder extends VirtualBuilder {
                 throw new IllegalArgumentException(
                 "Invalid fieldname: \"" + fieldName + "\"");
             }
-            
+
             // Add sort order.
             BasicSortOrder sortOrder = query.addSortOrder(field); // ascending
-            
+
             // Change direction if needed.
             if (iDirections.hasNext()) {
                 String direction = (String) iDirections.next();
@@ -1528,7 +1523,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
     }
-    
+
     /**
      * Gets first step from list, that corresponds to the builder
      * of a specified node - or one of its parentbuilders.
@@ -1543,12 +1538,12 @@ public class ClusterBuilder extends VirtualBuilder {
         if (nodeNumber < 0) {
             return null;
         }
-        
+
         MMObjectNode node = getNode(nodeNumber);
         if (node == null) {
             return null;
         }
-        
+
         MMObjectBuilder builder = node.parent;
         BasicStep result = null;
         do {
@@ -1564,10 +1559,10 @@ public class ClusterBuilder extends VirtualBuilder {
             // Not found, then try again with parentbuilder.
             builder = builder.getParentBuilder();
         } while (builder != null && result == null);
-        
+
         return result;
     }
-    
+
     /**
      * Adds relation directions.
      *
@@ -1580,7 +1575,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package visibility!
     void addRelationDirections(BasicSearchQuery query, int searchdir, Map roles) {
-        
+
         Iterator iSteps = query.getSteps().iterator();
         BasicStep sourceStep = (BasicStep) iSteps.next();
         BasicStep destinationStep = null;
@@ -1590,16 +1585,16 @@ public class ClusterBuilder extends VirtualBuilder {
             }
             BasicRelationStep relationStep = (BasicRelationStep) iSteps.next();
             destinationStep = (BasicStep) iSteps.next();
-            
+
             // Check directionality is requested and supported.
             if (searchdir != SEARCH_ALL && InsRel.usesdir) {
                 relationStep.setCheckedDirectionality(true);
             }
-            
+
             // Determine in what direction(s) this relation can be followed:
             boolean desttosrc = false; // From 'source' to 'destination'.
             boolean srctodest = false; // From 'destination' to 'source'.
-            
+
             // Determine typedef number of the source-type.
             int srcType = mmb.getTypeDef().getIntValue(
                 getTableName(sourceStep.getAlias()));
@@ -1631,11 +1626,11 @@ public class ClusterBuilder extends VirtualBuilder {
                     if (desttosrc && srctodest) break;
                 }
             }
-            
+
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
                 desttosrc = false;
             }
-            
+
             if (desttosrc) {
                 // there is a typed relation from destination to src
                 if (srctodest) {
@@ -1652,10 +1647,10 @@ public class ClusterBuilder extends VirtualBuilder {
                 } else {
                     // no results possible...
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-                    log.warn("No relation defined between " 
-                        + sourceStep.getAlias() + " and " 
-                        + destinationStep.getAlias() + " using " 
-                        + relationStep + " with direction(s) " 
+                    log.warn("No relation defined between "
+                        + sourceStep.getAlias() + " and "
+                        + destinationStep.getAlias() + " using "
+                        + relationStep + " with direction(s) "
                         + getSearchDirString(searchdir));
                 }
             }
