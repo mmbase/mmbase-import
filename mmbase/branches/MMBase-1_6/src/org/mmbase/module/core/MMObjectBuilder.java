@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.net.URLEncoder;
 
 import org.mmbase.util.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.ParseException;
 import org.mmbase.storage.StorageException;
 import org.mmbase.module.database.MultiConnection;
@@ -50,27 +51,85 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.18 2003-02-25 09:54:37 vpro Exp $
  */
-public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.SizeMeasurable {{
+public class MMObjectBuilder extends MMTable {
 
-    // Max size of the object type cache
+    /**
+     * Escapes the 5 predefined xml entity characters. Only the characters "<"
+     * and "&" are strictly illegal in XML. Apostrophes, quotation marks and
+     * greater than signs are legal, but it is a good habit to replace them.
+     * 
+     * @param body text to convert
+     * @return String with escaped chars
+     * 
+     * @since 1.6.2
+     * @deprecated will only be avaialbe in 1.6. temporarily required
+     * 
+     */
+    private String getEscapeXml(String body) {
+        String rtn="";
+        if (body!=null) {
+            StringObject obj=new StringObject(body);
+            obj.replace("&", "&amp;");
+            obj.replace("\"", "&quot;");
+            obj.replace("'", "&apos;");
+            obj.replace("<","&lt;");
+            obj.replace(">","&gt;");
+            rtn=obj.toString();
+        }
+        return rtn;
+    }
+
+     /**
+     * Returns a Javascript string version of a string,
+     * escaping single and double quotes with a backslash
+     * and replacing linefeeds with \n and removing
+     * cariage returns \r
+     *
+     * @param body text to convert
+     * @return the convert text
+     * 
+     * @since 1.6.2
+     * @deprecated will only be avaialbe in 1.6. temporarily required
+     */
+    private String getEscapeJavaScript(String body) {
+        String rtn="";
+        if (body!=null) {
+            StringObject obj=new StringObject(body);
+            obj.replace("\\", "\\\\");
+
+            obj.replace("'","\\'");
+            obj.replace("\"","\\\"");
+            obj.replace("\n","\\n");
+            obj.replace("\r", "");
+            rtn=obj.toString();
+        }
+        return rtn;
+    }
+
+    /** Max size of the object type cache, config/caches.xml can override this */
     public final static int OBJ2TYPE_MAX_SIZE=20000;
 
-    // Default size of the temporary node cache
+    /** Default size of the temporary node cache */
     public final static int TEMPNODE_DEFAULT_SIZE=1024;
 
-    // Default replacements for method getHTML()
+    /** Default replacements for method getHTML() */
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
 
     /**
      * The cache that contains the last X types of all requested objects
-     * X is currently set to 20000.
-     * The hashtable is created using the init_obj2type() method, which
-     * seems strange - as other caches are instantiated during variable declaration.
+     * @deprecated Will not be available anymore in 1.7
      */
-    public static LRUHashtable obj2type;
+    public static Cache obj2type;
+    
+    static {
+        obj2type = new Cache(OBJ2TYPE_MAX_SIZE) {
+            public String getName()        { return "TypeCache"; }
+            public String getDescription() { return "Cache for node types";}
+        };
+        obj2type.putCache();
+    }
 
     /**
      * The cache that contains the X last requested nodes
@@ -338,8 +397,6 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 return false;
             }
         }
-        // should this be here??
-        if (obj2type==null) init_obj2type();
 
         // add temporary fields
         checkAddTmpField("_number");
@@ -499,7 +556,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
      * Note that this should possibly be moved to the variable declaration part (like nodecache)?
      */
-    public synchronized void init_obj2type() {
+/*    public synchronized void init_obj2type() {
 
         if (obj2type!=null) return;
         obj2type = new LRUHashtable(OBJ2TYPE_MAX_SIZE);
@@ -524,7 +581,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return;
     }
-
+*/
     /**
      * Returns the builder that this builder extends.
      *
@@ -2406,20 +2463,22 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 int wrappos=Integer.parseInt(function.substring(5));
                 return wrap(val,wrappos);
             } catch(Exception e) {}
-        } else if (function.equals("currency_euro")) {
+        } else if (function.equals("xml")) {
+            String val=node.getStringValue(field);
+            return getEscapeXml(val);
+        } else if (function.equals("pml")) {
+            String val=node.getStringValue(field);
+            return getEscapeXml(val);
+        } else if (function.equals("escapejavascript")) {
+            String val=node.getStringValue(field);
+            return getEscapeJavaScript(val);
+       } else if (function.equals("currency_euro")) {
             double val = node.getDoubleValue(field);
             NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMANY);
             return  "" + nf.format(val);
         } else {
             // old manner: parsing list from string. That is ugly.
-            StringBuffer arg = new StringBuffer(field);
-            if (arguments != null) {
-                for (int i = 1; i < arguments.size(); i++) {
-                    if (arg.length() > 0) arg.append(',');
-                    arg.append(arguments.get(i));
-                }
-            }
-            return executeFunction(node, function, arg.toString());
+            return getObjectValue(node, field);
         }
         return null;
     }
@@ -3507,6 +3566,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return false;
     }
+
 
     /**
      * Implements equals for nodes (this is in MMObjectBuilder because you cannot override MMObjectNode)
