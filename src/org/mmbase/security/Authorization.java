@@ -114,7 +114,7 @@ public abstract class Authorization {
      *	@return the context setting of the node.
      *	@exception org.mmbase.SecurityException If operation is not allowed(needs read rights)
      */        
-    public abstract String setContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException;
+    public abstract String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException;
 
     /** 
      *	This method could be overrided by an extending class.     
