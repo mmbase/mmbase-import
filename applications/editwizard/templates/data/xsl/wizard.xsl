@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.85 2003-04-02 14:25:27 michiel Exp $
+  @version $Id: wizard.xsl,v 1.86 2003-04-16 10:09:28 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -228,7 +228,7 @@
       message_dateformat="{$message_dateformat}"
       message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
       message_listtooshort="{$message_listtooshort}"
-      invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
+      invalidlist="{/wizard/form[@invalidlist]/@invalidlist}"
       filter_required="{$filter_required}"
       >
       <xsl:if test="$debug='true'">debug:<textarea class="debug" name="debug">javascript debugging</textarea></xsl:if>
@@ -677,7 +677,15 @@
   <xsl:template match="list">
     <td colspan="2" class="listcanvas">
       
-      <div class="subhead" title="{description}">
+      <div title="{description}">
+	<xsl:choose>
+	  <xsl:when test="@status='invalid'">
+	    <xsl:attribute name="class">notvalid</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+	    <xsl:attribute name="class">subhead</xsl:attribute>
+          </xsl:otherwise>
+	</xsl:choose>
         <nobr><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="title" /></xsl:call-template></nobr>
       </div>
 
