@@ -54,7 +54,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
         helper.setTag(this);
         helper.setValue(result);
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

@@ -73,11 +73,9 @@ public class RelatedNodesTag extends AbstractNodeListTag {
 
         
         NodeList nodes;
-        if ( (constraints != Attribute.NULL && !constraints.getString(this).equals(""))
-             ||
-             (orderby != Attribute.NULL && !orderby.getString(this).equals(""))
-             ) { // given orderby or constraints, start hacking:
-
+        if ( (!constraints.getString(this).equals("")) || (!orderby.getString(this).equals("")) ) { 
+            log.debug("given orderby or constraints"); // start hacking:
+            
             if (type == Attribute.NULL) {
                 throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             }
@@ -103,13 +101,20 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 nodes = manager.getList(where.toString(), orderby.getString(this), directions.getString(this));
             }
         } else {
+            log.debug("no orderby or constraints attributes");
             if (type == Attribute.NULL) {
                 if (role != Attribute.NULL) {
                     throw new JspTagException("Must specify type attribute when using 'role'");
                 }
+                log.debug("no nodetype given");
                 nodes = parentNode.getRelatedNodes();
             } else {
-                nodes = parentNode.getRelatedNodes((String) type.getValue(this), (String) role.getValue(this), (String) searchDir.getValue(this));
+                if (log.isDebugEnabled()) {
+                    log.debug("Getting relatednodes type: " + type.getString(this) + " role: " + role.getValue(this) + " searchDir: " + searchDir.getValue(this));
+                }
+                nodes = parentNode.getRelatedNodes(type.getString(this), 
+                                                   (String) role.getValue(this), 
+                                                   (String) searchDir.getValue(this));
             }
         }
         return setReturnValues(nodes, true);

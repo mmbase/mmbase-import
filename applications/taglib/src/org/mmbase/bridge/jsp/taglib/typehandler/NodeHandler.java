@@ -69,7 +69,7 @@ public class NodeHandler extends IntegerHandler {
             if (node != null) value = node.getStringValue(field.getName());
 
             // args for gui function
-            List args = new Vector();
+            List args = new ArrayList();
             args.add("");
             args.add(context.getCloud().getLocale().getLanguage());
             // should actually be added
@@ -103,7 +103,7 @@ public class NodeHandler extends IntegerHandler {
                     // this is the selected one!
                     buffer.append("selected=\"selected\"");
                 }
-                buffer.append("value=\""+gui.getValue()+"\">");
+                buffer.append("value=\"" + gui.getValue() + "\">");
                 buffer.append(Encode.encode("ESCAPE_XML", (String)  gui.getKey()));
                 buffer.append("</option>\n");
             }
@@ -125,10 +125,10 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if (context.getContextTag().findAndRegister(id, id) == null) {
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
                 return null;
             } else {
-                String search = context.getContextTag().findAndRegisterString(prefix(fieldName));
+                String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
                 if (search == null || "".equals(search)) {
                     return null;
                 }

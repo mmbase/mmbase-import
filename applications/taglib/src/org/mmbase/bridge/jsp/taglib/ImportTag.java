@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -23,8 +23,7 @@ import org.mmbase.util.logging.Logging;
 */
 
 public class ImportTag extends WriteTag {
-
-    private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ImportTag.class);
 
     protected Attribute required = Attribute.NULL;
     protected Attribute from     = Attribute.NULL; 
@@ -82,8 +81,8 @@ public class ImportTag extends WriteTag {
     }
 
     protected int getFrom() throws JspTagException {
-        if (from == Attribute.NULL) return ContextTag.LOCATION_NOTSET;
-        return ContextTag.stringToLocation(from.getString(this));
+        if (from == Attribute.NULL) return ContextContainer.LOCATION_NOTSET;
+        return ContextContainer.stringToLocation(from.getString(this));
     }
 
     public int doStartTag() throws JspTagException {
@@ -99,19 +98,19 @@ public class ImportTag extends WriteTag {
         }
         if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
             if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
-            getContextTag().unRegister(useId);
+            getContextProvider().getContainer().unRegister(useId);
         }
 
         if (externid != Attribute.NULL) {            
             if (log.isDebugEnabled()) log.trace("Externid was given " + externid.getString(this));
             if (from == Attribute.NULL) {
-                found = (getContextTag().findAndRegister(externid.getString(this), useId) != null);
+                found = (getContextProvider().getContainer().findAndRegister(pageContext, externid.getString(this), useId) != null);
             } else {
-                found = (getContextTag().findAndRegister(getFrom(), externid.getString(this), useId) != null);
+                found = (getContextProvider().getContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId) != null);
             }
 
             if (! found && required.getBoolean(this, false)) {
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + ContextTag.locationToString(getFrom()));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + ContextContainer.locationToString(getFrom()));
             }
             if (found) {
                 value = getObject(useId);
@@ -123,7 +122,7 @@ public class ImportTag extends WriteTag {
         if (found) {
             helper.setValue(value, WriterHelper.NOIMPLICITLIST); 
             if (useId != null) {
-                getContextTag().reregister(useId, helper.getValue());
+                getContextProvider().getContainer().reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
         } else {
@@ -145,7 +144,7 @@ public class ImportTag extends WriteTag {
                         log.debug("Found a default in the body (" + body + ")");
                     }
                     helper.setValue(body);
-                    getContextTag().reregister(useId, helper.getValue());
+                    getContextProvider().getContainer().reregister(useId, helper.getValue());
                 }
             }
         } else { // get value from the body of the tag.
@@ -154,7 +153,7 @@ public class ImportTag extends WriteTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                getContextTag().register(useId, helper.getValue());
+                getContextProvider().getContainer().register(useId, helper.getValue());
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time

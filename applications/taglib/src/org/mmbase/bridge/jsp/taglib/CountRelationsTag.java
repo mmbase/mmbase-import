@@ -38,7 +38,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     public int doStartTag() throws JspTagException {
         helper.setTag(this);
         if (getReferid() != null) {
-            helper.setValue(getContextTag().getObject(getReferid()));
+            helper.setValue(getContextProvider().getContainer().getObject(getReferid()));
         } else {
             log.debug("Search the node.");
             Node node = getNode();
@@ -49,7 +49,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
             }
         }
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

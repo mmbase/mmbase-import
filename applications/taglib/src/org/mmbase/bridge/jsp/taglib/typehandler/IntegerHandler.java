@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  */
 public class IntegerHandler extends AbstractTypeHandler {
 
-    private static Logger log = Logging.getLoggerInstance(IntegerHandler.class.getName());
+    private static Logger log = Logging.getLoggerInstance(IntegerHandler.class);
 
 
     private DateHandler dateHandler;
@@ -161,7 +161,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         String guiType = field.getGUIType();
         String fieldName = field.getName();
         if (guiType.equals("boolean")) {
-            String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
+            String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
             fieldValue = context.encode(fieldValue, field);
             if (fieldValue == null) {
                 node.setIntValue(fieldName, 0);
@@ -193,7 +193,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if (context.getContextTag().findAndRegister(id, id) == null) {
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field);

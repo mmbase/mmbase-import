@@ -33,7 +33,7 @@ public class SizeTag extends ListReferrerTag implements Writer {
         helper.setValue(new Integer(getList().size()));
 
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

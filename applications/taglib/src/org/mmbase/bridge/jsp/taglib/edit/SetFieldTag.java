@@ -54,7 +54,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
             String newValue = convert(body);
             getNodeVar().setValue(fieldName, newValue);
             if (getId() != null) {
-                getContextTag().register(getId(), newValue);
+                getContextProvider().getContainer().register(getId(), newValue);
             }
         }
         findNodeProvider().setModified();

@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.62 2003-05-22 10:33:21 kees Exp $
+ * @version $Id: FieldInfoTag.java,v 1.63 2003-05-26 15:17:27 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -287,7 +287,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

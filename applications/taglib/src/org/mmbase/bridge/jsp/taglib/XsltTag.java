@@ -75,7 +75,7 @@ public class XsltTag extends ContextReferrerTag  {
         }
         if (log.isDebugEnabled()) log.debug("Found xslt: " + xsltString);
         if (getId() != null) {
-            getContextTag().register(getId(), xsltString);
+            getContextProvider().getContainer().register(getId(), xsltString);
         }
         if (formatter != null) { 
             String totalString;

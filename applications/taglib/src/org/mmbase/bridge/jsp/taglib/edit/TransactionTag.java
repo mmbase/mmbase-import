@@ -73,7 +73,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             transaction = findCloudProvider().getCloudVar().getTransaction(name.getString(this));
             if (getId() != null) { // put it in context
                 log.debug("putting transaction in context");
-                getContextTag().register(getId(), transaction);
+                getContextProvider().getContainer().register(getId(), transaction);
             }
         }
         if (jspvar != null) {
@@ -87,7 +87,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (commit.getBoolean(this, true)) {
             ((Transaction) getCloudVar()).commit();
             if (getId() != null) {
-                getContextTag().unRegister(getId());
+                getContextProvider().getContainer().unRegister(getId());
             }
         }
         return EVAL_PAGE;

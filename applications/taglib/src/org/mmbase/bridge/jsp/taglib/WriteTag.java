@@ -84,7 +84,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
 
 
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         if (sessionvar != Attribute.NULL) {
             if (pageContext.getSession() == null) {

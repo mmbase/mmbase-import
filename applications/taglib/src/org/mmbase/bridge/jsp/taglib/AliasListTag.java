@@ -76,7 +76,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
 
     public int doAfterBody() throws JspException {
         if (getId() != null) {
-            getContextTag().unRegister(getId());
+            getContextProvider().getContainer().unRegister(getId());
         }
         helper.doAfterBody();
         if (returnValues.hasNext()){
@@ -95,7 +95,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     }
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextTag().register(getId(), returnList);
+            getContextProvider().getContainer().register(getId(), returnList);
         }
         return  EVAL_PAGE;
     }
@@ -106,7 +106,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
             currentItemIndex ++;
             helper.setValue(returnValues.next().toString());
             if (getId() != null) {
-                getContextTag().register(getId(), helper.getValue());
+                getContextProvider().getContainer().register(getId(), helper.getValue());
             }
 
         }
