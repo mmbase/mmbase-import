@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: configuration.xml,v 1.6 2002-08-27 21:36:14 michiel Exp $</date>
+    <date>$Id: configuration.xml,v 1.7 2002-08-28 06:23:13 michiel Exp $</date>
     <title>MMBase configuration documentation</title>
   </articleinfo>
   <section>
@@ -36,12 +36,87 @@
         to web.xml itself).
       </para>
     </section>
-    <section id="servlets">
+    <section id="servlets">      
       <title>Servlets</title>
       <para>
-        MMBase will normally not work without at least one servlet. This is documented <ulink
-        url="configuration.servlets.html">here. </ulink> 
-        <!-- TODO must be linked nicer, or moved to here -->
+        For MMBase to start up, at least one `MMBaseServlet' must be
+        turned on in your web.xml. The following of those servlets are available.      
+        <variablelist>
+          <varlistentry>
+            <term><classname>org.mmbase.servlet.MMBaseServlet</classname></term>
+            <listitem>
+              <para>
+                MMBaseServlet itself can only serve the MMBase version
+                number. It has no properties to be set. You don't need a
+                servlet-mapping to it, tough "/version" would be nice.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><classname>org.mmbase.servlet.ImageServlet</classname></term>
+            <listitem>
+              <para>
+                This servlet serves MMBase nodes as images (so also
+                icaches). Those nodes must contain an 'handle' field. It
+                has an 'expire' property, which can be set to set the
+                'Expires' header (for the node-type 'icaches' this is
+                ignored) in seconds after now. A servlet-mapping could be
+                e.g. /images/* or /img.db.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><classname>org.mmbase.servlet.AttachmentServlet</classname></term>
+            <listitem>
+              <para>
+                This servlet looks a lot like ImageServlet, but it is
+                focussed on 'attachments' nodes, which besides a 'handle'
+                also store a 'mimetype' field and a 'filename' field. It
+                has the 'expire' property just like ImageServlet. Map it
+                e.g. to /attachments/* or /attachment
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><classname>org.mmbase.servlet.servdb</classname></term>
+            <listitem>
+              <para>
+                This servlet is the original one of MMBase 1.5 and
+                before. It can do several things and is normally mapped
+                to e.g. /img.db and /attachment.db. By the mapping it decides
+                what to do. 
+              </para>
+              <para>
+                When it is used as an 'imageservlet' it also can
+                accept the 'transformation' template to generate a
+                'icache' node from a orginal image node on the URL. This
+                can be handy, but also opens a vulnarability to your
+                site.              
+              </para>
+              <para>
+                Since servdb is not based on the MMBase bridge, the
+                content which it serves is not protected by the security
+                system. It will serve any image, attachment
+              etc. disregarding the possible read-restrictions on
+              them.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><classname>org.mmbase.servlet.servscan</classname></term>
+          <listitem>
+            <para>
+              If you also have turned on the right MMBase `modules',
+              this servlet will provide the `SCAN' template
+              language. For new users it is adviced not to use SCAN, but
+              to use e.g. JSP (the JSP servlet and servlet-mapping are
+              normally shipped with and installed in your application
+              server). The SCAN servlet servscan has to be mapped to
+                `*.shtml'.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
       </para>
     </section>
     <section id="taglibs">      
@@ -53,6 +128,118 @@
         application servers it might be enough to have the mmbase.jar (or other jars) in your WEB-INF/lib
         directory to have the MMBase taglib (or other taglibs) to your disposal.
         <!--  TODO links!, also to web.xml example -->
+      </para>
+    </section>
+    <section id="webxmlexample">
+      <title>Example</title>
+      <para>
+      Here is an example web.xml. Some things are clarified more by use of XML comments in it.
+      <example>
+        <title>An example web.xml</title>        
+        <programlisting id="web.xml"><![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <context-param>
+    <param-name>mmbase.htmlrooturlpath</param-name>
+    <param-value>/mm/</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>version</servlet-name>
+    <servlet-class>org.mmbase.servlet.MMBaseServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+    
+  <servlet>
+    <servlet-name>images</servlet-name>
+    <display-name>images</display-name>
+    <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>    
+    <init-param>
+      <param-name>expire</param-name><!-- Expire time of original images. Cached images never expire -->
+      <param-value>600</param-value><!-- 10 minutes -->
+     </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>attachments</servlet-name>
+    <display-name>attachments</display-name>
+    <servlet-class>org.mmbase.servlet.AttachmentServlet</servlet-class>    
+    <init-param>
+      <param-name>expire</param-name><!-- Expire time of attachment -->
+      <param-value>10</param-value><!-- 10 minutes -->
+    </init-param>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+
+  <!-- We don't encourage new users to use SCAN, but you would need the following for it -->
+  <servlet>
+    <servlet-name>servscan</servlet-name>
+    <display-name>servscan</display-name>
+    <servlet-class>org.mmbase.servlet.servscan</servlet-class>
+    <load-on-startup>4</load-on-startup>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>version</servlet-name>
+    <url-pattern>/version</url-pattern>
+  </servlet-mapping>
+    
+
+  <servlet-mapping>
+    <servlet-name>images</servlet-name>
+    <url-pattern>/images/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>attachments</servlet-name>
+    <url-pattern>/attachments/*</url-pattern>
+  </servlet-mapping>
+    
+  <servlet-mapping>
+    <servlet-name>servscan</servlet-name>
+    <url-pattern>*shtml</url-pattern>
+  </servlet-mapping>
+
+  <!-- The MMBase taglib -->
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
+
+    <!-- taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location --> 
+    <!-- this has to work according to specs, but does not (yet) in all app-servers -->
+
+    <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
+    <!-- using a separate taglib description file should always work -->
+  </taglib>
+
+  <!-- MMBase community taglib -->
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/mmcommunity-taglib.tld</taglib-location>
+  </taglib>
+    
+  <!-- Some private mmbase-related taglib -->  
+  <taglib>
+    <taglib-uri>http://mmbase.omroep.nl/omroep-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/omroep-taglib.tld</taglib-location>
+  </taglib>
+
+  <!-- Taglibs not directly related to MMBase -->
+
+  <!-- 
+    The 'Open Symphony' cache tags can e.g. cache your page partially. It uses expire-times or can
+    be invalidated programaticly.  See http://www.opensymphony.com
+  -->
+  <taglib>
+    <taglib-uri>oscache</taglib-uri>
+    <taglib-location>/WEB-INF/lib/oscache.jar</taglib-location>
+  </taglib>
+
+</web-app>
+]]>
+          </programlisting>
+        </example>
       </para>
     </section>
   </section>
