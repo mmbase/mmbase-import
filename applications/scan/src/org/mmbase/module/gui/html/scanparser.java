@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.12 2000-05-30 11:35:54 wwwtech Exp $
+$Id: scanparser.java,v 1.13 2000-06-20 14:23:08 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/05/30 11:35:54  wwwtech
+Wilbert: scanparser (still fake to keep it compilable) passes mimetype to newput2
+
 Revision 1.11  2000/05/23 17:54:02  wwwtech
 - (marcel) changed entries printUrl(sp) to sp.getUrl() (this prints parameters in url also), debugs faulty html-pages more easily
 
@@ -56,7 +59,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.12 $ $Date: 2000-05-30 11:35:54 $
+ * @$Revision: 1.13 $ $Date: 2000-06-20 14:23:08 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -837,7 +840,7 @@ public class scanparser extends ProcessorModule {
     */
     private final String do_newpage(scanpage sp,String part)
     {
-		debug( "do_newpage("+sp.getUrl()+")");
+		//debug( "do_newpage("+sp.getUrl()+")");
         sp.rstatus=2;
         return(part);
     }
