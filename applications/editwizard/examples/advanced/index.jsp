@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.24 2004-01-09 20:21:12 johannes Exp $
+    @version  $Id: index.jsp,v 1.25 2004-02-27 13:35:17 gerard Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -85,7 +85,7 @@
            demonstrate here how you can jump directly to the wizard to create a
            new person (without having to go to the list first).
   </td>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/samples/people.xml</mm:param></mm:url>">view XML</a></td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/people.xml</mm:param></mm:url>">view XML</a></td>
   </tr>
 
    <tr><td>
