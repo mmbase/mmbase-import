@@ -44,5 +44,5 @@
   |
   <a href="<mm:url page="1.1/" />" >what's new</a>
   |
-  <a href="<mm:url page="$taglibdoc/toc.html" />" >Taglib documentation</a>
+  <a href="<mm:url page="$taglibdoc" />" >Taglib documentation</a>
 </p>
