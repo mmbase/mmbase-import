@@ -11,7 +11,7 @@
 	</node>
 
 
-  <!-- the security 'context' does not exist, so these contextes cannot be deleted -->
+  <!-- the security 'context', so these contextes cannot be deleted -->
 	<node number="518" owner="security">
 		<name>system</name>
 		<description></description>
@@ -24,6 +24,11 @@
 
 	<node number="1001" owner="security">
 		<name>imagesmodule</name>
+		<description></description>
+	</node>
+
+	<node number="1002" owner="security">
+		<name>security</name>
 		<description></description>
 	</node>
 

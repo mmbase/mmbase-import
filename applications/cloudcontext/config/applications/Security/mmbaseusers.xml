@@ -15,11 +15,11 @@
 	</node>
 
 
-	<node number="1002" owner="admin">
+	<node number="2002" owner="security">
 		<status>1</status>
 		<username>anonymous</username>
 		<defaultcontext>1000</defaultcontext>
-		<password></password>
+		<password></password> <!-- no password needed for anonymous -->
 	</node>
 
 </mmbaseusers>
