@@ -1,5 +1,7 @@
-<%@ include file="page_base.jsp"
-%><mm:write referid="style" />
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><%@ include file="page_base.jsp"
+%>
+<mm:write referid="style" />
 <mm:import id="configsubmitted" externid="config" from="parameters" />
 
 <mm:present referid="configsubmitted">
@@ -79,5 +81,6 @@
 <mm:locale language="$config.lang">
 <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <%@ include file="foot.jsp"  %>
+
 </mm:cloud>
 </mm:locale>
