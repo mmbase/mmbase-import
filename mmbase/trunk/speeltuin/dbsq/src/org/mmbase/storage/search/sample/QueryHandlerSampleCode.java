@@ -16,7 +16,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
@@ -81,16 +81,16 @@ public class QueryHandlerSampleCode {
         step2b.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
         Step step2c = step2b.getNext();
         // Add at least the number fields of all steps.
-        query2.addField(step2a, pools.getField("number")).setAlias("field1");
-        query2.addField(step2b, insrel.getField("number")).setAlias("field2");
-        query2.addField(step2c, images.getField("number")).setAlias("field3");
+        query2.addField(step2a, pools.getField("number"));
+        query2.addField(step2b, insrel.getField("number"));
+        query2.addField(step2c, images.getField("number"));
         
 /*
  Query:
         SELECT 
-            pools.number AS 'field1', 
-            insrel.number AS 'field2', 
-            images.number AS 'field3'
+            pools.number, 
+            insrel.number, 
+            images.number
         FROM 
             <basename>_pools pools, 
             <basename>_insrel insrel, 
@@ -123,16 +123,16 @@ public class QueryHandlerSampleCode {
         step3a.setAlias("pools0");
         step3c.setAlias("images3");
         // Add at least the number fields of all steps.
-        query3.addField(step3a, pools.getField("number")).setAlias("field1");
-        query3.addField(step3b, insrel.getField("number")).setAlias("field2");
-        query3.addField(step3c, images.getField("number")).setAlias("field3");
+        query3.addField(step3a, pools.getField("number"));
+        query3.addField(step3b, insrel.getField("number"));
+        query3.addField(step3c, images.getField("number"));
         
 /*
  Query:
         SELECT 
-            pools0.number AS 'field1', 
-            pools0.number AS 'field2', 
-            images3.number AS 'field3'
+            pools0.number, 
+            insrel.number, 
+            images3.number
         FROM 
             <basename>_pools pools0, 
             <basename>_insrel insrel, 
@@ -166,9 +166,9 @@ public class QueryHandlerSampleCode {
 /*
  Query:
         SELECT 
-            pools.number AS 'field1',
-            pools.name AS 'field2',
-            pools.description AS 'field3'
+            number AS field1,
+            name AS field2,
+            description AS field3
         FROM 
             <basename>_pools pools
  */
@@ -192,7 +192,7 @@ public class QueryHandlerSampleCode {
         BasicStep step5a = query5.addStep(pools);
         // Add some aggregated fields with field aliases.
         query5.addAggregatedField(step5a, pools.getField("number"), 
-            AggregatedField.AGGREGATION_TYPE_COUNT).setAlias("count");
+            AggregatedField.AGGREGATION_TYPE_COUNT).setAlias("pool_count");
         query5.addAggregatedField(step5a, pools.getField("number"), 
             AggregatedField.AGGREGATION_TYPE_MIN).setAlias("min_number");
         query5.addAggregatedField(step5a, pools.getField("number"), 
@@ -201,9 +201,9 @@ public class QueryHandlerSampleCode {
 /*
  Query:
         SELECT 
-            COUNT(pools.number) AS 'count',
-            MIN(pools.number) AS 'min_number',
-            MAX(pools.number) AS 'max_number'
+            COUNT(number) AS pool_count,
+            MIN(number) AS min_number,
+            MAX(number) AS max_number
         FROM 
             <basename>_pools pools
  */
@@ -219,7 +219,7 @@ public class QueryHandlerSampleCode {
 
 /*
  Returns: 
-        a resultnode with these fields: count, min_number, max_number      
+        a resultnode with these fields: pool_count, min_number, max_number      
  */ 
 
         System.exit(0);

@@ -23,7 +23,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
@@ -56,7 +56,7 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS 'title' FROM <basename>_images images
+        SELECT title FROM <basename>_images images
  */
         System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
         
@@ -68,7 +68,7 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS 'title'
+        SELECT images.title
         FROM <basename>_images images,
             <basename>_insrel insrel,
             <basename>_pools pools
@@ -84,11 +84,11 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS 'title',
-            pools.name AS 'name'
-        FROM <basename>images images,
-            <basename>insrel insrel,
-            <basename>pools pools
+        SELECT images.title,
+            pools.name
+        FROM <basename>_images images,
+            <basename>_insrel insrel,
+            <basename>_pools pools
         WHERE (images.number=insrel.snumber
         AND pools.number=insrel.dnumber)
  */
@@ -99,11 +99,11 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS 'title',
-            pools.name AS 'name'
-        FROM <basename>images images,
-            <basename>insrel insrel,
-            <basename>pools pools 
+        SELECT images.title,
+            pools.name
+        FROM <basename>_images images,
+            <basename>_insrel insrel,
+            <basename>_pools pools
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber)
@@ -117,11 +117,11 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS 'title',
-            pools.name AS 'name'
-        FROM <basename>images images,
-            <basename>insrel insrel,
-            <basename>pools pools 
+        SELECT images.title,
+            pools.name
+        FROM <basename>_images images,
+            <basename>_insrel insrel,
+            <basename>_pools pools 
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber)
@@ -134,11 +134,11 @@ public class QuerySampleCode {
 
 /* 
  Result:
-        SELECT images.title AS 'title',
-            pools.name AS 'name'
-        FROM test1_images images,
-            test1_insrel insrel,
-            test1_pools pools 
+        SELECT images.title,
+            pools.name
+        FROM <basename>_images images,
+            <basename>_insrel insrel,
+            <basename>_pools pools 
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber) 
@@ -157,8 +157,8 @@ public class QuerySampleCode {
 
 /* 
  Result:
-        SELECT COUNT(images.number) AS 'number_count' 
-        FROM <basename>images images
+        SELECT COUNT(number) AS number_count 
+        FROM <basename>_images images
  */
         System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
 
@@ -168,9 +168,9 @@ public class QuerySampleCode {
 
 /* 
  Result:
-        SELECT COUNT(images.number) AS 'number_count',
-            images.title AS 'title'
-        FROM <basename>images images 
+        SELECT COUNT(number) AS number_count,
+            title
+        FROM <basename>_images images 
         GROUP BY title
  */
         System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
