@@ -68,7 +68,9 @@ public class Casting {
     static public Document toXML(Object o, String documentType, String conversion) {
         if (!(o instanceof Document)) {
             //do conversion from string to Document thing...
-            log.warn("Object " + o + "is not a Document, but a " + o.getClass().getName());
+            if (log.isServiceEnabled()) {
+                log.service("Object " + o.getClass().getName() + "is not a Document, but a " + o.getClass().getName());
+            }
             return convertStringToXML(toString(o), documentType, conversion);
         }
         return (Document) o;
@@ -364,17 +366,17 @@ public class Casting {
             return doc;
         }
         catch(ParserConfigurationException pce) {
-            String msg = "[sax parser] not well formed xml: "+pce.toString() + "\n"+value+"\n" + Logging.stackTrace(pce);
+            String msg = "[sax parser] not well formed xml: "+pce.toString() + "\n" + Logging.stackTrace(pce);
             log.error(msg);
             throw new RuntimeException(msg);
         }
         catch(org.xml.sax.SAXException se) {
-            String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")\n"+value+"\n" + Logging.stackTrace(se);
+            String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")\n" + Logging.stackTrace(se);
             log.error(msg);
             throw new RuntimeException(msg);
         }
         catch(java.io.IOException ioe) {
-            String msg = "[io] not well formed xml: "+ioe.toString() + "\n"+value+"\n" + Logging.stackTrace(ioe);
+            String msg = "[io] not well formed xml: "+ioe.toString() + "\n" + Logging.stackTrace(ioe);
             log.error(msg);
             throw new RuntimeException(msg);
         }
