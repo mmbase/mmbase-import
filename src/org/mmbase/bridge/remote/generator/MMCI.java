@@ -81,7 +81,7 @@ public class MMCI{
         //should we use BridgeException interface?
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
 
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
+        //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
