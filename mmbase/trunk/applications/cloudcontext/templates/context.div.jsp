@@ -6,7 +6,7 @@
  </p>
 
 <div class="rights">
-   <form method="post" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_context.jsp</mm:param></mm:url>">    
+   <form method="post" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_context.jsp</mm:param></mm:url>">
    <input type="hidden" name="context" value="<mm:field name="number" />" />
    <table>
      <mm:fieldlist type="edit" fields="owner">
