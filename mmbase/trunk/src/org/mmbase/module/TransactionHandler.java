@@ -14,6 +14,7 @@ import org.mmbase.module.core.*;
 
 import java.util.*;
 import java.io.*;
+import java.lang.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.*;
@@ -37,7 +38,7 @@ public class TransactionHandler
 	implements TransactionHandlerInterface {
 	
 	private boolean _debug=true;
-	private void 	debug( String msg, int indent) {
+	private void debug( String msg, int indent) {
 		for (int i = 1; i < indent; i++) System.out.print("\t");
 		System.out.println( msg );
 	}
@@ -46,7 +47,7 @@ public class TransactionHandler
 	// the construct ((UserTransactionInfo) cashUser.get(currentUser))
 	// this is hided if function userInfo(), just for readability
 	// is used to refer to the current info indexed per user
-	private static Hashtable cashUser;
+	private static Hashtable cashUser = new Hashtable();
 	
 	private MMBase mmbase;
 	private UserTransactionInfo user;
@@ -62,41 +63,21 @@ public class TransactionHandler
 	 */
 	public void init(){
 		if (_debug) debug(">> init TransactionHandler Module ", 0);
-		
-		// initialize static hashtable if necc.
-		if (cashUser == null) cashUser = new Hashtable();
-		
 		mmbase=(MMBase)getModule("MMBASEROOT");
-		
-		if (rand == null) rand = new Random();
-		synchronized (cashUser) {
-	  	// hack
-			// the next construction generates a new user for every shmtl page
-			// should come from MMbase system later on
-			currentUser = new User("U" + rand.nextInt(10000000));
-			// end hack
-			
-			// make acess of all variables indexed by user;
-			user = new UserTransactionInfo();
-			cashUser.put(currentUser, user);
-		}
-		
-		user.transactionManager = new TransactionManager(mmbase);
-		user.tmpObjectManager = new TemporaryNodeManager(mmbase);
 	}
 	
 	public void onload(){
 		if (_debug) debug(">> onload TransactionHandler Module ", 0);
 	}
 
-private final String xmlHeader =
+	private final String xmlHeader =
 	"<?xml version='1.0'?> <!DOCTYPE TRANSACTION SYSTEM \"Transactions.dtd\">";
 	
 	/*
 	 * handleTransaction is the method that is called externally
 	 * by scanparser. It is the start of the whole chain.
 	 */
-public void handleTransaction(String template, sessionInfo session, scanpage sp) {
+	public void handleTransaction(String template, sessionInfo session, scanpage sp) {
 			
 		if (_debug) debug(" >>>>handleTransaction in TransactionHandler ", 0);
 		if (_debug) debug(template, 0);
@@ -105,87 +86,86 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
-		parse(null, is);
+		// Resolve user.
+		String user = session.getCookie();
+		UserTransactionInfo uti = userInfo(user); 
+		parse(null, is, uti);
 	}
 
 
-	private void parse(String xFile, InputSource iSource) {
+	private void parse(String xFile, InputSource iSource, UserTransactionInfo userTransactionInfo) {
 		
 		Document document;
 		Element docRootElement;
-	  NodeList transactionContextList;
-	  Node currentTransactionArgumentNode;
-	  Node transactionContext;
-	  Node currentObjectArgumentNode;
+		NodeList transactionContextList;
+		Node currentTransactionArgumentNode;
+		Node transactionContext;
+		Node currentObjectArgumentNode;
 		Node objectContext;
 		NodeList fieldContextList;
 		
 		DOMParser parser = new DOMParser();
 		
 		try {
-		   if (xFile ==  null) {
-		   	if (_debug) debug("parsing input: " + iSource.toString(), 0);
-		   	parser.parse(iSource);
-		   }
-		   if (iSource ==  null) {
-		   	if (_debug) debug("parsing file: " + xFile, 0);
-		   	parser.parse(xFile);
-		   }
-		} catch (SAXException se) {
-		   se.printStackTrace();
-			 return;
-		   //System.exit(-1);
-		} catch (IOException ioe) {
-		   ioe.printStackTrace();
-		   return;
-		   //System.exit(-2);
+			if (xFile ==  null) {
+		   		if (_debug) debug("parsing input: " + iSource.toString(), 0);
+		   		parser.parse(iSource);
+		   	}
+			if (iSource ==  null) {
+		   		if (_debug) debug("parsing file: " + xFile, 0);
+		   		parser.parse(xFile);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
 		}
-		
 		
 		try {  //catch TransactionHandlerException's here
 			
-		document = parser.getDocument();
+			document = parser.getDocument();
 		
-		// get <Transactions> context
-		docRootElement = document.getDocumentElement();
+			// get <Transactions> context
+			docRootElement = document.getDocumentElement();
 		
-		// do for all transaction contexts (create-, open-, commit- and deleteTransaction)
-		transactionContextList = docRootElement.getChildNodes();
-		for (int i = 0; i < transactionContextList.getLength(); i++) {
-			String id = null, commit = null, time = null;
-			boolean noId = true;
-			currentTransactionArgumentNode = null;
+			// do for all transaction contexts (create-, open-, commit- and deleteTransaction)
+			transactionContextList = docRootElement.getChildNodes();
+			for (int i = 0; i < transactionContextList.getLength(); i++) {
+				String id = null, commit = null, time = null;
+				boolean noId = true;
+				currentTransactionArgumentNode = null;
 
-			transactionContext = transactionContextList.item(i);
-			String tName = transactionContext.getNodeName();
-			if (tName.equals("#text")) continue;
+				transactionContext = transactionContextList.item(i);
+				String tName = transactionContext.getNodeName();
+				if (tName.equals("#text")) continue;
 			
-			//get attributes for transaction
-			NamedNodeMap nm = transactionContext.getAttributes();
-			if (nm != null) {
-				//id
-				currentTransactionArgumentNode = nm.getNamedItem("id");
-				if (currentTransactionArgumentNode != null)
-					id = currentTransactionArgumentNode.getNodeValue();
-				if (id == null) {
-					noId = true;
-					id = uniqueId();
-				} else {
-					noId = false;
+				//get attributes for transaction
+				NamedNodeMap nm = transactionContext.getAttributes();
+				if (nm != null) {
+					//id
+					currentTransactionArgumentNode = nm.getNamedItem("id");
+					if (currentTransactionArgumentNode != null) {
+						id = currentTransactionArgumentNode.getNodeValue();
+					}
+					if (id == null) {
+						noId = true;
+						id = uniqueId();
+					} else {
+						noId = false;
+					}
+					//commitOnClose
+					currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
+					if (currentTransactionArgumentNode != null) {
+						commit = currentTransactionArgumentNode.getNodeValue();
+					}
+					if (commit==null) commit="true";
+					//timeOut
+					currentTransactionArgumentNode = nm.getNamedItem("timeOut");
+					if (currentTransactionArgumentNode != null) {
+						time = currentTransactionArgumentNode.getNodeValue();
+					}
+					if (time==null) time="6";
 				}
-				//commitOnClose
-				currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
-				if (currentTransactionArgumentNode != null)
-					commit = currentTransactionArgumentNode.getNodeValue();
-				if (commit==null) commit="true";
-				//timeOut
-				currentTransactionArgumentNode = nm.getNamedItem("timeOut");
-				if (currentTransactionArgumentNode != null)
-					time = currentTransactionArgumentNode.getNodeValue();
-				if (time==null) time="6";
-				
-			}
-			initTransactionContext(tName, id, commit, time);
+			initTransactionContext(tName, id, commit, time, userTransactionInfo);
 			
 			//do for all object contexts (create-, open-, get- and deleteObject)
 			NodeList objectContextList = transactionContext.getChildNodes();
@@ -218,7 +198,7 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 					currentObjectArgumentNode = nm2.getNamedItem("mmbaseId");
 					if (currentObjectArgumentNode != null) oMmbaseId = currentObjectArgumentNode.getNodeValue();
 				}
-				initObjectContext(oName, oId, oType, oMmbaseId);
+				initObjectContext(oName, oId, oType, oMmbaseId, userTransactionInfo);
 				
 				//do for all field contexts (setField)
 				fieldContextList = objectContext.getChildNodes();
@@ -239,14 +219,14 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 								fieldValue = setFieldValue.getNodeValue();
 							}
                             if (_debug) System.out.println("setFieldValue = "+setFieldValue);
-							executeFieldContext(oId, fieldName, fieldValue);
+							executeFieldContext(oId, fieldName, fieldValue, userTransactionInfo);
 					}
 				}
 				
-				exitObjectContext(oName, oId, oType, oMmbaseId);
+				exitObjectContext(oName, oId, oType, oMmbaseId, userTransactionInfo);
 			}
 			
-			exitTransactionContext(tName, id, commit, time);
+			exitTransactionContext(tName, id, commit, time, userTransactionInfo);
 		}
 		
 		} catch (TransactionHandlerException t) {
@@ -256,12 +236,21 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 	System.out.println("exciting parse method");
 	}
 	
-	
-	private UserTransactionInfo userInfo() {
-		return ((UserTransactionInfo) cashUser.get(currentUser));
+	private UserTransactionInfo userInfo(String user) {
+		if (!cashUser.containsKey(user)) {
+			if (_debug) debug("Create UserTransactionInfo for user "+user,0);
+			// make acess to all variables indexed by user;
+			UserTransactionInfo uti = new UserTransactionInfo();
+			cashUser.put(user, uti);
+			uti.transactionManager = new TransactionManager(mmbase);
+			uti.tmpObjectManager = new TemporaryNodeManager(mmbase);
+			uti.user = new User(user);
+		}
+		return ((UserTransactionInfo) cashUser.get(user));
 	}
 		
-	private void initTransactionContext(String tName, String id, String commit, String time)
+		
+	private void initTransactionContext(String tName, String id, String commit, String time, UserTransactionInfo userTransactionInfo)
 		throws TransactionHandlerException {
 			
 		if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
@@ -270,32 +259,32 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		if (tName.equals("createTransaction")) {
 			if (id == null) {
 				id = uniqueId();
-				userInfo().anonymousTransaction = true;
+				userTransactionInfo.anonymousTransaction = true;
 			}
 			else {
-				userInfo().anonymousTransaction = false;
+				userTransactionInfo.anonymousTransaction = false;
 			}
 			// check for existence
-			if (userInfo().knownTransactionContexts.get(id) != null) {
+			if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
 				throw new TransactionHandlerException(tName + " transaction id already exists: " + id);
 			}
 			// actually create and administrate if not anonymous
-			userInfo().currentTransactionContext =
-				userInfo().transactionManager.create(currentUser, id);
-			if (!userInfo().anonymousTransaction)
-				userInfo().knownTransactionContexts.put(id, userInfo().currentTransactionContext);
+			userTransactionInfo.currentTransactionContext =
+				userTransactionInfo.transactionManager.create(userTransactionInfo.user, id);
+			if (!userTransactionInfo.anonymousTransaction)
+				userTransactionInfo.knownTransactionContexts.put(id, userTransactionInfo.currentTransactionContext);
 			return;
 		} // end createTransaction
 		
 		// except for create (above), all (open commit, cancel) need existing id
 		if (id == null) throw 
 				new TransactionHandlerException("id is null for " + tName);
-		userInfo().currentTransactionContext = (String) userInfo().knownTransactionContexts.get(id);
-		if (userInfo().currentTransactionContext == null) throw 
+		userTransactionInfo.currentTransactionContext = (String) userTransactionInfo.knownTransactionContexts.get(id);
+		if (userTransactionInfo.currentTransactionContext == null) throw 
 				new TransactionHandlerException(tName + "id is not known " + id);
 				
 		if (tName.equals("openTransaction")) {
-			// no-op we only need userInfo().currentTransactionContext
+			// no-op we only need userTransactionInfo.currentTransactionContext
 		} // end openTransaction
 		
 		if (tName.equals("commitTransaction")) {
@@ -303,77 +292,78 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		} // end commitTransaction
 		
 		if (tName.equals("deleteTransaction")) {
-			userInfo().transactionManager.cancel(currentUser, id);
-			userInfo().currentTransactionContext = null;
-			userInfo().knownTransactionContexts.remove(id);
+			userTransactionInfo.transactionManager.cancel(userTransactionInfo.user, id);
+			userTransactionInfo.currentTransactionContext = null;
+			userTransactionInfo.knownTransactionContexts.remove(id);
 		} // end deleteTransaction
 		
 	} 
 	
-	private void initObjectContext(String oName, String id, String type, String oMmbaseId)
+	private void initObjectContext(String oName, String id, String type, String oMmbaseId, UserTransactionInfo userTransactionInfo)
 		throws TransactionHandlerException {
 			
 		if (_debug) debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
 		// check if we are inside transaction context, if not error
-		if (userInfo().currentTransactionContext == null) throw
+		if (userTransactionInfo.currentTransactionContext == null) throw
 				new TransactionHandlerException(oName + " id " + id + " : not in tansaction context");
 		// create object, if no Id create one, remember it's anonymous
 		if (oName.equals("createObject")) {
 			if (id == null) {
 				id = uniqueId();
-				userInfo().anonymousObject = true;
+				userTransactionInfo.anonymousObject = true;
 			}
 			else {
-				userInfo().anonymousObject = false;
+				userTransactionInfo.anonymousObject = false;
 			}
 			// check for existence
-			if (userInfo().knownObjectContexts.get(id) != null) {
+			if (userTransactionInfo.knownObjectContexts.get(id) != null) {
 				throw new TransactionHandlerException(oName + " Object id already exists: " + id);
 			}
 			// actually create and administrate if not anonymous
-			userInfo().currentObjectContext =
-				userInfo().tmpObjectManager.createTmpNode(type, currentUser.getName(), id);
-			if (!userInfo().anonymousObject)
-				userInfo().knownObjectContexts.put(id, userInfo().currentObjectContext);
+
+			userTransactionInfo.currentObjectContext =
+				userTransactionInfo.tmpObjectManager.createTmpNode(type, userTransactionInfo.user.getName(), id);
+			if (!userTransactionInfo.anonymousObject)
+				userTransactionInfo.knownObjectContexts.put(id, userTransactionInfo.currentObjectContext);
 			// add to tmp cloud
-			userInfo().transactionManager.addNode(userInfo().currentTransactionContext, userInfo().currentObjectContext);
+			userTransactionInfo.transactionManager.addNode(userTransactionInfo.currentTransactionContext, userTransactionInfo.currentObjectContext);
 			return;
 		} // end createObject
 		
 		if (oName.equals("getObject")) {
 			if (id == null) {
 				id = uniqueId();
-				userInfo().anonymousObject = true;
+				userTransactionInfo.anonymousObject = true;
 			}
 			else {
-				userInfo().anonymousObject = false;
+				userTransactionInfo.anonymousObject = false;
 			}
 			// check for existence
-			if (userInfo().knownObjectContexts.get(id) != null) {
+			if (userTransactionInfo.knownObjectContexts.get(id) != null) {
 				throw new TransactionHandlerException(oName + " Object id already exists: " + id);
 			}
 			if (oMmbaseId == null) {
 				throw new TransactionHandlerException(oName + " no MMbase id: ");
 			}
 			// actually get and administrate if not anonymous
-			//MMObjectNode m  = userInfo().tmpObjectManager.getNode(oMmbaseId);
-			userInfo().currentObjectContext =
-				userInfo().tmpObjectManager.getObject(oMmbaseId, currentUser.getName() + id);
+			//MMObjectNode m  = userTransactionInfo.tmpObjectManager.getNode(oMmbaseId);
+			userTransactionInfo.currentObjectContext =
+				userTransactionInfo.tmpObjectManager.getObject(oMmbaseId, userTransactionInfo.user.getName() + id);
 			//get Node succeed?
-			if (userInfo().currentObjectContext==null) throw 
+			if (userTransactionInfo.currentObjectContext==null) throw 
 				new TransactionHandlerException("could not get MMbase object id:  " + oMmbaseId);
-			if (!userInfo().anonymousObject)
-				userInfo().knownObjectContexts.put(id, userInfo().currentObjectContext);
+			if (!userTransactionInfo.anonymousObject)
+				userTransactionInfo.knownObjectContexts.put(id, userTransactionInfo.currentObjectContext);
 			// add to tmp cloud
-			userInfo().transactionManager.addNode(userInfo().currentTransactionContext, userInfo().currentObjectContext);
+			userTransactionInfo.transactionManager.addNode(userTransactionInfo.currentTransactionContext, userTransactionInfo.currentObjectContext);
 			return;
 		} // end getObject
 		
 		// except for create, get (above), all (open, delete) need existing id
 		if (id == null) throw 
 				new TransactionHandlerException("id is null for " + oName);
-		userInfo().currentObjectContext = (String) userInfo().knownObjectContexts.get(id);
-		if (userInfo().currentObjectContext == null) throw 
+		userTransactionInfo.currentObjectContext = (String) userTransactionInfo.knownObjectContexts.get(id);
+		if (userTransactionInfo.currentObjectContext == null) throw 
 				new TransactionHandlerException(oName + "id is not known " + id);
 				
 		if (oName.equals("openObject")) {
@@ -382,51 +372,51 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		
 		if (oName.equals("deleteObject")) {
 			//delete from temp cloud
-			userInfo().transactionManager.removeNode(userInfo().currentTransactionContext, userInfo().currentObjectContext);
+			userTransactionInfo.transactionManager.removeNode(userTransactionInfo.currentTransactionContext, userTransactionInfo.currentObjectContext);
 			// destroy
-			userInfo().tmpObjectManager.deleteTmpNode(userInfo().currentObjectContext);
-			userInfo().currentObjectContext = null;
-			userInfo().knownObjectContexts.remove(id);
+			userTransactionInfo.tmpObjectManager.deleteTmpNode(userTransactionInfo.currentObjectContext);
+			userTransactionInfo.currentObjectContext = null;
+			userTransactionInfo.knownObjectContexts.remove(id);
 		} // end deleteObject
 		
 	}
 	
-	private void exitTransactionContext(String tName, String id, String commit, String time) 
+	private void exitTransactionContext(String tName, String id, String commit, String time, UserTransactionInfo userTransactionInfo) 
 		throws TransactionHandlerException {
 			
 		if (tName.equals("deleteTransaction")) {
 			return;
 		} // end deleteTransaction
 
-		// we're supposed to have a 'userInfo().currentTransactionContext', so check
-		if (userInfo().currentTransactionContext == null) throw 
+		// we're supposed to have a 'userTransactionInfo.currentTransactionContext', so check
+		if (userTransactionInfo.currentTransactionContext == null) throw 
 				new TransactionHandlerException(tName + " no current transaction for " + id);
 			
 		if ((tName.equals("createTransaction")) || (tName.equals("openTransaction"))) {
 			if (commit.equals("true")) {
-				userInfo().transactionManager.commit(currentUser, userInfo().currentTransactionContext);
+				userTransactionInfo.transactionManager.commit(userTransactionInfo.user, userTransactionInfo.currentTransactionContext);
 			}
 		} // end createTransaction & openTransaction
 		
 		if (tName.equals("commitTransaction")) {
-				userInfo().transactionManager.commit(currentUser, userInfo().currentTransactionContext);
+				userTransactionInfo.transactionManager.commit(userTransactionInfo.user, userTransactionInfo.currentTransactionContext);
 		} // end commitTransaction
 		
 		
 		//out of context now
 		if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
-		userInfo().currentTransactionContext = null;
+		userTransactionInfo.currentTransactionContext = null;
  }
 	
-	private void exitObjectContext(String oName, String id, String type, String oMmbaseId) 
+	private void exitObjectContext(String oName, String id, String type, String oMmbaseId, UserTransactionInfo userTransactionInfo) 
 		throws TransactionHandlerException {
 		
 		if (oName.equals("deleteObject")) {
 			return;
 		} // end deleteTransaction
 		
-		// we're supposed to have a 'userInfo().currentObjectContext' for the others, so check
-		if (userInfo().currentObjectContext == null) throw 
+		// we're supposed to have a 'userTransactionInfo.currentObjectContext' for the others, so check
+		if (userTransactionInfo.currentObjectContext == null) throw 
 				new TransactionHandlerException(oName + " no current object context for " + id);
 			
 		if (oName.equals("createObject")) {
@@ -439,59 +429,61 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		
 		//out of context now
 		if (_debug) debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-		userInfo().currentObjectContext = null;
+		userTransactionInfo.currentObjectContext = null;
 
 	}
 	
-	private void executeFieldContext(String oId, String fieldName, String fieldValue) throws
+	private void executeFieldContext(String oId, String fieldName, String fieldValue, UserTransactionInfo userTransactionInfo) throws
 		TransactionHandlerException {
 
 		if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
 		
 		//check that we are inside object context
-		if (userInfo().currentObjectContext == null) throw
+		if (userTransactionInfo.currentObjectContext == null) throw
 				new TransactionHandlerException(oId + " set field " + fieldName + " to " + fieldValue);
 		
-		userInfo().tmpObjectManager.setObjectField(userInfo().currentObjectContext, fieldName, fieldValue);
+		userTransactionInfo.tmpObjectManager.setObjectField(userTransactionInfo.currentObjectContext, fieldName, fieldValue);
 	}
 	
-	private String uniqueId() {
-		return "ID" + rand.nextInt(10000);
+
+	private synchronized String uniqueId() {
+		return "ID"+java.lang.System.currentTimeMillis();
 	}
+
+
+
 	///
 	// actual code ends here, rest is temporary or for testing
 	//
 	
-	/*
-	 * Inner classes
-	 * Inner classes
-	 * Inner classes
-	 * Inner classes
-	 *
-	 * a work around for the user problem
-	 *
+	/**
+	 * Dummy User object, this object needs to be replace by
+	 * the real User object (when that is finished)
 	 */
 	class User {
 		private String name;
+
 		public User(String name) {
 			this.name= name;
 		}
 		
-		String getName() { return name;}
+		String getName() { 
+			return name;
+		}
 	}
 
-	private User currentUser;
-	private static Random rand;
 
-	/*
+	/**
 	 * own exception class
 	 */
 	class TransactionHandlerException extends Exception {
-		TransactionHandlerException(String s) { super(s); }
+		TransactionHandlerException(String s) { 
+			super(s); 
+		}
 	}
 	
-	/* 
-	 *container class for info per user for thread safety
+	/** 
+	 * container class for info per user for thread safety
 	 */
 	class UserTransactionInfo {
 		// the Managers for this user
@@ -506,6 +498,7 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		public boolean anonymousObject = true;
 		public String currentObjectContext = null;
 		public Hashtable knownObjectContexts = new Hashtable();
+
+		public User user = null;
 	}
-	
 }
