@@ -29,8 +29,18 @@ public class FileCopier implements Runnable {
     // logger
     private static Logger log = Logging.getLoggerInstance(FileCopier.class.getName());
 
+    /**
+     * The thread reference.
+     * Setting this object to null stops the thread.
+     */
     Thread kicker = null;
+    /**
+     * Sleeptime for this thread. unused as sleeping is arranged by the Queue object.
+     */
     int sleepTime=8888;
+    /**
+     * Queue of {@link aFile2Copy} objects that need to be handled.
+     */
     Queue files;
 
     /**
