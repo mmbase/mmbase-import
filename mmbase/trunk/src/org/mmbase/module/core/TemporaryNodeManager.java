@@ -15,10 +15,15 @@ import java.lang.Exception;
 import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.InsRel;
+
 /*
-	$Id: TemporaryNodeManager.java,v 1.15 2001-03-02 13:56:44 install Exp $
+	$Id: TemporaryNodeManager.java,v 1.16 2001-03-06 11:00:10 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.15  2001/03/02 13:56:44  install
+	Rico: fixed TCP bug concerning keys, NOTE this sets extra field defs for the _number , _dnumber , _snumber fields when needed
+	
 	Revision 1.14  2001/01/08 12:31:58  install
 	Rob: fixed bug 5180, added check for valid relationname
 	
@@ -67,7 +72,7 @@ import org.mmbase.module.corebuilders.RelDef;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.15 2001-03-02 13:56:44 install Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.16 2001-03-06 11:00:10 install Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -137,6 +142,11 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			if (_debug) debug("getNode tmp not node found "+key);
 			node=bul.getNode(key);
 		}
+		node.parent.checkAddTmpField("_number");
+		if (node.parent instanceof InsRel) {
+			node.parent.checkAddTmpField("_snumber");
+			node.parent.checkAddTmpField("_dnumber");
+		}
 		return(node);
 	}
 
@@ -154,6 +164,11 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			}
 		}
 		if (node != null) {
+			node.parent.checkAddTmpField("_number");
+			if (node.parent instanceof InsRel) {
+				node.parent.checkAddTmpField("_snumber");
+				node.parent.checkAddTmpField("_dnumber");
+			}
 			return(key);
 		} else {
 			return null;
