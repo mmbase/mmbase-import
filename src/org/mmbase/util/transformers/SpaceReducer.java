@@ -33,7 +33,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
 
     public Writer transform(Reader r, Writer w) {
 
-        int space = 1;  // 'open' spaces
+        int space = 1;  // 'open' spaces (on this line)
         int nl    = 1;  // 'open' newlines
         // we start at 1, rather then 0, because in that way, all leading space is deleted too
         
@@ -48,13 +48,13 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
                 if (c == -1) break;
                 if (c == '\n') {
                     if (nl == 0) w.write(c);                    
-                    space++;
                     nl++;
                     l = 0;
+                    space = 0; indent.setLength(0);
                 } else if (Character.isWhitespace((char) c)) {
                     if (space == 0 && l > 0) w.write(' ');
                     if (l == 0) indent.append((char) c);
-                    space ++;
+                    space++;
                 } else {                
                     if (l == 0 && space > 0) {
                         w.write(indent.toString());
