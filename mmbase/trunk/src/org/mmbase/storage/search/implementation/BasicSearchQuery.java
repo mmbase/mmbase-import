@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.16 2003-12-09 22:49:14 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.17 2003-12-17 17:00:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -194,7 +194,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             StepField field = sortOrder.getField();
             int j = q.getFields().indexOf(field);
             StepField newField;
-            if (j == -1) { // not sorting on field of field list.
+            if (j == -1 || j >= fields.size()) { // not sorting on field of field list.
                 Step step = field.getStep();
                 MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
                 newField = new BasicStepField(field.getStep(), bul.getField(field.getFieldName()));
