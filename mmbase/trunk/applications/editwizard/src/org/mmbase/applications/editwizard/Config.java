@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.48 2004-02-17 12:38:56 pierre Exp $
+ * @version $Id: Config.java,v 1.49 2004-03-10 16:42:00 michiel Exp $
  */
 
 public class Config {
@@ -395,7 +395,7 @@ public class Config {
                         StringBuffer fieldsBuffer = new StringBuffer();
                         FieldIterator i = cloud.getNodeManager(mainObjectName).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
-                        while (i.hasNext()) {
+                        while (i.hasNext()) {                            
                             fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
                             if (i.hasNext()) fieldsBuffer.append(',');
                         }
@@ -724,7 +724,9 @@ public class Config {
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             config(wizard); // determine the objectnumber and assign the wizard name.
             // wizard should now have a name!
-            if (wizard.wizard == null) throw new WizardException("Wizardname may not be null, conigurated by class with name: " + this.getClass().getName());
+            if (wizard.wizard == null) {
+                throw new WizardException("Wizardname may not be null, configurated by class with name: " + this.getClass().getName());
+            }
             wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
