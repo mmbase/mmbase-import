@@ -85,7 +85,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
 	}
 
 
-	private boolean nodeChanged(String number,String builder,String ctype) {
+	private boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		log.service("Versions -> signal change "+number+" "+builder+" "+ctype);
 		Vector subs=(Vector)CacheVersionHandlers.get(builder);
 		try {
@@ -102,14 +102,14 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
 		return(true);
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
 		getNode(number); // to make sure cache is valid
-	        super.nodeLocalChanged(number,builder,ctype);
-		return nodeChanged( number, builder, ctype);
+	        super.nodeLocalChanged(machine,number,builder,ctype);
+		return nodeChanged(machine, number, builder, ctype);
 	}
 
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-       		 super.nodeRemoteChanged(number,builder,ctype);
-		return nodeChanged( number, builder, ctype);
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+       		 super.nodeRemoteChanged(machine,number,builder,ctype);
+		return nodeChanged(machine, number, builder, ctype);
 	}
 }
