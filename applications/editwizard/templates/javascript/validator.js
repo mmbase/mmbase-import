@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.26 2003-12-22 22:33:59 nico Exp $
+ * @version  $Id: validator.js,v 1.27 2003-12-23 21:46:27 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -383,7 +383,7 @@ function validateDatetime(el, form, v) {
 	    }
 	}
     
-    /** VERY UGLY TO USE THE VALIDATOR TO CHANGE AN ELEMENT VALUE, BUT I HAVE NO UDEA HOW TO SOLVE IT.
+    /** VERY UGLY TO USE THE VALIDATOR TO CHANGE AN ELEMENT VALUE, BUT I HAVE NO IDEA HOW TO SOLVE IT.
      * THIS IS THE ONLY PLACE IN THE VALIDATOR WHERE AN ELEMENT VALUE IS CHANGED.
      */
     if (errormsg.length == 0) {
@@ -445,6 +445,8 @@ function updateButtons(allvalid) {
     var savebut = document.getElementById("bottombutton-save");
     var saveonlybut = document.getElementById("bottombutton-saveonly");
     if (allvalid) {
+        setSaveInactive("false");
+
         savebut.className = "bottombutton";
         var usetext = getToolTipValue(savebut,"titlesave", "Stores all changes.");
         savebut.title = usetext;
@@ -456,6 +458,8 @@ function updateButtons(allvalid) {
           saveonlybut.disabled = false;
         }
     } else {
+        setSaveInactive("true");
+
         savebut.className = "bottombutton-disabled";
         var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
         savebut.title = usetext;
