@@ -41,13 +41,13 @@ public class ProjectManager {
     private static Logger log = Logging.getLoggerInstance(ProjectManager.class);
 
     // state of this manager is running or not
-    private static boolean state=false;
+    private static boolean state = false;
 
     // list of all the defined projects (xml file)
-    private static Hashtable projects=new Hashtable();
+    private static Hashtable projects = new Hashtable();
  
     // list of all the defined creators this manager can work with (xml file)
-    private static Hashtable creators =new Hashtable();
+    private static Hashtable creators = new Hashtable();
 
     // defines needed for the xml readers to find the dtd's
     public static final String DTD_PROJECTS_1_0 = "projects_1_0.dtd";
@@ -71,11 +71,11 @@ public class ProjectManager {
     * start this manager, it reads all the defined creators and projects
     */
     public static synchronized void init() {
-	if (!isRunning()) {
-    		readCreators();
-		readProjects();
-		state=true;
-	}
+        if (!isRunning()) {
+            readCreators();
+            readProjects();
+            state=true;
+        }
     }
 
     /**
@@ -85,7 +85,7 @@ public class ProjectManager {
     *
     */
     public static boolean isRunning() {
-	return(state);
+        return state;
     }
 
 
@@ -96,7 +96,7 @@ public class ProjectManager {
      * @return projects
      */
     public static Enumeration getProjects() {
-	return projects.elements();
+        return projects.elements();
     }
 
 
@@ -106,7 +106,7 @@ public class ProjectManager {
     * @return Project or null if not found
     */
     public static Project getProject(String name) {
-	return (Project)projects.get(name);
+        return (Project)projects.get(name);
     }
 
 
@@ -117,12 +117,12 @@ public class ProjectManager {
     * @return true if the add worked, false if something went wrong
     */
     public static boolean addProject(String name,String path) {
-	Project pr=new Project(name,path);
-	if (pr.save()) {
-		projects.put(name,pr);
-		save();
-	}
-	return true;
+        Project pr = new Project(name,path);
+        if (pr.save()) {
+            projects.put(name,pr);
+            save();
+        }
+        return true;
     }
 
 
@@ -133,13 +133,13 @@ public class ProjectManager {
     * @return true if the change worked, false if something went wrong
     */
     public static boolean changeProjectSettings(String oldname,String newname,String newpath) {
-	Project p=(Project)projects.get(oldname);
-	if (p!=null) {
-		projects.remove(oldname);
-		addProject(newname,newpath);
-		save();
-	}	
-	return true;
+        Project p = (Project)projects.get(oldname);
+        if (p != null) {
+            projects.remove(oldname);
+            addProject(newname,newpath);
+            save();
+        }    
+        return true;
     }
 
     /**
@@ -149,9 +149,9 @@ public class ProjectManager {
     * @return true if the delete worked, false if something went wrong
     */
     public static boolean deleteProject(String name) {
-	projects.remove(name);
-	save();
-	return true;
+        projects.remove(name);
+        save();
+        return true;
     }
 
     /**
@@ -160,44 +160,42 @@ public class ProjectManager {
     * resources.
     */
     public static void readProjects() {
-       String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
-
+        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
         File file = new File(filename);
         if(file.exists()) {
-            	XMLBasicReader reader = new XMLBasicReader(filename,ProjectManager.class);
-            	if(reader!=null) {
+            XMLBasicReader reader = new XMLBasicReader(filename,ProjectManager.class);
+            if(reader!=null) {
 
-			// decode projects
-            		for(Enumeration ns=reader.getChildElements("projects","project");ns.hasMoreElements(); ) {
-                		Element n=(Element)ns.nextElement();
-   		               	NamedNodeMap nm=n.getAttributes();
-                    		if (nm!=null) {
-					String name=null;
-					String path=null;
+                // decode projects
+                for(Enumeration ns=reader.getChildElements("projects","project");ns.hasMoreElements(); ) {
+                    Element n=(Element)ns.nextElement();
+                    NamedNodeMap nm=n.getAttributes();
+                    if (nm!=null) {
+                        String name=null;
+                        String path=null;
 
-					// decode name
-                        		org.w3c.dom.Node n3=nm.getNamedItem("name");
-                        		if (n3!=null) {
-						name=n3.getNodeValue();
-					}
-					// decode path
-                        		n3=nm.getNamedItem("path");
-                        		if (n3!=null) {
-						path=n3.getNodeValue();
-					}
+                        // decode name
+                        org.w3c.dom.Node n3=nm.getNamedItem("name");
+                        if (n3!=null) {
+                            name=n3.getNodeValue();
+                        }
 
-					if (path!=null && name!=null) {
-						Project p=new Project(name,path);
-						projects.put(name,p);
-					}
-				}
-			}
+                        // decode path
+                        n3=nm.getNamedItem("path");
+                        if (n3!=null) {
+                            path=n3.getNodeValue();
+                        }
 
-		}
-
-	} else {
+                        if (path!=null && name!=null) {
+                            Project p=new Project(name,path);
+                            projects.put(name,p);
+                        }
+                    }
+                }
+            }
+        } else {
             log.error("missing projects file : "+filename);
-	}
+        }
     }
 
 
@@ -207,46 +205,46 @@ public class ProjectManager {
     * resources.
     */
     public static void readCreators() {
-       creators=new Hashtable();
-       String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"creators.xml";
+        creators = new Hashtable();
+        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"creators.xml";
 
         File file = new File(filename);
         if(file.exists()) {
-            	XMLBasicReader reader = new XMLBasicReader(filename,ProjectManager.class);
-            	if(reader!=null) {
-            		for(Enumeration ns=reader.getChildElements("creators","creator");ns.hasMoreElements(); ) {
-                		Element n=(Element)ns.nextElement();
-   		                NamedNodeMap nm=n.getAttributes();
-                    		if (nm!=null) {
-					String type=null;
-					String classname=null;
+            XMLBasicReader reader = new XMLBasicReader(filename,ProjectManager.class);
+            if(reader != null) {
+                for(Enumeration ns = reader.getChildElements("creators","creator");ns.hasMoreElements(); ) {
+                    Element n = (Element)ns.nextElement();
+                    NamedNodeMap nm = n.getAttributes();
+                    if (nm != null) {
+                        String type = null;
+                        String classname = null;
 
-					// decode type
-                        		org.w3c.dom.Node n2=nm.getNamedItem("type");
-                        		if (n2!=null) {
-						type=n2.getNodeValue();
-					}
+                        // decode type
+                        org.w3c.dom.Node n2 = nm.getNamedItem("type");
+                        if (n2 != null) {
+                            type = n2.getNodeValue();
+                        }
 
-					// decode the class
-                        		n2=nm.getNamedItem("class");
-                        		if (n2!=null) {
-						classname=n2.getNodeValue();
-					}
-					try {
-		                        	Class newclass=Class.forName(classname);	
-			                        CreatorInterface cr = (CreatorInterface)newclass.newInstance(); 
-						cr.setType(type);
-						if (cr!=null) creators.put(type,cr);
-					} catch (Exception e) {
-						log.error("Can't create creator : "+classname+" for type "+type);
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	} else {
+                        // decode the class
+                        n2 = nm.getNamedItem("class");
+                        if (n2 != null) {
+                            classname = n2.getNodeValue();
+                        }
+                        try {
+                            Class newclass = Class.forName(classname);    
+                            CreatorInterface cr = (CreatorInterface)newclass.newInstance(); 
+                            cr.setType(type);
+                            if (cr !=null) creators.put(type,cr);
+                        } catch (Exception e) {
+                            log.error("Can't create creator : "+classname+" for type "+type);
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        } else {
             log.error("missing creator file : "+filename);
-	}
+        }
     }
 
     /**
@@ -255,7 +253,7 @@ public class ProjectManager {
     * @return creators
     */
     public static Hashtable getCreators() {
-	return creators;
+        return creators;
     }
 
     /**
@@ -264,9 +262,9 @@ public class ProjectManager {
     * @return creator or null if non is found for the asked mimetype
     */
     public static CreatorInterface getCreatorByType(String type) {
-		Object o=creators.get(type);
-		if (o!=null) return(CreatorInterface)o;
-		return null;
+        Object o = creators.get(type);
+        if (o != null) return (CreatorInterface)o;
+        return null;
     }
 
 
@@ -276,18 +274,18 @@ public class ProjectManager {
    * @return true if file saved/synced, false if something went wrong
    */
    public static boolean save() {
-       String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-       body+="<!DOCTYPE projects PUBLIC \"-//MMBase/DTD projects config 1.0//EN\" \"http://www.mmbase.org/dtd/projects_1_0.dtd\">\n";
-       body+="<projects>\n";
-	Enumeration e=projects.elements();
-	while (e.hasMoreElements()) {
-		Project pr=(Project)e.nextElement();
-		body+="\t<project name=\""+pr.getName()+"\" path=\""+pr.getPath()+"\" />\n";
-	}
-       body+="</projects>\n";
+       String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+       body += "<!DOCTYPE projects PUBLIC \"-//MMBase/DTD projects config 1.0//EN\" \"http://www.mmbase.org/dtd/projects_1_0.dtd\">\n";
+       body += "<projects>\n";
+       Enumeration e=projects.elements();
+       while (e.hasMoreElements()) {
+           Project pr = (Project)e.nextElement();
+           body += "\t<project name=\""+pr.getName()+"\" path=\""+pr.getPath()+"\" />\n";
+       }
+       body += "</projects>\n";
        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
-        File sfile = new File(filename);
-        try {
+       File sfile = new File(filename);
+       try {
             DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
             scan.writeBytes(body);
             scan.flush();
@@ -297,5 +295,4 @@ public class ProjectManager {
         }
         return true;
     }
-    
 }
