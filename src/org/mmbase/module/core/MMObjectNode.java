@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.121 2004-03-03 14:46:50 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.122 2004-03-10 10:06:01 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -122,7 +122,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Pointer to the actual builder to which this node belongs.
      * This value is initialised through the first call to {@link #getBuilder() }
      */
-    private MMObjectBuilder builder=null;
+    private MMObjectBuilder builder = null;
 
     /**
      * Used to make fields from multiple nodes (for multilevel for example)
@@ -189,11 +189,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public MMObjectBuilder getBuilder() {
         if (builder == null) {
-            int oType=getOType();
+            int oType = getOType();
             if (oType == -1 || parent.oType == oType) {
                 builder = parent;
             } else {
-                builder = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(oType));
+                String builderName = parent.mmb.getTypeDef().getValue(oType);
+                if (builderName != null) { // avoid NPE from mmb.getBuilder.
+                    builder = parent.mmb.getBuilder(builderName);
+                }
             }
             if (builder == null) {
                 log.warn("Builder of node " + getNumber() + " not found, taking 'object'");
