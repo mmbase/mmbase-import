@@ -1469,7 +1469,7 @@ public class MMObjectBuilder extends MMTable {
             String val=node.getStringValue(field);
             try {
                 int wrappos=Integer.parseInt(function.substring(5));
-                log.debugprintln("WRAPPOS="+wrappos);
+                log.debug("WRAPPOS="+wrappos);
                 rtn=wrap(val,wrappos);
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
