@@ -10,13 +10,19 @@
 	<!-- 
   Define the chain of filters, the filter that has to filter first
   has to be mentioned as first. A filter is specified or by the classname
-  (class needs to be ResponseInfoComparator).
+  (class needs to be a org.mmbase.applications.media.filters.Filter).
+  
+  One kind of filter are the Comparators, for which filtering is no
+  more then sorting.
+
 		-->
 	<chain>
+
 		<filter>org.mmbase.applications.media.filters.AvailableComparator</filter>
 		<filter id="clienformat">org.mmbase.applications.media.filters.ClientFormatComparator</filter>
 		<filter id="format">org.mmbase.applications.media.filters.ServerFormatComparator</filter>
 		<filter id="real">org.mmbase.applications.media.filters.RealComparator</filter>
+
 	</chain>
 
   <filterConfigs>
