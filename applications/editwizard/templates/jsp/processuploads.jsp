@@ -3,6 +3,7 @@
 %><jsp:useBean id="mySmartUpload" scope="page" class="com.jspsmart.upload.SmartUpload"
 /><%@ page import="java.io.ByteArrayOutputStream"
 %><%@ page import="org.mmbase.applications.editwizard.*" %>
+%><%@ page import="org.mmbase.applications.editwizard.Config" %>
 <html>
 <body bgcolor="white">
 <h1>Upload</h1>
@@ -13,7 +14,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.10 2003-08-27 12:30:21 michiel Exp $
+     * @version  $Id: processuploads.jsp,v 1.11 2003-12-11 11:57:52 vpro Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen

@@ -4,12 +4,13 @@
 ><%@ page import="org.mmbase.bridge.*"
 %><%@ page import="org.w3c.dom.Node"
 %><%@ page import="org.mmbase.applications.editwizard.*"
+%><%@ page import="org.mmbase.applications.editwizard.Config"
 %><%
     /**
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.10 2003-09-23 12:11:44 michiel Exp $
+     * @version  $Id: deletelistitem.jsp,v 1.11 2003-12-11 11:57:52 vpro Exp $
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
