@@ -13,8 +13,31 @@
 	</formalpara>
 	<formalpara>
 		<title>Usage</title>
-		<para>A list displays a set of related nodes, and provides means to edit this list - either by adding items to or removing items from the list, or by editing items directly. Lists can be sorted, and various commands can be added to allow a search for new objects toa dd, subwizards to call, or new empty objecst to be craeted and inserted in the list.</para>
+		<para>A list displays a set of related nodes, and provides means to edit this list - either by adding items to or removing items from the list, or by editing items directly. Lists can be sorted, and various commands can be added to allow a search for new objects toa dd, subwizards to call, or new empty objecst to be created and inserted in the list.</para>
 	</formalpara>
+	<para>Lists are similar to fields in that they select a certain element from the data document. In particular, List select relation nodes. The attributes of as list provide a filter with which the wizard selects relations, relative to the object that has focus (generally the main object). The filter can be set by specifying role of the relation or the destinationtype, but it is also possible to make a more complex filter, by providing an xpath using the fdatapath attribute.</para>
+	<para>An example of using role/destinationtype is the following:
+	<programlisting format="linespecific"><![CDATA[
+<list role="posrel" destinationtype="news" >
+	<item>
+	  <field name="title" ftype="data" />
+	</item
+</list>
+]]></programlisting>
+	Which selects all 'posrel' relations to 'news' objects (seen from the current object). The list only shows those relations loaded or created by the wizard using the action tags.</para>
+	<para>You can also obtain the list noted above using the fdatapath attribute. In that case, you specify an xpath, relative from the current object, as follows:
+	<programlisting format="linespecific"><![CDATA[
+<list fdatapath="relation[@role='posrel' and object/@type='news']" >
+	<item>
+	  <field name="title" ftype="data" />
+	</item
+</list>
+]]></programlisting>
+	See the section <link linkend="xpathexpressions">XPath Expressions and Wizard variables</link> for more info on using xpaths.
+	</para>
+	<para>Displaying content is done by specifying an item object. The item can contain field objects and other lists, with which you can display or edit the object's or the relation's fields.   
+	</para>
+	<note><para>While the list 'selects' relations (in the example, the posrel relation), the fields within the &lt;item&gt; tag assume that the object that is to be displayed or edited is the related object (in the example, the news item). See the <link linkend="title">&lt;item&gt;</link> tag for more info.</para></note>
 	<formalpara>
 		<title>Required Attributes</title>
 		<para>None</para>
@@ -25,27 +48,42 @@
 			<varlistentry>
 				<term>destinationtype</term>
 				<listitem>
-					<para>The destination type of a related object. This filter is used combined with 'role' to select the objects to show in the list.</para>
+					<para>The destination type of a related object. This filter is used combined with 'role' and 'searchdir' to select the objects to show in the list.</para>
 					<note><para>In MMBase 1.6.3 or lower, this attribute is called 'destination'. While you can still use the 'destination' attribute, in 1.6.4 and up you should concider using the 'destinationtype' attribute instead.</para></note>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
 				<term>role</term>
 				<listitem>
-					<para>The role of the relation. This filter is used combined with 'destination' to select the objects to show in the list.</para>
+					<para>The role of the relation. This filter is used combined with 'destination' and 'searchdir' to select the objects to show in the list.</para>
 				</listitem>
 			</varlistentry>
-		</variablelist></para>
-	</formalpara>
-	<para>or :</para>
-	<para><variablelist>
-		<varlistentry>
-			<term>fdatapath</term>
-			<listitem>
-				<para>The xpath describing the collections of objects to show i this list.</para>
-			</listitem>
-		</varlistentry>
-	</variablelist></para>
+			<varlistentry>
+				<term>searchdir</term>
+				<listitem>
+					<para>The direction to follow the relation in. You can specify the values 'source', 'destination', or 'both'. 
+					'Source' and 'destination' in this context refer to the directionality of the relation. Each relation in mmbase has a 'source' (where the relation starts) and a 'destination' (where the relation ends). Most of the time this directionality is not of import. You can follow relations either way without worrying on directionality, and most of teh time only one relation si posisble betweem two object types (so specifying destinationtype is often enough). In some cases you may have more possible relations (say, when you relate objects of the same type, i.e. a pool hierachy). If you want to narrow down the selection absed on directyion fo teh relation, you sepcify searchdir.</para>
+					<para>					
+					If you specify 'source', only those relations are returned where the 'current' object is the destination object (and the related objects are the 'source').  Specifying 'destination' only returns those relations are returned where the 'current' object is the source object. 'Both' returns all relations.</para>
+					<para>This filter is used combined with 'role' and 'destination' to select the objects to show in the list.</para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>fdatapath</term>
+				<listitem>
+					<para>The xpath describing the relations whose objects to show in this list. Note that if you specify fdatapath, you cannot use destination or role.</para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>fparentdatapath</term>
+				<listitem>
+					<para>The xpath describing the parent object of the list. The value of this path is used when adding new relations (using the <link linkend="action_add">add</link> or <link linkend="action_create">create actions</link>), as the parent object of the list is where new relations are added to.</para>
+					<para>This is normally the current object, so you generally do not have to specify this attribute.</para>
+					<para>However, if you specify a fdatapath attribute, it is posisble to obtain a list of relations who are not the children of the current object. In that case, if you want to be able to create new relations, you need to add the fparentdatapath to point out the list's parent object.</para>
+				</listitem>
+			</varlistentry>
+		</variablelist>
+	</para>
 	<formalpara>
 		<title>Required Child Nodes</title>
 		<para>None</para>
