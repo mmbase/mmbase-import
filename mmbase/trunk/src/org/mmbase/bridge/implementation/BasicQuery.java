@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.15 2003-08-05 20:24:54 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.16 2003-08-06 19:39:51 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -148,19 +148,19 @@ public class BasicQuery implements Query  {
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
         
         step.setAlias(createAlias(step));
-        addField(step, nm.getField("number")); // how works distinct in mmbase?
+        if (! aggregating) addField(step, nm.getField("number")); // how works distinct in mmbase?
         return step;
     }
 
 
-    protected RelationStep addRelationStep(InsRel insrel, NodeManager otherNodeManager, int searchDir) {
+    protected BasicRelationStep addRelationStep(InsRel insrel, NodeManager otherNodeManager, int searchDir) {
         MMObjectBuilder otherBuilder = ((BasicNodeManager) otherNodeManager).builder;        
         BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
         relationStep.setDirectionality(searchDir); 
         relationStep.setAlias(createAlias(relationStep));
         BasicStep next = (BasicStep) relationStep.getNext();
         next.setAlias(createAlias(next));
-        addField(next, otherNodeManager.getField("number")); // distinct?
+        if (! aggregating) addField(next, otherNodeManager.getField("number")); // distinct?
         /*
           optimize query 
         relationStep.setCheckedDirectionality(true);
@@ -182,15 +182,24 @@ public class BasicQuery implements Query  {
         return addRelationStep(BasicCloudContext.mmb.getInsRel(), otherNodeManager, searchDir); 
     }
 
-
-    public RelationStep addRelationStep(RelationManager rm) {
-        return addRelationStep(rm, RelationStep.DIRECTIONS_BOTH); // would 'DESTINATION' not be better?
-    }
-    public RelationStep addRelationStep(RelationManager rm, int searchDir) {
+    public RelationStep addRelationStep(NodeManager otherNodeManager, String role, int searchDir) {
         if (used) throw new BridgeException("Query was used already");
         // could check here if the relationmanager 'fits' the last existing step.
-        InsRel insrel =  (InsRel) ((BasicRelationManager)rm).builder;
-        return addRelationStep(insrel, rm.getDestinationManager(), searchDir);
+        if (role == null) {
+            InsRel insrel =  BasicCloudContext.mmb.getInsRel();
+            return addRelationStep(insrel, otherNodeManager, searchDir);
+        } else {
+            RelDef relDef = BasicCloudContext.mmb.getRelDef();
+            int r = relDef.getNumberByName(role);
+            if (r == -1) {
+                throw new NotFoundException("Role '" + role + "' does not exist.");
+            }
+            MMObjectNode relDefNode = relDef.getNode(r);
+            InsRel insrel = ((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
+            BasicRelationStep step =  addRelationStep(insrel, otherNodeManager, searchDir);
+            step.setRole(new Integer(r));
+            return step;
+        }
     }
 
     
@@ -335,6 +344,14 @@ public class BasicQuery implements Query  {
         BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
         return s;
+        
+    }
+
+    public void addNode(Step  s, Node node) {
+        if (used) throw new BridgeException("Query was used already");
+        BasicStep step = (BasicStep) s;
+        step.addNode(node.getNumber());
+        return;
         
     }
 
