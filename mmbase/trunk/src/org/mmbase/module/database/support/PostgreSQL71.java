@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.19 2002-10-09 09:37:35 michiel Exp $
+ * @version $Id: PostgreSQL71.java,v 1.20 2002-10-09 09:56:04 eduard Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -622,26 +622,31 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             throw new RuntimeException(sqle.toString());
         }
 
+
+	// when an error occures, we know our field-state info...
+	FieldDefs currentField = null;
+	int current = 1;
+	    
         // Now fill the fields
         try {
             preStmt.setEscapeProcessing(false);
-
-            int j=0;
-            for (Enumeration e= ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
-                String key = ((FieldDefs) e.nextElement()).getDBName();
+	    Enumeration enum = ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();
+            while (enum.hasMoreElements()) {
+		currentField = (FieldDefs) enum.nextElement();
+                String key = currentField.getDBName();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) )  {
-                    if (log.isDebugEnabled()) log.trace("DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
-                    setValuePreparedStatement( preStmt, node, key, j );
-                    log.trace("we did set the value for field " + key + " with the number " + j );
-                    j++;
+                    if (log.isDebugEnabled()) log.trace("DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+current);
+                    setValuePreparedStatement( preStmt, node, key, current);
+                    log.trace("we did set the value for field " + key + " with the number " + current);
+                    current++;
                 } else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                     log.trace("DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
                 } else {
                     if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
-                        setValuePreparedStatement( preStmt, node, key, j );
-                        log.debug("we did set the value for field " + key + " with the number " + j );
-                        j++;
+                        setValuePreparedStatement( preStmt, node, key, current );
+                        log.debug("we did set the value for field " + key + " with the number " + current );
+                        current++;
                     } else {
                         log.warn("DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
                     }
@@ -653,7 +658,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             con.setAutoCommit(true);
             con.close();
         } catch (SQLException sqle) {
-            log.error("error, could not insert record for builder " + bul.getTableName());
+            log.error("error, could not insert record for builder " + bul.getTableName()+ " current field:("+current+")"+currentField);
             // log.error(Logging.stackTrace(sqle));
             for(SQLException se = sqle;se != null; se = se.getNextException()){
                 log.error("\tSQL      : " + sql);
