@@ -94,7 +94,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // do authentication.....
         mmbaseCop = mmb.getMMBaseCop();
-	
+
         if (mmbaseCop == null) {
             String message;
             message = "Couldn't find the MMBaseCop.";
@@ -477,7 +477,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
         if (fields == null) fields = "";
         pars += " FIELDS='"+fields+"'";
-        
+
         if (orderby!=null) {
             pars+=" SORTED='"+orderby+"'";
         }
@@ -521,6 +521,18 @@ public class BasicCloud implements Cloud, Cloneable {
         Vector v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,
                                                    orderVec,sdirection,search);
         if (v!=null) {
+            // get authorization for this call only
+            Authorization auth=mmbaseCop.getAuthorization();
+            for (int i=v.size()-1; i>=0; i--) {
+                boolean check=true;
+                MMObjectNode node=(MMObjectNode)v.get(i);
+                for (int j=0; check && (j<tables.size()); j++) {
+                    check=auth.check(userContext.getUserContext(),
+                                     node.getIntValue(tables.get(j)+".number"),
+                                     Operation.READ);
+                }
+                if (!check) v.remove(i);
+            }
             NodeManager tempNodeManager = null;
             if (v.size()>0) {
                 tempNodeManager = new VirtualNodeManager((MMObjectNode)v.get(0),this);
@@ -528,7 +540,7 @@ public class BasicCloud implements Cloud, Cloneable {
             return new BasicNodeList(v,this,tempNodeManager);
         } else {
             String message;
-            message = "Parameters are invalid :" + pars + " - " + constraints; 
+            message = "Parameters are invalid :" + pars + " - " + constraints;
             log.error(message);
             throw new BridgeException(message);
         }
