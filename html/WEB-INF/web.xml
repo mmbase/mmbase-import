@@ -3,18 +3,22 @@
 <web-app>
   <servlet>
     <servlet-name>version</servlet-name>
+    <description>To get the version of MMBase</description>
     <servlet-class>org.mmbase.servlet.MMBaseServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>    
   
   <servlet>
     <servlet-name>images</servlet-name>
+    <description>To extract images from MMBase</description>    
     <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
-    <load-on-startup>2</load-on-startup>
     <init-param>
-      <param-name>expire</param-name><!-- Expire time of original images. Cached images never expire. -->
-      <param-value>600</param-value><!-- 10 minutes (default is one hour)-->
-    </init-param>
+      <!-- Expire time of original images. Cached images never expire. -->
+      <param-name>expire</param-name>
+      <!-- 10 minutes (default is one hour)-->
+      <param-value>600</param-value>
+    </init-param>    
+    <load-on-startup>2</load-on-startup>
   </servlet>    
   
   <servlet-mapping>
@@ -37,5 +41,5 @@
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
   </taglib>
-  
+    
 </web-app>

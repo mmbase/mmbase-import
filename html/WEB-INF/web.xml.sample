@@ -22,11 +22,13 @@
   <servlet>
     <servlet-name>images</servlet-name>
     <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
-    <load-on-startup>2</load-on-startup>
     <init-param>
-      <param-name>expire</param-name><!-- Expire time of original images. Cached images never expire. -->
-      <param-value>1200</param-value><!-- 20 minutes (default is one hour)-->
+      <!-- Expire time of original images. Cached images never expire. -->
+      <param-name>expire</param-name>
+      <!-- 20 minutes (default is one hour)-->
+      <param-value>1200</param-value>
     </init-param>
+    <load-on-startup>2</load-on-startup>
   </servlet>    
 
   <servlet>
