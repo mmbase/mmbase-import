@@ -21,7 +21,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Selects a MMBase database configuration based on a java.sql.Connection
+ * Represents a xml document that can be used to determine the database configuration resource,
+ * based on a database's metadata. 
+ *
+ * @author Pierre van Rooden
+ * @since MMBase-1.7
+ * @version $Id: DatabaseStorageLookup.java,v 1.2 2003-08-05 11:14:41 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {  
 
