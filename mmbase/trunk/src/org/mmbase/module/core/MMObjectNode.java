@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.72 $ $Date: 2002-04-08 11:14:35 $
+ * @version $Revision: 1.73 $ $Date: 2002-04-09 08:12:19 $
  */
 
 public class MMObjectNode {
@@ -287,7 +287,7 @@ public class MMObjectNode {
      */
     public boolean setValue(String fieldName, Object fieldValue) {
         // check the value also when the parent thing is null
-    Object originalValue = values.get(fieldName);
+        Object originalValue = values.get(fieldName);
 
         // if we have an XML-dbtype field, we always have to store it inside an Element.
         if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
@@ -303,12 +303,13 @@ public class MMObjectNode {
 
         // process the changed value (?)
         if (parent != null) {
-        if(!parent.setValue(this,fieldName, originalValue)) {
-            // setValue of parent returned false, no update needed...
-            return false;
+            if(!parent.setValue(this,fieldName, originalValue)) {
+                // setValue of parent returned false, no update needed...
+                return false;
             }
-    }
-        else log.error("parent was null for node with number" + getNumber());
+        } else {
+            log.error("parent was null for node with number" + getNumber());
+        }
         setUpdate(fieldName);
         return true;
     }
@@ -358,17 +359,13 @@ public class MMObjectNode {
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
      *  The fieldName is added to the (public) 'changed' vector to track changes.
+     *  @deprecated  This one will be moved/replaced soon...
+     *  Testing of db types will be moved to the DB specific classes
      *  @param fieldName the name of the field to change
      *  @param fieldValue the value to assign
      *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
      */
-    public boolean setValue(String fieldName, int type, String value)
-    // WH: This one will be moved/replaced soon...
-    // Testing of db types will be moved to the DB specific classes
-    // Called by both versions of FieldEditor.setEditField.
-    // MMBaseMultiCast.mergeXMLNode
-    // MMImport.parseOneXML
-    {
+    public boolean setValue(String fieldName, int type, String value) {
         if (type==FieldDefs.TYPE_UNKNOWN) {
             log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
             return false;
@@ -382,30 +379,42 @@ public class MMObjectNode {
                 break;
             case FieldDefs.TYPE_INTEGER:
                 Integer i;
-                try { i = new Integer(value); }
-                catch (NumberFormatException e)
-                { log.error( e.toString() ); log.error(Logging.stackTrace(e)); return false; }
+                try {
+                    i = new Integer(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
                 setValue( fieldName, i );
                 break;
             case FieldDefs.TYPE_FLOAT:
                 Float f;
-                try { f = new Float(value); }
-                catch (NumberFormatException e)
-                { log.error( e.toString() ); log.error(Logging.stackTrace(e)); return false; }
+                try {
+                    f = new Float(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
                 setValue( fieldName, f );
                 break;
             case FieldDefs.TYPE_LONG:
                 Long l;
-                try { l = new Long(value); }
-                catch (NumberFormatException e)
-                { log.error( e.toString() ); log.error(Logging.stackTrace(e)); return false; }
+                try {
+                    l = new Long(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
                 setValue( fieldName, l );
                 break;
             case FieldDefs.TYPE_DOUBLE:
                 Double d;
-                try { d = new Double(value); }
-                catch (NumberFormatException e)
-                { log.error( e.toString() ); log.error(Logging.stackTrace(e)); return false; }
+                try {
+                    d = new Double(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
                 setValue( fieldName, d );
                 break;
             default:
@@ -426,7 +435,6 @@ public class MMObjectNode {
         if (!changed.contains(fieldName) && state==FieldDefs.DBSTATE_PERSISTENT) {
             changed.addElement(fieldName);
         }
-
         // is it a memory only field ? then send a fieldchange
         if (state==0) sendFieldChangeSignal(fieldName);
     }
@@ -484,12 +492,13 @@ public class MMObjectNode {
         if (o!=null) {
             if (o instanceof byte[]) {
                 tmp = new String((byte[])o);
-            }
-            else if(o instanceof Document) {
+            } else if(o instanceof MMObjectNode) {
+                //
+                tmp = ""+((MMObjectNode)o).getNumber();
+            } else if(o instanceof Document) {
                 //
                 tmp = convertXmlToString(fieldName, (Document) o );
-            }
-            else {
+            } else {
                 tmp=""+o;
             }
         }
@@ -561,8 +570,6 @@ public class MMObjectNode {
      */
     public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
-
-
         if(getDBType(fieldName)!= FieldDefs.TYPE_XML) {
             throw new RuntimeException("field was not an xml-field, dont know how i need to convert this to and xml-document");
         }
@@ -605,7 +612,6 @@ public class MMObjectNode {
             // was allready unmapped so return the value
             return (byte[])obj;
         } else {
-
             byte[] b;
             if (getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
                 // call our builder with the convert request this will probably
@@ -677,7 +683,7 @@ public class MMObjectNode {
             res=((Number)i).intValue();
         } else if (i!=null) {
             try {
-              res=Integer.parseInt(""+i);
+                res=Integer.parseInt(""+i);
             } catch (NumberFormatException e) {}
         }
         return res;
@@ -793,7 +799,7 @@ public class MMObjectNode {
             res=((Number)i).floatValue();
         } else if (i!=null) {
             try {
-              res=Float.parseFloat(""+i);
+                res=Float.parseFloat(""+i);
             } catch (NumberFormatException e) {}
         }
         return res;
@@ -818,7 +824,7 @@ public class MMObjectNode {
             res=((Number)i).doubleValue();
         } else if (i!=null) {
             try {
-              res=Double.parseDouble(""+i);
+                res=Double.parseDouble(""+i);
             } catch (NumberFormatException e) {}
         }
         return res;
@@ -849,7 +855,6 @@ public class MMObjectNode {
         }
     }
 
-
     /**
      * Returns the DBType of a field.
      * @param fieldName the name of the field who's type to return
@@ -866,7 +871,6 @@ public class MMObjectNode {
             return parent.getDBType(fieldName);
         }
     }
-
 
     /**
      * Returns the DBState of a field.
@@ -1027,7 +1031,6 @@ public class MMObjectNode {
         return  parent.getTableName();
     }
 
-
     /**
      * Set the parent builder for this node.
      * @param bul the builder
@@ -1036,7 +1039,6 @@ public class MMObjectNode {
     public void setParent(MMObjectBuilder bul) {
         parent=bul;
     }
-
 
     /**
      * Delete the relation cache for this node.
@@ -1105,11 +1107,10 @@ public class MMObjectNode {
     public int getRelationCount() {
         if (relations==null) {
             relations=parent.getRelations_main(getNumber());
-        relation_cache_miss++;
+            relation_cache_miss++;
         } else {
-        relation_cache_hits++;
-    }
-
+            relation_cache_hits++;
+        }
         if (relations!=null) {
             return relations.size();
         } else {
@@ -1163,10 +1164,10 @@ public class MMObjectNode {
         if (otype!=-1) {
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
-            relation_cache_miss++;
+                relation_cache_miss++;
             } else {
-            relation_cache_hits++;
-        }
+                relation_cache_hits++;
+            }
             if (relations!=null) {
                 for(Enumeration e=relations.elements();e.hasMoreElements();) {
                     MMObjectNode tnode=(MMObjectNode)e.nextElement();
@@ -1386,19 +1387,19 @@ public class MMObjectNode {
             return doc;
         }
         catch(javax.xml.parsers.ParserConfigurationException pce) {
-        String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
+            String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
             log.error(msg);
-        throw new RuntimeException(msg);
+            throw new RuntimeException(msg);
         }
         catch(org.xml.sax.SAXException se) {
-        String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(se);
+            String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(se);
             log.error(msg);
-        throw new RuntimeException(msg);
+            throw new RuntimeException(msg);
         }
         catch(java.io.IOException ioe) {
-        String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(ioe);
+            String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(ioe);
             log.error(msg);
-        throw new RuntimeException(msg);
+            throw new RuntimeException(msg);
         }
     }
 
@@ -1443,13 +1444,11 @@ public class MMObjectNode {
                 log.debug("xml -> string:\n" + str.toString());
             }
             return str.toString();
-        }
-        catch(javax.xml.transform.TransformerConfigurationException tce) {
+        } catch(javax.xml.transform.TransformerConfigurationException tce) {
             String message = tce.toString() + " " + Logging.stackTrace(tce);
             log.error(message);
             throw new RuntimeException(message);
-        }
-        catch(javax.xml.transform.TransformerException te) {
+        } catch(javax.xml.transform.TransformerException te) {
             String message = te.toString() + " " + Logging.stackTrace(te);
             log.error(message);
             throw new RuntimeException(message);
