@@ -14,6 +14,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 
+import org.mmbase.util.Casting;
+
 import java.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The page context container stores variables directly in the page context, like JSTL does.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PageContextContainer.java,v 1.2 2004-12-14 14:09:49 michiel Exp $
+ * @version $Id: PageContextContainer.java,v 1.3 2005-01-03 20:16:32 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -73,7 +75,7 @@ public class PageContextContainer extends ContextContainer {
                                                     }
                                                     public Object setValue(Object value) {
                                                         Object was = pageContext.getAttribute(name, SCOPE);
-                                                        pageContext.setAttribute(name, value, SCOPE);
+                                                        pageContext.setAttribute(name, Casting.wrapToString(value), SCOPE);
                                                         if (value == null) {
                                                             nulls.add(name);
                                                         }
@@ -102,7 +104,7 @@ public class PageContextContainer extends ContextContainer {
                     if (value == null) {
                         nulls.add(key);
                     } else {
-                        pageContext.setAttribute((String) key, value, SCOPE);
+                        pageContext.setAttribute((String) key, Casting.wrapToString(value), SCOPE);
                     }
                     return was;
                 }
