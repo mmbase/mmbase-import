@@ -74,8 +74,9 @@ public class SetFieldTag extends NodeReferrerTag {
      * Set the value of the field.
      */
     public int doAfterBody() throws JspTagException {
+        Field f = node.getNodeManager().getField(fieldname);
         // Get the new value from the body.
-        if (node.getNodeManager().getField(fieldname).getType() == Field.TYPE_BYTE) {
+        if ((f != null) && (f.getType() == Field.TYPE_BYTE)) {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
             node.setByteValue(fieldname, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
 	} else {           
