@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.1 2003-08-21 09:59:30 pierre Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.2 2003-08-21 17:28:04 pierre Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -39,7 +39,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
     public double getVersion() {
         return 1.0;
     }
-    
+
     /**
      * Adds a node to the passed builder and all its parent builders.
      * @param node The node to insert. The node already needs to have a (new) number assigned
@@ -52,7 +52,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         try {
             do {
                 super.create(node,builder);
-                builder = getParentBuilder(builder);
+                builder = builder.getParentBuilder();
             } while (builder!=null);
             if (localTransaction) commit();
         } catch (StorageException se) {
@@ -73,7 +73,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         try {
             do {
                 super.change(node,builder);
-                builder = getParentBuilder(builder);
+                builder = builder.getParentBuilder();
             } while (builder!=null);
             if (localTransaction) commit();
         } catch (StorageException se) {
@@ -94,7 +94,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         try {
             do {
                 super.delete(node,builder);
-                builder = getParentBuilder(builder);
+                builder = builder.getParentBuilder();
             } while (builder!=null);
             if (localTransaction) commit();
         } catch (StorageException se) {
