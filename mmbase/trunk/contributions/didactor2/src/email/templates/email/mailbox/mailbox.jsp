@@ -25,6 +25,7 @@
 	</mm:compare>
 
     <mm:node number="$mailbox" notfound="skip">
+        <mm:import id="mailboxtype"><mm:field name="type"/></mm:import>
       <mm:relatednodescontainer type="emails">
 
         <mm:import id="gfx_attachment"><mm:treefile page="/email/gfx/attachment.gif" objectlist="$includePath" referids="$referids" /></mm:import>
@@ -34,7 +35,13 @@
             <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form,this.checked)"></input></di:headercell>
             <di:headercell><img src="<mm:write referid="gfx_attachment"/>"/></di:headercell>
             <di:headercell sortfield="subject">Onderwerp</di:headercell>
-            <di:headercell sortfield="from">Afzender</di:headercell>
+            <%-- show recipient if sentbox --%>
+            <mm:compare referid="mailboxtype" value="1">
+                <di:headercell sortfield="to">Ontvanger</di:headercell>
+            </mm:compare>
+            <mm:compare referid="mailboxtype" value="1" inverse="true">
+                <di:headercell sortfield="from">Afzender</di:headercell>
+            </mm:compare>
             <di:headercell sortfield="date" default="true">Datum</di:headercell>
           </di:row>
           <mm:relatednodes>
@@ -52,7 +59,13 @@
                 </mm:relatednodes>
               </di:cell>
               <di:cell><mm:write escape="none" referid="link"/><mm:field name="subject" /></a></di:cell>
-              <di:cell><mm:write escape="none" referid="link"/><mm:field name="from" /></a></di:cell>
+              <mm:compare referid="mailboxtype" value="1">
+                  <di:cell><mm:write escape="none" referid="link"/><mm:field name="to" /></a></di:cell>
+
+              </mm:compare>
+              <mm:compare referid="mailboxtype" value="1" inverse="true">
+                    <di:cell><mm:write escape="none" referid="link"/><mm:field name="from" /></a></di:cell>
+              </mm:compare>
               <di:cell><mm:write escape="none" referid="link"/><mm:field name="gui(date)" /></a></di:cell>
             </di:row>
             <mm:remove referid="link" />
