@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @duplicate very similar to {@link org.mmbase.util.media.audio.audioparts.AudioPartDef}
  *
  * @author    vpro
- * @version   $Id: VideoPartDef.java,v 1.8 2002-02-20 10:43:29 pierre Exp $
+ * @version   $Id: VideoPartDef.java,v 1.9 2002-11-12 16:57:58 pierre Exp $
  */
 
 public class VideoPartDef {
@@ -224,13 +224,13 @@ public class VideoPartDef {
 
     /**
      * Attempts to selects the best available rawvideo object for the given speed and channels
-     * The result of this method is deciding for the outcome of the {@link @getRealVideoUrl} call.
+     * The result of this method is deciding for the outcome of the {@link #getRealVideoUrl} call.
      * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already wrapping a node)
      * @param wantedspeed the desired speed of the video
      * @param wantedchannels  the desired nr of channels for the video
      * @param sorted whether to sort the available videos first (?)
      * @return true if a raw video could be found. If true, the rawvideo is remembered by the object,
-     *          for use by a subsequent call to {@link @getRealVideoUrl}
+     *          for use by a subsequent call to {@link #getRealVideoUrl}
      */
     public boolean getRawVideos( MMBase mmbase, int wantedspeed, int wantedchannels, boolean sorted ) {
         boolean result = false;
@@ -284,7 +284,7 @@ public class VideoPartDef {
 
     /**
      * Gets the Realvideo url and ads the 'title','start' and 'end' name and values parameters.
-     * The result of this method is dependent on the outcome of the previous {@link @getRawVideos} call,
+     * The result of this method is dependent on the outcome of the previous {@link #getRawVideos} call,
      * which makes it unsafe for use in a multithreaded environment.
      * @deprecation-used contains commented-out code (SMIL does not accept quoted values)
      * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code

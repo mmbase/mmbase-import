@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @duplicate very similar to {@link org.mmbase.util.media.video.videoparts.VideoPartDef}
  *
  * @author    vpro
- * @version   $Id: AudioPartDef.java,v 1.8 2002-02-20 10:43:28 pierre Exp $
+ * @version   $Id: AudioPartDef.java,v 1.9 2002-11-12 16:57:57 pierre Exp $
  */
 
 public class AudioPartDef {
@@ -226,13 +226,13 @@ public class AudioPartDef {
 
     /**
      * Attempts to selects the best available rawaudio object for the given speed and channels
-     * The result of this method is deciding for the outcome of the {@link @getRealAudioUrl} call.
+     * The result of this method is deciding for the outcome of the {@link #getRealAudioUrl} call.
      * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already wrapping a node)
      * @param wantedspeed the desired speed of the audio
      * @param wantedchannels  the desired nr of channels for the audio
      * @param sorted whether to sort the available audios first (?)
      * @return true if a raw audio could be found. If true, the rawaudio is remembered by the object,
-     *          for use by a subsequent call to {@link @getRealAudioUrl}
+     *          for use by a subsequent call to {@link #getRealAudioUrl}
      */
     public boolean getRawAudios(MMBase mmbase, int wantedspeed, int wantedchannels, boolean sorted) {
         boolean result  = false;
@@ -288,7 +288,7 @@ public class AudioPartDef {
     /**
      * Gets the Realaudio url and ads the 'title','start' and 'end' name and values
      * parameters.
-     * The result of this method is dependent on the outcome of the previous {@link @getRawAudios} call,
+     * The result of this method is dependent on the outcome of the previous {@link #getRawAudios} call,
      * which makes it unsafe for use in a multithreaded environment.
      * @deprecation-used contains commented-out code (SMIL does not accept quoted values)
      * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code

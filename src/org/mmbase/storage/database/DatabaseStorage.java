@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.1 2002-09-16 15:07:35 pierre Exp $
+ * @version $Id: DatabaseStorage.java,v 1.2 2002-11-12 16:57:52 pierre Exp $
  */
 public interface DatabaseStorage extends Storage  {
 
@@ -75,14 +75,14 @@ public interface DatabaseStorage extends Storage  {
 
     /**
      * Returns the filepath where binary objects are stored.
-     * Only applies if {@link #getStoreBinaryAsFile()} returns true.
+     * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @return the file path
      */
     public String getBinaryFilePath();
 
     /**
      * Sets the filepath where binary objects are stored.
-     * Only applies if {@link #getStoreBinaryAsFile()} returns true.
+     * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @param path the file path
      */
     public void setBinaryFilePath(String path);
@@ -101,7 +101,7 @@ public interface DatabaseStorage extends Storage  {
      * Returns the current mapping of disallowed fieldsnames (typically reserved words)
      * and their replacement names.
      * Note that this is a copy. Changes made to this map will not affect the databse until
-     * set with {@link #setDisallowedFieldNames()}.
+     * set with {@link #setFieldNameMap}.
      * @return a Map of field mappings.
      */
     public Map getFieldNameMap();
@@ -117,7 +117,7 @@ public interface DatabaseStorage extends Storage  {
      * Obtains the type map.
      * The type map is used to convert MMBase types to database types (needed for creating tables).
      * Note that this is a copy. Changes made to this map will not affect the database until
-     * set with {@link #setTypeMap()}.
+     * set with {@link #setTypeMap}.
      * However, the individual map elements are not copies - changing the dTypeInfo objects wil
      * affect the database layer directly.
      * @return a Map of MMBase types and their database type.
@@ -221,7 +221,7 @@ public interface DatabaseStorage extends Storage  {
 
     /**
      * Returns the JDBC module used by this class to connect to the database.
-     * Note that this interface may be up to change, so use with care. 
+     * Note that this interface may be up to change, so use with care.
      * @return the JDBC Module.
      */
     public JDBCInterface getJDBC();

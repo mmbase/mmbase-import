@@ -22,39 +22,40 @@ import org.apache.xpath.XPathAPI;
  * necessary to use this Xalan extension. The XSLT looks like this then:
  *
  <pre>
-  &lt;xsl:stylesheet  version = "1.0" 
+  &lt;xsl:stylesheet  version = "1.0"
     xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
-    xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction" 
+    xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
   &gt;
   ..
-  </pre
+  </pre>
   You can then use a function like this if in the current template is a DOM Node with a 'field' subnode.
   <pre>
   ..
   &lt;img src="{$formatter_imgdb}{node:function(., 'cache(s(180x180))')}" /&gt;
-  <pre>
+  </pre>
   And otherwise you can also feed it a number:
   <pre>
   ..
   &lt;img src="{$formatter_imgdb}{node:function(string(@number), 'cache(s(180x180))')}" /&gt;
-  <pre>
+  </pre>
   Possibly even with the name of MMBase:
   <pre>
   ..
   &lt;img src="{$formatter_imgdb}{node:function('mmbase', string(@number), 'cache(s(180x180))')}" /&gt;
-  <pre>
+  </pre>
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.5 2002-09-23 10:58:03 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.6 2002-11-12 16:57:46 pierre Exp $
  * @since   MMBase-1.6
  */
+
 public  class NodeFunction {
     private static Logger log = Logging.getLoggerInstance(NodeFunction.class.getName());
 
     /**
      * Supposes the default cloud 'mmbase'.
-     * @see function
+     * @see #function
      */
 
     public static String function(String node, String function) {
@@ -63,7 +64,7 @@ public  class NodeFunction {
         }
         return function("mmbase", node, function);
     }
-    
+
     /**
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
@@ -73,7 +74,7 @@ public  class NodeFunction {
     public static String function(String cloudName, String number, String function) {
         log.debug("calling base");
         try {
-            Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);        
+            Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);
             return function(cloud, number, function);
         } catch (BridgeException e) {
             return "could not execute '" + function + "' on node '" + number + "' (" + e.toString() + ")";

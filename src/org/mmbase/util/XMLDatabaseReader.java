@@ -157,7 +157,7 @@ public class XMLDatabaseReader extends XMLBasicReader  {
      * Obtains the type map.
      * The type map is used to convert MMBase types to database types (needed for creating tables).
      * The kyes in the map are Integer object whos evalues match the MMBase object types as
-     * defined in {@link FieldDefs}.The value are {@link dtTypeInfos} objects.
+     * defined in {@link FieldDefs}.The value are {@link dTypeInfos} objects.
      * @return a Map of MMBase types and their database type.
      */
     public Hashtable getTypeMapping() {

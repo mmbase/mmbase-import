@@ -27,17 +27,17 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * A base class for all Caches. Extend this class for other caches.  
+ * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.15 2002-10-30 00:05:03 michiel Exp $
+ * @version $Id: Cache.java,v 1.16 2002-11-12 16:57:46 pierre Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
     private static Logger log = Logging.getLoggerInstance(Cache.class.getName());
 
     private static Map caches = new Hashtable();
-   
+
     /**
      * Configures the caches using a config File. There is only one
      * config file now so the argument is al little overdone, but it
@@ -66,7 +66,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
         }
 
         Enumeration e =  xmlReader.getChildElements("caches", "cache");
-        while (e.hasMoreElements()) {           
+        while (e.hasMoreElements()) {
             Element cacheElement = (Element) e.nextElement();
             String cacheName =  cacheElement.getAttribute("name");
             if (only != null && ! only.equals(cacheName)) {
@@ -99,11 +99,11 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
                     }
                 }
             }
-        }        
+        }
     }
 
 
-    /** 
+    /**
     * The caches can be configured with an XML file, this file can
     * be changed which causes the caches to be reconfigured automaticly.
     */
@@ -202,8 +202,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches().
-     *
-     * @see getCaches
+     * @see #getCaches
      */
     public static Cache getCache(String name) {
         return (Cache) caches.get(name);
@@ -242,7 +241,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
      */
     public void setActive(boolean a) {
         active = a;
-        if (! active) clear(); 
+        if (! active) clear();
         // inactive caches cannot contain anything
         // another option would be to override also the 'contains' methods (which you problable should not use any way)
     }
@@ -275,13 +274,13 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
         SizeOf sizeof = new SizeOf();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());            
+            len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
         return len;
     }
-       
+
 public static void main(String args[]) {
-    Cache mycache = new Cache(20) {  
+    Cache mycache = new Cache(20) {
             public String getName()        { return "test cache"; }
             public String getDescription() { return ""; }
         };
@@ -292,10 +291,10 @@ public static void main(String args[]) {
 
     System.out.println("putting an hashmap in cache");
     Map m = new HashMap();
-    m.put("ccc", "CCCCCC");      
-    m.put("ddd", "DDD");            
+    m.put("ccc", "CCCCCC");
+    m.put("ddd", "DDD");
     m.put("abc", "EEE");
-    mycache.put("eee", m);   
+    mycache.put("eee", m);
     */
 
     MMObjectNode node = new MMObjectNode(new MMObjectBuilder());
