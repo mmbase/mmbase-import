@@ -14,6 +14,9 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
+
 /**
  * Has to live in a formatter tag.
  * 
@@ -70,7 +73,9 @@ public class XsltTag extends ContextReferrerTag  {
                     xsltString + 
                     "\n</xsl:stylesheet>";
             }
-            formatter.setXsltSource(new javax.xml.transform.stream.StreamSource(new java.io.ByteArrayInputStream(totalString.getBytes())), xsltString);
+            Source src = new StreamSource(new java.io.ByteArrayInputStream(totalString.getBytes()));
+            src.setSystemId(xsltString);
+            formatter.setXsltSource(src);
         }
         return SKIP_BODY;
     }
