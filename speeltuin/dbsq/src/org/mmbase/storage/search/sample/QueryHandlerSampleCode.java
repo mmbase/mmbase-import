@@ -16,7 +16,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
@@ -67,7 +67,7 @@ public class QueryHandlerSampleCode {
         System.out.println("Query: " + sqlHandler.toSql(query1, sqlHandler));
         
         // Execute, get result as real nodes.
-        List nodes1 = handler.getNodes(query1, pools);
+        List nodes1 = pools.getNodes(query1);
         Iterator iNodes1 = nodes1.iterator();
         while (iNodes1.hasNext()) {
             MMObjectNode node = (MMObjectNode) iNodes1.next();
@@ -101,7 +101,8 @@ public class QueryHandlerSampleCode {
         System.out.println("Query: " + sqlHandler.toSql(query2, sqlHandler));
 
         // Execute, result as clusternodes.
-        List nodes2 = handler.getNodes(query2, new ClusterBuilder(mmbase));
+        ClusterBuilder clusterBuilder = mmbase.getClusterBuilder();
+        List nodes2 = clusterBuilder.getClusterNodes(query2);
         Iterator iNodes2 = nodes2.iterator();
         while (iNodes2.hasNext()) {
             ClusterNode node = (ClusterNode) iNodes2.next();
@@ -143,7 +144,7 @@ public class QueryHandlerSampleCode {
         System.out.println("Query: " + sqlHandler.toSql(query3, sqlHandler));
 
         // Execute, result as clusternodes.
-        List nodes3 = handler.getNodes(query3, new ClusterBuilder(mmbase));
+        List nodes3 = clusterBuilder.getClusterNodes(query3);
         Iterator iNodes3 = nodes3.iterator();
         while (iNodes3.hasNext()) {
             ClusterNode node = (ClusterNode) iNodes3.next();
