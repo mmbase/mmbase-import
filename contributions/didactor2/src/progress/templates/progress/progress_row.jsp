@@ -36,13 +36,14 @@
 
       <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
-        <mm:field id="testNo" name="number" write="false"/>
+        <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>
  
-        <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
+<%--        <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
          <%
              testStatus = testStatus.trim();
          %><mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><%= testStatus %></mm:import>
-        
+--%>
+        <%@include file="teststatus.jsp"%>
        <mm:compare referid="teststatus" value="incomplete" inverse="true">
        
              <mm:compare referid="teststatus" value="toberated">
@@ -58,10 +59,10 @@
              </mm:compare>
          
              <mm:compare referid="teststatus" value="passed">
-       	             <td class="td_test_tbs">S</td>
+       	             <td class="td_test_tbs">S <mm:write referid="madetestscore"/>/<mm:write referid="requiredscore"/></td>
              </mm:compare> 
              <mm:compare referid="teststatus" value="failed">
-       	             <td class="td_test_failed">F</td>
+       	             <td class="td_test_failed">F <mm:write referid="madetestscore"/>/<mm:write referid="requiredscore"/></td>
        	     </mm:compare>
         </mm:compare>
          <mm:compare referid="teststatus" value="incomplete" >
