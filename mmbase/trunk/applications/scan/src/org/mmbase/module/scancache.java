@@ -24,6 +24,7 @@ import org.mmbase.util.*;
 
 /**
  * Simple file cache system that can be used by any servlet
+ * the configuration properties of this file can be found in /config/database/modules/cache.properties
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -33,10 +34,9 @@ public class scancache extends Module implements scancacheInterface {
 	
 	Hashtable pools = new Hashtable();
 	Hashtable timepool = new Hashtable();
-	private static String cachepath="/usr/local/algemeen/MMBaseCache";
-	//private static String cachepath="/tmp/scancache/";
+	private String cachepath="";
 	MMBase mmbase;	
-	// org.mmbas StatisticsInterface statsav
+	// org.mmbas StatisticsInterface stats;
 
 	public void onload() {
 	}
@@ -87,7 +87,6 @@ public class scancache extends Module implements scancacheInterface {
 
 
 	public String get(String poolName, String key, String line) {
-		if (debug) debug("poolName="+poolName+" key="+key+" line="+line);
 		String tmp=line.substring(0,line.indexOf('>'));
 
 		// get the interval time
@@ -137,7 +136,6 @@ public class scancache extends Module implements scancacheInterface {
 
 
 	public String getPage(String poolName, String key,String line) {
-		if (debug) debug("getPage="+poolName+" key="+key);
 		fileInfo fileinfo=loadFile(poolName,key);
 		if (fileinfo!=null && fileinfo.value!=null) {
 			return(fileinfo.value);
@@ -285,6 +283,10 @@ public class scancache extends Module implements scancacheInterface {
 
 	public void init() {
 		String statmode=getInitParameter("statmode");	
+		cachepath=getInitParameter("CachePath");	
+		if (cachepath==null) {
+			debug("SCANCACHE -> No CacheRoot set in SCANCACHE.properties");
+		}
 		mmbase=(MMBase)getModule("MMBASEROOT");
 		/* org.mmbase
 		if (statmode!=null && statmode.equals("yes")) {
@@ -355,10 +357,10 @@ public class scancache extends Module implements scancacheInterface {
 					scan.flush();
 					scan.close();
 				} else {
-					debug("scandisk cache -> making "+dirname+" failed ");
+					// debug("scandisk cache -> making "+dirname+" failed ");
 				}
 			} catch (Exception f) {
-				debug("scandisk cache -> Saving file "+filename+" failed "+f);
+					//debug("scandisk cache -> Saving file "+filename+" failed "+f);
 			}
 			return(false);
 		}
