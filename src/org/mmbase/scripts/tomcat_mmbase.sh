@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.9 2000-10-17 14:34:10 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.10 2000-10-17 22:47:34 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
-# WARNING: only tested with Tomcat 3.1 !!!!!
+# Tested on Tomcat 3.2
 #
 
 # Shell script to start and stop the server
@@ -17,17 +17,25 @@
 MMBASE_HOME=..
 # change this to your Tomcat directory
 TOMCAT_HOME=/usr/local/java/apache/jakarta-tomcat
-
-# change this to your mmbase path where the classes are or to the mmbase.jar
-MMBASE_LIB=$MMBASE_HOME/lib
 # change this to your mmbase-config dir
 MMBASE_CONFIG=$MMBASE_HOME/config/default
+# change this to your JDBC-driver
+JDBC_CLASSPATH=/usr/local/lib/java/mysql.jar
+
+#####################################
+#
+# Below this line nothing has to change if you're using the default distribution
+# Only if you're a programmer and know what you're doing, go on..... :)
+#
+#
+
+# change this to your mmbase path where the classes are or to the mmbase.jar
+# you only have to change this if you're gonna develop code
+MMBASE_LIB=$MMBASE_HOME/lib
 # change this to the location of the mmbase-html's (must be under webapps in Tomcat)
 MMBASE_HTML=webapps/ROOT
 # change this to the location where you'd like to see the mmbase.log
 MMBASE_LOG=$MMBASE_HOME/log/mmbase.log
-# change this to your JDBC-driver
-JDBC_CLASSPATH=/usr/local/lib/java/mysql.jar
 
 if [ -f $HOME/.tomcatrc ] ; then 
   . $HOME/.tomcatrc
