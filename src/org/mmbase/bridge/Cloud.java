@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.29 2002-09-23 15:57:34 pierre Exp $
+ * @version $Id: Cloud.java,v 1.30 2002-10-18 10:52:59 pierre Exp $
  */
 public interface Cloud {
 
@@ -34,8 +34,8 @@ public interface Cloud {
     public Node getNode(int number) throws NotFoundException;
 
     /**
-     * Returns the node with the specified number from this cloud. 
-     * If the string passed is not a number, the string is assumed to be an alias. 
+     * Returns the node with the specified number from this cloud.
+     * If the string passed is not a number, the string is assumed to be an alias.
      * The returned node is a new instance of <code>Node</code> with a reference to this
      * instance of <code>Cloud</code>.
      *
@@ -71,8 +71,8 @@ public interface Cloud {
     public Relation getRelation(int number) throws NotFoundException;
 
     /**
-     * Returns the relation with the specified number from this cloud. 
-     * If the string passed is not a number, the string is assumed to be an alias. 
+     * Returns the relation with the specified number from this cloud.
+     * If the string passed is not a number, the string is assumed to be an alias.
      * The returned node is a new instance of <code>Relation</code> with a reference to this
      * instance of <code>Cloud</code>.
      *
@@ -97,7 +97,7 @@ public interface Cloud {
 
     /**
      * Determines whether a node with the specified number is available from this cloud.
-     * If the string passed is not a number, the string is assumed to be an alias. 
+     * If the string passed is not a number, the string is assumed to be an alias.
      * The node returns true if a Node exists and if the user has sufficent right to access
      * the node.
      *
@@ -109,8 +109,8 @@ public interface Cloud {
 
     /**
      * Determines whether a relation with the specified number is available from this cloud.
-     * The node returns true if a Node exists, the user has sufficent right to access it, and 
-     * the node is a relation.     
+     * The node returns true if a Node exists, the user has sufficent right to access it, and
+     * the node is a relation.
      *
      * @param number    the number of the node
      * @return          true if the node is available
@@ -120,9 +120,9 @@ public interface Cloud {
 
     /**
      * Determines whether a relation with the specified number is available from this cloud.
-     * If the string passed is not a number, the string is assumed to be an alias. 
-     * The node returns true if a Node exists, the user has sufficent right to access it, and 
-     * the node is a relation.     
+     * If the string passed is not a number, the string is assumed to be an alias.
+     * The node returns true if a Node exists, the user has sufficent right to access it, and
+     * the node is a relation.
      *
      * @param number a string containing the number or alias of the requested node
      * @return          true if the node is available
@@ -141,13 +141,19 @@ public interface Cloud {
     /**
      * Returns the specified node manager.
      *
-     * @param name                      the name of the requested node
-     *                                  manager
-     * @return                          the requested node manager
-     * @throws NotFoundException        if the specified node manager
-     *                                  could not be found
+     * @param name                the name of the requested node manager
+     * @return                    the requested node manager
+     * @throws NotFoundException  if the specified node manager could not be found
      */
     public NodeManager getNodeManager(String name) throws NotFoundException;
+
+    /**
+     * Returns whether the specified node manager exists.
+     *
+     * @param name  the name of the requested node manager
+     * @return      <code>true</code> if the specified node manager exists
+     */
+    public boolean hasNodeManager(String name);
 
     /**
      * Returns the specified node manager.
@@ -162,29 +168,51 @@ public interface Cloud {
     /**
      * Returns the specified relation manager.
      *
-     * @param sourceManagerName         name of the node manager of the
-     *                                  source node
-     * @param destinationManagerName    name of the node manager of the
-     *                                  destination node
-     * @param roleName                  name of the role
-     * @return                          the requested relation manager
-     * @throws NotFoundException        if the specified relation
-     *                                  manager could not be found
+     * @param nodeManagerId       Unique ID of the RelationManager to retrieve
+     * @return                    the requested relation manager
+     * @throws NotFoundException  if the specified relation manager could not be found
+     * @since  MMBase-1.6
+     */
+    public RelationManager getRelationManager(int relationManagerId) throws NotFoundException;
+
+    /**
+     * Returns the specified relation manager.
+     *
+     * @param sourceManagerName      name of the node manager of the source node
+     * @param destinationManagerName name of the node manager of the destination node
+     * @param roleName               name of the role
+     * @return                       the requested relation manager
+     * @throws NotFoundException     if the specified relation manager could not be found
      */
     public RelationManager getRelationManager(String sourceManagerName,
             String destinationManagerName, String roleName) throws NotFoundException;
 
     /**
-     * Returns the specified relation manager.
-     * This is a very generic Relation Manager, which does not contain type
-     * information (it does, however, validate new relations).
+     * Returns whether the specified relation manager exists.
      *
-     * @param roleName            name of the role
-     * @return                    the requested relation manager
-     * @throws NotFoundException  if the specified relation
-     *                            manager could not be found
+     * @param sourceManagerName      name of the node manager of the source node
+     * @param destinationManagerName name of the node manager of the destination node
+     * @param roleName               name of the role
+     * @return                       <code>true</code> if the specified relation manager could not be found
+     */
+    public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
+
+    /**
+     * Returns the specified relation manager.
+     *
+     * @param roleName               name of the role
+     * @return                       the requested relation manager
+     * @throws NotFoundException     if the specified relation manager could not be found
      */
     public RelationManager getRelationManager(String roleName) throws NotFoundException;
+
+    /**
+     * Returns whether the specified relation manager exists.
+     *
+     * @param roleName               name of the role
+     * @return                       <code>true</code> if the specified relation manager exists
+     */
+    public boolean hasRelationManager(String roleName);
 
     /**
      * Returns all relation managers available in this cloud.
@@ -214,8 +242,7 @@ public interface Cloud {
      *
      * @param name                     an unique name to use for the transaction
      * @return                         a <code>Transaction</code> on this cloud
-     * @throws AlreadyExistsException  if a transaction with the
-     *                                 specified name allready exists
+     * @throws AlreadyExistsException  if a transaction with the specified name allready exists
      */
     public Transaction createTransaction(String name) throws AlreadyExistsException;
 
@@ -391,13 +418,13 @@ public interface Cloud {
             String searchDir, boolean distinct);
 
     /**
-     * Sets a locale for this Cloud instance. 
+     * Sets a locale for this Cloud instance.
      * @param locale To which locale it must be set. It can be null, in which case it will be reset to a default.
      *
      * @since MMBase-1.6
      */
     public void setLocale(Locale locale);
- 
+
    /**
      * Gets the Locale assocatied with this Cloud instance.
      *
