@@ -39,8 +39,8 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     private FieldList     returnList;
     private FieldIterator returnValues;
-    private Field currentField;
-    private int currentItemIndex= -1;
+    private Field         currentField;
+    private int           currentItemIndex= -1;
 
     private String nodeManagerString = null;
     private NodeProvider nodeProvider = null;
@@ -97,10 +97,13 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
     public Node getNodeVar() throws JspTagException {
+        /*
         if (nodeManagerString != null) {
             return null;
         }
-        nodeProvider = findNodeProvider();
+        */
+        nodeProvider = findNodeProvider(false);
+        if (nodeProvider == null) return null;
         return nodeProvider.getNodeVar();
     }
 
@@ -115,8 +118,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     *
     **/
     public int doStartTag() throws JspTagException{
-
-
         if (getReferid() != null) {
             if (nodeManagerString != null || type != NO_TYPE) {
                 throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
