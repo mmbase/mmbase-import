@@ -16,20 +16,23 @@ import org.mmbase.tests.*;
  * Test class <code>NodeManager</code> from the bridge package.
  *
  * @author Jaco de Groot
+ * @author Kees Jongenburger
  */
 public class NodeManagerTest extends BridgeTest {
     Cloud cloud;
-    Node node;
+    NodeList nodes;
     int nrOfTestNodes;
+    public final static String TEST_STRING_VALUE = "C05353E04zz HAVO, Cultuur/Maatschappij, Z'zee, 04-05";
 
     public NodeManagerTest(String name) {
         super(name);
     }
 
     public void setUp() {
-        // Create a test node.
+        // Create some test nodes
         cloud = getCloud();
-        node = cloud.getNodeManager("aa").createNode();
+        nodes = cloud.getCloudContext().createNodeList();
+        Node node = cloud.getNodeManager("aa").createNode();
         byte[] bytes = {72,101,108,108,111,32,119,111,114,108,100,33};
         node.setByteValue("bytefield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
@@ -38,23 +41,46 @@ public class NodeManagerTest extends BridgeTest {
         node.setLongValue("longfield", 500);
         node.setStringValue("stringfield", "600");
         node.commit();
-        nrOfTestNodes = 1;
+        nodes.add(node);
+
+        node = cloud.getNodeManager("aa").createNode();
+        node.setByteValue("bytefield", "100".getBytes());
+        node.setDoubleValue("doublefield", 200);
+        node.setFloatValue("floatfield", 300);
+        node.setIntValue("intfield", 400);
+        node.setLongValue("longfield", 500);
+        node.setStringValue("stringfield", TEST_STRING_VALUE );
+        node.commit();
+
+        nodes.add(node);
+
     }
 
     public void tearDown() {
         // Remove test node.
-        node.delete();
+        
+        for (NodeIterator i  = nodes.nodeIterator() ; i.hasNext() ; ){
+         i.nextNode().delete();
+        }
     }
 
     public void testGetList() {
         NodeManager nodeManager = cloud.getNodeManager("aa");
         NodeList nodeList;
         nodeList = nodeManager.getList(null, null, null);
-        assertTrue(nodeList.size() == nrOfTestNodes);
+        assertTrue(nodeList.size() == nodes.size());
         nodeList = nodeManager.getList("", "", "");
-        assertTrue(nodeList.size() == nrOfTestNodes);
+        assertTrue(nodeList.size() == nodes.size());
     }
     
+    /**
+     * Test if it is possible to search for a node that contains single quotes
+     */
+    public void testGetListWithQuotes() {
+        NodeManager nodeManager = cloud.getNodeManager("aa");
+        NodeList nodeList = nodeManager.getList("stringfield ='"+ org.mmbase.util.Encode.encode("ESCAPE_SINGLE_QUOTE",TEST_STRING_VALUE) +" '", "", "");
+        assertTrue(nodeList.size() == 1);
+    }
     // Add some more list test.
 
     // Add some tests with wrong formatted parameters.
