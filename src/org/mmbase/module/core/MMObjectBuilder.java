@@ -9,28 +9,74 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.util.*;
-import java.util.Date;
-import java.sql.*;
 import java.io.File;
-import java.text.NumberFormat;
-import java.text.DateFormat;
 import java.net.URLEncoder;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.mmbase.util.*;
+import org.mmbase.cache.Cache;
+
 import org.mmbase.module.ParseException;
-import org.mmbase.storage.StorageException;
+import org.mmbase.module.builders.DayMarkers;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 
-import org.mmbase.module.builders.DayMarkers;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.gui.html.EditState;  //argh 
 
-import org.mmbase.module.gui.html.EditState;  // argh
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.StorageException;
+import org.mmbase.storage.search.AggregatedField;
+import org.mmbase.storage.search.CompositeConstraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.FieldValueConstraint;
+import org.mmbase.storage.search.ResultBuilder;
+import org.mmbase.storage.search.ResultNode;
+import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.search.SortOrder;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicAggregatedField;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
+import org.mmbase.storage.search.implementation.BasicConstraint;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
+import org.mmbase.storage.search.implementation.BasicSortOrder;
+import org.mmbase.storage.search.implementation.BasicStep;
+import org.mmbase.storage.search.implementation.ModifiableQuery;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.util.DateStrings;
+import org.mmbase.util.DateSupport;
+import org.mmbase.util.QueryConvertor;
+import org.mmbase.util.SPartFileFilter;
+import org.mmbase.util.SortedVector;
+import org.mmbase.util.StringObject;
+import org.mmbase.util.StringTagger;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This class is the base class for all builders.
@@ -52,28 +98,34 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.209 2003-02-19 20:23:50 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.210 2003-02-26 12:37:16 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
-    // Max size of the object type cache
+    /** Max size of the object type cache */
     public final static int OBJ2TYPE_MAX_SIZE=20000;
 
-    // Default size of the temporary node cache
+    /** Default size of the temporary node cache */
     public final static int TEMPNODE_DEFAULT_SIZE=1024;
 
-    // Default replacements for method getHTML()
+    /** Default replacements for method getHTML() */
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
 
     /**
      * The cache that contains the last X types of all requested objects
-     * X is currently set to 20000.
-     * The hashtable is created using the init_obj2type() method, which
-     * seems strange - as other caches are instantiated during variable declaration.
+     * @since 1.7
      */
-    public static LRUHashtable obj2type;
+    public static Cache typeCache;
 
+    static {
+        typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
+            public String getName()        { return "TypeCache"; }
+            public String getDescription() { return "Cache for node types";}
+        };
+        typeCache.putCache();
+    }
+    
     /**
      * The cache that contains the X last requested nodes
      */
@@ -202,8 +254,10 @@ public class MMObjectBuilder extends MMTable {
      */
     private Stack ancestors = new Stack();
 
-    // Version information for builder registration
-    // Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
+    /** Version information for builder registration
+     * Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml
+     * builder file
+     */
     private int version=0;
 
     /**
@@ -342,8 +396,6 @@ public class MMObjectBuilder extends MMTable {
                 return false;
             }
         }
-        // should this be here??
-        if (obj2type==null) init_obj2type();
 
         // add temporary fields
         checkAddTmpField("_number");
@@ -497,41 +549,6 @@ public class MMObjectBuilder extends MMTable {
             return false;
         }
     }
-
-    /**
-     * Creates a cache for storing types and objects.
-     * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
-     * Note that this should possibly be moved to the variable declaration part (like nodecache)?
-     *
-     * @sql
-     */
-    public synchronized void init_obj2type() {
-
-        if (obj2type!=null) return;
-        obj2type=new LRUHashtable(OBJ2TYPE_MAX_SIZE);
-
-        // This doesn't do anything...
-        if (false) {
-            MultiConnection con = null;
-            Statement stmt = null;
-            // do the query on the database
-            try {
-                con  = mmb.getConnection();
-                stmt = con.createStatement();
-                ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+","+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object;");
-                while(rs.next() && (obj2type.size()<OBJ2TYPE_MAX_SIZE)) {
-                    obj2type.put(new Integer(rs.getInt(1)),new Integer(rs.getInt(2)));
-                }
-            } catch (SQLException e) {
-                log.error(Logging.stackTrace(e));
-            } finally {
-                mmb.closeConnection(con, stmt);
-            }
-        }
-        return;
-    }
-
-
 
     /**
      * Returns the builder that this builder extends.
@@ -763,8 +780,8 @@ public class MMObjectBuilder extends MMTable {
         Statement stmt2 = null;
         try {
             // first try our mega cache for the convert
-            if (obj2type!=null) {
-                Integer tmpv=(Integer)obj2type.get(new Integer(number));
+            if (typeCache!=null) {
+                Integer tmpv=(Integer)typeCache.get(new Integer(number));
                 if (tmpv!=null) {
                     otype=tmpv.intValue();
                 }
@@ -779,7 +796,7 @@ public class MMObjectBuilder extends MMTable {
                     otype=rs.getInt(1);
                     // hack hack need a better way
                     if (otype!=0) {
-                        if (obj2type!=null) obj2type.put(new Integer(number),new Integer(otype));
+                        if (typeCache!=null) typeCache.put(new Integer(number),new Integer(otype));
                     }
                 } else {
                     log.debug("Could not find the otype (no records) using following query:" + sql);
