@@ -439,9 +439,24 @@ public class BasicCloud implements Cloud, Cloneable {
      * @return a <code>List</code> of found (virtual) nodes
      */
     public NodeList getList(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct) {
-  		StringTagger tagger= new StringTagger(
-  		                    "NODES='"+nodes+"' TYPES='"+nodeManagers+"' FIELDS='"+fields+
-  		                  "' SORTED='"+sorted+"' DIR='"+direction+"'",
+  		
+        String pars ="";
+  		if (nodes!=null) {
+  		    pars+=" NODES='"+nodes+"'";
+  		}
+  		if (nodeManagers!=null) {
+  		    pars+=" TYPES='"+nodeManagers+"'";
+  		}
+  		if (fields!=null) {
+  		    pars+=" FIELDS='"+fields+"'";
+  		}
+  		if (sorted!=null) {
+  		    pars+=" NODES='"+sorted+"'";
+  		}
+  		if (direction!=null) {
+  		    pars+=" NODES='"+direction+"'";
+  		}
+  		StringTagger tagger= new StringTagger(pars,
   		                    ' ','=',',','\'');
   		
   		String sdistinct="";
@@ -466,7 +481,7 @@ public class BasicCloud implements Cloud, Cloneable {
   		        where="WHERE "+where;
   		    }
   		}
-  		Vector v = multirel.searchMultiLevelVector(snodes,sfields,sdistinct,tables,where,orderVec,sdirection);
+  		Vector v = multirel.searchMultiLevelVector(snodes,sfields,sdistinct,tables,where,orderVec,sdirection,MultiRelations.SEARCH_BOTH);
   		if (v!=null) {
   		    NodeManager tempNodeManager = null;
   		    if (v.size()>0) {
@@ -483,7 +498,7 @@ public class BasicCloud implements Cloud, Cloneable {
   		    }
 */
 		} else {
-      		throw new BasicBridgeException("getList failed, parameters are invalid");
+      		throw new BasicBridgeException("getList failed, parameters are invalid :" +pars);
         }
     }
 
