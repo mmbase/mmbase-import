@@ -10,27 +10,32 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.sql.*;
 
-import org.mmbase.module.database.*;
+import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * @javadoc
  * @author Daniel Ockeloen
- * @version 3 Dec 2000
+ * @version $Id: BugReports.java,v 1.4 2002-11-21 13:39:43 pierre Exp $
  */
 public class BugReports extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(BugReports.class.getName());
 
 	private int starttime;
 
+    /**
+     * @javadoc
+     */
 	public BugReports() {
 		starttime=(int)(System.currentTimeMillis()/1000);
 	}
 
-	
+    /**
+     * @javadoc
+     */
 	private boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		int nowtime=(int)(System.currentTimeMillis()/1000);
 		if ((nowtime-starttime)>30) {
@@ -40,16 +45,25 @@ public class BugReports extends MMObjectBuilder {
 		return(true);
 	}
 
+    /**
+     * @javadoc
+     */
 	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
 	        super.nodeLocalChanged(machine,number,builder,ctype);
 		return(nodeChanged(machine, number, builder, ctype));
 	}
 
+    /**
+     * @javadoc
+     */
 	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
        		super.nodeRemoteChanged(machine,number,builder,ctype);
 		return(nodeChanged(machine, number, builder, ctype));
 	}
 
+    /**
+     * @javadoc
+     */
 	private void changedReport(String number) {
 		MMObjectNode node=getNode(number);
 
@@ -68,24 +82,27 @@ public class BugReports extends MMObjectBuilder {
 		}
 		if (lastlog!=null) body+=lastlog;
 
-		// send the email
-		Enumeration e=node.getRelatedNodes("people").elements();
-		while (e.hasMoreElements()) {
-			MMObjectNode n2=(MMObjectNode)e.nextElement();
-			String firstname=n2.getStringValue("firstname");
-			String lastname=n2.getStringValue("lastname");
-			String email=n2.getStringValue("email");
-			log.debug("EMAIL="+email);	
-
-			Mail mail=new Mail(email,"bugs@mmbase.org");
-			mail.setSubject("Mail from BugTracker");
-			mail.setDate();
-			mail.setReplyTo("bugs@mmbase.org"); // should be from
-			mail.setText(body);
-			if (mmb.getSendMail().sendMail(mail)==false) {
-				log.error("bugreports -> mail failed");
-			}
+        SendMailInterface sendmail=mmb.getSendMail();
+        if (sendmail==null) {
+            log.warn("sendmail module not active, cannot send email");
+        } else {
+            // send the email
+            Enumeration e=node.getRelatedNodes("people").elements();
+            while (e.hasMoreElements()) {
+                MMObjectNode n2=(MMObjectNode)e.nextElement();
+                String firstname=n2.getStringValue("firstname");
+                String lastname=n2.getStringValue("lastname");
+                String email=n2.getStringValue("email");
+                log.debug("EMAIL="+email);
+                Mail mail=new Mail(email,"bugs@mmbase.org");
+                mail.setSubject("Mail from BugTracker");
+                mail.setDate();
+                mail.setReplyTo("bugs@mmbase.org"); // should be from
+                mail.setText(body);
+                if (mmb.getSendMail().sendMail(mail)==false) {
+                    log.error("sending email failed");
+                }
+            }
 		}
 	}
-
 }
