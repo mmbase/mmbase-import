@@ -16,9 +16,10 @@ package org.mmbase.util;
  * Used by the {@link org.mmbase.module.scancache} module.
  *
  * @rename FileInfo
-  * @author Daniel Ockeloen
+ * @application SCAN
+ * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: fileInfo.java,v 1.8 2003-03-10 11:51:15 pierre Exp $
+ * @version $Id: fileInfo.java,v 1.9 2004-09-30 08:52:17 pierre Exp $
  */
 public class fileInfo {
     /**

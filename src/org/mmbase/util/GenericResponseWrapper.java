@@ -18,8 +18,6 @@ import java.util.regex.Matcher;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
-
 /**
  * Wrapper around the response. It collects all data that is sent to it, and makes it available
  * through a toString() method. It is used by taglib's Include-Tag, but it might find more general
@@ -29,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.11 2004-09-22 15:11:08 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.12 2004-09-30 08:52:11 pierre Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -46,7 +44,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 
     private static String DEFAULT_CONTENTTYPE = "text/html";
 
-    private PrintWriter         writer; 
+    private PrintWriter         writer;
     private StringWriter        string; // wrapped by writer
 
     private ServletOutputStream outputStream; // wrapped by outputStream
@@ -61,7 +59,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Public constructor
      */
     public GenericResponseWrapper(HttpServletResponse resp) {
-        super(resp);        
+        super(resp);
         wrappedResponse = resp; // I don't understand why this object is not super.getResponse();
 
     }
@@ -69,7 +67,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Sets also a value for the characterEncoding which must be supposed.
      * Normally it would be determined automaticly right, but if for some reason it doesn't you can override it.
      */
-
     public GenericResponseWrapper(HttpServletResponse resp, String encoding) {
         this(resp);
         characterEncoding = encoding;
@@ -87,7 +84,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         HttpServletResponse response = wrappedResponse;
         while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
             response = ((GenericResponseWrapper) response).wrappedResponse;
-        } 
+        }
         return response;
     }
 
@@ -95,6 +92,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     public void sendRedirect(String location) throws IOException  {
         getHttpServletResponse().sendRedirect(location);
     }
+
     public void setStatus(int s) {
         getHttpServletResponse().setStatus(s);
     }
@@ -102,6 +100,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     public void addCookie(Cookie c) {
         getHttpServletResponse().addCookie(c);
     }
+
     public void setHeader(String header, String value) {
         getHttpServletResponse().setHeader(header,value);
     }
@@ -133,7 +132,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         }
         return writer;
     }
-
 
     /**
      * Sets the content type of the response being sent to the
@@ -173,7 +171,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         return characterEncoding;
     }
 
-
     protected byte[] determinXMLEncoding() {
         byte[] allBytes = bytes.toByteArray();
         characterEncoding = getXMLEncoding(allBytes);
@@ -205,15 +202,10 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         }
     }
 
-    /*
-    public static void  main(String[] argv) {
-        log.info("Found encoding " + getXMLEncoding(argv[0]));
-    }
-    */
     /**
      * Takes a String, which is considered to be (the first) part of an XML, and returns the
      * encoding (the specified one, or the XML default)
-     * @returns The XML Encoding, or <code>null</code> if the String was not recognized as XML (no <?xml header found)
+     * @returns The XML Encoding, or <code>null</code> if the String was not recognized as XML (no &lt;?xml&gt; header found)
      * @since MMBase-1.7.1
      * @see #getXMLEncoding(byte[])
      */
@@ -228,9 +220,10 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             return encoding;
         }
     }
+
     /**
      * Takes a ByteArrayInputStream, which is considered to be (the first) part of an XML, and returns the encoding.
-     * @returns The XML Encoding, or <code>null</code> if the String was not recognized as XML (not <?xml header found)
+     * @returns The XML Encoding, or <code>null</code> if the String was not recognized as XML (not &lt;?xml&gt; header found)
      * @since MMBase-1.7.1
      * @see #getXMLEncoding(String)
      */
@@ -241,14 +234,14 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             System.arraycopy(allBytes, 0, firstBytes, 0, 100);
         }
         try {
-            return  getXMLEncoding(new String(firstBytes, "US-ASCII")); 
+            return  getXMLEncoding(new String(firstBytes, "US-ASCII"));
         } catch (java.io.UnsupportedEncodingException uee) {
             // cannot happen, US-ASCII is known
         }
         return "UTF-8"; // cannot come here.
     }
 
-    /** 
+    /**
      * Takes the value of a Content-Type header, and tries to find the encoding from it.
      * @since MMBase-1.7.1
      * @return The found charset if found, otherwise 'null'
@@ -262,9 +255,10 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             return null;
         }
     }
-    /** 
-     * Supposes that no explicit charset is mentioned in a contentType, and returns a default. (UTF-8 or US-ASCII 
-     * for XML types and ISO-8859-1 otherwise).     
+
+    /**
+     * Supposes that no explicit charset is mentioned in a contentType, and returns a default. (UTF-8 or US-ASCII
+     * for XML types and ISO-8859-1 otherwise).
      * @since MMBase-1.7.1
      * @return A charset.
      */
@@ -275,17 +269,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
                                              // ignore it, because if not not ascii, it will never
                                              // work, and all known charset are superset of us-ascii
                                              // (so the response _is_ correct it will work).
-        } else if ( contentType.equals("application/xml") || contentType.equals("application/xhtml+xml")) { 
+        } else if ( contentType.equals("application/xml") || contentType.equals("application/xhtml+xml")) {
             return "UTF-8";
         } else {
             return "iso-8859-1";
         }
-        
+
     }
-
-
-    
-    
 }
 
 /**
@@ -310,7 +300,5 @@ class MyServletOutputStream extends ServletOutputStream {
     public void write(byte[] b, int off, int len) throws IOException {
         stream.write(b, off, len);
     }
-
-
 }
 
