@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import org.mmbase.module.core.*;
+import org.mmbase.storage.search.*;
 
 /**
  * The Storage interface defines a storage device - a location where MMBase objects are kept,
@@ -19,9 +20,9 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Storage.java,v 1.2 2002-11-07 12:30:37 pierre Exp $
+ * @version $Id: Storage.java,v 1.3 2002-11-22 08:28:03 pierre Exp $
  */
-public interface Storage  {
+public interface Storage extends SearchQueryHandler {
 
     /**
      * Returns whether this storage layer allows for builder to be a parent builder
