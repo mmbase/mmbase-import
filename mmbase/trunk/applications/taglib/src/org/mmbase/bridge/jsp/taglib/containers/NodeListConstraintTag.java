@@ -24,9 +24,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.8 2003-08-04 20:19:09 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.9 2003-08-18 14:13:46 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
+
+    private static final int BETWEEN = -1; // not FieldCompareConstraint
 
     private static Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
 
@@ -37,6 +39,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     protected Attribute field      = Attribute.NULL;
     protected Attribute value      = Attribute.NULL;
+
+    protected Attribute value2    = Attribute.NULL; // needed for BETWEEN
 
 
     protected Attribute field2     = Attribute.NULL; // not implemented
@@ -52,6 +56,11 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
+    }
+
+
+    public void setValue2(String v) throws JspTagException {
+        value2 = getAttribute(v);
     }
 
     public void setOperator(String o) throws JspTagException {
@@ -72,6 +81,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
             return FieldCompareConstraint.GREATER_EQUAL;
         } else if (op.equals("LIKE")) {
             return FieldCompareConstraint.LIKE;
+        } else if (op.equals("BETWEEN")) {
+            return BETWEEN;
         //} else if (op.equals("~") || op.equals("REGEXP")) {
         //  return FieldCompareConstraint.REGEXP;
         } else {
@@ -80,18 +91,23 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     }
 
-    public static FieldConstraint addConstraint(Query query, String field, int operator, String stringValue) throws JspTagException {
+    protected static Number getNumberValue(String stringValue) throws JspTagException {
+        try {
+            return  new Integer(stringValue);
+        } catch (NumberFormatException e) {
+            try {
+               return new Double(stringValue);
+            } catch (NumberFormatException e2) {
+                throw new  JspTagException("Operator requires number value ('" + stringValue + "' is not)");
+            }
+        }
+    }
+
+
+    public static FieldConstraint addConstraint(Query query, String field, int operator, String stringValue, String stringValue2) throws JspTagException {
         Object compareValue;
         if (operator < FieldCompareConstraint.LIKE) {
-            try {
-                compareValue = new Integer(stringValue);
-            } catch (NumberFormatException e) {
-                try {
-                    compareValue = new Double(stringValue);
-                } catch (NumberFormatException e2) {
-                    throw new  JspTagException("Operator requires number value ('" + stringValue + "' is not)");
-                }
-            } 
+            compareValue = getNumberValue(stringValue);     
         } else {
             compareValue = stringValue;
         }
@@ -99,7 +115,15 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         StepField stepField = query.createStepField(field);
         log.debug(stepField);
         if (stepField == null) log.warn("Could not create stepfield with '" + field + "'");
-        newConstraint = query.createConstraint(stepField, operator, compareValue);
+        if (operator > 0) {
+            newConstraint = query.createConstraint(stepField, operator, compareValue);
+        } else {
+            if (operator == BETWEEN) {
+                newConstraint = query.createConstraint(stepField, compareValue, getNumberValue(stringValue2));
+            } else {
+                throw new RuntimeException("Unknown value for operation " + operator);
+            }
+        }
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
             log.debug("compositing constraint");
@@ -116,7 +140,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
-        addConstraint(query, field.getString(this), getOperator(), value.getString(this));
+        addConstraint(query, field.getString(this), getOperator(), value.getString(this), value2.getString(this));
                 
         return SKIP_BODY;
     }
