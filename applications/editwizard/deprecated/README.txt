@@ -10,7 +10,7 @@ How to install.
   /mmbase/edit/wizard.deprectated  (next to the 'new' front end)
   /mmapps/editwizard               (original location of 1.6)
 
-  Then, you also need the 'jsp' directory and the 'media' directory, which
+  Then, you also need the 'jsp' directory, the 'media' directory and the 'data/i18n' directory which
   do not have 2 versions.
 
   You could copy them from /mmbase/edit/wizard/jsp and  /mmbase/edit/wizard/media (or templates/ if
@@ -18,6 +18,7 @@ How to install.
 
   /home/mmbase/mmbase-app/mmbase/edit/wizard.deprecated$ ln -s  ~/mmbase/head/applications/editwizard/templates/media
   /home/mmbase/mmbase-app/mmbase/edit/wizard.deprecated$ ln -s  ~/mmbase/head/applications/editwizard/templates/jsp 
+  /home/mmbase/mmbase-app/mmbase/edit/wizard.deprecated/data$ ln -s  ~/mmbase/head/applications/editwizard/templates/data/i18n
 
   And now use this location. Perhaps you somewhere in you editor entrance page have a setting like:
 
@@ -30,5 +31,5 @@ How to install.
   want to go for placing the whole lot in /mmapps/editwizard.
 
 
-$Id: README.txt,v 1.1 2004-01-20 15:48:05 michiel Exp $
+$Id: README.txt,v 1.2 2004-05-24 13:21:11 michiel Exp $
  
