@@ -36,6 +36,14 @@ Applications build file
   <target name="all" depends="init,all16,editwizard,community,rmmci" />
 
 
+  <target name="jars" depends="all">
+    <copy todir="${applications.build.dir}/jars" flatten="true">
+      <fileset dir=".">
+        <include name="**/*.jar" />
+      </fileset>
+    </copy>
+  </target>
+
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
     <ant dir="${source.dir}" target="expand.hsqldb" />
