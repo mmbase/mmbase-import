@@ -1,0 +1,268 @@
+<project name="MMBaseTest" default="run.all" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties" />
+
+  <!-- Default values for properties that can be customized -->
+  <property name="mmbase.source.dir" value=".." />
+  <property name="source.dir"   location="${mmbase.source.dir}" />
+
+  <property file="${source.dir}/build.properties" />
+
+  <property name="build.dir"    value="${source.dir}/build" />
+  <property name="download.dir" value="${build.dir}/download" />
+  <property name="expand.dir"   value="${download.dir}/expanded" />
+
+  <!-- use the build.properties.default from mmbase to define where
+  jars are located -->
+	<property file="${mmbase.source.dir}/build.properties.default"/>
+
+  <property name="tests.source.dir"   location="." />
+  <property name="tests.build.dir" value="${tests.source.dir}/build" />
+  <property name="tests.work.dir"    value="${tests.source.dir}/work" />
+
+  <property name="tests.lib"       value="${tests.build.dir}/lib" />
+  <property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
+  <property name="ui.class" value="junit.textui.TestRunner" />
+
+
+  <target name="init" depends="mmbase,expand.junit">
+    <mkdir dir="${tests.work.dir}"/>
+    <copy file="${junit.jar}" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci.jar" todir="${tests.lib}" />
+    <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase-rmmci-server.jar" todir="${tests.lib}" />
+    <copy todir="${tests.lib}">
+      <fileset dir="${build.dir}/lib">
+        <include name="*.jar"/>
+        <include name="*.zip"/>
+      </fileset>
+    </copy>
+    <copy file="${hsqldb.jar}" todir="${tests.lib}" />
+
+
+    <available property="dummy" classname="dummy">
+      <classpath id="compile.classpath">
+        <fileset dir="${tests.lib}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+      </classpath>
+      
+      
+      <classpath id="run.classpath">
+        <fileset dir="${tests.lib}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+      </classpath>
+    </available>  
+  </target>
+
+  <target name="mmbase">
+    <ant dir="${source.dir}" target="jar" />
+    <ant dir="${source.dir}" target="lib.compile" />
+    <!--<ant dir="${source.dir}" target="expand.hsqldb" />-->
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Clean the JUnit test environment                                    -->
+  <!-- =================================================================== -->
+  <target name="clean" description="Clean the test environment">
+    <delete dir="${tests.build.dir}"/>
+    <delete dir="${tests.work.dir}"/>
+  </target>
+
+  <target name="init.get">
+    <!-- JUnit -->
+    <property name="junit.version" value="junit3.8.1"/>
+    <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
+    <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
+    <available property="junit.present" 
+      file="${download.dir}/${junit.version}.zip"/>
+    <available property="junit.expanded"
+               file="${expand.dir}/${junit.version}"/>
+
+  </target>
+
+
+  <target name="get.junit" depends="init.get" unless="junit.present">
+    <get src="${junit.url}"
+         dest="${download.dir}/${junit.version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.junit" depends="get.junit" unless="junit.expanded">
+    <unzip src="${download.dir}/${junit.version}.zip" dest="${expand.dir}"/>
+  </target>
+
+
+  <target name="compile" description="Compile the source directory" depends="init">
+
+    <mkdir dir="${tests.build.dir}/classes"/>
+    <echo message="java version: ${ant.java.version}" />
+
+    <echo message="copying" />
+
+    <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
+      <fileset dir="${tests.source.dir}" >
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.jpg"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
+    </copy>
+
+    <echo message="compiling" />
+
+    <javac 
+      destdir="${tests.build.dir}/classes"
+      debug="true"
+      optimize="false"
+      classpathref="compile.classpath"
+      deprecation="false"
+      >
+      <src path="${tests.source.dir}/bridge"/>
+      <src path="${tests.source.dir}/typerel"/>
+      <src path="${tests.source.dir}/convertimage"/>
+      <src path="${tests.source.dir}/dbsq"/>
+      <src path="${tests.source.dir}/common"/>
+      <include name="**/*.java"/>
+    </javac>
+  </target>
+
+
+  <target name="jar.uptodatecheck">
+    <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
+      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**" />
+    </uptodate>   
+  </target>
+
+  <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
+    <echo message="${mmbasetest.jar} is up-to-date" />
+  </target>
+    
+
+  <target name="jar" description="Create the MMBase testjar file"
+          depends="jar.check" unless="jar.uptodate">
+    <antcall target="compile" />
+
+    <echo file="${tests.build.dir}/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase Community
+URL: http://www.mmbase.org
+Comment: The MMBase Content Managment System Tests
+Build-by: ${ant.version}
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+    <jar jarfile="${mmbasetest.jar}"
+         basedir="${tests.build.dir}/classes"
+       includes="**"
+       update="false"
+       manifest="${tests.build.dir}/manifest.mf" >
+    </jar>
+
+    <delete file="${tests.build.dir}/manifest.mf" />
+  </target>
+
+
+  <target name="run.typerel" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+    </java>
+  </target>
+
+  <target name="run.bridge" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.bridge.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+    </java>
+  </target>
+
+  <!-- 
+  Test for rmmci, this tests is not 100% since both 
+  the client and server run in the same classloader/jvm.
+  errors when bridge code call the core directely are not 
+  detected
+  -->
+  <target name="run.bridge.rmmci" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.bridge.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
+    </java>
+  </target>
+
+
+  <target name="run.convertimage" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.bridge.tests.ConvertImageTest" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+    </java>
+  </target>
+
+
+  <target name="run.dbsq" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="BaseSuite" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+    </java>
+  </target>
+
+
+  <!-- ================================================================== -->
+
+  <target name="standalone" depends="jar,init">
+    <java 
+      classname="org.mmbase.tests.MMBaseTest"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+    </java>
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Run the tests -->
+  <!-- =================================================================== -->
+  <target name="run.all" description="Run all tests"
+          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci">
+
+  </target>
+
+</project>

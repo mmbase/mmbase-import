@@ -1,0 +1,85 @@
+<html>
+<head><title>Merging Objects Cookbook</title></head>
+<body>
+Authors: Rob van Maris (Finalist IT Group)
+<br>
+Last revision: Januari 18th, 2002
+
+<h4>Introduction</h4>
+The most important new concept introduced by XML Importer is <em>merging objects</em>. The XML Importer code will handle most of the details for you, and in order to put this to work, all you will have to do is provide implementations for these interfaces: <code><ul>
+<li>SimilarObjectFinder
+<li>ObjectMerger
+</ul></code>.
+The XML Importer provides basic implementations for both of these, but some additional work will be necessary to meet your needs.
+<p>In this document we'll have a look at some of the issues involved, and give some guidelines.
+
+<h4>SimilarObjectFinder</h4>
+When we have populated a transaction with (access and input) objects, we can merge all objects of a given type. In order to do so, the XML Importer performs these actions:<ol>
+<li>Walk through the list of objects in the transaction - in the order they were added to the transaction - of the given type.
+<li>For each such object, look for a similar object.
+<li>If a similar object is found, merge both objects to a single object.
+<li>If more than one similar object is found, the transaction cannot proceed, unless the user can choose the object to merge with.
+</ol>
+
+The SimilarObjectFinder is needed to implement step 2. One fairly general way to do this is implemented by BasicFinder, which makes a distinction between <em>exact matches</em> (i.e. indistinguishable) and <em>non-exact matches</em> (e.g. different, but considered to be the same, based on some specified criteria - i.e. fuzzy comparison):<ol>
+<li>Walk through the list of objects in the transaction, that were added before this one, compare these with this object, and keep the results as a list of exact matches and a list of non-exact matches.
+<li>Look for exact matches in the persistent cloud
+<li>If exact matches were found in step 1 or 2, these are returned as the result of the search.
+<li>Otherwise, look for objects in the persistent cloud that are close enough to warrant further inspection, and compare these with this object.
+<li>If non-exact matches were found in step 1 or 4, these are returned as the result of the search.
+</ol>
+
+This strategy has these characteristics:<ul>
+<li>If the transaction introduces a number of similar objects, these are merged one by one, in the order they were added to the transaction.
+<li>If an exact match is found, the non-exact matches are ignored.
+<li>Searching the persistent cloud for non-exact matches occurs only if no exact match is found (performance optimimalization).
+<li>Searching the persistent cloud for non-exact matches is performed in two parts: selecting objects that are close enough, followed by comparing these objects with this object (performance optimalization, since this reduces the number of objects to be compared).
+</ul>
+
+For examples of implementation based on BasicFinder, see MoviesFinder and PersonsFinder in the XML Importer examples code.
+
+<h4>ObjectMerger</h4>
+The ObjectMerger is needed to implement merging two objects to a single object. In order to do so, the XML Importer performs these actions:<ol>
+<li>If one of the objects represents a persistent object, this object is made the <em>merge target</em>, e.g. the object that will hold the merge result.
+<li>The fields of both objects are merged - the resulting fields are set on the merge target.
+<li>The relations of both objects are merged - the resulting relations are set to the merge target.
+<li>If step 3 results in duplicate relations, the duplicating relations are deleted.
+<li>Of the two objects, only the merge target is retained - the object that is not the merge target is deleted.
+<li>If there was no similar object to merge with, this object will only be kept in the transaction if the ObjectMerger specifies so (see method <code>isAllowedToAdd()</code> in ObjectMerger).
+</ol>
+
+A fairly general implementation is provided by BasicMerger, which has these characteristics:<ul>
+<li>The fields of the merge target are unaffected (e.g. the merge result has the same fields of the merge target).
+<li>The relations of both objects are moved to the merge result.
+<li>Relations are considered duplicates when of same type and with same source and destination (e.g. in this case the duplicating relations are deleted).
+<li>Objects for which no similar object is found, are kept in the transaction
+</ul>
+
+<h4>Tips</h4><ul>
+<li>As a general rule, keep the transactions small.
+<li>If a number of transactions involve merging with the same objects over and over, it is worthwhile to combine these into a single transaction.
+<li>Within a transaction, the same object in the persistent cloud can be accessed repeatedly (e.g. &lt;accessObject mmbaseId="12345" id="id12345"&gt;), provided the same id is used each time. This proves handy when the XML file containing the TCP code is generated by a stylesheet transformation, where it can be hard to establish if an object had been accessed within the same transaction already. Just use the mmbaseId to create a unique id, so the same id will be used when accessing the same object again.
+<li>When it comes to performance and resources, merging objects can be expensive, therefore try to <em>use the merging mechanism only when really needed</em>. As an alternative, in many cases objects can be be accessed directly using their mmbase id.
+<li>If you want to see wich objects are merged, set logging priority for the class <code>Transaction</code> to "debug", and look at the log output of the Transaction method <code>commit()</code>.
+<li>Set the timeOut to a value sufficient for the transaction to be completed under normal circumstances. Keep in mind that transactions take longer to complete in interactive mode.
+</ul>
+<h4>Performance issues</h4>
+
+Merging objects can put a heavy stress on the MMBase server and database, so it is important to be aware of the following perfomance issues. <ul>
+<li>When two objects are merged, all their relations are added to the transaction in order to be processed. Try to <em>avoid merging objects that have a large number of relations</em>.
+<li>When using SimilarObjectFinder to merge objects, based on a fuzzy match criterium, the search for non-exact matches in the persistent cloud occurs in two stages: <ol>
+<li>Query the database for objects that are close enough and access these objects in the transaction.
+<li>Compare these with the original object.
+</ol>
+Step 2 is needed when a database query is not sufficient to compare the objects. Therfore try to <em>make the query in step 1 as selective as possible</em> to avoid large numbers of unneeded objects in the transaction.
+</ul>
+
+<h4>Documentation</h4>
+For a full unterstanding of the XML Importer, it is recommended to read the following documents, available on the <a href="http://www.mmbase.org">MMBase website</a>:
+<ol>
+<li>TCP 1.0 documentation (see Temporary Cloud Project).
+<li>XML Importer overview (see XML Importer Project).
+<li>The javadoc documentation of the <code>org.mmbase.applications.xmlimporter</code> package.
+</ol>
+
+</body>
