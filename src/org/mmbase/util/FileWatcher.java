@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.18 2003-07-18 14:57:46 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.19 2003-11-16 14:04:21 michiel Exp $
  */
 public abstract class FileWatcher  {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -97,7 +97,6 @@ public abstract class FileWatcher  {
     public void start() {        
         fileWatchers.add(this);
     }
-
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
      * @param file The file that was changed..
@@ -271,14 +270,15 @@ public abstract class FileWatcher  {
 
         private Set watchers = new HashSet();
         FileWatcherRunner() {
+            log.info("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
         }
 
         void add(FileWatcher f) {
-            //synchronized(watchers) {
+            synchronized(watchers) {
                 watchers.add(f);
-                //}
+            }
         }
 
         /**
@@ -289,7 +289,7 @@ public abstract class FileWatcher  {
             do {
                 try {
                     long now = System.currentTimeMillis();
-                    //synchronized(watchers) {
+                    synchronized(watchers) {
                         Iterator i = watchers.iterator();
                         while (i.hasNext()) {
                             FileWatcher f = (FileWatcher) i.next();
@@ -301,16 +301,22 @@ public abstract class FileWatcher  {
                                 // System.out.print(".");
                                 f.removeFiles();
                                 if (f.changed() || f.mustStop()) {
+                                    if (log.isDebugEnabled()) {
+                                        log.debug("Removing filewatcher " + f + " " + f.mustStop());
+                                    }
                                     i.remove();
                                 }
                                 f.lastCheck = now;
                             }
                         }
-                        //}
+                    }
                     Thread.sleep(THREAD_DELAY);
                 } catch(InterruptedException e) {
-                    System.out.println("interrupted");
+                    log.error("Interrupted" + Logging.stackTrace(e));
                     // no interruption expected
+                } catch (Throwable ex) { 
+                    // unexpected exception?? This run method should never interrupt, so we catch everything.
+                    log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage()  + Logging.stackTrace(ex));
                 }
                 // when we found a change, we exit..
             } while (true);
