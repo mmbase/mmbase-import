@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.89 2004-02-25 13:47:03 pierre Exp $
+ * @version $Id: CloudTag.java,v 1.90 2004-02-25 23:31:20 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -947,7 +947,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (rank != Attribute.NULL) {
                 log.debug("Checking for rank");
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
-                if (curRank.getInt() < getRank().getInt()) {
+                Rank r = getRank();
+                if (curRank.getInt() < r.getInt()) {
                     if (log.isDebugEnabled())
                         log.debug("logged on, but rank of user is too low (" + cloud.getUser().getRank() + ". log out first.");
                     cloud = null;
@@ -955,7 +956,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                         session.removeAttribute(getSessionName());
                     }
                     log.debug("rank to low");
-                    return deny(DENYREASON_RANKTOOLOW, "User rank is too low");
+                    return deny(DENYREASON_RANKTOOLOW, "" + curRank + " < " + r);
                 }
             }
             return EVAL_BODY;
