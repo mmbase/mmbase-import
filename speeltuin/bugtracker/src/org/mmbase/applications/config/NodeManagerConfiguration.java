@@ -7,7 +7,7 @@ public interface NodeManagerConfiguration{
 	public String getMaintainer();
 	public String getClassFile();
 	public String getSearchAge();
-	public String getNodeManagerName();
+	public String getName();
         public String getDescription();
 	public FieldConfigurations getFieldConfigurations();
 }

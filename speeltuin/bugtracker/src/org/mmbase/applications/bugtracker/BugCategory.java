@@ -12,12 +12,16 @@ package org.mmbase.applications.bugtracker;
  * @mmbase-nodemanager-name bugcategory
  * @mmbase-nodemanager-field name
  *
+ * @mmbase-nodemanager-name catrel
+ * @mmbase-nodemanager-extends insrel
+ * @mmbase-nodemanager-classfile PosRel
+ * @mmbase-nodemanager-field pos INTEGER
+ *
  * @mmbase-relationmanager-name subcategoryrel
- * @mmbase-relationmanager-nodemanager categoryrel
  * @mmbase-relationmanager-directionality unidirectional
  * @mmbase-relationmanager-source bugcategory
  * @mmbase-relationmanager-destination bugcategory
- * @mmbase-relationmanager-field pos INTEGER
+ * @mmbase-relationmanager-nodemanager catrel
  */
 public class BugCategory {
     

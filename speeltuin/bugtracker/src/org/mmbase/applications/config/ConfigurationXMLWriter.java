@@ -5,6 +5,7 @@ import nanoxml.*;
 public abstract class ConfigurationXMLWriter{
     public static String writeNodeManagerConfiguration(NodeManagerConfiguration nodeManagerConfiguration){
         XMLElement builder = new XMLElement();
+        builder.setComment("nodemanager name=" + nodeManagerConfiguration.getName());
         builder.setTagName("builder");
         builder.addProperty("maintainer",nodeManagerConfiguration.getMaintainer());
         builder.addProperty("version",nodeManagerConfiguration.getVersion());
@@ -24,13 +25,13 @@ public abstract class ConfigurationXMLWriter{
         XMLElement singular = new XMLElement();
         singular.setTagName("singular");
         singular.addProperty("xml:lang","en");
-        singular.setContent(nodeManagerConfiguration.getNodeManagerName());
+        singular.setContent(nodeManagerConfiguration.getName());
         names.addChild(singular);
         
         XMLElement plural = new XMLElement();
         plural.setTagName("plural");
         plural.addProperty("xml:lang","en");
-        plural.setContent(nodeManagerConfiguration.getNodeManagerName());
+        plural.setContent(nodeManagerConfiguration.getName());
         names.addChild(plural);
         builder.addChild(names);
         
