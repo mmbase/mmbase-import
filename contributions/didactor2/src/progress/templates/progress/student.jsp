@@ -151,10 +151,33 @@
         <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>
         <mm:field id="feedback" name="feedbackpage" write="false"/>
         <tr> 
+
+
+        <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+            <mm:constraint field="copybooks.number" referid="copybookNo"/>
+            <mm:relatednodes>
+                <mm:field id="madetestNo" name="number" write="false"/>
+            </mm:relatednodes>
+        </mm:relatednodescontainer>
+
+        
         <td class="listItem"><% for (int i=0; i<blockName.size(); i++) {%><%= (String) blockName.get(i) %><% if (i < blockName.size()-1 ) { %> &gt; <% } } %></td>
 
-        <td class="listItem"><mm:field name="name"/></td>
+        <%@include file="teststatus.jsp"%>
 
+        
+        <td class="listItem">
+        <mm:compare referid="teststatus" value="incomplete">
+            <mm:field name="name"/>
+        </mm:compare>
+        <mm:compare  referid="teststatus" value="incomplete" inverse="true">
+        <a href="<mm:treefile page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids" >
+            <mm:param name="madetest"><mm:write referid="madetestNo"/></mm:param>
+            <mm:param name="tests"><mm:write referid="testNo"/></mm:param>
+        </mm:treefile>"/><mm:field name="name"/></a>
+        </mm:compare>
+        
+        </td>
 
         
 
@@ -168,7 +191,6 @@
                 </mm:isgreaterthan>
             </mm:field>
        </td> 
-        <%@include file="teststatus.jsp"%>
 
         <td class="listItem"><mm:write referid="save_madetestscore"/></td>
  
