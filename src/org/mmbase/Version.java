@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.16.2.6 2003-08-27 14:26:19 gerard Exp $
+ * @version $Id: Version.java,v 1.16.2.7 2003-08-27 14:38:21 gerard Exp $
  */
 public class Version {
    
@@ -82,7 +82,7 @@ public class Version {
      * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
      * @since MMBase-1.6
      */
-    public static boolean isRelease() { return true; };    
+    public static boolean isRelease() { return false; };    
 
     /**
      * Returns the version of this MMBase.
