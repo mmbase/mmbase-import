@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.57 2003-12-04 18:25:45 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.58 2003-12-17 20:53:59 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -188,8 +188,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
 
-
-
     protected static class NodesAndTrim {
         boolean  needsTrim;
         NodeList nodeList;
@@ -216,11 +214,22 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (offset != Attribute.NULL) {
                 query.setOffset(offset.getInt(this, 0));
             }
-            result.nodeList = query.getCloud().getList(query);
+
+            if (query instanceof NodeQuery) {
+                NodeQuery nq = (NodeQuery) query;
+                result.nodeList = nq.getNodeManager().getList(nq);
+            } else {
+                result.nodeList = query.getCloud().getList(query);
+            }
             result.needsTrim = more > 0;
         } else { 
             // using comparator, doing max and offset programmaticly, otherwise the comparator is loosing most of its use
-            result.nodeList = query.getCloud().getList(query);
+            if (query instanceof NodeQuery) {
+                NodeQuery nq = (NodeQuery) query;
+                result.nodeList = nq.getNodeManager().getList(nq);
+            } else {
+                result.nodeList = query.getCloud().getList(query);
+            }
 
             // give a warning if what you are doing right now is not very smart
             if(result.nodeList.size() > QUERY_WARN_SIZE) {
