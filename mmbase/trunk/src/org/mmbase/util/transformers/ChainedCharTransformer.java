@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.13 2003-05-12 13:13:30 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.14 2003-05-12 22:22:50 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -93,7 +93,6 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
 
             List threads = new ArrayList(); // keep track of the started threads, needing to wait
                                             // for them later.
-            CharTransformer ct;
 
             // going to loop backward through the list of CharTransformers, and starting threads for
             // every transformation, besides the last one (which is the first in the chain). This
@@ -101,7 +100,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
 
             ListIterator i = charTransformers.listIterator(charTransformers.size());
             while (i.hasPrevious()) {         
-                ct = (CharTransformer) i.previous();
+                CharTransformer ct = (CharTransformer) i.previous();
                 if (i.hasPrevious()) { // needing a new Thread!
                     r = new PipedReader();
 
