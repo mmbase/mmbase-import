@@ -9,6 +9,49 @@
 
 <!-- end action check -->
 <mm:compare referid="mode" value="overview">
+
+<!-- start -->
+<table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" border="0">
+<tr>
+<td width="50%" align="middle" valign="top">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-left : 10px;">
+	<tr>
+	<th colspan="2" width="225">
+	Project Information
+	</th>
+	</tr>
+ 	<tr><th>Name</th><td><mm:write referid="name" /></td>
+</table>
+</td>
+
+<td width="50%" align="middle" valign="top">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-left : 10px;">
+	<tr>
+	<th colspan="2" width="225">
+	Project Actions
+	</th>
+	</tr>
+        <tr><th>Change Project Info</th>
+         <td>
+           <A HREF="<mm:url page="index.jsp" referids="main,sub,name">
+            <mm:param name="mode" value="changeprojectinfo" />
+	   </mm:url>">
+	   <IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
+        </td>
+       </tr> 
+        <tr><th>Delete Project</th>
+         <td>
+           <A HREF="<mm:url page="index.jsp" referids="main,sub,name">
+            <mm:param name="mode" value="deleteview" />
+	   </mm:url>">
+	   <IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
+        </td>
+       </tr> 
+</table>
+</td>
+</tr>
+</table>
+<!-- end -->
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="75%">
 <tr>
 	<th colspan="4">
@@ -110,6 +153,45 @@
 </tr>
 </table>
 </mm:compare>
+
+<mm:compare referid="mode" value="changeprojectinfo">
+
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="65%">
+<tr>
+	<th colspan="3">
+	Project Name and Path
+	</th>
+</tr>
+	<form action="<mm:url page="index.jsp" referids="main,sub,name" />" method="post">
+	<input type="hidden" name="action" value="changeprojectvalues" />
+<tr>
+	<th width="100">Name</ht>
+	<td><input name="newname" style="width: 28%" value="bla"></td>
+</tr>
+<tr>
+	<th width="100">Path</ht>
+	<td><input name="newpath" style="width: 98%" value="bla"></td>
+</tr>
+	</form>
+</table>
+</mm:compare>
+<mm:compare referid="mode" value="deleteview">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="30%">  
+<tr>    
+<form action="<mm:url page="index.jsp" referids="main,name" />" method="post">
+        <th colspan="2">Delete this project </th>
+	<input type="hidden" name="action" value="delproject" />
+<tr><td height="30"><center><input type="submit" value="Yes, delete"></center></td>
+	</form>
+	<form action="<mm:url page="index.jsp" referids="main,sub,name" />" method="post">
+	<td <center><input type="submit" value="No, Oops"></center></td>
+	</form>
+	</tr>
+</td>
+</table>
+</mm:compare>
+
+
 <mm:compare referid="mode" value="addbundletarget">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="75%">   
 <tr>    

@@ -19,7 +19,7 @@
 	</th>
 </tr>
 <mm:nodelistfunction set="mmpb" name="getProjects">
-<TR>
+<tr>
 		<td width="200">
 			<mm:field name="name">
 			<A HREF="<mm:url page="index.jsp"><mm:param name="main" value="$main" /><mm:param name="sub" value="project" /><mm:param name="name" value="$_" /></mm:url>"><mm:field name="name" /></a>
