@@ -42,8 +42,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Mood description, such as 'happy', or 'angry'</description>
+          <description xml:lang="nl">Humeur omschrijving, zoals 'vrolijk' of 'boos'</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -75,8 +75,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Rating of the mood</description>
+          <description xml:lang="nl">Zwaarte of sterkte van het humeur</description>
         </descriptions>
         <!-- gui related -->
         <gui>

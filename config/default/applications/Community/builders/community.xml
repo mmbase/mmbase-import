@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="community" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: community.xml,v 1.6 2002-10-31 10:26:03 pierre Exp $ -->
+<!-- @version $Id: community.xml,v 1.7 2002-11-25 09:45:11 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -51,17 +51,17 @@
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 3 : <field> 'name'  -->
+    <!-- POS 3 : <field> 'title'  -->
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Title of the community</description>
+          <description xml:lang="nl">Titel van de gemeenschap</description>
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Name</guiname>
-            <guiname xml:lang="nl">Naam</guiname>
+            <guiname xml:lang="en">Title</guiname>
+            <guiname xml:lang="nl">Titel</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -78,7 +78,7 @@
         <!-- database related  -->
         <db>
             <!-- name of the field in the database -->
-            <name>name</name>
+            <name>title</name>
             <!-- MMBase datatype and demands on it -->
             <type state="persistent" size="255" notnull="false">STRING</type>
         </db>
@@ -88,8 +88,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Subtitle of the community</description>
+          <description xml:lang="nl">Subtitel van de gemeenschap</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -121,8 +121,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Introtext for the community, i.e. a welcome message</description>
+          <description xml:lang="nl">Introduktietekst van de gemeenschap, bijv onderwerp en welkomstwoord</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -154,8 +154,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Main descriptive tekt for this community, i.e. forum rules</description>
+          <description xml:lang="nl">Hoofdtekst voor de gemeenschap, bijv voor forum regels</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -188,8 +188,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Type of community: FORUM or CHAT</description>
+          <description xml:lang="nl">Type gemeenschap: FORUM of CHAT</description>
         </descriptions>
         <!-- gui related -->
         <gui>
