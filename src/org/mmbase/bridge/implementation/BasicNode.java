@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.116 2003-12-30 15:37:13 nico Exp $
+ * @version $Id: BasicNode.java,v 1.117 2004-01-08 09:56:48 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -356,7 +356,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             if ("rnumber".equals(fieldName)) {
                 throw new BridgeException("Not allowed to change field " + fieldName + ".");
             } else if ("snumber".equals(fieldName) || "dnumber".equals(fieldName)) {
-                BasicRelation relation = (BasicRelation)this;
+                BasicRelation relation = (BasicRelation) this;
                 relation.relationChanged = true;
             }
         }
@@ -449,11 +449,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             int type = nodeManager.getField(fieldName).getType();
             switch(type) {
             case Field.TYPE_STRING:  return getStringValue(fieldName);
-            case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
             case Field.TYPE_BYTE:    return getByteValue(fieldName);
-            case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-            case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-            case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+            case Field.TYPE_INTEGER: return (getObjectValue(fieldName) == null ? null : new Integer(getIntValue(fieldName)));
+            case Field.TYPE_FLOAT:   return (getObjectValue(fieldName) == null ? null : new Float(getFloatValue(fieldName)));
+            case Field.TYPE_DOUBLE:  return (getObjectValue(fieldName) == null ? null : new Double(getDoubleValue(fieldName)));
+            case Field.TYPE_LONG:    return (getObjectValue(fieldName) == null ? null : new Long(getLongValue(fieldName)));
             case Field.TYPE_XML:     return getXMLValue(fieldName);
             case Field.TYPE_NODE:    return getNodeValue(fieldName);
             default:                 getNode().getValue(fieldName);
@@ -468,7 +468,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public Object getObjectValue(String fieldName) {
         Object result = getNode().getValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            result = (String) ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
+            result = ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
         }
         return result;
     }
