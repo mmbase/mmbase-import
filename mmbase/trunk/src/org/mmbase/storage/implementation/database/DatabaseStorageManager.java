@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.69 2004-09-17 09:29:41 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.70 2004-09-17 09:48:16 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -86,7 +86,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     // for debug purposes
     protected final void logQuery(String msg) {
-        log.debug("Query :" + msg);
+        if (log.isDebugEnabled()) {
+            log.debug("Query :" + msg);       
+            log.trace(Logging.stackTrace());
+        }
     }
 
     // javadoc is inherited
@@ -357,9 +360,6 @@ public class DatabaseStorageManager implements StorageManager {
             }
         } else {
             untrimmedResult = result.getString(index);
-            if (result.wasNull()) {
-                return null;
-            }
         }
         if(untrimmedResult!=null && factory.hasOption(Attributes.TRIM_STRINGS)) {
              return untrimmedResult.trim();
@@ -367,13 +367,13 @@ public class DatabaseStorageManager implements StorageManager {
         return untrimmedResult;
     }
 
-    /**
+    /*
      * Retrieve the XML (as a string) for a specified object field.
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Unlike
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
-
+ 
      * @param result the resultset to retrieve the xml from
      * @param index the index of the xml in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -381,9 +381,12 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
-    protected String getXMLValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
-        return getStringValue(result, index, field);
-    }
+     protected String getXMLValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
+         return getStringValue(result, index, field);
+     }
+    
+
+
 
     /**
      * Determine whether a field (such as a large text or a blob) should be shortened or not.
@@ -497,8 +500,9 @@ public class DatabaseStorageManager implements StorageManager {
         while (number > 0) {
             int num = number % 100;
             pathBuffer.insert(0, num);
-            if (num < 10)
+            if (num < 10) {
                 pathBuffer.insert(0, 0);
+            }
             pathBuffer.insert(0, File.separator);
             number /= 100;
         }
@@ -688,20 +692,73 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), fieldValues.toString()});
                 getActiveConnection();
-                PreparedStatement ps = activeConnection.prepareStatement(query);
-                for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-                    FieldDefs field = (FieldDefs)fields.get(fieldNumber);
-                    setValue(ps, fieldNumber + 1, node, field);
-                }
-                logQuery(query);
-                ps.executeUpdate();
-                ps.close();
+                executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
                 throw new StorageException(se);
             } finally {
                 releaseActiveConnection();
             }
         }
+    }
+
+    /**
+     * Executes an update query for given node and fields. It will close the connection which are no
+     * good, which it determins by trying "SELECT 1 FROM <OBJECT TABLE>" after failure. If that happens, the connection
+     * is explicitely closed (in case the driver has not done that), which will render is unusable
+     * and at least GenericDataSource will automaticly try to get new ones.
+     *
+     * @throws SQLException If something wrong with the query, or the database is down or could not be contacted.
+     * @since MMBase-1.7.1
+     */
+    protected void executeUpdateCheckConnection(String query, MMObjectNode node,  List fields) throws SQLException {
+        try {
+            executeUpdate(query, node, fields);
+        } catch (SQLException sqe) {
+            while (true) {
+                try {
+                    s = activeConnection.createStatement();
+                    rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
+                } catch (SQLException isqe) {
+                    // so, connection must be broken.
+                    log.service("Found broken connection, closing it");
+                    if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
+                        ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
+                    } else {
+                        activeConnection.close();
+                    }
+                    getActiveConnection();
+                    if (activeConnection.isClosed()) {
+                        // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
+                        break;
+                    }
+                    continue; 
+                 } finally {
+                     if (s != null) s.close();                    
+                     if (rs != null) rs.close(); 
+                 }
+                break;
+            }
+            executeUpdate(query, node, fields);
+        }
+    }
+
+    /**
+     * Executes an update query for given node and fields.  This is wrapped in a function because it
+     * is repeatedly called in {@link #executeUpdateCheckConnection} which in turn is called from
+     * several spots in this class.
+     *
+     * @since MMBase-1.7.1
+     */
+    protected void executeUpdate(String query, MMObjectNode node, List fields) throws SQLException {
+        PreparedStatement ps = activeConnection.prepareStatement(query);
+        for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
+            FieldDefs field = (FieldDefs)fields.get(fieldNumber);
+            setValue(ps, fieldNumber + 1, node, field);
+        }
+        logQuery(query);
+        ps.executeUpdate();
+        ps.close();
+        
     }
 
     // javadoc is inherited
@@ -758,14 +815,7 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 String query = scheme.format(new Object[] { this, builder, setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
-                PreparedStatement ps = activeConnection.prepareStatement(query);
-                for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-                    FieldDefs field = (FieldDefs)fields.get(fieldNumber);
-                    setValue(ps, fieldNumber + 1, node, field);
-                }
-                logQuery(query);
-                ps.executeUpdate();
-                ps.close();
+                executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
                 throw new StorageException(se);
             } finally {
@@ -788,7 +838,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setValue(PreparedStatement statement, int index, MMObjectNode node, FieldDefs field) throws StorageException, SQLException {
         String fieldName = field.getDBName();
-        Object value = node.getValue(fieldName);
+        Object value = node.getValue(fieldName); 
         switch (field.getDBType()) {
             // Store numeric values
         case FieldDefs.TYPE_INTEGER :
@@ -796,14 +846,19 @@ public class DatabaseStorageManager implements StorageManager {
         case FieldDefs.TYPE_DOUBLE :
         case FieldDefs.TYPE_LONG :
             setNumericValue(statement, index, value, field);
+            break;           
+        case FieldDefs.TYPE_BOOLEAN :
+            setBooleanValue(statement, index, value, field);            
+        case FieldDefs.TYPE_DATETIME :
+            setDateTimeValue(statement, index, value, field);            
             break;
             // Store nodes
         case FieldDefs.TYPE_NODE :
             // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
-            setNodeValue(statement, index, value, field);
+            setNodeValue(statement, index, value, field);            
             break;
             // Store strings
-        case FieldDefs.TYPE_XML :
+        case FieldDefs.TYPE_XML : 
             setXMLValue(statement, index, value, field);
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
@@ -815,10 +870,13 @@ public class DatabaseStorageManager implements StorageManager {
             // note: do not use getByteValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
             setBinaryValue(statement, index, value, field);
-            break;
-            // unknown field type - error
+            break;         
         }
-        default :
+        case FieldDefs.TYPE_LIST : {
+            setListValue(statement, index, value, field);
+            break;
+        }
+        default :    // unknown field type - error
             throw new StorageException("unknown fieldtype");
         }
     }
@@ -909,13 +967,40 @@ public class DatabaseStorageManager implements StorageManager {
     protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
         int nodeNumber = Casting.toInt(node);
-
+        
         if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
-            throw new StorageException("The NODE field with name " + field.getDBName() + " can not be NULL.");
+            throw new StorageException("The NODE field with name " + field.getDBName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
         }
 
         // retrieve node as a numeric value
         statement.setInt(index, nodeNumber);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected void setBooleanValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
+        if (setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) return;
+        boolean bool = Casting.toBoolean(value);       
+        statement.setBoolean(index, bool);
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected void setDateTimeValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
+        if (setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) return;
+        java.util.Date date = Casting.toDate(value);       
+        statement.setTimestamp(index, new Timestamp(date.getTime()));
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    protected void setListValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
+        if (setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) return;
+        List list = Casting.toList(value);       
+        statement.setObject(index, list, java.sql.Types.ARRAY);
     }
 
     /**
@@ -958,7 +1043,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;        
         String value = Casting.toString(objectValue);
 
         // Store data as a binary stream when the code is a clob or blob, or
@@ -977,7 +1062,7 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, value);
         }
     }
-
+    
     /**
      * This default implementation calls {@link #setStringValue}.
      * Override this method if you want to override this behavior.
@@ -1136,26 +1221,23 @@ public class DatabaseStorageManager implements StorageManager {
     protected Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
         try {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
-            if (field != null)
+            if (field != null) {
                 dbtype = field.getDBType();
+            }
             switch (dbtype) {
                 // string-type fields
-                case FieldDefs.TYPE_XML :
-                    {
-                        return getXMLValue(result, index, field);
-                    }
-                case FieldDefs.TYPE_STRING :
-                    {
-                        return getStringValue(result, index, field);
-                    }
-                case FieldDefs.TYPE_BYTE :
-                    {
-                        return getBinaryValue(result, index, field);
-                    }
-                default :
-                    {
-                        return result.getObject(index);
-                    }
+            case FieldDefs.TYPE_XML : {
+                return getXMLValue(result, index, field);
+            } 
+            case FieldDefs.TYPE_STRING : {
+                return getStringValue(result, index, field);
+            }
+            case FieldDefs.TYPE_BYTE : {
+                return getBinaryValue(result, index, field);
+            }
+            default : {
+                return result.getObject(index);
+            }
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1229,6 +1311,7 @@ public class DatabaseStorageManager implements StorageManager {
         // valid create SQL string
         // for backward compatibility, fields are to be created in the order defined
         List fields = builder.getFields(FieldDefs.ORDER_CREATE);
+        log.debug("found fields " + fields);
         StringBuffer createFields = new StringBuffer();
         StringBuffer createIndices = new StringBuffer();
         StringBuffer createFieldsAndIndices = new StringBuffer();
@@ -1254,8 +1337,9 @@ public class DatabaseStorageManager implements StorageManager {
             // convert a fielddef to a field SQL createdefinition
             if (isPartOfBuilderDefinition(field)) {
                 String fieldDef = getFieldDefinition(field);
-                if (createFields.length() > 0)
+                if (createFields.length() > 0) {
                     createFields.append(", ");
+                }
                 createFields.append(fieldDef);
                 // test on other indices
                 String constraintDef = getConstraintDefinition(field);
@@ -1287,8 +1371,9 @@ public class DatabaseStorageManager implements StorageManager {
             // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
             // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
             // and the comma should not be prefixed.
-            if (rowtypeScheme == null || createIndices.length() > 0)
+            if (rowtypeScheme == null || createIndices.length() > 0) {
                 createCompositeIndices.append(", ");
+            }
             createCompositeIndices.append(compConstraintDef);
         }
         try {
@@ -1336,7 +1421,7 @@ public class DatabaseStorageManager implements StorageManager {
                 FieldDefs field = (FieldDefs)f.next();
                 if (
                     (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
-                    field.getDBType() == FieldDefs.TYPE_NODE &&
+                    field.getDBType() == FieldDefs.TYPE_NODE &&  
                     ! field.getDBName().equals("number")) {
                     String query = createIndex.format(new Object[] { this, builder, field.getDBName()});
                     try {
@@ -1623,62 +1708,58 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected int getJDBCtoMMBaseType(int jdbcType, int mmbaseType) {
         switch (jdbcType) {
-            case Types.INTEGER :
-                ;
-            case Types.SMALLINT :
-                ;
-            case Types.TINYINT :
-                ;
-            case Types.BIGINT :
-                ;
-                if (mmbaseType == FieldDefs.TYPE_INTEGER || mmbaseType == FieldDefs.TYPE_LONG || mmbaseType == FieldDefs.TYPE_NODE) {
-                    return mmbaseType;
-                } else {
-                    return FieldDefs.TYPE_INTEGER;
-                }
-            case Types.FLOAT :
-                ;
-            case Types.REAL :
-                ;
-            case Types.DOUBLE :
-                ;
-            case Types.NUMERIC :
-                ;
-            case Types.DECIMAL :
-                ;
-                if (mmbaseType == FieldDefs.TYPE_FLOAT || mmbaseType == FieldDefs.TYPE_DOUBLE) {
-                    return mmbaseType;
-                } else {
-                    return FieldDefs.TYPE_DOUBLE;
-                }
-            case Types.BINARY :
-                ;
-            case Types.LONGVARBINARY :
-                ;
-            case Types.VARBINARY :
-                ;
-            case Types.BLOB :
-                ;
-                if (mmbaseType == FieldDefs.TYPE_BYTE || mmbaseType == FieldDefs.TYPE_STRING || mmbaseType == FieldDefs.TYPE_XML) {
-                    return mmbaseType;
-                } else {
-                    return FieldDefs.TYPE_BYTE;
-                }
-            case Types.CHAR :
-                ;
-            case Types.CLOB :
-                ;
-            case Types.LONGVARCHAR :
-                ;
-            case Types.VARCHAR :
-                ;
-                if (mmbaseType == FieldDefs.TYPE_STRING || mmbaseType == FieldDefs.TYPE_XML) {
-                    return mmbaseType;
-                } else {
-                    return FieldDefs.TYPE_STRING;
-                }
-            default :
-                return FieldDefs.TYPE_UNKNOWN;
+        case Types.INTEGER :
+        case Types.SMALLINT :
+        case Types.TINYINT :
+        case Types.BIGINT :
+            if (mmbaseType == FieldDefs.TYPE_INTEGER || mmbaseType == FieldDefs.TYPE_LONG || mmbaseType == FieldDefs.TYPE_NODE) {
+                return mmbaseType;
+            } else {
+                return FieldDefs.TYPE_INTEGER;
+            }
+        case Types.FLOAT :
+        case Types.REAL :
+        case Types.DOUBLE :
+        case Types.NUMERIC :
+        case Types.DECIMAL :
+            if (mmbaseType == FieldDefs.TYPE_FLOAT || mmbaseType == FieldDefs.TYPE_DOUBLE) {
+                return mmbaseType;
+            } else {
+                return FieldDefs.TYPE_DOUBLE;
+            }
+        case Types.BINARY :
+        case Types.LONGVARBINARY :
+        case Types.VARBINARY :
+        case Types.BLOB :
+            if (mmbaseType == FieldDefs.TYPE_BYTE || mmbaseType == FieldDefs.TYPE_STRING || mmbaseType == FieldDefs.TYPE_XML) {
+                return mmbaseType;
+            } else {
+                return FieldDefs.TYPE_BYTE;
+            }
+        case Types.CHAR :
+        case Types.CLOB :
+        case Types.LONGVARCHAR :
+        case Types.VARCHAR :
+            if (mmbaseType == FieldDefs.TYPE_STRING || mmbaseType == FieldDefs.TYPE_XML) {
+                return mmbaseType;
+            } else {
+                return FieldDefs.TYPE_STRING;
+            }
+        case Types.BIT :
+        case Types.BOOLEAN :
+            if (mmbaseType == FieldDefs.TYPE_BOOLEAN) {
+                return mmbaseType;
+            }  else {
+                return FieldDefs.TYPE_BOOLEAN;
+            }
+        case Types.TIMESTAMP :
+            if (mmbaseType == FieldDefs.TYPE_DATETIME) {
+                return mmbaseType;
+            }  else {
+                return FieldDefs.TYPE_DATETIME;
+            }
+        default :
+            return FieldDefs.TYPE_UNKNOWN;
         }
     }
 
@@ -1816,9 +1897,10 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Drop a constraint for a composite index.
      * You should have an active connection before calling this method.
-     * @param builder the builder for which to drop the composite key
+     * @param builder the builder for which to drop the composite key     
      * @throws StorageException if the composite index cannot be deleted
      * @throws SQLException when a database error occurs
+     * @throws
      */
     protected void deleteCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
         if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
@@ -2011,6 +2093,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+
     /**
      * Convert legacy file
      * @return Number of converted fields. Or -1 if not storing binaries as files
@@ -2029,7 +2112,7 @@ public class DatabaseStorageManager implements StorageManager {
                         FieldDefs field = (FieldDefs)fields.next();
                         String fieldName = field.getDBName();
                         if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
-
+                            
                             // check whether it might be in a column
                             boolean foundColumn = false;
                             {
@@ -2054,7 +2137,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     releaseActiveConnection();
                                 }
                             }
-
+                            
                             List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
                             log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                             Iterator i = nodes.iterator();
@@ -2093,7 +2176,7 @@ public class DatabaseStorageManager implements StorageManager {
                     if (fromDatabase > 0) {
                         log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
                     }
-
+                    
                 } else {
                     log.service("Converted no fields");
                 }
