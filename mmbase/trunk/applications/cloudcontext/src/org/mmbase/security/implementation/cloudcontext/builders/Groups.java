@@ -15,7 +15,6 @@ import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.Cache;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.storage.search.implementation.*;
@@ -27,24 +26,12 @@ import org.mmbase.storage.search.implementation.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.7 2003-08-13 10:39:18 michiel Exp $
+ * @version $Id: Groups.java,v 1.8 2003-08-15 19:42:28 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Groups.class);
 
-    public final static Argument[] ALLOW_ARGUMENTS = {
-        new Argument("context",   String.class),
-        new Argument("operation", String.class)
-    };
-
-
-    public final static Argument[] GRANT_ARGUMENTS = {
-        new Argument("context",   String.class),
-        new Argument("operation", String.class),
-        new Argument("user", org.mmbase.bridge.User.class),
-
-    };
 
     protected static Cache containsCache = new Cache(200) {
             public String getName()        { return "CCS:ContainedBy"; }
@@ -161,218 +148,6 @@ public class Groups extends MMObjectBuilder {
         }
     }
      */
-
-
-    /**
-     * Wether users of the given group may do operation on a node of given context.
-     * @return boolean
-     */    
-    protected boolean allows(MMObjectNode groupNode, String context, Operation operation) {
-        Contexts contexts = Contexts.getBuilder();
-        Set groups = contexts.getGroups(context, operation);
-        return groups.contains(groupNode);
-    }
-
-    /**
-     * Wether users of the given group may do operation on a node of given context, because
-     * (one of) the parents of this group allow it.
-     * 
-     * @return boolean
-     */    
-    protected boolean parentsAllow(MMObjectNode groupNode, String context, Operation operation) {
-
-        Contexts contexts = Contexts.getBuilder();
-        Set groups = contexts.getGroups(context, operation);
-        Iterator i = groups.iterator();
-        while (i.hasNext()) {
-            MMObjectNode containingGroup = (MMObjectNode) i.next();
-            if (contains(containingGroup, groupNode)) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Grand/revoke all
-     * @untested
-     */
-    protected void grantAll(MMObjectNode groupNode, List contexts, Operation operation, MMObjectNode user) { 
-        Users users = Users.getBuilder();
-        SortedSet allContexts = Contexts.getBuilder().getAllContexts();
-        Iterator i = allContexts.iterator();
-        while (i.hasNext()) {
-            String context = (String) i.next();
-            if (contexts.contains(context)) {
-                grant(groupNode, context, operation, user);
-            } else {
-                revoke(groupNode, context, operation, user);
-            }
-        }        
-    }
-
-    /**
-     * @untested
-     */
-
-    protected boolean revoke(MMObjectNode groupNode, String context, Operation operation, MMObjectNode user) { 
-        Users users = Users.getBuilder();
-        if (!allows(groupNode, context, operation)) return true; // already disallowed
-
-        if (mayRevoke(groupNode, context, operation, user)) {
-            log.service("Revoking right " + operation + " on context " + context + " to group " + groupNode + " by " + user);
-            Contexts contexts = Contexts.getBuilder();
-            RightsRel rights   = RightsRel.getBuilder(); 
-            MMObjectNode contextNode = contexts.getContextNode(context);
-            NodeSearchQuery q = new NodeSearchQuery(rights);
-            BasicStepField snumber = q.getField(rights.getField("snumber"));
-            BasicStepField dnumber = q.getField(rights.getField("dnumber"));
-            BasicFieldValueConstraint c1 = new BasicFieldValueConstraint(snumber, new Integer(contextNode.getNumber()));
-            BasicFieldValueConstraint c2 = new BasicFieldValueConstraint(dnumber, new Integer(groupNode.getNumber()));           
-            BasicCompositeConstraint cons = new BasicCompositeConstraint(BasicCompositeConstraint.LOGICAL_AND);
-            cons.addChild(c1);
-            cons.addChild(c2);
-            q.setConstraint(cons);
-            try {
-                Iterator i = rights.getNodes(q).iterator();
-                while (i.hasNext()) {
-                    MMObjectNode right = (MMObjectNode) i.next();
-                    rights.removeNode(right);
-                }
-            } catch (Exception sqe) {
-                log.error(sqe.toString());
-                return false;
-            }
-            return true;
-        } else {
-            log.service("Revoking right " + operation + " on context " + context + " to group " + groupNode + " by " + user + " failed because it it not allowed");
-            return false;
-        }
-
-    }
-    
-
-
-    /**
-     * util
-     */
-    protected MMObjectNode getUserNode(org.mmbase.bridge.User bridgeUser) {
-        Users users = Users.getBuilder();
-        return users.getUser(bridgeUser.getIdentifier());
-    }
-
-
-    /**
-     * @untested
-     */
-    protected boolean grant(MMObjectNode groupNode, String context, Operation operation, MMObjectNode user) {    
-        if (allows(groupNode, context, operation)) return true; // already allowed
-        // create a relation..
-        if (mayGrant(groupNode, context, operation, user)) {
-            log.service("Granting right " + operation + " on context " + context + " to group " + groupNode + " by " + user);
-            RightsRel rightsRel = RightsRel.getBuilder();
-            Contexts contexts = Contexts.getBuilder();
-            MMObjectNode contextNode = contexts.getContextNode(context);
-            String owner = user.getStringValue("defaultcontext");
-            MMObjectNode newRight = rightsRel.getNewNode(owner, contextNode.getNumber(), groupNode.getNumber(), operation);
-            return newRight.insert(owner) > 0;
-
-        } else {
-            log.service("Granting right " + operation + " on context " + context + " to group " + groupNode + " by " + user + " failed because it it not allowed");
-            return false;
-        }
-    }
-
-
-    /**
-     * @untested
-     */
-
-    protected boolean mayRevoke(MMObjectNode groupNode, String context, Operation operation, MMObjectNode user) { 
-        Users users = Users.getBuilder();
-        if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
-        if (! contains(groupNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group 
-        return true;
-    }
-
-
-
-
-    /**
-     * @untested
-     */
-    protected boolean mayGrant(MMObjectNode groupNode, String context, Operation operation, MMObjectNode user) { 
-        Users users = Users.getBuilder();
-        if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
-
-        if (! contains(groupNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group 
-        Contexts contexts = Contexts.getBuilder();
-        MMObjectNode contextNode = contexts.getContextNode(context);
-        return contexts.mayDo(user, contextNode, operation); // you need to have the right yourself to grant it.
-    }
-
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
-        log.debug("executefunction of abstractservletbuilder");
-        if (function.equals("info")) {
-            List empty = new ArrayList();
-            Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("allow",        "" + ALLOW_ARGUMENTS + " Wether operation may be done by members of this group");
-            info.put("parentsallow", "" + ALLOW_ARGUMENTS + " Wether operation may be done by members of this group, also because of parents");
-            info.put("grant",        "" + GRANT_ARGUMENTS + " Grant a right");
-            info.put("revoke",       "" + GRANT_ARGUMENTS + " Revoke a right");
-            info.put("maygrant",     "" + GRANT_ARGUMENTS + " Check if user may grant a right");
-            info.put("mayrevoke",    "" + GRANT_ARGUMENTS + " Check if user may revoke a right");
-
-            if (args == null || args.size() == 0) {
-                return info;
-            } else {
-                return info.get(args.get(0));
-            }
-        } else if (function.equals("allows")) {
-            Arguments a = Arguments.get(ALLOW_ARGUMENTS, args);
-            if (allows(node, (String) a.get("context"), Operation.getOperation((String) a.get("operation")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else if (function.equals("parentsallow")) {
-            Arguments a = Arguments.get(ALLOW_ARGUMENTS, args);
-            if (parentsAllow(node, (String) a.get("context"), Operation.getOperation((String) a.get("operation")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else if (function.equals("grant")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
-            if (grant(node, (String) a.get("context"), Operation.getOperation((String) a.get("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else if (function.equals("revoke")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
-            if (revoke(node, (String) a.get("context"), Operation.getOperation((String) a.get("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else if (function.equals("maygrant")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
-            if (mayGrant(node, (String) a.get("context"), Operation.getOperation((String) a.get("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else if (function.equals("mayrevoke")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
-            if (mayRevoke(node, (String) a.get("context"), Operation.getOperation((String) a.get("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-
-        } else {
-            return super.executeFunction(node, function, args);
-        }
-    }
 
 
 
