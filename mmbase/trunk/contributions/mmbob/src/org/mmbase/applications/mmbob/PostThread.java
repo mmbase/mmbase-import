@@ -23,6 +23,8 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
+import org.mmbase.applications.mmbob.util.transformers.PostingBody;
+
 /**
  * @author Daniel Ockeloen
  * 
@@ -49,6 +51,7 @@ public class PostThread {
    private Vector postings=null;
    private int threadpos=0;
    private Vector writers=new Vector();
+    private PostingBody postingBody = new PostingBody();
 
    public PostThread(PostArea parent,Node node) {
 	this.parent=parent;
@@ -244,11 +247,13 @@ public class PostThread {
 		}
 
 		// snap er niets van hoe moet dit nu Gerard ?
-		if (body.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
-	    		pnode.setStringValue("body","<poster>"+body+"</poster>");
-		} else {
-	    		pnode.setStringValue("body",body);
-		}
+		//if (body.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
+	    	//	pnode.setStringValue("body","<poster>"+body+"</poster>");
+		//} else {
+	    	//	pnode.setStringValue("body",body);
+		//}
+
+                pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
 
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
