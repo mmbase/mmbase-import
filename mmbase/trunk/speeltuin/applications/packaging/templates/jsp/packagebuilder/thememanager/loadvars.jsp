@@ -26,6 +26,8 @@
   <mm:import id="themeid">PackageManager</mm:import>
   <mm:import id="style_default"><mm:function set="thememanager" name="getStyleSheet" referids="context,themeid" /></mm:import> 
 
+  <mm:import id="imageid" reset="true">help</mm:import>
+  <mm:import id="image_help"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
   <mm:import id="imageid" reset="true">arrowright</mm:import>
   <mm:import id="image_arrowright"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
   <mm:import id="imageid" reset="true">arrowleft</mm:import>
