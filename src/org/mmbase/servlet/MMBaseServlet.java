@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.20 2003-05-16 11:06:12 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.21 2003-06-16 13:21:28 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -73,8 +73,15 @@ public class MMBaseServlet extends  HttpServlet {
     private static int printCount;
 
     private static int servletInstanceCount = 0;
-    private static Map servletMappings    = new Hashtable();;
+    // servletname -> servletmapping
+    // obtained from web.xml  
+    private static Map servletMappings    = new Hashtable();
+    // topic -> servletname
+    // set by isntantiated servlets
     private static Map associatedServlets = new Hashtable();
+    // topic -> servletmapping
+    // set by instantiated servlets
+    private static Map associatedServletMappings = new Hashtable();
 
     /**
      * On default, servlets are not associated with any function.
@@ -195,11 +202,20 @@ public class MMBaseServlet extends  HttpServlet {
      * type of operation or data (i.e 'images', 'attachments').
      *
      *
-     * @param topic the topic that deidentifies the type of association
-     * @return an unmodifiable list of servlet mappings associated with the topic
+     * @param function the function that identifies the type of association
+     * @return an unmodifiable list of servlet mappings associated with the function
      */
-    public static List getServletMappingsByAssociation(String topic) {
-        String name = getServletByAssociation(topic);
+    public static List getServletMappingsByAssociation(String function) {
+        // check if any mappings were explicitly set for this function
+        // if so, return that list.
+        ServletEntry mapping = (ServletEntry)associatedServletMappings.get(function);
+        if (mapping != null) {
+            List mappings = new ArrayList();
+            mappings.add(mapping.name); 
+            return mappings;
+        }
+        // otherwise, get the associated servet
+        String name = getServletByAssociation(function);
         if (name != null) {
             return getServletMappings(name);
         } else {
@@ -209,17 +225,17 @@ public class MMBaseServlet extends  HttpServlet {
 
     /**
      * Gets the name of the servlet that performs actions associated with the
-     * the given keyword.
+     * the given function.
      *
      * Use this to find a servlet to handle a certain type of
      * operation or data (i.e 'imageservlet', 'myimageservlet',
      * 'images');
      *
-     * @param topic the topic that deidentifies the type of association
-     * @return the name of the servlet associated with the topic, or null if there is none
+     * @param function the function that identifies the type of association
+     * @return the name of the servlet associated with the function, or null if there is none
      */
-    public static String getServletByAssociation(String topic) {
-        ServletEntry e = ((ServletEntry) associatedServlets.get(topic));
+    public static String getServletByAssociation(String function) {
+        ServletEntry e = ((ServletEntry) associatedServlets.get(function));
         if (e != null) {
             return e.name;
         } else {
@@ -229,20 +245,50 @@ public class MMBaseServlet extends  HttpServlet {
 
 
     /**
-     * Associate a given servlet with the the given topic.
+     * Associate a given servlet with the given function.
      * Use this to set a servlet to handle a certain type of operation or data (i.e 'image-processing');
      * For now, only one servlet can be registered.
-     * @param topic the topic that deidentifies the type of association
-     * @param servletname name of the servlet to associate with the topic
-     * @param  priority    priority of this association, the association only occurs if no servlet
-     *                    with higher priority for the same topic is present already
+     * @param function the function that deidentifies the type of association
+     * @param servletname name of the servlet to associate with the function
+     * @param priority priority of this association, the association only occurs if no servlet or servletmapping
+     *                    with higher priority for the same function is present already
      */
     private static synchronized void associate(String function, String servletName, Integer priority) {
         if (priority == null) priority = new Integer(0);
+        ServletEntry m = (ServletEntry) associatedServletMappings.get(function);
+        if (m != null && (priority.intValue() < m.priority)) return;
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
-        if (e == null || (priority.intValue() >= e.priority)) {
-            log.service("Associating function '" + function + "' with servlet " + servletName + (e == null ? ""  : " (removing association with " + e.name +" servlet)"));
-            associatedServlets.put(function, new ServletEntry(servletName, priority));
+        if (e != null && (priority.intValue() < e.priority)) return;
+        log.service("Associating function '" + function + "' with servletname " + servletName + 
+           (e == null ? ""  : " (removing " + e.name +")")+
+           (m == null ? ""  : " (removing " + m.name +")"));
+        associatedServlets.put(function, new ServletEntry(servletName, priority));
+        if (m != null) {
+            associatedServletMappings.remove(function);
+        }
+    }
+
+    /**
+     * Associate a given servletmapping with the given function.
+     * Use this to set a servletmapping to call for a certain type of operation or data (i.e 'image-processing');
+     * For now, only one servletmapping can be registered.
+     * @param function the function that identifies the type of association
+     * @param servletMapping mapping of the servlet to associate with the function
+     * @param priority    priority of this association, the association only occurs if no servlet or servletmapping
+     *                    with higher priority for the same function is present already
+     */
+    protected static synchronized void associateMapping(String function, String servletMapping, Integer priority) {
+        if (priority == null) priority = new Integer(0);
+        ServletEntry m = (ServletEntry) associatedServletMappings.get(function);
+        if (m != null && (priority.intValue() < m.priority)) return;
+        ServletEntry e = (ServletEntry) associatedServlets.get(function);
+        if (e != null && (priority.intValue() < e.priority)) return;
+        log.service("Associating function '" + function + "' with servletmapping " + servletMapping + 
+           (e == null ? ""  : " (removing " + e.name +")")+
+           (m == null ? ""  : " (removing " + m.name +")"));
+        associatedServletMappings.put(function, new ServletEntry(servletMapping, priority));
+        if (e != null) {
+            associatedServlets.remove(function);
         }
     }
 
@@ -252,8 +298,6 @@ public class MMBaseServlet extends  HttpServlet {
      * MMBase servlet will probably override this method.
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        long minute = System.currentTimeMillis() + (long) (60 * 1000);
-        res.setDateHeader("Expires", minute);
         res.setContentType("text/plain");
         PrintWriter pw = res.getWriter();
         pw.print(org.mmbase.Version.get());

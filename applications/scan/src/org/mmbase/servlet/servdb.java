@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.49 2003-06-02 16:49:37 pierre Exp $
+ * @version $Id: servdb.java,v 1.50 2003-06-16 13:21:28 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -83,8 +83,13 @@ public class servdb extends JamesServlet {
         if (sessions == null) {
             log.debug("Could not find session module, proceeding without sessions");
         }
-    }
 
+        // associate explicit mapping 
+        associateMapping("images","img.db",new Integer(10));
+        associateMapping("attachments","attachment.db",new Integer(10));
+        associateMapping("audio","rastreams.db",new Integer(10));
+        associateMapping("video","rmstreams.db",new Integer(10));
+    }
 
     // utility method for converting strings to bytes
     private byte[] stringToBytes(String value) {
@@ -105,7 +110,7 @@ public class servdb extends JamesServlet {
         String templine,templine2;
         int filesize;
 
-        incRefCount(req); // this is already done in service of MMBaseServlet,
+        incRefCount(req); // this is already done in service of MMBaseServlet, 
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
@@ -235,16 +240,17 @@ public class servdb extends JamesServlet {
                         // ---
                         // img
                         // ---
-                        boolean notANumber=false;
+
+						boolean notANumber=false;
                         Vector params = getParamVector(req);
-                        // Catch alias only images without parameters.
-                        if (params.size()==1) {
-                            try {
-                                Integer.parseInt((String)params.elementAt(0));
-                            } catch (NumberFormatException e) {
-                                notANumber=true;
-                            }
-                        }
+						// Catch alias only images without parameters.
+						if (params.size()==1) {
+							try { 
+								Integer.parseInt((String)params.elementAt(0));
+							} catch (NumberFormatException e) {
+								notANumber=true;
+							}
+						}
                         if (params.size() > 1 || notANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
@@ -337,17 +343,16 @@ public class servdb extends JamesServlet {
 
                         // is it a audiopart or an episode ?
                         // ---------------------------------
-
-                        Vector vec = getParamVector(req);
+                       Vector vec = getParamVector(req);
 
                         if ( getParamValue("ea", vec)  != null ) {
-                            log.debug("service(rastream): episode found");
+                            log.debug("service(rmstream): episode found");
                             if( playlists != null )
                                 cline.buffer = playlists.getRAMfile(vec);
                             else
-                                log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
+                                log.warn("service(rmstream): WARNING: triggered playlists, but module not loaded!");
                         } else {
-                            log.debug("service(rastream): rastream found");
+                            log.debug("service(rmstream): rmstream found");
                             cline.buffer=getRMStream(vec,sp,res);
                         }
 
@@ -1158,7 +1163,7 @@ public class servdb extends JamesServlet {
         try {
             result = Integer.parseInt( number );
         } catch( NumberFormatException e ) {
-            log.error( method+"(): ERROR: "+var+"("+number+") is not a real number!");
+            log.error( method+"(): "+var+"("+number+") is not a real number!");
             result = -1;
         }
         return result;
