@@ -62,6 +62,14 @@ public class ListTag extends AbstractNodeListTag {
     }
 
     /**
+     * @param type a comma separated list of nodeManagers
+     * @depercated use setPath instead
+     */
+    public void setType(String type) throws JspTagException {
+        this.pathString = getAttributeValue(type);
+    }
+
+    /**
      * The search parameter, determines how directionality affects the search.
      * Possible values are <code>both</code>, <code>destination</code>,
      * <code>source</code>, and <code>all</code>
