@@ -141,6 +141,8 @@ public class MMObjectBuilder extends MMTable {
             int n;
             n=database.insert(this,owner,node);
             if (n>=0) nodeCache.put(new Integer(n),node);
+	    String alias=node.getAlias();
+ 	    if (alias!=null) createAlias(n,alias);	
             return(n);
         } catch(Exception e) {
             debug("ERROR INSERT PROBLEM !");
@@ -1250,6 +1252,8 @@ public class MMObjectBuilder extends MMTable {
         return(node);
     }
 
+
+
     /**
     * convert mmnode2sql still new should replace the old mapper soon
     */
@@ -1749,4 +1753,13 @@ public class MMObjectBuilder extends MMTable {
     public void setMaintainer(String m) {
         maintainer=m;
     }
+
+	private void createAlias(int number,String alias) {
+		if (mmb.OAlias!=null) {
+			MMObjectNode node=mmb.OAlias.getNewNode("system");
+			node.setValue("name",alias);
+			node.setValue("destination",number);
+			node.insert("system");
+		}
+	}
 }
