@@ -26,7 +26,7 @@ public class UserBuilder extends MMObjectBuilder {
         String encoding = (String) getInitParameters().get("encoding");
         if(encoding==null) {
             log.warn("no property 'encoding' defined in '"+getTableName()+".xml' using default encoding");
-            encoder = new org.mmbase.util.Encode("BASE64");
+            encoder = new org.mmbase.util.Encode("MD5");
         }
         else {
             encoder = new org.mmbase.util.Encode(encoding);
@@ -61,14 +61,20 @@ public class UserBuilder extends MMObjectBuilder {
     }
     
     public boolean exists(String username, String password) {
+        log.trace("username: '"+username+"' password: '"+password+"'");
         java.util.Enumeration e = searchWithWhere("username LIKE('"+username+"')");
 	while(e.hasMoreElements()) {       
             MMObjectNode node = (MMObjectNode) e.nextElement();
             if(encode(password).equals(node.getStringValue("password"))) {
                 // found it !
+                log.trace("username: '"+username+"' password: '"+password+"' found in node #" + node.getNumber());
                 return true;
-            }    
-        }
+            }
+            else {
+                log.trace("username: '"+username+"' found in node #" + node.getNumber()+" --> PASSWORDS NOT EQUAL");
+            }
+        }        
+        log.trace("username: '"+username+"' --> USERNAME NOT CORRECT");
         return false;
     }
 	

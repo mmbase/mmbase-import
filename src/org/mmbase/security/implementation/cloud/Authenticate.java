@@ -67,18 +67,20 @@ public class Authenticate extends Authentication {
     } 
 
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+        log.trace("login-module: '"+moduleName+"'");
 	if(moduleName.equals("anonymous")) {
 	    log.debug("[anonymous login]");
-	    return new User("anonymous", Rank.ANONYMOUS, validKey);			
+	    return new User("anonymous", Rank.ANONYMOUS, validKey);
 	}			
-	else if(moduleName.equals("name/password")) {		
+	else if(moduleName.equals("name/password")) {
 	    // look if the builder is good and such things....
 	    checkBuilder();
 	    if(builder==null) {
                 throw new org.mmbase.security.SecurityException("builder wasnt loaded");
             }
             String username = (String)loginInfo.get("username");
-	    String password = (String)loginInfo.get("password");            
+	    String password = (String)loginInfo.get("password");
+            log.trace("login-module: '"+moduleName+"' username: '"+username+"' password: '"+password+"'");
             if(username == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
 	    if(username.equals("anonymous")) throw new org.mmbase.security.SecurityException("'anonymous' aint allowed to do a login");            
 	    if(password == null) throw new org.mmbase.security.SecurityException("expected the property 'password' with login");
