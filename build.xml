@@ -77,8 +77,10 @@ several MMBase-checkouts.
   <property name="distro"      value="MMBase ${version}"/>
 
   <!-- documentation related settings -->
+  <property name="documentation.home" value="${source.dir}/documentation" />
   <property name="documentation.builders.language" value="en" />
   <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
+
 
   <property name="source-config.dir"         location="${source.dir}/config"/>
   <property name="source-config-builders.dir" location="${source.dir}/config/builders;${source.dir}/config/applications"/>
@@ -1229,8 +1231,8 @@ Build-compiler: ${build.compiler}
     </copy>
   </target>
 
+  <!-- only needed for builder.docs -->
   <target name="doc.resources" depends="expand.docbook-xsl">
-
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt"
@@ -1246,53 +1248,21 @@ Build-compiler: ${build.compiler}
       </fileset>
     </copy>
 
-
-
   </target>
 
 
- <!-- ================================================================================ -->
- <!-- Perform docbook2html conversion in the documentation module                      -->
- <!-- ================================================================================ -->
+  <target name="documentation" 
+          depends="jar,taglib.doc,documentation.builders,mmcidocs">
 
-  <target name="docbookumentation"
-    depends="xsltransformer,doc.resources"
-    description="Make the MMBase documentation from docbook-sources">
-    <!--
-    <style
-    basedir="${source-documentation.dir}"
-    destdir="${mmdocs.dir}"
-      style="${build.dir}/docbook2xhtml.xslt"
-      processor="xalan"
-      >
-      <param name="html.stylesheet" expression="'style.css'"/>
-      <include name="**/*.xml" />
-    </style>
-    -->
+    <ant dir="${documentation.home}" target="documentation">
+      <property name="mmbase.default.dir" value=".." />
+      <property name="download.dir" value="${download.dir}" />
+    </ant>
 
-    <java classname="org.mmbase.util.XSLTransformer"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="no">
-      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
-      <jvmarg value="-mx150m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${build.dir}/docbook2xhtml.xslt" />
-      <arg value="${source-documentation.dir}" />
-      <arg value="${mmdocs.dir}" />
-    </java>
-
-  </target>
-
-
-  <target name="documentation"
-          depends="taglib.doc,docbookumentation,documentation.builders,mmcidocs">
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-html.dir}/mmdocs" />
     </copy>
+
   </target>
 
   <!-- =================================================================== -->
@@ -1407,8 +1377,7 @@ Build-compiler: ${build.compiler}
   <!-- Clean the documentation directory                                   -->
   <!-- =================================================================== -->
   <target name="clean.documentation" description="Clean the generated documentation">
-    <delete dir="${mmdocs.dir}"/>
-    <delete file="${build.dir}/docbook2xhtml.xslt"/>
+    <ant dir="${documentation.home}" target="clean" />
   </target>
 
   <!-- =================================================================== -->
