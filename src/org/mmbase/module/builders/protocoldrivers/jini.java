@@ -10,37 +10,38 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.protocoldrivers;
 
 /**
+ * @javadoc
+ * @deprecated-now not used anymore
  * @rename Jini
- * @version $Id: jini.java,v 1.6 2003-03-10 11:50:23 pierre Exp $
+ * @version $Id: jini.java,v 1.7 2004-10-08 11:49:06 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class jini implements ProtocolDriver {
 
+    String remoteHost;
+    int remotePort;
 
-	String remoteHost;
-	int remotePort;
+    public jini() {
+    }
 
-	public jini() {
-	}
-
-	public void init(String remoteHost,int remotePort) {
-		this.remoteHost=remoteHost;
-		this.remotePort=remotePort;
-	}
-
-
-	public boolean commitNode(String nodename,String tableName,String xml) {
-		return(true);
-	}
+    public void init(String remoteHost,int remotePort) {
+        this.remoteHost=remoteHost;
+        this.remotePort=remotePort;
+    }
 
 
-	public String getProtocol() {
-		return("jini");
-	}
+    public boolean commitNode(String nodename,String tableName,String xml) {
+        return true;
+    }
+
+
+    public String getProtocol() {
+        return "jini";
+    }
 
 
 
-	public boolean signalRemoteNode(String number, String builder, String ctype) {
-		return(true);
-	}
+    public boolean signalRemoteNode(String number, String builder, String ctype) {
+        return true;
+    }
 }
