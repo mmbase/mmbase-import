@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Context Security Configuration</title>
     <date>2003-02-12</date>
-    <edition>$Id: context-security.xml,v 1.10 2003-07-27 17:47:50 henk Exp $</edition>
+    <edition>$Id: context-security.xml,v 1.11 2003-12-18 15:15:41 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -77,7 +77,7 @@
     <section id="groups">
       <title>Groups</title>
       <para>A Group can exist of users and/ or groups. In this way you can define a structure which inherits rights from lower levels. For example the office-sweeper group may read the newspaper. The office-clerk group is member of the office-sweeper group but may also use the toilet. So a member of the office-clerk may read the newspaper and go to the toilet, even at the same time. While a office-sweeper can only read the paper and work fast to get home in time to use the bathroom. As you probably noticed a stupid example which might help to understand the framework.</para>
-      <para>A user van be member of more than one group within MMBase.</para>
+      <para>A user can be member of more than one group within MMBase.</para>
     </section>
     <section id="contexts">
       <title>Contexts</title>
@@ -111,7 +111,7 @@
       <title>Contexts, Groups and Users </title>
       <section>
         <title>Reference field</title>
-        <para>Within MMBase has each object a field called &#39;owner&#39;. The value of this field is used by the security system to specify the context of an object. If an object is accessed and the name of its context does not exist a warning will be issued in the logs and the default context will be selected.</para>
+        <para>Within MMBase each object has a field called &#39;owner&#39;. The value of this field is used by the security system to specify the context of an object. If an object is accessed and the name of its context does not exist a warning will be issued in the logs and the default context will be selected.</para>
       </section>
       <section>
         <title>Contexts</title>
@@ -241,7 +241,7 @@
     </section>
     <section>
       <title>&lt;accounts /&gt;</title>
-      <para>This are the accounts of the users which are know to the system. It is advised to also create a user called anonymous since it does not exists any ware else.</para>
+      <para>This are the accounts of the users which are know to the system. It is advised to also create a user called anonymous since it does not exists anywhere else.</para>
     </section>
     <section>
       <title>&lt;user&gt; &lt;identify /&gt; &lt;/user&gt;</title>
@@ -251,13 +251,13 @@
           <para>name="..." : The name of the user</para>
         </listitem>
         <listitem>
-          <para>context="..." : The context that object get when created through this user</para>
+          <para>context="..." : The context that objects get when created through this user</para>
         </listitem>
         <listitem>
           <para>&lt;identify type="..." &gt; : The login type refers to /contextconfig/loginmodules/module[@name] , this shall always be "name/password"</para>
         </listitem>
         <listitem>
-          <para>&lt;identify rank="..." &gt; : This is the rank of the user after login. The default is &#39;basis user&#39; unless a person is administrator then the rank will be &#39;administrator&#39;. Anonymous users always get the rank &#39;anonymous&#39;</para>
+          <para>&lt;identify rank="..." &gt; : This is the rank of the user after login. The default is &#39;basic user&#39; unless a person is administrator then the rank will be &#39;administrator&#39;. Anonymous users always get the rank &#39;anonymous&#39;</para>
         </listitem>
         <listitem>
           <para>&lt;identify &gt; ... &lt;/identify &gt; : The password for this user</para>
@@ -319,7 +319,7 @@
               <para>&lt;context&gt; &lt;operation type="..." /&gt; &lt;/context&gt; : The type of operation where rights are granted to. Valid values are &#39;read&#39;, &#39;write&#39;, &#39;link&#39;, &#39;delete&#39; and &#39;change context&#39;</para>
             </listitem>
             <listitem>
-              <para>&lt;context&gt; &lt;operation &gt; &lt;grant group="..." /&gt; &lt;operation /&gt; &lt;/context&gt;  : The group which receives the rights within this context. Off course the group should be found in a &lt;groups&gt; &lt;group name="..." /&gt; &lt;/groups&gt; element.</para>
+              <para>&lt;context&gt; &lt;operation &gt; &lt;grant group="..." /&gt; &lt;/operation&gt; &lt;/context&gt;  : The group which receives the rights within this context. Off course the group should be found in a &lt;groups&gt; &lt;group name="..." /&gt; &lt;/groups&gt; element.</para>
             </listitem>
             <listitem>
               <para>&lt;context&gt; &lt;possible context="..." /&gt; &lt;/context&gt; context/possible[@context] : When the context of object van be changed, it can only be changed into the values specified in this element. Which should be found in an element called &lt;contexts&gt; &lt;context name="..." /&gt; &lt;/contexts&gt;.</para>
