@@ -33,7 +33,7 @@
 <!ELEMENT option ( #PCDATA ) >
 <!ATTLIST option id CDATA  #REQUIRED >
 
-<!ELEMENT query EMPTY >
+<!ELEMENT query ( object* ) >
 <!ATTLIST query xpath CDATA #REQUIRED >
 <!ATTLIST query where CDATA #IMPLIED >
 <!ATTLIST query orderby CDATA #IMPLIED >
