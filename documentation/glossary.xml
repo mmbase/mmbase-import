@@ -5,12 +5,15 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.18 2004-03-10 20:52:15 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.19 2005-01-31 11:47:27 michiel Exp $</edition>
 
-    <copyright>
-      <year>This document is created under the Mozilla Public License</year>
-    </copyright>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
 
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
     <date>2003-03</date>
 
     <authorgroup>
@@ -21,22 +24,10 @@
 
       <author>
         <firstname>Michiel</firstname>
-
         <surname>Meeuwissen</surname>
       </author>
     </authorgroup>
 
-    <revhistory>
-      <revision>
-        <revnumber>0.0</revnumber>
-        <date>2003-06-01</date>
-        <revremark>First draft</revremark>
-      </revision>
-      <revision>
-        <revnumber>1.0</revnumber>
-        <date>2004-03-05</date>
-      </revision>
-    </revhistory>
 
     <abstract>
       <para>This glossary tries to provide an overview of the terms used in
@@ -289,8 +280,10 @@
             stated explicitely).
           </para>
           <glossseealso otherterm="role"></glossseealso>
-          <glossseealso otherterm="unidirectional"></glossseealso>
-          <glossseealso otherterm="bidirectional"></glossseealso>
+          <glossseealso otherterm="unidir"></glossseealso>
+          <glossseealso otherterm="bidir"></glossseealso>
+          <glossseealso otherterm="typerel"></glossseealso>
+          <glossseealso otherterm="relation"></glossseealso>
           <glossseealso otherterm="path"></glossseealso>
         </glossdef>
       </glossentry>
@@ -345,9 +338,9 @@
             </listitem>
 
             <listitem>
-              <para>An allowed relation. Sometimes also &#39;typerel&#39;
-              entries are referred to as simply &#39;relations&#39;. It would
-              perhaps be clearer to call these &#39;allowed relations&#39;</para>
+              <para>An allowed relation. Sometimes also 'typerel'
+              entries are referred to as simply 'relations'. It would
+              perhaps be clearer to call these 'allowed relations'</para>
             </listitem>
 
             <listitem>
@@ -383,7 +376,7 @@
             </listitem>
 
             <listitem>
-              <para>More general term for &#39;node&#39;.</para>
+              <para>More general term for 'node'.</para>
             </listitem>
 
             <listitem>
@@ -417,15 +410,15 @@
         <glossterm>node</glossterm>
 
         <glossdef>
-          <para>MMBase objects are generally referred to as &#39;node&#39;,
+          <para>MMBase objects are generally referred to as 'node',
           especially in the bridge. A normal MMBase node corresponds to one
           record in the database (in the table(s) associated with the
-          builder). We recognize also &#39;cluster nodes&#39; and &#39;virtual
-          nodes&#39;.</para>
+          builder). We recognize also 'cluster nodes' and 'virtual
+          nodes'.</para>
 
           <para>Every Node is uniquely (inside the MMBase instance) identified
           by a node number. In editors this number field is sometimes even be
-          indicated with &#39;Object&#39;.</para>
+          indicated with 'Object'.</para>
 
           <glossseealso otherterm="clusternode"></glossseealso>
 
@@ -443,7 +436,7 @@
         <glossdef>
           <para>Complicated database queries do not give back simple nodes,
           but fields from several tables. A record from such a table join is
-          represented by a &#39;cluster node&#39;. A cluster node is a special
+          represented by a 'cluster node'. A cluster node is a special
           kind of virtual node.</para>
 
           <glossseealso otherterm="virtualnode"></glossseealso>
@@ -496,7 +489,7 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>A geeky synonym for &#39;I agree&#39;.</para>
+              <para>A geeky synonym for 'I agree'.</para>
             </listitem>
 
             <listitem>
@@ -543,7 +536,7 @@
           MMBase source codes. Typical for CVS is that it is possible to use
           it without acquiring locks on files (which is the way it is used for
           MMBase). This means that files can be edited simultaneously by
-          different people, but also that the risk for &#39;conflicts&#39;
+          different people, but also that the risk for 'conflicts'
           arises (if a patch cannot be made automatically).</para>
 
           <para>The MMBase CVS repository is hosted on the mmbase.org server.</para>
@@ -608,16 +601,16 @@
             </listitem>
 
             <listitem>
-              <para>All java classes from the &#39;src&#39; CVS module which
+              <para>All java classes from the 'src' CVS module which
               are present in mmbase.jar, so everything which is not an MMBase
-              application, is MMBase &#39;core&#39;.</para>
+              application, is MMBase 'core'.</para>
             </listitem>
 
             <listitem>
               <para>MMObjectBuilder/MMObjectNode vs NodeManager/Node. When you
-              want to define a new &#39;object type&#39; with extra
+              want to define a new 'object type' with extra
               functionality then it is currently not possible to extend
-              NodeManagers or Nodes, but you need to extend the core&#39;s
+              NodeManagers or Nodes, but you need to extend the core's
               MMObjectBuilder.</para>
             </listitem>
           </orderedlist>
@@ -749,23 +742,23 @@
             </listitem>
 
             <listitem>
-              <para>A &#39;User Context&#39; is the MMBase security object
+              <para>A 'User Context' is the MMBase security object
               which provides the essential identity information for a user: an
-              identifier, an &#39;owner&#39; abstraction (sometimes also
-              called &#39;context&#39;) and a rank. It is provided by the
+              identifier, an 'owner' abstraction (sometimes also
+              called 'context') and a rank. It is provided by the
               <emphasis>authentication</emphasis> implementation and is used
               by the <emphasis>authorization</emphasis> implementation.</para>
             </listitem>
 
             <listitem>
-              <para>A &#39;Cloud Context&#39; is the bridge object which
+              <para>A 'Cloud Context' is the bridge object which
               provides clouds, modules, and empty lists.</para>
             </listitem>
 
             <listitem>
-              <para>In MMBase taglib a &#39;context&#39; is a container for
+              <para>In MMBase taglib a 'context' is a container for
               Taglib variables. It is also associated with every page, the
-              &#39;context&#39; tag, and (in MMBase &#62;= 1.7) list tags.</para>
+              'context' tag, and (in MMBase &#62;= 1.7) list tags.</para>
             </listitem>
 
             <listitem>
@@ -777,8 +770,8 @@
 
             <listitem>
               <para>In a J2EE environment the web-application is associated
-              with a &#39;context&#39;, which is basically the first part of
-              the path. Often it will be &#39;/&#39;, but this is not required
+              with a 'context', which is basically the first part of
+              the path. Often it will be '/', but this is not required
               for MMBase.</para>
             </listitem>
           </orderedlist>
@@ -797,7 +790,7 @@
             </listitem>
 
             <listitem>
-              <para>When talking about CVS, a &#39;module&#39; is a kind of
+              <para>When talking about CVS, a 'module' is a kind of
               main entry of the repository. The MMBase CVS repository
               currently has the following modules: src (core java classes),
               documentation (docbook sources), html (general content for the
@@ -812,7 +805,7 @@
 
               <para>Modules are usually compiled separately (in compiled
               languages) and provide an abstraction or information hiding
-              mechanism so that a module&#39;s implementation can be changed
+              mechanism so that a module's implementation can be changed
               without requiring any change to other modules. In this respect
               they are similar to objects in an object-oriented language,
               though a module may contain many procedures and/or functions
@@ -831,7 +824,7 @@
         <glossterm>unidirectional</glossterm>
 
         <glossdef>
-          <para>A value for the &#39;dir&#39; attribute of reldef and insrel
+          <para>A value for the 'dir' attribute of reldef and insrel
           nodes. It only says something about the visibility of the relation.
           A unidirectional relation is not visible from the destination node.</para>
 
@@ -1031,13 +1024,16 @@
         <glossterm>developers list</glossterm>
         <glossdef>
           <para>
-            The developers@mmbase.org mailing list, sometimes shorthanded to dev-list. This is the
+            The developers@lists.mmbase.org mailing list, sometimes shorthanded to dev-list. This is the
             most active MMBase mailing list, which is used by the developers community to discuss
             and answer questions about technical issues. 
           </para>
           <para>
             Information about the subscription and about other mmbase mailing lists can be found on
             the mmbase web-site.
+          </para>
+          <para>
+            Before november 2004 this list was addressed as developers@mmbase.org.
           </para>
           <glossseealso otherterm="vote"></glossseealso>
           <glossseealso otherterm="irc"></glossseealso>
