@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.15 2002-10-08 15:40:34 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.16 2002-10-14 15:20:50 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -94,7 +94,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else {
             throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
         }
-        
+
     }
 
     // logging variable
@@ -376,6 +376,11 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // get the relation string
         relstring=getRelationString(alltables, searchdir, roles);
+        // check if this is an 'invalid' condition (one which never produces results,
+        // in that case, return empty resultset
+        if (relstring==null) {
+            return new Vector();
+        }
         if ((relstring.length()>0) && (basenodestring.length()>0)) {
                 relstring=" AND "+relstring;
         }
@@ -481,6 +486,11 @@ public class ClusterBuilder extends VirtualBuilder {
                     throw new RuntimeException(msg);
                 } else {
                     bul=mmb.getInsRel(); // dummy
+                    roles.put(orgtable,new Integer(rnumber));
+                }
+            } else if (bul instanceof InsRel) {
+                int rnumber = mmb.getRelDef().getNumberByName(curtable);
+                if (rnumber!=-1) {
                     roles.put(orgtable,new Integer(rnumber));
                 }
             }
@@ -824,9 +834,10 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Creates a condition string which checks the relations between nodes.
      * The string can then be added to the query's where clause.
+     * The method returns null if no validf condition can be made (i.e. the result would ALWAYS be an empty resultset)
      * @param alltables the tablenames to use
      * @param searchdir the directionality option to use
-     * @return a condition as a <code>String</code>
+     * @return a condition as a <code>String</code>, or null id no valid condiiton can be made
      */
     protected String getRelationString(Vector alltables, int searchdir, HashMap roles) {
         StringBuffer result = new StringBuffer(40); // 40: reasonable size for the result
@@ -850,20 +861,23 @@ public class ClusterBuilder extends VirtualBuilder {
 
             boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
             boolean srctodest = false; // And from 'destination' to 'source'.
-            { // determine desttosrc and srctodest 
+            { // determine desttosrc and srctodest
 
                 // the typedef number of the source-type
                 int s        = typedef.getIntValue(getTableName((String) alltables.elementAt(i)));
                 // role ?
-                Integer rnum = (Integer) roles.get((String) alltables.elementAt(i + 1)); 
+                Integer rnum = (Integer) roles.get((String) alltables.elementAt(i + 1));
                 // the typdef number of the destination-type
-                int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));  
-                
+                int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));
+
+                log.info("rnum="+rnum+"("+(String) alltables.elementAt(i + 1)+", s="+s+"("+(String) alltables.elementAt(i)+")"+", d="+d+"("+(String) alltables.elementAt(i + 2));
+
                 // check if  a definite rnumber was requested...
                 if (rnum != null) {
                     result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
                     srctodest = (searchdir != SEARCH_SOURCE)      && typerel.reldefCorrect(s, d, rnum.intValue());
                     desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.reldefCorrect(d, s, rnum.intValue());
+                    log.info("rnum="+rnum+", srctodest="+srctodest+", desttosrc="+desttosrc);
                 } else {
                     for (Enumeration e = typerel.getAllowedRelations(s, d); e.hasMoreElements(); ) {
                         // get the allowed relation definitions
@@ -880,6 +894,7 @@ public class ClusterBuilder extends VirtualBuilder {
                                     );
                         if (desttosrc && srctodest) break;
                     }
+                    log.info("srctodest="+srctodest+", desttosrc="+desttosrc);
                 }
             }
 
@@ -894,7 +909,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     dirstring = " AND " + relChar + ".dir <> 1";
                 } else {
                     dirstring = "";
-                }                
+                }
                 // there is a typed relation from destination to src
                 if (srctodest) {
                     String sourceNumber = numberOf(idx2char(i));
@@ -911,9 +926,15 @@ public class ClusterBuilder extends VirtualBuilder {
                                   numberOf(idx2char(i + 2)) + "=" + relChar + ".snumber" + dirstring);
                 }
             } else {
-                // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                result.append(numberOf(idx2char(i))     + "=" + relChar + ".snumber AND "+
+                if (srctodest) {
+                    // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
+                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".snumber AND "+
                               numberOf(idx2char(i + 2)) + "=" + relChar + ".dnumber");
+                } else {
+                    // no results possible
+                    // terminate, return null!
+                    return null;
+                }
             }
 
         }
