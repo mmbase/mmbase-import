@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.38 2002-10-03 15:44:28 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.39 2002-10-04 14:47:14 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -113,7 +113,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // set the owner to the owner field as indicated by the user
         node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
 
-        //node.setValue("owner","bridge");
         if (getMMObjectBuilder() instanceof TypeDef) {
             return new BasicRelation(node, this, id);
         } else if (getMMObjectBuilder() instanceof InsRel) {
