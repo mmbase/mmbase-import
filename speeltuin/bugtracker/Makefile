@@ -13,6 +13,7 @@ app:
 javadoc:
 	javadoc -d docs \
 		-sourcepath src \
+		-classpath $(JAVA_HOME)/lib/tools.jar:classes:lib/rmmci.jar \
 		nanoxml \
 		org.mmbase.applications.config \
 		org.mmbase.applications.mmbasedoclet \
