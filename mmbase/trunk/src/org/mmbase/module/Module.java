@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.12 $ $Date: 2000-05-02 11:48:41 $
+ * @version $Revision: 1.13 $ $Date: 2000-05-03 22:40:29 $
  */
 public abstract class Module {
 
@@ -369,11 +369,14 @@ public abstract class Module {
 			// also start the maintaince thread that calls all modules every x seconds
 			mprobe = new ModuleProbe(modules);
 		}
+		String orgname=name;
 		if (xmlinstalled) name=name.toLowerCase();
 
 
 		// try to obtain the ref to the wanted module
 		Object obj=modules.get(name);	
+		if (obj==null) obj=modules.get(orgname);
+	
 		if (obj!=null) {
 			return(obj);
 		} else {
