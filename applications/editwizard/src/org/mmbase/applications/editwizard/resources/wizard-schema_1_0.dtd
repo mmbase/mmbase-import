@@ -12,6 +12,7 @@
 <!ELEMENT action ( field | object | relation  | prompt | description )* >
 <!ATTLIST action type NMTOKEN #IMPLIED >
 <!ATTLIST action include CDATA #IMPLIED >
+<!ATTLIST action extends CDATA #IMPLIED >
 
 <!ELEMENT lists ( optionlist+ ) >
 
@@ -60,6 +61,7 @@
 <!ATTLIST list type NMTOKEN #IMPLIED >
 <!ATTLIST list fields CDATA #IMPLIED >
 <!ATTLIST list include CDATA #IMPLIED >
+<!ATTLIST list directions CDATA #IMPLIED > <!-- ?? -->
 
 <!ELEMENT item ( title | description | field | fieldset | list )* >
 <!ATTLIST item displaytype NMTOKEN #IMPLIED >
@@ -72,7 +74,7 @@
 <!ATTLIST command filterrequired NMTOKEN #IMPLIED >
 <!ATTLIST command inline NMTOKEN #IMPLIED >
 <!ATTLIST command nodepath CDATA #IMPLIED >
-<!ATTLIST command objectnumber NMTOKEN #IMPLIED >
+<!ATTLIST command objectnumber CDATA #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
 <!ATTLIST command directions CDATA #IMPLIED >
@@ -93,7 +95,7 @@
 <!ATTLIST field rows NMTOKEN #IMPLIED >
 <!ATTLIST field inline NMTOKEN #IMPLIED >
 <!ATTLIST field wizardname CDATA #IMPLIED >
-<!ATTLIST field objectnumber NMTOKEN #IMPLIED >
+<!ATTLIST field objectnumber CDATA #IMPLIED >
 
 <!ELEMENT subtitle ( #PCDATA ) >
 <!ATTLIST subtitle xml:lang NMTOKEN #IMPLIED >
