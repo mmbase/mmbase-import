@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.11 2004-02-06 21:15:48 michiel Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.12 2004-03-10 18:20:35 michiel Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -94,19 +94,19 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         return node;
     }
 
-    public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
+    public String getMMNodeSearch2SQL(String where, MMObjectBuilder bul) {
         throw new UnsupportedOperationException("Storage classes do not support MMNODE syntax. Use SearchQuery.");
     }
 
     /**
      * @javadoc
      */
-    public String getShortedText(String tableName,String fieldname,int number) {
+    public String getShortedText(String tableName, String fieldName, int number) {
         // capture calls form temporary nodes
         if (number < 0) return null;
         try {
             MMObjectBuilder bul = mmbase.getMMObject(tableName);
-            return factory.getStorageManager().getStringValue(bul.getNode(number),bul.getField(fieldname));
+            return factory.getStorageManager().getStringValue(bul.getNode(number), bul.getField(fieldName));
         } catch (StorageException se) {
             log.error(se.getMessage());
             log.error(Logging.stackTrace(se));
@@ -117,12 +117,12 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     /**
      * @javadoc
      */
-    public byte[] getShortedByte(String tableName,String fieldname,int number) {
-        // capture calls form temporary nodes
+    public byte[] getShortedByte(String tableName, String fieldName, int number) {
+        // capture calls from temporary nodes
         if (number < 0) return null;
         try {
             MMObjectBuilder bul = mmbase.getMMObject(tableName);
-            return factory.getStorageManager().getBinaryValue(bul.getNode(number),bul.getField(fieldname));
+            return factory.getStorageManager().getBinaryValue(bul.getNode(number), bul.getField(fieldName));
         } catch (StorageException se) {
             log.error(se.getMessage());
             log.error(Logging.stackTrace(se));
@@ -130,7 +130,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         }
     }
 
-    public byte[] getDBByte(ResultSet rs,int idx) {
+    public byte[] getDBByte(ResultSet rs, int idx) {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
             // getValue is protected, so can call it from the same package..
@@ -146,7 +146,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         }
     }
 
-    public String getDBText(ResultSet rs,int idx) {
+    public String getDBText(ResultSet rs, int idx) {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
             // getValue is protected, so can call it from the same package..
