@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.41 2000-11-19 00:00:56 daniel Exp $
+$Id: MMSQL92Node.java,v 1.42 2000-11-19 00:59:54 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.41  2000/11/19 00:00:56  daniel
+removed the lock its not part of sql92, find a new trick !
+
 Revision 1.40  2000/11/15 09:19:23  install
 Rob Changed getDBKey multiple mmbases can synchronize their keys
 
@@ -165,7 +168,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.41 $ $Date: 2000-11-19 00:00:56 $
+* @$Revision: 1.42 $ $Date: 2000-11-19 00:59:54 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -781,6 +784,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		if (debug) System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
 		if(!created(mmb.baseName+"_numberTable")) {
 			int number = getDBKeyOld();
+
+			// extra check to make sure we start at number=1 if needed
+			if (number==1) number=0;
+
 	 	 	if (debug) System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
 			String createStatement = getMatchCREATE("numberTable")+"( number integer not null);";
 			try {
