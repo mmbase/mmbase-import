@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.community;
 import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 
 import org.mmbase.bridge.Node;
@@ -26,12 +27,12 @@ import org.mmbase.bridge.jsp.taglib.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: GetInfoTag.java,v 1.11 2003-06-06 10:03:13 pierre Exp $
+ * @version $Id: GetInfoTag.java,v 1.12 2003-06-18 13:41:30 michiel Exp $
  */
  
 public class GetInfoTag extends NodeReferrerTag implements Writer {
 
-    private static Logger log = Logging.getLoggerInstance(GetInfoTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(GetInfoTag.class);
 
     private Attribute key = Attribute.NULL;
     public void setKey(String k) throws JspTagException {
@@ -51,9 +52,10 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
             k = key.getString(this);
         }
         String value = node.getStringValue("getinfovalue(" + k + ")");
-        if (value == null) value="";
-        helper.setValue(value);
+        if (value == null) value = "";
         helper.setTag(this);
+        helper.setValue(value);
+        helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         if (getId() != null) {
             getContextProvider().getContainer().register(getId(), helper.getValue());
         }
@@ -66,5 +68,9 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
      **/
     public int doEndTag() throws JspTagException {
         return helper.doEndTag();
+    }
+
+    public int doAfterBody() throws JspException {
+        return helper.doAfterBody();
     }
 }
