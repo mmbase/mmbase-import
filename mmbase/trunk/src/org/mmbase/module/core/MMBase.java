@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.111 2004-03-15 09:43:53 michiel Exp $
+ * @version $Id: MMBase.java,v 1.112 2004-03-15 15:31:36 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -374,6 +374,16 @@ public class MMBase extends ProcessorModule {
         // retrieve JDBC module and start it
         jdbc = (JDBCInterface) getModule("JDBC", true);
 
+        try {
+            if (jdbc.getConnection(jdbc.makeUrl()) == null) {
+                log.info("Did get 'null' connection of JDBC module, probably MMBase is shut down. Aborting init.");
+                return;
+            }
+        } catch (java.sql.SQLException sqe) {
+            log.error(sqe.getMessage() + "Aborting init");            
+            return;
+        }
+
         if (multicasthost != null) {
             log.debug("Starting Multicasting");
             mmc = new MMBaseMultiCast(MMBase.this);
@@ -395,7 +405,7 @@ public class MMBase extends ProcessorModule {
         loadBuilders();
 
         mmbaseState = STATE_INITIALIZE;
-
+        
         log.service("Initializing  storage:");
         initializeStorage();
         
