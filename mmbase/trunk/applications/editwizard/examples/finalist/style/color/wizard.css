@@ -3,14 +3,13 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.1 2003-12-19 11:10:02 nico Exp $
+  @version  $Id: wizard.css,v 1.2 2004-01-12 22:10:16 nico Exp $
 */
 @import url("base.css");
-@import url("wysiwyg.css");
 
 td.stepother {
   background-color: #7198B8;
-  border-color: #000000;
+  border-color: #F0F0F0;
 }
 
 td.stepcurrent {
