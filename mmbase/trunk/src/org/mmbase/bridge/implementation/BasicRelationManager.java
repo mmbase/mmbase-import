@@ -23,15 +23,15 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.17 2002-10-03 13:13:07 eduard Exp $
+ * @version $Id: BasicRelationManager.java,v 1.18 2002-10-03 15:39:34 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
 
-    private MMObjectNode relDefNode = null;
-    private MMObjectNode typeRelNode = null;
-    private int snum = 0;
-    private int dnum = 0;
+    public MMObjectNode relDefNode;
+    private MMObjectNode typeRelNode;
+    private int snum;
+    private int dnum;
 
     /**
      * Creates a new Relation manager (for insert).
@@ -62,7 +62,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * Initializes the NodeManager: determines the MMObjectBuilder from the
      * passed node (reldef or typerel), and fillls temporary variables to maintain status.
      */
-    synchronized protected void initManager() {
+    protected void initManager() {
         if (noderef.getBuilder() instanceof RelDef) {
             relDefNode= noderef;
         } else {
@@ -78,12 +78,12 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     public Node createNode() {
         Node relation = super.createNode();
 	if(relation == null) {
-	    throw new RuntimeException("relation node is null");	    
+	    throw new RuntimeException("relation node is null");
 	}
 	if(relDefNode == null) {
 	    throw new RuntimeException("reldef node is null");
 	}
-        ((BasicNode)relation)._setValue("rnumber", new Integer(relDefNode.getIntValue("rnumber")));
+        ((BasicNode)relation)._setValue("rnumber", new Integer(relDefNode.getNumber()));
         return relation;
     }
 
