@@ -18,6 +18,7 @@ import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 
 /**
  * Groups of users. A group can also contain other groups. Containing
@@ -26,14 +27,13 @@ import org.mmbase.storage.search.implementation.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.13 2003-11-27 08:32:22 pierre Exp $
- * @see ContainsRel
+ * @version $Id: Groups.java,v 1.14 2004-02-25 19:39:23 michiel Exp $
  */
 public class Groups extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(Groups.class);
+    private static final Logger log = Logging.getLoggerInstance(Groups.class);
 
 
-    protected static Cache containsCache = new Cache(200) {
+    protected static Cache containsCache = new Cache(500) {
             public String getName()        { return "CCS:ContainedBy"; }
             public String getDescription() { return "group + group/user --> boolean"; }
         };
@@ -75,6 +75,7 @@ public class Groups extends MMObjectBuilder {
         return contains(containingGroupNode, containedObject, new HashSet());
     }
 
+
     /**
      * Checks wether group or user identified by number is contained by group.
      *
@@ -87,31 +88,55 @@ public class Groups extends MMObjectBuilder {
         if (result == null) {
             int role       = mmb.getRelDef().getNumberByName("contains");
             InsRel insrel =  mmb.getRelDef().getBuilder(role);
-            Enumeration e  = insrel.getRelations(containedObject, getObjectType(), role);
-            result = Boolean.FALSE;
-            while(e.hasMoreElements()) {
-                MMObjectNode relation    = (MMObjectNode) e.nextElement();
-                int source = relation.getIntValue("snumber");
-                //assert(source.parent instanceof Groups);
-                if (source  == containedObject) continue; // only search 'up', so number must represent destination.
 
-                if (containingGroup == source) { // the found source is the requested group, we found it!
+            MMObjectBuilder object = mmb.getBuilder("object");
+            BasicSearchQuery query = new BasicSearchQuery();
+            Step step = query.addStep(object);
+            BasicStepField numberStepField = new BasicStepField(step, object. getField("number"));
+            BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(containedObject));
+            
+            BasicRelationStep relationStep = query.addRelationStep(insrel, this);
+            relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
+            
+            query.setConstraint(numberConstraint);            
+            query.addFields(relationStep.getNext());
+
+            List resultList;
+            try {
+                resultList = mmb.getDatabase().getNodes(query, this); // not cached, but no need, because total result is cached.
+                processSearchResults(resultList);
+            } catch (SearchQueryException sqe) {
+                log.error(sqe.getMessage());
+                resultList = new ArrayList();
+            }
+
+
+            Iterator i = resultList.iterator();
+
+            result = Boolean.FALSE;
+            while (i.hasNext()) {
+                MMObjectNode group = (MMObjectNode) i.next();
+                
+                if (group.getNumber() == containingGroup) {
                     log.trace("yes!");
                     result = Boolean.TRUE;
                     break;
-                } else if (recurse != null) { // recursively call on groups
+                } else if (recurse != null) {
                     log.trace("recursively");
-                    if (! recurse.contains(new Integer(source))) {
-                        recurse.add(new Integer(source));
-                        if (contains(containingGroupNode, source, recurse)) {
+                    Integer  groupNumber = new Integer(group.getNumber());
+                    if (! recurse.contains(groupNumber)) {
+                        recurse.add(groupNumber);
+                        if (contains(containingGroupNode, group.getNumber(), recurse)) {
                             result = Boolean.TRUE;
                             break;
                         }
                     }
                 }
             }
+            
             containsCache.put(key, result);
         }
+        
         return result.booleanValue();
     }
 
