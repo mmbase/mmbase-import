@@ -105,7 +105,7 @@ public class TimerTag extends ContextReferrerTag {
      * Initialize timer.
      */
     public int doStartTag() throws JspTagException {        
-        log.service("Starting timer " + name );
+        log.info("Starting timer " + name );
         timers     = new Vector(1);
         timerIds   = new Vector(1);
         totalTimes = new HashMap();
@@ -125,9 +125,9 @@ public class TimerTag extends ContextReferrerTag {
         
         while (i.hasNext()) {
             String key = (String)i.next();
-            result += "   " + key + ": " +  (double)(((LongContainer) totalTimes.get(key)).value)/1000 + " s\n";
+            result += "   " + key + ": " +  (double)(((LongContainer) totalTimes.get(key)).value) + " ms\n";
         }
-        log.service(result);        
+        log.info(result);        
         
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());            
