@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.Constraint;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 import java.util.*;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.10 2003-08-05 09:07:00 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.11 2003-08-07 14:35:21 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -131,12 +132,13 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }        
 
 
-    public void whereHtmlInput(Field field, Query query) throws JspTagException {
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
+            return null;
         } else {
-            super.whereHtmlInput(field, query);
+            return super.whereHtmlInput(field, query);
         }
     }        
 
