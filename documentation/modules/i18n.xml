@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: i18n.xml,v 1.1 2002-09-05 20:50:12 michiel Exp $</date>
+    <date>$Id: i18n.xml,v 1.2 2002-09-17 06:33:57 michiel Exp $</date>
     <title>MMBase Internationalisation and Localisation</title>
   </articleinfo>
   <section>
@@ -83,6 +83,16 @@
       On a few parts in MMBase there can be found texts in different languages. A language is
       always indicated by a two letter code from ISO 639 (note that this is for languages, not
       countries).
+    </para>
+    <para>
+      The internationalisation of MMBase currently only extends to the real user interface
+      parts, by which is meant in practice `content editors'. There does not yet exist an
+      internationalised administration user interface. Another thing which one might
+      imagine subject to internationalisation are error messages, specificly those which
+      can appear to users and templaters; all error messages from the MMCI and the MMBase
+      Taglib can now only appear in english (or broken english). Some of these messages,
+      like Security exceptions (`permission denied'), can occasionally appear to editor
+      users.
     </para>
     <section id="builder">
       <title>Builders</title>        
