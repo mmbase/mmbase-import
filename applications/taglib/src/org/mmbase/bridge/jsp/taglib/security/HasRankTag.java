@@ -13,6 +13,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.security.Rank; // sucks!
 
+import java.util.regex.*;
 import javax.servlet.jsp.JspTagException;
 
 
@@ -20,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check for the rank of the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRankTag.java,v 1.2 2004-07-26 20:18:02 nico Exp $
+ * @version $Id: HasRankTag.java,v 1.3 2005-03-01 15:01:47 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -48,6 +49,8 @@ public class HasRankTag extends CloudReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
+    public final static Pattern IS_INTEGER = Pattern.compile("\\d+");
+
     public int doStartTag() throws JspTagException {
         boolean result;
         String minValueString = minValue.getString(this);
@@ -57,21 +60,33 @@ public class HasRankTag extends CloudReferrerTag implements Condition {
             if (minValueString.length() > 0 || maxValueString.length() > 0) {
                 throw new TaglibException("Cannot specify 'value' attribute with one 'minvalue' or 'maxvalue' attributes.");
             }
-            result = getCloudVar().getUser().getRank().equals(valueString);
+            result = getCloudVar().getUser().getRank().toString().equals(valueString);
         } else {
-            int rank = Rank.getRank(getCloudVar().getUser().getRank()).getInt();
+            int rank = getCloudVar().getUser().getRank().getInt();
             result = true;
             if (minValueString.length() > 0) {
-                Rank minRank = Rank.getRank(minValueString);
-                if (minRank == null) throw new TaglibException("Value of minrank: '" + minValueString + "' is not currently a known rank");
-                if (rank < minRank.getInt()) {
+                int minRankInt;
+                if (IS_INTEGER.matcher(minValueString).matches()) {
+                    minRankInt = Integer.parseInt(minValueString);
+                } else {
+                    Rank minRank = Rank.getRank(minValueString);
+                    if (minRank == null) throw new TaglibException("Value of minrank: '" + minValueString + "' is not currently a known rank");
+                    minRankInt =minRank.getInt();
+                }
+                if (rank < minRankInt) {
                     result = false;
                 }
             }
             if (maxValueString.length() > 0) {
-                Rank maxRank = Rank.getRank(maxValueString);
-                if (maxRank == null) throw new TaglibException("Value of maxrank'" + maxValueString + "' is not currently a known rank");
-                if (rank > maxRank.getInt()) {
+                int maxRankInt;
+                if (IS_INTEGER.matcher(maxValueString).matches()) {
+                    maxRankInt = Integer.parseInt(maxValueString);
+                } else {
+                    Rank maxRank = Rank.getRank(maxValueString);
+                    if (maxRank == null) throw new TaglibException("Value of maxrank'" + maxValueString + "' is not currently a known rank");
+                    maxRankInt = maxRank.getInt();
+                }
+                if (rank > maxRankInt) {
                     result = false;
                 }
             }           
