@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
 public class PostArea {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(PostArea.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(PostArea.class); 
 
    private int id;
    private Node node;

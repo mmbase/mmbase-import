@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 public class ForumSwapManager implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(ForumSwapManager.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ForumSwapManager.class); 
 
     // thread
     Thread kicker = null;

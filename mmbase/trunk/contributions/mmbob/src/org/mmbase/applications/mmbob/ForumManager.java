@@ -27,7 +27,7 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class ForumManager {
-    private static Logger log = Logging.getLoggerInstance(ForumManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ForumManager.class);
   
     private static Hashtable forums=new Hashtable();
     private static Hashtable forumnamecache=new Hashtable();

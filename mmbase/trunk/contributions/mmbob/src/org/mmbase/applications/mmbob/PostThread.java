@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
 public class PostThread {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(PostThread.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(PostThread.class); 
 
    private String subject;
    private String creator;

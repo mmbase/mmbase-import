@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
 public class Poster {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(Poster.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(Poster.class); 
 
    private int id,postcount,sessionstart,lastsessionend;
    private int avatar=0;
