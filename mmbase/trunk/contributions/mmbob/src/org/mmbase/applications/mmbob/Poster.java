@@ -189,7 +189,6 @@ public class Poster {
     public void seenThread(PostThread t) {
         Integer tid = new Integer(t.getId());
         seenthreads.put(tid, new Integer(t.getLastPostTime()));
-        log.info("seenthreads=" + seenthreads);
     }
 
     /**
@@ -392,7 +391,6 @@ public class Poster {
      * @return <code>true</code> if this method is called
      */
     public boolean profileUpdated() {
-        log.info("POSTER UPDATED !!!");
         readImages();
         return true;
     }
@@ -502,13 +500,13 @@ public class Poster {
    * get aliases version of this field
    */
    public String getAliased(String key) {
-        // long start = System.currentTimeMillis();
+        //long start = System.currentTimeMillis();
         String value = parent.getAliased(node,"posters."+key);
         if (value==null)  {
                 value=node.getStringValue(key);
         }
-        // long end = System.currentTimeMillis();
-        // log.info("getAlias Speed = "+(end-start)+"ms");
+        //long end = System.currentTimeMillis();
+        //log.info("getAlias Speed = "+(end-start)+"ms");
         return value;
    }
 
