@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.10 2003-08-01 12:12:30 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.11 2003-08-05 09:05:45 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -219,6 +219,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             BasicCompareFieldsConstraint newConstraint = new BasicCompareFieldsConstraint(createNewStepField(q, constraint.getField()), createNewStepField(q, constraint.getField2()));
             newConstraint.setOperator(constraint.getOperator());
             newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;
         } else if (c instanceof FieldValueConstraint) {
             FieldValueConstraint constraint = (FieldValueConstraint) c;
@@ -226,11 +227,13 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             BasicFieldValueConstraint newConstraint = new BasicFieldValueConstraint(createNewStepField(q, constraint.getField()), value);
             newConstraint.setOperator(constraint.getOperator());
             newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;            
         } else if (c instanceof FieldNullConstraint) {
             FieldNullConstraint constraint = (FieldNullConstraint) c;
             BasicFieldNullConstraint newConstraint = new BasicFieldNullConstraint(createNewStepField(q, constraint.getField()));
             newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;            
         } else if (c instanceof FieldValueBetweenConstraint) {
             FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
@@ -241,6 +244,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), new Double(constraint.getLowerLimit()), new Double(constraint.getUpperLimit()));
             }
             newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;            
         } else if (c instanceof FieldValueInConstraint) {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
@@ -250,6 +254,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 newConstraint.addValue(k.next());
             }
             newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;            
         }
         throw new RuntimeException("Could not copy constraint " + c);
