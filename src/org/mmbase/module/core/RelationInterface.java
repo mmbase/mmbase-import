@@ -12,32 +12,40 @@ package org.mmbase.module.core;
 import java.util.Enumeration;
 
 /**
+ * A relation within the cloud.
  *
  * @author Rob Vermeulen
+ * @author Pierre van Rooden
  */
 public interface RelationInterface extends NodeInterface {
 
 	/** 
-	 * get the source of the relation
-	 * @return the source Node
+	 * Retrieves the source of the relation
+	 * @return the source node
 	 */
 	public NodeInterface getSource();
 
 	/**
-	 * get the destination of the relation
-	 * @return the destination Node
+	 * Retrieves the destination of the relation
+	 * @return the destination node
 	 */
 	public NodeInterface getDestination();
 
 	/** 
 	 * set the source of the relation
-	 * @param the source Node
+	 * @param the source node
 	 */
 	public void setSource(NodeInterface node);
 
 	/**
 	 * set the destination of the relation
-	 * @param the destination Node
+	 * @param the destination node
 	 */
 	public void setDestination(NodeInterface node);
+
+ 	/**
+     * Retrieves the relation type used
+     * @return the relation type
+     */
+    public RelationTypeInterface getRelationType();
 }
