@@ -39,7 +39,7 @@
 <%      } %>
           <tr>
             <td class="editfield">
-                <input type="hidden" name="device" value="$device" />
+                <input type="hidden" name="device" value="<%=device%>" />
                 <input type="hidden" name="devicename" value="<mm:write referid="devicename" />" />
                 <input type="hidden" name="field" value="<mm:write referid="field" />" /> 
                 <input type="image" class="button" name="action" value="commit" src="../gfx/btn.red.gif" /> <%=mmlanguage.getInfo("GET-ok")%>
