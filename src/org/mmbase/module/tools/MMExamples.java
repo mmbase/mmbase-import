@@ -52,6 +52,7 @@ public class MMExamples extends ProcessorModule {
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
+			if (cmd.equals("APPLICATIONS")) return(getApplicationsList());
 		}
 		return(null);
 	}
@@ -68,6 +69,35 @@ public class MMExamples extends ProcessorModule {
 			token = tok.nextToken();
 			if (token.equals("INSTALL")) {
 				doInstall(cmds,vars);
+			}
+			if (token.equals("LOAD")) {
+				Versions ver=(Versions)mmb.getMMObject("versions");
+				String appname=(String)cmds.get(cmdline);
+				String path=MMBaseContext.getConfigPath()+("/applications/");
+				XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
+				if (app!=null) {
+					String name=app.getApplicationName();
+					String maintainer=app.getApplicationMaintainer();
+					int version=app.getApplicationVersion();
+					int installedversion=ver.getInstalledVersion(name,"application");
+					if (installedversion==-1 || version>installedversion) {
+						if (installedversion==-1) {
+							System.out.println("installing application : "+name);
+						} else {	
+							System.out.println("installing application : "+name+" new version from "+installedversion+" to "+version);
+						}
+						if (installApplication(name)) {
+							if (installedversion==-1) {
+								ver.setInstalledVersion(name,"application",maintainer,version);
+							} else {
+								ver.updateInstalledVersion(name,"application",maintainer,version);
+							}
+						} else {
+							System.out.println("Problem installing application : "+name);
+						}
+					}
+
+				}
 			}
 		}
 		return(false);
@@ -126,6 +156,8 @@ public class MMExamples extends ProcessorModule {
 				System.out.println("Application installer stopped : not all needed builders present");
 				return(false);
 			}
+		} else {
+			System.out.println("Can't install application : "+path+applicationname+".xml");
 		}
 		return(true);
 	}
@@ -451,8 +483,6 @@ public class MMExamples extends ProcessorModule {
 						String maintainer=app.getApplicationMaintainer();
 						int version=app.getApplicationVersion();
 						int installedversion=ver.getInstalledVersion(name,"application");
-					
-						//System.out.println("name="+name+" maintainer="+maintainer+" version="+version+" installed version="+installedversion);
 						if (installedversion==-1 || version>installedversion) {
 							if (installedversion==-1) {
 								System.out.println("Auto deploy application : "+aname);
@@ -481,5 +511,44 @@ public class MMExamples extends ProcessorModule {
 		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
 		XMLApplicationWriter.writeXMLFile(app,"/tmp",mmb);
 		return(true);
+	}
+
+	Vector getApplicationsList() {
+		Versions ver=(Versions)mmb.getMMObject("versions");
+		if (ver==null) {
+			System.out.println("Versions builder not installed, Can't get to apps");
+			return(null);
+		}
+		Vector results=new Vector();
+		
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		// new code checks all the *.xml files in builder dir
+        	File bdir = new File(path);
+		if (bdir.isDirectory()) {
+			String files[] = bdir.list();		
+			for (int i=0;i<files.length;i++) {
+				String aname=files[i];
+				if (aname.endsWith(".xml")) {
+					XMLApplicationReader app=new XMLApplicationReader(path+aname);
+					String name=app.getApplicationName();
+					results.addElement(name);
+					results.addElement(""+app.getApplicationVersion());
+					int installedversion=ver.getInstalledVersion(name,"application");
+					if (installedversion==-1) {
+						results.addElement("no");
+					} else {
+						results.addElement("yes (ver : "+installedversion+")");
+					}
+					results.addElement(app.getApplicationMaintainer());
+					boolean autodeploy=app.getApplicationAutoDeploy();
+					if (autodeploy) {
+						results.addElement("yes");
+					} else {
+						results.addElement("no");
+					}
+				}
+			}
+		}
+		return(results);
 	}
 }
