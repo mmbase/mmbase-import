@@ -7,7 +7,7 @@
 
     <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.8 2003-07-02 11:39:16 pierre Exp $</edition>
+    <edition>$Id: storage.xml,v 1.9 2003-07-02 12:50:46 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -50,32 +50,30 @@ public interface Transaction {
 	public boolean rollback();
 
 }]]></programlisting>
-			<formalpara>
+			<itemizedlist>
 				<title>Transaction Methods:</title>
-				<para><variablelist>
-						<varlistentry>
-							<term><methodname>boolean supportsRollback();</methodname></term>
-							<listitem>
-								<para>This method returns <constant>true</constant> if the transaction object supports rollback.</para>
-								<note><para>This method generally retrieves it's data by calling the <methodname>supportsRollback</methodname> method of the Storage class. Useful for when you do not have a reference to Storage, but otherwise a bit superfluous. However it is possible for individual transactions to turn rollback on or off (i.e. when querying data, rollback may be turned off as it makes the transaction quicker), so this method may still yield different results.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean commit();</methodname></term>
-							<listitem>
-								<para>This method closes the transaction and commits all changes. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, committing or closing fails.</para>
-								<para>You should call this method only after all changes for this transaction have been made. The commit() actually closes the transaction (i.e. it closes the database connection), making it inaccessible after the call. Any further attempts to use the Transaction will throw a StorageException.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean rollback();</methodname></term>
-							<listitem>
-								<para>This method cancels the transaction. If the transaction supports rollback, all changes made to the storage through the transaction are undone. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, canceling fails.</para>
-								<para>You should call not use the transaction any more after this method is called, as, similar to commit, it closes the transaction and makes it inaccessible, so any further use will throw a StorageException.</para>
-							</listitem>
-						</varlistentry>
-					</variablelist></para>
-			</formalpara>
+				
+				<listitem>
+				  <formalpara><title>boolean supportsRollback();</title><para /></formalpara>
+					<para>This method returns <constant>true</constant> if the transaction object supports rollback.</para>
+					<note><para>This method generally retrieves it's data by calling the <methodname>supportsRollback</methodname> method of the Storage class. Useful for when you do not have a reference to Storage, but otherwise a bit superfluous. However it is possible for individual transactions to turn rollback on or off (i.e. when querying data, rollback may be turned off as it makes the transaction quicker), so this method may still yield different results.</para></note>
+				</listitem>
+				
+				<listitem>
+				
+					<formalpara><title>boolean commit();</title><para /></formalpara>
+					<para>This method closes the transaction and commits all changes. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, committing or closing fails.</para>
+					<para>You should call this method only after all changes for this transaction have been made. The commit() actually closes the transaction (i.e. it closes the database connection), making it inaccessible after the call. Any further attempts to use the Transaction will throw a StorageException.</para>
+				</listitem>
+				
+				<listitem>
+				
+					<formalpara><title>boolean rollback();</title><para /></formalpara>
+						<para>This method cancels the transaction. If the transaction supports rollback, all changes made to the storage through the transaction are undone. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, canceling fails.</para>
+					<para>You should call not use the transaction any more after this method is called, as, similar to commit, it closes the transaction and makes it inaccessible, so any further use will throw a StorageException.</para>
+				</listitem>
+				
+			</itemizedlist>
 		</section>
 	
 		<section id="Storage">
@@ -148,215 +146,215 @@ public interface Storage extends SearchQueryHandler {
 }]]></programlisting>
 			<formalpara>
 				<title>Storage Methods:</title>
-				<para><variablelist>
-						<varlistentry>
-							<term><methodname>boolean isAllowedParentBuilder(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+				<para><itemizedlist>
+						<listitem>
+							<formalpara><title>boolean isAllowedParentBuilder(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Returns whether this storage layer allows for the specified builder to be a parent builder (that is, other builders can 'extend' this builder and its storage device). 'Object' and 'Insrel' should always be allowed parent builders. Whether other builders are allowed depends on the storage implementation (which may or may not implement means for builder tables to extend each other).</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
-					throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
+					throws StorageException;</title><para /></formalpara>
+							
 								<para>Registers a builder as a parent builder (that is, other builders can 'extend' this builder and its storage device). At the least, this code should check whether the builder is allowed as a parent builder, and throw an exception if this is not possible.</para>
 								<note><para>This method will be dropped from the interface. Knowledge on whether a builder extends other builders should be done in the builder itself, not in the storage layer. In current implementations the method does not do anything useful anyway.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean supportsRollback();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean supportsRollback();</title><para /></formalpara>
+							
 								<para>Returns whether rollback on storage level is supported. This method determines whether <link linkend="Transaction" >Transaction</link> objects for this layer can rollback changes. If <methodname>Storage.supportsRollback()</methodname> returns false, the <methodname>Transaction.supportsRollback()</methodname> should also return false.</para>
-							</listitem>
-						</varlistentry>
+							
+						</listitem>
 						
-						<varlistentry>
-							<term><methodname>String getText(MMObjectNode node,String fieldname);</methodname></term>
-							<listitem>
+						<listitem>
+							<formalpara><title>String getText(MMObjectNode node,String fieldname);</title><para /></formalpara>
+							
 								<para>Retrieve a large text for a specified object field. While this would normally be retrieved using getNode(), for purposes of performance and memory preservation, you might not want to load large texts in memory until you actually uses this. If you want to preserve memory in your storage, you can implement this method to return texts on demand. In addition, when you assemble a Node from storage, you will need to fill the text fields that you do NOT want to load directly with an indicator value (currently the text "$SHORTED").
 								</para>
 								<note><para>It may be useful to define a specific Indicator object/value rather than a text. The Indicator object would need to be defined in the Storage Interface.</para></note>
 								<note><para>There should be a Transactional version of this method.</para></note>
-							</listitem>
-						</varlistentry>
+							
+						</listitem>
 						
-						<varlistentry>
-							<term><methodname>byte[] getBytes(MMObjectNode node,String fieldname);</methodname></term>
-							<listitem>
+						<listitem>
+							<formalpara><title>byte[] getBytes(MMObjectNode node,String fieldname);</title><para /></formalpara>
+							
 								<para>Retrieve a large binary object (byte array) for a specified object field. See getText() above for more details. The Indicator for an unloaded Binary field is the same as for an unloaded text field.</para>
 								<note><para>There should be a Transactional version of this method.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>Transaction createTransaction() throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>Transaction createTransaction() throws StorageException;</title><para /></formalpara>
+							
 								<para>Returns a newly created <link linkend="Transaction" >Transaction</link> object. The Transaction object should be passed to most transaction-sensitive Storage methods (such as delete(), create(), etc). Note that most 'non-transactional' methods will actually create and use a transaction (though invisible to those outside the Storage class).</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int createKey();</methodname></term>
-							<listitem><para>Gives an unique number for a node to be inserted. This method is non-transactional (does not require a Transaction object), and should work properly even if multiple mmbase servers use the same storage. Currently this method actually calls the transactional version of the createKey method, but that method will be dropped. </para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int createKey(Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int createKey();</title><para /></formalpara>
+							<para>Gives an unique number for a node to be inserted. This method is non-transactional (does not require a Transaction object), and should work properly even if multiple mmbase servers use the same storage. Currently this method actually calls the transactional version of the createKey method, but that method will be dropped. </para>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int createKey(Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Gives an unique number for a node to be inserted, using the given Transaction to access the Storage. This method should work properly even if multiple mmbase servers use the same storage.</para>
 								<note><para>Since obtaining a key should work cross- server, it should also work cross-transaction. Using a transaction to obtain the key does not actually add functionality. This method will be dropped, unless merits can be found to trace the Transaction that created the key.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int insert(MMObjectNode node);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int insert(MMObjectNode node);</title><para /></formalpara>
+							
 								<para>This method inserts a new object, and registers the change. Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns a new node number or -1 depending on success.</para>
 								<note><para>We should determine whether non-transactional methods should be included in the Interface. While it is useful as it simplifies calls to Storage, it also complicates the interface. It should be determined whether these methods are to be included in the Storage interface or not. Alternate solutions are to create a TransactionalStorage interface and move all transactional versions of methods there, or to simply drop the non-transactional methods from Storage and - for backward compatibility -include them in the Support2Storage class. This notice applies to all transactional methods, including <methodname>commit</methodname>, <methodname>delete</methodname>, <methodname>create</methodname>, <methodname>getNode</methodname>, <methodname>getNodeType</methodname>, and <methodname>createObjectStorage</methodname>. It may also be worthwhile to add the transactional methods to the Transaction interface, so that Transaction.insert(MMObjectNode) will be similar to Storage.insert(MMObjectNode, Transaction).</para></note>
 								<note><para>It should be considered to rename <methodname>insert()</methodname> to <methodname>createNode()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int insert(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int insert(MMObjectNode node, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>This method inserts a new object within a transaction, and registers the change.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean commit(MMObjectNode node);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean commit(MMObjectNode node);</title><para /></formalpara>
+							
 								<para>Commit this node to the specified builder. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
 								<note><para>It should be considered to rename <methodname>commit()</methodname> to <methodname>commitNode()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean commit(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean commit(MMObjectNode node, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Commit this node to the specified builder within a transaction.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean delete(MMObjectNode node);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean delete(MMObjectNode node);</title><para /></formalpara>
+							
 								<para>Delete a node. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
 								<note><para>It should be considered to rename <methodname>delete()</methodname> to <methodname>deleteNode()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean delete(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean delete(MMObjectNode node, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Delete a node within a transaction.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>MMObjectNode getNode(MMObjectBuilder builder, int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>MMObjectNode getNode(MMObjectBuilder builder, int number);</title><para /></formalpara>
+							
 								<para>Select a node from a specified builder. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred.</para>
 								<note><para>Changes in other transactions may - depending on implementation - not be visible when using this method.</para></note>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Select a node from a specified builder within a transaction. This method guarantees to incorporate any changes made during the transaction.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int getNodeType(int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int getNodeType(int number);</title><para /></formalpara>
+							
 								<para>Returns the nodetype for a specified node number. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred.</para>
 								<note><para>Changes in other transactions may - depending on implementation - not be visible when using this method.</para></note>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int getNodeType(int number, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int getNodeType(int number, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Returns the nodetype for a specified nodereference within a transaction. This method guarantees to incorporate any changes made during the transaction.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean create(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean create(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
 								<note><para>See insert() for notes on non-transactional method, but see also the transactional method.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Create a storage for the specified builder within a transaction.</para>
 								<note><para>I don't think defining a storage (creating, deleting, or altering it) should be done within a transaction (as it generally works on database tables). It seems more useful to only define this method as non-transactional, so that calling this method assures the storage is there, so that when you use multiple servers you will not run into conflict (or use functionality that may not be there). This also counts for <methodname>createObjectStorage</methodname>, <methodname>addField</methodname>, <methodname>removeField</methodname>, <methodname>ChangeField</methodname>, and <methodname>updateStorage</methodname>.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean createObjectStorage();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean createObjectStorage();</title><para /></formalpara>
+							
 								<para>Create the object storage (the storage where to register all objects).</para>
 								<note><para>See insert() and create() for notes on non-transactional vs transactional method.</para></note>
 								<note><para>It should be considered to rename <methodname>createObjectStorage()</methodname> to <methodname>createStorage()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean createObjectStorage(Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean createObjectStorage(Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Create the object storage (the storage where to register all objects) within a transaction.</para>
 								<note><para>See create() for notes on transactional methods pertaining the creation of storages.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean created(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean created(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Tells if a storage for the builder already exists.</para>
 								<note><para>There is currently no non-transactional method for created(). Whether there should be one is dependent on whether the transactional method for create() is dropped or not.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int size(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int size(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Return the number of objects in a builder.</para>
 								<note><para>Should have a transactional version, as transactional methods can affect the size of builder.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean drop(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean drop(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Drops the storage of this builder.</para>
 								<note><para>There is currently no non-transactional method for drop(). Whether there should be one is dependent on whether the transactional method for create() is dropped or not.</para></note>
 								<note><para>It should be considered to rename <methodname>drop()</methodname> [database specific] to <methodname>delete()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean addField(MMObjectBuilder builder,String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean addField(MMObjectBuilder builder,String fieldname);</title><para /></formalpara>
+							
 								<para>Adds a field to the storage of this builder.</para>
 								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
 								<note><para>Should be renamed to <methodname>createField()</methodname> (in accordance with code conventions)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean removeField(MMObjectBuilder builder,String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean removeField(MMObjectBuilder builder,String fieldname);</title><para /></formalpara>
+							
 								<para>Deletes a field from the storage of this builder.</para>
 								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
 								<note><para>Should be renamed to deleteField (in accordance with code conventions)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean changeField(MMObjectBuilder builder,String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean changeField(MMObjectBuilder builder,String fieldname);</title><para /></formalpara>
+							
 								<para>Changes a field to the storage of this builder.</para>
 								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean updateStorage(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean updateStorage(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Changes the storage of a builder to match its new configuration.</para>
 								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
-							</listitem>
-						</varlistentry>
-					</variablelist></para>
+							
+						</listitem>
+					</itemizedlist></para>
 			</formalpara>
 		</section>
 		
@@ -437,303 +435,288 @@ public interface Storage extends SearchQueryHandler {
 	]]></programlisting>
 			<formalpara>
 				<title>DatabaseStorage Methods:</title>
-				<para><variablelist>
-						<varlistentry>
-							<term>Constants: KEY_NONE, KEY_PRIMARY, KEY_SECONDARY, KEY_FOREIGN, KEY_NOTNULL</term>
-							<listitem>
+				<para><itemizedlist>
+						<listitem>
+							<formalpara><title>Constants: KEY_NONE, KEY_PRIMARY, KEY_SECONDARY, KEY_FOREIGN, KEY_NOTNULL</title><para /></formalpara>
+							
 								<para>Constants used to indicate whether a certain field is a key, and if so, what type.
 								It is used in the <methodname>constructFieldDefiniton()</methodname> method, which is defined in AbstractDatabaseStorage.
 								</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void init(MMBase mmb, XMLDatabaseReader reader);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void init(MMBase mmb, XMLDatabaseReader reader);</title><para /></formalpara>
+							
 								<para>Initializes the database layer. This reads database specific content from the database configuration document. If needed, the code creates a 'numbertable' for mmbase to track number generation. It should also load the JDBC module, load database properties (such as whether it supports rollback, etc.)</para>
 								<note><para>Rewriting XMLDatabaseReader to use sax, and act as a property holder, allows all configuration to be stored in a separate class. That class can then also load schemes.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean getStoreBinaryAsFile();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean getStoreBinaryAsFile();</title><para /></formalpara>
+							
 								<para>Returns true if binaries are stored as files on disk, instead of in the database. Initially retrieved form the database configuration file (if the blobdatapath is given, this method returns true)</para>
 								<note><para>Should be renamed, moved to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setStoreBinaryAsFile(boolean value);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setStoreBinaryAsFile(boolean value);</title><para /></formalpara>
+							
 								<para>Sets whether binaries should be stored as files on disk, instead of in the database.</para>
 								<note><para>Should be renamed, moved to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>File getBinaryFilePath();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>File getBinaryFilePath();</title><para /></formalpara>
+							
 								<para>Returns the directory where binary fields are to be stored (provided getStoreBinaryAsFile() returns true).</para>
 								<note><para>Should be moved to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setBinaryFilePath(File path);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setBinaryFilePath(File path);</title><para /></formalpara>
+							
 								<para>Sets the directory where binary files are to be stored. The initial value is <filename class="directory">/tmp/data</filename>.</para>
 								<note><para>Should be moved to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setFieldNameMap(Map fieldmap);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setFieldNameMap(Map fieldmap);</title><para /></formalpara>
+							
 								<para>Sets the mapping of MMBase fieldnames (typically reserved words) to database fieldnames. Loaded form the database configuration file.</para>
 								<para>This map is used to map MMBase fieldnames to fieldnames that are acceptable to the database, i.e. Oracle does not accept 'number' as a fieldname, though MMBase uses it as a field name.</para>
 								<note><para>Remove (not really needed) or move to a separate class (XMLDatabaseReader?).</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>Map getFieldNameMap();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>Map getFieldNameMap();</title><para /></formalpara>
+							
 								<para>Returns the mapping of MMBase fieldnames.</para>
 								<note><para>Remove (not really needed) or move to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setTypeMap(Map typeMap);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setTypeMap(Map typeMap);</title><para /></formalpara>
+							
 								<para>Sets the type map used to convert MMBase types to database types (needed for creating tables).</para>
 								<note><para>Remove (not really needed) or move to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>Map getTypeMap();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>Map getTypeMap();</title><para /></formalpara>
+							
 								<para>Returns the type map.</para>
 								<note><para>Remove (not really needed) or move to a separate class (XMLDatabaseReader?)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setPrimaryKeyScheme(String scheme);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setPrimaryKeyScheme(String scheme);</title><para /></formalpara>
+							
 								<para>The primary key scheme is a parameterized string that defines the definition part of a primary key field.</para>
-								<variablelist>
+								<itemizedlist>
 								  <title>Parameters</title>
-									<varlistentry>
-									  <term>{0}</term>
-										<listitem><para>the name of the field to create.</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{1}</term>
-										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
-									</varlistentry>
-								</variablelist>
+									<listitem>
+									  <para>{0} : the name of the field to create.</para>
+									</listitem>
+									<listitem>
+									  <para>{1} the field type definition (i.e. 'varchar(64)' )</para>
+									</listitem>
+								</itemizedlist>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String getPrimaryKeyScheme();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String getPrimaryKeyScheme();</title><para /></formalpara>
+							
 								<para>The primary key scheme is a parameterized string that defines the definition part of a primary key field.</para>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setNotNullScheme(String scheme);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setNotNullScheme(String scheme);</title><para /></formalpara>
+							
 								<para>The not null scheme is a parameterized string that defines the definition part of a field that cannot be null.</para>
-								<variablelist>
+								<itemizedlist>
 								  <title>Parameters</title>
-									<varlistentry>
-									  <term>{0}</term>
-										<listitem><para>the name of the field to create.</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{1}</term>
-										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
-									</varlistentry>
-								</variablelist>
+									<listitem>
+									  <para>{0} : the name of the field to create.</para>
+									</listitem>
+									<listitem>
+									  <para>{1} : the field type definition (i.e. 'varchar(64)' )</para>
+									</listitem>
+								</itemizedlist>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String getNotNullScheme();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String getNotNullScheme();</title><para /></formalpara>
+							
 								<para>The not null scheme is a parameterized string that defines the definition part of a field that cannot be null.</para>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setKeyScheme(String scheme);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setKeyScheme(String scheme);</title><para /></formalpara>
+							
 								<para>The key scheme is a parameterized string that defines the definition part of a field that is a secondary (unique) key.</para>
-								<variablelist>
+								<itemizedlist>
 								  <title>Parameters</title>
-									<varlistentry>
-									  <term>{0}</term>
-										<listitem><para>the name of the field to create.</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{1}</term>
-										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{2}</term>
-										<listitem><para>the index name</para></listitem>
-									</varlistentry>
-								</variablelist>
+									<listitem>
+									  <para>{0} : the name of the field to create.</para>
+									</listitem>
+									<listitem>
+									  <para>{1} : the field type definition (i.e. 'varchar(64)' )</para>
+									</listitem>
+									<listitem>
+									  <para>{2} : the index name</para>
+									</listitem>
+								</itemizedlist>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String getKeyScheme();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String getKeyScheme();</title><para /></formalpara>
+							
 								<para>The key scheme is a parameterized string that defines the definition part of a field that is a secondary (unique) key.</para>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setForeignKeyScheme(String scheme);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setForeignKeyScheme(String scheme);</title><para /></formalpara>
+							
 								<para>The foreign key scheme is a parameterized string that defines the definition part of a field that is a foreign key.</para>
-								<variablelist>
+								<itemizedlist>
 								  <title>Parameters</title>
-									<varlistentry>
-									  <term>{0}</term>
-										<listitem><para>the name of the field to create.</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{1}</term>
-										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{2}</term>
-										<listitem><para>the index name</para></listitem>
-									</varlistentry>
-								</variablelist>
+									<listitem>
+									  <para>{0} : the name of the field to create.</para>
+									</listitem>
+									<listitem>
+									  <para>{1} : the field type definition (i.e. 'varchar(64)' )</para>
+									</listitem>
+									<listitem>
+									  <para>{2} : the index name</para>
+									</listitem>
+								</itemizedlist>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String getForeignKeyScheme();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String getForeignKeyScheme();</title><para /></formalpara>
+							
 								<para>The foreign key scheme is a parameterized string that defines the definition part of a field that is a foreign key.</para>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setCreateScheme(String scheme);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setCreateScheme(String scheme);</title><para /></formalpara>
+							
 								<para>The create scheme is a parameterized string that describes the SQL create table statement.</para>
-								<variablelist>
+								<itemizedlist>
 								  <title>Parameters</title>
-									<varlistentry>
-									  <term>{0}</term>
-										<listitem><para>the name of the table to create.</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{1}</term>
-										<listitem><para>the list of field definitions (separated by commas)</para></listitem>
-									</varlistentry>
-								</variablelist>
+									<listitem>
+									  <para>{0} : the name of the table to create.</para>
+									</listitem>
+									<listitem>
+									  <para>{1} : the list of field definitions (separated by commas)</para>
+									</listitem>
+								</itemizedlist>
 								<note><para>Should be moved to a separate utility class (Schemes).  Scheme may need to be extended with additional information, such as keys to use.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String getCreateScheme();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String getCreateScheme();</title><para /></formalpara>
+							
 								<para>The create scheme is a parameterized string that describes the SQL create table statement.</para>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setCreateExtendedScheme(String scheme);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setCreateExtendedScheme(String scheme);</title><para /></formalpara>
+							
 								<para>The create scheme is a parameterized string that describes the SQL create table statement for extended (OO) tables.</para>
-								<variablelist>
+								<itemizedlist>
 								  <title>Parameters</title>
-									<varlistentry>
-									  <term>{0}</term>
-										<listitem><para>the name of the table to create.</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{1}</term>
-										<listitem><para>the list of field definitions (separated by commas)</para></listitem>
-									</varlistentry>
-									<varlistentry>
-									  <term>{2}</term>
-										<listitem><para>the name of the table to extend</para></listitem>
-									</varlistentry>
-								</variablelist>
+									<listitem>
+									  <para>{0} : the name of the table to create.</para>
+									</listitem>
+									<listitem>
+									  <para>{1} : the list of field definitions (separated by commas)</para>
+									</listitem>
+									<listitem>
+									  <para>{2} : the name of the table to extend</para>
+									</listitem>
+								</itemizedlist>
 								<note><para>Should be moved to a separate utility class (Schemes). Scheme may need to be extended with additional information, such as keys to use.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String getCreateExtendedScheme();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String getCreateExtendedScheme();</title><para /></formalpara>
+							
 								<para>The create scheme is a parameterized string that describes the SQL create table statement for extended (OO) tables. Only for OO databases.</para>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void setMaxDropSize(int value);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void setMaxDropSize(int value);</title><para /></formalpara>
+							
 								<para>Sets the maximum size of a table before it can be 'dropped', generally as part of some table altering process.</para>
 								<note><para>Silly (mostly undocumented) property which should be dropped. Maybe replace with a field indicating whether tables can be altered.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int getMaxDropSize();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int getMaxDropSize();</title><para /></formalpara>
+							
 								<para>Returns the maximum size of a table before it can be 'dropped', generally as part of some table altering process.</para>
 								<note><para>Should be dropped.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean supportsExtendedTables();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean supportsExtendedTables();</title><para /></formalpara>
+							
 								<para>Returns true of the database used is OO.</para>
 								<note><para>Remove this property - methods depending on this property (i.e. create table method) should be overridden in the appropriate classes.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String mapToTableFieldName(String fieldName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String mapToTableFieldName(String fieldName);</title><para /></formalpara>
+							
 								<para>Maps a mmbase fieldname to a database fieldname. Only used internally.</para>
 								<note><para>If interfaces are changed to abstract classes, this method should become protected.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>String mapToMMBaseFieldName(String fieldName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>String mapToMMBaseFieldName(String fieldName);</title><para /></formalpara>
+							
 								<para>Maps a database fieldname to a mmbase fieldname. Only used internally.</para>
 								<note><para>If interfaces are changed to abstract classes, this method should become protected.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>JDBCInterface getJDBC();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>JDBCInterface getJDBC();</title><para /></formalpara>
+							
 								<para>Returns the JDBC Module.</para>
 								<note><para>The JDBC module should be moved and renamed (org.mmbase.storage.database.JDBC).</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);</title><para /></formalpara>
+							
 								<para>Stores a field from a table ResultSet in a MMObjectNode (using the index in the ResultSet and the fieldname of the node). This method is called by DatabaseTransaction.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException;</title><para /></formalpara>
+							
 								<para>Stores a field from a Node in a prepared statement (using the index in the statement and the fieldname of the node). This method is called by DatabaseTransaction.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void registerChanged(MMObjectNode node, String change);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void registerChanged(MMObjectNode node, String change);</title><para /></formalpara>
+							
 								<para>Register a change of a Node in the database.</para>
 								<note><para>Move to Transaction</para></note>
-							</listitem>
-						</varlistentry>
-					</variablelist></para>
+							
+						</listitem>
+					</itemizedlist></para>
 			</formalpara>
 		</section>
 	</section>
@@ -771,83 +754,83 @@ public class DatabaseTransaction {
 }]]></programlisting>
 			<formalpara>
 				<title>DatabaseTransaction Methods (in addition to the methods in Transaction):</title>
-				<para><variablelist>
-						<varlistentry>
-							<term><methodname>DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;</methodname></term>
-							<listitem>
+				<para><itemizedlist>
+						<listitem>
+							<formalpara><title>DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;</title><para /></formalpara>
+							
 								<para>The constructor for the DatabaseTransaction object.</para>
 								<para>The transaction attempts to obtain a connection with the database, using the DatabaseStorage to obtain the needed data (such as a reference to the JDBC module).
 								The parameter supplied indicates whether rollback should be enabled (if available). You can explicitly turn off rollback facilities (which might slow down database access) for internal routines by specifying useRollback as false.</para>
 								<note><para>If <parameter class="option">userollback</parameter> is true, this method calls the DatabaseStorage <methodname>supportsRollback()</methodname> method to check if rollback is possible. The DatabaseStorage will generally have pre-determined whether rollback is possible or not (when initializing the storage layer) by calling the <methodname>databaseSupportsRollback()</methodname> method.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean databaseSupportsRollback() throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean databaseSupportsRollback() throws StorageException;</title><para /></formalpara>
+							
 								<para>Queries the database metadata to test whether this database supports rollback. Rollback of a transaction is defined as making undone any changes to the persistent storage used (i.e. a database), since the transaction started. Not all databases support this.</para>
 								<note><para>This method should be called only once, at the initialization of the storage layer, to determine whether rollback is available. It may be worthwhile to replace this method with a getMetaData() method. We can then move the rollback test itself to the DatabaseStorage.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean hasTable(String tableName) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean hasTable(String tableName) throws StorageException;</title><para /></formalpara>
+							
 								<para>Queries the database metadata to test whether a given table exists.</para>
 								<note><para>It may be worthwhile to replace this method with a getMetaData() method (see <methodname>databaseSupportsRollback()</methodname>. We can then move the table test itself to the DatabaseStorage.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>Set getTables(String baseName) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>Set getTables(String baseName) throws StorageException;</title><para /></formalpara>
+							
 								<para>Queries the database metadata to obtain a list of tables following a specified pattern.</para>
 								<note><para>It may be worthwhile to replace this method with a getMetaData() method (see <methodname>databaseSupportsRollback()</methodname>. We can then move the table list itself to the DatabaseStorage.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>void registerChanged(MMObjectNode node, String change);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>void registerChanged(MMObjectNode node, String change);</title><para /></formalpara>
+							
 								<para>Register changes for broadcasting after commit.</para>
 								<para>The Transaction maintains a cache of changes to nodes. If the Transaction is successfully committed, it will broadcast these changes using MultiCast, by calling the <methodname>registerChanged</methodname> in the DatabaseStorage. This ensures that changes are only broadcasted if the commit was successful.</para>
 								<note><para>Current code does not take into account Transactions that do not rollback. If no rollback support is present, the changes should immediately be broadcasted, instead of cached.</para></note>
 								<note><para>The <methodname>commit()</methodname> method calls the <methodname>registerChanged()</methodname> in DatabaseStorage to actually broadcast the events. It is more appropriate to move that code from DatabaseStorage to DatabaseTransaction. (In fact, it would make sense to add the method to the Transaction interface, as it is not specifically database related and generally required to maintain a correct state between servers)</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>ResultSet executeQuery(String sql) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>ResultSet executeQuery(String sql) throws StorageException;</title><para /></formalpara>
+							
 								<para>Execute a SQL statement on the database, and return the ResultSet.</para>
 								<note><para>I generally feel that the Query interface should be used by DatabaseStorage. DatabaseTransaction merely passes commands (sql statements) to the database. I think it is appropriate to pass sql strings, rather than query objects, especially as it allows for the DatabaseStorage to pass it's own statements.</para></note>
 								<note><para>The reason we do not pass a Statement object is that this allows ONE entry point where connections and statements are created. This allows for the Transaction to use connection pools and logging separate from the Database storage.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean executeUpdate(String sql) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean executeUpdate(String sql) throws StorageException;</title><para /></formalpara>
+							
 								<para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a ResultSet). If the execution was successful (but did not generate an error) the method returns true.</para>
 								<note><para>see <methodname>executeQuery()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;</title><para /></formalpara>
+							
 							  <para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a ResultSet). The sql query will be run using a prepared statement, which is then filled with content from the passed node. The fields parameter contains the fields to add to the statement. The SQL statement should be appropriate to be used as a prepared statement, and have the appropriate type and number of parameters (as in fields).</para>
 								<para>If the execution was successful (but did not generate an error) the method returns true.</para>
 								<note><para>see <methodname>executeQuery()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>int getIntegerResult();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>int getIntegerResult();</title><para /></formalpara>
+							
 								<para>Attempts to return a single integer result from the last retrieved ResultSet. Use this method to return the result of a query which returns a ResultSet of records containing one single numeric field If the query failed, or returned an unexpected result, or if the ResultSet is exhausted, the function returns -1. If this is due to an error then the error is logged.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>MMObjectNode getNodeResult(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>MMObjectNode getNodeResult(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Attempts to return a single Node from the last retrieved ResultSet. Use this method to return the result of a query which returns a ResultSet of records containing fields from a builder table. If the query failed, or returned an unexpected result, or if the ResultSet is exhausted, the function returns null. If this is due to an error then the error is logged. Currently does not work for clusternodes, as far as I know.</para>
 								<note><para>This method (and <methodname>getIntegerResult()</methodname>) assume that Transaction can (and should) be used to temporarily store a ResultSet. If we choose for this approach (rather than move the code to DatabaseStorage), we would also need <methodname>getResultSet()</methodname> and <methodname>next()</methodname> methods, so we can iterate.</para></note>
-							</listitem>
-						</varlistentry>
-					</variablelist></para>
+							
+						</listitem>
+					</itemizedlist></para>
 			</formalpara>
 		</section>
 
@@ -914,186 +897,186 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 }]]></programlisting>
 			<formalpara>
 				<title>AbstractDatabaseStorage Methods (in addition to the methods in DatabaseStorage):</title>
-				<para><variablelist>
-						<varlistentry>
-							<term><methodname>protected void deployDatabaseReader(XMLDatabaseReader reader);</methodname></term>
-							<listitem>
+				<para><itemizedlist>
+						<listitem>
+							<formalpara><title>protected void deployDatabaseReader(XMLDatabaseReader reader);</title><para /></formalpara>
+							
 								<para>Reads database specific content from the database configuration document. Called by the init() of AbstractDatabaseStorage.</para>
 								<note><para>This method should be removed and replaced by a Configuration class</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String getFullTableName(String tableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String getFullTableName(String tableName);</title><para /></formalpara>
+							
 								<para>Returns the fully expanded tablename (includes the MMbase basename prefix) of a builder.</para>
 								<note><para>Maybe rename to <methodname>mapToTableName</methodname>(), similar to <methodname>mapToTableFieldName()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected final String getFullTableName(MMObjectBuilder buil);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected final String getFullTableName(MMObjectBuilder buil);</title><para /></formalpara>
+							
 								<para>Returns the fully expanded tablename (includes the MMbase basename prefix) of a builder.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String getTableName(String tableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String getTableName(String tableName);</title><para /></formalpara>
+							
 								<para>Maps the full table name to a table name acceptable to the database.</para>
 								<note><para>Should be dropped. mapping to a database acceptable name should be done by <methodname>getFullTableName()</methodname>.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyScheme(String scheme, String a1, String a2, String a3);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyScheme(String scheme, String a1, String a2, String a3);</title><para /></formalpara>
+							
 								<para>Applies a given scheme. Substitutes parameters a1, a2 and a3 for the values {0}, {1} and {2} in the scheme string</para>
 								<note><para>Move to new class Schemes</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyPrimaryKeyScheme(String fieldName, String fieldType);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyPrimaryKeyScheme(String fieldName, String fieldType);</title><para /></formalpara>
+							
 								<para>Retrieves and applies the primary key scheme. Substitutes parameters fieldName and fieldType for the values {0}, and {1} in the scheme string</para>
 								<note><para>Move to new class Schemes</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyNotNullScheme(String fieldName, String fieldType);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyNotNullScheme(String fieldName, String fieldType);</title><para /></formalpara>
+							
 								<para>Retrieves and applies the not null scheme. Substitutes parameters fieldName and fieldType for the values {0}, and {1} in the scheme string</para>
 								<note><para>Move to new class Schemes</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyKeyScheme(String fieldName, String fieldType, String indexName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyKeyScheme(String fieldName, String fieldType, String indexName);</title><para /></formalpara>
+							
 								<para>Retrieves and applies the key scheme. Substitutes parameters fieldName, fieldType and indexName for the values {0}, {1} and {2} in the scheme string</para>
 								<note><para>Move to new class Schemes</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyForeignKeyScheme(String fieldName, String fieldType, String reference);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyForeignKeyScheme(String fieldName, String fieldType, String reference);</title><para /></formalpara>
+							
 								<para>Retrieves and applies the foreign key scheme. Substitutes parameters fieldName, fieldType and reference for the values {0}, {1} and {2} in the scheme string</para>
 								<note><para>Move to new class Schemes</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);</title><para /></formalpara>
+							
 								<para>Retrieves and applies the table create scheme. Substitutes parameters tableName, fieldDefinitions and parentTableName for the values {0}, {1} and {2} in the scheme string</para>
 								<note><para>Move to new class Schemes. Add a <methodname>applyCreateExtendedScheme()</methodname> method.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String createSQL(String tableName, String fields);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String createSQL(String tableName, String fields);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for creating a specified table.</para>
 								<note><para>This is useful as it can be overridden by implementations that do not like to use schemes (the default implementation will use the schemes to build the sql statement).</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>abstract protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>abstract protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for creating a specified table, optionally extending another supplied table.
 								Implement this method to add a database-specific syntax or optimization.</para>
 								<note><para>see createSQL() above</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>abstract protected String insertSQL(String tableName,String fieldNames, String fieldValues);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>abstract protected String insertSQL(String tableName,String fieldNames, String fieldValues);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for inserting an object in a table. Override this method to add a database-specific syntax or optimization.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>abstract protected String updateSQL(String tableName,String setFields,int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>abstract protected String updateSQL(String tableName,String setFields,int number);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for updating an object in a table. Override this method to add a database-specific syntax or optimization.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>abstract protected String deleteSQL(String tableName,int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>abstract protected String deleteSQL(String tableName,int number);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for deleting an object in a table. Override this method to add a database-specific syntax or optimization.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String selectSQL(String tableName, String fieldNames, int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String selectSQL(String tableName, String fieldNames, int number);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for selecting data from one object.</para>
 								<note><para>Replace with query if possible</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String selectSQL(String tableName, String fieldNames);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String selectSQL(String tableName, String fieldNames);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for selecting data from a table.</para>
 								<note><para>Replace with query if possible</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String selectSQL(String tableName, String fieldNames, String where, String orderby);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String selectSQL(String tableName, String fieldNames, String where, String orderby);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for selecting data from a table.</para>
 								<note><para>Replace with query if possible</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>abstract protected String selectSQL(String tableName, String fieldNames, String where, String orderby,
-                               int offset, int max);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>abstract protected String selectSQL(String tableName, String fieldNames, String where, String orderby,
+                               int offset, int max);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for selecting data from a table.</para>
 								<note><para>Replace with query if possible</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String constructFieldDefinition(MMObjectBuilder builder, FieldDefs field);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String constructFieldDefinition(MMObjectBuilder builder, FieldDefs field);</title><para /></formalpara>
+							
 								<para>Constructs a creation definition segment for one field, to use in a CREATE TABLE sql command. uses schemes by default.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String matchType(int type, int size);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String matchType(int type, int size);</title><para /></formalpara>
+							
 								<para>Map a MMBase Type to a database specific type. If the type cannot be determined the result is null</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType)/</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType)/</title><para /></formalpara>
+							
 								<para>Constructs a creation definition segment for one field, to use in a CREATE TABLE sql command</para>
 								<note><para>This is a variation of <methodname>constructFieldDefinition(MMObjectBuilder builder, FieldDefs field)</methodname>. It can be removed, though an alternate way of constructing the 'object' fields (using FieldDefs) should first be found.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public DatabaseTransaction createDatabaseTransaction() throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public DatabaseTransaction createDatabaseTransaction() throws StorageException;</title><para /></formalpara>
+							
 								<para>Returns a newly created database transaction object.</para>
 								<note><para>Add to DatabaseStorage</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public DatabaseTransaction createDatabaseTransaction(boolean useRollback) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public DatabaseTransaction createDatabaseTransaction(boolean useRollback) throws StorageException;</title><para /></formalpara>
+							
 								<para>Returns a newly created database transaction object. You can explicitly turn off rollback facilities (to speed up  database access) for internal routines by specifying useRollback as false.</para>
 								<note><para>Add to DatabaseStorage</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public final byte[] getBytes(String tableName, String fieldName, int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public final byte[] getBytes(String tableName, String fieldName, int number);</title><para /></formalpara>
+							
 								<para>Returns a binary object. Used instead of <methodname>getByte(MMObjectNode node, String fieldname)</methodname> for backward compatibility with supportclasses <methodname>getShortedBytes()</methodname> method</para>
 								<note><para>Should this really be final?</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx);</title><para /></formalpara>
+							
 								<para>Returns a binary object using a stream to retrieve it from JDBC.</para>
 								<note><para>Should be moved or renamed</para></note>
-							</listitem>
-						</varlistentry>
-					</variablelist>
+							
+						</listitem>
+					</itemizedlist>
 				</para>
 			</formalpara>
 		</section>
@@ -1192,266 +1175,266 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
 			<formalpara>
 				<title>AbstractDatabaseStorage Methods (in addition to the methods in DatabaseStorage):</title>
 				<para>
-					<variablelist>
-						<varlistentry>
-							<term><methodname>protected void loadExistingTables();</methodname></term>
-							<listitem>
+					<itemizedlist>
+						<listitem>
+							<formalpara><title>protected void loadExistingTables();</title><para /></formalpara>
+							
 								<para>Load the names of the existing tables for this MMBase instance in memory. Called by init().</para>
 								<note><para>This list is only used internally to determine if a table is created, in the created() and drop() methods. It is better to use the <classname>DatabaseTransaction</classname> <methodname>hasTable()</methodname> or <methodname>getMetaData()</methodname> methods. In that case this method can be dropped</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected void loadSupportInformation();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected void loadSupportInformation();</title><para /></formalpara>
+							
 								<para>Load information on database support (i.e support of rollback). Called by init().</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected void prepare();</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected void prepare();</title><para /></formalpara>
+							
 								<para>Prepares the database layer. Called by init(). Ment to be overridden by subclasses, to prepare the database. Possible examples are creating a Sequence in postgresql, or adding a supporting numberTable for tracking objectnumbers in MySQL. Overriding prepare() is easier than overriding init().</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);</title><para /></formalpara>
+							
 								<para>Applies the create scheme (if available), and returns the result (a field type defintiton string). If no scheme is available, this code uses a default SQL scheme.</para>
 								<note><para>Obsolete. abstract classes should not make assumptons on the validity of create schemes.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for creating a specified table, optionally extending another supplied table.</para>
 								<note><para>Should be moved to a more specific layer.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String dropSQL(String tableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String dropSQL(String tableName);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for dropping a specified table.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String insertSQL(String tableName,String fieldNames, String fieldValues);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String insertSQL(String tableName,String fieldNames, String fieldValues);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for inserting an object in a table.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String updateSQL(String tableName,String setFields,int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String updateSQL(String tableName,String setFields,int number);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for updating an object in a table.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String deleteSQL(String tableName,int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String deleteSQL(String tableName,int number);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for deleting an object in a table.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String selectSQL(String tableName, String fieldNames, String where, String orderby, int offset, int max);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String selectSQL(String tableName, String fieldNames, String where, String orderby, int offset, int max);</title><para /></formalpara>
+							
 								<para>Returns the SQL command to use for selecting data from a table.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>abstract protected String getText(String tableName, String fieldname, int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>abstract protected String getText(String tableName, String fieldname, int number);</title><para /></formalpara>
+							
 								<para>Obtain (large) text field for a node with the indicated number.</para>
 								<note><para>Move the implementation of getText from RelationalDatabaseStorage to this layer. The reason this method exists is backward compatibility with the <methodname>getShortedText</methodname> methdoi from the support classes. As such it cannot yet be removed.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public String getText(MMObjectNode node, String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public String getText(MMObjectNode node, String fieldname);</title><para /></formalpara>
+							
 								<para>Obtain (large) text field for a node</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public final byte[] getBytes(MMObjectNode node, String fieldName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public final byte[] getBytes(MMObjectNode node, String fieldName);</title><para /></formalpara>
+							
 								<para>Obtain (large) binary field for a node. This method determines whether to retrieve data from file or database, and then calls the function that retrieves it.</para>
 								<note><para>Should this really be final?</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public int insert(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public int insert(MMObjectNode node, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>This method performs some checks, retrieves a key if needed, inserts a new object within a transaction (by calling <methodname>insertIntoTable</methodname>), and registers the change.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected int insertIntoTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected int insertIntoTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>This method inserts a new object in a specified builder table. It performs a simple insert statement</para>
 								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean commit(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean commit(MMObjectNode node, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Commit this node to the specified builder table within a transaction (by calling <methodname>commitToTable</methodname>), and registers the change.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected boolean commitToTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected boolean commitToTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Commit the changes to this node to the specified builder table.</para>
 								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Delete a node within a transaction (by calling <methodname>deleteFromTable</methodname>), and registers the change.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Remove a node from the specified builder table.</para>
 								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Select a node from a specified builder</para>
 								<note><para>Should use Query?</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public int getNodeType(int number, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public int getNodeType(int number, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Returns the nodetype for a specified nodereference</para>
 								<note><para>Should use Query?</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected List getFieldsOrderCreate(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected List getFieldsOrderCreate(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Returns the fields of a builder in the order in which they should be created.</para>
 								<note><para>Order is not of import with this particular database layer, which refers to fields by name (not index). However, older databases DO rely on a specific order of the fields, specifically when inserting data. Also, some older routines in MMBase that still execute SQL on their own (shudder!) access fields on index. As such, when creating a table, fields should be created in order.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected MMObjectBuilder getParentBuilder(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected MMObjectBuilder getParentBuilder(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Returns the parent builder of the specifed builder.</para>
 								<note><para>Utility method. Move to MMObjectBuilder.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected String getParentTableName(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected String getParentTableName(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Returns the name of the parent table of the specifed builder.</para>
 								<note><para>Utility method. Bit obscure and only called once, so remove.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected boolean isParentField(MMObjectBuilder builder,String fieldName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected boolean isParentField(MMObjectBuilder builder,String fieldName);</title><para /></formalpara>
+							
 								<para>Tests whether the specified field is a member of the parent table of the specifed builder.</para>
 								<note><para>Utility method. Move to MMObjectBuilder.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Create a database table for the specified builder.</para>
 								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean createObjectStorage(Transaction trans) throws StorageException;</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean createObjectStorage(Transaction trans) throws StorageException;</title><para /></formalpara>
+							
 								<para>Create the object table (the basic table for all objects) within a transaction</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean created(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean created(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Tells if a table for the builder already exists</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean created(String tableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean created(String tableName);</title><para /></formalpara>
+							
 								<para>Tells if a table already exists.</para>
 								<note><para>This version of the method exists so existence of non-builder tables (i.e. teh numberTable in MySQL) can be checked too.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public int size(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public int size(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Return number of objects in a builder.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public int size(String tableName);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public int size(String tableName);</title><para /></formalpara>
+							
 								<para>Return number of entries consisting in given table.</para>
 								<note><para>Probably not needed anymore, can be removed.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected File getBinaryFile(String tableName, String fieldName, int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected File getBinaryFile(String tableName, String fieldName, int number);</title><para /></formalpara>
+							
 								<para>Obtain a file reference containing a binary object for a field in a given node.</para>
 								<note><para>Maybe define as private, as it is unlikely to be accessed otehr than by <methodname>writeBytesToFile()</methodname> or <methodname>readBytesFromFile()</methodname></para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected boolean writeBytesToFile(String tableName, String fieldName, int number, byte[] value);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected boolean writeBytesToFile(String tableName, String fieldName, int number, byte[] value);</title><para /></formalpara>
+							
 								<para>Writes a binary object of a given node to a file.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>protected byte[] readBytesFromFile(String tableName, String fieldName, int number);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>protected byte[] readBytesFromFile(String tableName, String fieldName, int number);</title><para /></formalpara>
+							
 								<para>Reads a binary object of a given node from a file.</para>
 								<note><para>zzz</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean drop(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean drop(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Drops the table of this builder.</para>
 								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean addField(MMObjectBuilder builder,String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean addField(MMObjectBuilder builder,String fieldname);</title><para /></formalpara>
+							
 								<para>Adds a field to the table of this builder.</para>
 								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean removeField(MMObjectBuilder builder,String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean removeField(MMObjectBuilder builder,String fieldname);</title><para /></formalpara>
+							
 								<para>Deletes a field from the table of this builder.</para>
 								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean changeField(MMObjectBuilder builder,String fieldname);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean changeField(MMObjectBuilder builder,String fieldname);</title><para /></formalpara>
+							
 								<para>Changes a field to the table of this builder.</para>
 								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><methodname>public boolean updateStorage(MMObjectBuilder builder);</methodname></term>
-							<listitem>
+							
+						</listitem>
+						<listitem>
+							<formalpara><title>public boolean updateStorage(MMObjectBuilder builder);</title><para /></formalpara>
+							
 								<para>Changes the storage of a builder to match its new configuration.</para>
 								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
-							</listitem>
-						</varlistentry>
-					</variablelist>
+							
+						</listitem>
+					</itemizedlist>
 				</para>
 			</formalpara>
 		</section>
