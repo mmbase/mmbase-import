@@ -27,7 +27,7 @@ import java.lang.reflect.*; // necessary for SizeOf
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.7 2002-08-09 14:03:30 michiel Exp $
+ * @version $Id: Cache.java,v 1.8 2002-08-09 21:00:53 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable {
 
@@ -223,7 +223,20 @@ abstract public class Cache extends LRUHashtable {
 
     static private class SizeOf {
         
-        private static final int SZ_REF = 4;       
+        private static final int SZ_REF = 4;               
+        private static int size_prim(Class t) { 
+            if      (t == Boolean.TYPE)   return 1;
+            else if (t == Byte.TYPE)      return 1;
+            else if (t == Character.TYPE) return 2;
+            else if (t == Short.TYPE)     return 2;
+            else if (t == Integer.TYPE)   return 4;
+            else if (t == Long.TYPE)      return 8;
+            else if (t == Float.TYPE)     return 4;
+            else if (t == Double.TYPE)    return 8;
+            else if (t == Void.TYPE)      return 0;
+            else return SZ_REF;
+        }
+        
         public static int sizeof(boolean b) { return 1; }        
         public static int sizeof(byte b)    { return 1; }        
         public static int sizeof(char c)    { return 2; }
@@ -232,53 +245,67 @@ abstract public class Cache extends LRUHashtable {
         public static int sizeof(long l)    { return 8; }        
         public static int sizeof(float f)   { return 4; }        
         public static int sizeof(double d)  { return 8; }
+        public static int sizeof(Object obj) {
+            System.out.println("sizeof object");
+            if (obj == null) {
+                return 0;
+            }
+            
+            Class c = obj.getClass();
+            
+            if (c.isArray()) {
+                System.out.println("an array");
+                return size_arr(obj, c);
+            } else {
+                System.out.println("an object");
+                if (obj instanceof Map)  return sizeof((Map) obj);
+                return size_inst(obj, c);
+            }
+        }
+        
+        public static int sizeof(Map m) {
+            System.out.println("sizeof Map");
+            int len = size_inst(m, m.getClass());
+            Iterator i = m.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                len += sizeof(entry.getKey());
+                len += sizeof(entry.getValue());
+            }
+            return len;
+        }
+        
+
         private static int size_inst(Object obj, Class c) {
             Field flds[] = c.getDeclaredFields();
             int sz = 0;
             
             for (int i = 0; i < flds.length; i++) {
                 Field f = flds[i];
-                if (!c.isInterface() &&  (f.getModifiers() & Modifier.STATIC) != 0)
+                if (!c.isInterface() &&  (f.getModifiers() & Modifier.STATIC) != 0) {
                     continue;
+                }
                 sz += size_prim(f.getType());
                 try {
+                    System.out.println("found a field " + f);
                     sz += sizeof(f.get(obj)); // recursion
                 } catch (java.lang.IllegalAccessException e) {
                     // well...
+                    System.out.println(e);
+
                 }
             }
             
-            if (c.getSuperclass() != null)
+            if (c.getSuperclass() != null) {
                 sz += size_inst(obj, c.getSuperclass());
+            }
             
             Class cv[] = c.getInterfaces();
-            for (int i = 0; i < cv.length; i++)
+            for (int i = 0; i < cv.length; i++) {
                 sz += size_inst(obj, cv[i]);
+            }
             
             return sz;
-        }
-        
-        private static int size_prim(Class t) { 
-            if (t == Boolean.TYPE)
-                return 1;
-            else if (t == Byte.TYPE)
-                return 1;
-            else if (t == Character.TYPE)
-                return 2;
-            else if (t == Short.TYPE)
-                return 2;
-            else if (t == Integer.TYPE)
-                return 4;
-            else if (t == Long.TYPE)
-                return 8;
-            else if (t == Float.TYPE)
-                return 4;
-            else if (t == Double.TYPE)
-                return 8;
-            else if (t == Void.TYPE)
-                return 0;
-            else 
-                return SZ_REF;
         }
         
         private static int size_arr(Object obj, Class c) {
@@ -303,24 +330,27 @@ abstract public class Cache extends LRUHashtable {
                 return sz;
             }
         }
+       
+    }
+    public static void main(String args[]) {
+        Cache mycache = new Cache(20) {  
+                public String getName()        { return "test cache"; }
+                public String getDescription() { return ""; }
+            };
+        System.out.println("putting some strings in cache");
+        mycache.put("aaa", "AAA"); // 6 bytes
+        mycache.put("bbb", "BBB"); // 6 bytes
 
-        public static int sizeof(Map m) {
-            int len = SZ_REF;
-            // walk and determin total size
-            // TO BE IMPLEMENTED
-            return len;
-        }
+        System.out.println("putting an hashmap in cache");
+        Map m = new HashMap();
+        m.put("ccc", "CCC");      
+        m.put("ddd", "DDD"); 
         
-        public static int sizeof(Object obj) {
-            if (obj == null)
-                return 0;
-            
-            Class c = obj.getClass();
-            
-            if (c.isArray())
-                return size_arr(obj, c);
-            else
-                return size_inst(obj, c);
-        }
+        mycache.put("eee", m);   // 24 bytes
+
+        mycache.put("fff", mycache); 
+
+        System.out.println("size of cache: " + mycache.getByteSize());
+
     }
 }
