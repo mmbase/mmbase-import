@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.3 2002-04-02 21:09:49 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.4 2002-04-04 17:53:23 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.0" 
@@ -11,13 +11,13 @@
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction" 
 >
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
-  <xsl:import href="dformatteddate.xslt" /><!-- dealing with dates is done there -->
+  <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
   
   <xsl:param name="formatter_imgdb" />    <!-- this information is needed to correctly construct img.db urls -->
   
   <xsl:output method="xml" omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
 
-  <xsl:variable name="newstype" select="news" /> <!-- I had an 'xmlnews' type... Can easily switch beteen them like this -->
+  <xsl:variable name="newstype">news</xsl:variable> <!-- I had an 'xmlnews' type... Can easily switch beteen them like this -->
   
    <!-- If objects is the entrance to this XML, then only handle the root child of it -->
   <xsl:template match="objects"> 
