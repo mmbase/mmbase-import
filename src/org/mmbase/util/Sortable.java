@@ -13,12 +13,12 @@ package org.mmbase.util;
  * Interface to sort objects.
  * @see org.mmbase.util.SortedVector
  *
- * @author Rico Jansen
- * @version $Id: Sortable.java,v 1.6 2004-05-03 10:50:18 michiel Exp $
  * @deprecated I think this is the same as java.util.Comparable
+ * @author Rico Jansen
+ * @version $Id: Sortable.java,v 1.7 2004-09-30 16:08:39 pierre Exp $
  */
-public interface Sortable
-{
+public interface Sortable {
+
     /**
      * The compare function called by SortedVector to sort things
      * @see org.mmbase.util.SortedVector
