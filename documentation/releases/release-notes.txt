@@ -23,16 +23,33 @@ NEW FEATURES:
 General New Features:
 --------------------
 
-- Storing images on disk has changed. Note: if you are upgrading from 1.7.0 RC1 you need to convert!
-  Images are now changed as follows:
-  An images' number is broken up in parts. The 3 least significant digits are ignored.
-  The remaining digits are divided by hundreds (pairs of digits of 2).
+- Storing blobs (e.g. images) on disk has changed. 
+  Blobs are now stored as follows:
+  The number of the object containing the blob is broken up in parts. The 3 least significant digits are ignored.
+  The remaining digits are divided by powers of hundred (pairs of digits of 2).
   These are then broken up in nested directories.
   For instance, the field 'handle' of node with number 5447637 is stored as:
-    data/databasename/buildername/54/47/5447637.handle
+    data/databasename/basename_buildername/54/47/5447637.handle
   while the same field of node number 1205 is stopped as:
-    data/databasename/buildername/01/1205.handle
+    data/databasename/basename_buildername/01/1205.handle
+
+  where 'databasename', 'basename' and 'buildername' are depending on configuration and type of the
+  node. 
+
   This improves performance on systems when you get a large number of binary fields.
+
+  Note: if you are upgrading from 1.7.0 RC1 you need to convert, because this 'breaking up' into
+  directories did not yet exist then.
+
+  Note: if you are upgrading from 1.6 or early 1.7 builds and used to store blobs on disk using the
+  'old' storage implementation or the 'support' implementation (from < 1.6), then too you need to
+  convert if you want to use the 'new' storage now (which you want). Note that the 'databasename'
+  and 'basename' parts are new in the path (these make it easier to toggle between configurations).
+
+  Make sure the old 'blobdatadir' dir is now WEB-INF/data (use e.g. a symlink)
+
+  You can convert the blobs via the admin pages /mmbase/admin admin->BLOBS (which can also be used
+  to migrate from blobs-in-database to blobs-on-disk).
 
 - Query-object, which allows for several new taglib and MMCI features.
 
