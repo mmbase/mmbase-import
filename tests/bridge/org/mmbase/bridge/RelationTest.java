@@ -11,9 +11,9 @@ package org.mmbase.bridge;
 
 import org.mmbase.tests.*;
 /**
- * Test cases to test the creation of relations and the retrieval 
+ * Test cases to test the creation of relations and the retrieval of them
  * @author Kees Jongenburger
- * @version $Id: RelationTest.java,v 1.2 2003-11-11 11:11:37 michiel Exp $
+ * @version $Id: RelationTest.java,v 1.3 2003-11-19 10:01:28 keesj Exp $
  */
 public class RelationTest extends BridgeTest {
     
@@ -39,23 +39,34 @@ public class RelationTest extends BridgeTest {
         
         RelationManager relatedRelationManager = cloud.getRelationManager("related");
         
+        
+        
         //create a relation from aaFirstNode to bbNode
-        aaFirstNode.createRelation(bbNode,relatedRelationManager).commit();
+        Relation related1 =aaFirstNode.createRelation(bbNode,relatedRelationManager);
+        related1.commit();
         
         //create a relation from bbNode to aaSecondNode
-        bbNode.createRelation(aaSecondNode,relatedRelationManager).commit();
+        Relation related2 = bbNode.createRelation(aaSecondNode,relatedRelationManager);
+        related2.commit();
         
         //we now have 3 node
-        //aaFirst -> related -> bb -> related -> aaSecond
+        //in the BridgeTest application the folowing is defined
+		//<relation from="aa" to="bb" type="related" />
+		//<relation from="bb" to="aa" type="related" />
+
+		//and we have created the folowing structure
+        //aaFirstNode -> related1 -> bbNode -> related2 -> aaSecondNode
+        
         //check back if we can get the direction
         
         NodeList aaRelatedList = aaFirstNode.getRelatedNodes("bb","related" ,"source");
         assertTrue("related list has size " + aaRelatedList.size() + " but should be 1", aaRelatedList.size() == 1);
+        
         NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa","related","source");
         assertTrue("relation count should be 1 but is "+ bbRelatedListSource.size() +" mmbase relations dont' work",bbRelatedListSource.size() == 1);
         
         NodeList bbRelatedListDestination = bbNode.getRelatedNodes("aa","related","destination");
-        assertTrue("relation count should be 1 buts is "+bbRelatedListDestination.size() +" mmbase relations dont' work",bbRelatedListDestination.size() ==1);
+        assertTrue("relation count should be 1 but is "+bbRelatedListDestination.size() +" mmbase relations dont' work",bbRelatedListDestination.size() ==1);
 		
     }
 }
