@@ -68,7 +68,7 @@
     ><span class="<%=("cache".equals(subcategory)) ? "current" : ""%>menuitem">CACHE</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top"
-    ><span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">:EMAIL</span></a>
+    ><span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
 	<% } %>
 </td>
 </tr>

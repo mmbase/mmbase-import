@@ -18,11 +18,11 @@
     NodeManager email=null;
     try {
        email=cloud.getNodeManager("email");
-    } catch (Exception e) {}
+    } catch (NotFoundException e) {}
 %>
 
 <tr align="left">
-  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
+  <th class="header" colspan="4">Dynamic &amp; Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <% if (email==null) { %>
 <tr>
@@ -31,14 +31,13 @@
 <% } else { %>
 
 <tr>
-  <td class="multidata" colspan="4">Email queue - first 500 entries</td>
+  <td class="multidata" colspan="4">Email queue - first 1000 entries</td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-  <td class="header" colspan="4">First (1000 max) messages into the memory queue
-</td>
+  <th class="header" colspan="4">First (1000 max) messages into the memory queue</th>
 </tr>
 <tr>
   <th class="header">second to mail</th>
@@ -50,6 +49,7 @@
 <%
    Hashtable params= new Hashtable();
    params.put("MAX","1000");
+   params.put("ITEMS","5");
    NodeList msgs=email.getList("MEMTASKS",params);
    for (int i=0; i<msgs.size(); i++) {
     Node msg=msgs.getNode(i);
@@ -58,7 +58,7 @@
   <td class="data"><%=msg.getValue("item2")%></td>
   <td class="data"><%=msg.getValue("item3")%></td>
   <td class="data"><%=msg.getValue("item4")%></td>
-  <td class="data"><a href="email/fullmail.jsp?msg=<%=msg.getValue("item1")%>"><%=msg.getValue("item5")%></a></td>
+  <td class="data"><a href="<mm:url page="<%="fullmail.jsp?msg="+msg.getValue("item1")%>" />"><%=msg.getValue("item5")%></a></td>
 </tr>
 <%   } %>
 <% } %>
@@ -66,7 +66,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../email.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../email.jsp"/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Email Monitor</td>
 </tr>
 </table>
