@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[
+]>
+  <article>
+  <articleinfo>
+    <date>$Id: i18n.xml,v 1.1 2002-09-05 20:50:12 michiel Exp $</date>
+    <title>MMBase Internationalisation and Localisation</title>
+  </articleinfo>
+  <section>
+    <title>Introduction</title>
+    <para>
+      Since MMBase is basicly a server-product, there is only little user-interface, and the issue
+      of which human language (or other `locale' setting) is in use is relatively unimportant. There
+      can be said a few words about it though, and if you want to adapt MMBase to the needs of your
+      country and language, then you can hopefully find what you need in this document. 
+    </para>
+    <para>
+      Happily MMBase is relatively well `internationalised', which means that effort has been taken
+      to make it possible to `localize' (i.e. basicly: add translations) it easily. MMBase was
+      developed in a dutch environment, rather then an english-only one, which ensured that this
+      issue was always kept in mind relatively well.
+    </para>
+    <para>
+      Part of the process of `internationalisation' (also refered to as `i18n') of course is the
+      possibility to represent all kind of characters, and on this subject the first section will
+      ellaborate.
+    </para>
+    <para>
+      The second part of this document will point out where the different `translatable' parts of
+      MMBase are, and how to add or improve a translation.
+    </para>
+  </section>
+  <section id="encodings">	
+   <title>Internationalisation - Encodings</title>
+    <para>
+      In MMBase 1.5 and before the default character encoding of the strings in the database was
+      ISO-8859-1, which is a superset of ASCII. In `iso-1' every letter is presented by excactly one
+      byte, so that there can be only 255 different letters and characters. Using ISO-8859-1 most
+      western european language - including english, french, german and dutch - can be presented
+      without much troubles.
+    </para>
+    <para>
+      MMBase however is coded in Java, and Java strings can contain much more than 255 different
+      characters. In fact the characters in Java strings must only be in the Unicode character set,
+      which is a huge set, sufficient to present texts in virtually all languages of the world. See
+      <ulink>http://www.unicode.org</ulink>.
+    </para>
+    <para>
+      Therefore in MMBase 1.6 the encoding of the database strings was made configurable. Of course
+      this is only needed if the database (and jdbc driver) does not understand unicode encodings by
+      itself. E.g. mysql does not support unicode by itself, so MMBase has to force it.             
+    </para>
+    <para>
+      Default this 'encoding' parameter (which can be found in mmbaseroot.xml) is now set to UTF-8,
+      which is the most common unicode encoding. UTF-8 is a multibyte encoding, which means that oane
+      character can be presented by 1 or more bytes. It has been arranged that the ASCII letters are
+      presented by the same bytes, which means that texts encoded in ASCII are also encoded in
+      UTF-8, so UTF-8 is largely backwards-compatible.
+    </para>
+    <para>
+      Most configuration in MMBase is done by use of XML nowadays. Unicode characters can always be
+      presented in XML documents by the use of `entities' or by the use of UTF-8 (the default
+      character encoding for XML-documents, IIRC).
+    </para>
+    <para>
+      Though Java strings can contain any unicode character, ussually Java-code cannot be in
+      e.g. UTF-8. I think java code must be in ISO-8859-1 (right?), so if a unicode character
+      outside the range of ISO-8859-1 has to be presented in Java source code then it has to be
+      escaped by the use of the \u notation. 
+    </para>
+    <para>
+      This also is valid for Java `property files'. Property files are not seldom used as resources
+      for translations, so it is important to realise that they must be encoded in ISO-8859-1, but
+      that it <emphasis>is</emphasis> possible to use characters from the complete unicode set. You
+      might want to use a tool to do the escaping for you though if you try to type a language of
+      which most characters are not in ISO-8859-1 (e.g. greek, russian and most asian languages).
+    </para>
+  </section>
+  <section id="translations">
+    <title>Localisation - Translations</title>
+    <para>
+      On a few parts in MMBase there can be found texts in different languages. A language is
+      always indicated by a two letter code from ISO 639 (note that this is for languages, not
+      countries).
+    </para>
+    <section id="builder">
+      <title>Builders</title>        
+      <para>
+        `Builders' or `Node-types' are defined by the use of XML-files in MMBase. The description
+        of the builder, complete with `GUI' names is present in the XML file, together with the
+        GUI-names of the fields of this builder. It is easy to add translations. Simply duplicate
+        the tags you want to translate, change the 'xml:lang' attribute and provide the
+        translation. A good start are the `core'-builders. The translated builder and field names
+        will be available in generic editors and for example also in the editwizards.
+      </para>
+    </section>
+    <section id="jspeditors">
+      <title>Generic JSP-editors</title>
+      <para>
+        The generic JSP-editor does use some text of itself. These messages are internationalised
+        and can be translated by adding a
+        org.mmbase.applications.jsp.editors.editors_&lt;language&gt;.properties resource file
+        containing the new translations.
+      </para>
+      <para>
+        Translations for a few languages are available in the mmbase.jar but I think more can be
+        put in the WEB-INF/classes/org/mmbase/applications/jsp/editors/ directory too (so there is
+        no need to make a new mmbase jar). You can send the translations to the community though
+        and then they can be placed in the mmbase jar for common usage.
+      </para>
+    </section>
+    <section id="editwizards">
+      <title>Editwizards</title>
+      <para>
+        Also the editwizards are relatively well internationalised. They output HTML-pages in
+        UTF-8, so all characters can be present. Translations for the `current' language are
+        present in a `prompts'.xsl. The default (english) one is next to the other editwizard
+        xsl's, but it can be overridden by placing a translation in
+        &lt;editwizard-dir&gt;/data/&lt;language&gt;/xsl/prompts.xsl. A few examples are shipped
+        with the 1.6 MMBase distribution.
+      </para>
+      <para>
+        In the editwizard `schema' XML's the prompt for a field can be explicitely stated. If you
+        omit this prompt though the internationalised version of the builder is used in stead.
+      </para>
+      <para>
+        The schema XML itself is not (yet) internationalised, and titles, prompts and other
+        messages in these files can only be in one language.
+      </para>
+    </section>
+  </section>
+  <section id="languagesetting">
+    <title>Language setting</title>
+    <para>
+      In the mmbaseroot.xml also the `default language' can be set, which is used if no language
+      is set.
+    </para>
+    <para>
+      The language can also be set explicitely in the Cloud of the bridge (using the 'setLocale'
+      function). GUI-names obtained from such a cloud will be localized according to this setting
+      (if possible)
+    </para>
+    <para>
+      The MMBase taglib provides the `locale' tag, which sets the language in cloud-tags in
+      surrounds, but also informs other less MMBase specific tags (the time tag), about the locale
+      settings it contains.
+    </para>
+  </section>
+</article>
+  
