@@ -123,9 +123,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      * get the shared Secret
      * @return the shared Secret
      */
-//    public String getSharedSecret() {
-//    	synchronized(this) {
-//            return config.sharedSecret;
-//	}
-//    }    
+    public String getSharedSecret() {
+    	return getConfig().getSharedSecret();
+    }    
 }
