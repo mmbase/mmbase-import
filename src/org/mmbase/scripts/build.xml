@@ -657,9 +657,14 @@ Build-compiler: ${build.compiler}
     <!-- This should depend on bindist!! -->
     <target name="war.webroot" depends="init.compile,documentation">
 
-    <!-- copy the jsp editors to a reasonable place -->
+        <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${webroot.build.dir}/mmbase/edit">
             <fileset dir="${source-html.dir}/mmeditors/jsp"/>
+        </copy>
+
+     <!-- copy the editwizards to a reasonable place -->
+       <copy todir="${webroot.build.dir}/mmbase/edit/wizard">
+            <fileset dir="${source-html.dir}/mmapps/editwizard"/>
         </copy>
                 
         <!-- docs -->
