@@ -132,7 +132,7 @@
 				<mm:param name="day"><mm:write referid="day"/></mm:param>
 			       </mm:treefile>">
 
-            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEINVITATION" />"/></a>
+            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEINVITATION" />"/></a>
         </mm:relatednodes>
       </mm:node>
 	    <a href="appointments.jsp"><di:translate id="listappointments">Bekijk afspraken</di:translate></a>
