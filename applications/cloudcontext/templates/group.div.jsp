@@ -8,7 +8,7 @@
 <div class="users">
    <mm:relatednodes id="user" searchdir="destination" role="contains" type="mmbaseusers">
      <mm:first>Users: </mm:first>
-     <a href="<mm:url page="edit_user.jsp" referids="user" />"><mm:nodeinfo type="gui" /></a>
+     <a href="<mm:url referids="parameters,$parameters,user"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /></a>
      <mm:last inverse="true">, </mm:last>
    </mm:relatednodes>
 </div>
