@@ -1,7 +1,7 @@
 <!ELEMENT action ( object | relation  | prompt | description )* >
 <!ATTLIST action type NMTOKEN #REQUIRED >
 
-<!ELEMENT command ( prompt?, search-filter* ) >
+<!ELEMENT command ( prompt*, search-filter* ) >
 <!ATTLIST command name NMTOKEN #REQUIRED >
 <!ATTLIST command age NMTOKEN #IMPLIED >
 <!ATTLIST command fields CDATA #IMPLIED >
@@ -30,7 +30,7 @@
 <!ELEMENT prefix ( #PCDATA ) >
 <!ELEMENT postfix ( #PCDATA ) >
 
-<!ELEMENT fieldset ( prompt?, field+ ) >
+<!ELEMENT fieldset ( prompt*, field+ ) >
 
 <!ELEMENT form-schema ( field | list | subtitle | title )* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
@@ -56,6 +56,7 @@
 <!ELEMENT lists ( optionlist ) >
 
 <!ELEMENT name ( #PCDATA ) >
+<!ATTLIST name xml:lang NMTOKEN #IMPLIED >
 
 <!ELEMENT object ( field | relation )* >
 <!ATTLIST object type NMTOKEN #IMPLIED >
@@ -73,6 +74,7 @@
 <!ATTLIST optionlist optioncontent CDATA #IMPLIED >
 
 <!ELEMENT prompt ( #PCDATA ) >
+<!ATTLIST prompt xml:lang NMTOKEN #IMPLIED >
 
 <!ELEMENT relation ( field | object )* >
 <!ATTLIST relation destination CDATA #IMPLIED >
@@ -81,13 +83,15 @@
 
 <!ELEMENT search-fields ( #PCDATA ) >
 
-<!ELEMENT search-filter ( name, search-fields, default? ) >
+<!ELEMENT search-filter ( name+, search-fields, default? ) >
 
 <!ELEMENT subtitle ( #PCDATA ) >
 
 <!ELEMENT title ( #PCDATA ) >
+<!ATTLIST title xml:lang NMTOKEN #IMPLIED >
 
 <!ELEMENT description ( #PCDATA ) >
+<!ATTLIST description  xml:lang NMTOKEN #IMPLIED >
 
-<!ELEMENT wizard-schema ( title, action+, lists?, form-schema+ ) >
+<!ELEMENT wizard-schema ( title+, action+, lists?, form-schema+ ) >
 <!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
