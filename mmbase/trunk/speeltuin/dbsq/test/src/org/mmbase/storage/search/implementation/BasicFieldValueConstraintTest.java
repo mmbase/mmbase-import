@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicFieldValueConstraintTest extends TestCase {
     
@@ -18,8 +18,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
     private final static String FIELD_NAME2 = "number";
     private final static String STRING_VALUE1 = "value1";
     private final static String STRING_VALUE2 = "aValue2";
-    private final static Integer INTEGER_VALUE1 = new Integer(12345);
-    private final static Integer INTEGER_VALUE2 = new Integer(34589);
+    private final static Double DOUBLE_VALUE1 = new Double(12345);
+    private final static Double DOUBLE_VALUE2 = new Double(34589);
 
     /** Test instance 1 (string field). */
     private BasicFieldValueConstraint instance1 = null;
@@ -48,6 +48,7 @@ public class BasicFieldValueConstraintTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
@@ -67,7 +68,7 @@ public class BasicFieldValueConstraintTest extends TestCase {
         // Create instance 2 (integer field).
         fieldDefs = builder.getField(FIELD_NAME2);
         field2 = new BasicStepField(step, fieldDefs);
-        instance2 = new BasicFieldValueConstraint(field2, INTEGER_VALUE1);        
+        instance2 = new BasicFieldValueConstraint(field2, DOUBLE_VALUE1);        
     }
     
     /**
@@ -78,7 +79,7 @@ public class BasicFieldValueConstraintTest extends TestCase {
     /** Test of setValue method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
     public void testSetValue() {
         assertTrue(instance1.getValue().equals(STRING_VALUE1));
-        assertTrue(instance2.getValue().equals(INTEGER_VALUE1));
+        assertTrue(instance2.getValue().equals(DOUBLE_VALUE1));
         
         try {
             // Null value, should throw IllegalArgumentException.
@@ -92,9 +93,9 @@ public class BasicFieldValueConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         try {
-            // Integer value for string type, should throw IllegalArgumentException.
-            instance1.setValue(INTEGER_VALUE1);
-            fail("Integer value for string type, should throw IllegalArgumentException.");
+            // Double value for string type, should throw IllegalArgumentException.
+            instance1.setValue(DOUBLE_VALUE1);
+            fail("Double value for string type, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
             // String value for integer type, should throw IllegalArgumentException.
@@ -105,9 +106,17 @@ public class BasicFieldValueConstraintTest extends TestCase {
         assertTrue(!STRING_VALUE1.equals(STRING_VALUE2)); // Different test values!
         instance1.setValue(STRING_VALUE2);
         assertTrue(instance1.getValue().equals(STRING_VALUE2));
-        assertTrue(!INTEGER_VALUE1.equals(INTEGER_VALUE2)); // Different test values!
-        BasicFieldValueConstraint result = instance2.setValue(INTEGER_VALUE2);
-        assertTrue(instance2.getValue().equals(INTEGER_VALUE2));
+        assertTrue(!DOUBLE_VALUE1.equals(DOUBLE_VALUE2)); // Different test values!
+        
+        // Insert as Integer value instead of Double.
+        instance2.setValue(new Integer(DOUBLE_VALUE2.intValue()));
+        assertTrue(
+            ((Number) instance2.getValue()).doubleValue() 
+                == DOUBLE_VALUE2.doubleValue());
+        
+        // Insert as Double.
+        BasicFieldValueConstraint result = instance2.setValue(DOUBLE_VALUE2);
+        assertTrue(instance2.getValue().equals(DOUBLE_VALUE2));
         assertTrue(result == instance2);
     }
     
