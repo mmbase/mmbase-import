@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class MMObjectBuilderTest extends TestCase {
     
@@ -96,6 +96,28 @@ public class MMObjectBuilderTest extends TestCase {
         TestSuite suite = new TestSuite(MMObjectBuilderTest.class);
         
         return suite;
+    }
+    
+    /** Test of getNode(int,boolean) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testGetNode() {
+        Iterator iTestNodes = testNodes.iterator();
+        while (iTestNodes.hasNext()) {
+            MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+            int nodeNumber = testNode.getNumber();
+            MMObjectNode node = instance.getNode(nodeNumber, false);
+            assertTrue(areEqual(node, testNode));
+        }
+    }
+    
+    /** Test of getNodeType(int) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testGetNodeType() {
+        Iterator iTestNodes = testNodes.iterator();
+        while (iTestNodes.hasNext()) {
+            MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+            int nodeNumber = testNode.getNumber();
+            int typedef = instance.getNodeType(nodeNumber);
+            assertTrue(typedef == testNode.getOType());
+        }
     }
     
     /** Test of count(String) method, of class org.mmbase.module.core.MMObjectBuilder. */
