@@ -42,14 +42,14 @@ public class Url extends AbstractTransformer implements CharTransformer {
         switch(to){
         case ESCAPE:           return URLEscape.escapeurl(r);
         case PARAM_ESCAPE:     return URLParamEscape.escapeurl(r);
-        default: return null;
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
     }
     public String transformBack(String r) {
         switch(to){
         case ESCAPE:           return URLEscape.unescapeurl(r);
         case PARAM_ESCAPE:     return URLParamEscape.unescapeurl(r);
-        default: return null;
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
 
