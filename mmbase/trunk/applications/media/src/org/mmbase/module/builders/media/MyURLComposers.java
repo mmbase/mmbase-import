@@ -21,7 +21,7 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyURLComposers.java,v 1.2 2003-01-07 09:06:33 michiel Exp $
+ * @version $Id: MyURLComposers.java,v 1.3 2003-01-08 22:23:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class MyURLComposers extends MediaURLComposers {
@@ -33,7 +33,7 @@ public class MyURLComposers extends MediaURLComposers {
      * @throws MalformedURLException
      */
 
-    protected URL getURL(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, List preferences) throws MalformedURLException {
+    protected List getURLs(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map preferences) {
         if (provider == null) throw new IllegalArgumentException("Cannot create URL without a provider");
         if (source   == null) throw new IllegalArgumentException("Cannot create URL without a source");
 
@@ -50,14 +50,22 @@ public class MyURLComposers extends MediaURLComposers {
                 appendTime(end, args.append(sep).append("end="));
                 sep = '&';
             }
-            int format = source.getIntValue("format");
-            if (format ==2 || format == 6 || format == 17) { // blech! should use constants or somehting like that
+            Format format = Format.get(source.getIntValue("format"));
+            if (format.isReal()) { 
                 // real...
                 String title = fragment.getStringValue("title");
                 args.append(sep).append("title=").append(title);
             }
         }
-        return new URL(composer.getStringValue("protocol"), provider.getStringValue("host"), args.toString());
+        List result = new ArrayList();
+        try {
+            result.add(
+                       new URL(composer.getStringValue("protocol"), provider.getStringValue("host"), args.toString())
+                       );
+        } catch (MalformedURLException e) {
+            log.error(e);
+        }
+        return result;
     }
 
 

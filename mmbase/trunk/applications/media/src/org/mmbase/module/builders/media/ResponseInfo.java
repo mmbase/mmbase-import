@@ -12,6 +12,7 @@ package org.mmbase.module.builders.media;
 
 import org.mmbase.module.core.MMObjectNode;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * ResponseInfo is a wrapper/container class  around an URL.  It contains besides the
@@ -25,7 +26,7 @@ import java.net.URL;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResponseInfo.java,v 1.1 2003-01-07 22:29:43 michiel Exp $
+ * @version $Id: ResponseInfo.java,v 1.2 2003-01-08 22:23:07 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -33,15 +34,17 @@ public class ResponseInfo  {
     private URL          url;
     private MMObjectNode source;
     private boolean      available;
-    ResponseInfo(URL u, MMObjectNode s, boolean a) {
-        url = u; source = s; available = a;
+    private Map          info;
+    ResponseInfo(URL u, MMObjectNode s,  boolean a, Map i) {
+        url = u; source = s; info = i; available = a;
     }
     ResponseInfo(URL u, MMObjectNode s) {
-        this(u, s, true);
+        this(u, s, true, null);
     }
-    public URL          getURL()      { return url;       }
+    public URL          getURL()      { return url;  }
     public MMObjectNode getSource()   { return source;  }
     public boolean      isAvailable() { return available; }
+    public Map          getInfo()     { return info; }
     
     public String toString() {
         if (available) {

@@ -1,0 +1,97 @@
+ /*
+  
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
+ 
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
+ */
+
+package org.mmbase.module.builders.media;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import java.util.*;
+
+/**
+ * Makes the 'Format' constants available.
+ *
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: Format.java,v 1.1 2003-01-08 22:23:06 michiel Exp $
+ * @since MMBase-1.7
+ */
+
+
+
+
+// See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
+public final class Format {   // final class!!
+    private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
+    public final static String RESOURCE = "org.mmbase.module.builders.media.resources.formats";
+    
+    private static List formats = new ArrayList(); // to make possible to get the Format object by int.
+    private int    number; // for storage     
+    private String id;     // for toString(), and as identifier in config file etc.
+                           // Also sync with common extension?
+    
+    private Format(int n, String i) { // private constructor!!
+        number = n; id = i; 
+        while (formats.size() <= number) formats.add(null);
+        formats.set(number, this);
+    }         
+    
+    // in contradiction to the example of the cited URL I prefer
+    // to state the number explicitely, because those numbers will
+    // appear in the database, so never may change (so don't
+    // determin the number automaticly
+    
+    public static final Format UNKNOWN = new Format(0, "unknown");
+    public static final Format MP3  = new Format(1, "mp3");
+    public static final Format RA   = new Format(2, "ra");
+    public static final Format WAV  = new Format(3, "wav");
+    public static final Format PCM  = new Format(4, "pcm");
+    public static final Format MP2  = new Format(5, "mp2");
+    public static final Format RM   = new Format(6, "rm");
+    public static final Format VOB  = new Format(7, "vob");
+    public static final Format AVI  = new Format(8, "avi");
+    public static final Format MPEG = new Format(9, "mpeg");
+    public static final Format MP4  = new Format(10, "mp4");
+    public static final Format MPG  = new Format(11, "mpg");
+    public static final Format ASF  = new Format(12, "asf");
+    public static final Format MOV  = new Format(13, "mov");
+    public static final Format WMA  = new Format(14, "wma");
+    public static final Format OGG  = new Format(15, "ocg");
+    public static final Format OGM  = new Format(16, "ogm");
+    public static final Format RAM  = new Format(17, "ram");
+    public int toInt()    { return number; }
+    public String toString() { return id;     }
+    public static Format get(int i) {
+        return (Format) formats.get(i);
+    }
+    public static Format get(String id) {
+        id = id.toLowerCase();
+        Iterator i = formats.iterator();
+        while (i.hasNext()) {
+            Format format = (Format) i.next();
+            if(format.toString().equals(id)) return format;
+        }
+        log.error("Cannot convert format (" + id + ") to number");
+        return UNKNOWN;
+    }
+    public boolean isReal() {
+        return this == RA || this == RM || this == RAM;
+    }
+    public List getSimilar() {
+        if (isReal()) {
+            if (this == RM) {
+                return Arrays.asList(new Format[]{this, RA, RAM});
+            } else if (this == RA) {
+                return Arrays.asList(new Format[]{this, RM, RAM});
+            } else if (this == RAM) {
+                return Arrays.asList(new Format[]{this, RM, RA});
+            }
+        }
+        return Arrays.asList(new Format[]{this});
+    }
+}
+    
