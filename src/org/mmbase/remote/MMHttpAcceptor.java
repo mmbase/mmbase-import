@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: MMHttpAcceptor.java,v 1.8 2000-11-28 16:41:12 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote;
 
 import java.lang.*;
@@ -16,7 +21,7 @@ import java.io.*;
 
 /**
  *
- * @version 27 Mar 1997
+ * @version $Revision: 1.8 $ $Date: 2000-11-28 16:41:12 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
@@ -48,16 +53,13 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	public MMHttpAcceptor(String servername,String remoteHost,int remotePort) {
 		this.remoteHost=remoteHost;
 		this.remotePort=remotePort;
-
-		debug("MMHttpAcceptor: server("+servername+"), remoteHost("+remoteHost+"), remotePort("+remotePort+")");
-	
+		if (debug) debug("MMHttpAcceptor("+servername+","+remoteHost+","+remotePort+"): Creating and initializing");
 		init();
 	}
 
 	public void init() {
 		this.start();	
 	}
-
 
 	/**
 	 * Starts the admin Thread.
@@ -76,15 +78,16 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 					//serversocket.setSoTimeout(Integer.MAX_VALUE);
 					okeonport=true;
 				} catch (Exception e) {
-					debug("bind failed  on port :"+port);
+					debug("start():bind failed  on port :"+port);
 					port=port+((trycount++)*10);
 				}
 			}
 			if (okeonport) {
-				debug("ok bind on port :"+port);
+				debug("start():ok bind on port :"+port);
 			} else {
-				debug("ALL BINDS from 8080 to 9080 failed ");
+				debug("start():ALL BINDS from 8080 to 9080 failed ");
 			}
+			if (debug) debug("start(): Creating and starting a new Thread.");
 			kicker = new Thread(this,"MMHttpAcceptor");
 			kicker.start();
 		}
@@ -102,6 +105,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	}
 
 
+	/**
+	 * Sets the priority of the admin thread a little higher and continuous with work.
+	 */
 	public void run() {
 		while (kicker!=null) {
 			try {
@@ -115,6 +121,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	}
 
 	/**
+	 * Lowers the current thread priority and creates a new MMHttpHandler instance.
 	 */
 	public void doWork() {
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY-1); 
@@ -127,8 +134,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 				* Do what is wanted and close the connect
 				* without hogging your host machine down.
 			 	*/
+				if (debug) debug("doWork(): Accepting client request and creating new MMHttpHandler.");
 				clientsocket=serversocket.accept();
-
+				
 				new MMHttpHandler(clientsocket,listeners);
 			} catch (Exception e) {
 			   /**
@@ -150,7 +158,8 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 
 
 	public synchronized boolean commitNode(String nodename,String tableName,String xml) {
- 		if( debug ) debug("commitNode("+nodename+","+tableName+","+xml.length()+")");
+		
+		if( debug ) debug("commitNode("+nodename+","+tableName+","+xml+"): xml.length():"+xml.length());
 		String line=null;
 		Socket connect;
 		BufferedInputStream in=null;
@@ -164,6 +173,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 
 		//System.out.println("DO POST ON : "+xml);
 		try {
+			if(debug) debug("commitNode: Performing HTTP POST and send the xml data to "+remoteHost+", "+remotePort);
 			connect=new Socket(remoteHost,remotePort);
 			try {
 				out=new PrintStream(connect.getOutputStream());
@@ -213,24 +223,23 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		return(true);
 	}
 
+	/**
+	 * @return true, always
+	 */
 	public boolean getNode(String nodename,String tableName) {
- 		if( debug ) debug("getNode("+nodename+","+tableName+")");
+ 		if (debug) debug("getNode("+nodename+","+tableName+"): Getting node!");
 
 		// connects to the server to obtain this node in xml
 		// and parse it back to a node
 		try {
-			String proto = getProtocol();
-			String host  = getLocalHost();
-			String sport  = ""+ getLocalPort();
-
-			if( debug ) {
-				debug("getNode("+nodename+","+tableName+"): proto("+proto+")");
-				debug("getNode("+nodename+","+tableName+"): host("+host+")");
-				debug("getNode("+nodename+","+tableName+"): sport("+sport+")");
-			}
+			String proto=getProtocol();
+			String host =getLocalHost();
+			String sport=""+getLocalPort();
+			if (debug) debug("getNode("+nodename+","+tableName+"): proto("+proto+"), host("+host+"), sport("+sport+")");
  
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
+			if (debug) debug("getNode("+nodename+","+tableName+"): Performing GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
@@ -238,6 +247,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			out.flush();
 			DataInputStream in=new DataInputStream(connect.getInputStream());
 			String line=readline(in);
+			if (debug) debug("getNode("+nodename+","+tableName+"): Return value on GET request:"+line);
 			if (line!=null && !line.equals("")) {
 				if (line.indexOf("200 OK")!=-1) {
 					Hashtable headers=readHeaders(in);
