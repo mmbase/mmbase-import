@@ -3,17 +3,23 @@
   <!-- 
   Demonstrating overriding of standard list.xsl 
 
-  @version   $Id: list.xsl,v 1.2 2002-07-10 20:20:38 michiel Exp $
+  @version   $Id: list.xsl,v 1.3 2002-07-11 08:29:34 michiel Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
   -->
   <xsl:import href="ew:xsl/list.xsl" /> <!-- extend from standard  editwizard xslt -->
-  
-  <xsl:template name="style"> <!-- just to test overriding -->
-    <title>XXXXX  <xsl:value-of select="$wizardtitle" /> - <xsl:value-of select="$title" />  XXXXX</title>
-    <link rel="stylesheet" type="text/css" href="{$rootew_path}style.css" ></link>
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}style.css" ></link>
-  </xsl:template>
-   
+ 
+  <xsl:template name="superhead"><!-- The first row of the the body's table -->
+    <tr>
+      <td />
+      <td>
+        <table width="100%">
+          <tr>
+            <td class="superhead"><nobr>[[ <xsl:value-of select="$title" /> ]]</nobr></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </xsl:template>   
 </xsl:stylesheet>
