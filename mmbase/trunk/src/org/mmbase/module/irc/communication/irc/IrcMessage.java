@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.module.irc.communication.irc;
+import org.mmbase.util.logging.*;
 
 import java.util.StringTokenizer;
 
 public class IrcMessage
 {
-	private String classname = getClass().getName();
-
+    private static Logger log = Logging.getLoggerInstance(IrcMessage.class.getName());
 	// message: [:<server|user> ]command [to] :[<params>]
 
 	private String message;
@@ -63,7 +63,7 @@ public class IrcMessage
 		if (command != null && !command.equals(""))
 			result += command + " ";
 		else
-			debug("construct: Parameter command is null or empty!");
+			log.debug("construct: Parameter command is null or empty!");
 
 		if (to != null && !to.equals(""))
 			result += to + " ";
@@ -111,7 +111,7 @@ public class IrcMessage
 		if (_command != null && !_command.equals(""))
 			result += _command + " ";
 		else
-			debug("construct("+_from+","+_command+","+_to+"," + _middle + ", " +_params+"): ERROR: Parameter command is null or empty!");
+			log.error("construct("+_from+","+_command+","+_to+"," + _middle + ", " +_params+"): ERROR: Parameter command is null or empty!");
 
 		if (_to != null && !_to.equals(""))
 			result += _to + " ";
@@ -169,7 +169,7 @@ public class IrcMessage
 					message = message.substring( spaceIndex+1 	);
 				}
 				else
-					debug("decode("+originalMessage+"): ERROR: Trying to decode FROM-clause, but seems that it is a strange message (missing space after ':')! (parsed: " + message+")");
+					log.error("decode("+originalMessage+"): ERROR: Trying to decode FROM-clause, but seems that it is a strange message (missing space after ':')! (parsed: " + message+")");
 			}
 
 			// check command
@@ -183,7 +183,7 @@ public class IrcMessage
 					message = message.substring( spaceIndex+1  );
 				}
 				else
-					debug("decode("+originalMessage+"): ERROR: Trying to decode COMMAND-clause, but seems that it is a strange message (missing space after COMMAND)! (parsed: " + message+")");
+					log.error("decode("+originalMessage+"): ERROR: Trying to decode COMMAND-clause, but seems that it is a strange message (missing space after COMMAND)! (parsed: " + message+")");
 			}
 
 			// decode to
@@ -199,7 +199,7 @@ public class IrcMessage
 						message = message.substring( spaceIndex+1 );
 					}
 					else
-						debug("decode(): spaceindex == -1");
+						log.debug("decode(): spaceindex == -1");
 				}
 			}
 
@@ -242,7 +242,7 @@ public class IrcMessage
 			}
 		}
 		else
-			debug("decode("+originalMessage+"): ERROR: Could not decode message!");
+			log.error("decode("+originalMessage+"): ERROR: Could not decode message!");
 	}
 	
 	public boolean checkMessage()
@@ -255,10 +255,10 @@ public class IrcMessage
 		boolean result = false;
 
 		if (message == null)
-			debug( "checkMessage("+message+"): ERROR: Parameter message is null!");
+			log.error( "checkMessage("+message+"): ERROR: Parameter message is null!");
 		else
 			if (message.equals(""))
-				debug( "checkMessage("+message+"): ERROR: Parameter message is empty!");
+				log.error( "checkMessage("+message+"): ERROR: Parameter message is empty!");
 		else
 			result = true;
 
@@ -311,11 +311,6 @@ public class IrcMessage
 		//result = construct();
 		result += "server [" + getServer() + "], from [" + from() + "], command [" + command() + "], to [" + to() + "], middle["+ middle() + "], params: [" + params() + "]";	
 		return result;	
-	}
-
-	public void debug( String msg ) 
-	{
-		System.out.println( classname + ":" + msg );
 	}
 
 	public static void main(String args[])

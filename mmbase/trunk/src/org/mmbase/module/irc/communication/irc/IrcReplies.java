@@ -25,9 +25,11 @@ See http://www.MMBase.org/license
 package org.mmbase.module.irc.communication.irc;
 
 import java.util.Hashtable;
+import org.mmbase.util.logging.*;
 
 public class IrcReplies
 {
+    private static Logger log = Logging.getLoggerInstance(IrcReplies.class.getName());
 	private String 		classname 	= getClass().getName();
 	private boolean 	assert 		= true; 
 	private Hashtable 	intReplies;
@@ -347,9 +349,9 @@ public class IrcReplies
 		if (assert)
 		{
 			if (number < 0 )
-				debug( "checkReply("+number+"): Number is negative!"); 
+				log.debug( "checkReply("+number+"): Number is negative!"); 
 			if (number > maxReplies)
-				debug( "checkReply("+number+"): Number is greater than max ("+maxReplies+").");
+				log.debug( "checkReply("+number+"): Number is greater than max ("+maxReplies+").");
 		}
 
 		boolean result = false;
@@ -395,9 +397,9 @@ public class IrcReplies
 		if (assert)
 		{
 			if (number < 0 )
-				debug( "getStringReply("+number+"): Number is negative!"); 
+				log.debug( "getStringReply("+number+"): Number is negative!"); 
 			if (number > maxReplies)
-				debug( "getStringReply("+number+"): Number is greater than max ("+maxReplies+").");
+				log.debug( "getStringReply("+number+"): Number is greater than max ("+maxReplies+").");
 		}
 
 		Integer i = new Integer( number );
@@ -406,7 +408,7 @@ public class IrcReplies
 			return (String) stringReplies.get( i );
 		else
 		{	
-			debug("getStringReply("+ number +"): Parameter reply not found in stringReplies! (Unknown reply from server)");
+			log.debug("getStringReply("+ number +"): Parameter reply not found in stringReplies! (Unknown reply from server)");
 			return "";
 		}
 	}
@@ -416,9 +418,9 @@ public class IrcReplies
 		if (assert)
 		{
 			if (number < 0 )
-				debug( "hasMoreStringReplies("+number+"): Number is negative!"); 
+				log.debug( "hasMoreStringReplies("+number+"): Number is negative!"); 
 			if (number > maxReplies)
-				debug( "hasMoreStringReplies("+number+"): Number is greater than max ("+maxReplies+").");
+				log.debug( "hasMoreStringReplies("+number+"): Number is greater than max ("+maxReplies+").");
 		}
 
 		switch( number )
@@ -453,13 +455,13 @@ public class IrcReplies
 		if (assert)
 		{
 			if (number < 0 )
-				debug( "getMoreStringReplies("+number+"): Number is negative!"); 
+				log.debug( "getMoreStringReplies("+number+"): Number is negative!"); 
 			if (number > maxReplies)
-				debug( "getMoreStringReplies("+number+"): Number is greater than max ("+maxReplies+").");
+				log.debug( "getMoreStringReplies("+number+"): Number is greater than max ("+maxReplies+").");
 
 			if ( !hasMoreStringReplies( number ) )
 			{
-				debug("getMoreStringReplies(" + number + "): ERROR: This reply has only one reply (do not use this method!)" );
+				log.error("getMoreStringReplies(" + number + "): ERROR: This reply has only one reply (do not use this method!)" );
 			}
 		}
 
@@ -583,9 +585,9 @@ public class IrcReplies
 		if (assert)
 		{
 			if (reply == null)
-				debug( "getIntReply("+reply+"): Parameter reply is null!" );
+				log.debug( "getIntReply("+reply+"): Parameter reply is null!" );
 			if (reply.equals(""))
-				debug( "getIntReply("+reply+"): Parameter reply is empty!");
+				log.debug( "getIntReply("+reply+"): Parameter reply is empty!");
 		}
 
 		if (intReplies.containsKey(reply))
@@ -609,13 +611,8 @@ public class IrcReplies
 			else	if ( reply.equals( "ERR_DESYNC" 				) || reply.equals( "ERR_ISCHANSERVICE" 		) 										) return 484;
 			else	if ( reply.equals( "ERR_NOSUCHGLINE" 			) || reply.equals( "ERR_TOOMANYWATCH" 		) 										) return 512;
 			else	if ( reply.equals( "ERR_BADPING" 				) || reply.equals( "ERR_NEEDPONG" 			) 										) return 513;
-			else	{ debug( "getIntReply("+reply+"): Parameter reply not found in intReplies! (Unknown reply from server)"); return 0; } 
+			else	{ log.warn( "getIntReply("+reply+"): Parameter reply not found in intReplies! (Unknown reply from server)"); return 0; } 
 		}
-	}
-
-	public void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );	
 	}
 
 	public static void main( String args[] )

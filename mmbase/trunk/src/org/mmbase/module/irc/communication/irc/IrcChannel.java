@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.module.irc.communication.irc;
+import org.mmbase.util.logging.*;
 
 public class IrcChannel
 {
+    private static Logger log = Logging.getLoggerInstance(IrcChannel.class.getName());
 	private String 	classname 	= getClass().getName();
-	private	boolean	debug		= false;
 	private String	server		= null;
 	private String 	channelname = null;
 	private String 	channelkey  = null;
@@ -50,10 +51,10 @@ public class IrcChannel
 	public void setChannelName( String name )
 	{
 		if (name == null)
-			debug("setChannelName("+name+"): ERROR: channelname is null!");
+			log.error("setChannelName("+name+"): ERROR: channelname is null!");
 		else
 			if (name.equals(""))
-				debug("setChannelName("+name+"): ERROR: channelname is empty!");
+				log.error("setChannelName("+name+"): ERROR: channelname is empty!");
 			else
 				this.channelname = name;
 	}
@@ -87,7 +88,7 @@ public class IrcChannel
 		// notify communication.connect() that channel is joined
 		// -----------------------------------------------------
 
-		if (debug) debug("joined().notify()");
+		log.debug("joined().notify()");
 		notify();
 	}
 
@@ -121,13 +122,6 @@ public class IrcChannel
 		}
 		return result;
 	}	
-
-	/**
-	 */
-	private void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );
-	}
 
 	public String toString()
 	{
