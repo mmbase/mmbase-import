@@ -927,6 +927,15 @@ one or more examplevalue tags is you want to give some example values.
       </info>
     </attribute>
     <attribute>
+      <name>uri</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+       The uri in case the cloud hast to be retreaved using the RRMCI.
+       Valid values are "local" (teh locat cloud) or an rmi uri, i.e. rmi://www.mmbase.org/remotecontext
+      </info>
+    </attribute>
+    <attribute>
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
