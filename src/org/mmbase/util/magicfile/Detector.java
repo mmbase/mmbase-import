@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br>
  * Not supported by magic file:<br>
  * - StarOffice<br>
- * @version $Id: Detector.java,v 1.1 2002-09-03 18:15:26 michiel Exp $
+ * @version $Id: Detector.java,v 1.1.2.1 2003-01-21 12:16:50 kees Exp $
  */
 
 public class Detector {
@@ -59,7 +59,6 @@ public class Detector {
     private static final String[] label = new String[]{"big endian","little endian"};
 
 
-    private String rawinput; // Original input line
     private int offset;
     private String type;         // types: byte, short, long, string, date, beshort, belong, bedate, leshort, lelong, ledate
     private String typeAND;   // Some types are defined as e.g. "belong&0x0000ff70", then typeAND=0x0000ff70 (NOT IMPLEMENTED!)
@@ -99,6 +98,7 @@ public class Detector {
      * Detectors are instanciated by MagicXMLReader, and by Parser.
      */
     Detector() {
+         if (log.isDebugEnabled()){log.debug("Detector()");};
 	childList = new Vector();
 	extensions = new Vector();
 	mimetype  = "application/octet-stream";
@@ -166,7 +166,6 @@ public class Detector {
     public boolean test(byte[] lithmus) {
 	if (lithmus == null || lithmus.length  == 0) return false;
 	boolean hit;
-	//log.debug("TESTING "+rawinput);
 	if (type.equals("string")) {
 	    hit = testString(lithmus);
 	} else if (type.equals("beshort")) {
@@ -199,6 +198,7 @@ public class Detector {
 		}
 	    }
 	}
+	lithmus=null;
 	return hit;
     }
 
@@ -241,6 +241,7 @@ public class Detector {
      * @return Conversion of 2 byte array to integer
      */
     private int byteArrayToInt(byte[] ar) {
+	log.debug("ar.lenght = " +  ar.length);
 	StringBuffer buf = new StringBuffer();
 	for (int i=0; i < ar.length; i++) {
 	    buf.append( Integer.toHexString((int)ar[i]&0x000000ff) );
@@ -252,6 +253,7 @@ public class Detector {
      * @return Conversion of 4 byte array to long
      */
     private long byteArrayToLong(byte[] ar) {
+	log.debug("ar.lenght = " +  ar.length);
 	StringBuffer buf = new StringBuffer();
 	for (int i=0; i < ar.length; i++) {
 	    buf.append( Integer.toHexString((int)ar[i]&0x000000ff) );
@@ -266,7 +268,7 @@ public class Detector {
     protected boolean testString(byte[] lithmus) {
 	String lithmusString = new String(lithmus);
 	if (test.length() == 0) {
-	    log.warn("TEST STRING LENGTH ZERO FOR ["+rawinput+"]");
+	    log.warn("TEST STRING LENGTH");
 	    return false;
 	}
 	String compare = lithmusString.substring(offset,offset+test.length());
@@ -290,7 +292,7 @@ public class Detector {
      * Test whether a short matches
      */
     protected boolean testShort(byte[] lithmus, int endian) {
-	log.debug("testing "+label[endian]+" short for "+rawinput);
+	log.debug("testing "+label[endian]+" short");
 	int found = 0;
 	if (endian == BIG_ENDIAN) {
 	    found = byteArrayToInt(new byte[]{lithmus[offset],lithmus[offset+1]});
@@ -328,7 +330,7 @@ public class Detector {
      * Test whether a long matches
      */
     protected boolean testLong(byte[] lithmus, int endian) {
-	log.debug("testing "+label[endian]+" long for "+rawinput);
+	log.debug("testing "+label[endian]+" long");
 	long found = 0;
 	try {
 	    if (endian == BIG_ENDIAN) {
@@ -388,7 +390,7 @@ public class Detector {
      * Test whether a byte matches
      */
     protected boolean testByte(byte[] lithmus) {
-	log.debug("testing byte for "+rawinput);
+	log.debug("testing byte for"); 
 	if (test.equals("x")) {
 	    hasX = true;
 	    xInt = (int)lithmus[offset];
@@ -413,12 +415,6 @@ public class Detector {
 	}
     }
 
-    /**
-     * @return Original unprocessed input line
-     */
-    public String getRawInput() {
-	return rawinput;
-    }
 
     protected String xmlEntities(String s) {
 	StringBuffer res = new StringBuffer();

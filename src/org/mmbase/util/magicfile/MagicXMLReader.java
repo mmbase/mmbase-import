@@ -80,6 +80,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
      */ 
     public List getDetectors() {
 	if (detectors == null) {
+            log.debug("detectors was NULL");
 	    detectors = new Vector();
 	    Element e = getElementByPath("magic.detectorlist");
 	    if (e == null) {
