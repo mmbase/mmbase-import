@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.25 2002-08-14 18:16:54 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.26 2002-08-21 16:43:36 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -97,6 +97,7 @@
         public void config(Config.WizardConfig c) {
             c.wizard           = getParam("wizard", c.wizard);
             c.popupId          = getParam("popupid",  "");
+            c.debug            = getParam("debug",  false);
             if (c.wizard != null && c.wizard.startsWith("/")) {
                 c.wizard = "file://" + getRequest().getRealPath(c.wizard);
             }
@@ -104,7 +105,7 @@
             c.setAttribute("origin",getParam("origin"));
             c.objectNumber = getParam("objectnumber");
         }
-    }
+    };
 
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
 Configurator configurator; // Fills the ewconfig if necessary.
@@ -112,8 +113,9 @@ Configurator configurator; // Fills the ewconfig if necessary.
 String popupId = "";  // default means: 'this is not a popup'
 boolean popup = false;  
 
+%><% 
 
-%><% boolean done=false;
+ boolean done=false;
      Object closedObject=null;
 %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
 
@@ -152,11 +154,15 @@ if (proceed && configObject == null) {
 }
 
 if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) { // nothing (ok) in the session
-    if (log.isDebugEnabled()) log.debug("creating new configuration (in session is " + configObject + ")");
-    ewconfig = new Config();
-    if (! sessionKey.endsWith("_search")) { 
-        session.setAttribute(sessionKey, ewconfig);  // put it in the session (if not a search window)
+    if (log.isDebugEnabled()) {
+        if (proceed) {
+            log.debug("creating new configuration (in session is " + configObject + ")");
+        } else {
+            log.debug("creating new configuration (missing proceed parameter)");
+        }
     }
+    ewconfig = new Config();
+    session.setAttribute(sessionKey, ewconfig);  // put it in the session (if not a search window)
 
 } else {
     log.debug("using configuration from session");
