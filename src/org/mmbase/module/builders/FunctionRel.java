@@ -51,10 +51,12 @@ public class FunctionRel extends InsRel {
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("task")) {
 			int val=node.getIntValue("task");
-			if (val==1) {
-				return("Uitvoerende");
-			} else if (val==2) {
-				return("Maker");
+			switch (val) {
+			case 1: return "Uitvoerende";
+			case 2: return "Maker";
+			case 3: return "Auteur";
+			case 4: return "Recensent";
+			default: return "Onbekend";
 			}
 		}
 		return(null);
