@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.32 2002-09-26 12:51:04 pierre Exp $
+ * @version $Id: Node.java,v 1.33 2002-09-30 12:39:46 michiel Exp $
  */
 public interface Node {
 
@@ -251,6 +251,19 @@ public interface Node {
      * @return           the value of the specified field
      */
     public String getStringValue(String fieldName);
+
+
+    /**
+     * Returns the value of the specified function on the node.  A
+     * function normally has arguments, which can be supplied with a
+     * List.
+     *
+     * @param functionName  the name of the function to be executed
+     * @param arguments     parameters to the function
+     * @return           the function value of the specified function
+     * @since MMBase-1.6
+     */
+    public FieldValue getFunctionValue(String functionName, List arguments);
 
     /**
     * Commit the node to the database.
