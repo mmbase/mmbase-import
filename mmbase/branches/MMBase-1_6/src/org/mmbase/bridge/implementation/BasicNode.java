@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.77.2.10 2003-04-08 14:32:22 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.77.2.11 2003-06-02 11:28:48 vpro Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -871,11 +871,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public boolean mayWrite() {
-        return cloud.check(Operation.WRITE, getNode().getNumber());
+        if (isNew()) {
+            return true;
+        } else {
+            return cloud.check(Operation.WRITE, getNode().getNumber());
+        }
     }
 
     public boolean mayDelete() {
-        return cloud.check(Operation.DELETE, getNode().getNumber());
+        if (isNew()) {
+            return true;
+        } else {
+            return cloud.check(Operation.DELETE, getNode().getNumber());
+        }
     }
 
     public boolean mayLink() {
@@ -885,7 +893,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public boolean mayChangeContext() {
-        return cloud.check(Operation.CHANGECONTEXT, getNode().getNumber());
+        if (isNew()) {
+            return true;
+        } else {
+            return cloud.check(Operation.CHANGECONTEXT, getNode().getNumber());
+        }
     }
 
     /**
