@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.21 2003-07-28 08:29:25 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.22 2003-07-28 08:31:05 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -337,9 +337,9 @@ public class MediaFragments extends MMObjectBuilder {
     
     /**
      * Get all mediasources belonging to this mediafragment
+     * (scope  should be protected)
      * @param mediafragment the mediafragment
      * @return All mediasources related to given mediafragment
-     * @scope  should be protected
      */
     public List getSources(MMObjectNode fragment) {
         if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment " + fragment.getNumber());
