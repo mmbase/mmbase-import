@@ -15,17 +15,18 @@ import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
-import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.SizeOf;
+import org.mmbase.util.StringSplitter;
+import org.mmbase.storage.search.*;
 import java.util.*;
 
 /**
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.84 2003-03-17 08:47:03 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.85 2003-04-29 20:07:43 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -72,7 +73,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // User context
     protected BasicUser userContext = null;
 
-    private MultilevelCacheHandler multilevelCache;
+    private MultilevelCache multilevelCache;
 
     private Locale locale;
 
@@ -105,8 +106,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         account= cloud.account;
 
         // start multilevel cache
-        MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
-        multilevelCache = MultilevelCacheHandler.getCache();
+        multilevelCache = MultilevelCache.getCache();
     }
 
     /**
@@ -145,8 +145,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         account="U"+uniqueId();
 
         // start multilevel cache
-        MultilevelCacheHandler.setMMBase(mmb);
-        multilevelCache = MultilevelCacheHandler.getCache();
+        multilevelCache = MultilevelCache.getCache();
     }
 
     // Makes a node or Relation object based on an MMObjectNode
@@ -606,6 +605,141 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return result;
     }
 
+    // javadoc inherited
+    public NodeList getList(SearchQuery query) {
+        
+        List    resultList = null; // result with all Cluster - MMObjectNodes (without security)
+
+        { // fill resultList with core objects
+
+            ClusterBuilder clusterBuilder = cloudContext.mmb.getClusterBuilder();
+            // check multilevel cache if needed
+            resultList = (List) multilevelCache.get(query);
+            
+            // if unavailable, obtain from database
+            if (resultList == null) {
+                log.debug("result list is null, getting from database");
+                try {
+                    resultList = clusterBuilder.getClusterNodes(query);
+                } catch (SearchQueryException sqe) {
+                    throw new BridgeException(sqe);
+                }
+                multilevelCache.put(query, resultList);
+            }
+        }
+
+        //assert(resultList != null);
+        if (log.isDebugEnabled()) {
+            log.debug("Creating NodeList of size " + resultList.size());
+        }
+
+        BasicNodeList resultNodeList; // this will be the result NodeList
+
+        { // create resultNodeList
+
+            NodeManager tempNodeManager = null;
+            if (resultList.size() > 0) {
+                tempNodeManager = new VirtualNodeManager((MMObjectNode) resultList.get(0), this);
+            } else {
+                tempNodeManager = new VirtualNodeManager(this);
+            }
+            resultNodeList = new BasicNodeList(resultList, tempNodeManager);
+            resultNodeList.setProperty("query", query);
+        }
+
+        log.debug("Starting read-check");
+        // resultNodeList is now a BasicNodeList; read restriction should only be applied now
+        // assumed it though, that it contain _only_ MMObjectNodes..
+        {
+            // get authorization for this call only
+            Authorization auth = mmbaseCop.getAuthorization();
+            
+            // it's a pity that one cannot ask auth if read rights can fail.
+            // the functionality is present there, sometimes, I think.
+
+            UserContext user   = userContext.getUserContext();
+            List steps = query.getSteps();
+
+            log.debug("Creating iterator");
+            ListIterator li = resultNodeList.listIterator();
+            resultNodeList.autoConvert = false; // make sure no conversion to Node happen
+            while (li.hasNext()) {
+                log.debug("next");
+                Object o = li.next();
+                if (log.isDebugEnabled()) {
+                    log.debug(o.getClass().getName());
+                }
+                MMObjectNode node = (MMObjectNode) o;
+                boolean mayRead = true;                
+                for (int j = 0; mayRead && (j < steps.size()); ++j) {
+                    int nodenr = node.getIntValue(((Step) steps.get(j)).getTableName() + ".number");
+                    if (nodenr != -1) {
+                        mayRead = auth.check(user, nodenr, Operation.READ);
+                    }
+                }
+                if (!mayRead) li.remove();
+            }       
+            resultNodeList.autoConvert = true;
+        }
+
+        return resultNodeList;
+    }
+
+    /*
+      new implementation of getList based on the above version (to be tested)
+
+
+    //javadoc inherited
+    public NodeList getList(String startNodes, String nodePath, String fields,
+            String constraints, String orderby, String directions,
+            String searchDir, boolean distinct) {
+
+        { 
+            // the bridge test case say that you may also specifiy empty string (why?)
+            if ("".equals(startNodes))  startNodes = null;
+            if ("".equals(fields))      fields = null;
+            if ("".equals(constraints)) constraints = null;
+            if ("".equals(searchDir))   searchDir = null;
+            // check invalid search command
+            org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
+            // if(startNodes != null) startNodes = encoder.encode(startNodes);
+            // if(nodePath != null) nodePath = encoder.encode(nodePath);
+            // if(fields != null) fields = encoder.encode(fields);
+            if(orderby != null)    orderby     = encoder.encode(orderby);
+            if(directions != null) directions  = encoder.encode(directions);
+            if(searchDir != null)  searchDir   = encoder.encode(searchDir);
+            if(constraints != null && !validConstraints(constraints)) {
+                throw new BridgeException("invalid contraints:" + constraints);
+            }
+        }
+
+
+        // create query object
+        SearchQuery query;
+        {  
+            ClusterBuilder clusterBuilder = cloudContext.mmb.getClusterBuilder();
+            int search = -1;
+            if (searchDir != null) {
+                search = clusterBuilder.getSearchDir(searchDir);
+            }
+
+            List snodes   = StringSplitter.split(startNodes);
+            List tables   = StringSplitter.split(nodePath);
+            List f        = StringSplitter.split(fields);
+            List orderVec = StringSplitter.split(orderby);
+            List d        = StringSplitter.split(directions);
+            try {
+                query = clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search);
+            } catch (IllegalArgumentException iae) {
+                throw new BridgeException(iae);
+            }
+        }
+
+        return getList(query);
+    }
+    */
+
+
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
             String searchDir, boolean distinct) {
@@ -737,6 +871,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             throw new BridgeException("Parameters are invalid :" + pars + " - " + constraints);
         }
     }
+    
+    
 
     /**
      * set the Context of the current Node
