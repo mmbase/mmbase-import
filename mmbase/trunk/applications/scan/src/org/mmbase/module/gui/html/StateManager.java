@@ -59,7 +59,7 @@ public class StateManager implements CommandHandlerInterface {
 
 		result = (EditState)editStates.get(user);
 		if (result == null) {
-			result = new EditState(mmBase);
+			result = new EditState(user,mmBase);
 			editStates.put(user, result);
 		}
 
@@ -404,7 +404,7 @@ public class StateManager implements CommandHandlerInterface {
 		EditState result;
 
 		result = (EditState)editStates.get(user);
-		if (result == null) result = new EditState(mmBase);
+		if (result == null) result = new EditState(user,mmBase);
 		
 		return result;
 	}
