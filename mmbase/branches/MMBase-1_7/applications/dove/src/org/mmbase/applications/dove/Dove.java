@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.52.2.1 2004-05-27 08:32:10 johannes Exp $
+ * @version $Id: Dove.java,v 1.52.2.2 2004-09-24 09:08:05 mark Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -71,7 +71,7 @@ public class Dove extends AbstractDove {
      * These can include virtual fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, rnumber, and dir
      * are excluded; these fields should be handled through the attributes of Element.
-     * @param node  the MMBase node that owns the field (or null)
+     * @param nodeManager  the MMBase node that owns the field (or null)
      * @param f The field to check
      */
     private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, Field f) {
@@ -92,7 +92,7 @@ public class Dove extends AbstractDove {
      * These can include virtual fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, and rnumber
      * are not excluded; these fields should be handled through the attributes of Element.
-     * @param node  the MMBase node that owns the field
+     * @param nodeManager  the MMBase node that owns the field
      * @param fname The name of the field to check
      */
     private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, String fname) {
@@ -110,7 +110,7 @@ public class Dove extends AbstractDove {
      * If the 'in' node has no field elements, all fields are returned, with the
      * exception of some system-specific fields.
      * <br />
-     * @todo Currently, the Dove does not return values for binary (byte) fields - a binary field is
+     * @toDo Currently, the Dove does not return values for binary (byte) fields - a binary field is
      * always returned empty. This is done for optimization of the editwizards, which would otherwise
      * eat a lot of memory, but that DO need a reference to a bytefield.
      * Future versions of Dove should handle a better mechanism for handling binary fields.
@@ -823,6 +823,7 @@ public class Dove extends AbstractDove {
                             if (field.getTagName().equals(FIELD)) {
                                 String fieldname = field.getAttribute(ELM_NAME);
                                 String href = field.getAttribute(ELM_HREF);
+                                String encoding = field.getAttribute(ELM_ENCODING);
                                 if (!href.equals("")) {
                                     // binary data.
                                     Object repval=repository.get(href);
@@ -832,6 +833,10 @@ public class Dove extends AbstractDove {
                                         if(field.getFirstChild()!=null) {
                                             values.put("filename",field.getFirstChild().getNodeValue());
                                         }
+                                    }
+                                } else if (!encoding.equals("")) {
+                                    if (encoding.toLowerCase().equals("base64")) {
+                                        values.put(fieldname, org.mmbase.util.Base64.decodeToBytes(field.getFirstChild().getNodeValue()));
                                     }
                                 } else {
                                     if(field.getFirstChild() == null) {
