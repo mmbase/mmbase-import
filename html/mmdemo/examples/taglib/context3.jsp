@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><%@page contentType="text/html; charset=utf-8" %><html>
 <body>
 <h1>context 3</h1>
 <mm:import externid="alias" required="true" />

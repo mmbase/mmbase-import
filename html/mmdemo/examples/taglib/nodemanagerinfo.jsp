@@ -1,4 +1,4 @@
-`<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase">
 <mm:import externid="nodemanager" from="parameters" />
 
