@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import org.w3c.dom.Document;
+import org.mmbase.util.Casting;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -19,8 +21,24 @@ package org.mmbase.bridge;
  */
 public class FilledNodeTest extends NodeTest {
 
+  
+
+
     public FilledNodeTest(String name) {
         super(name);
+    }
+
+
+    protected Document getEmptyDocument() {
+        try {
+            javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dfactory.setNamespaceAware(true);
+            javax.xml.parsers.DocumentBuilder   documentBuilder = dfactory.newDocumentBuilder();
+            org.mmbase.bridge.util.xml.Generator generator = new org.mmbase.bridge.util.xml.Generator(documentBuilder);
+            return generator.getDocument();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setUp() {
@@ -33,7 +51,8 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));
         node.setValue("longfield", new Long(Long.MAX_VALUE));
-        node.setValue("stringfield", "Bridge testing!");
+        node.setValue("stringfield", "Bridge testing!");     
+        node.setValue("xmlfield", getEmptyDocument());
         node.commit();
     }
 
@@ -47,9 +66,9 @@ public class FilledNodeTest extends NodeTest {
             Object object = node.getValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
                 byte[] bytes = (byte[])object;
-                assertTrue("Hello world!".equals(new String(bytes)));
+                assertTrue("getValue on byte field should give 'Hello World!' but gave '" + new String(bytes) + "'", "Hello world!".equals(new String(bytes)));
             } else if (fieldTypes[i].equals("double")) {
-                assertTrue(new Double(Double.MAX_VALUE).compareTo((Double)object) == 0);
+                assertTrue("getValue on double field should give " +  Double.MAX_VALUE + " but gave " + object, new Double(Double.MAX_VALUE).compareTo((Double)object) == 0);
             } else if (fieldTypes[i].equals("float")) {
                 assertTrue(new Float(Float.MAX_VALUE).compareTo((Float)object) == 0);
             } else if (fieldTypes[i].equals("int")) {
@@ -58,6 +77,9 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(new Long(Long.MAX_VALUE).compareTo((Long)object) == 0);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue("Bridge testing!".equals((String)object));
+            } else if (fieldTypes[i].equals("xml")) {
+                //   assertTrue(getEmptyDocument().isEqualNode((org.w3c.dom.Node)object)); java 1.5
+                assertTrue(Casting.toString(getEmptyDocument()).equals(Casting.toString((Document)object)));
             } else {
                 fail();
             }
@@ -82,6 +104,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue("Bridge testing!".equals(new String(bytes)));
+            } else if (fieldTypes[i].equals("xml")) {
+                // System.err.println("Don't know what getByteValue on get XML Field should give: " + bytes);
             } else {
                 fail();
             }
@@ -102,6 +126,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("long")) {
                 assertTrue(d == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
+                assertTrue(d == -1);
+            } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(d == -1);
             } else {
                 fail();
@@ -124,6 +150,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(f == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(f == -1);
+            } else if (fieldTypes[i].equals("xml")) {
+                assertTrue(f == -1);
             } else {
                 fail();
             }
@@ -144,6 +172,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("long")) {
                 assertTrue(integer == new Long(Long.MAX_VALUE).intValue());
             } else if (fieldTypes[i].equals("string")) {
+                assertTrue(integer == -1);
+            } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(integer == -1);
             } else {
                 fail();
@@ -166,6 +196,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(l == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(l == -1);
+            } else if (fieldTypes[i].equals("xml")) {
+                assertTrue(l == -1);
             } else {
                 fail();
             }
@@ -187,6 +219,33 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(String.valueOf(Long.MAX_VALUE).equals(string));
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue("Bridge testing!".equals(string));
+            } else if (fieldTypes[i].equals("xml")) {
+                assertTrue(Casting.toString(getEmptyDocument()).equals(string));
+                // System.err.println("Don't know what getStringValue on get XML Field should give: '" + string + "'");
+            } else {
+                fail();
+            }
+        }
+    }
+
+    public void testGetXMLValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Document document = node.getXMLValue(fieldTypes[i] + "field");
+            if (fieldTypes[i].equals("byte")) {
+
+            } else if (fieldTypes[i].equals("double")) {
+
+            } else if (fieldTypes[i].equals("float")) {
+
+            } else if (fieldTypes[i].equals("int")) {
+
+            } else if (fieldTypes[i].equals("long")) {
+
+            } else if (fieldTypes[i].equals("string")) {
+
+            } else if (fieldTypes[i].equals("xml")) {
+                //assertTrue(getEmptyDocument().isEqualNode(document)); java 1.5
+                assertTrue(Casting.toString(getEmptyDocument()).equals(Casting.toString(document)));
             } else {
                 fail();
             }
