@@ -1,5 +1,14 @@
 Migratie issues
 
+2005-03-31
+
+The email domain (for mail sent from the didactor instance) is now configurable
+via the web.xml (see the "emailsenderdomain" entry). 
+
+    Developers: you can generate the correct entry by filling in the 
+    "emailsenderdomain" property in your configure.properties file.
+    see the configure.properties.zeeland for an example.
+
 2005-03-11
 
 An extra field "showtitle" is added for a number of builders. The metadata builder has changed (field value is changed from virtual to persistent). 
