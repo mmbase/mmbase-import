@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -30,9 +30,6 @@ public class BasicQueryHandlerTest extends TestCase {
     
     /** Test instance. */
     private BasicQueryHandler instance;
-    
-    /** Test query. */
-    private BasicSearchQuery query = null;
     
     /** Disallowed values map. */
     private Map disallowedValues = null;
@@ -75,7 +72,6 @@ public class BasicQueryHandlerTest extends TestCase {
         
         SqlHandler sqlHandler = new BasicSqlHandler(disallowedValues);
         instance = new BasicQueryHandler(sqlHandler);
-        query = new BasicSearchQuery();
         
         // Add testnodes.
         MMObjectNode pool1 = pools.getNewNode(JUNIT_USER);
@@ -107,13 +103,14 @@ public class BasicQueryHandlerTest extends TestCase {
     
     /** Test of getNodes method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetNodes() throws Exception {
+        BasicSearchQuery query = null;
         // Test for real nodes.
         // TODO: add number field as well, once the queryhandler can be
         // properly initialized with the disallowed2allowed map specified
         // for the database that is actually used (instead of a dummy map
         // as is now the case).
         {
-            BasicSearchQuery query = new BasicSearchQuery();
+            query = new BasicSearchQuery();
             BasicStep poolsStep = query.addStep(pools);
             poolsStep.setAlias("pools1");
             FieldDefs poolsName = pools.getField("name");
@@ -153,7 +150,7 @@ public class BasicQueryHandlerTest extends TestCase {
         
         // Test for clusternodes.
         {
-            BasicSearchQuery query = new BasicSearchQuery();
+            query = new BasicSearchQuery();
             BasicStep poolsStep = query.addStep(pools);
             poolsStep.setAlias("pools1");
             FieldDefs poolsName = pools.getField("name");
@@ -189,6 +186,21 @@ public class BasicQueryHandlerTest extends TestCase {
             }
             assert(!iResultNodes.hasNext());
         }
+        
+        query.setMaxNumber(100);
+        // Query with maxNumber not supported, should throw SearchQueryException.
+        try {
+            instance.getNodes(query, mmbase.getClusterBuilder());
+            fail("Query with maxNumber not supported, should throw SearchQueryException.");
+        } catch (SearchQueryException e) {}
+        
+        query.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // reset to default
+        query.setOffset(10);
+        // Query with offset not supported, should throw SearchQueryException.
+        try {
+            instance.getNodes(query, mmbase.getClusterBuilder());
+            fail("Query with offset not supported, should throw SearchQueryException.");
+        } catch (SearchQueryException e) {}
     }
     
     /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
