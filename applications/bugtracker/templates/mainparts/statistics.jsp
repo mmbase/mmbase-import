@@ -163,7 +163,7 @@
 			</mm:compare>
 		</mm:field>
 	</mm:related>
-<tr>
+<tr <mm:even>class="even"</mm:even>>
 		<td width="180">
 			 <mm:field name="firstname" />
 			 <mm:field name="lastname" />

@@ -1,20 +1,22 @@
-
 <mm:import externid="action" />
 <mm:present referid="action">
-
 <mm:cloud logon="admin" method="delegate" authenticate="class">
 
+ <mm:import id="works">yep</mm:import>
 
 <mm:compare value="sendaccountinfo" referid="action">
     <mm:import externid="email" />
-    <mm:listnodes type="users" constraints="email='$email'" max="1">
-	<mm:import id="account"><mm:field name="account" /></mm:import>
-	<mm:import id="password"><mm:field name="password" /></mm:import>
-	<mm:createnode id="emailnode" type="email">
-		<mm:setfield name="mailtype">1</mm:setfield>
-		<mm:setfield name="to"><mm:write referid="email" /></mm:setfield>
-		<mm:setfield name="from">bugtracker@mmbase.org</mm:setfield>
-		<mm:setfield name="subject">Your MMBase BugTracker account</mm:setfield>
+    <mm:listnodescontainer type="users">
+        <mm:constraint field="email" referid="email"/>
+        <mm:maxnumber value="1"/>
+      <mm:listnodes>
+      <mm:field id="account" name="account" write="false"/>
+      <mm:field id="password" name="password" write="false" />
+        <mm:createnode id="emailnode" type="email">
+		    <mm:setfield name="mailtype">1</mm:setfield>
+		    <mm:setfield name="to"><mm:write referid="email" /></mm:setfield>
+		    <mm:setfield name="from">bugtracker@mmbase.org</mm:setfield>
+		     <mm:setfield name="subject">Your MMBase BugTracker account</mm:setfield>
 <mm:setfield name="body">
 Your account info for the MMBase Bugtracker :
 
@@ -24,6 +26,7 @@ password : <mm:write referid="password" />
 </mm:setfield>
 	</mm:createnode>
     </mm:listnodes> 
+ </mm:listnodescontainer>
 
     <mm:present referid="emailnode">
 	<mm:import id="message">email</mm:import>
@@ -34,24 +37,28 @@ password : <mm:write referid="password" />
 </mm:compare>
 
 <mm:compare value="checkuser" referid="action">
-        <mm:import externid="account" />
-        <mm:import externid="password" />
+  <mm:import externid="account" />
+  <mm:import externid="password" />
 	<mm:listnodescontainer type="users">
-	<mm:constraint field="account" value="$account" />
-	<mm:constraint field="password" value="$password" />
-        <mm:listnodes>
-                <mm:import id="usernumber" jspvar="usernumber" ><mm:field name="number"/></mm:import>
-        </mm:listnodes>
-        </mm:listnodescontainer>
-        <mm:present referid="usernumber">
-            <mm:write referid="account" cookie="ca" />
-            <mm:write referid="password" cookie="cw" />
-	    <mm:import id="message">login</mm:import>
+	  <mm:constraint field="account" value="$account" />
+	  <mm:constraint field="password" value="$password" />
+    <mm:listnodes>
+      <mm:import id="usernumber" jspvar="usernumber" ><mm:field name="number"/></mm:import>
+    </mm:listnodes>
+    </mm:listnodescontainer>
+    <mm:present referid="usernumber">
+      <mm:write referid="account" cookie="ca" />
+      <mm:write referid="password" cookie="cw" />
+      <%--  I HATE MMBASE. where is the mm:export 
+	    <mm:write id="message" session="message">login</mm:write>
+      --%>
+        <mm:import id="message">login</mm:import>
         </mm:present>
-        <mm:notpresent referid="usernumber">
-	    <mm:import id="message">should have jumper</mm:import>
+      <mm:notpresent referid="usernumber">
+        <mm:import id="message">failedlogin</mm:import>
+        <% request.setAttribute("template","changeUser.jsp"); %>
     	    <%-- response.sendRedirect("/development/bugtracker/changeUser.jsp?error=login&portal="+portal+"&page="+page2); --%>
-        </mm:notpresent>
+      </mm:notpresent>
 </mm:compare>
 
 <mm:compare value="updatebug" referid="action">
@@ -192,13 +199,19 @@ password : <mm:write referid="password" />
 		<mm:setfield name="rationale"></mm:setfield>
 		<mm:setfield name="time"><%=now%></mm:setfield>
 	</mm:createnode>
-    	<mm:createrelation role="related" source="bugreportnode" destination="poolnode" />
-    	<mm:createrelation role="rolerel" source="bugreportnode" destination="usernode">
-		<mm:setfield name="role">submitter</mm:setfield>
-    	</mm:createrelation>
+  <mm:createrelation role="related" source="bugreportnode" destination="poolnode" />
+  <mm:createrelation role="rolerel" source="bugreportnode" destination="usernode">
+    <mm:setfield name="role">submitter</mm:setfield>
+  </mm:createrelation>
 	<mm:node id="areanode" number="$newarea" />
-    	<mm:createrelation role="related" source="bugreportnode" destination="areanode" />
-    	<mm:import id="message">newbug</mm:import>
+  <mm:createrelation role="related" source="bugreportnode" destination="areanode" />
+  <mm:import id="message">newbug</mm:import>
+  <% request.setAttribute("template","fullview.jsp"); %>
+  <mm:node referid="bugreportnode">
+    <mm:field name="number" jspvar="bugreportNumber">
+    <% request.setAttribute("bugreport",bugreportNumber); %>
+    </mm:field>
+  </mm:node>
 </mm:compare>
 
 <mm:compare value="deletebugreport" referid="action">
@@ -325,6 +338,28 @@ password : <mm:write referid="password" />
 		<mm:setfield name="role">interested</mm:setfield>
     </mm:createrelation>
 </mm:compare>
-
+<mm:present referid="message">
+<mm:write referid="message" write="false" jspvar="msg">
+<%--
+<script>
+	alert("message <mm:write referid="message"/>");
+</script>
+--%>
+        <% request.setAttribute("message",msg); %>
+</mm:write>
+</mm:present>
 </mm:cloud>
+<mm:notpresent referid="works">
+<div style="border: 1px solid black;">
+<div style="border: 2px dotted red; background: yellow;font-weight: bold;color: red">
+<img src="images/icon_error.gif"/>&nbsp;Failed to get a cloud via de delegate method.
+add<br/>
+<code style="background: white">
+&lt;authenticate class="<%= this.getClass().getName().replaceAll("\\.","\\.") %>"&gt;<br/>
+&nbsp;&lt;property name="username" value="admin" /&gt;<br/>
+&lt;/authenticate&gt;<br/>
+</code> to  classauthentication.xml
+</div>
+</div>
+</mm:notpresent>
 </mm:present>
