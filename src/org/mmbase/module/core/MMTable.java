@@ -12,6 +12,7 @@ package org.mmbase.module.core;
 import java.sql.*;
 
 import org.mmbase.module.database.*;
+import org.mmbase.storage.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,79 +26,81 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.8 2003-06-18 15:22:41 kees Exp $
+ * @version $Id: MMTable.java,v 1.9 2003-09-04 09:00:12 pierre Exp $
  */
 public class MMTable {
 
-    private static Logger log = Logging.getLoggerInstance(MMTable.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(MMTable.class.getName());
 
     /**
-    * The MMBase module that this table belongs to
-    */
-	public MMBase mmb;
-	
-	/**
-	* The table name
-	*/
-	public String tableName;
+     * The MMBase module that this table belongs to
+     * @scope protected
+     */
+    public MMBase mmb;
 
     /**
-    * Empty constructor.
-    */
-	public MMTable() {
-	}
+     * The table name
+     * @scope protected
+     */
+    public String tableName;
 
     /**
-    * Constructor.
-    * Associates the table with a MMBase module.
-    * @param m MMBase module to associate the table with
-    */
-	public MMTable(MMBase m) {
-		mmb=m; 
-	}
+     * Empty constructor.
+     */
+    public MMTable() {
+    }
 
     /**
-    * Determine the number of objects in this table.
-    * @return The number of entries in the table.
-    */
-	public int size() {
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-            String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
-			log.info(query);
-			ResultSet rs=stmt.executeQuery(query);
-			int i=-1;
-			while(rs.next()) {
-				i=rs.getInt(1);
-			}	
-			stmt.close();
-			con.close();
-			return i;
-		} catch (Exception e) {
-			return(-1);
-		}
-		// better: (but have to move getFullTableName() from MOBjectBuilder to MMTable first)
- 	    // return database.size(getFullTableName());
-	}
-
+     * Determine the number of objects in this table.
+     * @return The number of entries in the table.
+     */
+    public int size() {
+        StorageManagerFactory factory = mmb.getStorageManagerFactory();
+        if (factory!=null) {
+            try {
+                return factory.getStorageManager().size((MMObjectBuilder)this);
+            } catch (StorageException se) {
+                log.error(se.getMessage());
+                return -1;
+            }
+        } else {
+            try {
+                MultiConnection con=mmb.getConnection();
+                Statement stmt=con.createStatement();
+                String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
+                log.info(query);
+                ResultSet rs=stmt.executeQuery(query);
+                int i=-1;
+                while(rs.next()) {
+                    i=rs.getInt(1);
+                }
+                stmt.close();
+                con.close();
+                return i;
+            } catch (Exception e) {
+                return -1;
+            }
+        }
+    }
 
     /**
-    * Check whether the table is accessible.
-    * In general, this means the table does not exist. Please note that this routine may
-    * also return false if the table is inaccessible due to insufficient rights.
-    * @return <code>true</code> if the table is accessible, <code>false</code> otherwise.
-    */
-	public boolean created() {
-		if (size()==-1) {
-			log.debug("TABLE "+tableName+" NOT FOUND");
-			return(false);
-		} else {
-			log.debug("TABLE "+tableName+" FOUND");
-			return(true);
-		}
-		// better:
- 	    // return database.created(getFullTableName());
-	}
+     * Check whether the table is accessible.
+     * In general, this means the table does not exist. Please note that this routine may
+     * also return false if the table is inaccessible due to insufficient rights.
+     * @return <code>true</code> if the table is accessible, <code>false</code> otherwise.
+     */
+    public boolean created() {
+        StorageManagerFactory factory = mmb.getStorageManagerFactory();
+        if (factory!=null) {
+            try {
+                return factory.getStorageManager().exists((MMObjectBuilder)this);
+            } catch (StorageException se) {
+                log.error(se.getMessage());
+                return false;
+            }
+        } else {
+            return size() != -1;
+        }
+    }
 
 }
