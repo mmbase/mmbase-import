@@ -32,5 +32,5 @@ the week after next week number <mm:time referid="the_week_after" format="w"/>
 #list of days in this week
 <mm:import id="counter" vartype="list">1,2,3,4,5,6,7</mm:import>
 <mm:stringlist referid="counter">
-<mm:time referid="this_week" offset="${+$_ * 60 * 60 * 24 }" format=":FULL.FULL"/>
+<mm:time referid="this_week" offset="$[+$_ * 60 * 60 * 24 ]" format=":FULL.FULL"/>
 </mm:stringlist>
