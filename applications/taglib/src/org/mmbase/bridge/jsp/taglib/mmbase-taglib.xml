@@ -163,7 +163,14 @@ one or more examplevalue tags is you want to give some example values.
         See the 'id' attribute of the Node tag. 
       </info>    
     </attribute>
-
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'jspvar' attribute of the Node tag. 
+      </info>    
+    </attribute>
 <example>&lt;mm:list node="123" type="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= mags_title %&gt;
@@ -231,6 +238,11 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
     <attribute>
       <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -419,28 +431,21 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>number</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'parameter' or 'key' must be supplied.</requirednote>
+        <requirednote>Either 'number' or 'parameter' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The nodenumber or alias identifying this node in MMBase.
 	</info>
     </attribute>
     <attribute>
-        <name>key</name>
+        <name>id</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'parameter' or 'key' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	  Get the node from the context with this key. 
-	</info>
-    </attribute>
-    <attribute>
-        <name>element</name>
-        <required>false</required>
-         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying this node in MMBase.
-	</info>
+	  With the 'id' attribute you define an unique identifier for
+	  this node. At the same time this defines an jsp 'Node'
+	  variable with this name. 
+        </info>	
     </attribute>
     <attribute>
         <name>parameter</name>
@@ -450,6 +455,24 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	<info>
  	   The request parameter name which contains the nodenumber or
 	   alias indentifying this node in MMBase.
+	</info>
+    </attribute>    
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  Create a JSP variable with this in the body. If you have defined 'fields' too,
+	  then these fields will have jsp-variables prefixed with
+	  jspvar and an underscore.
+	</info>
+    </attribute>
+    <attribute>
+        <name>element</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+	<info>
+	  The nodenumber or alias identifying this node in MMBase.
 	</info>
     </attribute>
     <attribute>
@@ -463,18 +486,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	  also get a jsp-variable.
 	</info>
     </attribute>
-    <attribute>
-        <name>id</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with this
-	  id and an underscore.
-        </info>	
-    </attribute>    
   </tag>
   <tag>
     <name>field</name>
@@ -719,6 +730,14 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>a_new_node</value>
       </examplevalue>
     </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'jspvar' attribute of the Node tag. 
+      </info>    
+    </attribute>
   </tag>
   <tag>
     <name>setfield</name>
@@ -845,7 +864,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-        <name>id</name>
+        <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>    
@@ -1035,7 +1054,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>key</name>
+        <name>id</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
@@ -1076,7 +1095,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     it possible to put other things in it too).
     </info>
     <attribute>
-        <name>key</name>
+        <name>id</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>	

@@ -20,13 +20,8 @@ import javax.servlet.jsp.JspTagException;
 */
 public class ImportTag extends CloudReferrerTag {
 
-    private String key = null;
-    public void setKey(String k) {
-        key = k;
-    }
-    
     public int doAfterBody() throws JspTagException{
-        findCloudProvider().register(key, bodyContent.getString());
+        findCloudProvider().register(getId(), bodyContent.getString());
         return SKIP_BODY;
     }
 

@@ -20,12 +20,7 @@ import javax.servlet.jsp.JspTagException;
 */
 public class ExportTag extends CloudReferrerTag {
 
-    private String key = null;
     private String jspvar = null;
-
-    public void setKey(String k) {
-        key = k;
-    }
     
     public void setType(String t) {
         // nothing to do, the type property is only used in the TEI.
@@ -36,7 +31,7 @@ public class ExportTag extends CloudReferrerTag {
     }
     
     public int doStartTag() throws JspTagException{
-        pageContext.setAttribute(jspvar, getObject(key));
+        pageContext.setAttribute(jspvar, getObject(getId()));
         return SKIP_BODY;
     }
 
