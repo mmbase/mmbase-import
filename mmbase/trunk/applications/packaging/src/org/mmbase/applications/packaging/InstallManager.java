@@ -141,8 +141,7 @@ public class InstallManager {
            // rename all the files that result in a server reset in a loop
            renameAutoResetFiles();
         } catch(Exception e) {
-            log.error("perform Install problem");
-	    e.printStackTrace();
+            log.error("perform Install problem",e);
         }
     }
 

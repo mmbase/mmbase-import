@@ -72,7 +72,7 @@ public class BundleManager {
         if (o != null) {
             return (BundleInterface)o;
         }
-        //log.error("bundle with id = "+id+" not found");
+        log.debug("bundle with id = "+id+" not found");
         return null;
     }
 
@@ -94,7 +94,7 @@ public class BundleManager {
                 }
             }
         }
-        //log.error("bundle with id = "+id+" not found");
+        log.debug("bundle with id = "+id+" not found");
         return null;
     }
 
@@ -108,7 +108,7 @@ public class BundleManager {
                 return p;
             }
         }
-        //log.error("bundle with id = "+id+" not found");
+        log.debug("bundle with id = "+id+" not found");
         return null;
     }
 
@@ -171,6 +171,7 @@ public class BundleManager {
             }
             return true;
         } catch(Exception e) {
+        	log.debug("error while updating  " + b + ":" + e.getMessage()  , e);
             return false;
         } 
     }
@@ -183,6 +184,7 @@ public class BundleManager {
                 return true;
             } 
         } catch(Exception e) {
+			log.debug("error while checking if a version of bundle: " + b + " is installed:" + e.getMessage()  , e);
             return false;
         }
         return false;
@@ -209,6 +211,7 @@ public class BundleManager {
             versions.updateInstalledVersion(b.getId(),"bundle",b.getMaintainer(),0);
             return true;
         } catch(Exception e) {
+			log.debug("error while updateing the versions builder to mark  " + b + " as uninstalled:" + e.getMessage()  , e);
             return false;
         }
     }
