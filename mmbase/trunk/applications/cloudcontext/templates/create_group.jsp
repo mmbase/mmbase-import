@@ -3,7 +3,7 @@
 %><%@include file="import.jsp" %><%@include file="settings.jsp"
 %>
 <mm:content language="$language">
-<mm:import id="url">edit_user.jsp</mm:import>
+<mm:import id="url">create_group.jsp</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
  <h1><%=m.getString("create_group")%></h1>
 
@@ -13,9 +13,9 @@
   <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>" method="post">
    <table>
     <mm:createnode id="newnode" type="mmbasegroups" makeuniques="true">
-    <mm:fieldlist type="edit">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
-    </mm:fieldlist>
+      <mm:fieldlist type="edit">
+        <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+      </mm:fieldlist>
     </mm:createnode>
     <tr>
      <td>Create associated security context</td>
