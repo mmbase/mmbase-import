@@ -33,10 +33,15 @@
       <mm:present referid="commentsfound" inverse="true">
         No user comments yet
       </mm:present>
+      <mm:present referid="user">
       Add comment 
       <a href="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="btemplate" value="addComment.jsp" /><mm:param name="commenttype" value="regular" /></mm:url>">
         <img src="<mm:url page="images/arrow-right.png" />" border="0" />
       </a>
+      </mm:present>
+      <mm:present referid="user" inverse="true">
+        To add comments please login
+      </mm:present>
     </td>
   </tr>
 </table>

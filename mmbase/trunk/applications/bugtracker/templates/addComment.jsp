@@ -34,7 +34,7 @@
   </table>
   </mm:present>
   <mm:notpresent referid="user">
-    You should be logged in
+    Adding comments to the bugtracker is only allowed if you are logged in
   </mm:notpresent>
 </mm:node>
 </mm:cloud>

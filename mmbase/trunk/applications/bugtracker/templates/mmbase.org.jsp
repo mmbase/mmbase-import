@@ -37,5 +37,15 @@
 
 
 </td>
+</tr>
+<tr>
+<td>
+</td>
+<td collspan="2">
+ <%@include file="whoami.jsp"%>
+</td>
+</tr>
+
+
 <%@include file="/includes/footer.jsp"%>
 </mm:cloud>
