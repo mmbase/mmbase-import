@@ -161,7 +161,8 @@ public class JavaJarPackage extends BasicPackage implements PackageInterface {
                     substep.setUserFeedBack("creating file : " + jardir + name + ".. ");
                     try {
                         InputStream in = jf.getInputStream(zippy);
-                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(jardir + name));
+                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(jardir + name + "_tmp"));
+			InstallManager.addAutoResetFile(jardir + name + "_tmp");
                         int val;
                         while ((val = in.read()) != -1) {
                             out.write(val);
