@@ -2,10 +2,13 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
+ <!-- uncomment this and fill in the right value, if your app-server
+       does not succeed to determin this automaticly.
   <context-param>
     <param-name>mmbase.htmlrooturlpath</param-name>
     <param-value>/</param-value>
   </context-param>
+  -->  
 
   <!-- Filter for jumpers
   Uncomment this code if you want to activate the jumpers filter.
