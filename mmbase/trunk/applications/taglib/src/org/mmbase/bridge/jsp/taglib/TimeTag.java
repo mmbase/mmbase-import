@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.42 2004-06-02 10:53:35 keesj Exp $
+ * @version $Id: TimeTag.java,v 1.43 2004-06-02 16:32:16 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -59,7 +59,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     static private Map months = new HashMap();
 
     static {
-        DateFormatSymbols dfs = new SimpleDateFormat("", Locale.ENGLISH).getDateFormatSymbols();
+        DateFormatSymbols dfs = new DateFormatSymbols(Locale.ENGLISH);
         setDays(dfs);
         setMonths(dfs);
     }
@@ -124,9 +124,17 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         return getPrecisionConstant(p);
     }
 
+    protected DateFormat getFormat() throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("format: '" + dateFormat + "'");
+        }
+        return  org.mmbase.util.DateFormats.getInstance(dateFormat.getString(this), timezone.getString(this), getLocale());
+    }
+
     /**
      * 
      * @return the current locale based on a parent locale tag if extist or else the default locale from the default cloud context
+     * @since  MMBase-1.7.1
      */
     protected Locale getLocale() throws JspTagException {
         Locale locale;
@@ -137,41 +145,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
         return locale;
-    }
-
-    protected DateFormat getFormat() throws JspTagException {
-
-        DateFormat df;
-        if (log.isDebugEnabled())
-            log.debug("format: '" + dateFormat + "'");
-
-        String format = dateFormat.getString(this);
-        Locale locale = getLocale();
-        // symbolic formats. Perhaps will be moved to another attribute or so.
-        if (format.length() > 0 && format.charAt(0) == ':') {
-            log.debug("found symbolic format");
-            if (format.charAt(1) == '.') {
-                df = DateFormat.getTimeInstance(getDateFormatStyle(format.substring(2)), locale);
-            } else if (format.indexOf('.') == -1) {
-                df = DateFormat.getDateInstance(getDateFormatStyle(format.substring(1)), locale);
-            } else {
-                int i = format.indexOf('.');
-                df = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)), getDateFormatStyle(format.substring(i + 1)), locale);
-            }
-        } else if (format.equals("e")) {
-            df = new DayOfWeekDateFormat(locale);
-
-        } else {
-            df = new SimpleDateFormat(format, locale);
-        }
-
-        String tz = timezone.getString(this);
-        if (!tz.equals("")) {
-            df.setTimeZone(TimeZone.getTimeZone(tz));
-        }
-
-        return df;
-
     }
 
     public void setInputformat(String inputformat) throws JspTagException {
@@ -223,26 +196,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         dateFormat = Attribute.NULL;
     }
 
-    /**
-     * Converts a string to a DateFormat constant.
-     *
-     * @param style A string describing the dateformat style (FULL, LONG, MEDIUM, SHORT)
-     * @return A DateFormat style constant.
-     * @see    java.text.DateFormat
-     */
-    private int getDateFormatStyle(String style) throws JspTagException {
-        if ("FULL".equals(style)) {
-            return DateFormat.FULL;
-        } else if ("LONG".equals(style)) {
-            return DateFormat.LONG;
-        } else if ("MEDIUM".equals(style)) {
-            return DateFormat.MEDIUM;
-        } else if ("SHORT".equals(style)) {
-            return DateFormat.SHORT;
-        } else {
-            throw new JspTagException("Unknown DateFormat Style " + style);
-        }
-    }
     /**
      * Evaluate the time attribute.
      * @TODO This function is a too complicated. The several functionalities should be spread to different functions.
@@ -369,6 +322,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             date = new Date(calculatedDate + os);
         }
 
+        // precision sets fields of date opbject to 0 starting with least relevant bits (for caching purposes)
         if (precision != Attribute.NULL) {
             Calendar cal = Calendar.getInstance(getLocale());
             cal.setTime(date);
@@ -399,6 +353,9 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             date = cal.getTime();
         }
 
+        // relevance (which is not in tld (yet), works the other way around. It sets the 'maximum
+        // relevance bit'. If for example you set it to 'months', then the yare is set to 0 and can
+        // be ignored. In this way you can e.g. check if it january, or if it is somebody's birthday.
         if (relevance != Attribute.NULL) {
             Calendar cal = Calendar.getInstance(getLocale());
             cal.setTime(date);
@@ -649,41 +606,4 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     protected SimpleDateFormat getDateFormat() throws JspTagException {
         return new SimpleDateFormat("", getLocale());
     }
-
-    protected class DayOfWeekDateFormat extends DateFormat {
-        Locale locale;
-        private TimeZone zone = null;
-
-        public DayOfWeekDateFormat(Locale locale) {
-            this.locale = locale;
-        }
-
-        public Date parse(String source, ParsePosition pos) {
-            Calendar calendar = Calendar.getInstance(locale);
-            int day = source.charAt(0) - '0';
-            pos.setIndex(pos.getIndex() + 1);
-            calendar.set(Calendar.DAY_OF_WEEK, day);
-            if (zone != null) {
-                calendar.setTimeZone(zone);
-            }
-            return calendar.getTime();
-        }
-
-        public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
-            Calendar calendar = Calendar.getInstance(locale);
-            calendar.setTime(date);
-            if (zone != null) {
-                calendar.setTimeZone(zone);
-            }
-            // pos.setBeginIndex(0); pos.setEndIndex(1);
-            toAppendTo.append(calendar.get(Calendar.DAY_OF_WEEK));
-            return toAppendTo;
-        }
-
-        public void setTimeZone(TimeZone value) {
-            zone = value;
-        }
-
-    }
-
 }
