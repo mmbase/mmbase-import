@@ -80,12 +80,14 @@
  <mm:offset    value="$offset"  />
  <mm:maxnumber value="$config.page_size" />  
  
- <mm:url id="baseurl" referid="form.url" referids="directions,search,orderby" write="false">
+ <mm:url id="baseurl" referid="form.url" referids="search?" write="false">
    <!--pass all search field values -->
    <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
      <mm:fieldinfo type="reusesearchinput" />
    </mm:fieldlist>
  </mm:url>
+
+ <mm:url id="purl" referid="baseurl" referids="orderby?,directions?" write="false" />
 
 
 <mm:import id="pager">
@@ -96,11 +98,11 @@
 
       <mm:isgreaterthan referid="page" value="$config.indexoffset">
         <nobr>
-        <a href='<mm:url referid="baseurl" referids="config.indexoffset@page" />'>
+        <a href='<mm:url referid="purl" referids="config.indexoffset@page" />'>
            <span class="previous"></span><span class="alt">[&lt;&lt;-first ]</span>
          </a>
         </a>
-        <a href='<mm:url referid="baseurl"><mm:param name="page" vartype="integer" value="${+ $page - 1}" /></mm:url>'>
+        <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="${+ $page - 1}" /></mm:url>'>
           <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
         </a>
         </nobr>
@@ -116,7 +118,7 @@
           </mm:compare>
         </mm:index>
       </mm:first>
-      <a href='<mm:url referid="baseurl">
+      <a href='<mm:url referid="purl">
       <mm:param name="page"><mm:index /></mm:param>
       </mm:url>' ><mm:index />
     </a>
@@ -131,7 +133,7 @@
       <mm:nextbatches max="21" indexoffset="$config.indexoffset">
        <mm:index offset="1">
        <mm:compare value="21" inverse="true">
-       <a href='<mm:url referid="baseurl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
+       <a href='<mm:url referid="purl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
           <mm:index />
         </a>
        </mm:compare>
@@ -148,10 +150,10 @@
       <td class="navigate" colspan="1" style="text-align: right;">
         <mm:present referid="needsnext">
           <nobr>
-          <a href='<mm:url referid="baseurl"><mm:param name="page" vartype="integer" value="${+ $page + 1}" /></mm:url>'>
+          <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="${+ $page + 1}" /></mm:url>'>
           <span class="next"></span><span class="alt">[next page -&gt;]</span>
         </a>
-        <a href='<mm:url referid="baseurl">
+        <a href='<mm:url referid="purl">
            <mm:param name="page" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
            </mm:url>'>
            <span class="next"></span><span class="alt">[last -&gt;&gt;]</span>
