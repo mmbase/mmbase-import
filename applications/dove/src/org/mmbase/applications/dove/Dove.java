@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.22 2002-10-04 22:22:31 michiel Exp $
+ * @version $Id: Dove.java,v 1.23 2002-10-17 12:31:01 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -99,8 +99,7 @@ public class Dove extends AbstractDove {
      * @param fname The name of the field to check
      */
     private boolean isDataField(org.mmbase.bridge.Node node, String fname) {
-        Field f=node.getNodeManager().getField(fname);
-        return (f!=null) && isDataField(node,f);
+        return node.getNodeManager().hasField(fname);
     }
 
     /**
