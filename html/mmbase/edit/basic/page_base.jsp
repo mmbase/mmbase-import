@@ -26,8 +26,8 @@ response.setHeader("Date",  now);
 <mm:context id="config">
   <mm:import id="page_size">20</mm:import>
   <mm:import id="hide_search">false</mm:import>
-  <mm:import id="style_sheet">mmbase.css</mm:import>
-  <mm:import id="lang" externid="mmjspeditors_language" from="cookie" >en</mm:import>
+  <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
+  <mm:import id="lang"        externid="mmjspeditors_language" from="cookie" >en</mm:import>
 </mm:context>
 <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
@@ -42,5 +42,5 @@ response.setHeader("Date",  now);
 %>
 </mm:write>
 
-<mm:import id="style"><link href="css/<mm:write referid="config.style_sheet" />" rel="stylesheet" type="text/css" media="screen"  /></mm:import>
+<mm:import id="style"><style type="text/css">@import url(css/<mm:write referid="config.style_sheet" />);</style></mm:import>
 <mm:import id="SESSION">mmbase_editors_cloud</mm:import>

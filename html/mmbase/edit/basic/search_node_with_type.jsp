@@ -75,7 +75,7 @@
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
 
 <a name="searchresult" />
-<table width="100%" border="0"><!-- list table -->      
+<table width="100%" class="list"><!-- list table -->      
   <tr align="left"><!-- header -->
     <mm:fieldlist nodetype="$node_type" type="list">
          <th><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></th>
@@ -96,7 +96,7 @@
           <mm:countrelations>
             <mm:compare value="0">
               <a href="<mm:url referids="node_type,node_number,page" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
-                            <img src="images/delete.gif" alt="[delete]" width="20" height="20" border="0" align="right"/>
+                  <span class="delete"></span><span class="alt">[delete]</span>
               </a>
             </mm:compare>
           </mm:countrelations>
@@ -106,7 +106,7 @@
      <td class="navigate">  
     <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink)) { %>
             <a href="<mm:url page="$to_page" referids="node_number" />">
-                      <img src="images/select.gif" alt="[change]" width="20" height="20" border="0" align="right"/>
+                  <span class="change"></span><span class="alt">[change]</span>
             </a>
      <% } else { %>&nbsp;<% } %>
      </td>
@@ -127,14 +127,14 @@
     <mm:isgreaterthan referid="page" value="0.5">
       <td class="navigate">
             <a href='<mm:url referids="node,node_type,role_name,direction,search"><mm:param name="page" value="${+$page-1}" /></mm:url>' >
-        <img src="images/previous.gif" alt="[<-previous page]" width="20" height="20" border="0" />
+                 <span class="previous"></span><span class="alt">[<-previous page]</span>
       </a>
         </td> 
     </mm:isgreaterthan>
     <mm:present referid="next_page">
       <td class="navigate">      
             <a href='<mm:url referids="node,node_type,role_name,direction,search"><mm:param name="page"  value="${+$page+1}" /></mm:url>' >
-              <img src="images/next.gif" alt="[next page->]" width="20" height="20" border="0" align="right"/>
+              <span class="next"></span><span class="alt">[next page ->]</span>
             </a>
       </td>
     </mm:present>

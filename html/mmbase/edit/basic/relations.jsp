@@ -16,7 +16,7 @@
 
     <mm:import id="sourceWhereClause">snumber=<mm:write referid="thisnumber" /></mm:import>
     <mm:import id="tn" vartype="Integer" jspvar="thisnumber"><mm:write referid="thisnumber" /></mm:import>
-    <table class="edit" summary="relation overview" width="100%" cellspacing="1" cellpadding="3" border="0">
+    <table class="list" summary="relation overview" width="100%">
         <tr>
             <th colspan="8"><%=m.getString("relations.from")%></th>
         </tr>
@@ -47,8 +47,8 @@
                         <mm:param name="direction">create_parent</mm:param>
                         <!-- END WHY CANT I USE DNAME as ROLE????  -->
                         </mm:url>'>
-                        <img src="images/create.gif" alt="+" width="20" height="20" border="0" align="right" />
-                   </a>
+                       <span class="create"></span><span class="alt">+</span>
+                   </a>                
                 </td>
             </tr>
             <!-- list all nodesof this specific relation type.. -->
@@ -72,15 +72,15 @@
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
             <mm:param name="node_type"><%= insrelNode.getNodeManager().getName() %></mm:param>
                         <mm:param name="delete">true</mm:param>
-            </mm:url>' >
-                        <img src="images/delete.gif" alt="x" border="0" width="20" height="20" align="right" />
+		    </mm:url>' >
+                      <span class="delete"></span><span class="alt">x</span>
                     </a>
 
                     <!-- edit the relation -->
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
-            </mm:url>' >
-                        <img src="images/select.gif" alt="->" border="0" width="20" height="20" align="right" />
+		    </mm:url>' >
+                      <span class="select"></span><span class="alt">-&gt;</span>
                     </a>
                 </td>
                 <%  String destinationNodeNumber = insrelNode.getStringValue("dnumber"); %>
@@ -94,7 +94,7 @@
                 <td class="navigate">
                     <!-- edit the related node -->
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok,node_number"/>'>
-                        <img src="images/select.gif" alt="->" border="0" width="20" height="20" align="right" />
+                      <span class="select"></span><span class="alt">-&gt;</span>
                     </a>
                 </td>
                 <!-- skip last field -->
@@ -145,8 +145,8 @@
                         <mm:param name="direction">create_child</mm:param>
                         <!-- END WHY CANT I USE DNAME as ROLE???? -->
                         </mm:url>'>
-                        <img src="images/create.gif" alt="+" width="20" height="20" border="0" align="right" />
-                   </a>
+                      <span class="create"></span><span class="alt">+</span>
+                   </a> 
                 </td>
             </tr>
             <!-- list all nodesof this specific relation type.. -->
@@ -170,15 +170,15 @@
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
             <mm:param name="node_type"><%= insrelNode.getNodeManager().getName() %></mm:param>
                         <mm:param name="delete">true</mm:param>
-            </mm:url>' >
-                        <img src="images/delete.gif" alt="x" border="0" width="20" height="20" align="right" />
+		    </mm:url>' >
+                      <span class="delete"></span><span class="alt">x</span>
                     </a>
 
                     <!-- edit the relation -->
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
-            </mm:url>' >
-                        <img src="images/select.gif" alt="->" border="0" width="20" height="20" align="right" />
+		    </mm:url>' >
+                      <span class="select"></span><span class="alt">-&gt;</span>
                     </a>
                 </td>
                 <%  String sourceNodeNumber = insrelNode.getStringValue("snumber"); %>
@@ -192,7 +192,7 @@
                 <td class="navigate">
                     <!-- edit the related node -->
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok,node_number"/>'>
-                        <img src="images/select.gif" alt="->" border="0" width="20" height="20" align="right" />
+                      <span class="select"></span><span class="alt">-&gt;</span>
                     </a>
                 </td>
                 <!-- skip last field -->

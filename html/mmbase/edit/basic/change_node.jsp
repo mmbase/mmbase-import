@@ -74,17 +74,18 @@
   <th><%=m.getString("change_node.aliases")%></th>
   <td class="data" width="90%"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
   <td class="navigate" width="0%">
-   <mm:maywrite>
- <a href="<mm:url referids="node_number" page="edit_aliases.jsp" />"><img src="images/select.gif" alt="[edit aliases]" width="20" height="20" border="0" align="right"/></a> 
+ <mm:maywrite>
+ <a  href="<mm:url referids="node_number"  page="edit_aliases.jsp" />">
+       <span class="select"></span><span class="alt">[edit aliases]</span>
+</a>     
    </mm:maywrite>    
- </td>
 </tr>
 </table>
 </form>
 
 <!-- list relations: -->
 <hr />
-<a name="relations" />
+<a name="relations"></a>
 <%@ include file="relations.jsp"%>
 
 </mm:node>

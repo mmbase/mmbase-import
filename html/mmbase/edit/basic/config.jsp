@@ -9,7 +9,8 @@
     <mm:import externid="hide_search" />
     <mm:import externid="style_sheet" />
     <mm:import externid="lang" />
-    <mm:write  referid="lang" cookie="mmjspeditors_language" />
+    <mm:write  referid="lang"        cookie="mmjspeditors_language" />
+    <mm:write  referid="style_sheet" cookie="mmjspeditors_style" />
     <mm:log>Writing lang cookie <mm:write referid="lang" /></mm:log>
  </mm:context>
  <mm:write referid="config" session="mmeditors_config" />
@@ -31,7 +32,10 @@
              </select></td>
      </tr>
      <tr><td><%= m.getString("config.stylesheet") %></td>
-         <td><input type="text" size="30" name="style_sheet" value="<mm:write referid="config.style_sheet" />" /></td>
+         <td><select name="style_sheet">
+             <option value="mmbase.css" <mm:compare referid="config.style_sheet" value="mmbase.css">selected="selected"</mm:compare>>default</option>
+             <option value="mmbase2.css" <mm:compare referid="config.style_sheet" value="mmbase2.css">selected="selected"</mm:compare>>classic</option>
+            </select></td>
      </tr>
      <tr><td><%= m.getString("config.language") %></td>  
          <td><input type="text" size="30" name="lang" value="<mm:write referid="config.lang" />" /></td>
