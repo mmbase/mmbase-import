@@ -1544,6 +1544,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>nodeinfo</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>This thing can be used inside a NodeProvider tag, to get
     certain information about the node.
     </info>
@@ -1559,6 +1560,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>guitype</value>
         <info>The GUI representation of the type (NodeManager) of the node.</info>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>nodetype</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
     </attribute>
     <example>&lt;mm:node number="1645"&gt;
 Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
@@ -1993,6 +2000,21 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <attribute>
         <name>node</name>
         <required>false</required>
+    </attribute>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+    </attribute>
+  </tag>
+  <tag>
+    <name>maycreate</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
+    <info>
+	Check if node may be create
+    </info>
+    <attribute>
+        <name>type</name>
+        <required>true</required>
     </attribute>
     <attribute>
         <name>inverse</name>
