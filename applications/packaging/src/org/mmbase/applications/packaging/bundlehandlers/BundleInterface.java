@@ -45,6 +45,8 @@ public interface BundleInterface {
         public String getLicenseVersion();
         public String getLicenseBody();
         public List getRelatedPeople(String type);
+        public List getScreenshots();
+        public List getStarturls();
 
 	public JarFile getJarFile();
 	public JarFile getIncludedPackageJarFile(String packageid,String packageversion);

@@ -195,7 +195,6 @@ public class BundleManager {
         try {
             int newversion = Integer.parseInt(b.getVersion());
             int oldversion = getInstalledVersion(b.getId());
-	    log.info("NEW VERSION="+newversion+" OLDVERSION="+oldversion);
 	    if (oldversion!=-1 && newversion > oldversion) {
 		return true;
 	    }

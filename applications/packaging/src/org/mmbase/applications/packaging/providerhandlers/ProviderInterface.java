@@ -13,6 +13,7 @@ import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.installhandlers.*;
 import org.mmbase.applications.packaging.projects.*;
+import org.mmbase.applications.packaging.projects.creators.*;
 
 /**
  * Interface for all the provider handlers
@@ -215,8 +216,8 @@ public interface ProviderInterface {
      */
     public void init(String name, String method, String maintainer, String path);
 
-    public boolean publish(BundleInterface bundle,String sharepassword);
+    public boolean publish(CreatorInterface creator, BundleInterface bundle,String sharepassword);
 
-    public boolean publish(PackageInterface p,String sharepassword);
+    public boolean publish(CreatorInterface creator, PackageInterface p,String sharepassword);
 }
 

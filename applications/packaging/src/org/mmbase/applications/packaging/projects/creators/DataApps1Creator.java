@@ -360,12 +360,14 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
 	HashSet set = new HashSet();
 	Project prj = target.getParent();
 	Target mod = prj.getTargetById(id);
+	log.info("mod="+mod);
 	CloudModelCreator modcr = (CloudModelCreator)mod.getCreator();
         Model model = new Model(modcr.getModelFile(mod));
 
         Iterator nbl=model.getNeededBuilders();
         while (nbl.hasNext()) {
             NeededBuilder nb=(NeededBuilder)nbl.next();
+	    log.info("BUILDER="+nb.getName());
 	    int i=MMBase.getMMBase().getTypeDef().getIntValue(nb.getName());
 	    set.add(new Integer(i));
         }
@@ -394,6 +396,28 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
             }
         }
         return virtual;
+    }
+
+    public void setDataFileType(String project, String target,String type) {
+	log.info("NEW DEPTH="+project+" "+target+" "+type);
+        Project p = ProjectManager.getProject(project);
+        if (p != null) {
+            Target t = p.getTarget(target);
+            if (t != null) {
+                    t.setItem("type",type);
+		    saveDataFile(project,t);
+	    }
+        }
+    }
+
+    private boolean saveDataFile(String project,Target target) {
+        String datafile = target.getBaseDir() + getItemStringValue(target, "datafile");
+        String id = target.getItem("depthname") + "@" + target.getItem("depthmaintainer") + "_cloud/model";
+        id = id.replace(' ', '_');
+        id = id.replace('/', '_');
+        HashSet filters = getWantedBuilders(target,id);
+        Apps1DataWriter.writeDataXML(filters,datafile,target);
+	return true;
     }
 
 }

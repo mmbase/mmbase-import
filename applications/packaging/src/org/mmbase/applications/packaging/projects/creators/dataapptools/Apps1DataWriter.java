@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.applications.packaging.projects.*;
 
 /**
  */
@@ -25,7 +26,7 @@ public class Apps1DataWriter {
      */
     private static Logger log = Logging.getLoggerInstance(Apps1DataWriter.class.getName());
 
-    public static boolean write(HashSet fb,String alias,String builder,String where,int depth,String datafile,String datapath) {
+    public static boolean write(HashSet fb,String alias,String builder,String where,int depth,String datafile,String datapath,Target target) {
 
 	int startnode = getStartNode(alias,builder,where);
 
@@ -34,7 +35,7 @@ public class Apps1DataWriter {
         HashSet nodes = new HashSet();
         getSubNodes(startnode,depth,fb, nodes,relnodes);
 
-        writeDataXML(fb,datafile);
+        writeDataXML(fb,datafile,target);
         writeNodes(fb,nodes,relnodes,datapath);
 
 	/*
@@ -273,15 +274,17 @@ public class Apps1DataWriter {
         return true;
     }
 
-    public static boolean writeDataXML(HashSet fb,String datafile) {
+    public static boolean writeDataXML(HashSet fb,String datafile,Target target) {
         String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body+="<!DOCTYPE dataset PUBLIC \"-//MMBase/DTD dataset config 1.0//EN\" \"http://www.mmbase.org/dtd/dataset_1_0.dtd\">\n";
         body+="<dataset>\n";
+	/* not sure if ill keep these
         body+="\t<creationinfo>\n";
         body+="\t\t<creator name=\"example\" maintainer=\"submarine\" version=\"2\" />\n";
         body+="\t\t<creationtime>Thu Oct 28 13:07:25 CEST 2004</creationtime>\n";
         body+="\t\t<creatorcomments>This is a fake file made by hand</creatorcomments>\n";
         body+="\t</creationinfo>\n";
+	*/
         body+="\t<objectsets>\n";
         Iterator res = fb.iterator();
         while (res.hasNext()) {
@@ -304,6 +307,25 @@ public class Apps1DataWriter {
 	    }
 	}
         body+="\t</relationsets>\n";
+	String type=(String)target.getItem("type");
+        body+="\t<selection type=\""+type+"\">\n";
+	if (type.equals("depth")) {
+        	body+="\t\t<model name=\""+target.getItem("depthname")+"\" maintainer=\""+target.getItem("depthmaintainer")+"\" version=\""+target.getItem("depthversion")+"\" />\n";
+		String alias=(String)target.getItem("depthalias");
+		if (alias!=null && !alias.equals("")) {
+        		body+="\t\t<startnode alias=\""+alias+"\">\n";
+		} else {
+        		body+="\t\t<startnode>\n";
+		}
+		String builder=(String)target.getItem("depthbuilder");
+		if (builder!=null && !builder.equals("")) {
+        		body+="\t\t\t<builder>"+builder+"</builder>\n";
+        		body+="\t\t\t<where>"+target.getItem("depthwhere")+"</where>\n";
+		}
+       		body+="\t\t</startnode>\n";
+       		body+="\t\t<depth>"+target.getItem("depth")+"</depth>\n";
+	}
+        body+="\t</selection>\n";
         body+="</dataset>\n";
         saveFile(datafile,body);
         return true;
