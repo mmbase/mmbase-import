@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.37 2002-07-18 14:42:39 mark Exp $
+ * @version $Id: MMInformix42Node.java,v 1.38 2002-07-31 10:01:12 vpro Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -978,7 +978,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      * Method: commit
      *         commit this node to the database
      */
-    /* begin copy old method overiding new one, stolen from MMSQL92Node.java,v 1.50 2001/04/20 08:33:25, which has now mutliple table support */
+    /* begin copy old method overiding new one, stolen from MMSQL92Node.java,v 1.50 2001/04/20 08:33:25, which has now multiple table support */
     public boolean commit(MMObjectBuilder bul, MMObjectNode node) {
         if (log.isDebugEnabled()) log.trace(" ");
         //  precommit call, needed to convert or add things before a save
