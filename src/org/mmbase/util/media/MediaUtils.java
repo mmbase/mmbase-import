@@ -177,7 +177,8 @@ public class MediaUtils
             // -----------------
             if( checkstring( "filterBestUrl","value",value) )
             {
-                if( value.startsWith("station") || value.startsWith("beep") )
+                if( value.startsWith("station") || value.startsWith("beep") 
+				        || value.startsWith("streams.vpro.nl"))
                 {
                     if( isInternal )
                         // always use this one
@@ -190,7 +191,7 @@ public class MediaUtils
                             result = value;
                 }
                 else
-                if( value.startsWith("streams") )
+                if( value.startsWith("streams.omroep.nl") )
                 {
                     if( isInternal )
                     {
