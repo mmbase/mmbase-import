@@ -46,13 +46,16 @@
     we can use <mm:field node="mag" name="title" --%>
     <tr>
       <td><mm:field name="title"/></td>
-      <td align="right"><a href="<mm:url referids="magid" page="newsitem.jsp" ><mm:param name="newsid"><mm:field name="number"/></mm:param></mm:url>">link</a></td>
+      <td align="right" class="link"><a href="<mm:url referids="magid" page="newsitem.jsp" ><mm:param name="newsid"><mm:field name="number"/></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link" /></a></td>
     </tr> 
     <mm:last></table></td></tr></mm:last>
   </mm:relatednodes>
   </table>
   <hr />
-   <a href="<mm:url referids="magid" page="ordered.jsp" /> ">--&gt;  Ordered news</a><br />
+  <div class="link">
+   <a href="<mm:url referids="magid" page="ordered.jsp" /> ">Ordered news <img src="<mm:url page="/mmbase/style/images/next.gif" />"></a><br />
+  </div> 
+  <hr /> 
    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
