@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.26 2004-08-26 12:10:38 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.27 2004-09-14 16:20:37 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -68,15 +68,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                     if (log.isDebugEnabled()) {
                         log.debug("removing " + key + " " + get(key));
                     }
-                    removed.add(key);
-                    // cannot use keys.remove(), becaus then cache.remove is not called.
+                    keys.remove();
                 }
 
-            }
-            keys = removed.iterator();
-            while (keys.hasNext()) {
-                String key = (String)keys.next();
-                remove(key);
             }
         }
         void removeCacheNumber(int icacheNumber) {
@@ -92,14 +86,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                     if (log.isDebugEnabled()) {
                         log.debug("removing " + key);
                     }
-                    // cannot use keys.remove(), becaus then cache.remove is not called.
+                    entries.remove();
                 }
                 
-            }
-            Iterator keys = removed.iterator();
-            while (keys.hasNext()) {
-                String key = (String)keys.next();
-                remove(key);
             }
         }
     }
