@@ -5,7 +5,7 @@
   <tr><th>Persons</th></tr>
   <tr><td>
   </mm:first>
-     <p><a target="_blank" href="<mm:url referids="person" page="/development/people/" />"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
+     <p><a target="_blank" href="<mm:url referids="person" page="/development/people/" />"><mm:field name="firstname" /> <mm:field name="lastname" /></a> <mm:first>(project leader)</mm:first>
      <br /></p>
   <mm:last>
 	 </td>
