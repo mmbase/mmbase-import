@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.applications.media.builders;
 
@@ -32,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.30 2004-01-19 17:05:56 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.31 2004-02-03 15:17:46 pierre Exp $
  * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
-    
+
     // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class);
 
@@ -46,18 +46,18 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_FILTEREDURLS  = "filteredurls";
     public static final String FUNCTION_URL         = "url";
     public static final String FUNCTION_NUDEURL     = "nudeurl";
-    public static final String FUNCTION_PARENTS     = "parents";    
-    public static final String FUNCTION_ROOT        = "root";    
+    public static final String FUNCTION_PARENTS     = "parents";
+    public static final String FUNCTION_ROOT        = "root";
     public static final String FUNCTION_SUBFRAGMENT = "issubfragment";
     public static final String FUNCTION_SUBFRAGMENTS = "subfragments";
     public static final String FUNCTION_AVAILABLE   = "available";
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_DURATION    = "duration";
 
-    
+
     // This filter is able to find the best mediasource by a mediafragment.
     // private  static MainFilter mediaSourceFilter = null;
-    
+
     // Is the mediafragment builder already initialised?
     // this class is used for several builders (mediafragments and descendants)
     private static boolean           initDone           = false;
@@ -66,12 +66,12 @@ public class MediaFragments extends MMObjectBuilder {
 
     public boolean init() {
         if(initDone) {
-	    return super.init();
-	}
+        return super.init();
+    }
         log.service("Init of Media Fragments builder");
         initDone = true;  // because of inheritance we do init-protections
-        
-        boolean result = super.init();       
+
+        boolean result = super.init();
         // deprecated:
         retrieveClassificationInfo();
 
@@ -89,11 +89,11 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return info;
     }
-        
+
     /**
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on " + node);
         }
         if (function.equals("info")) {
@@ -112,7 +112,7 @@ public class MediaFragments extends MMObjectBuilder {
                 return info;
             } else {
                 return info.get(args.get(0));
-            }            
+            }
         } else if (FUNCTION_URLS.equals(function)) {
             return getURLs(node, translateURLArguments(args, null), null,null);
         } else if (FUNCTION_FILTEREDURLS.equals(function)) {
@@ -128,7 +128,7 @@ public class MediaFragments extends MMObjectBuilder {
             return "" + getRootFragment(node).getNumber();
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             List pt  = node.getRelatedNodes("publishtimes");
-            if (pt.size() == 0) { 
+            if (pt.size() == 0) {
                 return Boolean.TRUE;
             } else {
                 MMObjectNode publishtime = (MMObjectNode) pt.get(0);
@@ -157,7 +157,7 @@ public class MediaFragments extends MMObjectBuilder {
         return super.executeFunction(node, function, args);
     }
 
-    
+
     /**
      * Calculate the length of a mediafragment
      * @param node the mediafragment
@@ -167,7 +167,7 @@ public class MediaFragments extends MMObjectBuilder {
         long start  = node.getLongValue("start");
         long stop   = node.getLongValue("stop");
         long length = node.getLongValue("length");
-        
+
         if(stop != 0) {
             return stop - start;
         } else if (length != 0) {
@@ -176,7 +176,7 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("length cannot be evaluated, no stoptime and no length");
         return 0;
     }
-    
+
     /**
      * Will show the title (clickable if possible)
      * @param node the mediafragment node
@@ -193,7 +193,7 @@ public class MediaFragments extends MMObjectBuilder {
             return "<a href=\"" + url + "\" alt=\"\" >" + title + "</a>";
         } else {
             return "[" + title + "]";
-        }        
+        }
     }
 
     public String getGUIIndicator(String field, MMObjectNode node) {
@@ -206,7 +206,7 @@ public class MediaFragments extends MMObjectBuilder {
     }
 
 
-    /** 
+    /**
      * Returns a List of all possible (unfiltered) URLComposer's for this Fragment.
      * A list of arguments can be supplied, which is currently unused (but should not be null).
      * It could contain a Map with preferences, or other information about the client.
@@ -221,8 +221,8 @@ public class MediaFragments extends MMObjectBuilder {
             MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
             bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
         }
-        return urls;        
-    }   
+        return urls;
+    }
 
     protected List getFilteredURLs(MMObjectNode fragment, Map info, Set cacheExpireObjects) {
         log.debug("getfilteredurls");
@@ -230,18 +230,18 @@ public class MediaFragments extends MMObjectBuilder {
         return MainFilter.getInstance().filter(urls);
     }
 
-      
-    /** 
+
+    /**
      * Retrieves the url of the mediasource that matches best.
-     * (e.g. pnm://www.mmbase.org/music/test.ra) 
+     * (e.g. pnm://www.mmbase.org/music/test.ra)
      *
      * @param fragment the media fragment
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
-     */ 
+     */
     protected  String getURL(MMObjectNode fragment, Map info) {
-        log.debug("Getting url of a fragment.");        
-	String key = URLCache.toKey(fragment, info);
+        log.debug("Getting url of a fragment.");
+    String key = URLCache.toKey(fragment, info);
         if(cache.containsKey(key)) {
             String url = (String) cache.get(key);
             if (log.isDebugEnabled()) {
@@ -249,47 +249,47 @@ public class MediaFragments extends MMObjectBuilder {
                 log.debug("Resolved url = " + url);
             }
             return url;
-	} else {
+    } else {
             log.debug("No cache hit, key = " + key);
-	}
+    }
 
-	Set cacheExpireObjects = new HashSet();
+    Set cacheExpireObjects = new HashSet();
         List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
-	String result = "";
+    String result = "";
         if (urls.size() > 0) {
             result = ((URLComposer) urls.get(0)).getURL();
-        } 
+        }
         if (log.isDebugEnabled()) {
             log.debug("Add to cache, key = " + key);
             log.debug("Resolved url = " + result);
         }
-	// put result in cache
-	cache.put(key, result, cacheExpireObjects);
-	return result;
+    // put result in cache
+    cache.put(key, result, cacheExpireObjects);
+    return result;
     }
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
-        log.debug("Getting format of a fragment.");        
-	// XXX also cache this ?
-	// XXX can be done in the same cache if we extend the key...
+        log.debug("Getting format of a fragment.");
+    // XXX also cache this ?
+    // XXX can be done in the same cache if we extend the key...
         List urls = getFilteredURLs(fragment, info,null);
         if (urls.size() > 0) {
             return ((URLComposer) urls.get(0)).getFormat().toString();
         } else {
-            return ""; //no sources 
+            return ""; //no sources
         }
     }
-        
+
     /**
      * If a mediafragment is coupled to another mediafragment instead of being directly
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
     public boolean isSubFragment(MMObjectNode mediafragment) {
-        int mediacount = mediafragment.getRelationCount("mediasources");        
+        int mediacount = mediafragment.getRelationCount("mediasources");
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
-    
+
     /**
      * Adds a parent fragment to the Stack and returns true, or returns false.
      */
@@ -311,7 +311,7 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return false;
     }
-    
+
     /**
      * Returns a Stack with all parent fragments. Starts stacking from
      * this, so on top is the mediafragment with the sources, and on
@@ -332,7 +332,7 @@ public class MediaFragments extends MMObjectBuilder {
      * Find the mediafragment of which the given mediafragment is a
      * part. This fragment is not a subfragment itself, and should be
      * linked to the actual sources.
-     * 
+     *
      * @param fragment sub media fragment
      * @return The parent media fragment or null if it has not.
      */
@@ -340,7 +340,7 @@ public class MediaFragments extends MMObjectBuilder {
         Stack s = getParentFragments(fragment);
         return (MMObjectNode) s.peek();
     }
-    
+
     /**
      * Get all mediasources belonging to this mediafragment
      * (scope  should be protected)
@@ -355,14 +355,14 @@ public class MediaFragments extends MMObjectBuilder {
             log.warn("Could not get related nodes of type mediasources");
         }
         if (log.isDebugEnabled()) log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
-        
+
         return mediasources;
     }
-    
-    
+
+
     /**
      * Removes related media sources. This can be used by automatic recording VWMS's.
-     * 
+     *
      * @param fragment The MMObjectNode
      */
     public  void removeSources(MMObjectNode fragment) {
@@ -375,16 +375,16 @@ public class MediaFragments extends MMObjectBuilder {
     }
 
     // --------------------------------------------------------------------------------
-    // These methods are added to be backwards compatible. 
+    // These methods are added to be backwards compatible.
 
-        
+
     private Map               classification     = null;
 
      /**
       * For backwards compatibility reasons, the first version of the mediafragment builder
-      * will contain the classification field. This field will contain numbers that are 
-      * resolved using the lookup builder. This construction, using classification in 
-      * mediafragment, was used for speeding up listings. 
+      * will contain the classification field. This field will contain numbers that are
+      * resolved using the lookup builder. This construction, using classification in
+      * mediafragment, was used for speeding up listings.
       * @deprecated
       */
      private void retrieveClassificationInfo() {
@@ -407,7 +407,7 @@ public class MediaFragments extends MMObjectBuilder {
          }
          return;
      }
-     
+
     /**
      * Replace all for frontend code
      * Replace commands available are GETURL (gets mediafile url for an objectnumber),
@@ -419,35 +419,54 @@ public class MediaFragments extends MMObjectBuilder {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
 
-	    log.debug("scan - "+token);
+        log.debug("scan - "+token);
             if (token.equals("GETURL")) {
                 Integer number=null, userSpeed=null, userChannels=null;
                 if (command.hasMoreTokens()) number=new Integer(command.nextToken());
                 if (command.hasMoreTokens()) userSpeed=new Integer(command.nextToken());
                 if (command.hasMoreTokens()) userChannels=new Integer(command.nextToken());
                 if (number!=null) {
-			MMObjectNode media = getNode(number.intValue());
+            MMObjectNode media = getNode(number.intValue());
             if(!(media.parent).isExtensionOf(mmb.getBuilder("mediafragments"))) {
                 log.error("Number "+number+" is not a media/audio/video fragment "+media);
                 return "Number "+number+" is not a media/audio/video fragment "+media;
             }
-			Map info = new HashMap();
-			if(userSpeed!=null) {
-				info.put("speed",""+userSpeed);
-			}
-			if(userChannels!=null) {
-				info.put("channels",""+userChannels);
-			}
+            Map info = new HashMap();
+            if(userSpeed!=null) {
+                info.put("speed",""+userSpeed);
+            }
+            if(userChannels!=null) {
+                info.put("channels",""+userChannels);
+            }
                     return getURL(media, info);
                 } else {
-			log.error("No mediafragment specified"); 
+            log.error("No mediafragment specified");
                     return null;
                 }
-            } 
-	    log.error("only command GETURL is supported");
-	    return "only command GETURL is supported";
+            }
+        log.error("only command GETURL is supported");
+        return "only command GETURL is supported";
         }
         log.error("No commands defined.");
         return "No commands defined.";
+    }
+
+    public Object getObjectValue(MMObjectNode node, String field) {
+        if (field.equals("lengthsec")) {
+            long val=node.getLongValue("length");
+            return ""+val/1000;
+        }
+        return super.getObjectValue(node,field);
+    }
+
+    public boolean setValue(MMObjectNode node,String fieldname) {
+        if (fieldname.equals("lengthsec")) {
+            long val=node.getLongValue("lengthsec");
+log.info("store value in seconds: "+val);
+            node.setValue("length",new Long(val*1000));
+            node.storeValue("lengthsec",null);
+            return false;
+        }
+        return super.setValue(node,fieldname);
     }
 }
