@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.66 2002-07-05 12:56:18 pierre Exp $
+ * @version $Id: MMBase.java,v 1.67 2002-08-05 16:48:23 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -284,7 +284,7 @@ public class MMBase extends ProcessorModule  {
      */
     public void init() {
 
-        log.info("\n---\nInit of " + org.mmbase.Version.get());
+        log.service("Init of " + org.mmbase.Version.get());
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");
         if (tmp != null) {
