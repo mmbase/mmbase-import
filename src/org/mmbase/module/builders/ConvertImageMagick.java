@@ -29,7 +29,8 @@ import org.mmbase.util.logging.Logger;
  * Converts images using ImageMagick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.24 2002-02-12 19:30:42 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: ConvertImageMagick.java,v 1.25 2002-02-26 10:47:53 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -119,11 +120,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
      *
      */
     public byte[] convertImage(byte[] input,Vector commands) {
-        String cmd,format;
+        Vector cmd;
+        String format;
         byte[] pict=null;
 
         if (commands!=null && input!=null) {
-            cmd=getConvertCommands(commands);
+            cmd =getConvertCommands(commands);
             format=getConvertFormat(commands);
             pict = convertImage(input,cmd,format);
         }
@@ -161,103 +163,112 @@ public class ConvertImageMagick implements ImageConvertInterface {
         return format;
     }
 
-    /**
-     * @javadoc
-     */
-    private String getConvertCommands(Vector params) {
-        StringBuffer cmdstr=new StringBuffer();
-        Vector cmds=new Vector();
-        String key,cmd,type;
-        int pos,pos2;
 
-        for (Enumeration t=params.elements();t.hasMoreElements();) {
+    /**
+     * Translates MMBase color format (without #) to an convert color format (with or without);
+     */
+
+    protected String color(String c) {
+        return "#" + c.toLowerCase();  // obviously a little to simple now, because you cannot say 'blue' now.
+    }
+
+    /**
+     * MMBase has some abreviations to convert commands, like 's' for 'geometry'. These are treated here.
+     */
+
+    protected String getAlias(String a) {
+        if (a.equals("s"))            return "geometry";
+        if (a.equals("r"))            return "rotate";
+        if (a.equals("c"))            return "colors";
+        if (a.equals("t"))            return "transparency";
+        if (a.equals("i"))            return "interlace";
+        if (a.equals("q"))            return "quality";
+        if (a.equals("mono"))         return "monochrome";
+        if (a.equals("highcontrast")) return "contrast"; 
+        if (a.equals("flipx"))        return "flop";
+        if (a.equals("flipy"))        return "flip";
+        if (a.equals("dia"))          return "negate"; // I don't think that this makes any sense, I dia is not dianegative, can be diapositive as well... But well, be are backwards compatible.
+        return a;
+            
+    }
+
+    /**
+     * Translates the arguments for img.db to arguments for convert of ImageMagick.
+     *
+     * @param params  Vector with arguments. First one is the image's number, which will be ignored.
+     * @return        Vector with convert arguments.
+     *
+     */
+    private Vector getConvertCommands(Vector params) {
+        StringBuffer cmdstr = new StringBuffer();
+        Vector cmds = new Vector();
+        String key, cmd, type;
+        int pos, pos2;
+        Enumeration t = params.elements();
+        if (t.hasMoreElements()) t.nextElement(); // first element is the number, ignore it.
+        while (t.hasMoreElements()) {
             key=(String)t.nextElement();
             pos=key.indexOf('(');
             pos2=key.lastIndexOf(')');
-            if (pos!=-1 && pos2!=-1) {
-                type=key.substring(0,pos);
-                cmd=key.substring(pos+1,pos2);
-                log.debug("getCommands(): type="+type+" cmd="+cmd);
-                if (type.equals("s")) {
-                    cmds.addElement("-geometry "+cmd);
-                } else if (type.equals("quality")) {
-                    cmds.addElement("-quality "+cmd);
-                } else if (type.equals("region")) {
-                    cmds.addElement("-region "+cmd);
-                } else if (type.equals("spread")) {
-                    cmds.addElement("-spread "+cmd);
-                } else if (type.equals("solarize")) {
-                    cmds.addElement("-solarize "+cmd);
-                } else if (type.equals("r")) {
-                    cmds.addElement("-rotate "+cmd);
-                } else if (type.equals("c")) {
-                    cmds.addElement("-colors "+cmd);
-                } else if (type.equals("colorize")) {
-                    // not supported ?
-                    cmds.addElement("-colorize "+cmd);
-                } else if (type.equals("colorizehex")) {
+            if (pos != -1 && pos2 != -1) {
+                type = key.substring(0,pos).toLowerCase();
+                cmd  = key.substring(pos+1, pos2);
+                if (log.isDebugEnabled()) {
+                    log.debug("getCommands(): type=" + type + " cmd=" + cmd);
+                }
+
+                /*
+                  Following code translates some MMBase specific things to imagemagick's convert arguments.
+                 */
+                type = getAlias(type);
+                if (type.equals("colorizehex")) {
                     // Incoming hex number rrggbb is converted to
                     // decimal values rr,gg,bb which are inverted on a scale from 0 to 100.
-                    log.debug("colorizehex, cmd: "+cmd);
+                    if (log.isDebugEnabled()) log.debug("colorizehex, cmd: "+cmd);
                     String hex = cmd;
                     // Check if hex length is 123456 6 chars.
                     if (hex.length()==6) {
-                        log.debug("Hex is :"+hex);
+
                         // Byte.decode doesn't work correctly.
                         int r = colorizeHexScale - Math.round(colorizeHexScale*Integer.parseInt(hex.substring(0,2),16)/255.0f);
                         int g = colorizeHexScale - Math.round(colorizeHexScale*Integer.parseInt(hex.substring(2,4),16)/255.0f);
                         int b = colorizeHexScale - Math.round(colorizeHexScale*Integer.parseInt(hex.substring(4,6),16)/255.0f);
-                        log.debug("Calling colorize with r:"+r+" g:"+g+" b:"+b);
-                        cmds.addElement("-colorize "+r+"/"+g+"/"+b);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Hex is :"+hex);
+                            log.debug("Calling colorize with r:"+r+" g:"+g+" b:"+b);
+                        }
+                        type = "colorize";
+                        cmd = r+"/"+g+"/"+b;
                     }
-                } else if (type.equals("bordercolor")) {
-                    // not supported ?
-                    cmds.addElement("-bordercolor #"+cmd);
-                } else if (type.equals("blur")) {
-                    cmds.addElement("-blur "+cmd);
-                } else if (type.equals("edge")) {
-                    cmds.addElement("-edge "+cmd);
-                } else if (type.equals("implode")) {
-                    cmds.addElement("-implode "+cmd);
                 } else if (type.equals("gamma")) {
-                    // cmds.addElement("-gamma "+cmd);
-                    StringTokenizer tok = new StringTokenizer(cmd,",");
+                    StringTokenizer tok = new StringTokenizer(cmd,",/");
                     String r=tok.nextToken();
                     String g=tok.nextToken();
                     String b=tok.nextToken();
-                    cmds.addElement("-gamma "+r+"/"+g+"/"+b);
-                } else if (type.equals("border")) {
-                    cmds.addElement("-border "+cmd);
-                } else if (type.equals("pen")) {
-                    cmds.addElement("-pen #"+cmd+"");
-                } else if (type.equals("font")) {
-                    cmds.addElement("font "+cmd);
-                } else if (type.equals("circle")) {
-                    cmds.addElement("draw 'circle "+cmd+"'");
+                    cmd = r+"/"+g+"/"+b;
+                } else if (type.equals("pen") || type.equals("transparency") || type.equals("fill") || type.equals("bordercolor")) {
+                    cmd = color(cmd);
                 } else if (type.equals("text")) {
                     StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
                     try {
-                        String x=tok.nextToken();
-                        String y=tok.nextToken();
-                        String te=tok.nextToken();
-                        cmds.addElement("-draw \"text +"+x+"+"+y+" "+te+"\"");
-                    } catch (Exception e) {}
-                } else if (type.equals("raise")) {
-                    cmds.addElement("-raise "+cmd);
-                } else if (type.equals("shade")) {
-                    cmds.addElement("-shade "+cmd);
-                } else if (type.equals("modulate")) {
-                    cmds.addElement("-modulate "+cmd);
-                } else if (type.equals("colorspace")) {
-                    cmds.addElement("-colorspace "+cmd);
-                } else if (type.equals("shear")) {
-                    cmds.addElement("-shear "+cmd);
-                } else if (type.equals("swirl")) {
-                    cmds.addElement("-swirl "+cmd);
-                } else if (type.equals("wave")) {
-                    cmds.addElement("-wave "+cmd);
-                } else if (type.equals("t")) {
-                    cmds.addElement("-transparency #"+cmd.toLowerCase()+"");
+                        String x = tok.nextToken();
+                        String y = tok.nextToken();
+                        String te = org.mmbase.util.Encode.decode("escape_url_param", tok.nextToken());
+                        type = "draw";
+                        cmd = "text " + x + "," + y + " " + te;
+                    } catch (Exception e) {
+                        log.error(e.toString());
+                    }
+                } else if (type.equals("font")) {
+                    if (cmd.startsWith("mm:")) {
+                        // recognize MMBase config dir, so that it is easy to put the fonts there.
+                        cmd = org.mmbase.module.core.MMBaseContext.getConfigPath() +  File.separator + cmd.substring(3);
+                    }
+                } else if (type.equals("circle")) {
+                    type = "draw";
+                    cmd  = "circle " + org.mmbase.util.Encode.decode("escape_url_param", cmd);
+                } else if (type.equals("draw")) {
+                    cmd  = org.mmbase.util.Encode.decode("escape_url_param", cmd);
                 } else if (type.equals("part")) {
                     StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
                     try {
@@ -265,8 +276,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         int y1=Integer.parseInt(tok.nextToken());
                         int x2=Integer.parseInt(tok.nextToken());
                         int y2=Integer.parseInt(tok.nextToken());
-                        cmds.addElement("-crop "+(x2-x1)+"x"+(y2-y1)+"+"+x1+"+"+y1);
-                    } catch (Exception e) {}
+                        type="crop";                        
+                        cmd = (x2-x1)+"x"+(y2-y1)+"+"+x1+"+"+y1;
+                    } catch (Exception e) {
+                        log.error(e.toString());
+                    }
                 } else if (type.equals("roll")) {
                     StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
                     String str;
@@ -275,59 +289,51 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     if (x>=0) str="+"+x;
                     else str=""+x;
                     if (y>=0) str+="+"+y;
-                    else str+=""+y;
-                    cmds.addElement("-roll "+str);
-                } else if (type.equals("i")) {
-                    cmds.addElement("-interlace "+cmd);
-                } else if (type.equals("q")) {
-                    cmds.addElement("-quality "+cmd);
-                } else if (type.equals("filter")) {
-                    cmds.addElement("-filter "+cmd);
+                    else str+=""+y;                    
+                    cmd = str;
+                } else if (type.equals("f")) { // format was already dealt with
+                    continue; // ignore this one.
                 }
+
+                // all other things are recognized as well..
+                cmds.add("-" + type); 
+                cmds.add(cmd);
             } else {
-                if (key.equals("mono")) {
-                    cmds.addElement("-monochrome");
-                } else if (key.equals("contrast")) {
-                    cmds.addElement("-contrast");
-                } else if (key.equals("lowcontrast")) {
-                    cmds.addElement("+contrast");
-                } else if (key.equals("highcontrast")) {
-                    cmds.addElement("-contrast");
-                } else if (key.equals("noise")) {
-                    cmds.addElement("-noise");
-                } else if (key.equals("emboss")) {
-                    cmds.addElement("-emboss");
-                } else if (key.equals("flipx")) {
-                    cmds.addElement("-flop");
-                } else if (key.equals("flipx")) {
-                    cmds.addElement("-flop");
-                } else if (key.equals("flipy")) {
-                    cmds.addElement("-flip");
-                } else if (key.equals("dia")) {
-                    cmds.addElement("-negate");
-                } else if (key.equals("neg")) {
-                    cmds.addElement("+negate");
+                key = getAlias(key);
+                if (key.equals("lowcontrast")) {
+                    cmds.add("+contrast");
+                }  else if (key.equals("neg")) {
+                    cmds.add("+negate");
+                } else {
+                    cmds.add("-" + key);
                 }
             }
         }
-        for (Enumeration t=cmds.elements();t.hasMoreElements();) {
-            key=(String)t.nextElement();
-            cmdstr.append(key);
-            cmdstr.append(" ");
-        }
-        return cmdstr.toString();
+        return cmds; 
     }
 
     /**
      * Does the actual conversion.
      *
+     * @param pict Byte array with the original picture
+     * @param cmd  Vector with convert parameters.
+     * @param format The picture format to output to (jpg, gif etc.).
+     * @return      The result of the conversion (a picture).
+     *
      */
-    private byte[] convertImage(byte[] pict, String cmd, String format) {
-        String command = converterRoot + converterCommand + " - " + cmd + " " + format + ":-";
-        if (log.isDebugEnabled()) log.debug("command:" + command + " in " +   new File("").getAbsolutePath());
+    private byte[] convertImage(byte[] pict, Vector cmd, String format) {
+        cmd.add(0, "-");
+        cmd.add(0, converterRoot + converterCommand);
+        cmd.add(format + ":-");
+        
+        String command = cmd.toString(); // only for debugging.
+
+        if (log.isDebugEnabled()) {
+            log.debug("command:" + command + " in " +   new File("").getAbsolutePath());
+        }
         try {            
             log.debug("starting program");
-            Process p = Runtime.getRuntime().exec(command);
+            Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]));
             // in grabs the stuff coming from stdout from program...
             InputStream in = p.getInputStream();
             // err grabs the stuff coming from stderr from program...            
@@ -337,6 +343,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             log.debug("starting process writer");
             pw.start();
             log.debug("done with process writer");            
+            
             ByteArrayOutputStream imagestream=new ByteArrayOutputStream();
             int size=0;
             byte[] inputbuffer=new byte[2048];
@@ -347,30 +354,32 @@ public class ConvertImageMagick implements ImageConvertInterface {
             log.debug("retrieved all information");
             byte[] image=imagestream.toByteArray();            
             
-            // no bytes in the image thingie
+                // no bytes in the image thingie
             if(image.length < 1) {
-                log.debug("result was 0 bytes, gonna look for an message on stderr");
-                // we a image of 0 bytes is not a real image to me... i will leave the code here intact, but maybe nicer to return null....
-                // checkout what our error? was...
-                imagestream=new ByteArrayOutputStream();
-                size=0;
-                while((size=err.read(inputbuffer))>0) {
-                    log.debug("copying "+size+" bytes from ERROR-stream ");
-                    imagestream.write(inputbuffer,0,size);
-                }
-                byte[]  errorMessage = imagestream.toByteArray();
-                if(errorMessage.length > 0) {
-                    log.error("From stderr with command '" + command + 
-                              "' in '" + 
-                              new File("").getAbsolutePath() + 
-                              "'  --> '" + 
-                              new String(errorMessage) + "'");
-                } else {
-                    log.debug("No information on stderr found");
-                }
                 log.warn("Imagemagick conversion did not succeed. Returning byte array of " + image.length + " bytes.");
             }
+            // we a image of 0 bytes is not a real image to me... i will leave the code here intact, but maybe nicer to return null....
+            // checkout what our error? was...
+
+            // log what came on STDERR
+            ByteArrayOutputStream errorstream = new ByteArrayOutputStream();
+            size=0;
+            while((size=err.read(inputbuffer))>0) {
+                log.debug("copying "+size+" bytes from ERROR-stream ");
+                errorstream.write(inputbuffer,0,size);
+            }
+            byte[]  errorMessage = errorstream.toByteArray();
+            if(errorMessage.length > 0) {
+                log.error("From stderr with command '" + command + 
+                          "' in '" + 
+                          new File("").getAbsolutePath() + 
+                          "'  --> '" + 
+                          new String(errorMessage) + "'");
+            } else {
+                log.debug("No information on stderr found");
+            }
             
+                     
             // print some info and return....            
             log.service("converted image(#" + pict.length + " bytes) with options '" + cmd + "' to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");            
             return image;
