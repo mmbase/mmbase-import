@@ -39,13 +39,13 @@ public class ShareManager {
 
     private static String providername = "";
 
-    private static Hashtable users = new Hashtable();
+    private static HashMap users = new HashMap();
 
-    private static Hashtable groups = new Hashtable();
+    private static HashMap groups = new HashMap();
 
-    private static Hashtable clients = new Hashtable();
+    private static HashMap clients = new HashMap();
 
-    private static Hashtable providingpaths = new Hashtable();
+    private static HashMap providingpaths = new HashMap();
 
     /** DTD resource filename of the sharing DTD version 1.0 */
     public static final String DTD_SHARING_1_0 = "shared_1_0.dtd";
@@ -79,40 +79,40 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Enumeration getSharedPackages() {
+    public static Iterator getSharedPackages() {
         // first get the PackageManager
         if (PackageManager.isRunning()) {
-            Enumeration p = PackageManager.getPackages();
-            Vector reallyshared = new Vector();
-            while (p.hasMoreElements()) {
-                PackageContainer e = (PackageContainer)p.nextElement();
+            Iterator p = PackageManager.getPackages();
+            ArrayList reallyshared = new ArrayList();
+            while (p.hasNext()) {
+                PackageContainer e = (PackageContainer)p.next();
                 if (e.isShared()) {
-                    reallyshared.addElement(e);
+                    reallyshared.add(e);
                 }
             }
-            return reallyshared.elements();
+            return reallyshared.iterator();
         } else {
-            return (new Vector()).elements();
+            return (new ArrayList()).iterator();
         }
     }
 
 
     /**
      */
-    public static Enumeration getSharedBundles() {
+    public static Iterator getSharedBundles() {
         // first getthe BundleManager
         if (BundleManager.isRunning()) {
-            Enumeration b = BundleManager.getBundles();
-            Vector reallyshared = new Vector();
-            while (b.hasMoreElements()) {
-                BundleContainer e = (BundleContainer)b.nextElement();
+            Iterator b = BundleManager.getBundles();
+            ArrayList reallyshared = new ArrayList();
+            while (b.hasNext()) {
+                BundleContainer e = (BundleContainer)b.next();
                 if (e.isShared()) {
-                    reallyshared.addElement(e);
+                    reallyshared.add(e);
                 }
             }
-            return reallyshared.elements();
+            return reallyshared.iterator();
         } else {
-            return (new Vector()).elements();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -121,20 +121,20 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Enumeration getNotSharedPackages() {
+    public static Iterator getNotSharedPackages() {
         // first get the PackageManager
         if (PackageManager.isRunning()) {
-            Enumeration p = PackageManager.getPackages();
-            Vector reallynotshared = new Vector();
-            while (p.hasMoreElements()) {
-                PackageContainer e = (PackageContainer)p.nextElement();
+            Iterator p = PackageManager.getPackages();
+            ArrayList reallynotshared = new ArrayList();
+            while (p.hasNext()) {
+                PackageContainer e = (PackageContainer)p.next();
                 if (!e.isShared()) {
-                    reallynotshared.addElement(e);
+                    reallynotshared.add(e);
                 }
             }
-            return reallynotshared.elements();
+            return reallynotshared.iterator();
         } else {
-            return (new Vector()).elements();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -143,20 +143,20 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Enumeration getNotSharedBundles() {
+    public static Iterator getNotSharedBundles() {
         // first get the BundleManager
         if (BundleManager.isRunning()) {
-            Enumeration b = BundleManager.getBundles();
-            Vector reallynotshared = new Vector();
-            while (b.hasMoreElements()) {
-                BundleContainer e = (BundleContainer)b.nextElement();
+            Iterator b = BundleManager.getBundles();
+            ArrayList reallynotshared = new ArrayList();
+            while (b.hasNext()) {
+                BundleContainer e = (BundleContainer)b.next();
                 if (!e.isShared()) {
-                    reallynotshared.addElement(e);
+                    reallynotshared.add(e);
                 }
             }
-            return reallynotshared.elements();
+            return reallynotshared.iterator();
         } else {
-            return (new Vector()).elements();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -165,38 +165,38 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Enumeration getRemoteSharedPackages(String user,String password,String method,String host) {
+    public static Iterator getRemoteSharedPackages(String user,String password,String method,String host) {
         // first get the PackageManager
         if (PackageManager.isRunning()) {
-            Enumeration p = PackageManager.getPackages();
-            Vector reallyshared = new Vector();
-            while (p.hasMoreElements()) {
-                PackageContainer e = (PackageContainer)p.nextElement();
+            Iterator p = PackageManager.getPackages();
+            ArrayList reallyshared = new ArrayList();
+            while (p.hasNext()) {
+                PackageContainer e = (PackageContainer)p.next();
                 if (e.isShared()) {
                     ShareInfo shareinfo = e.getShareInfo();
                     if (shareinfo!=null && shareinfo.isActive()) {
                         if (shareinfo.sharedForUser(user,password,method,host)) {
-                            reallyshared.addElement(e);
+                            reallyshared.add(e);
                         }
                     }
                 }
             }
 
-            Enumeration b = BundleManager.getBundles();
-            while (b.hasMoreElements()) {
-                BundleContainer e = (BundleContainer)b.nextElement();
+            Iterator b = BundleManager.getBundles();
+            while (b.hasNext()) {
+                BundleContainer e = (BundleContainer)b.next();
                 if (e.isShared()) {
                     ShareInfo shareinfo = e.getShareInfo();
                     if (shareinfo != null && shareinfo.isActive()) {
                         if (shareinfo.sharedForUser(user,password,method,host)) {
-                            reallyshared.addElement(e);
+                            reallyshared.add(e);
                         }
                     }
                 }
             }
-            return reallyshared.elements();
+            return reallyshared.iterator();
         } else {
-            return (new Vector()).elements();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -569,12 +569,12 @@ public class ShareManager {
         return true;
     }
 
-    public static Enumeration getShareUsers() {
-        return users.elements();
+    public static Iterator getShareUsers() {
+        return users.values().iterator();
     }
 
-    public static Enumeration getShareGroups() {
-        return groups.elements();
+    public static Iterator getShareGroups() {
+        return groups.values().iterator();
     }
 
     public static ShareUser getShareUser(String name) {
@@ -652,9 +652,9 @@ public class ShareManager {
     }
 
     public static void signalRemoteClients() {
-        Enumeration e = clients.elements();
-        while (e.hasMoreElements()) {
-            ShareClientSession s = (ShareClientSession)e.nextElement();
+        Iterator e = clients.values().iterator();
+        while (e.hasNext()) {
+            ShareClientSession s = (ShareClientSession)e.next();
             s.sendRemoteSignal(getProviderName());
         }
     } 
@@ -663,7 +663,7 @@ public class ShareManager {
         return (String)providingpaths.get(method);
     }
 
-    public static Hashtable getProvidingPaths() {
+    public static HashMap getProvidingPaths() {
         return providingpaths;
     }
 

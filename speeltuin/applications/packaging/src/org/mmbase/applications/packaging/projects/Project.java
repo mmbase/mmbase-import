@@ -33,9 +33,9 @@ public class Project {
     String path;
     String name;
     String basedir;
-    Hashtable targets = new Hashtable();
-    Hashtable packagetargets = new Hashtable();
-    Hashtable bundletargets = new Hashtable();
+    HashMap targets = new HashMap();
+    HashMap packagetargets = new HashMap();
+    HashMap bundletargets = new HashMap();
 
     /**
      * DTD resource filename of the packaging DTD version 1.0
@@ -127,8 +127,8 @@ public class Project {
      *
      * @return    The targets value
      */
-    public Enumeration getTargets() {
-        return targets.elements();
+    public Iterator getTargets() {
+        return targets.values().iterator();
     }
 
 
@@ -255,8 +255,8 @@ public class Project {
      *
      * @return    The packageTargets value
      */
-    public Enumeration getPackageTargets() {
-        return packagetargets.elements();
+    public Iterator getPackageTargets() {
+        return packagetargets.values().iterator();
     }
 
 
@@ -265,8 +265,8 @@ public class Project {
      *
      * @return    The bundleTargets value
      */
-    public Enumeration getBundleTargets() {
-        return bundletargets.elements();
+    public Iterator getBundleTargets() {
+        return bundletargets.values().iterator();
     }
 
 
@@ -453,14 +453,14 @@ public class Project {
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body += "<!DOCTYPE packaging PUBLIC \"-//MMBase/DTD packaging config 1.0//EN\" \"http://www.mmbase.org/dtd/packaging_1_0.dtd\">\n";
         body += "<packaging basedir=\".\">\n";
-        Enumeration e = packagetargets.elements();
-        while (e.hasMoreElements()) {
-            Target t = (Target) e.nextElement();
+        Iterator e = packagetargets.values().iterator();
+        while (e.hasNext()) {
+            Target t = (Target) e.next();
             body += "\t<package name=\"" + t.getName() + "\" type=\"" + t.getType() + "\" file=\"" + t.getPath() + "\" />\n";
         }
-        e = bundletargets.elements();
-        while (e.hasMoreElements()) {
-            Target t = (Target) e.nextElement();
+        e = bundletargets.values().iterator();
+        while (e.hasNext()) {
+            Target t = (Target) e.next();
             body += "\t<bundle name=\"" + t.getName() + "\" type=\"" + t.getType() + "\" file=\"" + t.getPath() + "\" />\n";
         }
         body += "</packaging>\n";
@@ -493,16 +493,16 @@ public class Project {
     public boolean hasSyntaxErrors() {
         // performs several syntax checks to signal
         // the users in the gui tools on possible problems
-        Enumeration e = packagetargets.elements();
-        while (e.hasMoreElements()) {
-            Target t = (Target) e.nextElement();
+        Iterator e = packagetargets.values().iterator();
+        while (e.hasNext()) {
+            Target t = (Target) e.next();
             if (t.hasSyntaxErrors()) {
                 return true;
             }
         }
-        e = bundletargets.elements();
-        while (e.hasMoreElements()) {
-            Target t = (Target) e.nextElement();
+        e = bundletargets.values().iterator();
+        while (e.hasNext()) {
+            Target t = (Target) e.next();
             if (t.hasSyntaxErrors()) {
                 return true;
             }

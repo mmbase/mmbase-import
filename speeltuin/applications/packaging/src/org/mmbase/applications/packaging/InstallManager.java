@@ -161,7 +161,7 @@ public class InstallManager {
         return bnd;
     }
 
-    public static Enumeration getInstallSteps() {
+    public static Iterator getInstallSteps() {
         return pkg.getInstallSteps();
     }
   

@@ -63,7 +63,7 @@ public class BasicPackage implements PackageInterface {
     // only can provide log info but also possible fixed, feedback, stats
     // etc etc. Each step in itself can have steps again providing for things
     // like three style logging and feedback
-    private Vector installsteps;
+    private ArrayList installsteps;
 
     private long lastupdated;
 
@@ -394,11 +394,11 @@ public class BasicPackage implements PackageInterface {
             step = new installStep();
         }
         if (installsteps == null) {
-            installsteps = new Vector();
-            installsteps.addElement(step);
+            installsteps = new ArrayList();
+            installsteps.add(step);
             return step;
         } else {
-            installsteps.addElement(step);
+            installsteps.add(step);
             return step;
         }
     }
@@ -409,9 +409,9 @@ public class BasicPackage implements PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Enumeration getInstallSteps() {
+    public Iterator getInstallSteps() {
         if (installsteps != null) {
-            return installsteps.elements();
+            return installsteps.iterator();
         } else {
             return null;
         }
@@ -436,14 +436,14 @@ public class BasicPackage implements PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Enumeration getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         // well maybe its one of my subs ?
-        Enumeration e = getInstallSteps();
-        while (e.hasMoreElements()) {
-            installStep step = (installStep) e.nextElement();
+        Iterator e = getInstallSteps();
+        while (e.hasNext()) {
+            installStep step = (installStep) e.next();
             Object o = step.getInstallSteps(logid);
             if (o != null) {
-                return (Enumeration) o;
+                return (Iterator) o;
             }
         }
         return null;

@@ -285,7 +285,7 @@ public class Target {
      *
      * @return    The packageSteps value
      */
-    public Enumeration getPackageSteps() {
+    public Iterator getPackageSteps() {
         return creator.getPackageSteps();
     }
 
@@ -296,7 +296,7 @@ public class Target {
      * @param  logid  Description of the Parameter
      * @return        The packageSteps value
      */
-    public Enumeration getPackageSteps(int logid) {
+    public Iterator getPackageSteps(int logid) {
         return creator.getPackageSteps(logid);
     }
 

@@ -43,7 +43,7 @@ public class PackageContainer implements PackageInterface {
 
     private PackageInterface activePackage;
 
-    private Hashtable versions = new Hashtable();
+    private HashMap versions = new HashMap();
 
 
     /**
@@ -365,8 +365,8 @@ public class PackageContainer implements PackageInterface {
      *
      * @return    The versions value
      */
-    public Enumeration getVersions() {
-        return versions.elements();
+    public Iterator getVersions() {
+        return versions.values().iterator();
     }
 
 
@@ -375,16 +375,16 @@ public class PackageContainer implements PackageInterface {
      *
      * @return    The versionNumbers value
      */
-    public Enumeration getVersionNumbers() {
-        Vector list = new Vector();
+    public Iterator getVersionNumbers() {
+        ArrayList list = new ArrayList();
         // loop all versions and filter the uniq numbers
-        Enumeration e = getVersions();
-        while (e.hasMoreElements()) {
-            PackageVersionContainer pvc = (PackageVersionContainer) e.nextElement();
+        Iterator e = getVersions();
+        while (e.hasNext()) {
+            PackageVersionContainer pvc = (PackageVersionContainer) e.next();
             String ver = pvc.getVersion();
             list.add(ver);
         }
-        return list.elements();
+        return list.iterator();
     }
 
 
@@ -430,7 +430,7 @@ public class PackageContainer implements PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Enumeration getInstallSteps() {
+    public Iterator getInstallSteps() {
         return activePackage.getInstallSteps();
     }
 
@@ -441,7 +441,7 @@ public class PackageContainer implements PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Enumeration getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         return activePackage.getInstallSteps(logid);
     }
 

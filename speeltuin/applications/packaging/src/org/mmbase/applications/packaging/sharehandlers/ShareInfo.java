@@ -28,16 +28,16 @@ public class ShareInfo {
     // this works the same way as windows shares.
     private boolean active;
 
-    private Hashtable users = new Hashtable();
+    private HashMap users = new HashMap();
 
-    private Hashtable groups = new Hashtable();
+    private HashMap groups = new HashMap();
 
     // logger
     private static Logger log = Logging.getLoggerInstance(ShareInfo.class);
 
 
     /**
-     *Constructor for the ShareInfo object
+     * Constructor for the ShareInfo object
      */
     public ShareInfo() { }
 
@@ -152,8 +152,8 @@ public class ShareInfo {
      *
      * @return    The shareUsers value
      */
-    public Enumeration getShareUsers() {
-        return users.elements();
+    public Iterator getShareUsers() {
+        return users.values().iterator();
     }
 
 
@@ -180,8 +180,8 @@ public class ShareInfo {
      *
      * @return    The shareGroups value
      */
-    public Enumeration getShareGroups() {
-        return groups.elements();
+    public Iterator getShareGroups() {
+        return groups.values().iterator();
     }
 }
 
