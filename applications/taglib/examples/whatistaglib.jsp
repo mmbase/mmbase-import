@@ -1,14 +1,12 @@
 <html>
   <head>
     <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-    <%@ taglib uri="oscache" prefix="cache" %>
     <%@ page contentType="text/html;charset=UTF-8" %>
     <title>What is MMBase taglib</title>
   </head>
   <body>
    <mm:timer>
    <mm:log>Hello</mm:log>
-   <cache:cache time="20">
     <mm:formatter>
       <mm:xslt>
         <!-- based on normal xslt, but a little changed -->
@@ -55,8 +53,6 @@
       </section>
       </mmxf>
     </mm:formatter>
-     </eo:pagxo>
-   </cache:cache>
     </mm:timer>
     <hr />
     <a href="<mm:url page="showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
