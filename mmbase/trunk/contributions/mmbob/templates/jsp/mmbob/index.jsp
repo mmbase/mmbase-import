@@ -67,7 +67,7 @@
           </mm:notpresent>
           <mm:write referid="mlg_account" /> : <input size="12" name="account">
           <mm:write referid="mlg_password" /> : <input size="12" type="password" name="password">
-          <input type="submit" value="inloggen" />
+          <input type="submit" value="<mm:write referid="mlg_login"/>" />
         </form>
         <p />
       </mm:compare>
