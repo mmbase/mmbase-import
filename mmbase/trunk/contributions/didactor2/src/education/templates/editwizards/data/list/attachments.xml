@@ -3,7 +3,7 @@
     <title>Bijbehorende Bestanden</title>
 
     <item>
-		<field name="title" ftype="data">
+        <field name="title" ftype="data">
             <prompt>Titel</prompt>
         </field>
         <field ftype="data" name="description">

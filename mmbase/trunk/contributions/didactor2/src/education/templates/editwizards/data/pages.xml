@@ -13,7 +13,8 @@
         <relation destination="images" role="sizerel" />
         <relation destination="audiotapes" role="related" />
         <relation destination="videotapes" role="related" />
-        <relation destination="urls" role="related" />
+        <relation destination="attachments" role="related" />
+       <relation destination="urls" role="related" />
         <relation destination="metadata" role="related">
           <object type="metadata">
            <relation destination="metalangstring" role="posrel">
@@ -85,7 +86,8 @@
         </field>
         
         <list role="sizerel" extends="list/sizedimages.xml" />
-        <list role="related" extends="list/audiotapes.xml" />
+     <list role="related" extends="list/attachments.xml" />
+       <list role="related" extends="list/audiotapes.xml" />
         <list role="related" extends="list/videotapes.xml" />
         <list destination="urls" role="related" extends="list/urls.xml" />
         <list role="related" extends="list/online.xml" />
