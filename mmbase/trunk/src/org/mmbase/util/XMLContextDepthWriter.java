@@ -75,7 +75,7 @@ public class XMLContextDepthWriter  {
 
 				// start the node
 				String tm=mmb.OAlias.getAlias(number);
-				if (tm!=null) {
+				if (tm==null) {
 					body+="\t<node number=\""+number+"\" owner=\""+owner+"\">\n";
 				} else {
 					body+="\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n";
