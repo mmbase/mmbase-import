@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.28.2.2 2003-05-13 16:06:50 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.28.2.3 2003-06-11 12:40:59 vpro Exp $
  */
 public class AudioParts extends MediaParts {
     //logging
@@ -97,7 +97,7 @@ public class AudioParts extends MediaParts {
             log.debug("objectnumber : "+objectnumber);
             log.debug("node.getnumber() : "+node.getNumber());
 
-	    if(!objectnumber.equals(""+node.getNumber())) {
+	    if(!objectnumber.equals("-1") && !objectnumber.equals(""+node.getNumber())) {
 		    log.debug("don't change start / stop times.");
 		    return;
 	    } else {
