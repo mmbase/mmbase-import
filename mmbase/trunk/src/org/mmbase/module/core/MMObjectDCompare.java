@@ -14,6 +14,7 @@ import org.mmbase.util.*;
 /**
  * MMObjectNodeCompare can me used as a compare function in Sortable
  * objects from org.mmbase.util (hitlisted)
+ * @deprecated This nearly duplicates MMObjectCompare. If the inverse of a comparable is needed, this can be implemented more genericly. Btw, this is not used.
  *
  */
 public class MMObjectDCompare implements CompareInterface {
