@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.NotFoundException;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.46 2004-03-22 13:41:53 rob Exp $
+ * @version $Id: IncludeTag.java,v 1.47 2004-03-23 19:15:42 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -186,21 +187,15 @@ public class IncludeTag extends UrlTag {
             ServletContext sc = pageContext.getServletContext();
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
             RequestDispatcher requestDispatcher = sc.getRequestDispatcher(relativeUrl);
-            if (requestDispatcher == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
+            if (requestDispatcher == null) {
+                throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
+            }
 
-
-            String page;
             GenericResponseWrapper responseWrapper = new GenericResponseWrapper(resp);
 
-
             requestDispatcher.include(requestWrapper, responseWrapper);                
-            // bodyContent.write(response.toString());
-            page = responseWrapper.toString();
-
-
+            String page = responseWrapper.toString();
             helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
-            //log.info("page : " + page);
-            // helper.setValue(page);
 
 
         } catch (Exception e) {
