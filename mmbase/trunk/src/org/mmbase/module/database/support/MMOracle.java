@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.8 $ $Date: 2002-05-08 13:44:55 $
+* @$Revision: 1.9 $ $Date: 2002-05-27 10:50:10 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -82,6 +82,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
         int type=node.getDBType(prefix+fieldname);
         switch (type) {
+            case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING:
                 String tmp=rs.getString(i);
                 if (tmp==null) {
@@ -176,7 +177,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             value=value.substring(pos+1,value.length()-1);
             like=true;
         }
-        if (dbtype==FieldDefs.TYPE_STRING) {
+        if (dbtype==FieldDefs.TYPE_STRING || dbtype==FieldDefs.TYPE_XML) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -579,6 +580,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
                             stmt.setDouble(i,node.getDoubleValue(key));
                         } else if (type==FieldDefs.TYPE_LONG) {
                             stmt.setLong(i,node.getLongValue(key));
+                        } else if (type==FieldDefs.TYPE_XML) {
+                            setDBText(i,stmt,node.getStringValue(key));
                         } else if (type==FieldDefs.TYPE_STRING) {
                             setDBText(i,stmt,node.getStringValue(key));
                         } else if (type==FieldDefs.TYPE_BYTE) {
@@ -812,7 +815,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.setDouble(i, node.getDoubleValue(key));
         } else if (type==FieldDefs.TYPE_LONG) {
             stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING) {
+        } else if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_STRING) {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
                 setDBText(i, stmt,tmp);
