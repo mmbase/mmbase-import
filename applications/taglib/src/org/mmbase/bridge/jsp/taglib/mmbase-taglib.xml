@@ -277,6 +277,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>nodeprovider</name>
+    <type>mmbase.basic</type>
     <info>
       A node provider makes an MMBase Node available to its body.
     </info>
@@ -327,6 +328,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>cloudprovider</name>
+    <type>mmbase.basic</type>
     <info>
       Cloudprovider tags provide a cloud to their body. Als a
       `transaction' is a kind of cloud.

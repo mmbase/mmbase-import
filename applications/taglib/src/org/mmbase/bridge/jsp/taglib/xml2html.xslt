@@ -129,7 +129,7 @@
           <td></td>
           <td>
             <a name="toc"/>			
-            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="toc" >
+            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="toc" >                
                 <xsl:sort select="name" />
             </xsl:apply-templates><br />
           </td>
@@ -155,8 +155,14 @@
         <tr>
           <td></td>
           <td>
-            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
-            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
+            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="full">
+                <xsl:with-param name="type" select="$type" />
+                <xsl:sort select="name" />
+            </xsl:apply-templates>
+            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="full">
+                <xsl:with-param name="type" select="$type" />
+                <xsl:sort select="name" />
+            </xsl:apply-templates>
           </td>
           <td></td>
         </tr>
@@ -202,10 +208,12 @@
 -->
 <xsl:template name="tagref">
   <xsl:param name="file" select="false()" />
+  <xsl:param name="type" select="'all'" />
   <xsl:param name="tag" />
+  <xsl:variable name="usefile" select="$file or (not($type='all') and not(/taglib/*[name = $tag]/type and contains(/taglib/*[name = $tag]/type, $type)))" />
   <xsl:param name="attribute" />   
-  <xsl:if test="$file"><xsl:value-of select="$tag" />.jsp</xsl:if>
-  <xsl:if test="$attribute or not($file)">#<xsl:value-of select="$tag" /></xsl:if>
+  <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
+  <xsl:if test="$attribute or not($usefile)">#<xsl:value-of select="$tag" /></xsl:if>
   <xsl:if test="$attribute">.<xsl:value-of select="$attribute" /></xsl:if>
 </xsl:template>
 
@@ -282,6 +290,7 @@
 <!-- A description for one tag -->
 <xsl:template match="tag|taginterface" mode="full">
   <xsl:param name="file" select="false()" /><!-- if true, reference to files -->
+  <xsl:param name="type" select="'all'" /><!-- if refering to tag of other type, must also reference to file -->
   <table bgcolor="#eeeeee" width="100%" cellpadding="5">
     <tr>
       <td colspan="2" bgcolor="white" align="right">
@@ -308,6 +317,7 @@
         <td>
           <xsl:apply-templates select="see" >
             <xsl:with-param name="file" select="$file" />
+            <xsl:with-param name="type" select="$type" />
           </xsl:apply-templates>
         </td>
       </tr>
@@ -316,9 +326,11 @@
       <tr>
         <td width="100" valign="top">attributes</td>
         <td>
-          <ul><xsl:apply-templates select="attribute" mode="full">
-          <xsl:with-param name="file" select="$file" />
-        </xsl:apply-templates>
+          <ul>
+            <xsl:apply-templates select="attribute" mode="full">
+              <xsl:with-param name="file" select="$file" />
+              <xsl:with-param name="type" select="$type" />
+           </xsl:apply-templates>
         </ul>
         </td>
       </tr>
@@ -326,6 +338,7 @@
     
     <xsl:apply-templates select="extends">
       <xsl:with-param name="file" select="$file" />
+      <xsl:with-param name="type" select="$type" />
     </xsl:apply-templates>
       <xsl:if test="xxbodycontent"><!-- ignore the bodycontent, its no use -->
       <tr>
@@ -341,9 +354,10 @@
     <tr>
     <td>tags of this type</td><td>
            <xsl:apply-templates
-              select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" 
+              select="/taglib/*[(name()='tag' or name()='taginterface') and contains(type, $type)]/extends[.=current()/name]/parent::*" 
               mode="tocext" >
              <xsl:with-param name="file" select="$file" />
+             <xsl:with-param name="type" select="$type" />
              <xsl:with-param name="testlast" select="true()" />
               <xsl:sort select="name" />
             </xsl:apply-templates>
@@ -367,11 +381,13 @@
 
 <xsl:template match="extends">
   <xsl:param name="file" select="false()" />
+  <xsl:param name="type" select="'all'" />
   <tr>
       <td width="100" valign="top"><xsl:if test="/taglib/taginterface/name[.=current()]"><a>
       <xsl:attribute name="href">
         <xsl:call-template name="tagref">
            <xsl:with-param name="file" select="$file" />
+           <xsl:with-param name="type" select="$type" />
            <xsl:with-param name="tag"  select="current()" />
         </xsl:call-template>
       </xsl:attribute>
@@ -381,6 +397,7 @@
       <ul>   	   
        <xsl:apply-templates select="/taglib/*[starts-with(name(), 'tag')]/name[.=current()]/parent::*/attribute"  mode="extends">
          <xsl:with-param name="file" select="$file" />
+         <xsl:with-param name="type" select="$type" />
        </xsl:apply-templates>
       </ul>
       </xsl:if>
@@ -388,15 +405,18 @@
    </tr>
    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/extends" >
       <xsl:with-param name="file" select="$file" />
+      <xsl:with-param name="type" select="$type" />
    </xsl:apply-templates>
 </xsl:template>
 
 <xsl:template match="attribute" mode="extends">
   <xsl:param name="file" select="false()" />
+  <xsl:param name="type" select="'all'" />
   <li><a>
   <xsl:attribute name="href">
     <xsl:call-template name="tagref">
       <xsl:with-param name="file" select="$file" />
+      <xsl:with-param name="type" select="$type" />
       <xsl:with-param name="tag"  select="parent::*/name" />
       <xsl:with-param name="attribute"  select="name" />
     </xsl:call-template>          
