@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.31 2003-06-06 10:03:08 pierre Exp $
+ * @version $Id: ImportTag.java,v 1.32 2003-06-17 18:07:38 michiel Exp $
  */
 
 public class ImportTag extends WriteTag {
@@ -43,7 +43,7 @@ public class ImportTag extends WriteTag {
         log.debug("releasing" );
         super.release();
         externid = Attribute.NULL;
-        id = null;
+        id = Attribute.NULL;
     }
 
     /**
@@ -94,7 +94,7 @@ public class ImportTag extends WriteTag {
             log.trace("No id was given, using externid ");
             useId = (String) externid.getValue(this);
         } else {
-            useId = id;
+            useId = getId();
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
         if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?

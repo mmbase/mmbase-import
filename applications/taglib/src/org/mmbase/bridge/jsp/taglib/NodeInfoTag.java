@@ -23,16 +23,17 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.23 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: NodeInfoTag.java,v 1.24 2003-06-17 18:07:38 michiel Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
-    private static final int TYPE_NODEMANAGER    = 0;
-    private static final int TYPE_GUINODEMANAGER = 1;
-    private static final int TYPE_NODENUMBER     = 2;
-    private static final int TYPE_GUI            = 3;
-    private static final int TYPE_DESCRIPTION = 4;
+    private static final int TYPE_NODEMANAGER           = 0;
+    private static final int TYPE_GUINODEMANAGER        = 1;
+    private static final int TYPE_GUINODEMANAGER_PLURAL = 2;
+    private static final int TYPE_NODENUMBER            = 3;
+    private static final int TYPE_GUI                   = 4;
+    private static final int TYPE_DESCRIPTION           = 5;
 
 
     private Attribute type = Attribute.NULL;
@@ -49,6 +50,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             return TYPE_NODEMANAGER;
         } else if ("guinodemanager".equals(t) || "guitype".equals(t)) {
             return TYPE_GUINODEMANAGER;
+        } else if ("plural_guinodemanager".equals(t) || "plural_guitype".equals(t)) {
+            return TYPE_GUINODEMANAGER_PLURAL;
         } else if ("description".equals(t)) {
             return  TYPE_DESCRIPTION;
         } else if ("number".equals(t)) {
@@ -73,6 +76,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         case TYPE_NODEMANAGER:
         case TYPE_DESCRIPTION:
         case TYPE_GUINODEMANAGER:
+        case TYPE_GUINODEMANAGER_PLURAL:
             if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
                 nodeManager = getNode().getNodeManager();
             } else {
@@ -94,6 +98,9 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             break;
         case TYPE_GUINODEMANAGER:
             show = nodeManager.getGUIName();
+            break;
+        case TYPE_GUINODEMANAGER_PLURAL:
+            show = nodeManager.getGUIName(10);
             break;
         case TYPE_GUI: {
             helper.useEscaper(false); // gui produces html
