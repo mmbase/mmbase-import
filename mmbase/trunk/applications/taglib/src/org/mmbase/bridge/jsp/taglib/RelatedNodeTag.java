@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import java.io.IOException;
 
@@ -27,22 +28,21 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(RelatedNodeTag.class.getName());
 
-    private String listRelationsId = null;
+    private Attribute listRelationsId = Attribute.NULL;
 
     public void release() {
         super.release();
-        listRelationsId = null;
     }
 
-    public void setListrelations(String l) {
-        listRelationsId = l;
+    public void setListrelations(String l) throws JspTagException {
+        listRelationsId = getAttribute(l);
     }
 
     public int doStartTag() throws JspTagException{
         Node node = null;
 
         // get the parent ListRelationsTag
-        ListRelationsTag lr = (ListRelationsTag) findParentTag("org.mmbase.bridge.jsp.taglib.ListRelationsTag", listRelationsId);
+        ListRelationsTag lr = (ListRelationsTag) findParentTag(ListRelationsTag.class.getName(), (String) listRelationsId.getValue(this));
         Node otherNode    = lr.getRelatedfromNode();
         Node relationNode = lr.getNodeVar();
 
@@ -56,7 +56,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         node = getCloud().getNode(number);
         setNodeVar(node);
         // if direct parent is a Formatter Tag, then communicate
-        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
         }
