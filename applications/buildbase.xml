@@ -115,7 +115,7 @@ Build-compiler: ${build.compiler}
     <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
-	     includes="src/**"
+	     includes="**"
 	     manifest="${project.build.dir}/manifest.mf" >
     </jar>
 
@@ -172,7 +172,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <echo message="copying to ${project.build.dir}" />
 
     <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
-      <fileset dir="${project.source.dir}">
+      <fileset dir="${project.source.dir}/src">
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
