@@ -147,7 +147,7 @@ public class XMLBuilderWriter  {
 		body+="\t\t\t<!-- name of the field in the database -->\n";
 		body+="\t\t\t<name>number</name>\n";
 		body+="\t\t\t<!-- MMBase datatype and demands on it -->\n";
-		body+="\t\t\t<type state=\"persistent\" notnull=\"true\">INTEGER</type>\n";
+		body+="\t\t\t<type state=\"persistent\" notnull=\"true\" key=\"true\">INTEGER</type>\n";
 		body+="\t\t</db>\n";
 		body+="\t</field>\n\n";
 	
@@ -207,9 +207,9 @@ public class XMLBuilderWriter  {
 			int size=def.getDBSize();
 
 			if (size==-1) {
-				body+="\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\">"+tmpt+"</type>\n";
+				body+="\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n";
 			} else {
-				body+="\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\">"+tmpt+"</type>\n";
+				body+="\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n";
 			}
 
 			body+="\t\t</db>\n";
