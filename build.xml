@@ -60,7 +60,7 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <!-- Init                                                                -->
   <!-- =================================================================== -->
-  <!-- Read customized values if available -->http://www.mmbase.org/download/builds/2003-02-28/mmbase-2003-02-28.zip
+  <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
 
