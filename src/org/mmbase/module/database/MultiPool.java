@@ -50,6 +50,7 @@ public class MultiPool
 		this.name=name;
 		this.password=password;
 		this.maxQuerys=maxQuerys;
+		this.databasesupport=databasesupport;
 
 		// put connections on the pool
 		for (int i=0;i<conMax;i++) {

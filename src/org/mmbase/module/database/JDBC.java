@@ -8,9 +8,12 @@ MMBase partners.
 
 */
 /*
-	$Id: JDBC.java,v 1.4 2000-02-25 14:06:37 wwwtech Exp $
+	$Id: JDBC.java,v 1.5 2000-03-01 16:28:46 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/02/25 14:06:37  wwwtech
+	Rico: added database specific connection init support
+	
 */
 package org.mmbase.module.database;
 
@@ -28,7 +31,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.4 2000-02-25 14:06:37 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.5 2000-03-01 16:28:46 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -128,9 +131,9 @@ private String defaultpassword;
 			cl=Class.forName(databasesupportclass);
 			databasesupport=(DatabaseSupport)cl.newInstance();
 			databasesupport.init();
-			debug("getDriver(): Loaded load class : "+databasesupportclass);
+			debug("loadsupport(): Loaded load class : "+databasesupportclass);
 		} catch (Exception e) {
-			debug("getDriver(): Can't load class : "+databasesupportclass+" : "+e);
+			debug("loadsupport(): Can't load class : "+databasesupportclass+" : "+e);
 		}
 	}
 
