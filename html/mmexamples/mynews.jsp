@@ -34,7 +34,7 @@
       </mm:listnodes>
       <mm:notpresent referid="mynewsIsPresent">
         The MyNews application is NOT installed. Please install before using it.<br />
-        You can install the MyNews application by going to ADMIN -> APPLICATIONS
+        You can install the MyNews application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">ADMIN -> APPLICATIONS</a>
       </mm:notpresent>
       <mm:present referid="mynewsIsPresent">
         <mm:url id="url" page="mynews/" write="false" />
