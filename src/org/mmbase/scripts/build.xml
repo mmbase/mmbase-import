@@ -137,7 +137,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <!-- Create the source distribution                                     -->
   <!-- =================================================================== -->
-  <target name="srcdist" description="Create the source distribution"
+ <target name="srcdist" description="Create the source distribution"
           depends="init">
     <!-- copy the java-sources -->
     <mkdir dir="${build.dir}/mmbase-src/src"/>
@@ -250,6 +250,14 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
   </target>
 
+  
+  <!-- =================================================================== -->
+  <!-- Clean the lib directory                                             -->
+  <!-- =================================================================== -->
+
+  <target name="clean.lib" description="Clean the lib directory">
+     <delete dir="${build.dir}/mmbase/lib" />
+  </target>
 
   <!-- =================================================================== -->
   <!-- Check the directory structure                                       -->
@@ -315,7 +323,6 @@ Change directory to ${build.dir}/orion and run:
     <fail message="Invalid directory structure"/>
   </target>
 
-
   <!-- =================================================================== -->
   <!-- Prepare for compilation                                             -->
   <!-- =================================================================== -->
@@ -370,7 +377,8 @@ Change directory to ${build.dir}/orion and run:
     <available property="jai.in.classpath"
                classname="javax.media.jai.JAI"/>
     <available property="log4j.in.classpath"
-               classname="org.apache.log4j.Category"/>
+               classname="org.apache.log4j.ConsoleAppender"/>
+    <!-- ConsoleAppender ensures that you have a version > 1.04 -->
     <available property="junit.in.classpath"
                classname="junit.runner.BaseTestRunner"/>
     <available property="tomcat.in.classpath" 
@@ -512,7 +520,8 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
   <!-- =================================================================== -->
-  <target name="clean.compile" description="Clean the compiled classes">
+  <target name="clean.compile" description="Clean the compiled classes"
+          depends="clean.lib" >
     <delete dir="${build.dir}/classes"/>
   </target>
 
@@ -968,9 +977,9 @@ Change directory to ${build.dir}/orion and run:
     <available property="jai.expanded"
                file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
-    <property name="log4j.version" value="jakarta-log4j-1.0.4"/>
-    <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.version}.tgz"/>
-    <property name="log4j.jar" value="${expand.dir}/${log4j.version}/log4j.jar"/>
+    <property name="log4j.version" value="jakarta-log4j-1.1.1"/>
+    <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.version}.tar.gz"/>
+    <property name="log4j.jar" value="${expand.dir}/${log4j.version}/dist/lib/log4j.jar"/>
     <available property="log4j.present"
                file="${download.dir}/${log4j.version}.tgz"/>
     <available property="log4j.expanded"
