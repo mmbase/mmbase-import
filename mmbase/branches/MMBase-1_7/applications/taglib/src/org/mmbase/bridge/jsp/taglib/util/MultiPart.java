@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.4.2.1 2004-08-31 16:23:23 rob Exp $
+ * @version $Id: MultiPart.java,v 1.4.2.2 2004-12-16 18:37:24 michiel Exp $
  **/
 
 public class MultiPart {
@@ -37,7 +37,7 @@ public class MultiPart {
     }
 
     public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
-        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY);
+        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY, PageContext.REQUEST_SCOPE);
         if (multipartRequest == null) {
             log.debug("Creating new MultipartRequest");
             multipartRequest = new MMultipartRequest((HttpServletRequest)pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
@@ -55,7 +55,7 @@ public class MultiPart {
                     log.debug("not a multipart request");
                 }
             }
-            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest);
+            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest, PageContext.REQUEST_SCOPE);
         }
         return multipartRequest;
     }
