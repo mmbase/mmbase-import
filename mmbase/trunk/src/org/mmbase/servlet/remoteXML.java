@@ -7,28 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Log: not supported by cvs2svn $
-Revision 1.15  2001/04/03 15:45:48  install
-Rob changed to new SecurityManager
-
-Revision 1.14  2001/04/03 15:09:54  install
-Rob
-
-Revision 1.13  2001/03/30 09:50:40  install
-Rob
-
-Revision 1.12  2001/03/22 17:30:49  vpro
-Davzev: First off added some better docs for this servlet.
-Second, when a new RemoteBuilder node is send through either a GET or POST,
-an insert will be done using one method instead of copy/pasted code.
-When unknown node requests (GET/POST) come in  that arent of type ServiceBuilder,
-they will be ignored and request will be cancelled.
-All other node requests that can be find in mmbase will be handled correctly.
-Finally, I removed some weird vpro specific code.
-
-$Id: remoteXML.java,v 1.16 2001-04-03 16:22:36 eduard Exp $
-*/
 package org.mmbase.servlet;
  
 import java.io.*;
@@ -53,12 +31,12 @@ import org.mmbase.security.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.16 $ $Date: 2001-04-03 16:22:36 $
+ * @version $Revision: 1.17 $ $Date: 2001-04-04 11:51:16 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
 	MMBase mmbase;
-	private org.mmbase.security.MMBaseCop mmbaseCop = null;
+	private MMBaseCop mmbaseCop = null;
 
 	/**
 	 * Initializing mmbase root variable.
@@ -83,7 +61,7 @@ public class remoteXML extends JamesServlet {
 
 			// Check if the remote machine knows the same shared secret. 
 			if(mmbaseCop.checkSharedSecret(sharedsecret)) {
-				debug("warning - sharedsecret is correct, system is authenticated"); 
+				debug("info - sharedsecret is correct, system is authenticated"); 
 			} else {
 				debug("warning - sharedsecret is NOT correct, system is NOT authenticated"); 
 			}
