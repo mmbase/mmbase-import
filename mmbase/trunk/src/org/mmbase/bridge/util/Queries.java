@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.10 2003-12-01 12:27:27 keesj Exp $
+ * @version $Id: Queries.java,v 1.11 2003-12-01 12:51:29 vpro Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -225,8 +225,9 @@ public class Queries {
             //  wil probably not work
             // @todo check
             return constraints.substring(5);
-        } else if (constraints.startsWith("WHERE")) {
-            constraints = constraints.substring(5);
+        } else if (!constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
+            // Must start with "WHERE " 
+            constraints = "WHERE " + constraints;
         }
 
         //keesj: what does this code do?
@@ -264,6 +265,11 @@ public class Queries {
         constraints = convertClauseToDBS(constraints);
         if (!validConstraints(constraints)) {
             throw new BridgeException("invalid constraints:" + constraints);
+        }
+        // Before converting to legacy constraint, 
+        // the leading "WHERE" must be skipped when present.
+        if (constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
+            constraints = constraints.substring(5).trim();
         }
         Constraint newConstraint = query.createConstraint(constraints);
         Constraint constraint = query.getConstraint();
