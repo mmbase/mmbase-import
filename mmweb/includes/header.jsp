@@ -23,7 +23,7 @@
 			I made this hack to be able to add javascript as well. Must be changed
 			Ernst Bunders
 			
-     --%><script type="text/javascript" language="javascript" src="<mm:url page="/scripts/launchcenter.js" />"><!-- help IE --></script> 
+     --%><script type="text/javascript" language="javascript" src="<mm:url page="/scripts/mmbase.js" />"><!-- help IE --></script> 
      <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/navi.js" />"><!-- help IE --></script>
 <%
 		if(pageContext.findAttribute("jScripts")!=null){
