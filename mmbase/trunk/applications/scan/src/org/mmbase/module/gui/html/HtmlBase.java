@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.33 2000-11-07 12:37:56 vpro Exp $
+	$Id: HtmlBase.java,v 1.34 2000-11-08 16:48:12 pierre Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.33  2000/11/07 12:37:56  vpro
+	Rico: fixed reload bug
+	
 	Revision 1.32  2000/11/07 10:48:19  vpro
 	Rico: added seperate cachedebug switch
 	
@@ -128,7 +131,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.33 2000-11-07 12:37:56 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.34 2000-11-08 16:48:12 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -728,7 +731,7 @@ public class HtmlBase extends ProcessorModule {
 				String fieldname=tok.nextToken();
 				String result=null;
 				MMObjectBuilder bul=mmb.getMMObject("typedef");
-				MMObjectNode node=bul.getNode(nodeNr);
+				MMObjectNode node=bul.getAliasedNode(nodeNr);
 				sessionInfo pagesession=getPageSession(sp);
 				if (pagesession!=null) {
 					pagesession.addSetValue("PAGECACHENODES",""+nodeNr);
@@ -826,7 +829,7 @@ public class HtmlBase extends ProcessorModule {
 			// oops we have a problem
         } catch(IOException e) {}
         if (len!=-1) {
-            rtn=new String(buffer,0);
+            rtn=new String(buffer);
         }
         return(rtn);
 	}
@@ -1118,24 +1121,24 @@ public class HtmlBase extends ProcessorModule {
 			// episodes.html_body
 			// html(episodes.body)
 			prefix="";
-			posdot=fieldname.indexOf('.');
 			posarc=fieldname.indexOf('(');
-			posunder=fieldname.indexOf('_');
 			if (posarc!=-1) {
 				pos=fieldname.indexOf(')');
 				results.addElement(fieldname.substring(posarc+1,pos));
 			} else {
+				posdot=fieldname.indexOf('.');
 				if (posdot!=-1) {
 					prefix=fieldname.substring(0,posdot+1);	
+					fieldname=fieldname.substring(posdot+1);
 				}
+				posunder=fieldname.indexOf('_');
 				if (posunder!=-1) {
 					results.addElement(prefix+fieldname.substring(posunder+1));
 				} else {
-					results.addElement(fieldname);
+					results.addElement(prefix+fieldname);
 				}
 			}
 		}
-//		debug("FIELDS="+results);
 		return(results);
 	}
 
