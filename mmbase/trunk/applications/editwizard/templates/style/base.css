@@ -4,14 +4,13 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: base.css,v 1.4 2002-07-18 13:50:57 michiel Exp $
+  @version  $Id: base.css,v 1.5 2002-07-18 14:11:41 michiel Exp $
   
 */
 
 
 /* General appearance */
 
-/* don't really like this... */
 body,
 td,
 p,
@@ -26,10 +25,12 @@ textarea {
      letter-spacing:0.05em; 
      font-weight:400; 
      color:#000000; 
-	 background-color: white;
      margin: 0;
 }
 
+body {
+ background-color: white;
+}
 
 
 /* what's this? */
