@@ -5,20 +5,21 @@
 <html>
  <head>
  <title>Magazine Overview (MyNews examples)</title>
+ <link rel="stylesheet" type="text/css" href="style.css" />
  </head>
- <body background="../images/back.gif" text="#42BDAD" bgcolor="#00425B" link="#42BDAD" alink="#42BDAD" vlink="#42BDAD">
+ <body>
   <center>
-   <h1>Magazine Overview</h1>
-  <table width="90%" cellspacing=1 cellpadding=3 border=0>
+  <table width="90%">
+  <tr><th><h1>Magazine Overview</h1></th></tr>
   <mm:listnodes type="mags">
   <tr>
-  <td width="30"><a href="<mm:url page="index.jsp"><mm:param name="magid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="title" /></a></td>
+  <td><a href="<mm:url page="index.jsp"><mm:param name="magid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="title" /></a></td>
   </tr>
   </mm:listnodes>
   </table>
   </center>
-<hr />
-<a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+  <hr />
+    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
 </mm:cloud>
