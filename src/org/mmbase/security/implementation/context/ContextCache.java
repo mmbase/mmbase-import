@@ -11,6 +11,8 @@ package org.mmbase.security.implementation.context;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.mmbase.security.Operation;
 import org.mmbase.security.SecurityException;
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
     
-    private HashMap globalRightCache = new HashMap();    
+    private Map globalRightCache = new HashMap();    
     private long    rightTries = 0;
     private long    rightSucces = 0;
     private long    rightSize = 0;    
@@ -72,12 +74,12 @@ public class ContextCache  {
 	return (Boolean)contextCache.get(user);
     }
 
-    private HashMap globalContextCache = new HashMap();
+    private Map globalContextCache = new HashMap();
     private long    contextTries = 0;
     private long    contextSucces = 0;
     private long    contextSize = 0;    
     
-    public void contextAdd(String context, HashSet possible) {
+    public void contextAdd(String context, Set possible) {
 	// when context was already known....
     	if(globalContextCache.containsKey(context)) {
 	    log.warn("context cache already contained this entry");
@@ -87,14 +89,14 @@ public class ContextCache  {
     	contextSize++;
     }
     
-    public HashSet contextGet(String context) {
+    public Set contextGet(String context) {
     	contextTries++;
 
     	if(globalContextCache.containsKey(context)) {
 	    contextSucces++;
 	    log.debug("context found in cache ("+info(contextTries, contextSucces, contextSize)+")");	    
     	}
-	return (HashSet)globalContextCache.get(context);
+	return (Set)globalContextCache.get(context);
     }
     
     private String info(long tries, long succes, long size) {
