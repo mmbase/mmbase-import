@@ -16,9 +16,10 @@ import java.util.*;
  * removed when the maximum is reached.  This table is used mostly to
  * implement a simple caching system.
  *
+ * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.18 2004-09-07 13:56:10 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.19 2004-09-30 08:52:12 pierre Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -193,14 +194,14 @@ public class LRUHashtable extends Hashtable implements Cloneable {
 
     /**
      * Returns the entries of this Map. Modification are reflected.
-     * 
+     *
      * @since MMBase-1.6.3
      */
     public Set entrySet() {
         return new LRUEntrySet();
     }
 
-    /**     
+    /**
      * @see   #keySet
      * @since MMBase-1.6.3
      */
@@ -545,11 +546,9 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             if (work != null) {
                 LRUHashtable.this.removeEntry(work);
                 LRUHashtable.this.currentSize--;
-            } 
+            }
         }
     }
-
-
 }
 
 

@@ -8,8 +8,12 @@ See http://www.MMBase.org/license
 
  */
 package org.mmbase.util;
+
 /**
+ * @javadoc
+ * @author vpro
  * @deprecated should be done by implementing and using the MMBase security Authorization
+ * @version $Id: HttpAuth.java,v 1.20 2004-09-30 08:52:11 pierre Exp $
  */
 public class HttpAuth {
     private static org.mmbase.util.logging.Logger log = org.mmbase.util.logging.Logging.getLoggerInstance(HttpAuth.class.getName());

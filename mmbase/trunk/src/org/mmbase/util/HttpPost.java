@@ -20,12 +20,12 @@ import org.mmbase.util.logging.Logging;
 /**
  * HttpPost handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.27 2004-05-06 12:34:30 keesj Exp $
+ * @application SCAN. To port this, use of HttpPost by i.e. taglibs should be replaced with the jakarta FileUpload code.
+ * @version $Id: HttpPost.java,v 1.28 2004-09-30 08:52:11 pierre Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
  */
-
 public class HttpPost {
 
     // logger
@@ -418,7 +418,7 @@ public class HttpPost {
                 log.error("readContentLength(): Can't read post msg from client");
                 log.error(Logging.stackTrace(e));
                 buffer[len - 1] = -1;
-                // just to return _something_... 
+                // just to return _something_...
                 // Mozilla 0.9.7 (and 0.9.6?) had a bug here. Now they are only slow, but work, if you don't supply a file...
 
             }
@@ -724,7 +724,7 @@ public class HttpPost {
                     int j = 0;
                     do {
                         // should we do something with temp? it is never read again
-                        //temp = 
+                        //temp =
                         fis.read(postbuffer);
 
                         end2 = indexOf(postbuffer, marker, 0);
@@ -876,7 +876,7 @@ public class HttpPost {
     }
 
     private void setProperties(Map properties) {
-        //keesj:sorry for this long code... 
+        //keesj:sorry for this long code...
         if (properties.containsKey(MAX_PARAMETER_SIZE_PROPERTY)) {
             try {
                 maxParameterSize = Integer.parseInt(properties.get(MAX_PARAMETER_SIZE_PROPERTY).toString());
@@ -912,7 +912,7 @@ public class HttpPost {
         }
         // do some basic checks
         if (maxInMemoryParameterSize > maxRequestSize){
-        	log.warn(MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY + " is bigger then " + MAX_REQUEST_SIZE_PROPERTY);
+            log.warn(MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY + " is bigger then " + MAX_REQUEST_SIZE_PROPERTY);
         }
     }
 }
