@@ -50,6 +50,7 @@ public class MMUsers extends ProcessorModule {
 	private String emailBodyPasswd;
 	private String emailBodyEnd;
 
+	private static final boolean debug=false;
 
 	private void debug (String msg) {
 		System.out.println (CLASSNAME + ": " + msg);
@@ -72,7 +73,7 @@ public class MMUsers extends ProcessorModule {
 		sessionInfo info = sessions.getSession (sp, sp.sname);
 		String userid = sessions.getValue (info, "USERNUMBER");
 
-		debug ("Clearing session-info of user " + userid);
+		if (debug) debug ("Clearing session-info of user " + userid);
 		if (userid!=null) {
 			Hashtable has = getUserProperties (userid);
 			if (has != null) {
@@ -80,7 +81,7 @@ public class MMUsers extends ProcessorModule {
 					MMObjectNode node = (MMObjectNode)e.nextElement ();
 					String key = node.getStringValue ("key");
 					if ((key != null) && (excludedKeys.indexOf(";"+key+";")<0)) {
-						debug ("Clearing key '" + key + "'");
+						if (debug) debug ("Clearing key '" + key + "'");
 						sessions.setValue (info, key, "");
 					}	
 				}
@@ -135,11 +136,11 @@ public class MMUsers extends ProcessorModule {
 				rtn = rtn+userid;
 			} else {
 				rtn="EMAIL";
-				debug("Email address is already in use");
+				if (debug) debug("Email address is already in use");
 			}
 		} else {
 			rtn="USER";
-			debug("Username is already in use");
+			if (debug) debug("Username is already in use");
 		}
 		return rtn;
 	}
@@ -153,7 +154,7 @@ public class MMUsers extends ProcessorModule {
 		if (usernode == null) return -1;
 		usernode.setValue ("description", "created for SID = " + sid);
 		int id = users.insert ("system", usernode);
-		debug ("Created new user " + id + ", SID=" + sid);
+		if (debug) debug ("Created new user " + id + ", SID=" + sid);
 
 		// sessionInfo info = sessions.getSession (sp.req, sid);
 		sessionInfo info = sessions.getSession (sp, sp.sname);
@@ -248,14 +249,14 @@ public class MMUsers extends ProcessorModule {
 				pnode.setValue ("ptype", "string");
 				properties.insert ("system", pnode);
 				usernode.delPropertiesCache();
-				debug ("storeValue() storing '" + value + "' in '" + key + "' for user "+userid);
+				if (debug) debug ("storeValue() storing '" + value + "' in '" + key + "' for user "+userid);
 			}
 			else
 			{
 				pnode.setValue ("value", value);
 				pnode.setValue ("ptype", "string");
 				pnode.commit();
-				debug ("storeValue() overwriting '" + value + "' in '" + key + "' for user "+userid);
+				if (debug) debug ("storeValue() overwriting '" + value + "' in '" + key + "' for user "+userid);
 			}
 		}
 		else {
@@ -288,7 +289,7 @@ public class MMUsers extends ProcessorModule {
 				    : getListSelection (props, fields, tagger); 
 			}
 			else {
-				debug ("MMUsers can't get property '" + tok + "'");
+				if (debug) debug ("MMUsers can't get property '" + tok + "'");
 			}
 		}
 		else {
@@ -398,8 +399,7 @@ public class MMUsers extends ProcessorModule {
 		if (emailBodyEnd == null || emailBodyEnd.equals("")) 
 			debug ("missing init param bodyend");
 
-		debug ("Sending e-mail to " + address + " concerning login '" + loginname
-			+ "' and password '" + password + "'");
+		if (debug) debug ("Sending e-mail to " + address + " concerning login '" + loginname + "' and password '" + password + "'");
 		if (sendMail == null) sendMail = (SendMailInterface)getModule("sendmail");
 		if (sendMail == null)
 		{
@@ -463,7 +463,7 @@ public class MMUsers extends ProcessorModule {
 		String type = pnode.getStringValue ("ptype");
 		String value = pnode.getStringValue ("value");
 		if (type.equals ("string")) res = value; else res = "<NON-PRINTABLE>";
-		debug( ""+userid+" "+res);
+		if (debug) debug( ""+userid+" "+res);
 		return res;
 	}
 
@@ -492,7 +492,7 @@ public class MMUsers extends ProcessorModule {
 		sessionInfo info = sessions.getSession (sp,sp.sname);
 		String oldUserID = sessions.getValue (info, "USERNUMBER");
 		
-		debug("Switch Info from " + oldUserID +" to "+newUserID);
+		if (debug) debug("Switch Info from " + oldUserID +" to "+newUserID);
 
 		if (!newUserID.equals(oldUserID))
 			clearSessionInfo( sp );
