@@ -7,7 +7,7 @@
 </head>
 <body>
 <form>
-<mm:cloud method="http"><!-- make sure the user is logged in, because	editwizard sometimes is buggy -->
+<mm:cloud  rank="basic user"><!-- make sure the user is logged in, because	editwizard sometimes is buggy -->
     <h1>Editwizard - samples</h1>
   <p>
    This example adds a new ftype to the default editwizard XSL's.
