@@ -46,8 +46,8 @@ public class ClassToXML {
         Method[] methods = clazz.getMethods();
         for (int i =0 ; i < methods.length ; i++){
             boolean createMethod = true;
-            //see if the declared belongs to the same class
-            //if not we don't need to declare it
+            //see if the declared method belongs to the same class
+            //we need to declare it
             if (! methods[i].getDeclaringClass().getName().equals(className)){
                 createMethod = false;
                 String name = methods[i].getDeclaringClass().getName();
@@ -55,9 +55,6 @@ public class ClassToXML {
                 if (methods[i].getDeclaringClass().isInterface()){
                     createMethod = true;
                 }
-                //if ( name.startsWith("java.util")){
-                //    createMethod= false;
-                //}
             }
             if (createMethod) {
                 String key ="";
