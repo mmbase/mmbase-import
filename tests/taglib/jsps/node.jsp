@@ -311,21 +311,36 @@ using list tag: <br />
    </mm:listnodes>
 </mm:listnodescontainer>
 
-<em>Using mm:distinct</em><br />
+<mm:log>mm:list</mm:log>
+<em>Using mm:distinct on mm:listcontainer</em><br />
+<mm:listcontainer path="news,urls" fields="urls.number">
+  <mm:constraint field="urls.url" value="$url" />
+  <mm:distinct />
+  listcontainer: size <mm:size /> (should be 1) <br />
+  Should follow the url:<br />
+  <mm:list fields="urls.number,urls.url">
+    <mm:index /> url: <mm:field name="urls.url" /><br />
+  </mm:list>
+</mm:listcontainer>
+
+
+
+<mm:log>distinct on mm:listnodescontainer</mm:log>
+<em>Using mm:distinct on mm:listnodescontainer</em><br />
 
 <mm:listnodescontainer path="news,urls" element="urls">  
   <mm:constraint field="url" value="$url" />
   <mm:distinct />
   listnodescontainer: size <mm:size /> (should be 1) <br />
-  Should follow the url:
+  Should follow the url: <br />
   <mm:listnodes>
     <mm:index /> url: <mm:field name="url" /><br />
   </mm:listnodes>
-
 </mm:listnodescontainer>
 
 
 
+<mm:log>mm:list with one element</mm:log>
 
 <h3>List-tag with only one element</h3>
 <mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" >
