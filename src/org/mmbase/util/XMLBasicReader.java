@@ -43,10 +43,10 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.35 2003-05-08 06:09:29 kees Exp $
+ * @version $Id: XMLBasicReader.java,v 1.36 2003-07-18 14:57:50 michiel Exp $
  */
 public class XMLBasicReader  {
-    private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
+    private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
 
     /** for the document builder of javax.xml. */
     private static DocumentBuilder documentBuilder = null;
@@ -80,16 +80,6 @@ public class XMLBasicReader  {
     protected Document document;
 
     private String xmlFilePath;
-
-    /**
-     * This class is used by init of logging system.
-     * After configuration of logging, logging must be reinitialized.
-     */
-    public static void reinitLogger() {
-        log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
-        XMLEntityResolver.reinitLogger();
-        XMLErrorHandler.reinitLogger();
-    }
 
     private static InputSource getInputSource(String path) {
         try {
@@ -380,6 +370,9 @@ public class XMLBasicReader  {
         }
         return v.elements();
     }
+    /**
+     * Returns the file name associated with this reader (if there is one)
+     */
 
     public String getFileName() {
         return xmlFilePath;

@@ -19,7 +19,7 @@ import org.xml.sax.SAXParseException;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.12 2003-06-05 09:30:05 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.13 2003-07-18 14:57:50 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -28,7 +28,7 @@ public class XMLErrorHandler implements ErrorHandler {
     public static int FATAL_ERROR = 3;
     public static int NEVER = 4;
 
-    private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
+    private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class);
     private int exceptionLevel;
     private boolean logMessages;
     private boolean warning = false;
@@ -36,14 +36,6 @@ public class XMLErrorHandler implements ErrorHandler {
     private boolean fatal = false;
 
     private StringBuffer messages = new StringBuffer();
-
-    /**
-     * This class is used by init of logging system.
-     * After configuration of logging, logging must be reinitialized.
-     */
-    static void reinitLogger() {
-        log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
-    }
 
 
     public XMLErrorHandler() {
