@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.18 2003-01-07 22:27:36 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.19 2003-01-08 08:47:10 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -58,22 +58,22 @@ public class MediaFragments extends MMObjectBuilder {
 
     
     // This filter is able to find the best mediasource by a mediafragment.
-    private MediaSourceFilter mediaSourceFilter;
+    private  static MediaSourceFilter mediaSourceFilter = null;
     
     // The media source builder
-    private MediaSources      mediaSourceBuilder;
+    private static MediaSources      mediaSourceBuilder;
     
    // Is the mediafragment builders already inited ?
     // this class is used for several builders (mediafragments and descendants)
 
-    private boolean           initDone           = false;
+    private static boolean           initDone           = false;
     
  
     public boolean init() {
         if(initDone) return super.init();
         log.service("Init of media-fragments");
         initDone = true;  // because of inheritance we do init-protections
-
+        
         boolean result = super.init();
         
         // Retrieve a reference to the MediaSource builder
