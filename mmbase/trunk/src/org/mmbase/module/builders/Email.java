@@ -42,6 +42,7 @@ public class Email extends MMObjectBuilder {
 	public final static int TYPE_ONESHOT=1;
 	public final static int TYPE_REPEATMAIL=2;
 	public final static int TYPE_ONESHOTKEEP=3;
+	private Vector dubcheck=new Vector(100);
 
 	public boolean init() {
 		super.init ();
@@ -165,6 +166,18 @@ public class Email extends MMObjectBuilder {
 	/**
 	*/
 	public int sendMailNode(MMObjectNode node) {
+			String ckey=""+node.getIntValue("number");
+			if (dubcheck.contains(ckey)) {
+				System.out.println("DUB KILLED");
+				return(-1);
+			} else {
+				dubcheck.addElement(ckey);
+				if (dubcheck.size()>100) {
+					dubcheck.removeElementAt(99);
+				}
+			}
+
+
 			// first set Node underway
 			node.setValue("mailstatus",STATE_UNDERWAY);
 
