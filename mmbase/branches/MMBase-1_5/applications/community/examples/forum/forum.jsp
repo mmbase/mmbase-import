@@ -22,7 +22,7 @@
 <mmcommunity:testchannel condition="readonly" reverse="true">
 <p>[ <a href="<mm:url page="createnewthread.jsp" referids="channel" />" >Start a new Thread</a> ]</p>
 </mmcommunity:testchannel>
-<mmcommunity:tree thread="$number" max="<%=pagesize%>" maxdepth="5" offset="<%=thispage*pagesize%>" id="thread">
+<mmcommunity:tree thread="$number" max='<%="" + pagesize%>' maxdepth="5" offset='<%="" + thispage*pagesize%>' id="thread">
   <mm:field name="listhead" />
      <li><a href="<mm:url page="message.jsp" referids="channel,thread" />"><mm:field name="html(subject)" /></a> (<mm:field name="replycount" />)
      <mmcommunity:getinfo key="name">
