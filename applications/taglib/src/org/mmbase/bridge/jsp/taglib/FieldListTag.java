@@ -26,7 +26,7 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.38 2003-09-10 11:16:08 michiel Exp $ 
+ * @version $Id: FieldListTag.java,v 1.39 2004-02-25 14:10:00 pierre Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -94,7 +94,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             throw new JspTagException("Unknown field order type " + t);
         }
     }
-    
+
     private String varType = null;
     private String jspVar   = null;
     public void setVartype(String t) {
@@ -172,7 +172,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else {
             NodeManager nodeManager;
 
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer                
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
                 Node n = getNodeVar();
                 if (n == null) throw new JspTagException("Fieldlist tag must be used either as node-referrer, or use the nodetype attribute");
                 nodeManager = n.getNodeManager();
@@ -195,7 +195,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                     returnList.clear();
                     Iterator i = getFields().iterator();
                     while (i.hasNext()) {
-                        returnList.add(nodeManager.getField((String) i.next()));
+                        String fieldName = (String) i.next();
+                        if (fieldName.endsWith("?")) {
+                            fieldName = fieldName.substring(0,fieldName.length()-1);
+                            if (!nodeManager.hasField(fieldName)) continue;
+                        }
+                        returnList.add(nodeManager.getField(fieldName));
                     }
                 }
             }
