@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.75.2.2 2003-03-27 17:31:43 robmaris Exp $
+ * @version $Id: MMSQL92Node.java,v 1.75.2.3 2004-01-08 16:35:29 robmaris Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -786,7 +786,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 return false;
             }
         } else {
-            log.warn("tried to update a node without any changes,..");
+            // tried to update a node without any changes,..
             return true;
         }
 

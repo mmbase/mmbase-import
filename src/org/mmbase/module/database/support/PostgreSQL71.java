@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.21.2.1 2003-03-27 17:31:43 robmaris Exp $
+ * @version $Id: PostgreSQL71.java,v 1.21.2.2 2004-01-08 16:35:29 robmaris Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -918,8 +918,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                 return false;
             }
         } else {
-            log.warn("tried to update a node without any changes,..");
-            return false;
+            // tried to update a node without any changes,..
+            return true;
         }
 
         // done database update, so clear changed flags..
