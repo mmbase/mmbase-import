@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.127 2002-04-12 12:33:34 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.128 2002-04-16 14:59:56 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2413,12 +2413,13 @@ public class MMObjectBuilder extends MMTable {
      * If this fails, the value set with {@link #setDutchSName} is used instead.
      * @returns the 'dutch' short name
      * @deprecated use {@link #getSingularName} instead.
+     * @deprecated This function is so stupid that it is twice deprecated
      */
-    public String getDutchSName() {
+    private String getDutchSName() {
         if (singularNames!=null) {
             String tmp=(String)singularNames.get(mmb.getLanguage());
             if (tmp==null) {
-               tmp=(String)singularNames.get("us");
+               tmp=(String)singularNames.get("nl");
             }
             return tmp;
         }
@@ -2437,13 +2438,13 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Gets short name of the builder in the current default language.
-     * If the current language is not available, the "us" version is returned instead.
-     * @returns the short name in either the default language or in "us"
+     * If the current language is not available, the "en" version is returned instead.
+     * @returns the short name in either the default language or in "en"
      */
     public String getSingularName() {
-        if (singularNames==null) return null;
-        String tmp=getSingularName(mmb.getLanguage());
-        if (tmp==null) tmp=getSingularName("us");
+        if (singularNames == null) return null;
+        String tmp = getSingularName(mmb.getLanguage());
+        if (tmp==null) tmp=getSingularName("en");
         return tmp;
     }
 
@@ -2459,13 +2460,13 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Gets long name of the builder in the current default language.
-     * If the current language is not available, the "us" version is returned instead.
-     * @returns the long name in either the default language or in "us"
+     * If the current language is not available, the "en" version is returned instead.
+     * @returns the long name in either the default language or in "en"
      */
     public String getPluralName() {
         if (pluralNames==null)  return null;
-        String tmp=getPluralName(mmb.getLanguage());
-        if (tmp==null) tmp=getPluralName("us");
+        String tmp = getPluralName(mmb.getLanguage());
+        if (tmp==null) tmp = getPluralName("en");
         return tmp;
     }
 

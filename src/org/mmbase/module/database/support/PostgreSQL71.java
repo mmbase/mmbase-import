@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.9 2002-03-26 13:46:22 eduard Exp $
+ * @version $Id: PostgreSQL71.java,v 1.10 2002-04-16 14:59:57 michiel Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -454,7 +454,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             // result += " REFERENCES " + mmb.baseName + "_object" + " ON DELETE CASCADE ";
         }
         // add in comment the gui stuff... nicer when reviewing database..
-        result += "\t-- " + def.getGUIName("us")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.GUIType+"')\n";
+        result += "\t-- " + def.getGUIName("en")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.GUIType+"')\n";
         return result;
     }
 

@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.55 2002-03-26 12:57:42 pierre Exp $
+ * @version $Id: MMBase.java,v 1.56 2002-04-16 14:59:56 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -234,9 +234,9 @@ public class MMBase extends ProcessorModule  {
     private SendMailInterface sendmail;
 
     /**
-     * Currently used language. Access using getLanguage()
+     * Currently used locale. Access using getLanguage()
      */
-    private String language="us";
+    private Locale locale = Locale.ENGLISH;
 
     /**
      * Currently used encoding. Access using getEncoding(). This
@@ -304,7 +304,7 @@ public class MMBase extends ProcessorModule  {
 
         tmp=getInitParameter("LANGUAGE");
         if (tmp!=null && !tmp.equals("")) {
-            language=tmp;
+            locale = new Locale(tmp, "");
         }
 
         tmp=getInitParameter("ENCODING");
@@ -1084,7 +1084,7 @@ public class MMBase extends ProcessorModule  {
 
                 Hashtable descriptions=parser.getDescriptions();
                 bul.setDescriptions(descriptions);
-                String desc=(String)descriptions.get(language);
+                String desc=(String)descriptions.get(locale.getLanguage());
                 // XXX" set description by builder?
                 bul.setDescription(desc);
                 // XXX: setDutchSName is deprecated
@@ -1183,7 +1183,7 @@ public class MMBase extends ProcessorModule  {
      * @return the language as a <code>String</code>
      */
     public String getLanguage() {
-        return language;
+        return locale.getLanguage();
     }
 
     /**
