@@ -120,8 +120,14 @@
             <br />
             <mm:import id="mailboxid">Inbox</mm:import>
             <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid,mailboxid">
-                <b><mm:write referid="mlg_you_have"/> <mm:field id="messagecount" name="messagecount" /> 
-                <a href="<mm:url page="privatemessages.jsp" referids="forumid" />"> <mm:compare referid="messagecount" value="1"> <mm:write referid="mlg_private_message"/> </mm:compare><mm:compare referid="messagecount" value="1" inverse="true"> <mm:write referid="mlg_private_messages"/> </mm:compare></a> (<mm:field name="messagenewcount" /> <mm:write referid="mlg_new"/> <mm:write referid="mlg_and"/> <mm:field name="messageunreadcount" /> <mm:write referid="mlg_unread"/>) </b>
+                <b><mm:write referid="mlg_you_have"/> 
+                <mm:field name="messagecount">
+                  <mm:compare value="">0 <a href="<mm:url page="privatemessages.jsp" referids="forumid" />"><mm:write referid="mlg_private_messages"/></a></mm:compare>
+                  <mm:compare value="" inverse="true">
+                    <mm:field id="messagecount" name="messagecount" /> 
+                    <a href="<mm:url page="privatemessages.jsp" referids="forumid" />"> <mm:compare referid="messagecount" value="1"> <mm:write referid="mlg_private_message"/> </mm:compare><mm:compare referid="messagecount" value="1" inverse="true"> <mm:write referid="mlg_private_messages"/> </mm:compare></a> (<mm:field name="messagenewcount" /> <mm:write referid="mlg_new"/> <mm:write referid="mlg_and"/> <mm:field name="messageunreadcount" /> <mm:write referid="mlg_unread"/>) </b>
+                  </mm:compare>
+                </mm:field>
             </mm:nodefunction>
 
             <h4><mm:write referid="mlg_At_the_moment" /> : <mm:field id="postersonline" name="postersonline" /> <mm:compare referid="postersonline" value="1"> <mm:write referid="mlg_member" /> </mm:compare> <mm:compare referid="postersonline" value="1" inverse="true"><mm:write referid="mlg_members" /> </mm:compare> <mm:write referid="mlg_online" />.</h4>
