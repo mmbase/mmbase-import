@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.5 2004-01-30 12:25:49 pierre Exp $
+ * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.6 2004-03-15 14:54:25 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint
@@ -142,7 +142,7 @@ implements FieldValueBetweenConstraint {
      */
     private String convertValue(Object value) {
         String result = null;
-        value = BasicStepField.testValue(value, getField());
+        BasicStepField.testValue(value, getField());
         if (value instanceof Number) {
             // Add value as string. This facilitates comparison of
             // numerical values of different type.

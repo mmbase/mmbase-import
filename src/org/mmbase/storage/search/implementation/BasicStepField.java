@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.8 2004-01-30 12:25:49 pierre Exp $
+ * @version $Id: BasicStepField.java,v 1.9 2004-03-15 14:54:26 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -34,87 +34,56 @@ public class BasicStepField implements StepField {
     private String alias = null;
 
     /**
-     * Tests if a value is acceptable for comparison with a certain field, and
-     * returns the value in the best useable form.
-     * For a INTEGER, FLOAT, DOUBLE, or LONG field, the value need be a Number or a
-     * String containing a number, and the method returns teh vaklue as a Number.
-     * For a NODE field, acceptable values are a number, an MMObjectNode, or a bridge
-     * Node object, and the method returns the value as a Number.
-     * A STRING or XML field should have a string value.
-     * A BYTE should be a byte array.
-     *
-     * @todo accept DOM objects for XML fields and aliasses for nodes
+     * Tests if a value is acceptable for comparison with a certain field.
      * @param value The value to be tested.
      * @param field The non-null field.
-     * @return the value in the best useable form for comparison with the field
-     * @throws IllegalStateException if the field type is unknown.
-     * @throws IllegalArgumentException when the value is <code>null</code> or not acceptable
+     * @throws IllegalArgumentException when the value is not acceptable
      *         for this field.
      */
     // package visibility!
-    static Object testValue(Object value, StepField field) {
+    static void testValue(Object value, StepField field) {
         int type = field.getType();
-
+        
         // Test for null value.
         if (value == null) {
             throw new IllegalArgumentException("Invalid value for "
             + FieldDefs.getDBTypeDescription(type) + " field: "
             + value);
         }
-
+        
         // Test for compatible type.
         boolean ok = true;
         switch (type) {
-            // byte array types
-            case FieldDefs.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
-                                      //I'm not sure a byte array is numerical
-                if (!(value instanceof byte[])) {
-                    ok = false;
-                }
-                break;
-            // Node type (can also be a number).
-            // XXX TODO: This code does not take into account the use of aliasses
-            case FieldDefs.TYPE_NODE:
-                if (value instanceof MMObjectNode) { // core node as a value
-                    value = new Long(((MMObjectNode)value).getNumber());
-                    break;
-                }
-                if (value instanceof Node) { // bridge node as a value
-                    value = new Long(((Node)value).getNumber());
-                    break;
-                }
             // Numberical types.
             case FieldDefs.TYPE_INTEGER:
+	    case FieldDefs.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
+                                      //I'm not shure a byte array is numerical
             case FieldDefs.TYPE_FLOAT:
             case FieldDefs.TYPE_DOUBLE:
             case FieldDefs.TYPE_LONG:
+            case FieldDefs.TYPE_NODE:
                 if (!(value instanceof Number)) {
-                    // attempt to convert a string to a number
-                    try {
-                       value = Double.valueOf(value.toString());
-                    } catch (NumberFormatException nfe) {
-                        ok = false;
-                    }
+                    ok = false;
                 }
                 break;
+                
                 // String types.
-            case FieldDefs.TYPE_XML:
-                // XXX TODO: This code does not take into account the use of DOM objects
             case FieldDefs.TYPE_STRING:
+            case FieldDefs.TYPE_XML:
                 if (!(value instanceof String)) {
                     ok = false;
                 }
                 break;
-
+                
             default: // Unknown field type, should not occur.
                 throw new IllegalStateException("Unknown field type: " + type);
         }
+        
         if (!ok) {
             throw new IllegalArgumentException("Invalid value for "
             + FieldDefs.getDBTypeDescription(type) + " field: "
             + value + ", of type " + value.getClass().getName());
         }
-        return value;
     }
 
     /**
