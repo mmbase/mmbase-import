@@ -2,26 +2,26 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <!--
     Basic parameters and settings for all xsl's of the editwizards.
-    
+
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.27 2004-03-19 11:08:44 nico Exp $
+    @version $Id: base.xsl,v 1.28 2004-04-07 12:36:00 pierre Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
-	<!--
-		For the people who are wondering why we don't use an DOCTYPE.
-		The editwizards are using extra attributes to do validation and
-		other dynamic stuff. So the editwizards don't comply to the DOCTYPE standards
+  <!--
+    For the people who are wondering why we don't use an DOCTYPE.
+    The editwizards are using extra attributes to do validation and
+    other dynamic stuff. So the editwizards don't comply to the DOCTYPE standards
 
     MM: It could comply, when using namespaces.
-		
+
     The xsl:output will generate
-		<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
 
       btw, output method "xml" which looks nicer (<br />) breaks empty text-area's
-	-->
+  -->
   <xsl:output
     method="html"
     encoding="utf-8"
@@ -52,8 +52,9 @@
 
   <!-- name of the file that called list.jsp or default.jsp, can be used for back-buttons (relative to context-root) -->
   <xsl:param name="referrer" />
-  <!-- Perhaps you want to refer to stuff not relative to the referrer-page, but to the root of the site where it belongs to. 
-    This must be given to the jsp's then with the paremeter 'templates' 
+  <xsl:param name="referrer_encoded" />
+  <!-- Perhaps you want to refer to stuff not relative to the referrer-page, but to the root of the site where it belongs to.
+    This must be given to the jsp's then with the paremeter 'templates'
   -->
   <xsl:param name="templatedir"><xsl:value-of select="$referrerdir" /></xsl:param>
 
@@ -95,7 +96,7 @@
 
   <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 
-  <!--xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer" />&amp;language=<xsl:value-of select="$language" /></xsl:variable-->
+  <!--xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer_encoded" />&amp;language=<xsl:value-of select="$language" /></xsl:variable-->
   <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="uploadpage">upload.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 
@@ -173,7 +174,7 @@
     <xsl:call-template name="headcontent" />
     <xsl:call-template name="bodycontent" />
   </xsl:template>
-  
+
   <!-- If you need a different headcontent, then you can override this thing -->
   <xsl:template name="headcontent" >
     <table class="head">
@@ -263,10 +264,10 @@
   -->
   <xsl:template name="writeCurrentField">
 
-		<!-- Disabled at the moment, because fields with html in it
-			screw up the full page when truncated.
-			This will work if we can filter the html out of the text before
-			truncating. -->
+    <!-- Disabled at the moment, because fields with html in it
+      screw up the full page when truncated.
+      This will work if we can filter the html out of the text before
+      truncating. -->
 
     <!--xsl:choose>
       <xsl:when test="string-length(.) > $MAX_LENGTH">
@@ -294,7 +295,7 @@
     </xsl:if>
   </xsl:template>
 
-  <!-- 
+  <!--
     xml:lang attribute of prompt, description and title tags
   -->
   <xsl:template name="i18n">
