@@ -2239,4 +2239,156 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
 	<extends>contextreferrer</extends>   
    </tag>
+  <tag>
+    <name>treefile</name>
+    <extends>url</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeFileTag</tagclass>
+    <info>
+          This tag does the same as TreeIncludeTag, but instead of including the
+          page that was found, it returns the URL for that page.
+    </info>
+    <attribute>
+        <name>objectlist</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+        <info>
+                 The list of objects
+        </info>
+    </attribute>
+    <see>param</see>
+    <see>url</see>
+  </tag>
+  <tag>
+    <name>leaffile</name>
+    <extends>url</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafFileTag</tagclass>
+    <info>                                                                
+          This tag does the same as LeafIncludeTag, but instead of including the
+          page that was found, it returns the URL for that page. This URL can be
+          displayed using the 'write' tag.
+    </info>                                                     
+    <attribute>
+        <name>objectlist</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+        <info>
+                 The list of objects
+        </info>
+    </attribute>
+    <see>param</see>
+    <see>url</see>  
+  </tag>
+
+  <tag>
+    <name>treeinclude</name>                                                             
+    <extends>include</extends>
+    <extends>treefile</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeIncludeTag</tagclass>
+    <info>
+          <p>
+		This tag is an implementation of the 'TREEPART' scan command.
+		There are two parameters: 'objectlist' and 'page'. The 
+		objectlist is a ',' seperated list of objects, the 'page'
+		is the page to be included. (inherited from the extended 'URL' tag)
+          </p>
+          <p>
+		This tag is similar in behaviour as the 'include' tag, but it
+		will try several different paths to find a 'best matching'
+		file to include. An example:
+          </p>
+	  <p>
+		objectlist="1,2,3,4", page="doh.jsp"
+ 		The treeinclude tag will first try to include '1/2/3/4/doh.jsp', if
+                that file is not available, it will try '1/2/3/doh.jsp', etc. etc.
+		Besides the directory '1/2/3/4', all directories starting with
+		the objectnumber will match. This means that the following paths
+		will all work with the given parameters:
+		<ul>
+			<li>1blaat/2random/3tekst/4kiekeboe/doh.jsp</li>
+			<li>1/2/3/4ditiseentest/doh.jsp</li>
+			<li>1/2/3/4alfabeta/doh.jsp</li>
+		</ul>
+		In case there are multiple paths that match for a given level
+		(compare the last two entries of the list above), the one that
+		comes alphabetically first will be chosen.
+		This behaviour is specified in the 'getSmartPath()' method in
+		MMObjectBuilder.
+          </p>
+	  <p>
+		The naming schema mentioned above (number postfixed with a random
+		string) can be overridden by a builder. For instance, if object
+		with number 1 is actually a 'portal' object, and the 'portal' builder
+		defines the 'getSmartPath' method, the following files (in order of importance,
+		as soon as one of the files exists this one will be taken) will be
+		included:
+		<ul>
+			<li>myportal/2random/3tekst/4kiekeboe/doh.jsp</li>
+                        <li>myportal/2/3/4ditiseentest/doh.jsp</li>
+                        <li>myportal/2/3/4alfabeta/doh.jsp</li>
+		</ul> 
+	  </p>
+    </info>
+    <see>include</see>
+    <see>treefile</see>
+    <see>param</see> 
+    <see>url</see>
+  </tag>
+  <tag>
+    <name>leafinclude</name>
+    <extends>include</extends>
+    <extends>leaffile</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafIncludeTag</tagclass>
+    <info>
+      This tag does almost exactly the same as TreeInclude. 
+      The only difference is when Treeinclude cannot find a file to include. In that case,
+      Leafinclude will use the type of the nodes from the objectlist to find a file to include.
+      An example:
+      <ul>
+        <li>Object with id '100' is an object from builder 'portals'</li>
+        <li>Object with id '101' is an object from builder 'subsites'</li>
+      </ul>
+      When leafinclude is called with page='page.jsp' and objectlist='101,102', the following
+      files will be tried to be included, in order of priority:
+      <ul>
+        <li> 100/101/page.jsp </li>
+        <li> 100/subsites/page.jsp </li>
+        <li> portals/subsites/page.jsp </li>
+      </ul>
+      Ofcourse, the default behaviour of getSmartPath (the fact that the directory '100' is chosen 
+      for objectid '100') can still be overridden.
+    </info>
+    <see>include</see>
+    <see>leaffile</see>
+    <see>param</see>
+    <see>url</see>
+  </tag>
+  <tag>
+    <name>param</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.ParamTag</tagclass>
+    <info>
+    Adds a parameter to the parent URL Tag.
+    </info>
+    <see>url</see>
+    <see>include</see>
+    <attribute>
+        <name>name</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+    <info>
+	The name of the parameter. 
+    </info>
+    </attribute>
+    <attribute>
+        <name>value</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+    <info>
+	The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
+    </info>
+    </attribute>
+  </tag>
 </taglib>
