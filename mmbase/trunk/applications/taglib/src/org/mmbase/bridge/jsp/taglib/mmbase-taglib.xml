@@ -3923,6 +3923,13 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
       </info>
     </attribute>
+    <attribute>
+      <name>escaper</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+      </info>
+    </attribute>
     <example>
       <include base="examples.taglib" href="codesamples/timelocale.jsp" />
     </example>
