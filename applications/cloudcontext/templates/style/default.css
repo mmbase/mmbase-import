@@ -95,6 +95,10 @@ table.rights  td {
   text-align: center;
 }
 
+table.rights  td.text { 
+  text-align: left;
+}
+
 table.rights td.parent { 
   background-color: #bfb;
 }
