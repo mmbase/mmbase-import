@@ -14,7 +14,7 @@
     <%@ include file="util/navigation.jsp"%>
     <div id="content">
       <% if (Rank.getRank(cloud.getUser().getRank()).getInt() >= 500) { %>
-      <mm:import externid="topic" />
+      <mm:import externid="maintopic" />
       <mm:import externid="subtopic" />
       <mm:import externid="detail" />
       <mm:import externid="level" />
@@ -26,10 +26,17 @@
 
       <mm:node number="$node">
         <mm:relatednodes type="templates" role="related" max="1">
-          <mm:field name="url">
-            <mm:url id="jumperurl" page="$_" referids="topic@maintopic,subtopic?,detail?" escapeamps="false" write="false" />
-            <mm:field name="name" id="templatetype" write="false" />
+          <mm:field name="position">
+            <mm:issmallerthan value="2"> <!-- page or submenu page -->
+              <mm:field name="url">
+                <mm:url id="jumperurl" page="$_" referids="maintopic,subtopic?,detail?" escapeamps="false" write="false" />
+              </mm:field>
+            </mm:issmallerthan>
+            <mm:compare value="3"> <!-- container -->
+              <mm:url id="jumperurl" page="index.jsp" referids="maintopic,subtopic?,detail?" escapeamps="false" write="false" />
+            </mm:isgreaterthan>
           </mm:field>
+          <mm:field name="name" id="templatetype" write="false" />
         </mm:relatednodes>
 
         <mm:compare referid="submit" value="Change">
@@ -64,7 +71,7 @@
         </mm:notpresent>
 
         <h2>Jumper for: <mm:field name="title" /></h2>
-        <form action="<mm:url page="jumper.jsp" referids="level,topic,subtopic?,detail?" escape="none" />" method="post">
+        <form action="<mm:url page="jumper.jsp" referids="level,maintopic,subtopic?,detail?" escape="none" />" method="post">
           <table>
             <tr>
               <td>Path:</td>

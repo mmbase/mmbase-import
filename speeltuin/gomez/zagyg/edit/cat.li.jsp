@@ -19,17 +19,17 @@
           <%@include file="cat.template.li.jsp" %>
         </mm:context>
       </mm:relatednodes>
-    </li>
+    <mm:onshrink></li></mm:onshrink>
   </mm:context>
 </mm:maywrite>
 <mm:maywrite inverse="true">
   <mm:depth>
-    <mm:islessthan referid="depth" value="5">
-    <li>
-      <span class="editintro">
-        <mm:field name="gui()" />
-      </span>
-    </li>
+    <mm:islessthan value="3">
+      <li>
+        <span class="editintro">
+          <mm:field name="gui()" />
+        </span>
+      <mm:onshrink></li></mm:onshrink>
     </mm:islessthan>
   </mm:depth>
 </mm:maywrite>

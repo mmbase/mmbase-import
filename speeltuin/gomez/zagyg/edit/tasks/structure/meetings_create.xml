@@ -5,7 +5,7 @@
   <title xml:lang="nl">Topics</title>
 
   <action type="create">
-    <object type="categories">
+    <object type="meetings">
       <field name="title" />
       <field name="visible">1</field>
       <field name="end">4102441257</field>
@@ -14,9 +14,9 @@
 
   <lists include="tasks/sitestatlists.xml" />
 
-  <form-schema extends="tasks/categories/schema.xml" id="basics" >
+  <form-schema extends="tasks/structure/schema.xml" id="basics" >
 
-    <list include="tasks/categorytypes/list.xml" />
+    <list include="tasks/meta/categorytypes/list.xml" />
 
   </form-schema>
 </wizard-schema>
