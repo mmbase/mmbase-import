@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.6 2002-11-21 17:22:13 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.7 2002-11-22 12:14:32 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -164,6 +164,9 @@
    <mm:url id="referrer" write="false" referids="origin,language" page="entrancepage.jsp" />
    <a href="<mm:url referids="referrer" page="logout.jsp" />"><%=m.getString("logout")%></a>
    (<%=cloud.getUser().getIdentifier()%>)</mm:context></p>
+  <p align="right">
+    <a href="images/Media.jpg" target="new">Object model</a>
+  </p>
 </body>
 </html>
 </mm:cloud>
