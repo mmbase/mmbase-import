@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.13 2002-06-24 13:46:57 michiel Exp $
+ * @version $Id: Generator.java,v 1.14 2002-06-24 15:37:18 michiel Exp $
  */
 public class Generator {
 
@@ -42,6 +42,7 @@ public class Generator {
         DOMImplementation impl = documentBuilder.getDOMImplementation();        
         this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects",  "-//MMBase/DTD objects config 1.0//EN", "http://www.mmbase.org/dtd/objects_1_0.dtd"));
         this.cloud = cloud;
+        this.document.getDocumentElement().setAttribute("xmlns", "http://www.mmbase.org/objects");
         //Element rootElement = document.createElement("objects");
         //document.appendChild(rootElement);
     }
@@ -163,7 +164,8 @@ public class Generator {
      * @param An MMBase bridge Node.
      */
     public void add(Relation relation) {        
-        add((org.mmbase.bridge.Node) relation);   
+        add((org.mmbase.bridge.Node) relation);
+        
     }
 
     /**
@@ -185,6 +187,7 @@ public class Generator {
         RelationIterator i = relations.relationIterator();
         while(i.hasNext()) {
             add(i.nextRelation());
+            
         }
     }
     /**
@@ -202,8 +205,7 @@ public class Generator {
         boolean getElementByIdWorks = false;
         Element object = null;
         if(getElementByIdWorks) {
-            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
-            
+            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.            
             object = document.getElementById("" + node.getNumber());
         } else {
             // TODO: this code should be removed!! but other code doesnt work :(
@@ -222,7 +224,7 @@ public class Generator {
 
         if (object != null) return object;
 
-        // if it is a realtion... first add source and destination info thingies..
+        // if it is a realtion... first add source and destination attributes..
         // can only happen after the node = node.getCloud().getNode(node.getNumber()); thing!
         if(node instanceof Relation) {
             Relation relation = (Relation) node;
@@ -260,6 +262,7 @@ public class Generator {
      *
      * @param fieldElement The Element describing the field
      * @param toImport     The Document to set as the field's value
+     * @return             The fieldContent.
      */
     private Element importDocument(Element fieldElement, Document toImport) {
         DocumentType dt = toImport.getDoctype();
@@ -270,100 +273,16 @@ public class Generator {
             namespace = dt.getSystemId();
         }  else {
             namespace = "http://www.mmbase.org/" + tagName;
-        }
-                      
-        String prefix = tagName + ":";       
-        
+        }        
         if (log.isDebugEnabled()) {
-            log.debug("using namepace: " + namespace + " with prefix: " + prefix);
+            log.debug("using namepace: " + namespace);
         }
-        toImport.getDocumentElement().setAttribute("xmlns:" + tagName, namespace);
-        return importElement(fieldElement, toImport.getDocumentElement(), namespace, prefix);
+        Element fieldContent = (Element) document.importNode(toImport.getDocumentElement(), true);
+        fieldContent.setAttribute("xmlns", namespace);
+        fieldElement.appendChild(fieldContent);
+        return fieldContent;
     }
 
-    private Element importElement(Element parent, Element toImport, String namespace, String prefix) {
-        // first create the Element
-        Element current = parent.getOwnerDocument().createElementNS(namespace, prefix + toImport.getTagName());
-        // add all the attributs..
-        NamedNodeMap namednodes = toImport.getAttributes();        
-        for(int i=0; i < namednodes.getLength(); i++) {
-            Node namesnode = namednodes.item(i);
-            switch(namesnode.getNodeType()) {
-                case Node.ATTRIBUTE_NODE:
-                    Attr attr = (Attr)namesnode;
-                    if(attr.getNamespaceURI() == null) {
-                        String name = attr.getName();
-                        // when there is a : inside the name, assume that it _should_ be a namespace :p
-                        if(name.indexOf(':') != -1) {
-                            // we have somekinda namespace thingie...
-                            current.setAttribute(attr.getName(), attr.getValue());
-                        }
-                        else {
-                            current.setAttributeNS(namespace, prefix + attr.getName(), attr.getValue());
-                        }                        
-                    }
-                    else {
-                        current.setAttribute(attr.getName(), attr.getValue());
-                    }                    
-                break;
-                case Node.CDATA_SECTION_NODE:
-                case Node.COMMENT_NODE:
-                case Node.ELEMENT_NODE:
-                case Node.TEXT_NODE:
-                case Node.DOCUMENT_FRAGMENT_NODE :
-                case Node.DOCUMENT_NODE:
-                case Node.DOCUMENT_TYPE_NODE:
-                case Node.ENTITY_NODE:
-                case Node.ENTITY_REFERENCE_NODE:
-                case Node.NOTATION_NODE:
-                case Node.PROCESSING_INSTRUCTION_NODE:
-                    throw new RuntimeException("type #" + namesnode.getNodeType() +"not implemented is not implemented");
-                default:
-                    throw new RuntimeException("type #" + namesnode.getNodeType() + "was unknown!");
-            }
-        }
-        // add to the parent
-        parent.appendChild(current);        
-        
-        // add all the childnodes...
-        Node childnode = toImport.getFirstChild();
-        while(childnode != null) {
-             switch(childnode.getNodeType()) {              
-                case Node.CDATA_SECTION_NODE:
-                    // throw new RuntimeException("not implemented");
-                    CDATASection cdata = current.getOwnerDocument().createCDATASection(((CDATASection)childnode).getData());
-                    current.appendChild(cdata);
-                break;
-                case Node.COMMENT_NODE:
-                    Comment comment = current.getOwnerDocument().createComment(((Comment)childnode).getData());
-                    current.appendChild(comment);
-                break;                    
-                case Node.ELEMENT_NODE:
-                    importElement(current, (Element)childnode, namespace, prefix);
-                break;
-                case Node.TEXT_NODE:
-                    Text text = current.getOwnerDocument().createTextNode(((Text)childnode).getData()); 
-                    current.appendChild(text);
-                break;
-                
-                case Node.ATTRIBUTE_NODE:
-                case Node.DOCUMENT_FRAGMENT_NODE :
-                case Node.DOCUMENT_NODE:
-                case Node.DOCUMENT_TYPE_NODE:
-                case Node.ENTITY_NODE:
-                case Node.ENTITY_REFERENCE_NODE:
-                case Node.NOTATION_NODE:
-                case Node.PROCESSING_INSTRUCTION_NODE:
-                    throw new RuntimeException("type #" + childnode.getNodeType() +"not implemented is not implemented");
-                default:
-                    throw new RuntimeException("type #" + childnode.getNodeType() + "was unknown!");
-            }
-            // go to nextone..
-            childnode = childnode.getNextSibling();
-        }
-        // return the Element...
-        return current;
-    }
     
     private String getFieldFormat(org.mmbase.bridge.Node node, Field field) {
         switch (field.getType()) {
@@ -413,8 +332,7 @@ public class Generator {
             fieldElement.setAttribute("role", reldef.getStringValue("sname"));
             fieldElement.setAttribute("related", "" + relation.getDestination().getNumber());
             fieldElement.setAttribute("type", "source");
-        }
-        else {
+        } else {
             fieldElement.setAttribute("role", reldef.getStringValue("dname"));
             fieldElement.setAttribute("related", "" + relation.getSource().getNumber());
             fieldElement.setAttribute("type", "destination");
