@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br>
  * Not supported by magic file:<br>
  * - StarOffice<br>
- * @version $Id: Detector.java,v 1.1 2002-09-03 18:15:26 michiel Exp $
+ * @version $Id: Detector.java,v 1.2 2003-01-24 14:24:22 kees Exp $
  */
 
 public class Detector {
@@ -522,10 +522,10 @@ public class Detector {
 	    return "parse error";
 	} else {
 	    StringBuffer res = new StringBuffer("["+offset+"] {"+type);
-	    if (typeAND != "0") {
+	    if (typeAND != null) {
 		res.append("["+typeAND+"]");
 	    }
-	    res.append("} "+testComparator+"("+test+") --> "+message);
+	    res.append("} "+testComparator+"("+test+") "+message);
 	    if (childList.size()>0) {
 		res.append("\n");
 		for (int i=0;i<childList.size();i++) {
