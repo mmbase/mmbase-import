@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.82 2003-02-23 15:25:44 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.83 2003-03-06 13:53:57 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -183,7 +183,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber);
+            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber, e);
         }
         if (node==null) {
             throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
@@ -693,9 +693,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (resultlist==null) {
             log.debug("result list is null, getting from database");
             resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
-       	    // store result in cache if needed
+            // store result in cache if needed
             if (hash != null && resultlist != null) {
-            	multilevelCache.put(hash, resultlist, tables, tagger);
+                multilevelCache.put(hash, resultlist, tables, tagger);
             }
         }
 
@@ -791,45 +791,45 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         // than the original string. This doesnt matter for the next sequence...
         // but it is important to realize!
         while(remaining.length() > 0) {
-	    if(remaining.indexOf('\'') != -1) {
-		// we still contain a "'"
-		int start = remaining.indexOf('\'');
+            if(remaining.indexOf('\'') != -1) {
+                // we still contain a "'"
+                int start = remaining.indexOf('\'');
 
-		// escaping started, but no stop
-		if(start == remaining.length())  {
-		    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints);
-		    return false;
-		}
+                // escaping started, but no stop
+                if(start == remaining.length())  {
+                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints);
+                    return false;
+                }
 
-		String notEscaped = remaining.substring(0, start);
-		if(notEscaped.indexOf(';') != -1) {
-		    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nnot excaped:" + notEscaped);
-		    return false;
-		}
+                String notEscaped = remaining.substring(0, start);
+                if(notEscaped.indexOf(';') != -1) {
+                    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nnot excaped:" + notEscaped);
+                    return false;
+                }
 
-		int stop = remaining.substring(start + 1).indexOf('\'');
-		if(stop < 0) {
-		    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nlast escaping:" + remaining.substring(start + 1));
-		    return false;
-		}
-		// we added one to to start, thus also add this one to stop...
-		stop = start + stop + 1;
+                int stop = remaining.substring(start + 1).indexOf('\'');
+                if(stop < 0) {
+                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nlast escaping:" + remaining.substring(start + 1));
+                    return false;
+                }
+                // we added one to to start, thus also add this one to stop...
+                stop = start + stop + 1;
 
-		// when the last character was the stop of our escaping
-		if(stop == remaining.length())  {
-		    return true;
-		}
+                // when the last character was the stop of our escaping
+                if(stop == remaining.length())  {
+                    return true;
+                }
 
-		// cut the escaped part from the string, and continue with resting sting...
-		remaining = remaining.substring(stop + 1);
-	    }
-	    else{
-		if(remaining.indexOf(';')!= -1) {
-		    log.warn("found a ';' inside our contrain:" + contraints);
-		    return false;
-		}
-		return true;
-	    }
+                // cut the escaped part from the string, and continue with resting sting...
+                remaining = remaining.substring(stop + 1);
+            }
+            else{
+                if(remaining.indexOf(';')!= -1) {
+                    log.warn("found a ';' inside our contrain:" + contraints);
+                    return false;
+                }
+                return true;
+            }
         }
         return true;
     }
@@ -843,7 +843,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
-             throw new NotFoundException("Something went wrong while getting node with number " + nodenumber);
+             throw new NotFoundException("Something went wrong while getting node with number " + nodenumber, e);
         }
         if (node==null) {
             throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");

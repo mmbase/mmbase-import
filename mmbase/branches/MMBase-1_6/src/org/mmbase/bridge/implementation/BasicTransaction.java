@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.10.4.1 2002-11-18 12:28:30 pierre Exp $
+ * @version $Id: BasicTransaction.java,v 1.10.4.2 2003-03-06 13:52:44 pierre Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());
@@ -58,7 +58,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             } catch (TransactionManagerException e) {
                 String message = e.getMessage();
                 log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException(message,e);
             }
         }
     }
@@ -80,7 +80,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // return false;
                 String message = e.getMessage();
                 log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException(message,e);
             }
         }
         // remove the transaction from the parent cloud
@@ -106,7 +106,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // do we drop the transaction here or delete the trans context?
                 String message = e.getMessage();
                 log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException(message,e);
             }
         }
         // remove the transaction from the parent cloud
@@ -125,7 +125,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } catch (TransactionManagerException e) {
             String message = e.getMessage();
             log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException(message,e);
         }
     }
 
@@ -139,7 +139,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } catch (TransactionManagerException e) {
             String message = e.getMessage();
             log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException(message,e);
         }
     }
 
@@ -153,7 +153,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } catch (TransactionManagerException e) {
             String message = e.getMessage();
             log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException(message,e);
         }
     }
 
