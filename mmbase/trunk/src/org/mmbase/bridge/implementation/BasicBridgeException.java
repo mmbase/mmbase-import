@@ -35,4 +35,15 @@ public class BasicBridgeException extends BridgeException {
 		super(message);
 		log.error(message);
 	}
+
+	/**
+	 * Create the exception.
+	 * @param message a description of the exception
+ 	 */
+	public BasicBridgeException (Exception e) {
+	    super(e.getMessage());
+		log.error(e.getMessage());
+		log.error(Logging.stackTrace(e));
+	}
+
 }
