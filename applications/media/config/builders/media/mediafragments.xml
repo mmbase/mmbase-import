@@ -7,19 +7,16 @@
 <classfile>org.mmbase.module.builders.media.MediaFragments</classfile>
 
 <names>
-	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">Mediafragment</singular>
-	<singular xml:lang="en">Media_fragment</singular>
+	<singular xml:lang="en">Media fragment</singular>
 
-	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="nl">Mediafragmenten</plural>
-	<plural xml:lang="en">Media_fragments</plural>
+	<plural xml:lang="en">Media fragments</plural>
 </names>
 
 <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="nl">Een Media Fragment beschrijft een stukje media.</description>
-	<description xml:lang="en">A Media Fragment describes one piece of media.</description>
+	 <description xml:lang="en">A Media Fragment describes one piece of media.</description>
 </descriptions>
 
 

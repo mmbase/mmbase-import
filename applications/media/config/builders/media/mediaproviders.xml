@@ -6,12 +6,10 @@
 <classfile>org.mmbase.module.builders.media.MediaProviders</classfile>
 
 <names>
-	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="en">Media_provider</singular>
+	<singular xml:lang="en">Media provider</singular>
 	<singular xml:lang="nl">Mediaprovider</singular>
 
-	<!-- plural per language as defined by ISO 639 -->
-	<plural xml:lang="en">Media_providers</plural>
+	<plural xml:lang="en">Media providers</plural>
 	<plural xml:lang="nl">Mediaproviders</plural>
 </names>
 
@@ -20,10 +18,6 @@
 	<description xml:lang="nl">Beschrijft het systeem dat media bestanden beschikbaar steld.</description>
 </descriptions>
 
-<!-- <properties>
-  you can define properties to be used by the classfile (if used) it uses
-  a key/value system. Its a optional tag.
-  -->
   <properties>
     <!-- specify which protocols to use for which media formats -->
     <property name="g2/sure">rtsp://</property>
