@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
+import java.sql.ResultSet;
 import java.util.*;
 import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: HSqlStorage.java,v 1.2 2003-05-02 14:44:00 michiel Exp $
+ * @version $Id: HSqlStorage.java,v 1.3 2003-05-02 20:29:03 michiel Exp $
  */
 public class HSqlStorage extends RelationalDatabaseStorage {
     /**
@@ -36,29 +37,30 @@ public class HSqlStorage extends RelationalDatabaseStorage {
         super();
     }
 
+    // javadoc inherited from DatabaseStorage
     public String mapToMMBaseFieldName(String fieldName) {
         return super.mapToMMBaseFieldName(fieldName).toLowerCase();
     }
 
     // hsql wanst the table constraint after the column definiation, here are they spared up.
-    private Map tableConstraints = new HashMap();
-    private Map indices          = new HashMap();
-
-
+    private Map tableConstraints = new HashMap(); // String fulltablename -> StringBuffer constraints definitions
+    
     /**
      * Hsql wants the contraint definition (uniuqe, primary key etc) _after_ the collumn definition, so not mixed.
-     */
-    
-    protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType) {
-        log.debug("createing field definition for " + tablename);
-        String name   = mapToTableFieldName(fieldname);
-        String result = matchType(type,size);
+     *
+     */   
+    protected String constructFieldDefinition(String tableName, String fieldName, int type, int size, int keyType) {
+        if (log.isDebugEnabled()) {
+            log.debug("creating field definition for " + tableName);
+        }
+        String name   = mapToTableFieldName(fieldName);
+        String result = matchType(type, size);
         // cannot determine database type. log the error, but continue -
         // but note that the sql will likely fail!
         if (result == null) {
             log.error("Cannot determine database type for : " + FieldDefs.getDBTypeDescription(type)+"(" + size + ")");
         }
-        StringBuffer constraints = (StringBuffer) tableConstraints.get(getFullTableName(tablename));      
+        StringBuffer constraints = (StringBuffer) tableConstraints.get(getFullTableName(tableName));
         if (constraints == null) {
             constraints = new StringBuffer(); 
         } 
@@ -73,7 +75,7 @@ public class HSqlStorage extends RelationalDatabaseStorage {
             return  applyNotNullScheme(name, result);
         }
         
-        tableConstraints.put(getFullTableName(tablename), constraints);
+        tableConstraints.put(getFullTableName(tableName), constraints);
 
         return name + " " + result;
     }
@@ -81,29 +83,30 @@ public class HSqlStorage extends RelationalDatabaseStorage {
 
 
     /*
-create table documenation for hsql:
-
-CREATE [ MEMORY | CACHED | TEMP | TEXT ] TABLE name
-( columnDefinition [, ...] [, constraintDefinition...]) ;
-
-Creates a tables in the memory (default) or on disk and only cached in memory. Identity columns are autoincrement columns. They must be integer columns and are automatically primary key columns. The last inserted value into an identity column for a connection is available using the function IDENTITY(), for example (where Id is the identity column):
-INSERT INTO Test (Id, Name) VALUES (NULL,'Test'); CALL IDENTITY();
-
-columnDefinition:
-columnname Datatype [(columnSize[,precision])] [DEFAULT 'defaultValue'] [[NOT] NULL] [IDENTITY] [PRIMARY KEY]
-
-the default value must be enclosed in singlequotes
-
-constraintDefinition:
-[ CONSTRAINT name ]
-UNIQUE ( column [,column...] ) |
-PRIMARY KEY ( column [,column...] ) |
-FOREIGN KEY ( column [,column...] ) REFERENCES refTable ( column [,column...]) [ON DELETE CASCADE]
-*/
-
-    // javadoc inherited
+      create table documenation for hsql:
+      
+      CREATE [ MEMORY | CACHED | TEMP | TEXT ] TABLE name
+      ( columnDefinition [, ...] [, constraintDefinition...]) ;
+      
+      Creates a tables in the memory (default) or on disk and only cached in memory. Identity columns are autoincrement columns. They must be integer columns and are automatically primary key columns. The last inserted value into an identity column for a connection is available using the function IDENTITY(), for example (where Id is the identity column):
+      INSERT INTO Test (Id, Name) VALUES (NULL,'Test'); CALL IDENTITY();
+      
+      columnDefinition:
+      columnname Datatype [(columnSize[,precision])] [DEFAULT 'defaultValue'] [[NOT] NULL] [IDENTITY] [PRIMARY KEY]
+      
+      the default value must be enclosed in singlequotes
+      
+      constraintDefinition:
+      [ CONSTRAINT name ]
+      UNIQUE ( column [,column...] ) |
+      PRIMARY KEY ( column [,column...] ) |
+      FOREIGN KEY ( column [,column...] ) REFERENCES refTable ( column [,column...]) [ON DELETE CASCADE]
+    */
+    
+    // javadoc inherited from AbstractDatabaseStorage
     protected String createSQL(String tableName, String fields, String parentTableName, String parentFields) {
-        log.debug("Creating SQL for " + tableName);
+        
+        if (log.isDebugEnabled()) log.debug("Creating SQL for " + tableName);
         if (!supportsExtendedTables() && (parentFields != null) && (! "".equals(parentFields))) {
             if (fields == null || "".equals(fields)) {
                 fields = parentFields;
@@ -113,11 +116,18 @@ FOREIGN KEY ( column [,column...] ) REFERENCES refTable ( column [,column...]) [
         }       
         StringBuffer constraints = (StringBuffer) tableConstraints.get(tableName);
         if (constraints != null) {
-            log.debug("using constraints " + constraints);
+            if (log.isDebugEnabled()) log.debug("using constraints " + constraints);
             fields = fields + constraints.toString();
         }
         return applyCreateScheme(tableName, fields, parentTableName)+";";
     }
 
+    /**
+     * HSql drive does not support getBlob, overridden with the 'binary stream' version
+     */
+
+    public byte[] getDBByte(ResultSet rs, int idx) {
+        return getDBByteBinaryStream(rs, idx);
+    }
 
 }
