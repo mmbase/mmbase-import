@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.4 2004-09-14 17:59:38 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.5 2004-12-10 19:04:39 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -143,7 +143,7 @@ public class NodeProviderHelper implements NodeProvider {
     **/
     public int doAfterBody() throws JspTagException {
         if (modified) {
-            log.service("node was changed ! calling commit");
+            log.service("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
             node.commit();
         }
         return BodyTagSupport.SKIP_BODY;
