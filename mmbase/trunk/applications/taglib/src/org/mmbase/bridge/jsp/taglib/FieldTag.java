@@ -42,7 +42,6 @@ public class FieldTag extends BodyTagSupport {
     }
 
     public int doStartTag() throws JspException{
-        log.info("hoi");
         return EVAL_BODY_TAG;
     }
     
