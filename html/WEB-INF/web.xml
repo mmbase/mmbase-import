@@ -36,11 +36,13 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
-  
+
+<!--  
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
   </taglib>
+-->
 
   <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)-->
   <!--
