@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.52 2003-06-11 13:50:04 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.53 2003-08-15 15:52:41 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -61,29 +61,34 @@ public class ConvertImageMagick implements ImageConvertInterface {
         
         String tmp;
         tmp = (String) params.get("ImageConvert.ConverterRoot");
-        if (tmp != null)
+        if (tmp != null) {
             converterRoot = tmp;
+        }
         
         tmp = (String) params.get("ImageConvert.ConverterCommand");
-        if (tmp != null)
+        if (tmp != null) {
             converterCommand = tmp;
+        }
+
+        String configFile = params.get("configfile").toString();
+        if (configFile == null) configFile = "images builder xml";
         
         converterPath = converterCommand; // default.
         if (!converterRoot.equals("")) { // also a root was indicated, add it..
             // now check if the specified ImageConvert.converterRoot does exist and is a directory
             File checkConvDir = new File(converterRoot).getAbsoluteFile();
             if (!checkConvDir.exists()) {
-                log.error( "ImageConvert.ConverterRoot " + converterRoot + " in images.xml does not exist");
+                log.error( "ImageConvert.ConverterRoot " + converterRoot + " in " + configFile + " does not exist");
             } else if (!checkConvDir.isDirectory()) {
-                log.error( "ImageConvert.ConverterRoot " + converterRoot + " in images.xml is not a directory");
+                log.error( "ImageConvert.ConverterRoot " + converterRoot + " in " + configFile + " is not a directory");
             } else {
                 // now check if the specified ImageConvert.Command does exist and is a file..
                 File checkConvCom = new File(converterRoot, converterCommand);
                 converterPath = checkConvCom.toString();
                 if (!checkConvCom.exists()) {
-                    log.error( converterPath + " specified by images.xml does not exist");
+                    log.error( converterPath + " specified by " + configFile + "  does not exist");
                 } else if (!checkConvCom.isFile()) {
-                    log.error( converterPath + " specified by images.xml is not a file");
+                    log.error( converterPath + " specified by " + configFile + "  is not a file");
                 }
             }
         }
