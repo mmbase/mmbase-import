@@ -72,7 +72,7 @@ one or more examplevalue tags is you want to give some example values.
     <name>contextreferrer</name>
     <info>
       Contextreferrer tags refer to the context. This means that (most of) their attributes can
-      contain `context' variables.
+      contain `context' variables. All tags are contextreferrers or specialisations of it.
     </info>
     <attribute>
       <name>context</name>
@@ -218,7 +218,8 @@ one or more examplevalue tags is you want to give some example values.
   <taginterface>     
     <name>cloudreferrer</name>
     <info>
-      A cloud referrer tag is a tag that needs to live in the body of a cloud tag.
+      A cloud referrer tag is a tag that needs to live in the body of a cloud tag. This means that
+      it can use MMBase data.
     </info>
     <attribute>
       <name>cloud</name>
@@ -1895,9 +1896,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 		  A 'transformation' template.
 		</p>
 		<p>
-		  In the font option, mm: stands
-		  for 'mmbase configuration directory'. In this way it is easy
-		  to make sure that fonts are available.
+		  In the font option, mm: stands for 'mmbase configuration
+		  directory'. In this way it is easy to make sure that fonts
+		  are available.
 		</p>
     </info>
 	  <examplevalue>
@@ -1910,7 +1911,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <value>s(180)+modulate(120,0)+gamma(1/1/2)+bordercolor(8c9c23)+border(10x0)</value>
 	  </examplevalue>
 	  <examplevalue>
-        <value>s(200)+fill(ffffff)+circle(20,20 30,30)"</value>
+        <value>s(200)+fill(ffffff)+circle(20,20 30,30)</value>
 	  </examplevalue>
 	  <examplevalue>
         <value>s(200x200!)+part(100,100,150,150)</value>
