@@ -6,13 +6,18 @@
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
+  <!-- not currentl used
   <property name="source.dir"   location="../../../1.6/mmbase" />
   <property name="build.dir"    value="${source.dir}/build" />
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
+  -->
+  <property name="test.class"   value="org.mmbase.module.corebuilders.TypeRelTest" />
 
   <property name="project.source.dir"   value="." />
-  <property name="project.build.dir"    value="${project.source.dir}/build" />
+  <property name="project.build.dir" value="${project.source.dir}/build" />
+
+  <!-- put mmbase.jar and junit.jar in this lib dir -->
   <property name="project.run.lib"      value="${project.source.dir}/lib" />
   <property name="project.compile.lib"  value="${project.run.lib}" />
 
@@ -73,14 +78,14 @@
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
-  <target name="run.junit" description="Run the bridgetest classes"
+  <target name="run.junit" description="Run the test"
           depends="compile,init">
     <java 
       classname="junit.textui.TestRunner"
       fork="true"
       classpathref="run.classpath"      
       >
-      <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
+      <arg value="${test.class}" />
     </java>
   </target>
 </project>
