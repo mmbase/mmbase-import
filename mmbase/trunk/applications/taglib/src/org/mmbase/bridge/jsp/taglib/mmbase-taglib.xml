@@ -22,7 +22,7 @@ The following additional tags are possible between <tag> and </tag>:
 The following additional tags are possible between <attribute> and </attribute>:
 
   <requirednote></requirednote> (To note that requirement of this attribute
-                                 is dependant on other conditions.)
+                                 is dependent on other conditions.)
 
   <info>...</info>
 
@@ -45,15 +45,15 @@ one or more examplevalue tags is you want to give some example values.
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>
-    <p>MMBase consists of a cloud of nodes (also known as objects) wich can be related to each
+    <p>MMBase consists of a cloud of nodes (also known as objects) which can be related to each
       other. Relations can be seen as nodes with two arms which they use to connect two other
       nodes. Nodes of a specific type (like a person node who holds a person's data) have their own
-      nodemanager (also knows as a builder). A node manager can have functions wich are specific for
+      node manager (also knows as a builder). A node manager can have functions which are specific for
       the type of nodes it is managing. Just like a cloud can contain different type of nodes it can
       contain different type of relations. And just like specific type of nodes have their own
-      nodemanager, relations of a specific type have their own relation manager.
+      node manager, relations of a specific type have their own relation manager.
     </p>
-    <p>This relativily simple idea gives rises to rich and sometimes complicated data structures. The
+    <p>This relatively simple idea gives rises to rich and sometimes complicated data structures. The
         goal of the MMBase taglib is to make this 'cloud' of data easily accessible, by means of
         XML-like 'tags'. There are:
     <ul>
@@ -195,7 +195,7 @@ See mmexamples/taglib for more elaborated examples.
   <description>utility tags</description>
   <info>
     <p>
-      These are the MMBase tags which do directy relate to MMBase
+      These are the MMBase tags which do directly relate to MMBase
       data, but are merely handy to have.
     </p>
   </info>
@@ -204,7 +204,7 @@ See mmexamples/taglib for more elaborated examples.
   <description>context/variable tags</description>
   <info>
     <p>
-       All MMBase utility tags related to 'contextes' and  'taglib
+       All MMBase utility tags related to 'contexts' and  'taglib
        variables'.
     </p>
   </info>
@@ -214,7 +214,7 @@ See mmexamples/taglib for more elaborated examples.
   <info>
     <p>
       These are the MMBase tags which do relate to lists (lists and
-      subtags of lists).
+      sub-tags of lists).
     </p>
   </info>
   </type>
@@ -224,7 +224,7 @@ See mmexamples/taglib for more elaborated examples.
     <type>util.context</type>
     <info>
       Contextreferrer tags refer to the context. This means that (most of) their attributes can
-      contain `context' variables (referred to by '$'). All tags are contextreferrers or specialisations of it.
+      contain `context' variables (referred to by '$'). All tags are contextreferrers or specializations of it.
     </info>
     <see tag="context" />
     <attribute>
@@ -242,7 +242,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>contextreferrer</extends>
     <info>
       A contextwriter is a contextreferrer, but it can also write itself to the context (using the
-      id attibute).
+      id attribute).
     </info>
     <see tag="context" />
     <attribute>
@@ -381,7 +381,7 @@ See mmexamples/taglib for more elaborated examples.
     <name>cloudprovider</name>
     <type>mmbase.basic</type>
     <info>
-      Cloudprovider tags provide a cloud to their body. Als a
+      Cloudprovider tags provide a cloud to their body. Also a
       `transaction' is a kind of cloud.
     </info>
     <see tag="cloudreferrer" />
@@ -392,14 +392,14 @@ See mmexamples/taglib for more elaborated examples.
       A nodereferrer tag is a tag that can (needs to) live in the body of a node
       provider, and uses the node provided by the node provider tag.
     </info>
-    <!-- in reality noderefferer extends cloudreffer, but only few tags use that -->
+    <!-- in reality nodereferrer extends cloudreferrer, but only few tags use that -->
     <attribute>
       <name>node</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
         Which node to use. You can use this attribute if your Nodereferrer is living in more than
-        one NodeProvider, and you don't need the direct parent.
+        one nodeprovider, and you don't need the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -552,7 +552,7 @@ See mmexamples/taglib for more elaborated examples.
     <info>
       Returns a list of (cluster) nodes. Starting at one or more nodes
       traversals are made according to a specified path of
-      nodemanagers. One traversal makes up one record returned by the
+      node managers. One traversal makes up one record returned by the
       list. All possible traversals that can be made starting at one
       or more nodes of the same type and following a specified path
       are returned. Additional attributes can be used to exclude
@@ -560,7 +560,7 @@ See mmexamples/taglib for more elaborated examples.
       returned list.  Because the returned records can contain more
       than one node (such a record that contains fields from several
       'nodes' is referred to as a 'clusternode') you will have to
-      prefix the field name with the nodemanager name and a dot if you
+      prefix the field name with the node manager name and a dot if you
       want to refer to them.
     </info>
     <see tag="listnodes" />
@@ -571,14 +571,14 @@ See mmexamples/taglib for more elaborated examples.
       <rtexprvalue>true</rtexprvalue>
       <info>
         Comma-separated list of node numbers that should be used as start nodes. The start nodes don't
-        have to be a member of the first nodemanager in the path. For example, if the start nodes
-        belong to the second nodemanager in a path with a length of three nodemanagers, traversals
+        have to be a member of the first node manager in the path. For example, if the start nodes
+        belong to the second node manager in a path with a length of three node managers, traversals
         will go into two directions at the same time. All traversals that make up a complete path
-        are returned.  If a node belongs to the last nodemanager in a path traversals will go from
-        right to left starting at the last nodemanager.  All start nodes specified in this attribute
-        have to belong to the same nodemanager. Nodes that belong to a different nodemanager than
+        are returned.  If a node belongs to the last node manager in a path traversals will go from
+        right to left starting at the last node manager.  All start nodes specified in this attribute
+        have to belong to the same node manager. Nodes that belong to a different node manager than
         the first node are ignored In case this attribute is not specified all nodes from the first
-        nodemanager in the path are used as start nodes.
+        node manager in the path are used as start nodes.
       </info>
     </attribute>
     <attribute>
@@ -586,14 +586,14 @@ See mmexamples/taglib for more elaborated examples.
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A comma-seperated list of nodemanagers which specifies the path
+        A comma-separated list of node managers which specifies the path
         that should be followed. It is possible to explicitly specify a
-        relationmanager that should be used to go from one node to an other. If
-        no relationmanager is specified between two nodemanagers, all possible
-        relationmanagers that can be used to go to the next specified node in
+        relation manager that should be used to go from one node to an other. If
+        no relation manager is specified between two node managers, all possible
+        relation managers that can be used to go to the next specified node in
         the path are followed. It is possible to add a digit (0-9) to the
-        nodemanager name and refer to this nodemanager with his name and this
-        digit appended. This can be usefull if a nodemanager is used more than
+        node manager name and refer to this node manager with his name and this
+        digit appended. This can be useful if a node manager is used more than
         once in a path.
       </info>
       <examplevalue>
@@ -634,10 +634,10 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-      Contraints to prevent records from being included in the returned list.
+      Constraints to prevent records from being included in the returned list.
       These constraints follow the syntax of the SQL where clause. It's a good
       practice to use uppercase letters for the operators and lowercase letters
-      for the fieldnames.
+      for the field names.
     </info>
       <examplevalue>
         <value>url.number = 100</value>
@@ -696,7 +696,7 @@ See mmexamples/taglib for more elaborated examples.
         <value>name='aaa''bbb'</value>
         <info>
         To only retrieve the string aaa'bbb. A single quote can be escaped using
-        it twice for every single occurence.
+        it twice for every single occurrence.
       </info>
       </examplevalue>
     </attribute>
@@ -714,7 +714,7 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A comma-separated list of values indicating wether to sort up
+        A comma-separated list of values indicating whether to sort up
         (ascending) or down (descending) on the corresponding field in the
         orderby  parameter or null if sorting on all fields should be up. The
         value DOWN (case insensitive) indicates that sorting on the
@@ -801,8 +801,8 @@ See mmexamples/taglib for more elaborated examples.
     <bodycontent>JSP</bodycontent>
     <info>
       The related tag is the same as the list tag except that it always needs
-      one or more start nodes from which the nodemanager will be taken
-      and prefixed to the path specified bij the path attribute.
+      one or more start nodes from which the node manager will be taken
+      and prefixed to the path specified by the path attribute.
       By default, the node used is that of the parent node tag.
     </info>
     <see tag="list" />
@@ -833,7 +833,7 @@ See mmexamples/taglib for more elaborated examples.
       <see tag="list" attribute="path" />
       <info>
         This attribute is the same as the path attribute of the list tag except
-        that the first nodemanager should be ommitted. The first nodemanager
+        that the first node manager should be omitted. The first node manager
         is implied by the parent node and prefixed to the path automaticly.
       </info>
     </attribute>
@@ -911,9 +911,9 @@ See mmexamples/taglib for more elaborated examples.
     <bodycontent>JSP</bodycontent>
     <info>
       The listnodes tag can be used to retrieve nodes managed by a certain
-      nodemanager. The syntax of the attributes are the same as the syntax of
+      node manager. The syntax of the attributes are the same as the syntax of
       the attributes of the list tag except that it is not needed to prefix
-      the fieldnames with nodemanager names.
+      the field names with node manager names.
     </info>
     <see tag="list" />
     <see tag="relatednodes" />
@@ -923,7 +923,7 @@ See mmexamples/taglib for more elaborated examples.
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The name of the nodemanager managing the type of nodes that should be
+        The name of the node manager managing the type of nodes that should be
         listed.
       </info>
     </attribute>
@@ -933,9 +933,9 @@ See mmexamples/taglib for more elaborated examples.
       <rtexprvalue>true</rtexprvalue>
       <info>
         See constraints attribute of list, but notice that it is not necessary to prefix the
-        field names with `nodemanager' names. You can put the field names in [] to enable 'key word
+        field names with `node manager' names. You can put the field names in [] to enable 'key word
         escaping'. E.g. in some databases 'status' is not a valid field name. [status] will
-        translate the fieldname in the right way.
+        translate the field name in the right way.
       </info>
       <see tag="list" attribute="constraints" />
     </attribute>
@@ -982,7 +982,7 @@ See mmexamples/taglib for more elaborated examples.
       The relatednodes tag can be used to retrieve nodes of a certain type
       related to a node of another type. The syntax of the attributes are the
       same as the syntax of the attributes of the list tag except that it is
-      not needed to prefix the fieldnames with a nodemanager name.
+      not needed to prefix the field names with a node manager name.
       By default, the node used is that of the parent node tag.
     </info>
     <see tag="list" />
@@ -1145,7 +1145,7 @@ See mmexamples/taglib for more elaborated examples.
       <info>The authentication name to use (account). When used together with
       e.g. the method="http" option, validation only succeeds if
       the username equals logon. In this case it is also possible to
-      supply a list of usernames here (comma seperated)</info>
+      supply a list of usernames here (comma separated)</info>
     </attribute>
     <attribute>
       <name>rank</name>
@@ -1188,10 +1188,10 @@ See mmexamples/taglib for more elaborated examples.
       <possiblevalue>
         <value>logout</value>
         <info>
-          When using `http' to logon, the browser will store name and
-          password. If you want to logon again, you have to `logout' first.
-          In this case the `realm' of the http authenication will be
-          changed, and you obtain a new possibility to logon after
+          When using `http' to log on, the browser will store name and
+          password. If you want to log on again, you have to `logout' first.
+          In this case the `realm' of the http authentication will be
+          changed, and you obtain a new possibility to log on after
           that. The cloud you obtain is anonymous.
         </info>
       </possiblevalue>
@@ -1226,7 +1226,7 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The authentitation module which must be used by the security
+        The authentication module which must be used by the security
         system. The default is "name/password", which will do in most
         cases.
       </info>
@@ -1259,7 +1259,7 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-       The name of the Jsp variable to export by cloud.
+       The name of the JSP variable to export by cloud.
       </info>
     </attribute>
     <example>
@@ -1314,7 +1314,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         NodeManager. The result of 'getInfo' is a string which on
         default is written to the page. Most of this functionality
         doesn't have much to do with MMBase, and can be acquired with
-        jsp or other taglibs too.
+        JSP or other taglibs too.
       </p>
     </info>
     <attribute>
@@ -1349,17 +1349,21 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag to make a node available. Normally it will enclose some field tags, but it is also
-      possible to only write to the context, or to a jsp variable.
+      possible to only write to the context, or to a JSP variable.
     </info>
     <attribute>
       <name>number</name>
       <required>false</required>
-      <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
+      <requirednote>
+        'number', 'element' or 'referid' must be
+        supplied. If none of them, then the node refers to a parent
+        NodeProvider.
+      </requirednote>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    The nodenumber or alias identifying this node in MMBase.
-    </info>
+        The node number or alias identifying this node in MMBase.
+      </info>
     </attribute>
     <attribute>
       <name>notfound</name>
@@ -1427,9 +1431,16 @@ access the value of title:
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The name of the field to get. It could also be field-like `functions' which can be
-        recognized by the appearing of parentheses. Which functions are available is principally
-        dependent on the node-type.
+        <p>
+          The name of the field to get. It could also be field-like `functions' which can be
+          recognized by the appearing of parentheses. Which functions are available is principally
+          dependent on the node-type.
+        </p>
+        <p>
+          When this attribute is missing, then the field is copied
+          from a parent FieldProvider (e.g. another field tag), which
+          must be present then.
+        </p>
       </info>
       <examplevalue>
         <value>title</value>
@@ -1521,9 +1532,9 @@ Why should deletealias live in a NodeProvider ???
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    The `value' of the condition, in other words what the condition is, described with a
-    string. There is a limited set available now. They are also availabe as `macro'-tags on this
-    tag.
+        The `value' of the condition, in other words what the condition is, described with a
+        string. There is a limited set available now. They are also available as `macro'-tags on this
+        tag.
       </info>
       <possiblevalue>
         <value>first</value>
@@ -1576,7 +1587,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         could 'repeat' the tag.
       </p>
       <p>
-        With the import tag you can explicitily put things from outside
+        With the import tag you can explicitly put things from outside
         this context into this context, e.g. from the parameter list or
         from a parent context. It is also possible to put new strings in
         the context with the import tag.
@@ -1626,7 +1637,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         On default a context has no id. The implicit 'page' context
         also doesn't have. If a context has no id, there is no way of
         referring to variables of it if you are not in the context
-        itself (or one of the subcontextes).
+        itself (or one of the sub-contexts).
       </p>
     </info>
     <see tag="createrelation" />
@@ -1783,7 +1794,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-       The name of the Jsp variable to export.
+       The name of the JSP variable to export.
       </info>
     </attribute>
     <attribute>
@@ -1921,7 +1932,7 @@ transaction was commited, following should result anything:
       A list of fields. A fieldlist can be inside a NodeProvider in
       which case the NodeManager is found by means of the parent
       node. It can also be stand alone, then you have to supply the type
-      of the node (the name of the `nodemanager').
+      of the node (the name of the `node manager').
     </info>
     <see tag="fieldinfo" />
     <see tag="nodeinfo" />
@@ -1936,7 +1947,7 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        You can specify a comma seperated list of fields you want to
+        You can specify a comma separated list of fields you want to
         list too. Use this attribute or the type attribute.
       </info>
     </attribute>
@@ -2037,11 +2048,11 @@ transaction was commited, following should result anything:
         make the right changes to the parent field.
       </p>
           <p>
-        The necessary externid's for this will be implicity imported in the context. You don't
+        The necessary externid's for this will be implicitly imported in the context. You don't
         have to worry about them.
       </p>
           <p>
-        'useinput' is exceptional because it doesn't realy produce any 'info' about the field,
+        'useinput' is exceptional because it doesn't really produce any 'info' about the field,
         but rather changes it.
       </p>
           <p>
@@ -2084,20 +2095,20 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Specify addtional parameters for the presentation/manipulation of the field. [***EXPERIMENTAL***]
+        Specify additional parameters for the presentation/manipulation of the field. [***EXPERIMENTAL***]
       </info>
       <examplevalue>
         <value>daytime</value>
-        <info>If the value is a datetime, treat it as a date time combination [***EXPERIMENTAL***]</info>
+        <info>If the value is a date-time, treat it as a date time combination [***EXPERIMENTAL***]</info>
       </examplevalue>
       <examplevalue>
         <value>time</value>
-        <info>If the value is a datetime, treat it as time only [***EXPERIMENTAL***]</info>
+        <info>If the value is a date-time, treat it as time only [***EXPERIMENTAL***]</info>
         <info>a time thingie[***EXPERIMENTAL***]</info>
       </examplevalue>
       <examplevalue>
         <value>date</value>
-        <info>If the value is a datetime, treat it as date only [***EXPERIMENTAL***]</info>
+        <info>If the value is a date-time, treat it as date only [***EXPERIMENTAL***]</info>
       </examplevalue>
     </attribute>
     <example>See the example for tags 'cloud' and 'nodeinfo'.</example>
@@ -2118,7 +2129,7 @@ transaction was commited, following should result anything:
       <rtexprvalue>true</rtexprvalue>
       <possiblevalue>
         <value>type</value>
-        <info>The type fo the node (the name of it's NodeManager).</info>
+        <info>The type of the node (the name of it's NodeManager).</info>
       </possiblevalue>
       <possiblevalue>
         <value>guitype</value>
@@ -2201,7 +2212,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <p>
         This is the behavior of `writer' tags, and this tag is the
         most basic version of that. Being a `writer' tag it also
-        supports the `jspvar' attribute with which you can make a jsp
+        supports the `jspvar' attribute with which you can make a JSP
         variable available in the body.
       </p>
       <p>
@@ -2229,24 +2240,38 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <info>
     The value to write. In this you can use context variables with "$", the advantage of this
     attribute above the referid attribute is that you can combine variables and add some text of
-    your own. The disadvantages relate to complexitiy and efficiency.
+    your own. The disadvantages relate to complexity and efficiency.
       </info>
     </attribute>
     <attribute>
       <name>session</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>You can also put things into the session with this.</info>
+      <info>
+        <p>
+          You can also put things into the session with this. The value
+          of this attribute becomes the key of the session variable.
+        </p>
+        <p>
+          At some other point you can pick up the variable again with
+          the import tag (so then the 'externid' attribute of import
+          corresponds to the 'session' attribute of write).
+        </p>
+      </info>
+      <see tag="import" attribute="from" />
     </attribute>
     <attribute>
       <name>cookie</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>Writing things to cookie is also possible.</info>
+      <info>
+        Writing things to cookie is also possible. Analogous to
+        writing to the session.
+      </info>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
-    <example>&lt;!-- Create a jsp-variable `greet' from context variable `hoi', write
+    <example>&lt;!-- Create a JSP-variable `greet' from context variable `hoi', write
      `greet' uppercased to the page --&gt;
 &lt;mm:write referid="hoi" jspvar="greet"&gt;&lt;%= greet.toUpperCase() %&gt;&lt;/mm:write&gt;</example>
   </tag>
@@ -2259,7 +2284,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <info>
     To put objects in the context. That is, import a variable from an
     external source (a parent context, parameters, a form
-    (postparameters) or the session). You can also create a new variable
+    (post parameters) or the session). You can also create a new variable
     with this.
     </info>
     <see tag="context" />
@@ -2369,10 +2394,10 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>false</rtexprvalue>
       <see tag="writer" attribute="jspvar" />
       <info>
-        If you specify `jspvar' a jsp-variable with this name will be
+        If you specify `jspvar' a JSP-variable with this name will be
         created too. It is available after the closing of the
-        tag. Jsp-variables can also be created with the `write' tag. A
-        write tag has preciser scoping possibilities.
+        tag. JSP-variables can also be created with the `write' tag. A
+        write tag has more precise scoping possibilities.
       </info>
     </attribute>
     <attribute>
@@ -2390,7 +2415,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <example>&lt;!-- Create a variable `hoi' with value `hello' --&gt;
 &lt;mm:import id="hoi"&gt;hello&lt;/mm:import&gt;</example>
     <example>&lt;!-- Create a variable `hoi'. The value will come from an external source,
-like the parameter list or the session (whereever it is availabe) --&gt;
+like the parameter list or the session (where ever it is available) --&gt;
 &lt;mm:import externid="hoi" /&gt;</example>
   </tag>
   <tag>
@@ -2399,7 +2424,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.RemoveTag</tagclass>
     <info>
       Removes an object from the context. Often it is nicer to use
-      'anonymous' contextes to avoid naming conflicts.
+      'anonymous' contexts to avoid naming conflicts.
     </info>
     <see tag="context" />
     <attribute>
@@ -2434,7 +2459,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <li>
           Simply write it in the 'page' attribute (with ? and
           &amp;amp; (or simply &amp; if you don't produce XHTML), you
-          can use the $-notation te refer to context variable values.
+          can use the $-notation to refer to context variable values.
         </li>
         <li>
           Use the 'referids' attribute to specify a list of context
@@ -2443,7 +2468,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
           variable.
         </li>
         <li>
-          Use 'mm:param' subtags.
+          Use 'mm:param' sub-tags.
         </li>
       </ul>
       <p>
@@ -2458,7 +2483,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       </p>
       <p>
         You don't need it for URLs outside your application server
-        application. It is very advicable to use it otherwise.
+        application. It is very advisable to use it otherwise.
       </p>
     </info>
     <see tag="param" />
@@ -2469,7 +2494,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        Specify which parameters. A comma seperated list of context
+        Specify which parameters. A comma separated list of context
         variable id's.
       </info>
     </attribute>
@@ -2488,7 +2513,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-          Wether or not to escape &amp;'s in the query
+          Whether or not to escape &amp;'s in the query
           string. According to XHTML is must. But perhaps you don't
           want XHTML but something else. Default it is true.
     </info>
@@ -2574,7 +2599,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       <p>
         Does an include. This tag is rather similar to mm:url, but in
-        stead of returing the url, it returns the page itself. In that
+        stead of returning the url, it returns the page itself. In that
         respect it is also very similar to jsp:include. The advantage
         above jsp:include is that this tag is aware of the context
         parameters and knows the 'param' sub tag.
@@ -2670,7 +2695,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <see tag="writer" attribute="vartype" />
       <info>
         The value can also be another context variable, which is not
-        necessarely a string. The type (set by 'vartype') is taken
+        necessarily a string. The type (set by 'vartype') is taken
         into account.
       </info>
     </attribute>
@@ -2926,7 +2951,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       <p>
         Change the context of a node. This has nothing to do with the
-        `contextes' of the taglib, but with security. With every node a
+        `contexts' of the taglib, but with security. With every node a
          `context' is associated (in fact the `owner' field is currently
         used for this), by which is is determined who may do what to
         it.
@@ -3085,7 +3110,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <p>
         Debug tag for measuring performance. It measures the duration of
         its body. Child tags can possibly communicate with this tag to
-        measure theirselves which will be logged on 'debug' level.
+        measure themselves which will be logged on 'debug' level.
         Total times per tag type are logged on 'service' level at the
         end of the Timer tag (sorted per unique combinations of id and tag type).
       </p>
@@ -3175,11 +3200,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <p>
         This tag is an implementation of the 'TREEPART' scan command.
         There are two parameters: 'objectlist' and 'page'. The
-        objectlist is a ',' seperated list of objects, the 'page'
+        objectlist is a ',' separated list of objects, the 'page'
         is the page to be included. (inherited from the extended 'URL' tag)
           </p>
       <p>
-        This tag is similar in behaviour as the 'include' tag, but it
+        This tag is similar in behavior as the 'include' tag, but it
         will try several different paths to find a 'best matching'
         file to include. An example:
           </p>
@@ -3188,7 +3213,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         The treeinclude tag will first try to include '/1/2/3/4/doh.jsp', if
                 that file is not available, it will try '/1/2/3/doh.jsp', etc. etc.
         Besides the directory '/1/2/3/4', all directories starting with
-        the objectnumber will match. This means that the following paths
+        the object number will match. This means that the following paths
         will all work with the given parameters:
         <ul>
           <li>/1blaat/2random/3tekst/4kiekeboe/doh.jsp</li>
@@ -3198,7 +3223,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         In case there are multiple paths that match for a given level
         (compare the last two entries of the list above), the one that
         comes alphabetically first will be chosen.
-        This behaviour is specified in the 'getSmartPath()' method in
+        This behavior is specified in the 'getSmartPath()' method in
         MMObjectBuilder.
           </p>
       <p>
@@ -3247,9 +3272,9 @@ the following files will be tried to be included, in order of priority:
 100/101/page.jsp
 100/subsites/page.jsp
 portals/subsites/page.jsp.
-The default behaviour of getSmartPath is that the directory '100' is chosen
+The default behavior of getSmartPath is that the directory '100' is chosen
 for objectid '100'.
-Ofcourse, the default behavior of getSmartPath can still be overridden.
+Of course, the default behavior of getSmartPath can still be overridden.
     </example>
   </tag>
   <tag>
@@ -3293,7 +3318,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Path to the XSLT file which must, relative to the current jsp
+        Path to the XSLT file which must, relative to the current JSP
         file. If you want to use default MMBase XSLT's, then you can
         prefix by 'mm:', and searching will begin in the mmbase
         configuration directory.
@@ -3323,7 +3348,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
             <li>
               It give access to certain java functionality present in
               the formatter tag's implementation. It is e.g. senseless
-              to escape XML with a XSL stylesheet, when it can be done
+              to escape XML with a XSL style sheet, when it can be done
               so easily in Java.
             </li>
           </ul>
@@ -3339,7 +3364,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       </possiblevalue>
       <possiblevalue>
         <value>presentxml</value>
-        <info>An XSLT. Tries to make a nice presentation of XMl in XHTML, with colors and so on.</info>
+        <info>An XSLT. Tries to make a nice presentation of XML in XHTML, with colors and so on.</info>
       </possiblevalue>
       <possiblevalue>
         <value>code</value>
@@ -3357,7 +3382,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       <possiblevalue>
       <value>date</value>
       <info>
-          Take a datetime field and formats it like a real date and/or
+          Take a date-time field and formats it like a real date and/or
           time. Use the options attribute to specify how this must be
           done exactly. It is an argument for
           java.text.SimpleDateFormat.applyPattern.
@@ -3396,8 +3421,8 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       <possiblevalue>
         <value>DOM</value>
         <info>
-          Means that the tag must contains subtags, which can
-          communicate theirselves to this formatter tag and are put in
+          Means that the tag must contains sub-tags, which can
+          communicate themselves to this formatter tag and are put in
           a DOM Document (created by org.mmbase.bridge.xml.Generator)
         </info>
       </possiblevalue>
@@ -3411,7 +3436,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
           <p>
             This means that it is 'DOM' iff the body contains only tags
             which can communicate themselves to this tag, or don't
-            produce output theirselves (are not writer tags) and the
+            produce output themselves (are not writer tags) and the
             'format' is an XSLT-format.
           </p>
         </info>
@@ -3426,7 +3451,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.XsltTag</tagclass>
     <info>
-      This tag must live as a subtag of Formatter. You can add 'inline' XSL with this. (EXPERIMENTAL)
+      This tag must live as a sub-tag of Formatter. You can add 'inline' XSL with this. (EXPERIMENTAL)
     </info>
     <extends>contextreader</extends>
     <see tag="formatter" />
@@ -3471,7 +3496,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
         syntax for this attribute can be found at
         http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html. Notice
         that if times have the following form they will be parsed
-        automatically, and this attribute can be ommited: yyyy/mm/dd
+        automatically, and this attribute can be omitted: yyyy/mm/dd
         hh:mm:ss, yyyy/mm/dd, and hh:mm:ss.
       </info>
     </attribute>
@@ -3489,7 +3514,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        The format attribute specifes how to display the time. If the
+        The format attribute specifies how to display the time. If the
         format attribute is not used the time will be displayed in
         seconds from EPOC. The syntax of the format attribute is
         identical to the syntax of the inputformat attribute. Instead
@@ -3534,7 +3559,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       Logs the body or creates a Logger variable in it.  You can log
       to the MMBase log with this.  It logs its body on 'service'
       within the category 'org.mmbase.PAGE.LOGTAG', followed by the file name
-      of the jsp which is executed. 
+      of the JSP which is executed. 
     </info>
     <attribute>
       <name>jspvar</name>
@@ -3566,7 +3591,7 @@ The 0 is just counter, which starts at 0 on every page.
         `language', but it is a little more. E.g. when formatting a
         date it is needed to know what the conventions are for the
         order of the fields, and what kind of characters to use to
-        seperate them. Another example is the formatting of numbers,
+        separate them. Another example is the formatting of numbers,
         which is also ruled by 'locale' conventions.
       </p>
       <p>
