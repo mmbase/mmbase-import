@@ -45,23 +45,26 @@ public class MediaFragments extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
     
     // This filter is able to find the best mediasource by a mediafragment.
-    private MediaSourceFilter mediaSourceFilter = null;
+    private MediaSourceFilter mediaSourceFilter  = null;
     
     // The media source builder
-    private MediaSources mediaSourceBuilder = null;
+    private MediaSources      mediaSourceBuilder = null;
     
     // Is the mediafragment builders already init ?
-    private static boolean initDone=false;
+    private boolean           initDone           = false;
     
     // depricated, for downwards compatability
-    private static Hashtable classification = null;
+    private Map               classification     = null;
     
     public MediaFragments() {
     }
     
     public boolean init() {
         if(initDone) return super.init();
-        initDone=true;
+
+        log.service("Init of media-fragments");
+        
+        initDone = true;
         
         boolean result = super.init();
                
@@ -91,7 +94,7 @@ public class MediaFragments extends MMObjectBuilder {
     private void retrieveClassificationInfo() {
         
         MMObjectBuilder lookup = (MMObjectBuilder) mmb.getMMObject("lookup");
-        if(lookup==null) {
+        if(lookup == null) {
             log.debug("Downwards compatible classification code not used.");
             return;
         }
@@ -103,14 +106,14 @@ public class MediaFragments extends MMObjectBuilder {
             MMObjectNode node = (MMObjectNode)e.nextElement();
             String index = node.getStringValue("index");
             String value = node.getStringValue("value");
-            log.debug("classification uses: "+index+" -> "+value);
+            log.debug("classification uses: " + index + " -> " + value);
             classification.put(index,value);
         }
         return;
     }
     
     /**
-     * create some virtual extra fields.
+     * Create some virtual extra fields.
      * @param node the mediapart
      * @param field the virtual field
      * @return the information of the virtual field
@@ -118,10 +121,10 @@ public class MediaFragments extends MMObjectBuilder {
     public Object getValue(MMObjectNode node, String field) {
         if (field.equals("showurl")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getUrl(node, new Hashtable());
+            return getURL(node, new Hashtable());
         } else if (field.equals("showurl")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getLongUrl(node, new Hashtable());
+            return getLongURL(node, new Hashtable());
         } else if (field.equals("contenttype")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
             return getContentType(node, new Hashtable());
@@ -138,27 +141,31 @@ public class MediaFragments extends MMObjectBuilder {
      * @return length in milliseconds
      */
     private long calculateLength(MMObjectNode node) {
-        long start = node.getLongValue("start");
-        long stop = node.getLongValue("stop");
+        long start  = node.getLongValue("start");
+        long stop   = node.getLongValue("stop");
         long length = node.getLongValue("length");
         
-        if(stop!=0) {
-            return stop-start;
-        } else if(length!=0) {
-            return length-start;
+        if(stop != 0) {
+            return stop - start;
+        } else if(length != 0) {
+            return length - start;
         }
         log.debug("length cannot be evaluated, no stoptime and no length");
         return 0;
     }
     
     /**
-     * will show the title in the editors
+     * Will show the title in the editors
      * @param node the mediapart node
      * @return the title of the mediapart
      */
     public String getGUIIndicator(MMObjectNode node) {
-        String str=node.getStringValue("title");
-        return(str);
+        String url = node.getStringValue("showurl");
+        if (! "".equals(url)) {
+            return "<a href=\"" + url + "\" alt=\"\" >" + node.getStringValue("title") + "</a>";
+        } else {
+            return "[" + node.getStringValue("title") + "]";
+        }        
     }
     
     /**
@@ -169,7 +176,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, etc.)
      * @return the url of the audio file
      */
-    private String getLongUrl(MMObjectNode mediaFragment, Hashtable info) {
+    private String getLongURL(MMObjectNode mediaFragment, Map info) {
         log.debug("Getting longurl");
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
         if(mediaSource==null) {
@@ -187,10 +194,10 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, etc.)
      * @return the url of the audio file
      */
-    private String getUrl(MMObjectNode mediaFragment, Hashtable info) {
+    private String getURL(MMObjectNode mediaFragment, Map info) {
         log.debug("Getting url");
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
-        if(mediaSource==null) {
+        if(mediaSource == null) {
             log.error("Cannot determine url");
             return "";
         }
@@ -203,11 +210,11 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info additional information provider by a user
      * @return the most appropriate media source
      */
-    private MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Hashtable info) {
-        
+    private MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {        
+        log.debug("mediasourcefilter " + mediaSourceFilter + " info " + info);
         MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, info);
-        if(mediaSource==null) {
-            log.error("No matching media source found by media fragment ("+mediaFragment.getIntValue("number")+")");
+        if(mediaSource == null) {
+            log.error("No matching media source found by media fragment (" + mediaFragment.getIntValue("number") + ")");
         }
         return mediaSource;
     }
@@ -237,7 +244,7 @@ public class MediaFragments extends MMObjectBuilder {
     public boolean isSubFragment(MMObjectNode mediafragment) {
         int mediacount = mediafragment.getRelationCount("mediasources");
         
-        return (mediacount==0 && mediafragment.getRelationCount("mediafragments")>0);
+        return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
     
     /**
@@ -262,13 +269,13 @@ public class MediaFragments extends MMObjectBuilder {
      * @return All mediasources related to given mediafragment
      */
     public Vector getMediaSources(MMObjectNode mediafragment) {
-        log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
+        if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
         while(isSubFragment(mediafragment)) {
-            log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
+            if (log.isDebugEnabled()) log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
             mediafragment = getParentFragment(mediafragment);
         }
         Vector mediasources = mediafragment.getRelatedNodes("mediasources");
-        log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
+        if (log.isDebugEnabled()) log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
         
         return mediasources;
     }

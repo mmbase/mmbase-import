@@ -45,22 +45,19 @@ public class MediaSources extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
     
     // Formats
-    public final static int MP3_FORMAT  = 1;
-    public final static int RA_FORMAT   = 2;
-    public final static int WAV_FORMAT  = 3;
-    public final static int PCM_FORMAT  = 4;
-    public final static int MP2_FORMAT  = 5;
-    public final static int RM_FORMAT   = 6;
-    public final static int VOB_FORMAT  = 7;
-    public final static int AVI_FORMAT  = 8;
-    public final static int MPEG_FORMAT = 9;
-    public final static int MP4_FORMAT  = 10;
-    public final static int MPG_FORMAT  = 11;
-    public final static int ASF_FORMAT  = 12;
-    public final static int MOV_FORMAT  = 13;
-    public final static int WMA_FORMAT  = 14;
-    public final static int OGG_FORMAT  = 15;
-    public final static int OGM_FORMAT  = 16;
+    public final static String FORMATS_RESOURCE = "org.mmbase.module.builders.media.resources.formats";
+    // store also in array, for quick access (in init).
+    private static String[] formats;
+
+    static {
+        ResourceBundle formatsBundle = ResourceBundle.getBundle(FORMATS_RESOURCE,  Locale.ENGLISH, MediaSources.class.getClassLoader());
+        int size = 0;
+        for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements(); e.nextElement()) size++;
+        formats = new String[size];    
+        int i = 0;
+        for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements(); formats[i++] = formatsBundle.getString((String) e.nextElement()));        
+    }
+
     
     // Codecs
     public final static int VORBIS_CODEC = 1;
@@ -70,10 +67,7 @@ public class MediaSources extends MMObjectBuilder {
     public final static int DIVX_CODEC   = 5;
     
     // Status
-    public final static int REQUEST = 1;
-    public final static int BUSY = 2;
-    public final static int DONE = 3;
-    public final static int SOURCE = 4;
+    public final static String STATUS_RESOURCE = "org.mmbase.module.builders.media.resources.states";
     
     public final static int MONO = 1;
     public final static int STEREO = 2;
@@ -139,7 +133,8 @@ public class MediaSources extends MMObjectBuilder {
         if(mediaUrlComposer==null) {
             mediaUrlComposer = new MediaUrlComposer(mediaFragmentBuilder, this);
         }
-        
+
+               
         return result;
     }
     
@@ -277,40 +272,48 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * return some human readable strings
      */
-    public Object executeFunction(MMObjectNode node, String function, String field) {
-        if (log.isDebugEnabled()) log.debug("executeFunction  " + function + "(" + field + ") on" + node);
-        if (function.equals("str")) {
-            if (field.equals("state")) {
-                int val=node.getIntValue("state");
-                switch(val) {
-                    case REQUEST: return "Request";
-                    case BUSY: return "Busy";
-                    case DONE: return "Done";
-                    case SOURCE: return "Source";
-                    default: return "Undefined";
-                }
-            } else if (field.equals("channels")) {
-                int val=node.getIntValue("channels");
-                switch(val) {
-                    case MONO: return "Mono";
-                    case STEREO: return "Stereo";
-                    default: return "Undefined";
-                }
-            } else if (field.equals("codec")) {
-                int val=node.getIntValue("codec");
-                return MediaSources.convertNumberToCodec(val);
-            } else if (field.equals("format")) {
-                int val=node.getIntValue("format");
-                return MediaSources.convertNumberToFormat(val);
-            } else {
-                return node.getStringValue(field);
-            }
-        } else if (function.equals("absoluteurl")) {
-            return getURL(node, field);
-        } else if (function.equals("urlresult")) {
-            return getURLResult(node, field);
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        if (log.isDebugEnabled()) { 
+            log.debug("executeFunction  " + function + "(" + args + ") on" + node);
         }
-        return super.executeFunction(node, function, field);
+        if (args.size() >= 1) {
+            if (function.equals("gui")) {
+                if (args.get(0).equals("state")) {
+                    String val = node.getStringValue("state");
+                    ResourceBundle bundle;
+                    if (args.size() > 1) {
+                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
+                    } else {
+                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
+                    }                    
+                    try {
+                        return bundle.getString(val);
+                    } catch (java.util.MissingResourceException e) {
+                        return bundle.getString("undefined");
+                    }
+                } else if (args.get(0).equals("channels")) {
+                    int val = node.getIntValue("channels");
+                    switch(val) {
+                    case MONO:   return "Mono";
+                    case STEREO: return "Stereo";
+                    default:     return "Undefined";
+                    }
+                } else if (args.get(0).equals("codec")) {
+                    int val = node.getIntValue("codec");
+                    return MediaSources.convertNumberToCodec(val);
+                } else if (args.get(0).equals("format")) {
+                    int val = node.getIntValue("format");
+                    return MediaSources.convertNumberToFormat(val);
+                } else {
+                    return node.getStringValue((String) args.get(0));
+                }            
+            } else if (function.equals("absoluteurl")) {
+                return getURL(node, (String) args.get(0));
+            } else if (function.equals("urlresult")) {
+                return getURLResult(node, (String) args.get(0));
+            }
+        }
+        return super.executeFunction(node, function, args);
     }
     
     /**
@@ -397,43 +400,18 @@ public class MediaSources extends MMObjectBuilder {
      * @return the format
      */
     public static String convertNumberToFormat(int format) {
-        switch(format) {
-            case MP3_FORMAT: return "mp3";
-            case RA_FORMAT: return "ra";
-            case WAV_FORMAT: return "wav";
-            case PCM_FORMAT: return "pcm";
-            case MP2_FORMAT: return "mp2";
-            case RM_FORMAT: return "rm";
-            case VOB_FORMAT: return "vob";
-            case AVI_FORMAT: return "avi";
-            case MPEG_FORMAT: return "mpeg";
-            case MP4_FORMAT: return "mp4";
-            case ASF_FORMAT: return "asf";
-            case MOV_FORMAT: return "mov";
-            case WMA_FORMAT: return "wma";
-            case OGG_FORMAT: return "ogg";
-            case OGM_FORMAT: return "ogm";
-            default: return "Undefined";
+        if (format >= formats.length || format < 0) { 
+            return "undefined";
+        } else {
+            return formats[format];
         }
     }
     
     public static int convertFormatToNumber(String format) {
         format = format.toLowerCase();
-        if(format.equals("mp3")) return MP3_FORMAT;
-        if(format.equals("ra")) return RA_FORMAT;
-        if(format.equals("wav")) return WAV_FORMAT;
-        if(format.equals("pcm")) return PCM_FORMAT;
-        if(format.equals("mp2")) return MP2_FORMAT;
-        if(format.equals("rm")) return RM_FORMAT;
-        if(format.equals("vob")) return VOB_FORMAT;
-        if(format.equals("avi")) return AVI_FORMAT;
-        if(format.equals("mpeg")) return MPEG_FORMAT;
-        if(format.equals("mp4")) return MP4_FORMAT;
-        if(format.equals("asf")) return ASF_FORMAT;
-        if(format.equals("mov")) return MOV_FORMAT;
-        if(format.equals("wma")) return WMA_FORMAT;
-        if(format.equals("ogg")) return OGG_FORMAT;
-        if(format.equals("ogm")) return OGM_FORMAT;
+        for (int i = 0; i < formats.length; i++) {
+            if(format.equals(formats[i])) return i;
+        }
         log.error("Cannot convert format ("+format+") to number");
         return -1;
     }
