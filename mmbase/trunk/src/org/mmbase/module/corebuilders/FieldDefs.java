@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.25 2002-03-22 14:20:44 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.26 2002-04-16 14:59:57 michiel Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -204,7 +204,7 @@ public class FieldDefs implements Comparable {
 
     /**
      * Retrieve the GUI name of the field depending on specified langauge.
-     * If the language is not available, the "us" value is returned instead.
+     * If the language is not available, the "en" value is returned instead.
      * If that one is unavailable a 'default' is returned.
      * @param lang the language to return the name in
      * @return the GUI Name
@@ -220,13 +220,14 @@ public class FieldDefs implements Comparable {
 
     /**
      * Retrieve the GUI name of the field.
-     * If possible, the "us" value is returned.
+     * If possible, the "en" value is returned.
      * If that one is unavailable a 'default' is returned.
      * @param lang the language to return the name in
      * @return the GUI Name
+     
      */
     public String getGUIName() {
-        String tmp=(String)GUINames.get("us");
+        String tmp = (String) GUINames.get("en");
         if (tmp!=null) return tmp;
         return GUIName;
     }

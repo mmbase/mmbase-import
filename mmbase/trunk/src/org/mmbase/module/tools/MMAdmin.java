@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.43 2002-03-29 21:28:41 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.44 2002-04-16 14:59:58 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -482,9 +482,9 @@ public class MMAdmin extends ProcessorModule {
         XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
         if (app!=null) {
             Hashtable desc=app.getDescriptions();
-            String us=(String)desc.get("us");
-            if (us!=null) {
-                return us;
+            String english = (String)desc.get("en");
+            if (english != null) {
+                return english;
             }
         }
         return "";
@@ -500,7 +500,7 @@ public class MMAdmin extends ProcessorModule {
         XMLModuleReader app=new XMLModuleReader(path+modulename+".xml");
         if (app!=null) {
             Hashtable desc=app.getDescriptions();
-            String us=(String)desc.get("us");
+            String us=(String)desc.get("en");
             if (us!=null) {
                 return us;
             }
@@ -1718,7 +1718,7 @@ public class MMAdmin extends ProcessorModule {
 
             String value=(String)vars.get("dbname");
             def.setDBName(value);
-            def.setGUIName("us",value);
+            def.setGUIName("en",value);
 
             value=(String)vars.get("mmbasetype");
             if (value.equals("STRING")) {
