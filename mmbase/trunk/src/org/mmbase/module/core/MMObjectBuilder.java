@@ -1862,7 +1862,7 @@ public class MMObjectBuilder extends MMTable {
     * Should be called by subclasses if they override it.
     * @param number Number of the changed node as a <code>String</code>
     + @param builder type of the changed node
-    + @param ctype command type, not very well documented
+    + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return always <code>true</code>
     */
     public boolean nodeRemoteChanged(String number,String builder,String ctype) {
@@ -1902,7 +1902,7 @@ public class MMObjectBuilder extends MMTable {
     * Should be called by subclasses if they override it.
     * @param number Number of the changed node as a <code>String</code>
     + @param builder type of the changed node
-    + @param ctype command type, not very well documented
+    + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return always <code>true</code>
     */
     public boolean nodeLocalChanged(String number,String builder,String ctype) {

@@ -13,53 +13,94 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 
 /**
+ * Virtual Web Master base object.
+ * Most VWM's inherit fromt his base class.
+ * The Vwm contains routines for performing tasks at certain intervals.
+ * The interval is determined from the maintime value in the Vwms builder (Maintenance time in seconds),
+ * Each interval, the vwm invokes the ProbeCall() method.
+ * VWMs perform periodic maintenance by overrideing the probeCall method (the default doesn't do anything).
+ * A VWM is also called a 'Bot'.
+ *
  * @author Daniel Ockeloen
+ * @author Pierre van Rooden (javadocs)
+ * @version 5-Apr-2001
  */
 
 public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
-	public String classname = getClass().getName();
-	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-
-	// probe
+	
+    // Logger class
+	private static Logger log = Logging.getLoggerInstance(Vwm.class.getName());
+	
+	/**
+	* Scheduler of tasks depending on VWMtask nodes assocaited with this Vwm.
+	*/
 	VwmProbe probe;
 
-	// The creation node of this VWM
+	/**
+	* The creation node of this VWM.
+	* Used to retrive the maintenance time and to maintain VWM state information.
+	*/
 	MMObjectNode wvmnode;
 
-	// Thread
+	/**
+	* Thread in which the VWM runs.
+	* This field can be sued to stop the VWM.
+	* Setting kicker to null (either from outside the thread or within) will cause the VWM
+	* to terminate it's {@link #run} method.
+	*/
 	Thread kicker=null;
 
-	// sleeptime (in seconds) 
+	/**
+	* Sleep time in seconds.
+	* This is the interval in which the VWM performs it's maintenance probes.
+	*/
 	int sleeptime;
 
-	// name of this bot, set by its subclass
+	/**
+	* What clients are using this VWM.
+	* Each client implements the {@link VwmCallBackInterface}, and can be invoked when important changes occur.
+	*/
+	Vector clients = new Vector();
+	
+	/**
+	* Name of the VWM.
+	* Retrieved from the node from the VWMs builder, but can also be set manually by the VWM's overriding class.
+	*/
 	protected String name="Unknown";
 
-	// what clients are using this vwm now
-	Vector clients = new Vector();
-
-	// its parent MMObjectBuilder that controlls all the Vwms
+	/**
+	* The VWMs builder that holds the VWM's node.
+	* The same as the <code>parent</code> attribute of {@link #vwmnode} (but a bit easier in use).
+	*/
 	protected Vwms Vwms;
 
 	/*
-	* init this bot is called by Vwms
+	* Initialize the Vwm.
+	* Called by the Vwms builder that starts the VWM.
+	* Sets a few fields, creates a new probe instance, and starts a new thread.
+	* @param vwmnode
+	* @param Vwms The VWMs builder. It is not really necessary as this is the same as the <code>parent</code> attribute of <code>vwmnode</code>.
 	*/
 	public void init(MMObjectNode vwmnode, Vwms Vwms) {
 		this.wvmnode=vwmnode;
 		this.name=vwmnode.getStringValue("name");
 		this.sleeptime=wvmnode.getIntValue("maintime");
 		this.Vwms=Vwms;
+		/* or :
+		    this.Vwms = (Vwms)vwmnode.parent;
+		*/
 		probe = new VwmProbe(this);
 		this.start();
 	}
 
 
 	/**
-	 * Starts the admin Thread.
+	 * Starts the thread for the Vwm.
 	 */
 	public void start() {
 		/* Start up the main thread */
@@ -70,7 +111,8 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 	}
 	
 	/**
-	 * Stops the admin Thread.
+	 * Stops the Vwm's thread.
+	 * Sets the kicker field to null, which causes the run method to terminate.
 	 */
 	public void stop() {
 		/* Stop thread */
@@ -81,7 +123,8 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 	}
 
 	/**
-	 * admin probe, try's to make a call to all the maintainance calls.
+	 * VWM maintenance scheduler.
+	 * Calls the {@link #probeCall} method, after which the thread sleeps for a number of seconds as set in {@link sleeptime}.
 	 */
 	public void run() {
 		kicker.setPriority(Thread.MIN_PRIORITY+1);  
@@ -89,8 +132,8 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 			try {
 				probeCall();	
 			} catch(Exception e) {
-				System.out.println("Vwm : Got a Exception in my probeCall : ");
-				e.printStackTrace();	
+				log.error("Vwm : Got a Exception in my probeCall : "+e.getMessage());
+				log.error(Logging.stackTrace(e));	
 			}
 			try {Thread.sleep(sleeptime*1000);} catch (InterruptedException e){}
 		}
@@ -99,113 +142,173 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 
 
 	/*
-	* add a client to the listen queue of the wvm
+	* Add a client to the listen queue of the wvm.
+	* @param client The client-object to add
+	* @return <code>true</code> if the client was added, <code>false</code> if it already existed in the queue.
 	*/
 	public boolean addClient(VwmCallBackInterface client) {
 		if (clients.contains(client)) {
-			System.out.println("Vwm : "+name+" allready has the client : "+client+".");
-			return(false);
+			log.warn("Vwm : "+name+" allready has the client : "+client+".");
+			return false;
 		} else {
 			clients.addElement(client);
-			return(true);
+			return true;
 		}	
 	}
 
 	/*
-	* release a client fromthe listen queue of the wvm
+	* Release a client from the listen queue of the wvm.
+	* @param client The client-object to release
+	* @return <code>true</code> if the client was released, <code>false</code> if it did not exist in the queue.
 	*/
 	public boolean releaseClient(VwmCallBackInterface client) {
 		if (clients.contains(client)) {
 			clients.removeElement(client);
+		    return true;
 		} else {
-			System.out.println("Vwm : "+name+" got a release call from : "+client+" but have no idea who he is.");
+			log.warn("Vwm : "+name+" got a release call from : "+client+" but have no idea who he is.");
+		    return false;
 		}	
-		return(true);
 	}
 
 	/*
-	* Probe callback
+	* Performs periodic maintenance.
+	* This method is called by the VWM's own {@link #run}} method.
+	* Since this does not actually do anything, perhaps this method should be abstract.
+    * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise
 	*/
 	public boolean probeCall() {
-		System.out.println("Vwm probe call : "+name);
-		return(false);
+		log.info("Vwm probe call : "+name);
+		return false;
 	}
 
+	/**
+	* Adds a new task to the list of taks to perform.
+	* Passes the task to the VWM's probe, which handles the of tasks.
+	* @param node the node describing the task (from the Vwmtasks builder)
+	* @return <code>true</code> is the task was succesfully added.
+	*/
 	public boolean putTask(MMObjectNode node) {
-//		System.out.println("Vwm : I "+name+" got a puttask");
-		probe.putTask(node);
-		return(true);
+		return probe.putTask(node);
 	}
 
+	/**
+	* Returns the name of the VWM.
+	*/
 	public String getName() {
-		return(name);
+		return name;
 	}
 
+	/*
+	* Performs maintenance based on a Vwmtasknode.
+	* This method is called by the {@link #probe} object assoviated with the VWM.
+	* the default method sets a status field to indicate an error, and sends an error email.
+	* Perhaps this method should be abstract.
+	* @param node The Vwmtask node that describes the task to be performed.
+    * @return <code>true</code> if maintenance was performed, <code>false</code> if it failed
+	*/
 	public boolean performTask(MMObjectNode node) {
-		System.out.println("Vwm ERROR : performTask not implemented in : "+name);
+		log.error("Vwm : performTask not implemented in : "+name);
 		node.setValue("status",5);
 		node.commit();
 
 		Vwms.sendMail(name,"performTask not implemented","");
-		return(false);
+		return false;
 	}
 
+	/**
+	* Signals that the task node is claimed.
+	* Sets the status of the task to 'claimed', as well as the machinename that is claiming the task.
+	* Setting a task to 'claimed' prevents it from being scheduled for performance by the Vwmtask builder.
+	* @param node The VwmTask node that describes the task
+	* @return <code>true</code> if teh task's state was cahnged, <code>false</code> if it fails.
+	*/
 	protected boolean claim(MMObjectNode node) {
-		boolean rtn=false;
-
-		node.setValue("status",2);
+		node.setValue("status",Vwmtasks.STATUS_CLAIMED);
 		node.setValue("claimedcpu",Vwms.getMachineName());
-		rtn=node.commit();
-
-		return(rtn);
+		return node.commit();
 	}
 
+	/**
+	* Signals that the task should be performed again (possibly after an initial failure).
+	* Sets the status of the task to 'request'.
+	* Setting a task to 'request' allows it to be scheduled for performance by the Vwmtask builder.
+	* @param node The VwmTask node that describes the task
+	* @return <code>true</code> if teh task's state was cahnged, <code>false</code> if it fails.
+	*/
 	protected boolean rollback(MMObjectNode node) {
-		boolean rtn=false;
-
-		node.setValue("status",1);
-		rtn=node.commit();
-
-		return(rtn);
+		node.setValue("status",Vwmtasks.STATUS_REQUEST);
+		return node.commit();
 	}
 
+	/**
+	* Signals that the task to be performed failed.
+	* Sets the status of the task to 'error'.
+	* Setting a task to 'error' prevents it from being scheduled for performance by the Vwmtask builder.
+	* @param node The VwmTask node that describes the task
+	* @return <code>true</code> if the task's state was cahnged, <code>false</code> if it fails.
+	*/
 	protected boolean failed(MMObjectNode node) {
-		boolean rtn=false;
-
-		node.setValue("status",5);
-		rtn=node.commit();
-
-		return(rtn);
+		node.setValue("status",Vwmtasks.STATUS_ERROR);
+		return node.commit();
 	}
 
+	/**
+	* Signals that the task to be performed was successful and has finished.
+	* Sets the status of the task to 'done'.
+	* Setting a task to 'done' prevents it from being scheduled for performance by the Vwmtask builder.
+	* @param node The VwmTask node that describes the task
+	* @return <code>true</code> if teh task's state was cahnged, <code>false</code> if it fails.
+	*/
 	protected boolean performed(MMObjectNode node) {
-		boolean rtn=false;
-
-		node.setValue("status",3);
-		rtn=node.commit();
-
-		return(rtn);
+		node.setValue("status",Vwmtasks.STATUS_DONE);
+		return node.commit();
 	}
 
+	/**
+	* Converts a string of properties to a Hashtable.
+	* Used to parse the 'data' field of a VwmTask node.
+	* The property format is a string with a property on each line in the format: name = value
+	* Very generic, should probably be moved to the MMObjectNode class (as in getPropertiesValue(fieldname) ).
+	* @param props the properties string
+	* @return a <code>hashtable</code> with the property name=value pairs.
+	*/
 	protected Hashtable parseProperties(String props) {
 		java.util.Properties p;
 		StringBufferInputStream b=new  StringBufferInputStream(props);
 		p=new java.util.Properties();
 		try {p.load(b);} catch(IOException e) {}
-		return(p);
+		return p;
 	}
 
+	/**
+	* Retrieves the creation node of this VWM.
+	*/
 	public MMObjectNode getVwmNode() {
-		return(wvmnode);
+		return wvmnode;
 	}
 
+	/**
+    * Called when a local node is changed.
+    * @param number Number of the changed node as a <code>String</code>
+    + @param builder type of the changed node
+    + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+    * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
+	*/
     public boolean nodeRemoteChanged(String number,String builder,String ctype)
 	{
-		return(false);
+		return false;
 	}
 
+	/**
+    * Called when a remote node is changed.
+    * @param number Number of the changed node as a <code>String</code>
+    + @param builder type of the changed node
+    + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+    * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
+	*/
     public boolean nodeLocalChanged(String number,String builder,String ctype)
 	{
-		return(false);
+		return false;
 	}
 }
