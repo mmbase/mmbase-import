@@ -1,5 +1,5 @@
 /*
-$Id: MMBaseContext.java,v 1.2 2000-02-24 13:57:38 wwwtech Exp $
+$Id: MMBaseContext.java,v 1.3 2000-02-24 14:40:44 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 13:57:38  wwwtech
+Davzev added CVS comment.
+
 */
 package org.mmbase.module.core;
 
@@ -26,7 +29,7 @@ import org.mmbase.module.database.*;
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision $Date
+ * @$Revision: 1.3 $ $Date: 2000-02-24 14:40:44 $
  */
 public class MMBaseContext {
 
