@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.26 2002-04-08 14:08:31 eduard Exp $
+ * @version $Id: MMBaseContext.java,v 1.27 2002-06-27 21:07:48 michiel Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.26 $ $Date: 2002-04-08 14:08:31 $
+ * @$Revision: 1.27 $ $Date: 2002-06-27 21:07:48 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -290,7 +290,7 @@ public class MMBaseContext {
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
             }
-            if (htmlRoot == null) {
+            if (htmlRoot == null){
                 String message = "Parameter mmbase.htmlroot not set.";
                 System.err.println(message);
                 throw new ServletException(message);
@@ -339,13 +339,18 @@ public class MMBaseContext {
      * final <code>File.separator</code>. Before calling this method the
      * init method should be called to make sure this parameter is set.
      *
-     * @return  the mmbase.config parameter
+     * @return  the mmbase.config parameter or WEB-INF/config
      */
     public synchronized static String getConfigPath() {
         if (!initialized) {
-            String message = "The init method should be called first.";
-            System.err.println(message);
-            throw new RuntimeException(message);
+            String config = System.getProperty("mmbase.config");
+            if (config == null) {
+                String message = "The init method should be called first (or start with mmbase.config parameter)";
+                System.err.println(message);
+                throw new RuntimeException(message);
+            } else {
+                return config;
+            }
         }
         return configPath;
     }
@@ -414,6 +419,7 @@ public class MMBaseContext {
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under 
      * the webserver, what is the root for this instance.
+w
      * this will return '/' or something like '/mmbase/' or so...
      * @return  the HtmlRootUrlPath
      * @deprecated  should not be needed, and this information should be requested from the ServletRequest
