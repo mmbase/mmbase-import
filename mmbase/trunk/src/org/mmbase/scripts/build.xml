@@ -602,7 +602,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- html directory of the web-server. A web server specific tag can copy--> 
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
-  <target name="web" description="Make the things which must appear web-servers html directory"
+  <target name="web" description="Make the things which must appear in the web-servers html directory"
          depends="init.compile">
     <mkdir dir="${web.dir}"/>
     <!-- create the mmbase-taglib tld: -->
@@ -622,6 +622,42 @@ Change directory to ${build.dir}/orion and run:
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+    </java>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the web directory                                            -->
+  <!-- This directory contains 'compiled' stuff, which must appear in the  -->
+  <!-- html directory of the web-server. A web server specific tag can copy--> 
+  <!-- them from here, depending on this 'web' target                      -->
+  <!-- =================================================================== -->
+  <target name="web.cust" description="Make the things which must appear in the web-servers html directory, using custom classpath"
+         depends="init.compile.cust">
+    <mkdir dir="${web.dir}"/>
+    <!-- create the mmbase-taglib tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmbase-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
           fork="yes"
           failonerror="yes">
       <arg value="-Q"/>
