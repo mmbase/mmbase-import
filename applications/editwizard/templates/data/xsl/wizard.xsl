@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.80.2.1 2002-11-18 12:51:20 michiel Exp $
+  @version $Id: wizard.xsl,v 1.80.2.2 2002-12-04 20:37:52 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -300,7 +300,7 @@
        Useful in fieldsets. 
        -->
   <xsl:template match="prefix|postfix">
-    <xsl:value-of select="name()" /><xsl:value-of select="." />
+    <xsl:value-of select="." />
   </xsl:template>
 
   <xsl:template name="prompt">
