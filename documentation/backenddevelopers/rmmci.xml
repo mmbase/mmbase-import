@@ -7,13 +7,13 @@
           <firstname>Kees</firstname>
           <surname>Jongenburger</surname>
           <affiliation>
-            <address><email>keesj@framfab.nl</email></address>
+            <address><email>keesj@dds.nl</email></address>
           </affiliation>
         </author>
     
         <copyright>
           <year>2001</year>
-          <holder>Copyright NelinQ/Framfab</holder>
+          <holder>NelinQ/Framfab</holder>
         </copyright>
     
         <abstract>
@@ -25,7 +25,7 @@
 	<sect2>
 	<title>RMMCI uses the MMCI Local implementation</title>
 	<para>
-	Developers of the MMBase community have created an interface called MMBase Cloud Interface (MMCI). This interface is a java Interface (as in interface classes). Using the MMCI it is possible to access most of the features of MMBase. The interface is there to provide abstraction between how MMBase is implemented (database/Java code) and the outside world. Using the interface it is possible to access different parts of MMBase, the cloud, transactions, node managers, nodes, modules etc... Until now there was only one implementation of the MMCI known as the "LocalContext" implementation. This  Local MMCI implementation uses core MMBase classes to implement the MMCI and is widely used. An example of functionality that is created on top of the MMCI is the JSP tag library. RMMCI uses the decorator pattern to intercept
+	Developers of the MMBase community have created an interface called MMBase Cloud Interface (MMCI). This interface is a Java Interface (as in interface classes). Using the MMCI it is possible to access most of the features of MMBase. The interface is there to provide abstraction between how MMBase is implemented (database/Java code) and the outside world. Using the interface it is possible to access different parts of MMBase, the cloud, transactions, node managers, nodes, modules etc... Until now there was only one implementation of the MMCI known as the "LocalContext" implementation. This  Local MMCI implementation uses core MMBase classes to implement the MMCI and is widely used. An example of functionality that is created on top of the MMCI is the JSP tag library. RMMCI uses the decorator pattern to intercept
 	every call to the MMCI, sends the call over a network(using RMI) and at server side RMMCI calls the "LocalContext" implementation.
 	</para>
         </sect2>
@@ -33,7 +33,7 @@
 	<title>The current MMBase MMCI architecture</title>
 	<para>
 The MMCI interface provides access to the MMBase cloud. The MMCI interface is defined in
-the package org.mmbase.bridge. Examples of such definitions are the <ulink url="http://www.mmbase.org/api/org/mmbase/bridge/Cloud.html">org.mbase.bridge.Cloud</ulink> and the <ulink url="http://www.mmbase.org/api/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink> interface.  Depending on your configuration a security model is chosen. the MMCI implementation (LocalContext) interfaces with the core MMBase classes.
+the package org.mmbase.bridge. Examples of such definitions are the <ulink url="http://www.mmbase.org/api/1.5.1/org/mmbase/bridge/Cloud.html">org.mbase.bridge.Cloud</ulink> and the <ulink url="http://www.mmbase.org/api/1.5.1/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink> interface.  Depending on your configuration a security model is chosen. the MMCI implementation (LocalContext) interfaces with the core MMBase classes.
 
 <programlisting>
   ---------------------
@@ -179,8 +179,7 @@ The communication between MMBase clouds and the RMMCI client is not encrypted, s
 <sect2>
 <title>Integration proccess</title>
 <para>
-The classes currently using the MMCI call LocalContext directly therefore will not be able to access RMMC. There is one possible solution creating a class called ContextProvider that returns
-the context wanted ContextProvider.getContext("name").
+	The classes currently using the MMCI call LocalContext directly therefore will not be able to access RMMCI. Support for multiple implementations of the bridge interface is provided by means of the ContextProvider class. This class should be used in order to be able to run programs local and remote.
 </para>
 </sect2>
 </sect1>
@@ -193,7 +192,7 @@ the context wanted ContextProvider.getContext("name").
 		    <itemizedlist>
 		      <listitem>
 			<para>edit <filename>conf.mmbase/modules/mmbaseroot.xml</filename> look for a line
-			   <literal>&lt;property name="host"&gt;127.0.0.1&lt;/property&gt;</literal> and make shure this is the right ip number for your machine. If not set correctly RMI will work for localhost but not
+			   <literal>&lt;property name="host"&gt;127.0.0.1&lt;/property&gt;</literal> and make sure this is the right IP number for your machine. If not set correctly RMI will work for localhost but not
 			   from remote machines
 			</para>
 		      </listitem>
@@ -215,13 +214,13 @@ the context wanted ContextProvider.getContext("name").
 		<para>
 		    <itemizedlist>
 		      <listitem>
-			<para>For RMMCI de default port to accept connections is 1111 java does by default not allow this
-			to get around this "problem" create a file called rmipolicy.txt with the folowing content
+			<para>For RMMCI the default port to accept connections is 1111 java does by default not allow this
+			to get around this "problem" create a file called rmipolicy.txt with the following content
 <programlisting>grant {
    permission java.net.SocketPermission *:1024-65535, connect,accept;
 };
 </programlisting>
-	and start the JVM with the folowing option
+	and start the JVM with the following option
 	<literal>java -Djava.security.policy=rmipolicy.txt -cp .:rmmci.jar:$CLASSPATH MyClassFile</literal>
 			</para>
 		      </listitem>
@@ -246,14 +245,13 @@ the context wanted ContextProvider.getContext("name").
 	<sect2>
 	<title>Example</title>
 	<para>
-<programlisting>
-import org.mmbase.bridge.*;
+<programlisting>import org.mmbase.bridge.*;
 
 import java.util.*;
 
 public class RMMCITest{
     public static void main(String[] argv){
-        CloudContext cloudContext= RemoteContext.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
+        CloudContext cloudContext= ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
         HashMap user = new HashMap();
         user.put("username", "admin");
         user.put("password", "admin2k");
@@ -274,8 +272,7 @@ public class RMMCITest{
     }
 }
 </programlisting>
-<screen>
-[keesj@carlit classes]$ <userinput>java RMMCITest</userinput>
+<screen>[keesj@carlit classes]$ <userinput>java RMMCITest</userinput>
 NodeManager mmservers
 name 	: value
 name	: MMBaseserver
@@ -291,7 +288,7 @@ jdk	: 1.3.0/Java HotSpot(TM) Client VM
 	<title>TODO</title>
 	<para>
 	<itemizedlist>
-		<listitem><para>creating a build.xml that create a jar rmmci.jar containing everything needed for using RMMCI at client side</para></listitem>
+		<listitem><para>Creating a build.xml that create a jar rmmci.jar containing everything needed for using RMMCI at client side.</para></listitem>
 	</itemizedlist>
 	</para>
 	</sect2>
