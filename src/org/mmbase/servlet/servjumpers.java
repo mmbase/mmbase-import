@@ -58,7 +58,7 @@ public class servjumpers extends JamesServlet {
             String tmpr=req.getRequestURI().substring(1);
             if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
             if (url!=null) {
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY,"OK");
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY); // 301
                 res.setContentType("text/html");
                 res.setHeader("Location",url);
                 return; // ??
