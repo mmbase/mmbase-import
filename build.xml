@@ -861,6 +861,7 @@ Build-compiler: ${build.compiler}
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
+           nowarn="${nowarn}"
            deprecation="${deprecation}">
       <include name="org/mmbase/module/tools/MMAppTool/*.java"/>
     </javac>
@@ -1056,6 +1057,7 @@ Build-compiler: ${build.compiler}
            depend="true"
            debug="${debug}"
            optimize="${optimize}"
+           nowarn="${nowarn}"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/XSLTransformer.java" />
     </javac>
@@ -1137,6 +1139,7 @@ Build-compiler: ${build.compiler}
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
+           nowarn="${nowarn}"
            deprecation="${deprecation}">
            <include name="org/mmbase/util/BuilderList.java" />
     </javac>
