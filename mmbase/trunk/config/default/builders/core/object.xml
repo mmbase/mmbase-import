@@ -42,7 +42,7 @@
     <plural xml:lang="fr">Objets</plural>
     <plural xml:lang="fy">Objekts</plural>
     <plural xml:lang="it">Oggetti</plural>
-    <singular xml:lang="ja">舞台</singular>
+    <plural xml:lang="ja">舞台</plural>
   </names>
 
   <!-- <descriptions>
