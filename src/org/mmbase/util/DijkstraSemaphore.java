@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class DijkstraSemaphore {
     
-    private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DijkstraSemaphore.class.getName());
     
     private int count;
     private int maxCount;
