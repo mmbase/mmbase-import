@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.31 2000-11-06 12:47:01 vpro Exp $
+	$Id: HtmlBase.java,v 1.32 2000-11-07 10:48:19 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.31  2000/11/06 12:47:01  vpro
+	Rico: fixed speling error
+	
 	Revision 1.30  2000/08/29 15:04:37  wwwtech
 	Rob: Added TYPENAME tag. usage $MOD-MMBASE-TYPENAME-400 gives person
 	
@@ -122,7 +125,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.31 2000-11-06 12:47:01 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.32 2000-11-07 10:48:19 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -131,6 +134,7 @@ public class HtmlBase extends ProcessorModule {
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 	private int multilevel_cachesize=150;
 	private LRUHashtable multilevel_cache;
+	private boolean cachedebug=true;
 
 	MMBase mmb=null;
 
@@ -886,7 +890,7 @@ public class HtmlBase extends ProcessorModule {
 		results=(Vector)multilevel_cache.get(hash);
 	
 		if (results==null || reload) {
-			if (debug) {
+			if (cachedebug) {
 				if (reload) {
 					debug("doMultiLevel cache RELOAD "+hash);
 				} else {
@@ -933,7 +937,7 @@ public class HtmlBase extends ProcessorModule {
 				debug("doMultilevel("+type+")="+(len)+" ms URI for page("+sp.req_line+")");
 			}
 		} else {
-			if (debug) debug("doMultiLevel cache HIT  "+hash);
+			if (cachedebug) debug("doMultiLevel cache HIT  "+hash);
 		}
 		return(results);
 	}
