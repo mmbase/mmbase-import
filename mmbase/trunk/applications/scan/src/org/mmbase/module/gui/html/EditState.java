@@ -12,7 +12,7 @@ package org.mmbase.module.gui.html;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.module.*;
-import org.mmbase.uti.logging.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 
 /**
@@ -22,7 +22,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.9 2001-03-09 10:10:46 pierre Exp $
+ * @version $Id: EditState.java,v 1.10 2001-03-09 11:16:33 pierre Exp $
  */
 public class EditState {
 
