@@ -12,6 +12,7 @@ package org.mmbase.module.gui.html;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.module.*;
+import org.mmbase.uti.logging.*;
 import org.mmbase.module.core.*;
 
 /**
@@ -21,19 +22,20 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.8 2000-11-06 12:40:12 vpro Exp $
+ * @version $Id: EditState.java,v 1.9 2001-03-09 10:10:46 pierre Exp $
  */
 public class EditState {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
-
+    /**
+    * Logging instance
+    */
+	private static Logger log = Logging.getLoggerInstance(EditStateNode.class.getName());
+	
+	private String user;
+	
 	Vector nodes=new Vector();
 	EditStateNode curNode;
 	MMBase mmBase;
-
-	private String user;
 	
 	public EditState(String user,MMBase mmBase) {
 		if( mmBase != null )
@@ -42,11 +44,11 @@ public class EditState {
 			//pushState();
 		}
 		else
-			debug("EditState("+mmBase+"): ERROR: MMBase is not valid!");
+	        log.error("EditState("+mmBase+"): MMBase is not valid!");
 		if (user!=null) {
 			this.user=user;
 		} else {
-			debug("EditState("+user+"): ERROR: User is not valid");
+			log.error("EditState("+user+"): User is not valid");
 		}
 	}
 
@@ -78,9 +80,9 @@ public class EditState {
 			if( !fieldname.equals("") )
 				result = curNode.setSearchValue(fieldname,value);
 			else
-				debug("setSearchValue("+fieldname+","+value+"): ERROR: fieldname is empty!");
+				log.error("setSearchValue("+fieldname+","+value+"): fieldname is empty!");
 		else
-			debug("setSearchValue("+fieldname+","+value+"): ERROR: fieldname is null!");
+			log.error("setSearchValue("+fieldname+","+value+"): fieldname is null!");
 		
 		return result;
 	}
@@ -92,9 +94,9 @@ public class EditState {
 			if( !name.equals("") )
 				result = curNode.getSearchValue(name);
 			else
-				debug("getSeachValue("+name+"): ERROR: name is empty!");
+				log.error("getSeachValue("+name+"): name is empty!");
 		else
-			debug("getSeachValue("+name+"): ERROR: name is null!");
+			log.error("getSeachValue("+name+"): name is null!");
 
 		return result;
 	}
@@ -115,9 +117,9 @@ public class EditState {
 			if( !fieldname.equals("") )
 				result = curNode.setHtmlValue(fieldname,value);
 			else
-				debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is !");
+				log.error("setHtmlValue("+fieldname+","+value+"): fieldname is !");
 		else
-			debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is null!");
+			log.error("setHtmlValue("+fieldname+","+value+"): fieldname is null!");
 		
 		return result;
 	}
@@ -129,9 +131,9 @@ public class EditState {
 			if( !name.equals("") )	
 				result = curNode.getHtmlValue(name);
 			else
-				debug("getHtmlValue("+name+"): ERROR: name is empty!");
+				log.error("getHtmlValue("+name+"): name is empty!");
 		else
-			debug("getHtmlValue("+name+"): ERROR: name is null!");
+			log.error("getHtmlValue("+name+"): name is null!");
 
 		return result;
 	}
@@ -154,13 +156,13 @@ public class EditState {
 						curNode.setEditNode(number,userName);
 					}
 					else
-						debug("setEditNode("+number+","+userName+"): ERROR: username is empty!");
+						log.error("setEditNode("+number+","+userName+"): username is empty!");
 				else
-					debug("setEditNode("+number+","+userName+"): ERROR: username is null!");
+					log.error("setEditNode("+number+","+userName+"): username is null!");
 			else
-				debug("setEditNode("+number+","+userName+"): ERROR: number is empty!");
+				log.error("setEditNode("+number+","+userName+"): number is empty!");
 		else
-			debug("setEditNode("+number+","+userName+"): ERROR: number is null!");
+			log.error("setEditNode("+number+","+userName+"): number is null!");
 	}
 
 	public MMObjectNode getEditNode() {
@@ -305,9 +307,9 @@ public class EditState {
 				{
 					pushState();
 					curNode.setBuilder(name);
-				} //else debug("setBuilder("+name+"): ERROR: curNode is null!");
-			} else debug("setBuilder("+name+"): ERROR: name is empty!");
-		} else debug("setBuilder("+name+"): ERROR: name is null!");
+				} //else log.error("setBuilder("+name+"): curNode is null!");
+			} else log.error("setBuilder("+name+"): name is empty!");
+		} else log.error("setBuilder("+name+"): name is null!");
 	}
 
 	public String getBuilderName() {
@@ -315,7 +317,7 @@ public class EditState {
 		if( curNode != null )
 			result = curNode.getBuilderName();
 		else
-			debug("getBuilderName(): ERROR: curNode("+curNode+") is null!");
+			log.error("getBuilderName(): curNode("+curNode+") is null!");
 
 		return result;
 	}
@@ -344,11 +346,11 @@ public class EditState {
 		int src=curNode.getEditNodeNumber();
 		EditStateNode node2=(EditStateNode)nodes.elementAt(pos-1);
 		if (node2!=null) {
-			debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
+			log.debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
 			mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
 			result=true;
 		} else {
- 			debug("addRelation("+owner+"): ERROR: src("+src+"), pos("+pos+"), cannot create relation from "+node2+" to "+src+" reltype 2");
+ 			log.error("addRelation("+owner+"): src("+src+"), pos("+pos+"), cannot create relation from "+node2+" to "+src+" reltype 2");
 		}
 		return(result);
 	}
