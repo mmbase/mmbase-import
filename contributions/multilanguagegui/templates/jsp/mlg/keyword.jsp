@@ -16,6 +16,7 @@
  <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
+<body onLoad="javascript:self.focus();document.edit.lang.focus()">
 <center>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="75%">
 	<tr>
@@ -50,7 +51,7 @@
 		</mm:nodelistfunction>
 
 	<tr>
-	<form action="keyword.jsp" method="post">
+	<form action="keyword.jsp" method="post" name="edit">
 	<th><input size="2" name="lang" /></th>
 	<td>
 		<input size="32" name="value" />
@@ -68,4 +69,5 @@
 </table>
 </center>
 </mm:cloud>
+</body>
 </html>
