@@ -10,16 +10,13 @@
 
 <h1>Container tags (more)</h1>
 
-<mm:cloud jspvar="cloud">
-<table>
-<tr><td colspan="2">
-  The query container tags can also be used to make search-tools.
-</td></tr>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/containersearch.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/containersearch.jsp" %></td>
-</tr>
-</table>
+<mm:cloud>
+  <p>  
+    The query container tags can also be used to make search-tools.
+  </p>
+  <%@include file="codesamples/containersearch.jsp" %>
+  <hr />
+  <pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/containersearch.jsp" /></mm:formatter></pre>
 </mm:cloud>
 </body>
 </html>

@@ -4,3 +4,24 @@ textarea {
   width: 100%;
   height: 20ex;
 }
+
+input { 
+  width: 100%;
+} 
+
+td { 
+  vertical-align: top;
+}
+
+table.search {
+  width: 100%;
+  display: block;
+  position: relative;
+}
+table.search input.small { 
+  width: 10ex;
+}
+
+table.search input { 
+  width: auto;
+}
