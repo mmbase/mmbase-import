@@ -71,29 +71,36 @@ public class XMLContextDepthWriter  {
 		Enumeration nods=nodes.elements();
 		while (nods.hasMoreElements()) {
 			MMObjectNode node=bul.getNode(((Integer)nods.nextElement()).intValue());
-			if (type==node.getIntValue("otype")) {
-				int number=node.getIntValue("number");
-				String owner=node.getStringValue("owner");
-
-				// start the node
-				String tm=mmb.OAlias.getAlias(number);
-				if (tm==null) {
-					body+="\t<node number=\""+number+"\" owner=\""+owner+"\">\n";
-				} else {
-					body+="\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n";
-				}
-				// write the values of the node
-				Hashtable values=node.getValues();	
-				Enumeration nd=values.keys();
-				while (nd.hasMoreElements()) {
-					String key=(String)nd.nextElement();
-					body+=writeXMLField(key,node,subtargetpath,mmb);
-				}
-	
-				// end the node
-				body+="\t</node>\n\n";
-				nrofnodes++;
+			/* was wrong check daniel
+			String exists=node.getStringValue("_exists");
+			if (exists==null || exists.equals("no")) {
 			}
+			*/
+				if (type==node.getIntValue("otype")) {
+					int number=node.getIntValue("number");
+					String owner=node.getStringValue("owner");
+	
+					// start the node
+					String tm=mmb.OAlias.getAlias(number);
+					if (tm==null) {
+						body+="\t<node number=\""+number+"\" owner=\""+owner+"\">\n";
+					} else {
+						body+="\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n";
+					}
+					// write the values of the node
+					Hashtable values=node.getValues();	
+					Enumeration nd=values.keys();
+					while (nd.hasMoreElements()) {
+						String key=(String)nd.nextElement();
+						if (!key.startsWith("_")) {
+							body+=writeXMLField(key,node,subtargetpath,mmb);
+						}
+					}
+		
+					// end the node
+					body+="\t</node>\n\n";
+					nrofnodes++;
+				}
 		
 		}
 	
@@ -133,29 +140,36 @@ public class XMLContextDepthWriter  {
 		Enumeration nods=nodes.elements();
 		while (nods.hasMoreElements()) {
 			MMObjectNode node=bul.getNode(((Integer)nods.nextElement()).intValue());
-			if (type==node.getIntValue("otype")) {
-				int number=node.getIntValue("number");
-				String owner=node.getStringValue("owner");
-				int snumber=node.getIntValue("snumber");
-				int dnumber=node.getIntValue("dnumber");
-
-				// start the node
-				body+="\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+snumber+"\" dnumber=\""+dnumber+"\" rtype=\""+namedrel+"\">\n";
-				// write the values of the node
-				Hashtable values=node.getValues();	
-				Enumeration nd=values.keys();
-				while (nd.hasMoreElements()) {
-					String key=(String)nd.nextElement();
-	
-					if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount") && !key.equals("snumber") && !key.equals("dnumber") && !key.equals("rnumber")) {
-						body+="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
-					}
-				}
-	
-				// end the node
-				body+="\t</node>\n\n";
-				nrofnodes++;
+			/* was wrong checke
+			String exists=node.getStringValue("_exists");
+			if (exists==null || exists.equals("no")) {
 			}
+			*/
+				if (type==node.getIntValue("otype")) {
+					int number=node.getIntValue("number");
+					String owner=node.getStringValue("owner");
+					int snumber=node.getIntValue("snumber");
+					int dnumber=node.getIntValue("dnumber");
+	
+					// start the node
+					body+="\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+snumber+"\" dnumber=\""+dnumber+"\" rtype=\""+namedrel+"\">\n";
+					// write the values of the node
+					Hashtable values=node.getValues();	
+					Enumeration nd=values.keys();
+					while (nd.hasMoreElements()) {
+						String key=(String)nd.nextElement();
+		
+						if (!key.startsWith("_")) {
+							if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount") && !key.equals("snumber") && !key.equals("dnumber") && !key.equals("rnumber")) {
+								body+="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
+							}
+						}
+					}
+		
+					// end the node
+					body+="\t</node>\n\n";
+					nrofnodes++;
+				}
 		}
 	
 		// write the footer	
