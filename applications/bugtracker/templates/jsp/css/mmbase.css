@@ -1,6 +1,6 @@
 
 /*   background="images/back.gif" text="#42BDAD" bgcolor="#00425B" link="#42BDAD" alink="#42BDAD" vlink="#42BDAD"> */
-body.basic { background-image: url("../images/background.gif");
+body.basic { background-image: url("../images/back.gif");
        background-color: white;
        background-repeat: repeat-y;
        margin-top: 1em;
