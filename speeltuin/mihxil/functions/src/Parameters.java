@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.6 2003-11-28 15:11:23 michiel Exp $
+ * @version $Id: Parameters.java,v 1.7 2003-12-11 21:56:22 michiel Exp $
  * @see Parameter
  */
 
@@ -120,6 +120,7 @@ public class Parameters extends AbstractList implements List  {
         }
         return array;        
     }
+
 
     /**
      * Adds the definitions to a List. Resolves the Attribute.Wrapper's (recursively).

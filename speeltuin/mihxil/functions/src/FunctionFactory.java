@@ -20,7 +20,7 @@ import java.util.*;
  * This I use now to instantiate function objects, but perhaps it is silly. (Can perhaps add static methods to the impelentation themselves or so).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.4 2003-11-24 16:08:40 michiel Exp $
+ * @version $Id: FunctionFactory.java,v 1.5 2003-12-11 21:56:21 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {
@@ -140,6 +140,11 @@ public class FunctionFactory {
     public static Function getFunction(Module module, String name) {
         // defined in Module XML?
         throw new UnsupportedOperationException("");
+    }
+
+
+    public static Function getFunction(Class claz, String name) {
+        return new LocalFunction(name, claz);
     }
 
 
