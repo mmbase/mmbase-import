@@ -24,25 +24,10 @@ import org.mmbase.bridge.Node;
  * @author Michiel Meeuwissen
  **/
 
-public class ImageTag extends NodeReferrerTag  implements Writer {
+public class ImageTag extends FieldTag {
 
     private String template = null;
-    protected WriterHelper helper = new WriterHelper();
-    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setVartype(String t) throws JspTagException {
-        throw new JspTagException("Image tag can only produces Strings");
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
-    }
-    public Object getWriterValue() throws JspTagException {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
     /**
      * The transformation template
      */
@@ -52,37 +37,41 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     }
 
     public int doStartTag() throws JspTagException {
-        Node node = getNode();
+        Node node = getNodeVar();
         if (node.getNodeManager().getField("handle") == null) {
             throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
-        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
 
-        int number;
+        // some servlet implementation's 'init' cannot determin this theirselves, help them a little:
+        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+        String context = req.getContextPath();
+
+        /* perhaps 'getSessionName' should be added to CloudProvider
+         * EXPERIMENTAL 
+         */
+        String sessionName = "cloud_mmbase";
+        CloudTag ct = null;
+        ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+        if (ct != null) {
+            sessionName = ct.getSessionName();
+        }        
+
+
+        String url;
         if (template == null) {
             // the image itself
-            number = node.getNumber();
+            url = node.getStringValue("servletpath(" + sessionName + ",number," + context + ")");
         } else {
             // the cached image
-            number = node.getIntValue("cache("+ template + ")");
+            url = node.getStringValue("servletpath(" + sessionName + ",cache(" + template + ")," + context + ")");
         }
-
-        // how about remote clouds!!!
-
-        String page = node.getStringValue("servletpath(" + req.getContextPath() + ")") + number;
-
-        helper.setValue(page);
-        helper.setJspvar(pageContext);
+        helper.setValue(url);
+        helper.setPageContext(pageContext);
+        helper.setJspvar();
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
-
-    public int doEndTag() throws JspTagException {
-        helper.setBodyContent(bodyContent);
-        return helper.doEndTag();
-    }
-
 }
 
