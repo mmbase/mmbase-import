@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.30 2003-04-28 14:40:56 michiel Exp $
+ * @version $Id: Config.java,v 1.31 2003-05-01 17:29:27 pierre Exp $
  */
 
 public class Config {
@@ -76,6 +76,13 @@ public class Config {
         public String constraints;
         public String orderBy;
         public String directions;
+        public String searchDir;
+
+        public String searchFields;
+        public String searchValue="";
+        public String searchType="like";
+        public String baseConstraints;
+
         public int    age = -1;
         public int    start = 0;
         public boolean distinct;
