@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.100 2004-07-05 15:24:49 pierre Exp $
+ * @version $Id: CloudTag.java,v 1.101 2004-09-14 17:57:25 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -436,7 +436,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             cloud = null;
             return false;
         } catch (Throwable t) {
-            throw new TaglibException("Could not create anonymous cloud because " + t.getMessage(), t);
+            throw new TaglibException("Could not create anonymous cloud because " + t.getClass().getName() + ": " + t.getMessage(), t);
         }
     }
 
