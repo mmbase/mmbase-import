@@ -92,7 +92,7 @@ public class ImportTag extends WriteTag {
         helper.setTag(this);
         if (getId() == null) {
             log.trace("No id was given, using externid ");
-            useId = externid.getString(this);
+            useId = (String) externid.getValue(this);
         } else {
             useId = id;
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
