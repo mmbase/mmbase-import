@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: RawAudioDef.java,v 1.11 2002-02-20 10:43:27 pierre Exp $
+ * @version $Id: RawAudioDef.java,v 1.12 2002-02-20 11:45:19 pierre Exp $
  */
 public class RawAudioDef implements Comparable, CompareInterface, Sortable {
 
@@ -229,6 +229,7 @@ public class RawAudioDef implements Comparable, CompareInterface, Sortable {
      * Compares this RawAudio object to the passed RawAudio object
      * RawAudio objects are compared (and ordered) by their id, speed, and channel.
      * @duplicate also used in RawVideoDef
+     * @since MMBase-1.6
      * @param o the object to compare this object to
      * @return 0 if the objects are the same, -1 if the passed object is greater than this object,
      *          1 passed if the object is smaller than this object.
@@ -268,6 +269,7 @@ public class RawAudioDef implements Comparable, CompareInterface, Sortable {
      * Compares whether this object and the passed object are the same.
      * Objects are the same if they have the same id, speed, and nr of channels
      * @duplicate also used in RawVideoDef
+     * @since MMBase-1.6
      * @param o the object to compare this object to
      * @return true if the objects are the same, false otherwise
      */
