@@ -9,24 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
-import java.io.IOException;
 
-import java.util.Enumeration;
+import java.io.*;
+import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.Node;
-
-//import org.mmbase.util.HttpPost;
-//import com.oreilly.servlet.MultipartRequest;
-
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 
 
@@ -717,9 +710,23 @@ class MMultipartRequest {
     public byte[] getBytes(String param) throws JspTagException {
         try {
             log.debug("Getting bytes for " + param);
-            return o.getPostParameterBytes(param);
-        }
-        catch (org.mmbase.util.PostValueToLargeException e) {
+	    if (o.isPostedToFile()){
+		File file = new File(o.getPostParameterFile(param));
+		if (! file.exists() ){
+		}
+		FileInputStream fis = new FileInputStream(file);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buffer = new byte[200];
+		int readsize =0;
+		while ( (readsize = fis.read(buffer)) >0){
+		    baos.write(buffer,0,readsize);
+		}
+		fis.close();
+		return baos.toByteArray();
+	    } else {
+                return o.getPostParameterBytes(param);
+	    }
+        } catch (Exception e) {
             log.warn(Logging.stackTrace(e));
             throw new JspTagException(Logging.stackTrace(e));
         }
