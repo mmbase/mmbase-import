@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.9 2000-05-18 15:10:28 wwwtech Exp $
+$Id: AudioParts.java,v 1.10 2000-05-19 11:15:42 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/05/18 15:10:28  wwwtech
+Rico: built in number - text translations of both source/class/storage
+
 Revision 1.8  2000/03/30 13:11:29  wwwtech
 Rico: added license
 
@@ -39,7 +42,7 @@ Davzev activated replace() method and GETURL and fixed GETURL related methods.
  * machines. Do NOT use before that, also ignore all errors stemming from
  * this builder
  *************************************************************************/
-package nl.vpro.mmbase.module.builders;
+package org.mmbase.module.builders;
 
 import java.util.*;
 import java.io.*;
@@ -57,7 +60,7 @@ import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.9 2000-05-18 15:10:28 wwwtech Exp $
+ * @version $Id: AudioParts.java,v 1.10 2000-05-19 11:15:42 wwwtech Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
