@@ -1,39 +1,7 @@
 <!--
-This "enhanced" tld file will be converted to a "normal" tld and a html file.
+  This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
-To convert this file to a standard .tld file you need  an xslt engine like xalan:
-java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2tld.xslt  > mmbase-taglib.tld
-
-To convert this file to html documentation you need  an xslt engine:
-java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
-
-
-The following additional tags are possible between <tag> and </tag>:
-
-  <info>...</info>
-
-  <example>...</example>
-
-
-The following additional tags are possible between <attribute> and </attribute>:
-
-  <requirednote></requirednote> (To note that requirement of this attribute
-                                 is dependant on other conditions.)
-
-  <info>...</info>
-
-  <possiblevalue> (Use one or more to list a possible values)
-    <value>...</value>
-    <info>...</info>
-  </possiblevalue>
-
-  <examplevalue> (Use one ore more to give some example values)
-    <value>...</value>
-    <info>...</info>
-  </examplevalue>
-
-Use one or more possiblevalue tags if you want to list all possible values. Use
-one or more examplevalue tags is you want to give some example values.
+  @see ../mmbase-taglib.xml
 -->
 <taglib>
   <tlibversion>1.0</tlibversion>
@@ -41,6 +9,19 @@ one or more examplevalue tags is you want to give some example values.
   <shortname>mmcommunity</shortname>
   <uri>http://www.mmbase.org/mmcommunity-taglib-1.0</uri>
   <info>Tag library for the MMBase Community Module (communityprc), based on MMCI(MMBase Cloud Interface).</info>
+  <tagtypes>
+    <type name="all">
+      <description>all mmbase community tags</description>
+      <info>
+        <p>
+          The Community Taglib provides an interface to the mmbase community nodemanagers.
+        </p>
+        <p>
+          The most useful feature is the 'tree'-tag.
+        </p>
+      </info>
+    </type>
+  </tagtypes>
   <tag>
     <name>tree</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.community.TreeTag</tagclass>
