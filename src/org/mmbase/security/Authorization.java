@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.18 2003-08-05 21:23:37 michiel Exp $
+ * @version $Id: Authorization.java,v 1.19 2003-08-28 06:29:35 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
-    private static Logger log = Logging.getLoggerInstance(Authorization.class);
+    private static final Logger log = Logging.getLoggerInstance(Authorization.class);
 
     /**
      *	This method should be overrided by an extending class.
@@ -168,13 +168,19 @@ public abstract class Authorization extends Configurable {
 
 
     /**
-     * Checks rights on a query. This means that the query will be changed (if possible) to return
-     * only checked results for the given user. Of course, this will normally only be implemented for the
-     * 'READ' operation.
+     * Checks rights on a query. This means that the query is explored and (if possible) a
+     * constraint for it is constructed, which, if appied to the query, makes it return only
+     * checked results for the given user. 
+     * 
+     * Of course, this will normally only be implemented for the  'READ' operation.
      *
-     * @param user The UserContext, for which the query must be considered
-     * @param query The query to be adapted.
-     * @return true of the query now will certainly give only readable results, false if 'check' still has to be called on every individual result.
+     * The constraint is <em>not</em> applied automaticly. This has to be done by using {@link
+     * Query#setSecurityConstraint}.
+     *
+     * @param user  The UserContext, for which the query must be considered
+     * @param query The query to be explored
+     * @return      A {@link QueryCheck} structure (containing whether the constriant is sufficient, and the
+     *              new constraint or null).
      * 
      * @since MMBase-1.7
      */
@@ -190,7 +196,7 @@ public abstract class Authorization extends Configurable {
      *
      * @since MMBase-1.7
      */
-    public static QueryCheck NO_CHECK       = new QueryCheck(false, null);
+    public static final QueryCheck NO_CHECK       = new QueryCheck(false, null);
 
     /**
      * Constant which can be used as a result for the check query function. It means: 'No extra
@@ -200,7 +206,7 @@ public abstract class Authorization extends Configurable {
      *
      * @since MMBase-1.7
      */
-    public static QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
+    public static final QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
 
 
     /**
@@ -218,9 +224,16 @@ public abstract class Authorization extends Configurable {
         public QueryCheck(boolean ch, Constraint co) {
             check = ch; constraint = co;
         }
+        /**
+         * Whether the contained result completely checks for security.
+         */
         public boolean isChecked() {
             return check;
         }
+        /**
+         * The stored constraint. This can be null if no constraint was needed (if checked), or no helpfull
+         * constraint could be constructed (if not checked).
+         */
         public Constraint getConstraint() {
             return constraint;
         }
