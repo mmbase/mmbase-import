@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.15 2004-02-16 10:59:51 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.16 2004-02-16 17:27:03 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -42,7 +42,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     protected Step step = null;
 
-    protected List extraFields = new ArrayList();
 
     BasicNodeQuery(Cloud c) {
         super(c);
@@ -117,23 +116,41 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return null; // hmm.
     }
 
-    public StepField addField(Step step, Field field) {
-        BasicStepField sf = (BasicStepField) super.addField(step, field);
-        extraFields.add(sf);
-        return sf;
+
+    /**
+     * Adds all fields of the gives collection, unless it is a field of the 'step' itself
+     */
+    protected void addFields(Collection c) {
+        Iterator i = c.iterator();
+        while (i.hasNext()) {
+            BasicStepField sf = (BasicStepField) i.next();
+            Step addedStep = sf.getStep();
+            if (addedStep.equals(step)) continue; // these are among the node-fields already
+            query.addField(addedStep, sf.getFieldDefs());
+        }
+    }
+
+    // overrides setDistinct of super, because it should consider 'step' Fields.
+    public Query setDistinct(boolean distinct) {
+        if (used) throw new BridgeException("Query was used already");
+        query.setDistinct(distinct);
+        if (distinct) { // in that case, make sure only the 'explicitely' added fields remain.
+            query.removeFields();
+            query.addFields(step);
+            implicitFields.clear();
+            addFields(explicitFields);
+        }
+        return this;
     }
 
     public Step setNodeStep(Step step) {
         // Make sure the query _starts_ with the Node-fields.
         // otherwise BasicQueryHandler.getNodes could do it wrong...
         query.removeFields();
-        query.addFields(step); 
-        Iterator i = extraFields.iterator();
-        while (i.hasNext()) {
-            BasicStepField sf = (BasicStepField) i.next();
-            Step addedStep = sf.getStep();
-            if (addedStep.equals(step)) continue; // these are among the node-fields already
-            query.addField(addedStep, sf.getFieldDefs());
+        query.addFields(step);         
+        addFields(explicitFields);
+        if (! isDistinct() ) {
+            addFields(implicitFields);
         }
         Step prevStep = this.step;
         this.step = step;
