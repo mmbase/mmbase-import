@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.9 2004-07-10 12:16:48 nico Exp $
+ * @version $Id: TreeTag.java,v 1.10 2004-07-22 13:58:42 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -98,30 +98,18 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     public void setMaxdepth(String md) throws JspTagException {
         maxDepth = getAttribute(md);
     }
+
+    /**
+     * @since MMBase 1.7.1
+     */
     public void setOrderby(String md) throws JspTagException {
         orderField = getAttribute(md);
     }
+    /**
+     * @since MMBase 1.7.1
+     */
     public void setDirection(String md) throws JspTagException {
         orderDirection = getAttribute(md);
-    }
-
-    private int getDirection() throws JspTagException {
-        String dir = orderDirection.getString(this).toUpperCase();
-        int order = 0;
-        if (dir.equals("")) {
-            order = SortOrder.ORDER_ASCENDING;
-        } else if (dir.equals("UP")) {
-            order = SortOrder.ORDER_ASCENDING;
-        } else if (dir.equals("DOWN")) {
-            order = SortOrder.ORDER_DESCENDING;
-        } else if (dir.equals("ASCENDING")) {
-            order = SortOrder.ORDER_ASCENDING;
-        } else if (dir.equals("DESCENDING")) {
-            order = SortOrder.ORDER_DESCENDING;
-        } else {
-            throw new JspTagException("Unknown sort-order '" + dir + "'");
-        }
-        return order;
     }
 
 
@@ -212,7 +200,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                         role.getString(this), 
                         searchDir.getString(this),
                         orderField.getString(this),
-                        getDirection()),
+                        Queries.getSortOrder(orderDirection.getString(this))),
                 maxDepth.getInt(this, 5));
 
         }
