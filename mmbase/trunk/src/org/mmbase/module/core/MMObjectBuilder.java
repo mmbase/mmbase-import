@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.201 2003-01-03 12:42:38 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.202 2003-01-03 16:27:51 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1128,8 +1128,18 @@ public class MMObjectBuilder extends MMTable {
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where) {
-        // do the query on the database
-        return basicSearch(getQuery(where));
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are caught.
+        // - The result is converted to a vector.
+        Vector result = new Vector();
+        NodeSearchQuery query = getSearchQuery(where);
+        try {
+            List nodes = getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return result;
     }
 
     /**
