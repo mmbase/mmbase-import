@@ -4,6 +4,6 @@
 >
 
 <project name="cloudcontext" default="jar" basedir=".">
-  <property name="project.name"   value="mmbase-cloudcontextsecurity" />
+  <property name="project.name"   value="cloudcontextsecurity" />
   &base;
 </project>
