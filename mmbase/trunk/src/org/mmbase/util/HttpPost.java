@@ -45,7 +45,7 @@ public class HttpPost {
     /**    
      * Maximum postparamtersize to decode the the parameters into memory
      */
-    private int MaximumPostbufferSize=1500000; // 1024 switch to disk needs to be param
+    private int MaximumPostbufferSize=1*1024*1024; // 1024 switch to disk needs to be param
 
 	/**
 	* post buffer, holds the values ones decoded
@@ -55,7 +55,7 @@ public class HttpPost {
 	/**
 	 * maxFileSize for a property
 	 */
-	private int maxFileSize = 10485760; // 10 Mb
+	private int maxFileSize = 4*1024*1024; // 4 Mb
  
     /**
      * Some postparameters are decoded to disk
