@@ -66,8 +66,8 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     /**
      * The search parameter, determines how directionality affects the search.
      * Possible values are <code>both</code>, <code>destination</code>,
-     * <code>source</code>, and <code>all</code>
-     * @param search the swerach value
+     * <code>source</code>, <code>either</code> and <code>all</code>
+     * @param search the search value
      */
     public void setSearchdir(String search) throws JspTagException {
         this.search = getAttribute(search);
@@ -116,11 +116,12 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         if (searchString.equals("")) {
             searchString="BOTH";
         } else if ( !searchString.equals("BOTH") &&
+                    !searchString.equals("EITHER") &&
                     !searchString.equals("SOURCE") &&
                     !searchString.equals("DESTINATION") &&
                     !searchString.equals("ALL"))  {
             throw new JspTagException("Search should be one of BOTH, SOURCE, "+
-                        "DESTINATION, or ALL (value found was " + searchString + ")");
+                        "DESTINATION, EITHER, or ALL (value found was " + searchString + ")");
         }
 
         String distinctString = distinct.getString(this);
