@@ -37,7 +37,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.97 2005-02-22 15:20:23 keesj Exp $
+ * @version $Id: MMAdmin.java,v 1.98 2005-03-01 15:13:33 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -195,7 +195,7 @@ public class MMAdmin extends ProcessorModule {
 
             if (o instanceof Cloud) {
                 Cloud cloud = (Cloud) o;
-                Rank curRank = Rank.getRank(cloud.getUser().getRank());
+                Rank curRank = cloud.getUser().getRank();
                 if (curRank.getInt() >= Rank.ADMIN.getInt()) {
                     // log.service("Found an administrator cloud in session key=" + attribute);
                     return true;
@@ -390,7 +390,7 @@ public class MMAdmin extends ProcessorModule {
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return ("" + (MultilevelCache.getCache().getSize()));
+                return ("" + (MultilevelCache.getCache().maxSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return ("" + MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -400,7 +400,7 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("NODECACHEPERFORMANCE")) {
                 return ("" + (MMObjectBuilder.nodeCache.getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
-                return ("" + (MMObjectBuilder.nodeCache.getSize()));
+                return ("" + (MMObjectBuilder.nodeCache.maxSize()));
             } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
                 return ("" + (MMObjectBuilder.TemporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
