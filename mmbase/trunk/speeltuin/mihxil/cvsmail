@@ -19,8 +19,16 @@ my $dir = shift @files;
 my $basedir = "/home/michiel/";
 my $toaddress     = "michiel\@mmbase.org";
 
+# mail too
+my $child;
+if ($child = fork()) {
+    exit 1; # ok, we are ready
+} else { 
+
 # mesagxoj estas je STDIN:
 my @message = <stdin>;
+
+
 
 # determin user:
 
@@ -45,11 +53,6 @@ print $logfile $message;
 print $logfile "\n[$files]\n";
 $logfile->close();
 
-# mail too
-my $child;
-if ($child = fork()) {
-    exit 1; # ok, we are ready
-} else { 
     sleep 5;
     my $subject = "[MMBASE CVS] ".$dir." ";
     for my $file (@files) {
