@@ -28,6 +28,15 @@
 	<property name="machinename">MMBaseserver</property>
 
 	<!--
+	name="storagemanagerfactory" defines waht factory to use for accessing the storage divices.
+	Curerntly. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices
+        using JDBC. 
+        Uncomment this property to use the storagemanagerfactory code, rather than te old (soon to be depricated) 
+	support classes.
+	-->
+	<!-- property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property -->
+
+	<!--
 	name="database" defines which database we are using as defined in your config
 	databases directory (default : org/mmbase/config/default/databases/). It
 	is defined by a xml file for example sql92.xml or mysql.xml. This should
