@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.72 2002-10-15 15:28:29 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.73 2002-10-18 10:52:59 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -61,9 +61,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // node managers cache
     protected HashMap nodeManagerCache = new HashMap();
 
-    // relation manager cache
-    protected HashMap relationManagerCache = new HashMap();
-
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud=null;
 
@@ -84,7 +81,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return getByteSize(new SizeOf());
     }
     public int getByteSize(SizeOf sizeof) {
-        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(relationManagerCache) + sizeof.sizeof(multilevelCache);
+        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(multilevelCache);
     }
 
 
@@ -197,10 +194,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             throw new NotFoundException(message);
         }
         if (node==null) {
-            String message;
-            message = "Node with number '" + nodenumber + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
         } else {
             return makeNode(node,nodenumber);
         }
@@ -274,28 +268,28 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public NodeManager getNodeManager(String nodeManagerName) throws NotFoundException {
-        // cache quicker, and you don't get 2000 nodetypes when you do a search....
-        BasicNodeManager nodeManager=(BasicNodeManager)nodeManagerCache.get(nodeManagerName);
         MMObjectBuilder bul = cloudContext.mmb.getMMObject(nodeManagerName);
         // always look if builder exists, since otherwise
         if (bul == null) {
-            String message;
-            message = "Node manager with name " + nodeManagerName + " does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Node manager with name " + nodeManagerName + " does not exist.");
         }
+        // cache quicker, and you don't get 2000 nodetypes when you do a search....
+        BasicNodeManager nodeManager=(BasicNodeManager)nodeManagerCache.get(nodeManagerName);
         if (nodeManager==null) {
             // not found in cache
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
-        }
-        else if (nodeManager.getMMObjectBuilder() != bul) {
+        } else if (nodeManager.getMMObjectBuilder() != bul) {
             // cache differs
             nodeManagerCache.remove(nodeManagerName);
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }
         return nodeManager;
+    }
+
+    public boolean hasNodeManager(String nodeManagerName) {
+        return cloudContext.mmb.getMMObject(nodeManagerName) != null;
     }
 
     /**
@@ -316,44 +310,30 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId){
-        // cache. pretty ugly but at least you don't get 1000+ instances of a relationmanager
-        RelationManager relManager=(RelationManager)relationManagerCache.get(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId);
-        if (relManager==null) {
-            // XXX adapt for other dir too!
-            Enumeration e =cloudContext.mmb.getTypeRel().search(
+        Enumeration e =cloudContext.mmb.getTypeRel().search(
                   "WHERE snumber="+sourceManagerId+" AND dnumber="+destinationManagerId+" AND rnumber="+roleId);
-            if (!e.hasMoreElements()) {
-              e =cloudContext.mmb.getTypeRel().search(
+        if (!e.hasMoreElements()) {
+            e =cloudContext.mmb.getTypeRel().search(
                   "WHERE dnumber="+sourceManagerId+" AND snumber="+destinationManagerId+" AND rnumber="+roleId);
-            }
-            if (e.hasMoreElements()) {
-                MMObjectNode node=(MMObjectNode)e.nextElement();
-                relManager = new BasicRelationManager(node,this);
-                relationManagerCache.put(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId,relManager);
-            }
         }
-        return relManager;
+        if (e.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)e.nextElement();
+            return new BasicRelationManager(node,this);
+        } else {
+            return null; // calling method throws exception
+        }
     }
 
-    /**
-     * Retrieves a flexible (type-independent) RelationManager.
-     * Note that the relation manager retrieved with this method does not contain
-     * type info, which means that some data, such as source- and destination type,
-     * cannot be retrieved.
-     * @param roleID number of the role
-     * @return the requested RelationManager
-     */
-    RelationManager getRelationManager(int roleId) {
-        // cache. pretty ugly but at least you don't get 1000+ instances of a relationmanager
-        RelationManager relManager=(RelationManager)relationManagerCache.get(""+roleId);
-        if (relManager==null) {
-            MMObjectNode n =cloudContext.mmb.getRelDef().getNode(roleId);
-            if (n!=null) {
-                relManager = new BasicRelationManager(n,this);
-                relationManagerCache.put(""+roleId,relManager);
-            }
+    public RelationManager getRelationManager(int number) {
+        MMObjectNode n =cloudContext.mmb.getTypeDef().getNode(number);
+        if (n==null) {
+            throw new NotFoundException("Relation manager with number "+number+" does not exist.");
         }
-        return relManager;
+        if ((n.getBuilder() instanceof RelDef)|| (n.getBuilder() instanceof TypeRel)) {
+            return new BasicRelationManager(n,this);
+        } else {
+            throw new NotFoundException("Node with number "+number+" is not a relation manager.");
+        }
     }
 
     public RelationManagerList getRelationManagers() {
@@ -366,59 +346,48 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     public RelationManager getRelationManager(String sourceManagerName,
         String destinationManagerName, String roleName) throws NotFoundException {
-        // uses getguesed number, maybe have to fix this later
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
-            String message;
-            message = "Role '" + roleName + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Role '" + roleName + "' does not exist.");
         }
         int n1=typedef.getIntValue(sourceManagerName);
         if (n1==-1) {
-            String message;
-            message = "Source type '" + sourceManagerName + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Source type '" + sourceManagerName + "' does not exist.");
         }
         int n2=typedef.getIntValue(destinationManagerName);
         if (n2==-1) {
-            String message;
-            message = "Destination type '" + destinationManagerName
-                      + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Destination type '" + destinationManagerName+ "' does not exist.");
         }
         RelationManager rm=getRelationManager(n1,n2,r);
         if (rm==null) {
-            String message;
-            message = "Relation manager from '" + sourceManagerName + "' to ;"
-                      + destinationManagerName + "' as '" + roleName
-                      + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Relation manager from '" + sourceManagerName + "' to '"
+                      + destinationManagerName + "' as '" + roleName + "' does not exist.");
         } else {
             return rm;
         }
+    }
+
+    public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
+        int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
+        if (r==-1)  return false;
+        int n1=typedef.getIntValue(sourceManagerName);
+        if (n1==-1)  return false;
+        int n2=typedef.getIntValue(destinationManagerName);
+        if (n2==-1)  return false;
+        return getRelationManager(n1,n2,r)!=null;
     }
 
     public RelationManager getRelationManager(String roleName) throws NotFoundException {
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             String message;
-            message = "Role '" + roleName + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Role '" + roleName + "' does not exist.");
         }
-        RelationManager rm=getRelationManager(r);
-        if (rm==null) {
-            String message;
-            message = "Relation manager for '" + roleName + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
-        } else {
-            return rm;
-        }
+        return getRelationManager(r);
+    }
+
+    public boolean hasRelationManager(String roleName) {
+        return cloudContext.mmb.getRelDef().getNumberByName(roleName)!=-1;
     }
 
     /**
