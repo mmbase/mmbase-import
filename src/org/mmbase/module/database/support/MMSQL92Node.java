@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.65 2002-06-27 14:29:19 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.66 2002-07-03 16:42:42 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -900,9 +900,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      */
     private void checkNumberTable() {
         if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> checks if table numberTable exists.");
-        if(!created(mmb.baseName+"_numberTable")) {
+        if (!created(mmb.baseName + "_numberTable")) {
             // We want the current number of object, not next number (that's the -1)
-            int number = getDBKeyOld()-1;
+            int number = getDBKeyOld() - 1;
+            
 
             if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
             String createStatement = getMatchCREATE("numberTable")+"( "+getNumberString()+" integer not null);";
@@ -950,25 +951,34 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     }
 
     /**
-     * @javadoc
+     * Get a new object key without using numberTable, that is, by getting the max number of mm_object.
+     * If object table does not exist (yet), it returns 1.
+     * This is only used when creating the numberTable. 
+     * @deprecated Can be replaced by '1'. Because new installations create the the numberTable when there are not objects yet.
      */
-    public synchronized int getDBKeyOld() {
-        int number=-1;
-        try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
-            if (rs.next()) {
-                number=rs.getInt(1);
-                number++;
-            } else {
-                number=1;
+    protected synchronized int getDBKeyOld() {
+        int number = -1;
+        if(created(mmb.getBaseName() + "_object")) {
+            try {
+                MultiConnection con=mmb.getConnection();
+                Statement stmt=con.createStatement();
+                ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
+                if (rs.next()) {
+                    number=rs.getInt(1);
+                    number++;
+                } else {
+                    // no objects yet
+                    number = 1;
+                }
+                stmt.close();
+                con.close();
+            } catch (SQLException e) {
+                log.error("MMBase -> Error getting a new key number:" + e.toString());
+                return 1; // try something.
             }
-            stmt.close();
-            con.close();
-        } catch (SQLException e) {
-            log.error("MMBase -> Error getting a new key number");
-            return 1;
+        } else {
+            // no object table yet.
+            number = 1;
         }
         return number;
     }
