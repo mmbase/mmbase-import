@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.29 2004-01-12 22:09:08 nico Exp $
+ * @version  $Id: validator.js,v 1.30 2004-01-22 10:17:26 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -72,8 +72,8 @@ addEvent = function(el, evname, func) {
             if (evname == 'keyup') {
                 el.onkeyup = func;
             }
-            if (evname == 'blur') {
-                el.onblur = func;
+            if (evname == 'click') {
+                el.onclick = func;
             }
         }
         else {
