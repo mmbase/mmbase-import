@@ -56,13 +56,24 @@
         </mm:node>
     </mm:present>
 
-	<p class="message">Your new node of type <b><%= ntype %></b> is saved with the following values.
+	
 	<mm:node referid="new_node">
+	<br />
 	<table border="0" cellspacing="0" cellpadding="3" class="table-form">
 	<tr bgcolor="#CCCCCC">
-	  <td colspan="2" class="title-m">New node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
+	  <td align="right">
+	    <a href="new_object.jsp?ntype=<%= ntype %>" title="another new node"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
+	    <a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit this node"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a>
+		<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete this node"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
+	  </td>
+	  <td class="title-m"><b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
 	</tr>
-    <mm:fieldlist type="list">
+   	<tr valign="top">
+   		  <td align="right" class="name">&nbsp;</td>
+   		  <td><p class="message">Your new node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)
+   		     is saved with the following values.</p></td>
+	</tr>
+	<mm:fieldlist type="list">
     	<tr valign="top">
     	  <td align="right" class="name"><mm:fieldinfo type="guiname" /></td>
     	  <td><mm:fieldinfo type="guivalue" />&nbsp;</td>
@@ -77,13 +88,12 @@
 	<tr>
 	  <td>&nbsp;</td>
 	  <td nowrap="nowrap">
-		<a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a>
-		<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
+		
 	  </td>
 	</tr>
 	</table>    
     </mm:node>
-    </p>
+    
 
   </mm:present>
 </mm:present>

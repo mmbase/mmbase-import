@@ -42,14 +42,16 @@
 </p>
 
 
-<p><b>Quick way to access my_editors from within your MMBase site</b><br>
+<p><b>Quick way to access my_editors from within your MMBase site</b><br />
 You can reach some of the my_editors pages - like edit node and delete node - by node id. 
 You could put for example the small edit icon near editable nodes in your web pages 
 to give people a quick way to edit a web page. Of course you would need to hide the 
 icons for people who are not logged in into your editor environment.</p>
 
-<p><b>Version history</b><br>
-27-11-2002: Fixed a bug with content-type in 'inc_top.jsp' and 'inc_head.jsp'. Default now is UTF-8.
+<p><b>Version history</b><br />
+27-11-2002: Fixed a bug with content-type in 'inc_top.jsp' and 'inc_head.jsp'. Default now is UTF-8.<br />
+27-01-2003: Some pages still used the parameter 'type' in stead of 'ntype'. Fixed that. 
+And changed a few little things in the lay-out. 
 </p>
 
 <%@ include file="inc_foot.jsp" %>

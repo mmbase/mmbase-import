@@ -1,6 +1,6 @@
 <hr noshade="noshade" />
-<div class="footer" align="left">Last updated: 27-11-2002<br />
-<strike>&copy; 2002 <a href="http://www.toly.nl/">andr&eacute;</a></strike></div>
+<div class="footer" align="left">Last updated: 27-01-2003<br />
+Contact <a href="http://www.toly.nl/">me</a> with your comments.</div>
 </div>
 </body>
 </html>

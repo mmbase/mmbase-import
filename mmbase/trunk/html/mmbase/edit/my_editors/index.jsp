@@ -111,15 +111,25 @@ int list_index = 0;		// Index value of the list
 <mm:fieldlist type="list" nodetype="$ntype"><% colspan++; %></mm:fieldlist>
 <table width="100%" border="0" cellspacing="0" cellpadding="4">
 <tr bgcolor="#CCCCCC">
-  <td colspan="<%= colspan - 1 %>" class="title-m">
+  <td>&nbsp;</td>
+  <td colspan="<%= colspan - 2 %>" class="title-m">
 	<%= total_found %> found of type 
 	<mm:nodeinfo nodetype="$ntype" type="guitype" />  (<%= ntype %>) 
   </td>
-  <td>
+  <td align="right">
 	<a href="#search" title="search"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a>
 	<a href="new_object.jsp?ntype=<%= ntype %>" title="new"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
  </td>
 </tr>
+<% if (total_found == 0) { %>
+	<tr>
+	  <td colspan="<%= colspan %>">&nbsp</td>
+	</tr><tr bgcolor="#EFEFEF">
+	  <td colspan="<%= colspan %>">&nbsp</td>
+	</tr><tr>
+	  <td colspan="<%= colspan %>">&nbsp</td>
+	</tr>
+<% } %>
 <mm:listnodes id="node_number" type="$ntype" 
 	directions="DOWN" orderby="number"
 	max="<%= conf_max %>" offset="<%= ofs_str %>"
@@ -139,7 +149,7 @@ int list_index = 0;		// Index value of the list
   	  </td>
   	  <% int i = 0; %>
 	  <mm:fieldlist type="list"><td><% if (i==0) { %><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"></mm:maywrite><% } %><mm:fieldinfo type="guivalue" /><% if (i==0) { %><mm:maywrite></a></mm:maywrite><% } %> </td> <% i++; %></mm:fieldlist>
-  	  <td nowrap="nowrap">
+  	  <td nowrap="nowrap" align="right">
   	    <mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></mm:maywrite>
 		<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
   	  </td>
@@ -173,7 +183,7 @@ int list_index = 0;		// Index value of the list
 <!-- ### Search form ### -->
 <p><a name="search">&nbsp;</a></p>
 <form method="post" action="<mm:url referids="ntype" />">
-<table border="0" cellspacing="0" cellpadding="4" class="table-form">
+<table width="100%" border="0" cellspacing="0" cellpadding="4" class="table-form">
 	<tr bgcolor="#CCCCCC">
 	  <td colspan="2" class="title-m">Search node of type <mm:nodeinfo nodetype="$ntype" type="guitype" /> (<%= ntype %>)</td>
 	</tr>

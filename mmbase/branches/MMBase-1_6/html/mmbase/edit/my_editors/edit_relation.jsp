@@ -65,17 +65,9 @@ String node_man = "";		// Nodemanager?
 	</tr>
 </mm:notpresent>
 
-<tr>
-  <td align="right"><a href="edit_object.jsp?nr=<%= ref %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0"></a></td>
-  <td>
-	Back to the <a href="edit_object.jsp?nr=<%= ref %>">edit page</a> of 
-	<mm:node number="<%= ref %>"><b><mm:field name="gui()" /></b></mm:node>.
-  </td>
-</tr>
-</table>
-</form>
-
 <mm:present referid="action">
+	<tr>
+	  <td colspan="2">
 	<%
 	if (action.equals("Change")) {
 	%>
@@ -89,7 +81,20 @@ String node_man = "";		// Nodemanager?
 		<mm:deletenode number="<%= nr %>" />
 		<p class="message">The relation is removed.</p>
 	<% } %>
+		</td>
+	</tr>
 </mm:present>
+
+<tr>
+  <td align="right"><a href="edit_object.jsp?nr=<%= ref %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0"></a></td>
+  <td>
+	Back to the <a href="edit_object.jsp?nr=<%= ref %>">edit page</a> of 
+	<mm:node number="<%= ref %>"><b><mm:field name="gui()" /></b></mm:node>.
+  </td>
+</tr>
+</table>
+</form>
+
 
 </mm:node>
 </mm:context>
