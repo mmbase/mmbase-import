@@ -18,9 +18,12 @@ import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.InsRel;
 
 /*
-	$Id: TemporaryNodeManager.java,v 1.16 2001-03-06 11:00:10 install Exp $
+	$Id: TemporaryNodeManager.java,v 1.17 2001-03-09 13:57:40 pierre Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.16  2001/03/06 11:00:10  install
+	Rico: fixed accessObject duplicate bug
+	
 	Revision 1.15  2001/03/02 13:56:44  install
 	Rico: fixed TCP bug concerning keys, NOTE this sets extra field defs for the _number , _dnumber , _snumber fields when needed
 	
@@ -72,7 +75,7 @@ import org.mmbase.module.corebuilders.InsRel;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.16 2001-03-06 11:00:10 install Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.17 2001-03-09 13:57:40 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -107,13 +110,12 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		int rnumber;
 		
 		// decode type to a builder using reldef
-		reldef=(RelDef)mmbase.getMMObject("reldef");
+		reldef=mmbase.getRelDef();
 		rnumber=reldef.getGuessedByName(type);
 		if(rnumber==-1) {
 			throw new Exception("type "+type+" is not a proper relation");
 		}
-		builder=mmbase.getMMObject(type);
-		if (builder==null) builder=mmbase.getMMObject("insrel");
+		builder = reldef.getBuilder(reldef.getNode(rnumber));
 		bulname=builder.getTableName();
 
 		// Create node
