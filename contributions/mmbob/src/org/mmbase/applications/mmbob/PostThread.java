@@ -458,7 +458,7 @@ public class PostThread {
         // if it was the last post that was removed, replace the lastpostsubject
         // with a remove-message.
         if (lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
-            lastpostsubject="** removed by moderator **";
+            lastpostsubject="removed";
         }
 
         if (postings.size() == 0) {
@@ -470,6 +470,9 @@ public class PostThread {
             log.debug("Postthread: removing just a reply from the thread");
             syncNode(ForumManager.FASTSYNC);
         }
+
+        // Also signal the parent PostArea to decrease it's postcount etc ..
+        parent.signalRemovedReply(this);
     }
 }
 
