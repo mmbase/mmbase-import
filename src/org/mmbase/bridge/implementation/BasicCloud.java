@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.55 2002-03-29 21:30:16 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.56 2002-05-03 15:09:26 eduard Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -210,16 +210,23 @@ public class BasicCloud implements Cloud, Cloneable {
 
     public NodeManager getNodeManager(String nodeManagerName) {
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
-        NodeManager nodeManager=(NodeManager)nodeManagerCache.get(nodeManagerName);
-        if (nodeManager==null) {
-            MMObjectBuilder bul=cloudContext.mmb.getMMObject(nodeManagerName);
-            if (bul==null) {
-                String message;
-                message = "Node manager with name " + nodeManagerName
-                          + " does not exist.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
+        BasicNodeManager nodeManager=(BasicNodeManager)nodeManagerCache.get(nodeManagerName);
+        MMObjectBuilder bul = cloudContext.mmb.getMMObject(nodeManagerName);
+        // always look if builder exists, since otherwise 
+        if (bul == null) {
+            String message;
+            message = "Node manager with name " + nodeManagerName + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
+        }
+        if (nodeManager==null) {            
+            // not found in cache
+            nodeManager=new BasicNodeManager(bul, this);
+            nodeManagerCache.put(nodeManagerName,nodeManager);
+        }
+        else if (nodeManager.getMMObjectBuilder() != bul) {
+            // cache differs
+            nodeManagerCache.remove(nodeManagerName);        
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }

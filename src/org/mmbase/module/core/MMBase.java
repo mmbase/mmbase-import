@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.61 2002-04-19 11:48:10 eduard Exp $
+ * @version $Id: MMBase.java,v 1.62 2002-05-03 15:09:27 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -928,17 +928,46 @@ public class MMBase extends ProcessorModule  {
         while (t.hasMoreElements()) {
             MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
             log.debug("init " + fbul);
-            if (!fbul.isVirtual()) {
-                fbul.init();
-                TypeDef.loadTypeDef(fbul.getTableName());
-                if (versions!=null) {
-                    checkBuilderVersion(fbul.getTableName(),versions);
-                }
-            }
+            initBuilder(fbul);
         }
 
         log.debug("**** end of initBuilders");
         return true;
+    }
+    
+
+    /**
+     * inits a builder
+     * @param builder The builder which has to be initialized
+     */
+    public void initBuilder(MMObjectBuilder builder) {        
+        if (!builder.isVirtual()) {
+            builder.init();
+            TypeDef.loadTypeDef(builder.getTableName());
+            Versions versions = (Versions) getMMObject("versions");
+            if (versions!=null) {
+                checkBuilderVersion(builder.getTableName(),versions);
+            }
+        }
+    }    
+
+    /**
+     * Unloads a builders from MMBase. After this, the builder is gone
+     * @param builder the builder which has to be unloaded
+     */
+    public void unloadBuilder(MMObjectBuilder builder) {    
+        if(mmobjs.remove(builder.getTableName()) == null) {
+            String msg = "builder with name: " + builder.getTableName() + " could not be unloaded, since it was not loaded.";
+            log.error(msg);
+            throw new RuntimeException(msg);            
+        }        
+        if (!builder.isVirtual()) {
+            TypeDef.unloadTypeDef(builder.getTableName());
+            log.info("unloaded builder with name:" + builder.getTableName());
+        }
+        else {
+            log.info("unloaded virtual builder with name:" + builder.getTableName());
+        }
     }
 
     /**
@@ -988,7 +1017,7 @@ public class MMBase extends ProcessorModule  {
      * @return the file path to the builder xml, or null if no builder could be found.
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
-    private String getBuilderPath(String builder, String path) {
+    public String getBuilderPath(String builder, String path) {
         if ((new File(builderpath+path+builder+".xml")).exists()) {
             return path;
         } else {
@@ -1045,8 +1074,7 @@ public class MMBase extends ProcessorModule  {
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      * @return the loaded builder object.
      */
-    MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
-
+    public MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null) {
             log.info("Builder '"+builder+"' is already loaded");
