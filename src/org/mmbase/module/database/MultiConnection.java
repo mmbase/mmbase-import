@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.25 2003-08-04 12:33:18 pierre Exp $
+ * @version $Id: MultiConnection.java,v 1.26 2003-08-20 12:57:08 pierre Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -196,8 +196,14 @@ public class MultiConnection implements Connection {
             log.debug(mes.toString());
         }
         state=CON_FINISHED;
+        // If there is a parent object, this connection belongs to a pool and should not be closed,
+        // but placed back in the pool
+        // If there is no parent, the connection belongs to a datasource (thus pooling is done by the appserver)
+        // and should be closed normally
         if (parent != null) {
             parent.putBack(this);
+        } else {
+            realclose();
         }
     }
     
