@@ -28,8 +28,9 @@ import org.mmbase.util.logging.Logging;
  * the template is based on a string, then the string itself serves as
  * a key.
  *
- * @author Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.1 2002-03-29 20:09:20 michiel Exp $
+ * @author  Michiel Meeuwissen
+ * @version $Id: TemplateCache.java,v 1.2 2002-03-30 08:36:37 michiel Exp $
+ * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
 
@@ -38,11 +39,15 @@ public class TemplateCache extends Cache {
     private static int cacheSize = 50;
     private static TemplateCache cache;
 
+    /**
+     * The Source-s which are based on a file, are added to this FileWatcher, which wil invalidate
+     * the corresponding cache entry when the file changes.
+     */
     private static FileWatcher templateWatcher = new FileWatcher (true) {
             protected void onChange(File file) {
                 // invalidate cache.
                 String key = "file:///" + file.getPath();
-                log.debug("Removing " + key + " from cache");
+                if (log.isDebugEnabled()) log.debug("Removing " + key + " from cache");
                 synchronized(cache) {
                     if (cache.remove(key) == null) {
                         log.error("Could not remove " + key + " from cache!");
@@ -52,6 +57,9 @@ public class TemplateCache extends Cache {
             }
         };
 
+    /**
+     * Returns the Template cache.
+     */
     public static TemplateCache getCache() {
         return cache;
     }
@@ -87,6 +95,13 @@ public class TemplateCache extends Cache {
         if (key == null) return null;
         return (Templates) get(key);
     }
+
+    /**
+     * You can only put Source/Templates values in the cache, so this throws an Exception.
+     *
+     * @throws RuntimeException
+     **/
+    
     public Object put(Object key, Object value) {
         throw new RuntimeException("wrong types in cache");
     }
@@ -97,7 +112,7 @@ public class TemplateCache extends Cache {
         Object res = super.put(key, value);
         if (key.startsWith("file:////")) { // this Source is a File, watch it, because it it changes, the cache entry must be invalidated.
             try {
-                java.io.File  f  = new java.io.File(new java.net.URL(key).getPath());
+                java.io.File  f  = new java.io.File(new java.net.URL(key).getFile());
                 log.debug("setting watch on  " + f.getAbsolutePath());
                 templateWatcher.add(f);                
             } catch (Exception e) {
