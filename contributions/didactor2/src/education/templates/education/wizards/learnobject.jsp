@@ -61,7 +61,7 @@
         </mm:compare>
         <mm:compare referid="objecttype" value="mcquestions">
             <mm:import id="mark_error" reset="true">Een multiple-choice vraag moet minstens 1 goed antwoord hebben</mm:import>
-            <mm:relatednodes type="mcanswers" constraints="correct > '0'" max="1">
+            <mm:relatednodes type="mcanswers" constraints="mcanswers.correct > '0'" max="1">
                 <mm:import id="mark_error" reset="true"></mm:import>
             </mm:relatednodes>
         </mm:compare>
