@@ -5,8 +5,11 @@
 %><mm:content language="$language" postprocessor="reducespace">
 <mm:import id="url">index_users.jsp</mm:import>
 
-<mm:import externid="orderby">username</mm:import>
-<mm:import externid="directions">UP</mm:import>
+<mm:import externid="orderby"    from="parameters,session">username</mm:import>
+<mm:import externid="directions" from="parameters,session">UP</mm:import>
+
+<mm:write session="orderby"    referid="orderby" />
+<mm:write session="directions" referid="directions" />
 
 <mm:import id="fields">username,defaultcontext,status,owner</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
