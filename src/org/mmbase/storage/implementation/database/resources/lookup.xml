@@ -26,4 +26,9 @@
 		<driver-class>org.hsqldb.</driver-class>
 	</filter>
 
+	<!-- postgresql -->
+	<filter resource="/org/mmbase/storage/implementation/database/resources/postgresql.xml">
+		<driver-class>org.postgresql.</driver-class>
+	</filter>
+
 </database-filters>
