@@ -275,7 +275,7 @@ public class BasicNodeManager implements NodeManager {
             }
             return new BasicNodeList(res,cloud,tempNodeManager);
     	} catch (Exception e) {
-    	    throw new BasicBridgeException(""+e);
+    	    throw new BasicBridgeException(e);
     	}
 	}
 
