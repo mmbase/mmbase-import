@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.43 2004-11-19 20:58:27 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.44 2004-11-25 10:24:36 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -152,6 +152,10 @@ public class TypeDef extends MMObjectBuilder {
         // this can happen when another thread was here first
         int result = getIntValue(node.getStringValue("name"));
         if (result < 0) {
+            // otherwise save the node
+            result = super.insert(owner, node);
+        }
+        if (result != -1) {
             // update the cache
             Integer number = new Integer(result);
             String name = node.getStringValue("name");
