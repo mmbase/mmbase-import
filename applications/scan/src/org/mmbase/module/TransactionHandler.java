@@ -429,7 +429,10 @@ public class TransactionHandler
 		}
 		
 		String getName() { 
-			return name;
+			int length = name.length();
+			String tempname = "TR"+ name.substring(length-8,length);
+			debug("Temporary name ="+tempname,0);
+			return tempname;
 		}
 	}
 
