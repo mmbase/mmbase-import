@@ -54,6 +54,7 @@ public class FieldInfoTag extends FieldReferrerTag {
     private String whichField = null;
        
     public void setType(String t) throws JspTagException {
+        t = getAttributeValue(t);
         if ("name".equals(t)) {
             type = TYPE_NAME;
         } else if ("guiname".equals(t)) {
