@@ -16,14 +16,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
 
 	public String getGUIIndicator (String field, MMObjectNode node) {
-		if (field.equals ("medium")) {
-			int val = node.getIntValue ("medium");
-			if (val == 1) {
-				return ("Televisie");
-			} else if (val == 2) {
-				return ("Radio");
-			}
-		} else if (field.equals ("status")) {
+		if (field.equals ("status")) {
 			int val = node.getIntValue ("status");
 			if (val==1) { 
 				return("inactive");
@@ -46,9 +39,10 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
 			System.out.println("Vwms -> VWM="+node);
 			String name = node.getStringValue("name");
+			String classname=node.getStringValue("classname");
 			try {
-				System.out.println("Vwms -> Trying to create bot : "+name);
-				newclass=Class.forName("org.mmbase.module.builders.vwms."+name);
+				System.out.println("Vwms -> Trying to create bot : "+name+" classname "+classname);
+				newclass=Class.forName(classname);
 				System.out.println("Vwms -> Loaded load class : "+newclass);
 				VwmInterface vwm = (VwmInterface)newclass.newInstance();
 				vwm.init(node,this);
@@ -73,9 +67,10 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 				MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
 				System.out.println("Vwms -> VWM="+vwmnode);
 				String name = vwmnode.getStringValue("name");
+				String classname=vwmnode.getStringValue("classname");
 				try {
-					System.out.println("Vwms -> Trying to create bot : "+name);
-					newclass=Class.forName("org.mmbase.module.builders.vwms."+name);
+					System.out.println("Vwms -> Trying to create bot : "+name+" classname "+classname);
+					newclass=Class.forName(classname);
 					System.out.println("Vwms -> Loaded load class : "+newclass);
 					VwmInterface vwm = (VwmInterface)newclass.newInstance();
 					vwm.init(vwmnode,this);
