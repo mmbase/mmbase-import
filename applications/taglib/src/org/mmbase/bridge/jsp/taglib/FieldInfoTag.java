@@ -38,28 +38,11 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.59 2003-04-07 19:25:13 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.60 2003-04-16 08:12:53 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
-
-    // Writer implementation:
-    protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
-
 
     private static Class defaultHandler = DefaultTypeHandler.class;
     private static Class[] handlers;

@@ -31,28 +31,11 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  **/
 
-public class WriteTag extends ContextReferrerTag implements Writer {
+public class WriteTag extends ContextReferrerWriter implements Writer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     public static String COOKIE_PATH    = "/";
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
-
-    protected WriterHelper helper = new WriterHelper();
-    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
 
     private Attribute sessionvar = Attribute.NULL;
     private Attribute cookie = Attribute.NULL;

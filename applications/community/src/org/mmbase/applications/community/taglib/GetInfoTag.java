@@ -31,22 +31,6 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(GetInfoTag.class.getName());
 
-    protected WriterHelper helper = new WriterHelper();
-
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
-
     private Attribute key = Attribute.NULL;
     public void setKey(String k) throws JspTagException {
         key = getAttribute(k);

@@ -24,22 +24,6 @@ import org.mmbase.util.logging.Logging;
  */
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
-    // Writer implementation:
-    protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
-
     private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
     private Attribute type = Attribute.NULL;
 
