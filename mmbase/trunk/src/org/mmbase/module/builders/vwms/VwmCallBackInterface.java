@@ -9,7 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
+/**
+ * Virtual Web Master Client interface.
+ * This interface is emnt for classes that want to get notified when things change in a vwm.
+ * The only method in this interface is a notification method used when a vwm 'unloads'.
+ *
+ * @author Pierre van Rooden (javadocs)
+ * @version 5-Apr-2001
+ */
 
 public interface VwmCallBackInterface {
-	public boolean vwmUnload();
+
+    /**
+    * Callback routine, called when a vwm is unloaded (?).
+    * @return <code>true</code> if successfully handled
+    */
+    public boolean vwmUnload();
 }

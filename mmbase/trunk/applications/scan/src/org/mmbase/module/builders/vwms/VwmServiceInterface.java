@@ -13,10 +13,35 @@ import java.util.*;
 import java.net.*;
 import java.sql.*;
 
-
+/**
+ * Interface for VWMs that handle file servicing.
+ * This interface is used for VWMs that need to be invoked by the scancache module whenever a file is to
+ * be cached through the CACHE PAGE directive.
+ * VWMS implementing this interface keep track of filechanges and update the filecache when needed.
+ * @see PageMaster
+ *
+ * @author Daniel Ockeloen
+ * @author Pierre van Rodoen (javadocs)
+ * @version 5 Apr 2001
+ */
 import org.mmbase.module.builders.*;
 
 public interface VwmServiceInterface extends VwmInterface {
-	public boolean fileChange(String number,String ctype);
-	public boolean fileChange(String service,String subservice,String filename);
+
+    /**
+     * Handles a service-request on a file, registered in the netfiles builder.
+     * @param number Number of the node in the netfiles buidler than contain service request information.
+     * @param ctype the type of change to that node
+     * @return <code>true</code> if the request was succesfully handled
+     */
+    public boolean fileChange(String number,String ctype);
+
+    /**
+     * Handles a service-request on a file, registered in the netfiles builder.
+     * @param service the service to be performed
+     * @param subservice the subservice to be performed
+     * @param filename the filename to service
+     * @return <code>true</code> if the request was handled
+     */
+    public boolean fileChange(String service,String subservice,String filename);
 }
