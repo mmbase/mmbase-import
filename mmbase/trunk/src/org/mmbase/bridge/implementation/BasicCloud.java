@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.94 2003-07-29 15:05:48 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.95 2003-07-29 17:06:11 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -620,7 +620,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     // javadoc inherited
     public NodeList getList(Query query) {
-        if (query.getFields().get(0) instanceof AggregatedField) { // should this perhaps be a seperate method?                   
+        if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
             return getResultNodeList(query);
         } else {
             return getClusterNodeList(query);
@@ -787,7 +787,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             List orderVec = StringSplitter.split(orderby);
             List d = StringSplitter.split(directions);
             try {
-                query = new BasicQuery(clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
+                query = new BasicQuery(this, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
             } catch (IllegalArgumentException iae) {
                 throw new BridgeException(iae);
             }
@@ -923,12 +923,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     // javadoc inherited
     public Query createQuery() {
-        return new BasicQuery();
+        return new BasicQuery(this);
     }
 
 
     public Query createAggregatedQuery() {
-        return new BasicQuery(true);
+        return new BasicQuery(this, true);
     }
 
     /**
