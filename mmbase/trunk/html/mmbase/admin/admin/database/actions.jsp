@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String database = request.getParameter("database"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -16,7 +16,7 @@
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
 <tr align="left">
- <th class="header" colspan="5">Description of <%=database%></td>
+ <th class="header" colspan="5">Description of <%=database%></th>
 </tr>
 <tr>
  <td class="multidata" colspan="5">
@@ -34,9 +34,9 @@
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
 <tr align="left">
-<th class="header">Action</td>
-  <th class="header" colspan="3">Status</td>
-  <th class="header" >View</td>
+<th class="header">Action</th>
+  <th class="header" colspan="3">Status</th>
+  <th class="header" >View</th>
 </tr>
 <tr>
  <td class="data">XML-check</td>
@@ -59,7 +59,7 @@
 <% } %>
 
 <tr>
-<td class="navigate"><a href="../databases.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../databases.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Database Overview</td>
 </tr>
 </table>

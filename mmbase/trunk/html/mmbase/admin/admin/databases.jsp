@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
@@ -13,21 +13,22 @@
 <table summary="databases" width="93%" cellspacing="1" cellpadding="3" border="0">
 <tr align="left">
 <th class="header" colspan="5">Database Overview
-</td>
+</th>
 </tr>
 <tr>
   <td class="multidata" colspan="5">
   <p>This overview lists all database systems supported by this system, as well as
      all connection pools (which administrate the actual database connections).
   </p>
+  </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header">Name</td>
-  <th class="header">Version</td>
-  <th class="header">Installed</td>
-  <th class="header">Maintainer</td>
-  <th class="header">&nbsp;</td>
+  <th class="header">Name</th>
+  <th class="header">Version</th>
+  <th class="header">Installed</th>
+  <th class="header">Maintainer</th>
+  <th class="header">&nbsp;</th>
 </tr>
 <%
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
@@ -41,7 +42,7 @@
   <td class="data"><%=database.getStringValue("item3")%></td>
   <td class="data"><%=database.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="database/actions.jsp?database=<%=database.getStringValue("item1")%>"><img src="../images/pijl.gif" border="0" alt="next" align="right"></a>
+    <a href="database/actions.jsp?database=<%=database.getStringValue("item1")%>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
@@ -49,10 +50,10 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-  <th class="header" colspan="2">Pool Name</td>
-  <th class="header">Size</td>
-  <th class="header">Connections Created</td>
-  <th class="header">&nbsp;</td>
+  <th class="header" colspan="2">Pool Name</th>
+  <th class="header">Size</th>
+  <th class="header">Connections Created</th>
+  <th class="header">&nbsp;</th>
 </tr>
 <%
    Module jdbc=LocalContext.getCloudContext().getModule("jdbc");
@@ -65,7 +66,7 @@
   <td class="data"><%=pool.getStringValue("item2")%></td>
   <td class="data"><%=pool.getStringValue("item3")%></td>
   <td class="navigate">
-    <a href="database/connections.jsp?pool=<%=pool.getStringValue("item1")%>"><img src="../images/pijl.gif" border="0" alt="next" align="right"></a>
+    <a href="database/connections.jsp?pool=<%=pool.getStringValue("item1")%>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
@@ -73,7 +74,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to home page</td>
 </tr>
 </table>

@@ -13,19 +13,18 @@
 
 <table summary="applications" width="93%" cellspacing="1" cellpadding="3" border="0">
 <tr align="left">
-  <th class="header" colspan="5">Cache Monitor - v1.0
-</td>
+  <th class="header" colspan="5">Cache Monitor - v1.0</th>
 </tr>
 <tr>
   <td class="multidata" colspan="5">Node cache - first 1000 entries</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header">Position</td>
-  <th class="header">Count</td>
-  <th class="header">Number</td>
-  <th class="header">Owner</td>
-  <th class="header">Type</td>
+  <th class="header">Position</th>
+  <th class="header">Count</th>
+  <th class="header">Number</th>
+  <th class="header">Owner</th>
+  <th class="header">Type</th>
 </tr>
 <%
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
@@ -47,7 +46,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../cache.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../cache.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Cache Monitor</td>
 </tr>
 </table>

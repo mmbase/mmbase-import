@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String module = request.getParameter("module");
    String property=request.getParameter("property"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
@@ -17,9 +17,9 @@
 %>
 <table summary="module property data" width="93%" cellspacing="1" cellpadding="3">
 <tr align="left">
-  <th class="header">Property</td>
-  <th class="header">Value</td>
-  <th class="header">Change</td>
+  <th class="header">Property</th>
+  <th class="header">Value</th>
+  <th class="header">Change</th>
 </tr>
 
 <form action="actions.jsp" method="POST">
@@ -40,7 +40,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="actions.jsp?module=<%=module%>"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="actions.jsp?module=<%=module%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">&nbsp;</td>
 </tr>
 </table>
