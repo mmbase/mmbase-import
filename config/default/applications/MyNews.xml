@@ -4,10 +4,10 @@
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="1">mags</builder>
 		<builder maintainer="mmbase.org" version="1">urls</builder>
-		<builder maintainer="mmbase.org" version="1">jumpers</builder>
 		<builder maintainer="mmbase.org" version="1">news</builder>
 		<builder maintainer="mmbase.org" version="1">mmevents</builder>
 		<builder maintainer="mmbase.org" version="1">people</builder>
+		<builder maintainer="mmbase.org" version="1">attachments</builder>
 		<builder maintainer="mmbase.org" version="1">images</builder>
 		<builder maintainer="mmbase.org" version="1">posrel</builder>
 	</neededbuilderlist>
@@ -19,11 +19,11 @@
 
 	<allowedrelationlist>
 		<relation from="mags"   to="news"     type="posrel" />
-		<relation from="news"   to="images"   type="related" />
-		<relation from="news"   to="urls"     type="related" />
+		<relation from="news"   to="urls"     type="posrel" />
+		<relation from="news"   to="images"   type="posrel" />
+		<relation from="news"   to="attachments"  type="posrel" />
 		<relation from="news"   to="mmevents" type="related" />
 		<relation from="news"   to="people"   type="related" />
-		<relation from="mags"   to="jumpers"  type="related" />
 		<relation from="people" to="images"   type="related" />
 	</allowedrelationlist>
 
@@ -32,7 +32,7 @@
 		<datasource builder="news"     path="MyNews/news.xml" />
 		<datasource builder="people"   path="MyNews/people.xml" />
 		<datasource builder="urls"     path="MyNews/urls.xml" />
-		<datasource builder="jumpers"  path="MyNews/jumpers.xml" />
+		<datasource builder="attachments"  path="MyNews/attachments.xml" />
 		<datasource builder="images"   path="MyNews/images.xml" />
 		<datasource builder="mmevents" path="MyNews/mmevents.xml" />
 	</datasourcelist>
