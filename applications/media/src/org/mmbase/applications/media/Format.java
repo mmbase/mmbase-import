@@ -17,7 +17,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.6 2003-02-18 00:11:14 michiel Exp $
+ * @version $Id: Format.java,v 1.7 2003-02-19 10:17:37 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -87,8 +87,12 @@ public final class Format {   // final class!!
     }
     
     public String getGUIIndicator(Locale locale) {
-        ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
-        return m.getString("" + number);
+        try {
+            ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
+            return m.getString("" + number);
+        } catch (Exception e) {
+            return "UNKNOWN";
+        }
     }
 
 
