@@ -11,6 +11,10 @@ CLASSES     = KitTest.class MMEditorPane.class $(XMLCLASSES) $(XMLPARSER) $(MMXF
 test: $(CLASSES)
 	java org.mmbase.util.swing.KitTest text/mmxf
 
+testhtml: $(CLASSES)
+	java org.mmbase.util.swing.KitTest text/html
+
+
 test2: $(CLASSES) Test.class
 	java org.mmbase.util.swing.Test
 
