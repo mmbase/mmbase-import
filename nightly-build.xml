@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.8 2003-04-07 11:11:52 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.9 2003-04-07 11:40:55 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -105,7 +105,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   -->
   <property name="buildscript.dir" value="${nbuild.dir}/cvs/mmbase"/>
   <property name="buildscript"     value="${buildscript.dir}/build.xml"/>   
-  <property name="build.compiler"  value="jikes" />	
+  <property name="build.compiler"  value="classic" />	
   <property name="optimize"        value="off" /><!-- line numbers ?-->
   <property name="debug"           value="on" /> <!-- for nightly builds it is more or less logical to compile with debug = on -->	
   
