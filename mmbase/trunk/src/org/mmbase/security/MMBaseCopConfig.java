@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.21 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.22 2005-03-01 13:59:54 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -93,8 +93,6 @@ public class MMBaseCopConfig {
 
         java.net.URL config = securityLoader.findResource("security.xml");
         log.info("using: '" + config + "' as configuration file for security");
-
-
         
         watcher = new SecurityConfigWatcher(mmbaseCop);
         watcher.add("security.xml");
@@ -102,6 +100,13 @@ public class MMBaseCopConfig {
 
         cop = mmbaseCop;
 
+
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    void load() throws java.io.IOException {
         XMLBasicReader reader = new XMLBasicReader(securityLoader.getInputSource("security.xml"), this.getClass());
 
         // are we active ?
@@ -120,20 +125,32 @@ public class MMBaseCopConfig {
         sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
 
         if(active) {
-            // load our authentication...
+            
+            // first instantiate authentication and authorization, during load they can check each others class then.
+
             org.w3c.dom.Element entry = reader.getElementByPath("security.authentication");
-            String authClass = reader.getElementAttributeValue(entry,"class");
-            String authUrl = reader.getElementAttributeValue(entry, "url");
-            authentication = getAuthentication(authClass, authUrl);
-            log.debug("Authentication retrieved");
+            String authenticationClass = reader.getElementAttributeValue(entry,"class");
+            String authenticationUrl = reader.getElementAttributeValue(entry, "url");
+            authentication = getAuthentication(authenticationClass);
 
-            // load our authorization...
+
             entry = reader.getElementByPath("security.authorization");
-            String auteClass = reader.getElementAttributeValue(entry,"class");
-            String auteUrl = reader.getElementAttributeValue(entry,"url");
+            String authorizationClass = reader.getElementAttributeValue(entry,"class");
+            String authorizationUrl = reader.getElementAttributeValue(entry,"url");
+            authorization = getAuthorization(authorizationClass);
 
-            authorization = getAuthorization(auteClass, auteUrl);
-            log.debug("Authorization retrieved");
+
+            if (log.isDebugEnabled()) {
+                log.debug("Loading class:" + authentication.getClass().getName() + " with config:" + authenticationUrl + " for Authentication");
+            }           
+            authentication.load(cop, watcher, authenticationUrl);
+
+            if (log.isDebugEnabled()) {
+                log.debug("Using class:" + authorization.getClass().getName() + " with config:" + authorizationUrl + " for Authorization");
+            }
+            authorization.load(cop, watcher,  authorizationUrl);
+
+
         } else {
             // we dont use security...
             authentication = new NoAuthentication();
@@ -196,16 +213,14 @@ public class MMBaseCopConfig {
         return sharedSecret;
     }
 
-    private Authentication getAuthentication(String className, String configUrl) throws SecurityException {
-        if (log.isDebugEnabled()) {
-            log.debug("Using class:" + className + " with config:" + configUrl + " for Authentication");
-        }
+    private Authentication getAuthentication(String className) throws SecurityException {
         Authentication result;
         try {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
             result = (Authentication) o;
-            result.load(cop, watcher, configUrl);
+            log.info("Setting manager of " + result + " to " + cop);
+            result.manager = cop;
         } catch(ClassNotFoundException cnfe) {
             throw new SecurityException(cnfe);
         } catch(IllegalAccessException iae) {
@@ -216,16 +231,15 @@ public class MMBaseCopConfig {
         return result;
     }
 
-    private Authorization getAuthorization(String className, String configUrl) throws SecurityException {
-        if (log.isDebugEnabled()) {
-            log.debug("Using class:" + className + " with config:" + configUrl + " for Authorization");
-        }
+    private Authorization getAuthorization(String className) throws SecurityException {
+
         Authorization result;
         try {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
-            result = (Authorization) o;
-            result.load(cop, watcher, configUrl);
+            result = (Authorization) o;            
+            log.info("Setting manager of " + result + " to " + cop);
+            result.manager = cop;
         }
         catch(java.lang.ClassNotFoundException cnfe) {
             log.debug("", cnfe);
