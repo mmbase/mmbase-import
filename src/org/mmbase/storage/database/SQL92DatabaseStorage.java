@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.11 2003-05-05 13:28:40 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.12 2003-05-16 07:27:18 kees Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -376,10 +376,12 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     }
 
     /**
-     * Get bytes from blob
+     * retrieves bytes from file or database depending on if getStoreBinayAsFIle is true
+     * 
      * @javadoc
      */
-    public byte[] getBytes(MMObjectNode node,String fieldname) {
+    public final byte[] getBytes(MMObjectNode node,String fieldname) {
+    	//TODO: find you why is this code only here and not in other methods/ 
         if (getStoreBinaryAsFile()) {
             return readBytesFromFile(getBinaryFilePath()+node.getBuilder().getTableName()+File.separator+node.getNumber()+"."+fieldname);
         } else {

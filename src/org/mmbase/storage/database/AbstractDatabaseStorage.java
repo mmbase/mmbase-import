@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.10 2003-05-05 13:23:12 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.11 2003-05-16 07:27:18 kees Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -742,10 +742,10 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
 
     /**
-     * Get bytes of a database blob
+     * creates an sql statements and calls {@link #getBytes(MMObjectNode,String)}
      * @javadoc
      */
-    public byte[] getBytes(String tableName, String fieldName, int number) {
+    public final byte[] getBytes(String tableName, String fieldName, int number) {
         byte[] result = null;
         String sqlselect=selectSQL(tableName, fieldName, number);
         DatabaseTransaction trans=null;
