@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.10 2004-07-22 13:58:42 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.11 2004-07-23 14:58:03 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -78,8 +78,8 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     protected Attribute role        = Attribute.NULL;
     protected Attribute searchDir   = Attribute.NULL;
     protected Attribute maxDepth    = Attribute.NULL;
-    protected Attribute orderField  = Attribute.NULL;
-    protected Attribute orderDirection = Attribute.NULL;
+    protected Attribute orderby     = Attribute.NULL;
+    protected Attribute directions  = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -102,14 +102,14 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     /**
      * @since MMBase 1.7.1
      */
-    public void setOrderby(String md) throws JspTagException {
-        orderField = getAttribute(md);
+    public void setOrderby(String o) throws JspTagException {
+        orderby = getAttribute(o);
     }
     /**
      * @since MMBase 1.7.1
      */
-    public void setDirection(String md) throws JspTagException {
-        orderDirection = getAttribute(md);
+    public void setDirections(String d) throws JspTagException {
+        directions = getAttribute(d);
     }
 
 
@@ -191,17 +191,27 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             }
             tree = (TreeList) o;
         } else {
-            NodeQueryContainer c = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, (String) container.getValue(this), false);
-            if (c == null) throw new JspTagException("Could not find surrounding NodeQuery");
-            NodeQuery query = c.getNodeQuery();
-            tree = new GrowingTreeList(query, 
-                new GrowingTreeList.PathElement(
-                        getProviderCloudVar().getNodeManager(nodeManager.getString(this)), 
-                        role.getString(this), 
-                        searchDir.getString(this),
-                        orderField.getString(this),
-                        Queries.getSortOrder(orderDirection.getString(this))),
-                maxDepth.getInt(this, 5));
+            tree = null;
+            if (parentNodeId == Attribute.NULL) {
+                TreeContainerTag c = (TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
+                if (c != null) {
+                    tree = c.getTree();
+                    if (! "".equals(maxDepth.getString(this)) && tree instanceof GrowingTreeList) {
+                        ((GrowingTreeList)  tree).setMaxDepth(maxDepth.getInt(this, 5));
+                    }
+                }
+            }
+            if (tree == null) {
+                NodeQuery query = TreeContainerTag.getStartQuery(this, container, parentNodeId);
+                tree = new GrowingTreeList(query, maxDepth.getInt(this, 5),
+                                           getProviderCloudVar().getNodeManager(nodeManager.getString(this)), 
+                                           role.getString(this), 
+                                           searchDir.getString(this));
+                Query template = ((GrowingTreeList) tree).getTemplate();
+                if (orderby != Attribute.NULL) {
+                    Queries.addSortOrders(template, (String) orderby.getValue(this), (String) directions.getValue(this));
+                }
+            }
 
         }
         iterator = tree.treeIterator();
