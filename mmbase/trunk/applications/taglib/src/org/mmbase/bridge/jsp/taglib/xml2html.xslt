@@ -277,10 +277,12 @@
 <!-- Tags can refer to other tags (and attributes) with a 'see' link. This template handles them. -->
 <xsl:template match="see">
   <xsl:param name="file" select="false()" />
+  <xsl:param name="type" select="'all'" />
   <a>
     <xsl:attribute name="href">
       <xsl:call-template name="tagref">
         <xsl:with-param name="file" select="$file" />
+        <xsl:with-param name="type" select="$type" />
         <xsl:with-param name="tag"  select="@tag"  /><xsl:with-param name="attribute"  select="@attribute" />
       </xsl:call-template>
     </xsl:attribute>
