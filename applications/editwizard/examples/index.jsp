@@ -13,12 +13,12 @@
   <ul>
     <li><a href="<mm:url page="simple/" />">A very simple example</a></li>
     <li><a href="<mm:url page="dutch/" />">Also very simple. Only Shows how to internationalize (to dutch)</a></li>
-    <li><a href="<mm:url page="advanced/" />">A more sophisticated example</a></li>
+    <li><a href="<mm:url page="advanced/" />">Some more sophisticated examples</a></li>
     <li><a href="<mm:url page="startwizard/" />">All kind of 'start-wizards'</a></li>
   </ul>
   <hr />
   <p>
-    Lots of these examples edit data of the <a href="<mm:url page="/mmexamples/mynews" />">My News example</a>. 
+    Lots of these examples edit data from the <a href="<mm:url page="/mmexamples/mynews" />">My News example</a>. 
   </p>
   </body>
 </html>
