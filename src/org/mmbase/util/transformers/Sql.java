@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 
 public class Sql extends AbstractTransformer implements CharTransformer {
-    
+    private final static String ENCODING     = "ESCAPE_SINGLE_QUOTE";
     private final static int ESCAPE_QUOTES    = 1;     
 
     /**
@@ -55,7 +55,7 @@ public class Sql extends AbstractTransformer implements CharTransformer {
 
     public HashMap transformers() {
         HashMap h = new HashMap();
-        h.put("escape_single_quote".toUpperCase(), new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
+        h.put(ENCODING, new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
         return h;
     }
 
@@ -79,4 +79,7 @@ public class Sql extends AbstractTransformer implements CharTransformer {
         }
     } 
 
+    public String getEncoding() {
+        return ENCODING;
+    }
 }

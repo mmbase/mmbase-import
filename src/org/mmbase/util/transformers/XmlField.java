@@ -547,5 +547,15 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 	}
         return result;
     }
-
+    public String getEncoding() {
+        switch(to){
+        case RICH:  return "MMXF_RICH";
+        case POOR:  return "MMXF_POOR";
+        case ASCII: return "MMXF_ASCII";
+        case XHTML: return "MMXF_XHTML";
+        case BODY:  return "MMXF_BODY";
+        case XML:   return "MMXF_MMXF";
+        default: throw new UnsupportedOperationException("unknown encoding");
+        }
+    }
 }

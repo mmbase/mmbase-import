@@ -27,7 +27,7 @@ import sun.misc.BASE64Encoder;
  */
 
 public class Base64 extends AbstractTransformer implements ByteToCharTransformer {
-    
+    private final static String ENCODING     = "BASE64";    
     private final static int BASE_64         = 1;     
 
     int to = BASE_64;
@@ -38,7 +38,7 @@ public class Base64 extends AbstractTransformer implements ByteToCharTransformer
 
     public HashMap transformers() {
         HashMap h = new HashMap();
-        h.put("base64".toUpperCase(), new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
+        h.put(ENCODING, new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
         return h;
     }
 
@@ -59,7 +59,9 @@ public class Base64 extends AbstractTransformer implements ByteToCharTransformer
             e.printStackTrace();
 	    throw new IllegalArgumentException("the entered string to decode properly was wrong: " + e);
 	}
+    }        
+        
+    public String getEncoding() {
+        return ENCODING;
     }
-
-
 }
