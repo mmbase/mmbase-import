@@ -54,14 +54,15 @@ import org.mmbase.util.logging.Logging;
  **/
 public class Encode {  
 
-    private static Logger log = Logging.getLoggerInstance(Encode.class.getName()); 
+    private static Logger log;
 
     private Transformer trans; // the instance of the object doing the actual work.
 
-    private  static HashMap encodings;                   // string -> Config, all encoding are registered in this.
-    private  static HashSet registered = new HashSet();  // in this is remembered which classes were registered, to avoid registering them more than once.
+    private  static Map encodings;                   // string -> Config, all encoding are registered in this.
+    private  static Set registered = new HashSet();  // in this is remembered which classes were registered, to avoid registering them more than once.
 
     static {
+        log = Logging.getLoggerInstance(Encode.class.getName());
         encodings = new HashMap();
         
         // a few Encoding are avaible by default:
