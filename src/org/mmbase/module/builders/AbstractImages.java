@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.19 2003-05-19 09:00:15 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.20 2003-05-19 09:59:12 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
@@ -83,15 +83,16 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a);
 
     /**
-     * Gui indicator of a whole node.
+     * Returns GUI Indicator for node
      */
-    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
-        return getGUIIndicatorWithAlt(node, "*", a);
+    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments a) {
+        return getGUIIndicatorWithAlt(node, "*", a); /// Gui indicator of a whole node.
     }
 
-    protected String getSGUIIndicator(String field, MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
+        String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
-            return getSGUIIndicator(node, a);
+            return getSGUIIndicatorForNode(node, a);
         }
         // other fields can be handled by the orignal gui function...
         return getSuperGUIIndicator(field, node);

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.24 2003-05-19 09:00:15 michiel Exp $
+ * @version $Id: Attachments.java,v 1.25 2003-05-19 09:59:12 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -60,10 +60,7 @@ public class Attachments extends AbstractServletBuilder {
     }
 
     protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
-        return getSGUIIndicator("handle", node, a);
-    }
-
-    protected String getSGUIIndicator(String field, MMObjectNode node, Arguments a) {
+        String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
@@ -82,12 +79,22 @@ public class Attachments extends AbstractServletBuilder {
             } else {
                 String ses = (String) a.get("session");
                 if (log.isDebugEnabled()) {
-                    log.debug("brdge: " + usesBridgeServlet + " ses: " + ses);
+                    log.debug("bridge: " + usesBridgeServlet + " ses: " + ses);
                 }
-                String url = getServletPath(filename) + (usesBridgeServlet && ses != null ? "session=" + ses + "+" : "") + num;
+                StringBuffer servlet = new StringBuffer();
+                HttpServletRequest req = (HttpServletRequest) a.get("request");
+                if (req != null) {            
+                    servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), filename));
+                } else {
+                    servlet.append(getServletPath(filename));
+                }
+                servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "").append(num);
                 HttpServletResponse res = (HttpServletResponse) a.get("response");
+                String url;
                 if (res != null) {
-                    url = res.encodeURL(url);
+                    url = res.encodeURL(servlet.toString());
+                } else {
+                    url = servlet.toString();
                 }
                 return "<a href=\"" + url + "\" target=\"extern\">" + title + "</a>";
             }

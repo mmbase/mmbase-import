@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Iterator;
 import org.mmbase.module.core.*;
 import org.mmbase.util.Arguments;
+import org.mmbase.util.UriParser;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -25,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.31 2003-05-19 09:00:15 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.32 2003-05-19 09:59:13 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -58,24 +59,32 @@ public class ImageCaches extends AbstractImages {
      **/
 
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a) {
-        String servlet    = getServletPath() + (usesBridgeServlet ? a.getString("session") : "");
+        StringBuffer servlet = new StringBuffer();
+        HttpServletRequest req = (HttpServletRequest) a.get("request");
+        if (req != null) {            
+            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), null));
+        } else {
+            servlet.append(getServletPath());
+        }
+        String ses = (String) a.get("session");
+        servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
         HttpServletResponse res = (HttpServletResponse) a.get("response");
         if (origNode != null) {
             List cacheArgs =  new Arguments(Images.CACHE_ARGUMENTS).set("template", GUI_IMAGETEMPLATE);
-            imageThumb = servlet + origNode.getFunctionValue("cache", cacheArgs);
+            imageThumb = servlet.toString() + origNode.getFunctionValue("cache", cacheArgs);
             if (res != null) imageThumb = res.encodeURL(imageThumb);
         } else {
             imageThumb = "";
         }
-        String image      = servlet + node.getNumber();
+        String image      = servlet.toString() + node.getNumber();
         if (res != null) image = res.encodeURL(image);
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
     // javadoc inherited
-    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments a) {
         MMObjectNode origNode = originalImage(node);
         return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
     }

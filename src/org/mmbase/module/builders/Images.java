@@ -30,7 +30,7 @@ import org.mmbase.util.Argument;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.76 2003-05-19 09:00:15 michiel Exp $
+ * @version $Id: Images.java,v 1.77 2003-05-19 09:59:13 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -152,20 +152,32 @@ public class Images extends AbstractImages {
         }
         // NOTE that this has to be configurable instead of static like this
         String ses = (String) args.get("session");
-        String servlet    = getServletPath() + (usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
+
+
+        StringBuffer servlet = new StringBuffer();
+        HttpServletRequest req = (HttpServletRequest) args.get("request");
+        if (req != null) {            
+            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), null));
+        } else {
+            servlet.append(getServletPath());
+        }
+        servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         List cacheArgs =  new Arguments(CACHE_ARGUMENTS).set("template", ImageCaches.GUI_IMAGETEMPLATE);
-        String imageThumb = servlet + executeFunction(node, "cache", cacheArgs);
-        String image      = servlet + node.getNumber();
+        String imageThumb = servlet.toString() + executeFunction(node, "cache", cacheArgs);
+        servlet.append(node.getNumber());
+        String image;
         HttpServletResponse res = (HttpServletResponse) args.get("response");
         if (res != null) {
             imageThumb = res.encodeURL(imageThumb);
-            image      = res.encodeURL(image);
+            image      = res.encodeURL(servlet.toString());
+        } else {
+            image = servlet.toString();
         }
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
     // javadoc copied from parent
-    protected String getSGUIIndicator(MMObjectNode node, Arguments args) {
+    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments args) {
         return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
     }
 
