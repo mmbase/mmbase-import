@@ -3,7 +3,7 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="MMBase media project" default="jar" basedir=".">
-  <property name="project.name"   value="media" />
+<project name="community" default="jar" basedir=".">
+  <property name="project.name"   value="community" />
   &base;
 </project>
