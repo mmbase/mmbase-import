@@ -1188,7 +1188,7 @@ Build-compiler: ${build.compiler}
     <available property="jspsmartupload.expanded" file="${jspsmartupload.jar}" />
 
     <!-- Docbook XSL -->
-    <property name="docbook-xsl.version" value="docbook-xsl-1.57.0"  />
+    <property name="docbook-xsl.version" value="docbook-xsl-1.60.1"  />
     <property name="docbook-xsl.file" value="${docbook-xsl.version}.tar.gz"  />
     <property name="docbook-xsl.url" value="http://belnet.dl.sourceforge.net/sourceforge/docbook/${docbook-xsl.file}" />
     <available property="docbook-xsl.present"  file="${download.dir}/${docbook-xsl.file}" />
@@ -1506,7 +1506,9 @@ Version: MMBase build ${version}
 
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
-    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+    <replace  file="${build.dir}/docbook2xhtml.xslt"
+              token="[BASESTYLESHEET]" 
+              value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
 
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
@@ -1553,6 +1555,7 @@ Version: MMBase build ${version}
       <arg value="${build.dir}/docbook2xhtml.xslt" />
       <arg value="${source-documentation.dir}" />
       <arg value="${mmdocs.dir}" />
+      <arg value="usecache=false" />
     </java>
 
   </target>
@@ -1579,15 +1582,15 @@ Version: MMBase build ${version}
           file="${source-documentation.dir}/style/docbook2xhtml.xslt"
           />
 
+    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+             token="[BASESTYLESHEET]"
+             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+
     <!-- not used at the moment
     <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
              token="[BASESTYLESHEET]"
              value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
     -->
-    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
-             token="[BASESTYLESHEET]"
-             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
-
 
     <!-- compile class for listing of builders -->
     <javac srcdir="${source-src.dir}"
