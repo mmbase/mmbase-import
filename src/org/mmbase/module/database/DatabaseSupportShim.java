@@ -14,17 +14,13 @@ import java.sql.*;
 /**
  * Interface to support specific database things
  * for the JDBC module
- *
- * @duplicate Since neither method does anything, better to make {@link DatabaseSupport}
- *            a base class and have {@link DatabaseSupportInformix} extend from that class.
- * @author vpro
- * @version $Id: DatabaseSupportShim.java,v 1.5 2004-10-07 17:22:34 pierre Exp $
+ * @version $Id: DatabaseSupportShim.java,v 1.4 2003-03-10 11:50:37 pierre Exp $
  */
 public class DatabaseSupportShim implements DatabaseSupport {
 
-    public void init() {
-    }
+	public void init() {
+	}
 
-    public void initConnection(Connection con) {
-    }
+	public void initConnection(Connection con) {
+	}
 }

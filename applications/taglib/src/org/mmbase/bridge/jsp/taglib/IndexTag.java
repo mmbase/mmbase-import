@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.17 2004-04-22 17:27:09 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.16.2.1 2004-05-04 16:06:31 michiel Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {

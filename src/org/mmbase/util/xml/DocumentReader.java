@@ -26,7 +26,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.XMLErrorHandler;
-import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -40,8 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.3 2004-11-11 16:56:12 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: DocumentReader.java,v 1.1 2003-08-18 16:50:52 pierre Exp $
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
@@ -86,30 +84,28 @@ public class DocumentReader  {
      * Creates an input source for a document, based on a filepath
      * If the file cannot be opened, the method returns an inputsource of an error document describing the condition 
      * under which this failed.
-     * @param  path the path to the file containing the document
+     * @param path the path to the file containing the doxument
      * @return the input source to the document.
-     * @deprecated
      */
     private static InputSource getInputSource(String path) {
-        InputSource is;
         try {
             // remove file protocol if present to avoid errors in accessing file
             if (path.startsWith("file://")) path= path.substring(7);
-            is = new InputSource(new FileInputStream(path));
+            InputSource is = new InputSource(new FileInputStream(path));
             is.setSystemId("file://" + path);
             return is;
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
             // try to handle more or less gracefully
-            is = new InputSource();
+            InputSource is = new InputSource();
             is.setSystemId(FILENOTFOUND + path);
             is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
                                                    "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
                                                    " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
-                                                   "<error>" + path + " not found</error>"));
-         } 
-        return is;
+                                                   "<error>" + e.toString() + "</error>"));
+            return is;
+        }
     }
 
     /**
@@ -159,14 +155,14 @@ public class DocumentReader  {
             xmlFilePath = source.getSystemId();
             XMLEntityResolver resolver = null;
             if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
-            DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
+            DocumentBuilder dbuilder = DocumentReader.getDocumentBuilder(validating, null, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
         } catch(org.xml.sax.SAXException se) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
         } catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe, ioe);
+            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
 

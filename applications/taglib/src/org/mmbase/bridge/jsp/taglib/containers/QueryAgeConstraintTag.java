@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.4 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.2.2.2 2004-07-26 20:12:19 nico Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {

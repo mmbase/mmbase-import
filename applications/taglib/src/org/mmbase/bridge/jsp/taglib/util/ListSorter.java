@@ -19,7 +19,7 @@ import java.util.*;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.4 2004-05-18 17:31:47 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.3.2.1 2004-05-18 17:32:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.13 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.9.2.4 2004-07-26 20:12:18 nico Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
     // nodereferrer because RelatedNodesContainer extension

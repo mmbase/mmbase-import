@@ -17,9 +17,7 @@ import org.mmbase.util.logging.*;
  * Class with support for creation of date strings in GMT format.
  * Date strings in this format are used in http headers.
  *
- * @deprecated-now Use response.setDateHeader
- * @author vpro
- * @version $Id: RFC1123.java,v 1.7 2004-09-30 14:07:13 pierre Exp $
+ * @deprecated Use response.setDateHeader
  */
 public class RFC1123 {
 
@@ -27,7 +25,7 @@ public class RFC1123 {
     static Logger log = Logging.getLoggerInstance(RFC1123.class.getName());
 
 
-    private static DateFormat formatter;
+    private static DateFormat formatter; 
 
     static {
         formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
@@ -63,7 +61,7 @@ public class RFC1123 {
         return formatter.format(d);
     }
 
-
+    
     /**
      * Method to call this class from the commandline for testing.
      */

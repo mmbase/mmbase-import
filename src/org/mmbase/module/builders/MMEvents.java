@@ -18,10 +18,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
- * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.16 2004-10-08 12:23:54 pierre Exp $
+ * @version $Id: MMEvents.java,v 1.15 2003-07-02 06:20:45 keesj Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
@@ -53,7 +51,7 @@ public class MMEvents extends MMObjectBuilder {
         return true;
     }
 
-
+    
     public String getGUIIndicator(MMObjectNode node) {
         int tmp=node.getIntValue("start");
         //String str=DateSupport.getMonthDay(tmp)+"/"+DateSupport.getMonth(tmp)+"/"+DateSupport.getYear(tmp);
@@ -110,7 +108,7 @@ public class MMEvents extends MMObjectBuilder {
         } else if (field.indexOf("year_")!=-1) {
             int str=(int)node.getIntValue(field.substring(5));
             return(DateSupport.getYear(str));
-        }
+        } 
         return(super.getValue(node,field));
     }
 
@@ -137,7 +135,7 @@ public class MMEvents extends MMObjectBuilder {
         } catch (SearchQueryException e) {
             log.error(e);
         }
-
+            
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField stopField = query.getField(getField("stop"));
@@ -153,14 +151,14 @@ public class MMEvents extends MMObjectBuilder {
         }
         MMObjectNode wnode=null;
         int sleeptime=-1;
-        if (snode!=null && enode==null) {
+        if (snode!=null && enode==null) { 
             sleeptime=snode.getIntValue("start");
             wnode=snode;
         }
         if (snode==null && enode!=null) {
             sleeptime=enode.getIntValue("stop");
             wnode=enode;
-        }
+        }        
         if (snode!=null && enode!=null) {
             if (snode.getIntValue("start")<enode.getIntValue("stop")) {
                 sleeptime=snode.getIntValue("start");
@@ -170,8 +168,8 @@ public class MMEvents extends MMObjectBuilder {
                 wnode=enode;
             }
         }
-
-        if (sleeptime!=-1) {
+    
+        if (sleeptime!=-1) {    
             if (log.isDebugEnabled()) {
                 log.debug("SLEEPTIME="+(sleeptime-now)+" wnode="+wnode+" also="+also);
             }
@@ -190,7 +188,7 @@ public class MMEvents extends MMObjectBuilder {
                     super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
                 }
             }
-        } else {
+        } else {    
             try {
                 Thread.sleep(300*1000);
             } catch (InterruptedException f) {
@@ -204,12 +202,12 @@ public class MMEvents extends MMObjectBuilder {
         int newval=(int)(System.currentTimeMillis()/1000);
         if (val==-1) {
             node.setValue("start",newval);
-
+            
         }
         val=node.getIntValue("stop");
         if (val==-1) {
             node.setValue("stop",newval);
-
+            
         }
         return(super.insert(owner,node));
     }
@@ -219,12 +217,12 @@ public class MMEvents extends MMObjectBuilder {
         int newval=(int)(System.currentTimeMillis()/1000);
         if (val==-1) {
             node.setValue("start",newval);
-
+            
         }
         val=node.getIntValue("stop");
         if (val==-1) {
             node.setValue("stop",newval);
-
+            
         }
         return(super.commit(node));
     }

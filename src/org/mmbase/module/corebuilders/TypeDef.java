@@ -9,47 +9,25 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.io.*;
 import java.util.*;
-
-import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.dom.DOMSource;
-import org.xml.sax.InputSource;
-
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.StringTagger;
+import org.mmbase.module.ParseException;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.BuilderReader;
-
 
 /**
- * TypeDef is used to define the* object types (builders).
- * Nodes of this builder have a vitual 'config' field.
- * This field contains the xml-Document of the builder represented by the node.
- * The filename used to refernce the xml document uis derived by extending the field 'name'.
- * Creating a new typedef node automatically creates a new xml file and loads a new builder.
- * Removing a node dropsa nd unloads a builder (including the xml).
- * Changes to the config will also be active on commit of the node.
+ * TypeDef, one of the meta stucture nodes it is used to define the
+ * object types (builders)
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.48 2004-12-06 14:22:07 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.38 2003-12-17 21:09:03 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
-    /**
-     * The property in the builder file ('deploy-dir') that sets the directory
-     * where new builder configuration files are to be deployed.
-     */
-    public static final String PROPERTY_DEPLOY_DIR = "deploy-dir";
-
     // Logger routine
     private static final Logger log = Logging.getLoggerInstance(TypeDef.class);
-    // Directory where new builder configuration files are deployed by default
-    String defaultDeploy = null;
-    // if true, auto-deploying builders (and saving configfiles) is possible
-    private boolean autoDeploy = true;
 
     /**
      * Number-to-name cache.
@@ -76,24 +54,6 @@ public class TypeDef extends MMObjectBuilder {
         broadcastChanges = false;
     }
 
-    /**
-     * Sets the default deploy directory for the builders.
-     * @return true if init was completed, false if uncompleted.
-     */
-    public boolean init() {
-        boolean result = super.init();
-        if (defaultDeploy == null) {
-            // determine default deploy directory
-            String builderDeployDir = getInitParameter(PROPERTY_DEPLOY_DIR);
-            if (builderDeployDir == null) {
-                builderDeployDir = "applications";
-            }
-            defaultDeploy = builderDeployDir;
-            log.service("Using '" + defaultDeploy + "' as default deploy dir for our builders.");
-        }
-        return result;
-    }
-
     protected Map getNumberToNameCache() {
         if (numberToNameCache == null) readCache();
         return numberToNameCache;
@@ -107,63 +67,20 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
      * This method indirectly calls {@link #preCommit}.
-     * Asside from that, this method loads the builder this node represents, and initalizes it. If you do
-     * not wish to load the builder (i.e. because it is already loaded), use {@link #insert(String, MMObjectNode, boolean)}
      * @param owner The administrator creating the node
      * @param node The object to insert. The object need be of the same type as the current builder.
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-        return insert(owner, node, true);
-    }
-
-    /**
-     * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
-     * This method indirectly calls {@link #preCommit}.
-     * @param owner The administrator creating the node
-     * @param node The object to insert. The object need be of the same type as the current builder.
-     * @param loadBuilder if <code>true</code>, the builder should be loaded. This method is set to
-     *        <code>false</code> when it is called from the init() method of MMObjectBuilder to prevent
-     *        it from being loaded twice
-     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
-     */
-    public int insert(String owner, MMObjectNode node, boolean loadBuilder) {
-        if (log.isDebugEnabled()) {
-            // would be logical to log this in SERVICE but the same occurance is logged on INFO already in MMObjectBuilder.init()
-            log.debug("Insert of builder-node with name '" + node.getStringValue("name") + "', loadBuilder = " + loadBuilder);
-        }
-        // look if we can store to file, if it aint there yet...
-        String path = getBuilderConfiguration(node);
-        java.net.URL url = mmb.getBuilderLoader().findResource(path);
-        try {
-            if (! url.openConnection().getDoInput()) {
-                // first store our config....
-                storeBuilderConfiguration(node);
-            }
-        } catch (Exception e) {
-            log.error(e);
-        }
-        // try if the builder was already in TypeDef for some reason
-        // this can happen when another thread was here first
-        int result = getIntValue(node.getStringValue("name"));
-        if (result < 0) {
-            // otherwise save the node
-            result = super.insert(owner, node);
-        }
-        if (result != -1) {
-            // update the cache
-            Integer number = new Integer(result);
-            String name = node.getStringValue("name");
-            getNameToNumberCache().put(name, number);
-            getNumberToNameCache().put(number, name);
-            // Load the builder if needed
-            if (loadBuilder) {
-                loadBuilder(node);
-            }
+        int result=super.insert(owner, node);
+        if (result!=-1) {
+            Integer number=node.getIntegerValue("number");
+            String name=node.getStringValue("name");
+            getNameToNumberCache().put(name,number);
+            getNumberToNameCache().put(number,name);
         }
         return result;
     }
-
 
     /**
      * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
@@ -171,37 +88,20 @@ public class TypeDef extends MMObjectBuilder {
      * @param node The node to be committed
      * @return true if commit successful
      */
-
     public boolean commit(MMObjectNode node) {
-        log.service("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        MMObjectBuilder builder = getBuilder(node);
-        BuilderReader originalBuilderXml = new BuilderReader(getBuilderConfiguration(node), getMMBase());
-        BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(
-                                                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                                 "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
-                                                 "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
-                                                 node.getStringValue("config"))), getMMBase());
-        if (!originalBuilderXml.equals(newBuilderXml)) {
-            try {
-                // unload the builder...
-                builder = unloadBuilder(node);
-                // attempt to apply changes to the database
-                // by dropping the buildertable (ARGH!)
-                if (! originalBuilderXml.storageEquals(newBuilderXml)) {
-                    builder.delete();
-                }
-                // finally save our new config.
-                storeBuilderConfiguration(node);
-            } finally {
-                // clear config, so it will be refreshed later on
-                node.storeValue("config",null);
-                // load the builder again.. (will possibly create a new table)
-                loadBuilder(node);
+        Integer number=node.getIntegerValue("number");
+        String oldname=node.getStringValue("name");
+        boolean result=super.commit(node);
+        if (result) {
+            String newname=node.getStringValue("name");
+            if (!oldname.equals(newname)) {
+                getNameToNumberCache().remove(oldname);
+                getNameToNumberCache().put(newname,number);
+                getNumberToNameCache().put(number,newname);
             }
         }
-        return super.commit(node);
+        return result;
     }
-
 
     /**
      * Remove a node from the cloud, when the represented builder was active
@@ -210,19 +110,6 @@ public class TypeDef extends MMObjectBuilder {
      * @throws RuntimeException When the operation could not be performed
      */
     public void removeNode(MMObjectNode node) {
-        log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        // only delete when builder is completely empty...
-        MMObjectBuilder builder = getBuilder(node);
-        testBuilderInUse(builder);
-        builder = unloadBuilder(node);
-        // now that the builder cannot be started again (since config is now really missing)
-        builder.delete();
-        // try to delete the configuration file first!.....
-        if (!deleteBuilderConfiguration(node)) {
-            // delete-ing failed, reload the builder again...
-            loadBuilder(node);
-            throw new RuntimeException("Could not delete builder config");
-        }
         Integer number=node.getIntegerValue("number");
         String name=node.getStringValue("name");
         super.removeNode(node);
@@ -232,19 +119,22 @@ public class TypeDef extends MMObjectBuilder {
 
     /**
      * Fill the typedef caches with the initial values.
-     * Caches filled are a number-to-name and a name-to-number cache.
+     * Caches filled are a number-to-name, name-to-number, and
+     * number-to-description cache
      * @duplicate should be moved to org.mmbase.cache
      * @return always true
      */
     private boolean readCache() {
         // at least fill in typedef
         log.service("Reading typedef caches");
+        Integer number;
+        String name;
         numberToNameCache = new Hashtable();
         nameToNumberCache = new Hashtable();
         for (Enumeration e = search(null); e.hasMoreElements();) {
             MMObjectNode n= (MMObjectNode) e.nextElement();
-            Integer number= n.getIntegerValue("number");
-            String name  = n.getStringValue("name");
+            number= n.getIntegerValue("number");
+            name  = n.getStringValue("name");
             if (number != null && name != null) {
                 nameToNumberCache.put(name,number);
                 numberToNameCache.put(number,name);
@@ -278,7 +168,7 @@ public class TypeDef extends MMObjectBuilder {
     public String getValue(int type) {
         String result = (String) getNumberToNameCache().get(new Integer(type));
         if (result == null) {
-            log.warn("Could not find builder name for typedef number " + type);
+            log.error("Could not find builder name for typedef number " + type);
         }
         return result;
     }
@@ -322,53 +212,12 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     /**
-     * Provides additional functionality when obtaining field values.
-     * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
-     * (generally when a fieldname is supplied that doesn't exist).
-     * It allows the system to add 'functions' to be included with a field name, such as 'html(body)' or 'time(lastmodified)'.
-     * This method will parse the fieldname, determining functions and calling the {@link #executeFunction} method to handle it.
-     * Functions in fieldnames can be given in the format 'functionname(fieldname)'. An old format allows 'functionname_fieldname' instead,
-     * though this only applies to the text functions 'short', 'html', and 'wap'.
-     * Functions can be nested, i.e. 'html(shorted(body))'.
-     * Derived builders should override this method only if they want to provide virtual fieldnames. To provide addiitonal functions,
-     * override {@link #executeFunction} instead.
-     * @param node the node whos efields are queries
-     * @param field the fieldname that is requested
-     * @return the result of the 'function', or null if no valid functions could be determined.
+     * @javadoc
      */
-    public Object getValue(MMObjectNode node, String field) {
-        if (log.isDebugEnabled()) {
-            log.debug("node:" + node + " field: " + field);
-        }
-        // return the Document from the config file..
-        if (field.equals("config")) {
-            // first check if we already have a value in node fields...
-            Object o = super.getValue(node, field);
-            if (o != null) {
-                return o;
-            }
-            // otherwise, open the file to return it...
-            if (log.isDebugEnabled()) {
-               log.debug("retrieving the document for node #" + node.getNumber());
-            }
-
-                // method node.getStringValue("name") should work, since getStringValue("path") checked it already...
-            String path = getBuilderConfiguration(node);
-            org.w3c.dom.Document doc;
-            try {
-                doc = mmb.getBuilderLoader().getDocument(path);
-            } catch (Exception e) {
-                log.warn("Error reading builder with name: " + path + " " + e.getMessage());
-                return null;
-            }
-            if (doc == null) {
-                log.warn("Resource with name: " + path + " didnt exist, getValue will return null for builder config");
-                return null;
-            }
-            node.setValue(field, doc);
-            return doc;
-        } else if (field.equals("state")) {
+    public Object getValue(MMObjectNode node,String field) {
+        if (field.equals("state")) {
             int val=node.getIntValue("state");
+
             // is it set allready ? if not set it, this code should be
             // removed ones the autoreloader/state code is done.
             if (val==-1) {
@@ -381,42 +230,7 @@ public class TypeDef extends MMObjectBuilder {
             // but have to change admin pages first
             return getGUIIndicator("name",node);
         }
-        return super.getValue(node, field);
-    }
-
-    /**
-     *  Sets a key/value pair in the main values of this node.
-     *  Note that if this node is a node in cache, the changes are immediately visible to
-     *  everyone, even if the changes are not committed.
-     *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
-     *  @param fieldValue the value to assign
-     *  @param originalValue the value which was original in the field
-     *  @return <code>true</code> When an update is required(when changed),
-     *	<code>false</code> if original value was set back into the field.
-     */
-    public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
-        Object newValue = node.retrieveValue(fieldName);
-        // the field with the name 'name' may not be changed.....
-        if (originalValue != null && !originalValue.equals(newValue)) {
-            if (fieldName.equals("name")) {
-                // restore the original value...
-                node.storeValue(fieldName, originalValue);
-                throw new RuntimeException("Cannot change a builder's name");
-/*            } else if (fieldName.equals("config")) {
-                MMObjectBuilder builder = getBuilder(node);
-                // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
-                if (builder == null) {
-                    log.warn("No builder found for typedef node " + node);
-                } else if (builder.size() > 0) {
-                    throw new RuntimeException("Cannot change builder config it has nodes (otherwise information could get lost..)");
-                } else {
-                    log.info("Changing config for typedef " + node + " associated with builder '" + builder.getTableName() + "'");
-                }
-*/
-            }
-        }
-        return true;
+        return super.getValue(node,field);
     }
 
     /**
@@ -440,25 +254,6 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     /**
-     * Returns the path, where the builderfile can be found, for not exising builders, a path will be generated.
-     * @param   node The node, from which we want to know it;s MMObjectBuilder
-     * @return  The path where the builder should live or <code>null</code> in case of strange failures
-     *          When the builder was not loaded.
-     * @since MMBase-1.8
-     */
-    protected String getBuilderConfiguration(MMObjectNode node) {
-        // call our code above, to get our path...
-        String path = getBuilderPath(node);
-        // do we have a path?
-        if (path == null) {
-            log.error("field 'path' was empty.");
-            return null;
-        }
-        return path + node.getStringValue("name") + ".xml";
-    }
-
-
-    /**
      * Returns the MMObjectBuilder which is represented by the node.
      * @param   node The node, from which we want to know its MMObjectBuilder
      * @return  The builder which is represented by the node, or <code>null</code>
@@ -473,7 +268,7 @@ public class TypeDef extends MMObjectBuilder {
      * @javadoc
      */
     public boolean reloadBuilder(String objectname) {
-        log.service("Trying to reload builder : "+objectname);
+        log.service("MMBASE -> Trying to reload builder : "+objectname);
         // first get all the info we need from the builder allready running
         MMObjectBuilder oldbul=mmb.getMMObject(objectname);
         String classname=oldbul.getClass().getName();
@@ -481,10 +276,10 @@ public class TypeDef extends MMObjectBuilder {
 
         try {
             Class newclass=Class.forName("org.mmbase.module.builders."+classname);
-            log.debug("Loaded load class : "+newclass);
+            log.debug("TypeDef -> Loaded load class : "+newclass);
 
             MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
-            log.debug("Started : "+newclass);
+            log.debug("TypeDef -> started : "+newclass);
 
             bul.setMMBase(mmb);
             bul.setTableName(objectname);
@@ -505,7 +300,12 @@ public class TypeDef extends MMObjectBuilder {
      * @return the display of the node as a <code>String</code>
      */
     public String getGUIIndicator(MMObjectNode node) {
-        return getSingularName(node.getStringValue("name"), null);
+        if (node!=null) {
+            return getGUIIndicator("name",node);
+        } else {
+            log.error("TypeDef-> problem node empty");
+            return "problem";
+        }
     }
 
     /**
@@ -567,7 +367,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public Vector getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("builders")) {
@@ -610,177 +410,5 @@ public class TypeDef extends MMObjectBuilder {
         } else {
             return super.executeFunction(node, function, args);
         }
-    }
-
-    private void testBuilderInUse(MMObjectBuilder builder) {
-        if (builder == null) {
-            throw new RuntimeException("Cannot delete inactive builders (because it is unknown what the state of the table in the database is)");
-        } else if (builder.size() > 0) {
-            throw new RuntimeException("Cannot delete this builder, it still contains nodes");
-        } else {
-            if (builder instanceof InsRel) {
-                MMObjectNode reldef = mmb.getRelDef().getDefaultForBuilder((InsRel)builder);
-                if (reldef != null) {
-                    throw new RuntimeException("Cannot delete this builder, it is referenced in reldef #" + reldef.getNumber());
-                }
-            }
-            Enumeration e = mmb.getTypeRel().search("WHERE snumber=" + builder.oType + " OR dnumber=" + builder.oType);
-            if (e.hasMoreElements()) {
-                String typerels = "#" + ((MMObjectNode)e.nextElement()).getNumber();
-                while (e.hasMoreElements()) {
-                    typerels = typerels + ", #" + ((MMObjectNode)e.nextElement()).getNumber();
-                }
-                throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
-            }
-        }
-    }
-
-
-    /**
-     * Returns the path, where the builder configuration file can be found, for not exising builders, a path will be generated.
-     * @param   node The node, from which we want to know it;s MMObjectBuilder
-     * @return  The path where the builder should live or <code>null</code> in case of strange failures
-     *          When the builder was not loaded.
-     */
-    protected String getBuilderPath(MMObjectNode node) {
-        if (log.isDebugEnabled()) {
-            log.debug("retrieving the path for node #" + node.getNumber());
-        }
-        // some basic checking
-        if (node == null) {
-            log.error("node was null");
-            return null;
-        }
-        if (node.getStringValue("name") == null) {
-            log.error("field 'name' was null");
-            return null;
-        }
-        if (node.getStringValue("name").trim().length() == 0) {
-            log.error("field 'name' was empty.");
-            return null;
-        }
-
-
-        String pathInBuilderDir = mmb.getBuilderPath(node.getStringValue("name"), "");
-        if (pathInBuilderDir != null) {
-            // return the file path,..
-            String file = pathInBuilderDir;
-            if (log.isDebugEnabled()) {
-                log.debug("builder file:" + file);
-            }
-            return file;
-        }
-        // still null, make up a nice url for our builder!
-        if (defaultDeploy != null) {
-            String file = defaultDeploy;
-            if (log.isDebugEnabled()) {
-                log.debug("builder file:" + file);
-            }
-            return file;
-        }
-        return null;
-    }
-
-
-    /**
-     */
-    protected MMObjectBuilder loadBuilder(MMObjectNode node) {
-        if (log.isDebugEnabled()) {
-            log.debug("Load builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        }
-        String path = getBuilderPath(node);
-        log.info("Loading bulider from " + path);
-        MMObjectBuilder builder = mmb.loadBuilderFromXML(node.getStringValue("name"), path);
-        if (builder == null) {
-            // inactive builder?
-            log.info("could not load builder from xml, is in inactive?(name: '" + node.getStringValue("name") + "' path: '" + path + "')");
-            return null;
-        }
-        mmb.initBuilder(builder);
-        return builder;
-    }
-
-
-
-    /**
-     */
-    protected void storeBuilderConfiguration(MMObjectNode node) {
-        if (log.isDebugEnabled()) {
-            log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        }
-        log.info("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        org.w3c.dom.Document doc = node.getXMLValue("config");
-        if (doc == null) {
-            log.error("Field config was null! Could not save the file for " + node.getStringValue("name") + Logging.stackTrace(new Throwable()));
-            return;
-        }
-        String path = getBuilderConfiguration(node);
-        log.info("Storing to " + path);
-        try {
-            mmb.getBuilderLoader().storeDocument(path, doc);
-        } catch (java.io.IOException ioe) {
-            log.error("Could not store builder configuration " + ioe.getMessage());
-        }
-    }
-
-    /**
-     *  documents may not be null!
-     */
-    private boolean compareDocuments(org.w3c.dom.Document a, org.w3c.dom.Document b) {
-        try {
-            //make a string from the XML
-            TransformerFactory tfactory = TransformerFactory.newInstance();
-            Transformer serializer = tfactory.newTransformer();
-            // maybe some better code?
-            StringWriter asw = new StringWriter();
-            serializer.transform(new DOMSource(a), new StreamResult(asw));
-            StringWriter bsw = new StringWriter();
-            serializer.transform(new DOMSource(b), new StreamResult(bsw));
-            // compare the 2 document-strings
-            return asw.toString().equals(bsw.toString());
-        } catch (TransformerConfigurationException tce) {
-            String message = tce.toString() + " " + Logging.stackTrace(tce);
-            log.error(message);
-            throw new RuntimeException(message);
-        } catch (TransformerException te) {
-            String message = te.toString() + " " + Logging.stackTrace(te);
-            log.error(message);
-            throw new RuntimeException(message);
-        }
-    }
-
-    /**
-     */
-    protected MMObjectBuilder unloadBuilder(MMObjectNode node) {
-        if (log.isDebugEnabled()) {
-            log.debug("Unload builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        }
-        // unload the builder,...
-        MMObjectBuilder builder = getBuilder(node);
-        if (builder != null) {
-            mmb.unloadBuilder(builder);
-        }
-        return builder;
-    }
-
-    /**
-     */
-    protected boolean deleteBuilderConfiguration(MMObjectNode node) {
-        if (log.isDebugEnabled()) {
-            log.debug("Delete file of builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-        }
-        File file = new File(getBuilderConfiguration(node));
-        if (file.exists()) {
-            if (!file.canWrite()) {
-                log.error("file: " + file + " had no write rights for me.");
-                return false;
-            }
-            // remove the file from the file system..
-            file.delete();
-            if (log.isDebugEnabled()) {
-                log.debug("file: " + file + " has been deleted");
-            }
-        }
-        return true;
     }
 }

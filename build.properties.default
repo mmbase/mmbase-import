@@ -1,18 +1,18 @@
 # -----------------------------------------------------------------------------
 # build.properties.default
 #
-# This is the default build.properties file.
+# This is the default build.properties file. 
 # It contains all required packages.
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# Should files appear to be missing, consult
+# Should files appear to be missing, consult 
 #
 #  - http://www.filewatcher.org
 #
-# for possible mirrors.
+# for possible mirrors. 
 #
-# $Id: build.properties.default,v 1.8 2004-11-09 10:15:05 marcel Exp $
+# $Id: build.properties.default,v 1.4.2.2 2004-11-09 10:15:49 marcel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -24,9 +24,6 @@
 # ----- Default Base Path for required Packages -----
 # download.dir=${documentation.build.dir}/download
 
-# ----- download-path for packages-list and argument for -link of javadoc --
-
-j2se-javadoc.loc=http://java.sun.com/j2se/1.4/docs/api
 
 # --------------------------------------------------
 #                REQUIRED LIBRARIES
@@ -110,13 +107,3 @@ xalan.loc=${mmbase.loc}/xalan/${xalan.file}
 xalan.jar=${expand.dir}/${xalan.fullversion}/bin/xalan.jar
 xerces.jar=${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar
-
-# ----- Jakarta file upload ----------
-fileupload.version=commons-fileupload-1.0
-fileupload.file=${fileupload.version}.tar.gz
-fileupload.dest=${download.dir}/${fileupload.file}
-fileupload.loc=http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}
-fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
-
-
-

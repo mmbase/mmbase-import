@@ -1,11 +1,11 @@
-/*
-
+/* -*- tab-width: 4; -*-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 package org.mmbase.module;
 
@@ -15,52 +15,73 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * ModuleProbe is a deamon thread that periodically calls the maintenance() method
- * of the modules active in MMBase.
- * The number of milliseconds of the invocation period is approcimately 1 minute.
+ * admin module, keeps track of all the worker pools
+ * and adds/kills workers if needed (depending on
+ * there load and info from the config module).
  *
- * @author Pierre van Rooden
+ * @version $Id: ModuleProbe.java,v 1.8 2003-03-26 10:15:20 kees Exp $
  * @author Daniel Ockeloen
- * @version $Id: ModuleProbe.java,v 1.9 2004-04-14 08:06:00 pierre Exp $
  */
-public class ModuleProbe extends Thread {
-
-    private static final Logger log = Logging.getLoggerInstance(ModuleProbe.class);
-
-    // Sleeptime (needs to be configurable?)
-    private int invocationPeriod = 60*1000;
-
-    public ModuleProbe() {
-        super("ModuleProbe");
-        setDaemon(true);
-        log.service("Starting ModuleProbe");
-        start();
+public class ModuleProbe implements Runnable {
+    
+    private static Logger log = Logging.getLoggerInstance(ModuleProbe.class.getName());
+    
+    private Thread kicker = null;
+    private Map mods;
+    
+    public ModuleProbe(Map mods) {
+        this.mods=mods;
+        init();
     }
-
+    
+    public void init() {
+        this.start();
+    }
+    
+    
     /**
-     * Periodically invoke the maintainance method of all active MMBase modules.
+     * Starts the admin Thread.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            log.service("Starting main thread of ModuleProbe");
+            kicker = new Thread(this,"ModuleProbe");
+            kicker.setDaemon(true);
+            kicker.start();
+        }
+    }
+    
+    /**
+     * Stops the admin Thread.
+     */
+    public void stop() {
+        /* Stop thread */
+        log.service("Stopping main thread of ModuleProbe");
+        kicker.interrupt();
+        kicker = null;
+    }
+    
+    /**
+     * admin probe, try's to make a call to all the maintainance calls.
      */
     public void run() {
-        while (true) {
-            // sleep
+        while (kicker != null) {
             try {
-                Thread.sleep(invocationPeriod);
+                Thread.sleep(60*1000);
             } catch (InterruptedException e){
                 return;
             }
-            // call each module's maintenance routine
-            try {
-                Iterator i = Module.getModules();
-                while(i != null && i.hasNext()) {
-                    Module module = (Module) i.next();
+            if (mods != null) {
+                for (Iterator i = mods.entrySet().iterator(); i.hasNext();) {
+                    Map.Entry entry = (Map.Entry) i.next();
                     try {
-                        module.maintainance();
-                    } catch (RuntimeException e) {
-                        log.error("Exception on maintainance call of " + module.getName() + " : " + e.getMessage());
+                        Module mod = (Module) entry.getValue();
+                        mod.maintainance();
+                    } catch(Exception er) {
+                        log.error("error on maintainance call : " + entry.getKey());
                     }
                 }
-            } catch (ConcurrentModificationException cme) {
-                log.debug("Module list changed - abort current probe, try again later");
             }
         }
     }

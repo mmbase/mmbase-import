@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.8 2004-06-30 16:19:35 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.7.2.1 2004-06-30 16:20:28 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet

@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.33 2004-08-18 10:46:06 rob Exp $
+ * @version $Id: StringHandler.java,v 1.27.2.6 2004-08-18 10:45:30 rob Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.5 2004-07-26 20:18:01 nico Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.2.2.3 2004-07-26 20:12:20 nico Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -78,7 +78,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
             nm = getCloudVar().getNodeManager(type.getString(this));
         }
         Node relatedFromNode = getNode();
-        query = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
+        query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
         relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
 
         return EVAL_BODY;

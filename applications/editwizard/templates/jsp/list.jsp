@@ -1,11 +1,12 @@
-<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
+<%@ page errorPage="exception.jsp"
+%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.53 2004-12-14 11:39:54 pierre Exp $
+     * @version  $Id: list.jsp,v 1.47.2.2 2004-09-15 13:04:26 jaco Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -119,7 +120,7 @@ int len   = listConfig.pagelength;
 int resultsSize;
 
 //// do not list anything if search is forced and no searchvalue given
-if (listConfig.search == Config.ListConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
+if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();
     resultsSize = 0;
 } else if (listConfig.multilevel) {
@@ -201,7 +202,7 @@ for (int i=0; i < results.size(); i++) {
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldname = (String)listConfig.fieldList.get(j);
-
+        
         Field field = null;
         String value = "";
         if (listConfig.multilevel) {
@@ -221,14 +222,16 @@ for (int i=0; i < results.size(); i++) {
         } else {
           value = item.getStringValue("gui(" + fieldname + ")");
         }
-        addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
+        addField(obj, field.getGUIName(), value, field.getGUIType());
     }
+
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
     }
     Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
     Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
+
 
 // place page information
 int pagecount = new Double(Math.floor(resultsSize / len)).intValue();
@@ -291,7 +294,7 @@ if (listConfig.title == null) {
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
-params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), "."));
+params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
 
 
 log.trace("Doing the transformation for " + listConfig.template);
@@ -312,13 +315,12 @@ private org.w3c.dom.Node addObject(org.w3c.dom.Node el, int number, int index, S
 
 }
 
-private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String fieldName, String value, String guitype) {
+private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value, String guitype) {
     org.w3c.dom.Node n = el.getOwnerDocument().createElement("field");
     Utils.setAttribute(n, "name", name);
-    Utils.setAttribute(n, "fieldname", fieldName);
     Utils.setAttribute(n, "guitype", guitype);
     Utils.storeText(n, value);
     el.appendChild(n);
     return n;
 }
-%></mm:log></mm:cloud></mm:content>
+%></mm:log></mm:cloud></mm:locale>

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.34 2004-12-10 15:50:02 pierre Exp $
+ * @version $Id: NodeInfoTag.java,v 1.27.2.2 2004-07-26 20:12:15 nico Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -34,8 +34,6 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     private static final int TYPE_NODENUMBER            = 3;
     private static final int TYPE_GUI                   = 4;
     private static final int TYPE_DESCRIPTION           = 5;
-    private static final int TYPE_CONTEXT               = 6;
-    private static final int TYPE_QUERY                 = 50; // for debug
 
 
     private Attribute type = Attribute.NULL;
@@ -56,14 +54,10 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             return TYPE_GUINODEMANAGER_PLURAL;
         } else if ("description".equals(t)) {
             return  TYPE_DESCRIPTION;
-        } else if ("context".equals(t)) {
-            return  TYPE_CONTEXT;
         } else if ("number".equals(t)) {
             return  TYPE_NODENUMBER;
         } else if ("gui".equals(t)) {
             return TYPE_GUI;
-        } else if ("query".equals(t)) {
-            return TYPE_QUERY;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -89,15 +83,12 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
                 nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
             }
         }
-        Object show = "";
+        String show = "";
 
         // set node if necessary:
         switch(t) {
         case TYPE_NODENUMBER:
             show = ""+getNode().getNumber();
-            break;
-        case TYPE_CONTEXT:
-            show = getNode().getContext();
             break;
         case TYPE_NODEMANAGER:
             show = nodeManager.getName();
@@ -119,22 +110,19 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
-            Parameters args = new ParametersImpl(MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-            args.set("locale",   getLocale());
+            args.set("language", getCloudVar().getLocale().getLanguage());
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request",  pageContext.getRequest());
             show = getNode().getFunctionValue("gui", args).toString();
             break;
         }
-        case TYPE_QUERY:
-            show = findNodeProvider().getGeneratingQuery();
-            break;
         default:
         }
 
-
+        
         helper.setValue(show);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

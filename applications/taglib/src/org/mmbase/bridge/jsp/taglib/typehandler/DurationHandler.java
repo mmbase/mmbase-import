@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.2 2004-09-17 07:23:57 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.1.2.1 2004-09-17 07:23:04 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Daniel Ockeloen
- * @version $Id: MMMysql42Node.java,v 1.24 2004-06-15 21:17:01 robmaris Exp $
+ * @version $Id: MMMysql42Node.java,v 1.23.2.1 2004-06-15 21:38:33 robmaris Exp $
  */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
     /**

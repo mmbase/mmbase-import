@@ -9,17 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-//import org.mmbase.cache.CacheImplementation;
 import java.util.*;
 /**
  * A hashtable which has a maximum of entries.  Old entries are
  * removed when the maximum is reached.  This table is used mostly to
  * implement a simple caching system.
  *
- * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.19 2004-09-30 08:52:12 pierre Exp $
+ * @version $Id: LRUHashtable.java,v 1.17.2.1 2004-09-07 14:37:24 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -194,7 +192,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
 
     /**
      * Returns the entries of this Map. Modification are reflected.
-     *
+     * 
      * @since MMBase-1.6.3
      */
     public Set entrySet() {
@@ -546,9 +544,11 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             if (work != null) {
                 LRUHashtable.this.removeEntry(work);
                 LRUHashtable.this.currentSize--;
-            }
+            } 
         }
     }
+
+
 }
 
 

@@ -9,7 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.Writer;
+import java.io.StringWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
+
 import java.util.*;
 
 import javax.xml.transform.*;
@@ -17,6 +22,7 @@ import javax.xml.parsers.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
+
 
 import org.mmbase.cache.xslt.*;
 
@@ -27,17 +33,16 @@ import org.mmbase.util.logging.Logging;
 /**
  * Make XSL Transformations
  *
- * @core (?) Not specific to MMBase, but used by build files for generation of documentation.
- * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.23 2004-11-11 17:53:07 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.19 2003-07-18 14:56:53 michiel Exp $
+ *
  */
 public class XSLTransformer {
-    private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XSLTransformer.class.getName());
     /**
      * Empty constructor
-     * @deprecated All methods are static.
      */
     public XSLTransformer() {}
 
@@ -48,8 +53,8 @@ public class XSLTransformer {
      * @param xslPath Path to XSL file
      * @return String with converted XML document
      */
-    public static String transform(String xmlPath, String xslPath) {
-        return transform(xmlPath,xslPath,false);
+    public String transform(String xmlPath, String xslPath) {
+	return transform(xmlPath,xslPath,false);
     }
 
     /**
@@ -66,19 +71,19 @@ public class XSLTransformer {
      *
      *
      */
-    public static  String transform(String xmlPath, String xslPath, boolean cutXML) {
+    public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
             StringWriter res = new StringWriter();
             transform(new File(xmlPath), new File(xslPath), new StreamResult(res), null, true);
-            String s = res.toString();
-            int n = s.indexOf("\n");
-            if (cutXML && s.length() > n) {
-                s = s.substring(n + 1);
-            }
-            return s;
+	    String s = res.toString();
+	    int n = s.indexOf("\n");
+	    if (cutXML && s.length() > n) {
+		s = s.substring(n + 1);
+	    }
+	    return s;
         } catch (Exception e) {
             log.error(e.getMessage());
-            log.error(Logging.stackTrace(e));
+	    log.error(Logging.stackTrace(e));
             return "Error during XSLT tranformation: "+e.getMessage();
         }
     }
@@ -87,23 +92,14 @@ public class XSLTransformer {
      * This is the base function which calls the actual XSL
      * transformations. Performs XSL transformation on MMBase specific
      * way (using MMBase cache, and URIResolver).
-     * @javadoc
      *
      * @since MMBase-1.6
-     */
-    public static void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+     **/
+
+    public void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         transform(xml, xslFile, result, params, true);
     }
-
-    /**
-     * This is the base function which calls the actual XSL
-     * transformations. Performs XSL transformation on MMBase specific
-     * way (using MMBase cache, and URIResolver).
-     * @javadoc
-     *
-     * @since MMBase-1.6
-     */
-    public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
 
         if (log.isDebugEnabled()) {
             Runtime rt = Runtime.getRuntime();
@@ -113,7 +109,6 @@ public class XSLTransformer {
 
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
-        //xsl.setSystemId(xslFile.toURL().toString());
         URIResolver uri;
         if (considerDir) {
             uri = new URIResolver(xslFile.getParentFile());
@@ -127,8 +122,7 @@ public class XSLTransformer {
             log.debug("template cache size " + cache.size() + " entries");
         }
         if (cachedXslt == null) {
-            TransformerFactory tf = FactoryCache.getCache().getFactory(uri);
-            cachedXslt = tf.newTemplates(xsl);
+            cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
             cache.put(xsl, cachedXslt, uri);
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
@@ -153,11 +147,10 @@ public class XSLTransformer {
     /**
      * Perfoms XSL Transformation on XML-file which is parsed MMBase
      * specificly (useing MMBasse EntityResolver and Errorhandler).
-     * @javadoc
      *
      * @since MMBase-1.6
      */
-    public static void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -170,9 +163,8 @@ public class XSLTransformer {
         db.setErrorHandler(handler);
         db.setEntityResolver(resolver);
         org.w3c.dom.Document xmlDoc = db.parse(xmlFile);
-        Source s = new DOMSource(xmlDoc);
-        s.setSystemId(xmlFile.toURL().toString());
-        transform(s, xslFile, result, params, considerDir);
+
+        transform(new DOMSource(xmlDoc), xslFile, result, params, considerDir);
     }
 
 
@@ -183,11 +175,11 @@ public class XSLTransformer {
      * points back to the root directory relatively. You need this
      * when all your transformations results (probably html's) need to
      * refer to the same file which is relative to the root of the transformation.
-     * @javadoc
      *
      * @since MMBase-1.6
      */
-    public static void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+
+    public void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         if (! xmlDir.isDirectory()) {
             throw  new TransformerException("" + xmlDir + " is not a directory");
         }
@@ -259,6 +251,7 @@ public class XSLTransformer {
      * Invocation of the class from the commandline for testing/building
      */
     public static void main(String[] argv) {
+        XSLTransformer t = new XSLTransformer();
         // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
             log.info("Use with two arguments: xslt-file xml-inputfile [xml-outputfile]");
@@ -300,7 +293,7 @@ public class XSLTransformer {
                 log.info("Transforming directory " + in);
                 long start = System.currentTimeMillis();
                 try {
-                    transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
+                    t.transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
                 } catch (Exception e) {
                     log.error("Error: " + e.toString());
                 }
@@ -311,13 +304,13 @@ public class XSLTransformer {
                     try {
                         FileOutputStream stream = new FileOutputStream(argv[2]);
                         Writer f = new OutputStreamWriter(stream,"utf-8");
-                        transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
+                        t.transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
                         f.close();
                     } catch (Exception e) {
                         log.error("Error: " + e.toString());
                     }
                 } else {
-                    String s= transform(argv[1], argv[0], false);
+                    String s=t.transform(argv[1], argv[0], false);
                     log.info(s);
                 }
             }

@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.TagIdentifier;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.3 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: QueryContainer.java,v 1.1.2.2 2004-07-26 20:12:19 nico Exp $
  */
 public interface QueryContainer extends TagIdentifier, QueryContainerOrListProvider {
 

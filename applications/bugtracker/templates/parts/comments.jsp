@@ -1,47 +1,47 @@
-<table class="list">
-  <tr>
-    <th>Statement from the maintainer</th>
-    <td>
-      <mm:field name="rationale">
-        <mm:isnotempty><mm:write escape="p,links" /></mm:isnotempty>
-        <mm:isempty>no maintainer statement yet</mm:isempty>
-      </mm:field>
-    </td>
-  </tr>
-  <tr>
-    <th>User comments</th>
-    <td>
-      <table border="0">
-        <mm:relatednodes role="rolerel" type="comments">
-          <tr>
-            <td valign="top" width="200">
-              <mm:relatednodes type="users" >
-                <mm:field name="firstname" /> <mm:field name="lastname" />
-              </mm:relatednodes>
-            </td>
-            <th valign="top" width="430">
-              <mm:first><mm:import id="commentsfound" /></mm:first>
-              <mm:field name="title" escape="inline,links" />
-            </th>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td><mm:field name="body" escape="p,links" /></td>
-          </tr>        
-        </mm:relatednodes>
-      </table>
-      <mm:present referid="commentsfound" inverse="true">
-        No user comments yet
-      </mm:present>
-      <mm:present referid="user">
-      Add comment 
-      <a href="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="btemplate" value="addComment.jsp" /><mm:param name="commenttype" value="regular" /></mm:url>">
-        <img src="<mm:url page="images/arrow-right.png" />" border="0" />
-      </a>
-      </mm:present>
-      <mm:present referid="user" inverse="true">
-        To add comments please login
-      </mm:present>
-    </td>
-  </tr>
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
+<tr>
+		<th>
+			  Statement from the maintainer 
+		</th>
+		<td>
+			<mm:field name="rationale">
+			<mm:compare value="" inverse="true">
+				<mm:field name="html(rationale)" />
+			</mm:compare>
+			<mm:compare value="">
+				no maintainer statement yet
+			</mm:compare>
+			</mm:field>
+		</td>
+</tr>
+<tr>
+		<th>
+			  User comments 
+		</th>
+		<td>
+				<table border="0">
+				<mm:related path="rolerel,comments">
+				<tr>
+				<td valign="top" width="200">
+				<mm:node element="comments">
+					<mm:relatednodes type="users" >
+					  <mm:field name="firstname" /> <mm:field name="lastname" />
+					</mm:relatednodes>
+				</mm:node>
+				</td>
+				<td valign="top" width="430">
+				<mm:first><mm:import id="commentsfound" /></mm:first>
+				title <mm:field name="comments.title" />
+				<mm:field name="comments.body" />
+
+				</mm:related>
+				</td>
+				</tr>
+				</table>
+				<mm:present referid="commentsfound" inverse="true">
+					No user comments yet
+				</mm:present>
+				Add comment <a href="addComment.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />&commenttype=regular"><img src="images/arrow-right.gif"></a><br />
+		</td>
+</tr>
 </table>

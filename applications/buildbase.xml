@@ -1,15 +1,15 @@
 <!-- ===========================================================================
 
 
-Generic project build file template.
+Generic project build file template. 
 
-Generates a jar for your project.
+Generates a jar for your project. 
 
 You can also do a test. (specify test.class).
 This makes sure you use the right class-path and so on.
 
 Create a build.xml with a DOCTYPE like this:
-<!DOCTYPE project
+<!DOCTYPE project 
  [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
 >
 (point to this file)
@@ -33,7 +33,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="debug"          value="off" />
   <property name="deprecation"    value="on" />
   <property name="nowarn"         value="off" />
-
+  
 
   <property name="applications.dir"   location=".." />
   <property name="project.source.dir" location="." />
@@ -41,21 +41,14 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.templates.include" value="**" />
   <property name="project.examples.dir"  value="${project.source.dir}/examples" />
   <property name="project.config.dir"  value="${project.source.dir}/config" />
-  <property name="project.config.dir.includes"  value="**" />
-  <property name="project.config.jar.includes"  value="" />
   <property name="project.build.postfix" value="" />
   <property name="project.build.dir"  location="./build${project.build.postfix}" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
-  <property name="project.javadoc.dir" value="${project.build.dir}/documentation/javadoc/${project.name}" />
 
-  <property name="project.extra.path"  value="" />  <!-- deprecated ! -->
-  <property name="project.extra.path2" value="" /><!-- deprecated ! -->
-
-
-  <property name="project.jars.dir"      location=".." />
-  <property name="project.jars.includes" value="NOTHING" />
+  <property name="project.extra.path" value="" />
+  <property name="project.extra.path2" value="" />
 
   <property name="project.package"      value="org/mmbase" />
   <property name="project.main.class"   value="org/mmbase/Version" />
@@ -68,7 +61,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="webapp.dir"      value="${build.dir}/mmbase/mmbase-webapp"/>
 
-  <property name="templates.dir"   value="${webapp.dir}/mmbase" />
+  <property name="templates.dir"   value="${webapp.dir}/mmbase" />  
   <property name="examples.dir"    value="${webapp.dir}/mmexamples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
@@ -85,8 +78,6 @@ Create a build.xml with a DOCTYPE like this:
   <property name="mail.jar" value="${build.dir}/lib/mail.jar"/>
   <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
-  <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
-
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="project.target.templates.dir" value="${project.name}" />
@@ -116,7 +107,6 @@ Create a build.xml with a DOCTYPE like this:
   <target name="init" depends="">
     <available property="src.available"           file="${project.source.dir}/src"/>
     <available property="documentation.available" file="${project.source.dir}/documentation" />
-    <available property="documentation.build.available" file="${project.build.dir}/documentation" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
     <available property="templates.available"     file="${project.templates.dir}"/>
@@ -149,7 +139,7 @@ Create a build.xml with a DOCTYPE like this:
     <property name="builddate"       value="${DSTAMP}"/>
 
     <property name="zip.name"      value="mmbase-${distro.version}.${builddate}-${project.name}" />
-
+    
     <property name="project.zip"     value="${project.zip.dir}/${zip.name}.zip" />
   </target>
 
@@ -171,22 +161,16 @@ Create a build.xml with a DOCTYPE like this:
     <echo message="${project.jar} is up-to-date (${project.source.dir}/src/** ${jar.uptodate})" />
   </target>
 
-  <target name="jar.config" depends="init,jar.check" if="config.available" unless="jar.uptodate">
-    <copy todir="${project.build.dir}/classes">
-      <mapper type="glob" from="*" to="org/mmbase/config/*" />
-      <fileset dir="${project.config.dir}" includes="${project.config.jar.includes}">
-      </fileset>
-    </copy>
-  </target>
-
-
-  <target name="jar" description="Create the MMBase project jar file"
-    depends="jar.check,jar.config" unless="jar.uptodate" if="src.available">
-
+  <target name="jar" description="Create the MMBase project jar file" 
+    depends="jar.check" unless="jar.uptodate" if="src.available">
+  
     <antcall target="compile" />
-
+    <echo message="Copying ${mmbase.classes} to ${project.build.dir}/classes" />
+    <copy todir="${project.build.dir}/classes">
+      <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
+    </copy>
     <mkdir dir="${project.metainf.dir}" />
-
+    
 
     <manifest file="${project.build.dir}/manifest.mf">
       <attribute name="Main-Class" value="${project.main.class}" />
@@ -203,13 +187,11 @@ Create a build.xml with a DOCTYPE like this:
     </manifest>
 
     <echo message="creating jar" />
-    
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
          includes="**"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}" includes="**" />
-
     </jar>
 
   </target>
@@ -228,11 +210,11 @@ Create a build.xml with a DOCTYPE like this:
     <antcall target="documentation" />
   </target>
 
-  <target name="package" depends="package.check,package.documentation" unless="package.uptodate">
+  <target name="package" depends="package.check,package.documentation" unless="package.uptodate">   
     <antcall target="jar" />
 
     <echo file="${project.build.dir}/README-PACKAGE.txt">
-This is the '${project.name}' package of MMBase.
+This is the '${project.name}' package of MMBase. 
 
 It can contain:
 
@@ -281,7 +263,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <exclude name="README*" />
       </patternset>
     </zipfileset>
-  </zip>
+  </zip>          
   </target>
 
 
@@ -300,7 +282,8 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </fileset>
     </copy>
 
-    <echo message="compiling.." />
+    <echo message="compiling" />
+    <echo message="${project.extra.path}" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
@@ -308,13 +291,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
            deprecation="${deprecation}"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
+
       >
       <classpath id="compile.classpath">
-        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
-        <pathelement path="${fileupload.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
@@ -330,15 +312,15 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <delete dir="${project.build.dir}" />
   </target>
 
-
+  
 
   <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
-    <available property="documentation.build.available"        file="${project.build.dir}/documentation"/>
+    <available property="documentation.available"        file="${project.build.dir}/documentation"/>
   </target>
 
   <target name="documentation.rawhtml" depends="init" if="do.generate.documentation">
     <copy todir="${project.build.dir}/documentation" includeEmptyDirs="false" >
-      <fileset dir="${project.documentation.dir}">
+      <fileset dir="${project.source.dir}/documentation">
         <include name="**/*.html"/>
       </fileset>
     </copy>
@@ -363,7 +345,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="javadocs" description="Documentation" depends="init" if="do.javadoc">
   <javadoc packagenames="${project.javadoc.packages}"
     sourcepath="${project.source.dir}/src"
-    destdir="${project.javadoc.dir}"
+    destdir="${project.build.dir}/api"
     author="true"
     version="true"
     use="false"
@@ -372,39 +354,17 @@ web-app/*                All kind of templates. They problably can (need?) to be
     doctitle="${project.name}"
     maxmemory="100M"
     source="1.4"
-    failonerror="false"
     bottom="${project.name} build ${version}">
       <classpath>
-        <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
         <pathelement path="${mail.jar}" />
-        <pathelement path="${fileupload.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
       </classpath>
-      <!-- mmbase custom tags -->
-      <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
-      <tag name="license" description="Warning: License conflict:" />
-      <tag name="rename" description="Warning: Will be renamed to:" />
-      <tag name="move" description="Warning: Will be moved to:" />
-      <tag name="scope" description="Warning: Scope will be changed to:" />
-      <tag name="core" description="Core Class" scope="types" />
-      <tag name="application"  description="Class for Application :" scope="types" />
-      <tag name="todo" description="To Do:" />
-      <!-- mmbase tags to ignore (development cleaning warnings only) -->
-      <tag name="javadoc" description="Warning: No Java Documentation Available." enabled="${javadoc.cleaning}" />
-      <tag name="bad-constant" description="Warning: Bad Constant" enabled="${javadoc.cleaning}" />
-      <tag name="bad-literal" description="Warning: Uses Bad Literal" enabled="${javadoc.cleaning}" />
-      <tag name="code-conventions" description="Warning: Code Conventions Breach" enabled="${javadoc.cleaning}"/>
-      <tag name="language" description="Warning: Contains Language-dependent Text Values" enabled="${javadoc.cleaning}"/>
-      <tag name="vpro" description="Warning: Contains VPRO Legacy Code" enabled="${javadoc.cleaning}"/>
-      <tag name="performance" description="Warning: Performance Issues" enabled="${javadoc.cleaning}"/>
-      <tag name="dependency" description="Warning: Contains Dependency Found" enabled="${javadoc.cleaning}"/>
-      <tag name="sql" description="Warning: Contains Database Legacy Code" enabled="${javadoc.cleaning}"/>
-      <tag name="duplicate" description="Warning: Contains Duplicate Code (present in other classes)" enabled="${javadoc.cleaning}"/>
-      <tag name="deprecation-used" description="Warning: Calls Deprecated Code" enabled="${javadoc.cleaning}"/>
     </javadoc>
   </target>
 
@@ -412,14 +372,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <copy todir="${templates.dir}/${project.target.templates.dir}">
       <fileset dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
-      </fileset>
+      </fileset>      
     </copy>
   </target>
 
   <target name="install.examples" depends="init" if="examples.available">
     <copy todir="${examples.dir}/${project.target.examples.dir}">
       <fileset dir="${project.examples.dir}">
-      </fileset>
+      </fileset>      
     </copy>
   </target>
 
@@ -427,18 +387,15 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
   <target name="install.config" depends="init" if="config.available">
     <copy todir="${mmbase.config}">
-      <fileset dir="${project.config.dir}"
-               includes="${project.config.dir.includes}"
-               >
-      </fileset>
+      <fileset dir="${project.config.dir}">
+      </fileset>      
     </copy>
   </target>
 
-
-  <target name="install.documentation" depends="documentation" if="documentation.build.available">
+  <target name="install.documentation" depends="documentation" if="documentation.available">
     <copy todir="${mmdocs.dir}">
       <fileset dir="${project.build.dir}/documentation">
-      </fileset>
+      </fileset>      
     </copy>
   </target>
 
@@ -446,12 +403,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <copy todir="${release.lib.dir}">
       <fileset dir="${project.jar.dir}">
         <include name="**/*.jar" />
-      </fileset>
+      </fileset>      
     </copy>
   </target>
 
 
-  <target name="test" depends="compile">
+  <target name="test" depends="compile">   
     <ant dir="${tests.source.dir}"   target="jar" />
     <java classname="${test.class}"
       classpathref="run.classpath"
@@ -460,14 +417,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <jvmarg value="${test.jvmarg}" />
       <arg    value="${test.arg}" />
       <classpath id="run.classpath">
-        <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
-        <pathelement path="${fileupload.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
         <fileset dir="${tests.lib}">
           <include name="*.jar"/>
           <include name="*.zip"/>

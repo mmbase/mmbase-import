@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.17 2004-05-26 21:58:21 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.14.2.3 2004-05-26 21:58:53 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 

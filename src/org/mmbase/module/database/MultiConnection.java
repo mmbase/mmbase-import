@@ -11,7 +11,6 @@ package org.mmbase.module.database;
 
 import java.sql.*;
 import java.util.Map;
-
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.38 2004-08-26 12:39:42 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.33.2.4 2004-08-26 12:40:14 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -68,8 +67,6 @@ public class MultiConnection implements Connection {
     
     /**
      * @javadoc
-     * @todo in 1.7 this method was made public,document why? 
-     * @since MMBase-1.7
      */
     public MultiConnection(MultiPool parent,Connection con) {
         this.con = con;
@@ -112,7 +109,7 @@ public class MultiConnection implements Connection {
      * createStatement returns an SQL Statement object
      */
     public Statement createStatement() throws SQLException {
-        MultiStatement s = new MultiStatement(this, con.createStatement());
+        MultiStatement s=new MultiStatement(this, con.createStatement());
         return s;
     }
     
@@ -140,7 +137,6 @@ public class MultiConnection implements Connection {
         setLastSQL(query);
         return con.nativeSQL(query);
     }
-    
 
     /**
      * Tries to fix the this connection, if it proves to be broken. It is supposed to be broken if
@@ -152,7 +148,6 @@ public class MultiConnection implements Connection {
      * 
      * @since MMBase-1.7.1
      */
-
     protected boolean checkAfterException() throws SQLException {
         Statement s = null;
         ResultSet rs = null;
@@ -171,8 +166,8 @@ public class MultiConnection implements Connection {
             if (rs != null) rs.close();            
         }        
         return false;
-    }
-
+    } 
+    
     /**
      * If "autoCommit" is true, then all subsequent SQL statements will
      * be executed and committed as individual transactions.  Otherwise
@@ -214,8 +209,6 @@ public class MultiConnection implements Connection {
     public void rollback() throws SQLException {
         con.rollback();
     }
-
-
     
 
     /**
@@ -235,18 +228,18 @@ public class MultiConnection implements Connection {
      */
     public void close() throws SQLException {        
         long time = System.currentTimeMillis() - getStartTimeMillis();
-        long maxLifeTime = parent.getMaxLifeTime();
-        if (time < maxLifeTime / 24) {  //  ok, you can switch on query logging with setting logging of this class on debug
+        
+        if (time < 5000) {  //  ok, you can switch on query logging with setting logging of this class on debug
             if (log.isDebugEnabled()) {
                 log.debug(getLogSqlMessage(time));
             }
-        } else if (time < maxLifeTime / 4) {     // maxLifeTime / 24 (~ 5 s) is too long, but perhaps that's still ok.
+        } else if (time < 30000) {     // 5 s is too long, but perhaps that's still ok.
             if (log.isServiceEnabled()) {
                 log.service(getLogSqlMessage(time));
             }
-        } else if (time < maxLifeTime / 2) {   // over maxLifeTime / 4 (~ 30 s), that too is good to know
+        } else if (time < 60000) {   // over 30 s, that too is good to know
             log.info(getLogSqlMessage(time));
-        } else {                      // query took more than maxLifeTiem / 2 (~ 60 s), that's worth a warning
+        } else {                      // query took more than 60 s, that's worth a warning
             log.warn(getLogSqlMessage(time));
         }
 
@@ -430,8 +423,8 @@ public class MultiConnection implements Connection {
     /**
      * createStatement returns an SQL Statement object
      */
-    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return new MultiStatement(this, con.createStatement(resultSetType, resultSetConcurrency));
+    public Statement createStatement(int i,int y) throws SQLException {
+        return new MultiStatement(this,con.createStatement(i,y));
     }
     
     /**
@@ -516,8 +509,9 @@ public class MultiConnection implements Connection {
      * @return a new Statement object
      * @since MMBase 1.5, JDBC 1.4
      */
-    public Statement createStatement(int type, int concurrency, int holdability) throws SQLException {
-        return new MultiStatement(this,con.createStatement(type, concurrency, holdability));
+    public Statement createStatement(int type, int concurrency, int holdability)
+    throws SQLException {
+        return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
     }
     
     /**

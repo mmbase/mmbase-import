@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.17 2004-06-30 17:51:54 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.15.2.2 2004-07-05 17:20:00 michiel Exp $ 
  * @since MMBase-1.7
  */
 

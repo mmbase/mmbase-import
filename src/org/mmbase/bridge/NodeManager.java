@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.35 2004-10-09 09:39:31 nico Exp $
+ * @version $Id: NodeManager.java,v 1.32 2004-04-07 15:10:55 keesj Exp $
  */
 public interface NodeManager extends Node {
 
@@ -63,7 +63,6 @@ public interface NodeManager extends Node {
     /**
      * Retrieve a  list of descendant nodemanagers (the Nodemanager that - posisbly indirectly - extend from this nodemanager)
      * @return a list of NodeManagers
-     * @since MMBase-1.7
      */
     public NodeManagerList getDescendants();
 
@@ -131,7 +130,6 @@ public interface NodeManager extends Node {
      *
      * @param locale the locale that determines the language for the description
      * @return the description of this node manager
-     * @since MMBase-1.7
      */
     public String getDescription(Locale locale);
 
@@ -163,7 +161,7 @@ public interface NodeManager extends Node {
      * Tests whether the field with the specified name exists in this nodemanager.
      *
      * @since MMBase-1.6
-     * @param fieldName  the name of the field to be returned
+     * @param name  the name of the field to be returned
      * @return      <code>true</code> if the field with the requested name exists
      */
     public boolean hasField(String fieldName);
@@ -254,18 +252,16 @@ public interface NodeManager extends Node {
      * byte array) fields are added.  The query can be used  by getList of Cloud.
      *
      * You can not add steps to this NodeQuery.
-     * @return query for this NodeNanager
      *
      * @since MMBase-1.7
-     * @see #getList(NodeQuery)
+     * @see #getList
      * @see Cloud#createNodeQuery
      */
+
     public NodeQuery createQuery();
 
     /**
      * Executes a query and returns the result as nodes of this NodeManager (or of extensions)
-     * @param query query to execute
-     * @return list of nodes
      * 
      * @since MMBase-1.7
      */
@@ -276,7 +272,6 @@ public interface NodeManager extends Node {
      * Retrieve info from a node manager based on a command string.
      * Similar to the $MOD command in SCAN.
      * @param command the info to obtain, i.e. "USER-OS".
-     * @return info from a node manager
      */
     public String getInfo(String command);
 
@@ -286,7 +281,6 @@ public interface NodeManager extends Node {
      * @param command the info to obtain, i.e. "USER-OS".
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
-     * @return info from a node manager
      */
     public String getInfo(String command, ServletRequest req,  ServletResponse resp);
 
@@ -325,7 +319,6 @@ public interface NodeManager extends Node {
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
      * @param parameters a hashtable containing the named parameters of the list.
-     * @return info from a node manager (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters);
 
@@ -337,7 +330,6 @@ public interface NodeManager extends Node {
      * @param parameters a hashtable containing the named parameters of the list.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
-     * @return info from a node manager (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 

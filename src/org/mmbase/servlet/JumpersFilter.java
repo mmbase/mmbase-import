@@ -18,9 +18,8 @@ import org.mmbase.util.logging.*;
 /**
  * Redirects request based on information supplied by the jumpers builder.
  *
- * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.11 2004-10-08 12:23:16 pierre Exp $
+ * @version $Id: JumpersFilter.java,v 1.9 2004-02-24 11:53:19 michiel Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -51,15 +50,12 @@ public class JumpersFilter implements Filter, MMBaseStarter {
     public MMBase getMMBase() {
         return mmbase;
     }
-
     public void setMMBase(MMBase mmb) {
         mmbase = mmb;
     }
-
     public void setInitException(ServletException se) {
         // never mind, simply, ignore
     }
-
     /**
      * @javadoc
      */
@@ -71,6 +67,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
         initThread = new MMBaseStartThread(this);
         initThread.start();
+
     }
 
     /**
@@ -80,7 +77,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         if (bul == null) {
             if (mmbase != null) {
                 bul = (Jumpers)mmbase.getBuilder("jumpers");
-            }
+            } 
             if (bul == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return; // nothing to be done
@@ -88,10 +85,13 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         }
         HttpServletRequest req = (HttpServletRequest)servletRequest;
         HttpServletResponse res = (HttpServletResponse)servletResponse;
-        // getContextPath() returns the portion of the request URI that indicates the context of the request.
-        // The context path always comes first in a request URI.
-        // The path starts with a "/" character but does not end with a "/" character.
-        // For servlets in the default (root) context, this method returns "". The container does not decode this string.
+        /**
+         * getContextPath()
+         * Returns the portion of the request URI that indicates the context of the request.
+         * The context path always comes first in a request URI.
+         * The path starts with a "/" character but does not end with a "/" character.
+         * For servlets in the default (root) context, this method returns "". The container does not decode this string.
+         */
         int contextPart = req.getContextPath().length();
         String reqURI = req.getRequestURI();
         String key = "";
@@ -103,13 +103,16 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         if (key.indexOf('.') == -1 && !key.endsWith("/")) {
             String url = bul.getJump(key);
             if (url != null) {
-                // Sends a temporary redirect response to the client using the specified redirect location URL.
-                // This method can accept relative URLs; the servlet container must convert the relative URL
-                // to an absolute URL before sending the response to the client. If the location is relative without a leading '/' the
-                // container interprets it as relative to the current request URI. If the location is relative with a leading '/' the container
-                // interprets it as relative to the servlet container root.
-                // If the response has already been committed, this method throws an IllegalStateException.
-                // After using this method, the response should be considered to be committed and should not be written to.
+                /*
+                 * Sends a temporary redirect response to the client using the specified redirect location URL.
+                 * This method can accept relative URLs; the servlet container must convert the relative URL
+                 * to an absolute URL before sending the response to the client. If the location is relative without a leading '/' the
+                 * container interprets it as relative to the current request URI. If the location is relative with a leading '/' the container
+                 *  interprets it as relative to the servlet container root.
+                 * If the response has already been committed, this method throws an IllegalStateException.
+                 *  After using this method, the response should be considered to be committed and should not be written to.
+                 */
+                // res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + url));
                 res.sendRedirect(url);
                 return;
             }

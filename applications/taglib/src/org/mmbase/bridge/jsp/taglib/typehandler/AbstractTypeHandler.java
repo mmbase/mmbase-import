@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.26 2004-04-23 13:37:11 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.25.2.1 2004-04-23 13:38:07 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {

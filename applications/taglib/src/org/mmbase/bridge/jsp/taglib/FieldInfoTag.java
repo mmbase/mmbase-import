@@ -24,7 +24,7 @@ import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.module.core.MMObjectBuilder;
 
 
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.75 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: FieldInfoTag.java,v 1.73.2.2 2004-07-26 20:12:17 nico Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -243,7 +243,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         default:
         }
 
-        Locale locale = getLocale();;
+        Locale locale = null;
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        if (localeTag != null) {
+            locale = localeTag.getLocale();
+        } else {
+            locale = getCloudVar().getLocale();
+        }
 
         switch(infoType) {
         case TYPE_NAME:
@@ -260,10 +266,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-            Parameters args = new ParametersImpl(MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    field.getName());
-            args.set("language",   locale.getLanguage());
-            args.set("locale",   locale);
+            args.set("language", locale.getLanguage());
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request", pageContext.getRequest());

@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.125 2004-12-07 10:09:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.113.2.6 2004-12-07 10:10:19 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -73,16 +73,10 @@ public class MMBase extends ProcessorModule {
     // logging
     private static final Logger log = Logging.getLoggerInstance(MMBase.class);
 
-   
-
     /**
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
      */
     private static MMBase mmbaseroot = null;
-
-
-
-
 
     /**
      * Time in seconds, when mmbase was started.
@@ -108,24 +102,34 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Reference to the TypeDef builder.
+     * Should be made private and accessed instead using getTypeDef()
+     * @scope private
      */
-    private TypeDef typeDef;
+    public TypeDef TypeDef;
     /**
      * Reference to the RelDef builder.
+     * Should be made private and accessed instead using getRelDef()
+     * @scope private
      */
-    private RelDef relDef;
+    public RelDef RelDef;
     /**
      * Reference to the OALias builder.
+     * Should be made private and accessed instead using getOAlias()
+     * @scope private
      */
-    private OAlias oAlias;
+    public OAlias OAlias;
     /**
      * Reference to the InsRel builder.
+     * Should be made private and accessed instead using getInsRel()
+     * @scope private
      */
-    private InsRel insRel;
+    public InsRel InsRel;
     /**
      * Reference to the TypeRel builder.
+     * Should be made private and accessed instead using getTypeRel()
+     * @scope private
      */
-    private TypeRel typeRel;
+    public TypeRel TypeRel;
 
     /**
      * The table that contains all loaded builders. Includes virtual builders such as "multirelations".
@@ -136,8 +140,9 @@ public class MMBase extends ProcessorModule {
 
     /**
      * The (base)path to the builder configuration files
+     * @scope private
      */
-    private ResourceLoader builderLoader;
+    String builderpath = "";
 
     /**
      * @deprecated-now unused
@@ -319,6 +324,10 @@ public class MMBase extends ProcessorModule {
             encoding = tmp;
         }
 
+        tmp = getInitParameter("AUTH401URL");
+        if (tmp != null && !tmp.equals("")) {
+            HttpAuth.setLocalCheckUrl(tmp);
+        }
         tmp = getInitParameter("DTDBASE");
         if (tmp != null && !tmp.equals("")) {
             dtdbase = tmp;
@@ -340,9 +349,10 @@ public class MMBase extends ProcessorModule {
         // retrieve JDBC module and start it
         jdbc = (JDBCInterface) getModule("JDBC", true);
         if (jdbc == null) {
-            log.fatal("Could not obtain JDBC module. MMBase cannot be started.");
+            log.fatal("Could not obtain JDBC module. MMBase cannot be started");
             return;
         }
+
 
         try {
             MultiConnection con = jdbc.getConnection(jdbc.makeUrl());
@@ -358,14 +368,11 @@ public class MMBase extends ProcessorModule {
 
         initializeSharedStorage(getInitParameter("SHAREDSTORAGE"));
 
-        {
-            String builderPath = getInitParameter("BUILDERFILE");
-            if (builderPath == null || builderPath.equals("")) {
-                builderPath = "builders";
-            }
-            log.debug("Builder path: " + builderPath);
-            builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderPath);
+        builderpath = getInitParameter("BUILDERFILE");
+        if (builderpath == null || builderpath.equals("")) {
+            builderpath = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
         }
+        log.debug("Builder path: " + builderpath);
 
         mmbaseState = STATE_LOAD;
 
@@ -388,7 +395,18 @@ public class MMBase extends ProcessorModule {
             createMMBase();
         }
 
+
         log.debug("Objects started");
+
+        // weird place needs to rethink (daniel).
+        Vwms bul = (Vwms)getMMObject("vwms");
+        if (bul != null) {
+            bul.startVwms();
+        }
+        Vwmtasks bul2 = (Vwmtasks)getMMObject("vwmtasks");
+        if (bul2 != null) {
+            bul2.start();
+        }
 
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
@@ -412,15 +430,15 @@ public class MMBase extends ProcessorModule {
 
         // try to load security...
         try {
-            mmbaseCop = new MMBaseCop();
+            mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
         } catch (Exception e) {
-            log.fatal("Error loading the mmbase cop: " + e.getMessage());
+            log.fatal("error loading the mmbase cop: " + e.getMessage());
             log.error(Logging.stackTrace(e));
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
 
-        typeRel.readCache();
+        TypeRel.readCache();
 
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
@@ -437,7 +455,7 @@ public class MMBase extends ProcessorModule {
     private void initializeSharedStorage(String sharedStorageClass) {
         if (sharedStorageClass != null) {
             log.debug("Starting Multicasting: " + sharedStorageClass);
-
+            
             Class newclass;
             try {
                 newclass = Class.forName(sharedStorageClass);
@@ -489,8 +507,6 @@ public class MMBase extends ProcessorModule {
 
 
     /**
-     * Loads the object builder if object.xml could be found.
-     * @return The MMObjectBuilder 'object' or null, if no object.xml was found.
      * @since MMBase-1.7.1
      */
     private MMObjectBuilder loadRootBuilder() {
@@ -616,7 +632,7 @@ public class MMBase extends ProcessorModule {
      * @return the <code>InsRel</code> builder if defined, <code>null</code> otherwise
      */
     public InsRel getInsRel() {
-        return insRel;
+        return InsRel;
     }
 
     /**
@@ -624,7 +640,7 @@ public class MMBase extends ProcessorModule {
      * @return the <code>RelDef</code> builder if defined, <code>null</code> otherwise
      */
     public RelDef getRelDef() {
-        return relDef;
+        return RelDef;
     }
 
     /**
@@ -632,7 +648,7 @@ public class MMBase extends ProcessorModule {
      * @return the <code>TypeDef</code> builder if defined, <code>null</code> otherwise
      */
     public TypeDef getTypeDef() {
-        return typeDef;
+        return TypeDef;
     }
 
     /**
@@ -640,7 +656,7 @@ public class MMBase extends ProcessorModule {
      * @return the <code>TypeRel</code> builder if defined, <code>null</code> otherwise
      */
     public TypeRel getTypeRel() {
-        return typeRel;
+        return TypeRel;
     }
 
     /**
@@ -648,7 +664,7 @@ public class MMBase extends ProcessorModule {
      * @return the <code>OAlias</code> builder if defined, <code>null</code> otherwise
      */
     public OAlias getOAlias() {
-        return oAlias;
+        return OAlias;
     }
 
     /**
@@ -656,7 +672,7 @@ public class MMBase extends ProcessorModule {
      * The Object builder is the builder from which all other builders eventually extend.
      * If the builder is not defined in the MMbase configuration, the system creates one.
      * @return the <code>Object</code> builder.
-     * @since MMBase-1.6
+     * @since MMBase1,6
      */
     public MMObjectBuilder getRootBuilder() {
         if (loadRootBuilder() == null) {
@@ -667,19 +683,19 @@ public class MMBase extends ProcessorModule {
             rootBuilder.setTableName("object");
             Vector xmlfields = new Vector();
             // number field  (note: state = 'system')
-            FieldDefs def = new FieldDefs("Object", "integer", 10, 10, "number", FieldDefs.TYPE_INTEGER, 1, FieldDefs.DBSTATE_SYSTEM);
+            FieldDefs def=new FieldDefs("Object","integer",10,10,"number",FieldDefs.TYPE_INTEGER,1,FieldDefs.DBSTATE_SYSTEM);
             def.setDBPos(1);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
             xmlfields.add(def);
             // otype field
-            def = new FieldDefs("Type", "integer", -1, -1, "otype", FieldDefs.TYPE_INTEGER, -1, FieldDefs.DBSTATE_SYSTEM);
+            def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,FieldDefs.DBSTATE_SYSTEM);
             def.setDBPos(2);
             def.setDBNotNull(true);
             def.setParent(rootBuilder);
             xmlfields.add(def);
             // owner field
-            def = new FieldDefs("Owner", "string", 11, 11, "owner", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_SYSTEM);
+            def=new FieldDefs("Owner","string",11,11,"owner",FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_SYSTEM);
             def.setDBSize(12);
             def.setDBPos(3);
             def.setDBNotNull(true);
@@ -693,7 +709,7 @@ public class MMBase extends ProcessorModule {
     /**
      * Returns the otype of the Object builder, or -1 if it is not known.
      * The Object builder is the builder from which all other builders eventually extend.
-     * @since MMBase-1.6
+     * @since MMBase1,6
      */
     public int getRootType() {
         if (rootBuilder == null) {
@@ -1048,7 +1064,6 @@ public class MMBase extends ProcessorModule {
         if (builder == null) {
             throw new BuilderConfigurationException("The core builder " + name + " is mandatory but inactive.");
         } else {
-            log.debug("Loaded core builder " + builder + " with otype " + builder.oType);
             return builder;
         }
     }
@@ -1064,31 +1079,23 @@ public class MMBase extends ProcessorModule {
 
         loadRootBuilder(); // loads object.xml if present.
 
-        typeDef = (TypeDef) loadCoreBuilder("typedef");
-        relDef  = (RelDef)  loadCoreBuilder("reldef");
-        insRel  = (InsRel)  loadCoreBuilder("insrel");
-        typeRel = (TypeRel) loadCoreBuilder("typerel");
-
-
+        TypeDef = (TypeDef)loadCoreBuilder("typedef");
+        RelDef = (RelDef)loadCoreBuilder("reldef");
+        InsRel = (InsRel)loadCoreBuilder("insrel");
+        TypeRel = (TypeRel)loadCoreBuilder("typerel");
 
 
 
         try {
-            oAlias = (OAlias)loadBuilder("oalias");
+            OAlias = (OAlias)loadBuilder("oalias");
         } catch (BuilderConfigurationException e) {
             // OALias  builder was not defined -
             // builder is optional, so this is not an error
         }
 
-        
-        Set builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
-        
-        log.info("Loading builders: " + builders);
-        Iterator i = builders.iterator();
-        while (i.hasNext()) {
-            String builderXml  = (String) i.next();
-            loadBuilderFromXML(ResourceLoader.getName(builderXml), ResourceLoader.getDirectory(builderXml) + "/");            
-        }
+        // new code checks all the *.xml files in builder dir, recursively
+        String path = "";
+        loadBuilders(path);
 
         log.debug("Starting MultiRelations Builder");
         MultiRelations = new MultiRelations(this);
@@ -1104,7 +1111,7 @@ public class MMBase extends ProcessorModule {
      */
     boolean initBuilders() {
 
-        typeDef.init();
+        TypeDef.init();
 
         // first initialize versions, if available (table must exist for quereis to succeed)
         log.debug("Versions:");
@@ -1113,9 +1120,9 @@ public class MMBase extends ProcessorModule {
             versions.init();
         }
 
-        relDef.init();
-        insRel.init();
-        typeRel.init();
+        RelDef.init();
+        InsRel.init();
+        TypeRel.init();
 
 
         log.debug("mmobjects, inits");
@@ -1132,7 +1139,7 @@ public class MMBase extends ProcessorModule {
                 bi.remove();
             } catch (Exception ex) {
                 log.error("Something went wrong while initializing builder " + fbul.getTableName());
-                log.info("This builder will be removed from active builder list");
+                log.error("Builder will be removed from active builder list");
                 log.error(Logging.stackTrace(ex));
                 bi.remove();
             }
@@ -1149,7 +1156,7 @@ public class MMBase extends ProcessorModule {
     public void initBuilder(MMObjectBuilder builder) {
         if (!builder.isVirtual()) {
             builder.init();
-            typeDef.loadTypeDef(builder.getTableName());
+            TypeDef.loadTypeDef(builder.getTableName());
             Versions versions = (Versions)getMMObject("versions");
             if (versions != null && versions.created()) {
                 checkBuilderVersion(builder.getTableName(), versions);
@@ -1163,24 +1170,45 @@ public class MMBase extends ProcessorModule {
      */
     public void unloadBuilder(MMObjectBuilder builder) {
         if (mmobjs.remove(builder.getTableName()) == null) {
-            throw new RuntimeException("builder with name: " + builder.getTableName() + " could not be unloaded, since it was not loaded.");
+            String msg =
+                "builder with name: " + builder.getTableName() + " could not be unloaded, since it was not loaded.";
+            log.error(msg);
+            throw new RuntimeException(msg);
         }
         if (!builder.isVirtual()) {
-            typeDef.unloadTypeDef(builder.getTableName());
+            TypeDef.unloadTypeDef(builder.getTableName());
             log.info("unloaded builder with name:" + builder.getTableName());
         } else {
             log.info("unloaded virtual builder with name:" + builder.getTableName());
         }
     }
 
-
     /**
-     * @since MMBase-1.8
+     * Loads all builders within a given path relative to the main builder config path, including builders in sub-paths
+     * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      */
-    public ResourceLoader getBuilderLoader() {
-        return builderLoader;
+    void loadBuilders(String ipath) {
+        String path = builderpath + ipath;
+        // new code checks all the *.xml files in builder dir
+        File bdir = new File(path);
+        if (bdir.isDirectory() && bdir.canRead()) {
+            log.service("Reading all builders of directory " + bdir);
+            String files[] = bdir.list();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    String bname = files[i];
+                    if (bname.endsWith(".xml")) {
+                        bname = bname.substring(0, bname.length() - 4);
+                        loadBuilderFromXML(bname, ipath);
+                    } else if (bdir.isDirectory()) {
+                        loadBuilders(ipath + bname + File.separator);
+                    }
+                }
+            } else {
+                log.error("Cannot find builders in " + path);
+            }
+        }
     }
-
 
     /**
      * Locate one specific builder withing the main builder config path, including sub-paths.
@@ -1199,31 +1227,31 @@ public class MMBase extends ProcessorModule {
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
      * Return the actual path.
      * @param builder name of the builder to find
-     * @param path the path to start searching. The path need be closed with a '/ character
+     * @param path the path to start searching. The path need be closed with a File.seperator character.
      * @return the file path to the builder xml, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
-     * @todo The second argument (and perhaps the whole function) is silly, only exists because this
-     *       function used to be implemented recursively (now delegated to ResourceLoader).
      */
     public String getBuilderPath(String builder, String path) {
-        Set builders = builderLoader.getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
-        Iterator i = builders.iterator();
-        if (log.isDebugEnabled()) {
-            log.debug("Found builder " + builders + " from " +  builderLoader  + " searching for " + builder);
-        }
-        String xml = builder + ".xml";
-        while (i.hasNext()) {
-            String builderXml = (String) i.next();
-            if (builderXml.equals(xml)) {
-                return "";
-            } else if (builderXml.endsWith("/" + xml)) {
-                return builderXml.substring(0, builderXml.length() - xml.length());
+        if ((new File(builderpath + path + builder + ".xml")).exists()) {
+            return path;
+        } else {
+            // not in the builders path, so we need to search recursively
+            File dirList = new File(builderpath + path);
+            String[] files = dirList.list();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    String lPath = path + files[i] + File.separator;
+                    if ((new File(builderpath + lPath)).isDirectory()) {
+                        String resultpath = getBuilderPath(builder, lPath);
+                        if (resultpath != null) {
+                            return resultpath;
+                        }
+                    }
+                }
             }
+            return null;
         }
-        return null;
     }
-
-
 
     /**
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
@@ -1256,7 +1284,7 @@ public class MMBase extends ProcessorModule {
      * this method is called seperately after all builders are loaded).
      * @deprecation-used uses deprecated buidedr methods, contains commented-out code
      * @param builder name of the builder to initialize
-     * @param ipath the path to start searching. The path need be closed with a '/' character.
+     * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      * @return the loaded builder object.
      */
     public MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
@@ -1266,11 +1294,12 @@ public class MMBase extends ProcessorModule {
             return bul;
         }
 
+        String path = builderpath + ipath;
         String objectName = builder; // should this allow override in file ?
         try {
             // register the loading of this builder
             loading.add(objectName);
-            BuilderReader parser = new BuilderReader(builderLoader.getInputSource(ipath + builder + ".xml"), this);
+            BuilderReader parser = new BuilderReader(path + builder + ".xml", this);
             String status = parser.getStatus();
             if (status.equals("active")) {
                 log.info("Starting builder : " + objectName);
@@ -1366,8 +1395,9 @@ public class MMBase extends ProcessorModule {
         if (database != null) return; // initialized allready
         log.service("Initializing storage");
         // check if there is a storagemanagerfactory specified
-        String databasename = getInitParameter("DATABASE");
-        if (databasename == null) {
+        String factoryClassName = getInitParameter("storagemanagerfactory");
+
+        if (factoryClassName != null) { // 'new' storage
             try {
                 storageManagerFactory = StorageManagerFactory.newInstance(this);
                 // if so, instantiate the support class wrapper for the storage layer
@@ -1381,6 +1411,24 @@ public class MMBase extends ProcessorModule {
         } else { // deprecated code for 'old' storage implementations:
             File databaseConfig = null;
             String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
+            String databasename = getInitParameter("DATABASE");
+            if (databasename == null) {
+                DatabaseLookup lookup =
+                    new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+                if (jdbc == null)
+                    throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
+                try {
+                    // dont use the getDirectConnection, upon failure, it will loop,....
+                    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
+                } catch (java.sql.SQLException sqle) {
+                    log.error(sqle);
+                    log.error(Logging.stackTrace(sqle));
+                    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
+                }
+            } else {
+                // use the correct databas-xml
+                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+            }
             // get our config...
             XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
             try {
@@ -1443,12 +1491,13 @@ public class MMBase extends ProcessorModule {
         /* fake because solved
          */
         int otype = node.getOType();
-        String ename = typeDef.getValue(otype);
-        if (ename == null) {
+        String ename = TypeDef.getValue(otype);
+        if (ename == null)
             return null;
-        }
         MMObjectBuilder res = getMMObject(ename);
-        return res.getNode(node.getNumber());
+        MMObjectNode node2 = res.getNode(node.getNumber());
+        return node2;
+        //return node;
     }
 
     /**
@@ -1529,14 +1578,8 @@ public class MMBase extends ProcessorModule {
     private boolean checkBuilderVersion(String buildername, Versions ver) {
 
         MMObjectBuilder tmp = (MMObjectBuilder)mmobjs.get(buildername);
-        BuilderReader bapp;
-        try {
-            bapp = new BuilderReader(builderLoader.getInputSource(tmp.getXMLPath() + buildername + ".xml"), this);
-        } catch (Exception e) {
-            log.error(e);
-            return false;
-        }
-
+        String builderfile = builderpath + tmp.getXMLPath() + buildername + ".xml";
+        BuilderReader bapp = new BuilderReader(builderfile, this);
         if (bapp != null) {
             int version = bapp.getBuilderVersion();
             String maintainer = bapp.getBuilderMaintainer();

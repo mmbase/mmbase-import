@@ -17,6 +17,7 @@ import org.mmbase.module.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.tools.MMAppTool.MMAppTool;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.StorageManagerFactory;
@@ -28,17 +29,15 @@ import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.security.Rank;
-import org.xml.sax.InputSource;
 
 import javax.servlet.http.*;
 
 /**
  * @javadoc
  *
- * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.93 2004-12-10 21:09:26 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.83.2.2 2004-06-01 15:36:50 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -60,7 +59,10 @@ public class MMAdmin extends ProcessorModule {
      * @scope private
      */
     String lastmsg = "";
-
+    /**
+     * @javadoc
+     */
+    private boolean restartwanted = false;
     /**
      * @javadoc
      */
@@ -116,7 +118,7 @@ public class MMAdmin extends ProcessorModule {
      * Generate a list of values from a command to the processor
      * @javadoc
      */
-    public Vector getList(PageInfo sp, StringTagger tagger, String value) {
+    public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
@@ -174,14 +176,14 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private boolean checkAdmin(PageInfo sp, String cmd) {
+    private boolean checkAdmin(scanpage sp, String cmd) {
         return checkUserLoggedOn(sp, cmd, true);
     }
 
     /**
      * @javadoc
      */
-    private boolean checkUserLoggedOn(PageInfo sp, String cmd, boolean adminonly) {
+    private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
 
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
         // there is some user with rank Administrator in the session...
@@ -202,14 +204,29 @@ public class MMAdmin extends ProcessorModule {
             }
         }
 
-        return false;
+        // no? try the 'classic' way.
+
+        String user = null;
+        try {
+            user = HttpAuth.getAuthorization(sp.req, sp.res, "www", "Basic");
+        } catch (javax.servlet.ServletException ex) {}
+
+
+
+
+        boolean authorized = (user != null) && (!adminonly || "admin".equals(user));
+        if (!authorized) {
+            lastmsg = "Unauthorized access : " + cmd + " by " + user;
+            log.info(lastmsg);
+        }
+        return authorized;
     }
 
     /**
      * Execute the commands provided in the form values
      * @javadoc
      */
-    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
         String cmdline, token;
 
         for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
@@ -220,8 +237,8 @@ public class MMAdmin extends ProcessorModule {
             StringTokenizer tok = new StringTokenizer(cmdline, "-\n\r");
             token = tok.nextToken();
             if (token.equals("SERVERRESTART")) {
-                lastmsg = "Server restart is not implemented any more";
-                return false;
+                String user = (String)cmds.get(cmdline);
+                doRestart(user);
             } else if (token.equals("LOAD") && !kioskmode) {
                 ApplicationResult result = new ApplicationResult(this);
                 String appname = (String)cmds.get(cmdline);
@@ -242,6 +259,9 @@ public class MMAdmin extends ProcessorModule {
                 String goal = (String)vars.get("GOAL");
                 log.info("APP=" + appname + " P=" + savepath + " G=" + goal);
                 writeApplication(appname, savepath, goal);
+            } else if (token.equals("APPTOOL")) {
+                String appname = (String)cmds.get(cmdline);
+                startAppTool(appname);
             } else if (token.equals("BUILDER")) {
                 doBuilderPosts(tok.nextToken(), cmds, vars);
             } else if (token.equals("MODULE")) {
@@ -332,7 +352,7 @@ public class MMAdmin extends ProcessorModule {
      * Handle a $MOD command
      * @javadoc
      */
-    public String replace(PageInfo sp, String cmds) {
+    public String replace(scanpage sp, String cmds) {
         if (!checkUserLoggedOn(sp, cmds, false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {
@@ -423,7 +443,8 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     int getVersion(String appname) {
-        XMLApplicationReader app = getApplicationReader(appname);
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
         if (app != null) {
             return app.getApplicationVersion();
         }
@@ -434,9 +455,10 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     int getBuilderVersion(String bulname) {
-        BuilderReader bul = getBuilderReader(bulname);
-        if (bul != null) {
-            return bul.getBuilderVersion();
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        BuilderReader app = new BuilderReader(path + bulname + ".xml", mmb);
+        if (app != null) {
+            return app.getBuilderVersion();
         }
         return -1;
     }
@@ -445,7 +467,8 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     String getBuilderClass(String bulname) {
-        BuilderReader bul = getBuilderReader(bulname);
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        BuilderReader bul = new BuilderReader(path + bulname + ".xml", mmb);
         if (bul != null) {
             return bul.getClassFile();
         }
@@ -456,7 +479,8 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     String getModuleClass(String modname) {
-        XMLModuleReader mod = new XMLModuleReader("modules/" + modname + ".xml");
+        String path = MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator;
+        XMLModuleReader mod = new XMLModuleReader(path + modname + ".xml");
         if (mod != null) {
             return mod.getClassFile();
         }
@@ -511,56 +535,20 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     String getDescription(String appname) {
-        XMLApplicationReader app = getApplicationReader(appname);
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
         if (app != null) {
             return app.getDescription();
         }
         return "";
-
-    }
-
-    
-    /**
-     * @since MMBase-1.8
-     */
-    private BuilderReader getBuilderReader(String bulName) {
-        try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("builders/" + bulName + ".xml");
-            if (is == null) return null;
-            return new BuilderReader(is, mmb);
-        } catch (Exception e) {
-            log.error(e);
-            return null;
-        }
-    }
-    private XMLModuleReader getModuleReader(String moduleName) {
-        try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("modules/" + moduleName + ".xml");
-            if (is == null) return null;
-            return new XMLModuleReader(is);
-        } catch (Exception e) {
-            log.error(e);
-            return null;
-        }
-
-    }
-    private XMLApplicationReader getApplicationReader(String appName) {
-        try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("applications/" + appName + ".xml");
-            if (is == null) return null;
-            return new XMLApplicationReader(is);
-        } catch (Exception e) {
-            log.error(e);
-            return null;
-        }
-
     }
 
     /**
      * @javadoc
      */
     String getBuilderDescription(String bulname) {
-        BuilderReader bul = getBuilderReader(bulname);
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        BuilderReader bul = new BuilderReader(path + bulname + ".xml", mmb);
         if (bul != null) {
             Hashtable desc = bul.getDescriptions();
             String english = (String)desc.get("en");
@@ -589,6 +577,37 @@ public class MMAdmin extends ProcessorModule {
      */
     public void maintainance() {}
 
+    /**
+     * @javadoc
+     * @bad-literal time for MMAdminProbe should be a constant or configurable
+     */
+    public void doRestart(String user) {
+        if (kioskmode) {
+            log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
+            return;
+        }
+        lastmsg = "Server Reset requested by '" + user + "' Restart in 3 seconds\n\n";
+        log.info("Server Reset requested by '" + user + "' Restart in 3 seconds");
+        restartwanted = true;
+        probe = new MMAdminProbe(this, 3 * 1000);
+    }
+
+    /**
+     * @javadoc
+     */
+    private boolean startAppTool(String appname) {
+        if (kioskmode) {
+            log.warn("refused starting app tool, am in kiosk mode");
+            return false;
+        }
+
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        log.info("Starting apptool with : " + path + File.separator + appname + ".xml");
+        MMAppTool app = new MMAppTool(path + File.separator + appname + ".xml");
+        lastmsg = "Started a instance of the MMAppTool with path : \n\n";
+        lastmsg += path + File.separator + appname + ".xml\n\n";
+        return true;
+    }
 
     /**
      * Installs the application
@@ -613,8 +632,8 @@ public class MMAdmin extends ProcessorModule {
         if (installationSet.contains(applicationName)) {
             return result.error("Circular reference to application with name " + applicationName);
         }
-        
-        XMLApplicationReader app = getApplicationReader(applicationName);
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + applicationName + ".xml");
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (app != null) {
             // test autodeploy
@@ -688,7 +707,7 @@ public class MMAdmin extends ProcessorModule {
                 } else {
                     log.info("installing application : " + name + " new version from " + installedVersion + " to " + version);
                 }
-                if (installBuilders(app.getNeededBuilders(), "applications/" + applicationName, result)
+                if (installBuilders(app.getNeededBuilders(), path + applicationName, result)
                     && installRelDefs(app.getNeededRelDefs(), result)
                     && installAllowedRelations(app.getAllowedRelations(), result)
                     && installDataSources(app.getDataSources(), applicationName, result)
@@ -717,7 +736,7 @@ public class MMAdmin extends ProcessorModule {
                 }
             }
         } else {
-            result.error("Install error: can't find xml file: applications/" + applicationName + ".xml");
+            result.error("Install error: can't find xml file: " + path + applicationName + ".xml");
         }
         return result.isSuccess();
     }
@@ -734,17 +753,10 @@ public class MMAdmin extends ProcessorModule {
             for (Enumeration h = ds.elements(); h.hasMoreElements();) {
                 Hashtable bh = (Hashtable)h.nextElement();
                 String path = (String)bh.get("path");
-                String prepath = "applications/";
-                InputSource is;
-                try {
-                    is = ResourceLoader.getConfigurationRoot().getInputSource("applications/" + path);
-                } catch (Exception e) {
-                    log.error(e);
-                    continue;
-                }
+                String prepath = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
 
-                if (is != null) {
-                    XMLNodeReader nodereader = new XMLNodeReader(is, prepath + appname + "/");
+                if (fileExists(prepath + path)) {
+                    XMLNodeReader nodereader = new XMLNodeReader(prepath + path, prepath + appname + File.separator, mmb);
                     String exportsource = nodereader.getExportSource();
                     int timestamp = nodereader.getTimeStamp();
 
@@ -962,16 +974,9 @@ public class MMAdmin extends ProcessorModule {
             for (Enumeration h = ds.elements(); h.hasMoreElements();) {
                 Hashtable bh = (Hashtable)h.nextElement();
                 String path = (String)bh.get("path");
-                InputSource is;
-                try {
-                    is = ResourceLoader.getConfigurationRoot().getInputSource("applications/" + path);
-                } catch (Exception e) {
-                    log.error(e);
-                    continue;
-                }
-
-                if (is != null) {
-                    XMLRelationNodeReader nodereader = new XMLRelationNodeReader(is, "applications/"  + appname + "/");
+                String prepath = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+                if (fileExists(prepath + path)) {
+                    XMLRelationNodeReader nodereader = new XMLRelationNodeReader(prepath+ path, prepath + appname + File.separator, mmb);
 
                     String exportsource = nodereader.getExportSource();
                     int timestamp = nodereader.getTimeStamp();
@@ -1128,7 +1133,7 @@ public class MMAdmin extends ProcessorModule {
      * Failure messages are stored in the lastmsg member.
      * @param neededbuilders a list with builder data that need be installed on teh system for this application to work
      *                       each element in teh list is a Map containing builder properties (in particular, 'name').
-     * @param applicationRoot the rootpath where the application's configuration files are located
+     * @param applicationroot the rootpath where the application's configuration files are located
      * @return true if the builders were succesfully installed, false if the installation failed
      */
     boolean installBuilders(List neededbuilders, String applicationRoot, ApplicationResult result) {
@@ -1141,18 +1146,41 @@ public class MMAdmin extends ProcessorModule {
                 // if 'inactive' in the config/builder path, fail
                 String path = mmb.getBuilderPath(name, "");
                 if (path != null) {
-                    result.error("The builder '" + name + "' was already on our system, but inactive." +
+                    result.error("The builder '" + name + "' was already on our system, but inactive." + 
                                  "To install this application, make the builder '" + path + name + ".xml ' active");
                     continue;
                 }
-                ResourceLoader appLoader     = ResourceLoader.getConfigurationRoot().getChildResourceLoader(ResourceLoader.getDirectory(applicationRoot));
-                ResourceLoader thisAppLoader = appLoader.getChildResourceLoader(ResourceLoader.getName(applicationRoot));
-                ResourceLoader builderLoader = thisAppLoader.getChildResourceLoader("builders");
+                // attempt to open the application root
+                File appFile = new File(applicationRoot);
+                if (!appFile.exists()) {
+                    return result.error("Could not find application directory :  '" + appFile + "'");
+                }
+                // attempt to open the %application%/builders/ folder
+                appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + "builders");
+                if (!appFile.exists()) {
+                    return result.error(
+                        "Could not find the 'builders' folder inside the application directory  '" + appFile + "'");
+                }
+                // attempt to open the applicationfile
+                appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + name + ".xml");
+                if (!appFile.exists()) {
+                    result.error("Could not find the builderfile :  '" + appFile + "'(builder '" + name + "')");
+                    continue;
+                }
+                // check the presence of typedef (if not present, fail)
+                MMObjectBuilder objectTypes = mmb.getTypeDef();
+                if (objectTypes == null) {
+                    return result.error("Could not find the typedef builder.");
+                }
+                // try to add a node to typedef, same as adding a builder...
+                MMObjectNode type = objectTypes.getNewNode("system");
+                // fill the name....
+                type.setValue("name", name);
 
-                // attempt to open the builder file.
-                org.w3c.dom.Document config;
+                // fill the config...
+                org.w3c.dom.Document config = null;
                 try {
-                    config = builderLoader.getDocument(name + ".xml");
+                    config = XMLBasicReader.getDocumentBuilder(BuilderReader.class).parse(appFile);
                 } catch (org.xml.sax.SAXException se) {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
@@ -1164,26 +1192,9 @@ public class MMAdmin extends ProcessorModule {
                     result.error("A file I/O error occurred (" + ioe.toString() + "). Check the log for details.");
                     continue;
                 }
-
-                if (config == null) {
-                    result.error("Could not find the builderfile :  '" + builderLoader.getResource(name + ".xml") + "' (builder '" + name + "')");
-                    continue;
-                }
-
-                
-                // check the presence of typedef (if not present, fail)
-                MMObjectBuilder typeDef = mmb.getTypeDef();
-                if (typeDef == null) {
-                    return result.error("Could not find the typedef builder.");
-                }
-                // try to add a node to typedef, same as adding a builder...
-                MMObjectNode type = typeDef.getNewNode("system");
-                // fill the name....
-                type.setValue("name", name);
-
                 type.setValue("config", config);
                 // insert into mmbase
-                typeDef.insert("system", type);
+                objectTypes.insert("system", type);
                 // we now made the builder active.. look for other builders...
             }
         }
@@ -1342,18 +1353,35 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public void probeCall() throws SearchQueryException {
+
+        if (restartwanted) {
+            System.exit(0);
+        }
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
             return;
         }
-        ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
-        Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
-        while (i.hasNext()) {
-            String appResource = (String) i.next();
-            ApplicationResult result = new ApplicationResult(this);
-            if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet(), true)) {
-                log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        // new code checks all the *.xml files in builder dir
+        File bdir = new File(path);
+        if (bdir.isDirectory()) {
+            String files[] = bdir.list();
+            if (files == null)
+                return;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
+                if (aname.endsWith(".xml")) {
+                    ApplicationResult result = new ApplicationResult(this);
+                    if (!installApplication(aname.substring(0, aname.length() - 4),
+                        -1,
+                        null,
+                        result,
+                        new HashSet(),
+                        true)) {
+                        log.error("Problem installing application : " + aname + ", cause: "+result.getMessage());
+                    }
+                }
             }
         }
         state = true;
@@ -1376,8 +1404,8 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused to write application, am in kiosk mode");
             return false;
         }
-
-        XMLApplicationReader app = getApplicationReader(appname);
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
         Vector savestats = XMLApplicationWriter.writeXMLFile(app, targetpath, goal, mmb);
         lastmsg = "Application saved oke\n\n";
         lastmsg += "Some statistics on the save : \n\n";
@@ -1392,42 +1420,41 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     Vector getApplicationsList() throws SearchQueryException {
-        Versions ver = (Versions) mmb.getMMObject("versions");
+        Versions ver = (Versions)mmb.getMMObject("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to apps");
             return null;
         }
         Vector results = new Vector();
 
-
-        ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
-        Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
-        while (i.hasNext()) {
-            String appResource = (String) i.next();
-            log.debug("module " + appResource);
-            XMLApplicationReader app;
-            try {
-                app = new XMLApplicationReader(applicationLoader.getInputSource(appResource));
-            } catch (Exception e) {
-                log.error(e);
-                continue;
-            }
-
-            String name = app.getApplicationName();
-            results.addElement(name);
-            results.addElement("" + app.getApplicationVersion());
-            int installedversion = ver.getInstalledVersion(name, "application");
-            if (installedversion == -1) {
-                results.addElement("no");
-            } else {
-                results.addElement("yes (ver : " + installedversion + ")");
-            }
-            results.addElement(app.getApplicationMaintainer());
-            boolean autodeploy = app.getApplicationAutoDeploy();
-            if (autodeploy) {
-                results.addElement("yes");
-            } else {
-                results.addElement("no");
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        // new code checks all the *.xml files in builder dir
+        File bdir = new File(path);
+        if (bdir.isDirectory()) {
+            String files[] = bdir.list();
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
+                if (aname.endsWith(".xml")) {
+                    XMLApplicationReader app = new XMLApplicationReader(path + aname);
+                    String name = app.getApplicationName();
+                    results.addElement(name);
+                    results.addElement("" + app.getApplicationVersion());
+                    int installedversion = ver.getInstalledVersion(name, "application");
+                    if (installedversion == -1) {
+                        results.addElement("no");
+                    } else {
+                        results.addElement("yes (ver : " + installedversion + ")");
+                    }
+                    results.addElement(app.getApplicationMaintainer());
+                    boolean autodeploy = app.getApplicationAutoDeploy();
+                    if (autodeploy) {
+                        results.addElement("yes");
+                    } else {
+                        results.addElement("no");
+                    }
+                }
             }
         }
         return results;
@@ -1453,44 +1480,58 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Versions builder not installed, Can't get to builders");
             return null;
         }
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        return getBuildersList(path, subpath, ver);
+    }
+
+    /**
+     * @javadoc
+     */
+    Vector getBuildersList(String configpath, String subpath, Versions ver) {
         Vector results = new Vector();
-        ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
-        Iterator builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
-        while (builders.hasNext()) {
-            String builderResource = (String) builders.next();
-            String sname = ResourceLoader.getName(builderResource);
-            BuilderReader app;
-            try {
-                app = new BuilderReader(builderLoader.getInputSource(builderResource), mmb);
-            } catch (Exception e) {
-                log.error(e);
-                continue;
+        File bdir = new File(configpath + subpath);
+        if (bdir.isDirectory()) {
+            if (!"".equals(subpath)) {
+                subpath = subpath + File.separator;
             }
-            results.addElement(ResourceLoader.getDirectory(builderResource) + "/" + sname);
-            results.addElement("" + app.getBuilderVersion());
-            int installedversion = -1;
-            try {
-                installedversion = ver.getInstalledVersion(sname, "builder");
-            } catch (SearchQueryException e) {
-                log.warn(Logging.stackTrace(e));
+            String files[] = bdir.list();
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
+                if (aname.endsWith(".xml")) {
+                    String name = aname;
+                    String sname = name.substring(0, name.length() - 4);
+                    BuilderReader app = new BuilderReader(configpath + subpath + aname, mmb);
+                    results.addElement(subpath + sname);
+                    results.addElement("" + app.getBuilderVersion());
+                    int installedversion = -1;
+                    try {
+                        installedversion = ver.getInstalledVersion(sname, "builder");
+                    } catch (SearchQueryException e) {
+                        log.warn(Logging.stackTrace(e));
+                    }
+                    if (installedversion == -1) {
+                        results.addElement("no");
+                    } else {
+                        results.addElement("yes");
+                    }
+                    results.addElement(app.getBuilderMaintainer());
+                } else {
+                    results.addAll(getBuildersList(configpath, subpath + aname, ver));
+                }
             }
-            if (installedversion == -1) {
-                results.addElement("no");
-            } else {
-                results.addElement("yes");
-            }
-            results.addElement(app.getBuilderMaintainer());
         }
         return results;
     }
-
 
     /**
      * @javadoc
      */
     Vector getModuleProperties(String modulename) {
         Vector results = new Vector();
-        XMLModuleReader mod = getModuleReader(modulename);
+        String path = MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator;
+        XMLModuleReader mod = new XMLModuleReader(path + modulename + ".xml");
         if (mod != null) {
             Hashtable props = mod.getProperties();
             for (Enumeration h = props.keys(); h.hasMoreElements();) {
@@ -1509,7 +1550,8 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getFields(String buildername) {
         Vector results = new Vector();
-        BuilderReader bul = getBuilderReader(buildername);
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        BuilderReader bul = new BuilderReader(path + buildername + ".xml", mmb);
         if (bul != null) {
             Vector defs = bul.getFieldDefs();
             for (Enumeration h = defs.elements(); h.hasMoreElements();) {
@@ -1534,30 +1576,39 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getModulesList() {
         Vector results = new Vector();
-        ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");        
-        // new code checks all the *.xml files in builder dir
 
-        Set modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false);
-        Iterator i = modules.iterator();
-        while (i.hasNext()) {
-            String path = (String) i.next();
-            String sname = ResourceLoader.getName(path);
-            XMLModuleReader app =  null;            
-            try {
-                app = new XMLModuleReader(ResourceLoader.getConfigurationRoot().getInputSource("modules/" + path));
-            } catch (Throwable t) {
-                log.error("Could not load module with xml '" + path + "': " + t.getMessage());
-                continue;
+        String path = MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator;
+        // new code checks all the *.xml files in builder dir
+        File bdir = new File(path);
+        if (bdir.isDirectory()) {
+            String files[] = bdir.list();
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
+                if (aname.endsWith(".xml")) {
+                    String name = aname;
+                    String sname = name.substring(0, name.length() - 4);
+                    XMLModuleReader app =  null;
+
+                    try {
+                        app = new XMLModuleReader(path + aname);
+                    } catch (Throwable t) {
+                        log.error("Could not load module with xml '" + path + aname + "': " + t.getMessage());
+                        continue;
+                    }
+                    results.addElement(sname);
+
+                    results.addElement("" + app.getModuleVersion());
+                    String status = app.getStatus();
+                    if (status.equals("active")) {
+                        results.addElement("yes");
+                    } else {
+                            results.addElement("no");
+                    }
+                    results.addElement(app.getModuleMaintainer());
+                }
             }
-            results.addElement(sname);
-            results.addElement("" + app.getModuleVersion());
-            String status = app.getStatus();
-            if (status.equals("active")) {
-                results.addElement("yes");
-            } else {
-                results.addElement("no");
-            }
-            results.addElement(app.getModuleMaintainer());
         }
         return results;
     }
@@ -2218,7 +2269,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public void syncBuilderXML(MMObjectBuilder bul, String builder) {
         String savepath =
-            MMBaseContext.getConfigPath() + "/builders/" + builder + ".xml";
+            MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + builder + ".xml";
         log.service("Syncing builder xml (" + savepath + ") for builder " + builder);
         try {
             BuilderWriter builderOut = new BuilderWriter(bul);
@@ -2250,7 +2301,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector getMultilevelCacheEntries() {
         Vector results = new Vector();
-        Iterator res = MultilevelCache.getCache().entrySet().iterator();
+        Iterator res = MultilevelCache.getCache().getOrderedEntries().iterator();
         while (res.hasNext()) {
             Map.Entry entry = (Map.Entry)res.next();
             /*
@@ -2291,7 +2342,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector getNodeCacheEntries() {
         Vector results = new Vector();
-        Iterator iter = MMObjectBuilder.nodeCache.entrySet().iterator();
+        Iterator iter = MMObjectBuilder.nodeCache.getOrderedEntries().iterator();
         while (iter.hasNext()) {
             MMObjectNode node = (MMObjectNode)iter.next();
             results.addElement("" + MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
@@ -2304,7 +2355,7 @@ public class MMAdmin extends ProcessorModule {
 
     class ApplicationResult {
 
-        protected StringBuffer resultMessage;
+        protected StringBuffer resultMessage; 
         protected boolean success;
         protected MMAdmin adminModule;
 

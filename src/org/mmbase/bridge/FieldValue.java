@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.9 2004-10-09 09:40:09 nico Exp $
+ * @version $Id: FieldValue.java,v 1.6 2004-03-02 12:42:25 pierre Exp $
  */
 public interface FieldValue {
 
@@ -165,14 +165,6 @@ public interface FieldValue {
     public org.w3c.dom.Document toXML() throws IllegalArgumentException;
 
     /**
-     * Returns the value as a <code>java.util.Date</code>
-     * If the value cannot be converted, this method returns <code>null</code>
-     * @return the field value as Date
-     * @since MMBase-1.8
-     */
-    public java.util.Date toDate();
-
-    /**
      * Returns the value as a <code>org.w3c.dom.Element</code>
      * If the node value is not itself a Document, the method attempts to
      * attempts to convert the String value into an XML.
@@ -197,7 +189,7 @@ public interface FieldValue {
      * Note that this behavior may change in the future and therefor code should not be dependent on this.
      * By preference, use the more specific methods for setting data (i.e. setString()).
      *
-     * @see #get
+     * @see #get()
      * @param value the field value as an Object
      */
     public void set(Object value);
@@ -206,7 +198,7 @@ public interface FieldValue {
      * Sets the value, passing a boolean value.
      * This value is converted to a Boolean object.
      *
-     * @see #toBoolean
+     * @see #toBoolean()
      * @param value the field value as a boolean
      */
     public void setBoolean(boolean value);
@@ -215,7 +207,7 @@ public interface FieldValue {
      * Sets the value, passing a float value.
      * This value is converted to a Float object.
      *
-     * @see #toFloat
+     * @see #toFloat()
      * @param value the field value as a float
      */
     public void setFLoat(float value);
@@ -224,7 +216,7 @@ public interface FieldValue {
      * Sets the value, passing a double value.
      * This value is converted to a Double object.
      *
-     * @see #toDouble
+     * @see #toDouble()
      * @param value the field value as a double
      */
     public void setDouble(double value);
@@ -233,7 +225,7 @@ public interface FieldValue {
      * Sets the value, passing a long value.
      * This value is converted to a Long object.
      *
-     * @see #toLong
+     * @see #toLong()
      * @param value the field value as a long
      */
     public void setLong(long value);
@@ -242,7 +234,7 @@ public interface FieldValue {
      * Sets the value, passing a int value.
      * This value is converted to a Integer object.
      *
-     * @see #toInt
+     * @see #toInt()
      * @param value the field value as a int
      */
     public void setInt(int value);
@@ -250,7 +242,7 @@ public interface FieldValue {
     /**
      * Sets the value, passing a byte array.
      *
-     * @see #toByte
+     * @see #toByte()
      * @param value the field value as a byte array
      */
     public void setByte(byte[] value);
@@ -258,7 +250,7 @@ public interface FieldValue {
     /**
      * Sets the value, passing a String.
      *
-     * @see #toString
+     * @see #toString()
      * @param value the field value as a String
      */
     public void setString(String value);
@@ -266,7 +258,7 @@ public interface FieldValue {
     /**
      * Sets the value, passing a Node.
      *
-     * @see #toNode
+     * @see #toNode()
      * @param value the field value as a Node
      */
     public void setNode(Node value);
@@ -274,17 +266,9 @@ public interface FieldValue {
     /**
      * Sets the value, passing a org.w3c.dom.Document object.
      *
-     * @see #toXML(org.w3c.dom.Document)
+     * @see #toXML()
      * @param value the field value as a XML Document
      */
     public void setXML(org.w3c.dom.Document value);
-
-    /**
-     * Sets the value, passing a java.util.Date object.
-     * @see #toDate
-     * @param value the field value as a java.util.Date Document
-     * @since MMBase-1.8
-     */
-    public void setDate(java.util.Date value);
 
 }

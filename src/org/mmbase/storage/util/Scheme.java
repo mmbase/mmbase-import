@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.3 2004-09-17 09:36:04 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: Scheme.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
  */
 public final class Scheme extends MessageFormat {
 
-    private static final Logger log = Logging.getLoggerInstance(Scheme.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(Scheme.class);
     
     /**
      * The factory this scheme belongs to.

@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp"  
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
+%><mm:content type="text/html" language="$config.lang" expires="0">
 <mm:write referid="style" escape="none" />
 <title>Login</title>
 </head>
@@ -11,11 +11,6 @@
   <mm:compare referid="reason" value="failed">
     <p class="failed">
       Failed to log in. Try again.
-    </p>
-  </mm:compare>
-  <mm:compare referid="reason" value="rank">
-    <p class="failed">
-      Failed to log in, rank too low. Try again with another user name.
     </p>
   </mm:compare>
   <table>

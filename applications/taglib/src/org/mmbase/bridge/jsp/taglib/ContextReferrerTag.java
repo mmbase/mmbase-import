@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.GenericResponseWrapper;
 
-import java.util.Locale;
+import java.util.*;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.63 2004-12-10 20:25:11 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.4 2004-11-08 14:00:15 michiel Exp $
  * @see ContextTag
  */
 
@@ -58,6 +58,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected  Attribute  id        = Attribute.NULL; // hides String id of TagSupport
 
+    /**
+     * A String representing the current page. Only used for debugging purposes.
+     */
     private String       thisPage = null;
 
     void setPageContextOnly(PageContext pc) {
@@ -89,15 +92,17 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             if (pageLog.isServiceEnabled()) {
                 HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
                 //thisPage = request.getRequestURI();
-                String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
+
                 String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
                 thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
-                pageLog.service("Parsing JSP page: " + thisPage + 
+
+                String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
+                pageLog.service("Parsing JSP page: " + thisPage +
                                 (queryString != null ? "?" + queryString : ""));
             }
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
-
+            
             // page context has no id, this also avoids that it tries
             // registering itself in the parent (which it is itself)
             // so don't change this!
@@ -131,9 +136,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public void setId(String i) {
         try {
-            if ("_".equals(i)) {
-                throw new RuntimeException("'_' is not a valid id (it is reserved for the 'current writer')");
-            }
             id = getAttribute(i);
         } catch (JspTagException j) {
             throw new RuntimeException(j);

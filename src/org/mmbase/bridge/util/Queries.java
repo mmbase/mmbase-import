@@ -21,28 +21,21 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This class contains various utility methods for manipulating and creating query objecs.
- * Most essential methods are available on the Query object itself, but too specific or legacy-ish
+ * This class contains various utility methods for manipulating and creating query objecs. Most
+ * essential methods are available on the Query object itself, but too specific or legacy-ish
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.48 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: Queries.java,v 1.32.2.8 2004-10-14 08:22:03 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
-abstract public class Queries {
-
-    public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
-    public static final int OPERATOR_IN = 10000; // not a FieldCompareConstraint (non numeric)
-    public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
-
+abstract public  class Queries {
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
 
     /**
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
-     * @param search string representation of the searchdir constant
-     * @return Searchdir constant (@link RelationStep)
      * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
@@ -66,23 +59,11 @@ abstract public class Queries {
     }
 
     /**
-     * Creates a Query object using arguments for {@link Cloud#getList(String, String, String, String, String, String, String, boolean)}
-     * (this function is of course implemented using this utility). This is useful to convert (legacy) code which uses
+     * Creates a Query object using arguments for {@link Cloud#getList} (this function is of course
+     * implemented using this utility). This is useful to convert (legacy) code which uses
      * getList, but you want to use new Query features without rewriting the complete thing.
      *
      * It can also be simply handy to specify things as Strings.
-     *
-     * @param cloud
-     * @param startNodes
-     * @param nodePath
-     * @param fields
-     * @param constraints
-     * @param orderby
-     * @param directions
-     * @param searchDir
-     * @param distinct
-     * @return
-     * @todo Should this method be part of Cloud itself?
      */
     public static Query createQuery(Cloud cloud, String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct) {
 
@@ -153,8 +134,6 @@ abstract public class Queries {
     /**
      * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
      * This is used by createQuery (i wonder if it still makes sense)
-     * @param constraints constraint to check
-     * @return is valid constraint
      */
     static private boolean validConstraints(String constraints) {
         // first remove all the escaped "'" ('' occurences) chars...
@@ -221,8 +200,6 @@ abstract public class Queries {
      * Converts a constraint by turning all 'quoted' fields into
      * database supported fields.
      * XXX: todo: escape characters for '[' and ']'.
-     * @param constraints constraint to convert
-     * @return Converted constraint
      */
     private static String convertClausePartToDBS(String constraints) {
         // obtain dbs for fieldname checks
@@ -256,8 +233,6 @@ abstract public class Queries {
      * Converts a constraint by turning all 'quoted' fields into
      * database supported fields.
      * XXX: todo: escape characters for '[' and ']'.
-     * @param constraints constraints to convert
-     * @return converted constraint
      */
     private static String convertClauseToDBS(String constraints) {
         if (constraints.startsWith("MMNODE")) {
@@ -305,8 +280,6 @@ abstract public class Queries {
     /**
      * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
      * by a string. Alreading existing constraints remain ('AND' is used)
-     * @param query query to add constraint to
-     * @param constraints string representation of constraints
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
@@ -329,9 +302,7 @@ abstract public class Queries {
     }
 
     /**
-     * Adds a Constraint to the already present constraint (with AND).
-     * @param query query to add the constraint to
-     * @param newConstraint constraint to add
+     * Adds a Constraint to the already present constraint (with AND). 
      * @return The new constraint.
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
@@ -351,16 +322,17 @@ abstract public class Queries {
         return newConstraint;
     }
 
+    public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
+    public static final int OPERATOR_IN = 10000; // not a FieldCompareConstraint (non numeric)
+    public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
+
     /**
      * Creates a operator constant for use by createConstraint
-     * @param s String representation of operator
-     * @return FieldCompareConstraint operator constant
-     * @see #createConstraint(Query, String, int, Object)
-     * @see #createConstraint(Query, String, int, Object, Object, boolean)
+     * @see #createConstraint
      */
     public static int getOperator(String s) {
         String op = s.toUpperCase();
-        // first: determine operator:
+        // first: determin operator:
         if (op.equals("<") || op.equals("LESS")) {
             return FieldCompareConstraint.LESS;
         } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
@@ -388,9 +360,6 @@ abstract public class Queries {
     }
     /**
      * Used in implementation of createConstraint
-     * @param stringValue string representation of a number
-     * @return Number object
-     * @throws BridgeException when failed to convert the string
      */
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         try {
@@ -406,102 +375,53 @@ abstract public class Queries {
 
     /**
      * Used in implementation of createConstraint
-     * @param fieldType Field Type constant (@link Field)
-     * @param operator Compare operator
-     * @param value value to convert
-     * @return new Compare value
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
-        return getCompareValue(fieldType, operator, value, -1);
-    }
 
-    /**
-     * Used in implementation of createConstraint
-     * @param fieldType Field Type constant (@link Field)
-     * @param operator Compare operator
-     * @param value value to convert
-     * @return new Compare value
-     */
-    protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart) {
-        if (operator == OPERATOR_IN) {
-            SortedSet set;
-            if (value instanceof SortedSet) {
-                set = (SortedSet)value;
-            } else if (value instanceof NodeList) {
-                set = new TreeSet();
-                NodeIterator i = ((NodeList)value).nodeIterator();
-                while (i.hasNext()) {
-                    Node node = i.nextNode();
-                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, new Integer(node.getNumber())));
-                }
-            } else if (value instanceof Collection) {
-                set = new TreeSet();
-                Iterator i = ((Collection)value).iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
-                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
-                }
-            } else {
-                set = new TreeSet();
-                if (!(value == null || value.equals(""))) {
-                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
-                }
-            }
-            return set;
-        }  else {
-            switch(fieldType) {
-            case Field.TYPE_INTEGER:
-            case Field.TYPE_FLOAT:
-            case Field.TYPE_LONG:
-            case Field.TYPE_DOUBLE:
-            case Field.TYPE_NODE:
-                if (value instanceof Number) {
-                    return value;
-                } else {
-                    return getNumberValue(Casting.toString(value));
-                }
-            case Field.TYPE_DATETIME:
-                if (datePart > -1) {
-                    return Casting.toInteger(value);
-                } else {
-                    return Casting.toDate(value);
-                }
-            case Field.TYPE_BOOLEAN:
-                return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
-            default:
+        if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) { // numeric compare
+            if (value instanceof Number) {
                 return value;
+            } else {
+                return getNumberValue(Casting.toString(value));
             }
+        } else {
+            if (operator == OPERATOR_IN) {
+                SortedSet set;
+                if (value instanceof SortedSet) {
+                    set = (SortedSet)value;
+                } else if (value instanceof NodeList) {
+                    set = new TreeSet();
+                    NodeIterator i = ((NodeList)value).nodeIterator();
+                    while (i.hasNext()) {
+                        Node node = i.nextNode();
+                        set.add(new Integer(node.getNumber()));
+                    }
+                } else if (value instanceof Collection) {
+                    set = new TreeSet();
+                    Iterator i = ((Collection)value).iterator();
+                    while (i.hasNext()) {
+                        Object o = i.next();
+                        set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
+                    }
+                } else {
+                    set = new TreeSet();
+                    if (!(value == null || value.equals(""))) {
+                        set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
+                    }
+                }
+                value = set;
+            }
+            return value;
         }
     }
 
     /**
-     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
-     * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used), datePart set to -1 (so no date part comparison)
-     * @param query      The query to create the constraint for
-     * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
-     * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
-     * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
-     * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
+     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean)}.
+     * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used).
      */
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value) {
-        return createConstraint(query, fieldName, operator, value, null, false, -1);
+        return createConstraint(query, fieldName, operator, value, null, false);
     }
-
-    /**
-     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
-     * DatePart set to -1 (so no date part comparison)
-     * @param query      The query to create the constraint for
-     * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
-     * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
-     * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
-     * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
-     * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
-     * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
-     */
-    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value,  Object value2, boolean caseSensitive) {
-        return createConstraint(query, fieldName, operator, value, value2, caseSensitive, -1);
-    }
-
     /**
      * Creates a constraint smartly, depending on the type of the field, the value is casted to the
      * right type, and the right type of constraint is created.
@@ -513,10 +433,10 @@ abstract public class Queries {
      * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
      * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
-     * @param datePart       The part of a DATETIME value that is to be checked
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
-    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive, int datePart) {
+
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive) {
 
         StepField stepField = query.createStepField(fieldName);
         if (stepField == null) {
@@ -557,35 +477,28 @@ abstract public class Queries {
                             } else {
                                 list.add(new Integer(-1));
                             }
-
+                            
                         }
                     }
-
+                    
                 }
             }
 
-            Object compareValue = getCompareValue(fieldType, operator, value, datePart);
+            Object compareValue = getCompareValue(fieldType, operator, value);
 
             if (operator > 0 && operator < OPERATOR_IN) {
-                if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
-                    newConstraint = query.createConstraint(stepField, operator, compareValue, datePart);
-                } else {
-                    newConstraint = query.createConstraint(stepField, operator, compareValue);
-                }
+                newConstraint = query.createConstraint(stepField, operator, compareValue);
             } else {
-                if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
-                    throw new RuntimeException("Cannot apply IN or BETWEEN to a partial date field");
-                }
                 switch (operator) {
-                case OPERATOR_BETWEEN :
-                    Object compareValue2 = getCompareValue(fieldType, operator, value2);
-                    newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
-                    break;
-                case OPERATOR_IN :
-                    newConstraint = query.createConstraint(stepField, (SortedSet)compareValue);
-                    break;
-                default :
-                    throw new RuntimeException("Unknown value for operation " + operator);
+                    case OPERATOR_BETWEEN :
+                        Object compareValue2 = getCompareValue(fieldType, operator, value2);
+                        newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
+                        break;
+                    case OPERATOR_IN :
+                        newConstraint = query.createConstraint(stepField, (SortedSet)compareValue);
+                        break;
+                    default :
+                        throw new RuntimeException("Unknown value for operation " + operator);
                 }
             }
         }
@@ -601,17 +514,18 @@ abstract public class Queries {
      * Constraints on different steps then the given 'sourceStep' are ignored. CompositeConstraints
      * cause recursion and would work too (but same limitation are valid for the childs).
      *
-     * @param c          The constrain to be copied (for example the result of sourceQuery.getConstraint()).
+     * @param Constraint The constrain to be copied (for example the result of sourceQuery.getConstraint()).
      * @param sourceStep The step in the 'source' query.
      * @param query      The receiving query
      * @param step       The step of the receiving query which must 'receive' the sort orders.
      * @since MMBase-1.7.1
      * @see   org.mmbase.storage.search.implementation.BasicSearchQuery#copyConstraint Functions are similar
      * @throws IllegalArgumentException If the given constraint is not compatible with the given step.
-     * @throws UnsupportedOperationException If CompareFieldsConstraints or LegacyConstraints are encountered.
+     * @throws UnsuporteOperationException If CompareFieldsConstraints or LegacyConstraints are encountered.
      * @return The new constraint or null
      */
     public static Constraint copyConstraint(Constraint c, Step sourceStep, Query query, Step step) {
+
         if (c == null) return null;
 
         if (c instanceof CompositeConstraint) {
@@ -633,9 +547,9 @@ abstract public class Queries {
             }
             query.setInverse(newConstraint, constraint.isInverse());
             return newConstraint;
-        } else if (c instanceof CompareFieldsConstraint) {
+        } else if (c instanceof CompareFieldsConstraint) { 
             throw new UnsupportedOperationException("Cannot copy comparison between fields"); // at least not from different steps
-        }
+        } 
 
 
         FieldConstraint fieldConstraint = (FieldConstraint) c;
@@ -644,7 +558,7 @@ abstract public class Queries {
         StepField field = query.createStepField(step, fieldConstraint.getField().getFieldName());
 
         FieldConstraint newConstraint;
-        if (c instanceof FieldValueConstraint) {
+        if (c instanceof FieldValueConstraint) {            
             newConstraint = query.createConstraint(field, ((FieldValueConstraint) c).getOperator(), ((FieldValueConstraint) c).getValue());
         } else if (c instanceof FieldNullConstraint) {
             newConstraint = query.createConstraint(field);
@@ -674,9 +588,6 @@ abstract public class Queries {
                 case Field.TYPE_DOUBLE:
                     value = new Double((String) value);
                     break;
-                case Field.TYPE_DATETIME:
-                    value = new Date((long) 1000 * Integer.parseInt("" + value));
-                    break;
                 }
                 set.add(value);
             }
@@ -686,7 +597,7 @@ abstract public class Queries {
         } else {
             throw new RuntimeException("Could not copy constraint " + c);
         }
-        query.setInverse(newConstraint, fieldConstraint.isInverse());
+        query.setInverse(newConstraint, fieldConstraint.isInverse());            
         query.setCaseSensitive(newConstraint, fieldConstraint.isCaseSensitive());
         return newConstraint;
 
@@ -707,14 +618,12 @@ abstract public class Queries {
             SortOrder sortOrder = (SortOrder) i.next();
             StepField sourceField = sortOrder.getField();
             if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
-            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());
+            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());            
         }
     }
 
     /**
      * Converts a String to a SortOrder constant
-     * @param dir string representation of direction of sortorder
-     * @return SortOrder constant
      * @since MMBase-1.7.1
      */
     public static int getSortOrder(String dir) {
@@ -736,9 +645,6 @@ abstract public class Queries {
 
     /**
      * Adds sort orders to the query, using two strings. Like in 'getList' of Cloud. Several tag-attributes need this.
-     * @param query query to add the sortorders to
-     * @param sorted string with comma-separated fields
-     * @param directions string with comma-separated directions
      *
      * @todo implement for normal query.
      * @return The new sort orders
@@ -781,8 +687,6 @@ abstract public class Queries {
 
     /**
      * Returns substring of given string without the leading digits (used in 'paths')
-     * @param complete string with leading digits
-     * @return string with digits removed
      */
     protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
@@ -795,9 +699,6 @@ abstract public class Queries {
     /**
      * Adds path of steps to an existing query. The query may contain steps already. Per step also
      * the 'search direction' may be specified.
-     * @param query extend this query
-     * @param path create steps from this path
-     * @param searchDirs add steps with these relation directions
      * @return The new steps.
      */
     public static List addPath(Query query, String path, String searchDirs) {
@@ -872,10 +773,9 @@ abstract public class Queries {
 
     /**
      * Adds a number of fields. Fields is represented as a comma separated string.
-     * @param query The query where the fields should be added to
-     * @param fields a comma separated string of fields
      * @return The new stepfields
      */
+
     public static List addFields(Query query, String fields) {
         List result = new ArrayList();
         if (fields == null || fields.equals("")) {
@@ -899,11 +799,8 @@ abstract public class Queries {
      * another then this found step.
      *
      * Furthermore may the nodes by identified by their alias, if they have one.
-     * @param query query to add the startnodes
-     * @param startNodes start nodes
-     *
-     * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery(List, List, String, List, String, List, List, int)
-     * (this is essentially a 'bridge' version of the startnodes part)
+     * 
+     * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery (this is essentially a 'bridge' version of the startnodes part)
      */
     public static void addStartNodes(Query query, String startNodes) {
         if (startNodes == null || "".equals(startNodes) || "-1".equals(startNodes)) {
@@ -928,7 +825,7 @@ abstract public class Queries {
                 }
             }
 
-            if (firstStep == null) { // firstStep not yet determined, do that now.
+            if (firstStep == null) { // firstStep not yet determined, do that now. 
                 Node node;
                 try {
                     node = query.getCloud().getNode(nodeNumber);
@@ -940,13 +837,13 @@ abstract public class Queries {
                 while (i.hasNext()) {
                     Step queryStep = (Step) i.next();
                     NodeManager queryNodeManager = query.getCloud().getNodeManager(queryStep.getTableName());
-                    if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) {
+                    if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) { 
                         // considering inheritance. ClusterBuilder is not doing that, but I think it is a bug.
-                        firstStep = queryStep;
+                        firstStep = queryStep; 
                         break;
                     }
                 }
-                if (firstStep == null) {
+                if (firstStep == null) { 
                     // odd..
                     // See also org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery
                     // specified a node which is not of the type of one of the steps.
@@ -976,8 +873,6 @@ abstract public class Queries {
 
     /**
      * Takes the query, and does a count with the same constraints (so ignoring 'offset' and 'max')
-     * @param query query as base for the count
-     * @return number of results
      */
     public static int count(Query query) {
         Cloud cloud = query.getCloud();
@@ -1032,8 +927,6 @@ abstract public class Queries {
 
     /**
      * Searches a list of Steps for a step with a certain name. (alias or tableName)
-     * @param steps steps to search through
-     * @param stepAlias alias to search for
      * @return The Step if found, otherwise null
      * @throws ClassCastException if list does not contain only Steps
      */
@@ -1047,8 +940,8 @@ abstract public class Queries {
             Step step = (Step)i.next();
             if (stepAlias.equals(step.getAlias())) {
                 return step;
-            }
-        }
+            } 
+        } 
         // if no aliases found, try table names
         i = steps.iterator();
         while (i.hasNext()) {
@@ -1064,7 +957,6 @@ abstract public class Queries {
      * Returns the NodeQuery returning the given Node. This query itself is not very useful, because
      * you already have its result (the node), but it is convenient as a base query for many other
      * goals.
-     * @param node Node to create the query from
      * @return A new NodeQuery object
      */
     public static NodeQuery createNodeQuery(Node node) {
@@ -1078,10 +970,6 @@ abstract public class Queries {
 
     /**
      * Returns a query to find the nodes related to the given node.
-     * @param node start node
-     * @param otherNodeManager node manager on the other side of the relation
-     * @param role role of the relation
-     * @param direction direction of the relation
      * @return A new NodeQuery object
      */
     public static NodeQuery createRelatedNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
@@ -1094,10 +982,6 @@ abstract public class Queries {
 
     /**
      * Returns a query to find the relations nodes of the given node.
-     * @param node start node
-     * @param otherNodeManager node manager on the other side of the relation
-     * @param role role of the relation
-     * @param direction direction of the relation
      * @return A new NodeQuery object
      */
     public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
@@ -1112,7 +996,6 @@ abstract public class Queries {
     /**
      * Add a sortorder (DESCENDING) on al the'number' fields of the query, on which there is not yet a
      * sortorder. This ensures that the query result is ordered uniquely.
-     * @param q query to change
      * @return The changed Query
      */
     public static Query sortUniquely(Query q) {

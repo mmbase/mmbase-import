@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.67 2004-12-10 19:05:36 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.65.2.1 2004-07-05 17:19:57 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -84,16 +84,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("setting page context");
     }
 
-    /**
-     * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
-     */
     void createContainer(ContextContainer c) {
-        if (c == null && ! ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.isELIgnored")))) {
-            container = new PageContextContainer(pageContext);
-        } else {
-            container = new StandaloneContextContainer(getId(), c);
-        }
-
+        container = new ContextContainer(getId(), c);
     }
 
     public ContextContainer getContextContainer() {

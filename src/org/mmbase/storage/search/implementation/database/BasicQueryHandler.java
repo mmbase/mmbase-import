@@ -11,7 +11,6 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
@@ -29,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.30 2004-09-28 20:58:51 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.26.2.2 2004-06-17 11:21:08 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -89,7 +88,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
             con = mmbase.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
-
             try {
                 if (mustSkipResults) {
                     log.debug("skipping results, to provide weak support for offset");
@@ -101,6 +99,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
                 // Now store results as cluster-/real nodes.
                 StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
+
                 int maxNumber = query.getMaxNumber();
 
                 // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
@@ -119,13 +118,13 @@ public class BasicQueryHandler implements SearchQueryHandler {
             } finally {
                 rs.close();
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
             if (log.isDebugEnabled()) {
                 log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
             }
-            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getMessage(), e);
         } finally {
             mmbase.closeConnection(con, stmt);
         }
@@ -248,19 +247,13 @@ public class BasicQueryHandler implements SearchQueryHandler {
             for (int i = 0; i < fields.length; i++) {
                 if (fields[i].getStep() != nodeStep) continue;
                 String fieldName =  fields[i].getFieldName();
+                // if (node.retrieveValue(fieldName) != null) continue;
+                // already set (node-query must _start_ with all nodes of the node)
+                // XXXX If getValue can give null for _set_ values, then something must be changed here.
+                // see also BasicNodeQuery.setNodeStep
                 database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
             }
             node.finish();
-
-            // set byte fields to shorted
-            for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext();) {
-                FieldDefs field = (FieldDefs)i.next();
-                if (field.inStorage()) {
-                    if (field.getDBType() == FieldDefs.TYPE_BYTE) {
-                        node.setValue(field.getDBName(), "$SHORTED");
-                    }
-                }
-            }
             results.add(node);
         }
         return results;
@@ -270,25 +263,25 @@ public class BasicQueryHandler implements SearchQueryHandler {
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int supportLevel;
         switch (feature) {
-        case SearchQueryHandler.FEATURE_OFFSET:
-            // When sql handler does not support OFFSET, this query handler
-            // provides weak support by skipping resultsets.
-            // (falls through)
-        case SearchQueryHandler.FEATURE_MAX_NUMBER:
-            // When sql handler does not support MAX NUMBER, this query
-            // handler provides weak support by truncating resultsets.
-            int handlerSupport = sqlHandler.getSupportLevel(feature, query);
-            if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
-                // TODO: implement weak support.
-                //supportLevel = SearchQueryHandler.SUPPORT_WEAK;
-                supportLevel = SearchQueryHandler.SUPPORT_NONE;
-            } else {
-                supportLevel = handlerSupport;
-            }
-            break;
-            
-        default:
-            supportLevel = sqlHandler.getSupportLevel(feature, query);
+            case SearchQueryHandler.FEATURE_OFFSET:
+                // When sql handler does not support OFFSET, this query handler
+                // provides weak support by skipping resultsets.
+                // (falls through)
+            case SearchQueryHandler.FEATURE_MAX_NUMBER:
+                // When sql handler does not support MAX NUMBER, this query
+                // handler provides weak support by truncating resultsets.
+                int handlerSupport = sqlHandler.getSupportLevel(feature, query);
+                if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
+                    // TODO: implement weak support.
+                    //supportLevel = SearchQueryHandler.SUPPORT_WEAK;
+                     supportLevel = SearchQueryHandler.SUPPORT_NONE;
+               } else {
+                    supportLevel = handlerSupport;
+                }
+                break;
+
+            default:
+                supportLevel = sqlHandler.getSupportLevel(feature, query);
         }
         return supportLevel;
     }

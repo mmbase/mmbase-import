@@ -15,20 +15,17 @@ import java.util.ListIterator;
  * An iterator for a list of strings
  *
  * @author Pierre van Rooden
- * @version $Id: StringIterator.java,v 1.6 2004-10-09 09:39:32 nico Exp $
+ * @version $Id: StringIterator.java,v 1.4 2003-03-04 09:19:05 pierre Exp $
  */
 public interface StringIterator extends ListIterator {
 
     /**
      * Returns the next element in the iterator as a String
-     * @return next String
      */
     public String nextString();
 
     /**
      * Returns the previous element in the iterator as a String
-     * @return previous String
-     * @since MMBase-1.7
      */
     public String previousString();
 

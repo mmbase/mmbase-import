@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A helper class to implement referids attribute.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Referids.java,v 1.4 2004-06-11 08:33:35 michiel Exp $
+ * @version $Id: Referids.java,v 1.2.2.2 2004-06-11 08:37:35 michiel Exp $
  * @since MMBase-1.7
  */
 public class  Referids  {

@@ -10,36 +10,27 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.io.ByteArrayInputStream;
 import org.mmbase.module.core.*;
-//import org.mmbase.util.ImageInfo;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.30 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.24.2.3 2004-10-03 11:14:24 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
-    /*
-    static final ImageInfo imageInfo = new ImageInfo();
-
-    public final static Parameter[] WIDTH_PARAMETERS    = {};
-    public final static Parameter[] HEIGHT_PARAMETERS   = {};
-    */
-
     /**
      * Cache with 'ckey' keys.
      * @since MMBase-1.6.2
      */
-    abstract protected static class CKeyCache extends org.mmbase.cache.Cache {
+    abstract protected static class  CKeyCache extends org.mmbase.cache.Cache {
         protected CKeyCache(int i) {
             super(i);
         }
@@ -48,53 +39,60 @@ public abstract class AbstractImages extends AbstractServletBuilder {
          * This depends now on the fact that ckeys start with the original node-number
          */
 
-        void remove(int originalNodeNumber) {
+        void   remove(int originalNodeNumber) {
             String prefix = "" + originalNodeNumber;
-            if (log.isDebugEnabled()) {
-                log.debug("removing " + prefix);
-            }
-            Iterator entries  = entrySet().iterator();
-            while (entries.hasNext()) {
-                Map.Entry entry = (Map.Entry)entries.next();
-                String key = (String)entry.getKey();
-                if (log.isDebugEnabled()) {
-                    log.debug("checking " + key);
-                }
+            log.debug("removing " + prefix);
+            Iterator keys  = keySet().iterator();
+            List removed = new ArrayList();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                log.debug("checking " + key);
                 if (key.startsWith(prefix)) {
                     // check is obviously to crude, e.g. if node number happens to be 4,
                     // about one in 10 cache entries will be removed which need not be removed,
                     // but well, it's only a cache, it's only bad luck...
                     // 4 would be a _very_ odd number for an Image, btw..
-                    if (log.isDebugEnabled()) {
-                        log.debug("removing " + key + " " + get(key));
-                    }
-                    entries.remove();
+                    log.debug("removing " + key + " " + get(key));
+                    removed.add(key);
+                    // cannot use keys.remove(), becaus then cache.remove is not called.
                 }
 
+            }
+            keys = removed.iterator();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                remove(key);
             }
         }
 
         void removeCacheNumber(int icacheNumber) {
             Iterator entries  = entrySet().iterator();
+            List removed = new ArrayList();
             while (entries.hasNext()) {
-                Map.Entry entry = (Map.Entry) entries.next();
+                Map.Entry entry = (Map.Entry) entries.next();                    
                 String key = (String) entry.getKey();
                 Object value = entry.getValue();
                 if (value instanceof ByteFieldContainer) {
-                    ByteFieldContainer bf = (ByteFieldContainer) value;
+                    ByteFieldContainer bf = (ByteFieldContainer) value;                
                     if (bf.number == icacheNumber) {
-                        entries.remove();
+                        removed.add(key);
                     }
                 } else if (value instanceof Integer) {
                     Integer i = (Integer) value;
                     if (i.intValue() == icacheNumber) {
-                        entries.remove();
+                        removed.add(key);
                     }
                 }
-
+                
+            }
+            Iterator keys = removed.iterator();
+            while (keys.hasNext()) {
+                String key = (String)keys.next();
+                remove(key);
             }
         }
     }
+
 
     protected String getAssociation() {
         return "images";
@@ -111,15 +109,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
     /**
      * Returns GUI Indicator for node
-     * @since MMBase-1.7
      */
     protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters a) {
         return getGUIIndicatorWithAlt(node, "*", a); /// Gui indicator of a whole node.
     }
 
-    /**
-     * @since MMBase-1.7
-     */
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
@@ -154,47 +148,6 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      */
     abstract public byte[] getImageBytes(List params);
 
-
-    /**
-     */
-    /*
-    protected int getHeight(MMObjectNode node) {
-        byte[] data = node.getByteValue("handle");
-        imageInfo.setInput(new ByteArrayInputStream(data));
-
-        if (log.isServiceEnabled()) {
-            if (!imageInfo.check()) {
-                log.service("ImageBuilder: Error parsing image");
-            }
-        }
-        int height = imageInfo.getHeight();
-        if (log.isDebugEnabled()) {
-            log.debug("ImageBuilder: height being returned = " + height);
-        }
-        return height;
-    }
-    */
-    /**
-     */
-    /*
-    protected int getWidth(MMObjectNode node) {
-
-       byte[] data = node.getByteValue("handle");
-       imageInfo.setInput(new ByteArrayInputStream(data));
-
-       if (log.isServiceEnabled()) {
-           if (!imageInfo.check()) {
-               log.service("ImageBuilder: Error parsing image");
-           }
-       }
-       int width = imageInfo.getWidth();
-       if (log.isDebugEnabled()) {
-           log.debug("ImageBuilder: width being returned = " + width);
-       }
-       return width;
-    }
-    */
-
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.
      *
@@ -205,15 +158,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             return getImageMimeType(node);
         } else if (function.equals("format")) {
             return getImageFormat(node);
-            /*
-        } else if ("width".equals(function)) {
-            return new Integer(getWidth(node));
-        } else if ("height".equals(function)) {
-            return new Integer(getHeight(node));
-            */
         } else {
             return super.executeFunction(node, function, args);
         }
     }
 
+
 }
+

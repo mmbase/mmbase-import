@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.25 2004-07-26 20:17:59 nico Exp $
+ * @version $Id: ListNodesTag.java,v 1.21.2.4 2004-07-26 20:12:15 nico Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {

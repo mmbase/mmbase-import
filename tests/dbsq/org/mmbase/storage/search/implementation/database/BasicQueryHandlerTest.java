@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandlerTest.java,v 1.6 2004-09-07 13:09:22 pierre Exp $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.4.2.1 2004-09-07 13:12:39 pierre Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 

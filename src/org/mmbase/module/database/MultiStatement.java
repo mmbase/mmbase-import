@@ -1,5 +1,4 @@
 /*
-
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.17 2004-08-26 12:39:42 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.13.2.4 2004-08-26 12:40:14 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -174,7 +173,7 @@ public class MultiStatement implements Statement {
 
     /**
      * Tries to fix the parent connection, if it proves to be broken. It is supposed to be broken if
-     * the query "SELECT 1 FROM <OBJECT TABLE> WHERE 1 = 0" does yield an exception. 
+     * the query "SELECT 1 FROM <OBJECT TABLE>" does yield an exception. 
      * This method is meant to be called in the catch after trying to exceute a statement.
      *
      * @return A new Statement object if a new Connection was successfully obtained. Or null, if 'SELECT 1' did succeed.

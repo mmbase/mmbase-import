@@ -13,7 +13,6 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import javax.servlet.*;
-import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -21,12 +20,10 @@ import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.Operation;
-import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
-import org.mmbase.util.functions.Function;
-import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
+
 
 /**
  * This class represents a node's type information object - what used to be the 'builder'.
@@ -39,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.84 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.77 2004-03-03 14:34:30 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -50,6 +47,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     // field types
     protected Map fieldTypes = new HashMap();
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected Set queryFields = new HashSet();
 
     private static NodeListCache nodeListCache = NodeListCache.getCache();
 
@@ -64,7 +66,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param id the id of the node in the temporary cloud
      */
     BasicNodeManager(MMObjectNode node, Cloud cloud, int nodeid) {
-        super(node, cloud, nodeid);
+        super(node,cloud, nodeid);
         // no initialization - for a new node, builder is null.
     }
 
@@ -77,7 +79,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectNode node, Cloud cloud) {
-        super(node, cloud);
+        super(node,cloud);
         initManager();
     }
 
@@ -89,25 +91,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
-        super(getNodeForBuilder(builder), cloud);
-        this.builder = builder;
+        super(builder.isVirtual() ? new VirtualNode(BasicCloudContext.mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
+        this.builder=builder;
         initManager();
-    }
-
-    /**
-     * This method is  only needed to get clearer exception from above constructor in case of problem with builder.
-     * @since MMBase-1.8
-     */
-    private static MMObjectNode getNodeForBuilder(MMObjectBuilder builder) {
-        if (builder.isVirtual()) {
-            return  new VirtualNode(BasicCloudContext.mmb.getTypeDef());
-        } else {
-            MMObjectNode typedefNode = builder.getNode(builder.oType);
-            if (typedefNode == null) {
-                throw new RuntimeException("Could not find typedef node for builder " + builder + " with otype " + builder.oType);
-            }
-            return typedefNode;
-        }
     }
 
     /**
@@ -138,18 +124,27 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // clear the list of fields..
         // why is this needed?
         List fields = builder.getFields();
-        if (fields != null) { // when is it null?
+        if (fields != null) {
             fieldTypes.clear();
             for(Iterator i = fields.iterator(); i.hasNext();){
                 FieldDefs f = (FieldDefs) i.next();
-                Field ft = new BasicField(f, this);
-                if (f.getDBPos() > 0) {
+                Field ft = new BasicField(f,this);
+                if (f.getDBPos()>0) {
                     fieldTypes.put(ft.getName(),ft);
+                    if (f.getDBType() != FieldDefs.TYPE_BYTE &&
+                       (f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
+                        queryFields.add(new BasicField(f, this));
+                    }
                 }
             }
         }
 
     }
+
+    protected Set getQueryFields() {
+        return queryFields;
+    }
+
 
 
     public Node createNode() {
@@ -249,12 +244,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public FieldList getFields() {
-        return new BasicFieldList(fieldTypes.values(), this);
+        return new BasicFieldList(fieldTypes.values(),this);
     }
 
     public FieldList getFields(int order) {
-        if (builder != null) {
-            return new BasicFieldList(builder.getFields(order), this);
+        if (builder!=null) {
+            return new BasicFieldList(builder.getFields(order),this);
         }
         return getFields();
     }
@@ -266,7 +261,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public boolean hasField(String fieldName) {
-        return fieldTypes.get(fieldName) != null;
+        return fieldTypes.get(fieldName)!=null;
     }
 
 
@@ -337,6 +332,56 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
 
+    /**
+     * Based on NodeSearchQuery (but it is wrapped in a BasicNodeQuery, because of security contraints).
+     *
+     * @since MMBase-1.7
+     */
+    /*
+    protected NodeList getSecureList(BasicNodeQuery query) {
+
+        Authorization auth = cloud.mmbaseCop.getAuthorization();
+        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+
+        BasicQuery bquery = (BasicQuery) query;
+        if (bquery.isSecure()) {
+            checked = true;
+        } else {
+            Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
+            bquery.setSecurityConstraint(check);
+            checked = bquery.isSecure();
+        }
+
+        List resultList;
+        try {
+            resultList = builder.getNodes((NodeSearchQuery)query.getQuery()); // result with all MMObjectNodes (without security)
+            // cached in MMObjectBuilder.
+
+        } catch (SearchQueryException sqe) {
+            throw new BridgeException(sqe);
+        }
+        query.markUsed();
+
+        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
+        if (! checked) {
+            log.debug("checking read rights");
+            list.autoConvert = false;
+
+            ListIterator i = list.listIterator();
+            while (i.hasNext()) {
+                if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
+                    i.remove();
+                }
+            }
+            list.autoConvert = true;
+        }
+        list.setProperty(NodeList.QUERY_PROPERTY, query);
+        return list;
+
+    }
+
+    */
+
     public RelationManagerList getAllowedRelations() {
        return getAllowedRelations((NodeManager) null, null, null);
     }
@@ -396,7 +441,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
         MMObjectBuilder builder=getMMObjectBuilder();
         StringTokenizer tokens= new StringTokenizer(command,"-");
-        return builder.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),tokens);
+        return builder.replace(BasicCloudContext.getScanPage(req, resp),tokens);
     }
 
     public NodeList getList(String command, Map parameters){
@@ -420,7 +465,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            Vector v=builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),params,tokens);
+            Vector v=builder.getList(BasicCloudContext.getScanPage(req, resp),params,tokens);
             if (v==null) { v=new Vector(); }
             int items=1;
             try {
@@ -467,7 +512,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     // overriding behavior of BasicNode
 
     public void commit() {
-        super.commit();  // commit the node - the builder should now be loaded by TypeDef
+        super.commit();  // commit the node - the builder should now be loaded by TypeDef/ObjectTypes
         // rebuild builder reference and fieldlist.
         initManager();
     }
@@ -475,30 +520,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public void delete(boolean deleteRelations) {
         super.delete(deleteRelations);
         builder=null;  // invalidate (builder does not exist any more)
-    }
-
-    public Set getFunctions() {
-        Set functions = builder.getFunctions();
-        // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functions.iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this,fun));
-        }
-        return functionSet;
-    }
-
-    public Function getFunction(String functionName) {
-        // first try to get the 'node' function.
-        Function function = getNode().getFunction(functionName);
-        // then try to get the 'builder' function.
-        if (function == null) {
-            function = builder.getFunction(functionName);
-        }
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
-        }
-        return new BasicFunction(this, function);
     }
 
 }

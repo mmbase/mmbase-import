@@ -37,10 +37,9 @@ required="true" />
   <th class="header">Value</th>
 </tr>
 <%
-   Iterator i = cache.entrySet().iterator();
+   Iterator i = cache.getOrderedEntries(500).iterator();
    int j = 0;
-   while(i.hasNext() && j < 500) {
-     j++;
+   while(i.hasNext()) {
      Map.Entry entry = (Map.Entry) i.next();
 %>
 <tr>

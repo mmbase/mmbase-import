@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.11 2004-09-30 14:54:56 pierre Exp $
+ * @version $Id: TreeList.java,v 1.7.2.3 2004-07-29 17:19:43 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -56,7 +56,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         cloud = q.getCloud();
 
         queries.add(q);
-        results.add(null); // determine when needed
+        results.add(null); // determin when needed
 
         size = Queries.count(q);
         numberOfSteps = q.getSteps().size();
@@ -142,7 +142,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         }
 
         queries.add(newQuery);
-        results.add(null); // determine when needed
+        results.add(null); // determin when needed
         topQuery++;
 
         return step;

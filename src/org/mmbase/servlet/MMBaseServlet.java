@@ -26,7 +26,6 @@ import java.io.PrintWriter;
 import java.util.*;
 
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -37,13 +36,14 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.36 2004-11-26 18:44:48 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.29.2.4 2004-11-09 13:12:05 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     private   static final Logger log = Logging.getLoggerInstance(MMBaseServlet.class);
+
     /**
      * MMBase reference. While null, servlet does not accept request.
      */
@@ -91,7 +91,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     /** 
      * Boolean indicating whether MMBase has been started. Used by {@link #checkInited}, set to true {@link #by setMMBase}.
-     * @since MMBase-1.7
+     * @since MMBase-1.7.2
      */
     private static boolean mmbaseInited = false;
 
@@ -122,9 +122,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         return new Hashtable();
     }
 
-    /**
-     * Used in association map 
-     */
     private static class ServletEntry {
         ServletEntry(String n) {
             this(n, null);
@@ -158,10 +155,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (! mmbaseInited) {
             log.info("MMBase servlets are ready to receive requests");            
         }
-        mmbase = mmb;        
+        mmbase = mmb;
         mmbaseInited = true;
     }
-
 
     
     /**
@@ -176,12 +172,14 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @since MMBase-1.7
      */
     public void setInitException(ServletException e) {
-        initException = e;
-    }
+        initException = e;        
+    }    
+
 
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
+
     public void init() throws ServletException {
 
         String retryAfterParameter = getInitParameter("retry-after");
@@ -211,40 +209,28 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                
                 MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
-                java.net.URL url;
-                try {
-                    url = getServletConfig().getServletContext().getResource("/WEB-INF/web.xml");
-                } catch (NoSuchMethodError nsme) {
-                    // for old app-servers.
-                    log.error(nsme);
-                    url = (new java.io.File(getServletConfig().getServletContext().getRealPath("/WEB-INF/web.xml"))).toURL();
-                }
-                if (url == null) {
-                    log.warn("No web.xml found");
-                } else {
-                    InputSource path = new InputSource(url.openStream());
-                    log.service("Reading servlet mappings from " + url);
-                    XMLBasicReader webDotXml = new XMLBasicReader(path, false);
-                    Enumeration mappings = webDotXml.getChildElements("web-app", "servlet-mapping");
-                    while (mappings.hasMoreElements()) {
-                        Element mapping = (Element) mappings.nextElement();
-                        Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
-                        String name = webDotXml.getElementValue(servName);
-                        if (!(name.equals(""))) {
-                            Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
-                            String pattern=webDotXml.getElementValue(urlPattern);
-                            if (!(pattern.equals(""))) {
-                                List ls = (List) servletMappings.get(name);
-                                if (ls == null) {
-                                    ls = new ArrayList(); 
-                                    servletMappings.put(name, ls);
-                                }
-                                ls.add(pattern);
+                String path = MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
+                log.service("Reading servlet mappings from " + path);
+                XMLBasicReader webDotXml = new XMLBasicReader(path, false);
+                Enumeration mappings = webDotXml.getChildElements("web-app", "servlet-mapping");
+                while (mappings.hasMoreElements()) {
+                    Element mapping = (Element) mappings.nextElement();
+                    Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
+                    String name = webDotXml.getElementValue(servName);
+                    if (!(name.equals(""))) {
+                        Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
+                        String pattern=webDotXml.getElementValue(urlPattern);
+                        if (!(pattern.equals(""))) {
+                            List ls = (List) servletMappings.get(name);
+                            if (ls == null) {
+                                ls = new ArrayList(); 
+                                servletMappings.put(name, ls);
                             }
+                            ls.add(pattern);
                         }
                     }
-                    webDotXml = null;
                 }
+                webDotXml = null;
             } catch (Exception e) {
                 log.error(e.getMessage() + Logging.stackTrace(e));
             }
@@ -396,7 +382,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * yet, but one could image lots of cool stuff here. Any other
      * MMBase servlet will probably override this method.
      */
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("text/plain");
         PrintWriter pw = res.getWriter();
         pw.print(org.mmbase.Version.get());

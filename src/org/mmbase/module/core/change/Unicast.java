@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * 
  * @author Nico Klasens
  * @created 20-sep-2004
- * @version $Id: Unicast.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: Unicast.java,v 1.1.2.1 2004-10-09 10:51:43 nico Exp $
  */
 public class Unicast extends SharedStorage {
 

@@ -16,17 +16,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 
 /**
- * This class reads a node from an exported application.
- * @application Applications
- * @move org.mmbase.util.xml
- * @rename ContextDepthReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
- * @author Daniel Ockeloen
+ * This class reads a node from an exported application
+ * @version $Id: XMLNodeReader.java,v 1.26 2004-01-08 23:49:58 michiel Exp $
+ * @author ?
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.28 2004-11-11 16:52:57 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
@@ -40,14 +35,6 @@ public class XMLNodeReader extends XMLBasicReader {
      */
     public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
         super(filename, false);
-        this.applicationpath = applicationpath;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public XMLNodeReader(InputSource is, String applicationpath) {
-        super(is, false);
         this.applicationpath = applicationpath;
     }
 
@@ -148,13 +135,13 @@ public class XMLNodeReader extends XMLBasicReader {
                                     if (type != -1) {
                                         if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
                                             if (value == null) {
-                                                value = "";
+                                                value = ""; 
                                             }
                                             newnode.setValue(key, value);
                                             if (log.isDebugEnabled()) {
                                                 log.debug("After value " + Casting.toString(newnode.getValue(key)));
                                             }
-                                        } else if (type == FieldDefs.TYPE_NODE) {
+                                        } else if (type == FieldDefs.TYPE_NODE) {                                            
                                             // do not really set it, because we need syncnodes later for this.
                                             newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
                                             newnode.setValue(key, MMObjectNode.VALUE_NULL);

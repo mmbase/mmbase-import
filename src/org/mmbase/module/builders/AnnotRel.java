@@ -18,10 +18,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
- * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.20 2004-10-25 08:08:36 pierre Exp $
+ * @version $Id: AnnotRel.java,v 1.17 2003-07-01 14:21:23 keesj Exp $
  */
 public class AnnotRel extends InsRel {
 
@@ -108,13 +106,13 @@ public class AnnotRel extends InsRel {
     /**
      * The hook that passes all form related pages to the correct handler.
      * This method is not supported.
-     * @param sp The PageInfo
+     * @param sp The scanpage
      * @param command the command to execute
      * @param cmds the commands (PRC-CMD) to process
      * @param vars variables (PRC-VAR) to use
      * @return the result value as a <code>String</code>
      */
-    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
         log.debug("process: This method isn't implemented yet.");
         return false;
     }
@@ -122,11 +120,11 @@ public class AnnotRel extends InsRel {
     /**
      * Obtains a string value by performing the provided command.
      * This method is not supported.
-     * @param sp The PageInfo
+     * @param sp The scanpage
      * @param tok the command to execute
      * @return the result value as a <code>String</code>
      */
-    public String replace(PageInfo sp, StringTokenizer command) {
+    public String replace(scanpage sp, StringTokenizer command) {
         log.debug("replace: This method isn't implemented yet.");
         return "";
     }

@@ -15,7 +15,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.3 2004-11-30 08:30:57 pierre Exp $
+ * @version $Id: Attributes.java,v 1.2.2.1 2004-11-30 08:32:06 pierre Exp $
  */
 public final class Attributes {
 

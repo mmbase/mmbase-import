@@ -10,11 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 /**
- * The DateString class provides constant text strings for the weekday, month etc.
- *
- * @deprecated use Local and java.text.DateFormat
- * @version $Id: DateStrings.java,v 1.9 2004-09-29 14:29:23 pierre Exp $
- */
+* The DateString class provides constant text strings for the weekday, month etc.
+*
+*/
 public class DateStrings {
     /**
      *  English short week day names

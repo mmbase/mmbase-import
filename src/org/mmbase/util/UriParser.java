@@ -8,19 +8,18 @@ See http://www.MMBase.org/license
 
 */
 
+/**
+ * For an important part stolen from jakarte vfs (only one function). 
+ *
+ *
+ * @author Michiel Meeuwissen
+ * @since MMBase-1.7
+ */
 package org.mmbase.util;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-/**
- * For an important part stolen from jakarta vfs (only one function).
- * @javadoc
- *
- * @author Michiel Meeuwissen
- * @since MMBase-1.7
- * @version $Id: UriParser.java,v 1.3 2004-09-30 17:19:50 pierre Exp $
- */
 public class UriParser {
 
     private static final Logger log = Logging.getLoggerInstance(UriParser.class);

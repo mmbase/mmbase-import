@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
+
 import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,10 +33,9 @@ import org.mmbase.util.logging.Logging;
  * 9 : is replaced by a random digit (0-9)<br />
  * <br />
  *
- * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.8 2004-10-11 11:08:56 pierre Exp $
+ * @version $Id: PasswordGenerator.java,v 1.6 2003-03-10 11:51:09 pierre Exp $
  */
 
 public class PasswordGenerator extends Module implements PasswordGeneratorInterface {
