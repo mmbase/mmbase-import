@@ -66,7 +66,33 @@
           listsize = nl.size();
           showsize = listsize-offset.intValue();
           if (max.intValue() < showsize) showsize=max.intValue();
-          
+%>
+         <tr><td colspan="<mm:write referid="columns" />" >
+            Weergave <%=offset.intValue()+1%> t/m <%=offset.intValue()+showsize%> van <%=listsize%>
+            <% if (showsize < listsize) {
+            %>
+              <table><tr><td>
+              <% if (offset.intValue()>0) { %>
+                <a href="<mm:url page="listobjects.jsp" >
+                           <mm:param name="offset"><%=offset.intValue()<max.intValue() ? 0 : offset.intValue()-max.intValue()%></mm:param>
+                         </mm:url>">&lt;&lt;</a>&nbsp;
+              <% } %>
+              <% for (int pg = 0; pg <listsize; pg+=max.intValue()) {
+                     int pagenr = (pg / max.intValue()) + 1;
+              %>
+                <a href="<mm:url page="listobjects.jsp" >
+                           <mm:param name="offset"><%=pg%></mm:param>
+                         </mm:url>">[<%=pagenr%>]</a>&nbsp;
+              <% } 
+                 if (offset.intValue()+showsize < listsize) { %>
+                &nbsp;<a href="<mm:url page="listobjects.jsp" >
+                           <mm:param name="offset"><%=offset.intValue()+max.intValue()%></mm:param>
+                         </mm:url>">&gt;&gt;</a>
+              <% } %>
+              </td></tr></table>
+            <%  } %>
+         </td></tr>
+<%          
           for (int i = offset.intValue(); i < offset.intValue()+showsize; i++) {
             Node node = nl.getNode(i);
       %>
@@ -92,23 +118,31 @@
       </mm:context>
       <% } %>
 </mm:write>      
-      <% if (offset.intValue()>0) { %>
-         <tr><td colspan="<mm:write referid="columns" />" >
-            <a href="<mm:url page="listobjects.jsp" >
-                <mm:param name="offset"><%=offset.intValue()<max.intValue() ? 0 : offset.intValue()-max.intValue()%></mm:param>
-            </mm:url>"><img src="gfx/previous.gif" /></a>
-         </td></tr>
-      <% } %>
          <tr><td colspan="<mm:write referid="columns" />" >
             Weergave <%=offset.intValue()+1%> t/m <%=offset.intValue()+showsize%> van <%=listsize%>
+            <% if (showsize < listsize) {
+            %>
+              <table><tr><td>
+              <% if (offset.intValue()>0) { %>
+                <a href="<mm:url page="listobjects.jsp" >
+                           <mm:param name="offset"><%=offset.intValue()<max.intValue() ? 0 : offset.intValue()-max.intValue()%></mm:param>
+                         </mm:url>">&lt;&lt;</a>&nbsp;
+              <% } %>
+              <% for (int pg = 0; pg <listsize; pg+=max.intValue()) {
+                     int pagenr = (pg / max.intValue()) + 1;
+              %>
+                <a href="<mm:url page="listobjects.jsp" >
+                           <mm:param name="offset"><%=pg%></mm:param>
+                         </mm:url>">[<%=pagenr%>]</a>&nbsp;
+              <% } 
+                 if (offset.intValue()+showsize < listsize) { %>
+                &nbsp;<a href="<mm:url page="listobjects.jsp" >
+                           <mm:param name="offset"><%=offset.intValue()+max.intValue()%></mm:param>
+                         </mm:url>">&gt;&gt;</a>
+              <% } %>
+              </td></tr></table>
+            <%  } %>
          </td></tr>
-      <% if (offset.intValue()+showsize < listsize) { %>
-         <tr><td colspan="<mm:write referid="columns" />" >
-            <a href="<mm:url page="listobjects.jsp" >
-                <mm:param name="offset"><%=offset.intValue()+max.intValue()%></mm:param>
-            </mm:url>"><img src="gfx/next.gif" /></a>
-         </td></tr>
-      <% } %>
      </table>
   </body>
   </mm:cloud>
