@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.281 2005-01-05 11:50:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.282 2005-01-05 19:33:32 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4915,6 +4915,11 @@ The 0 is just counter, which starts at 0 on every page.
         for Locale class</a> (A little technical, but at least you'll
         find links to possible languages and countries, and another
         short description of what a Locale actually is).
+      </p>
+      <p>
+        Also 
+        <a href="http://java.sun.com/products/jsp/jstl/1.1/docs/tlddocs/fmt/tld-summary.html">the fmt
+        tags of JSTL</a> will recognize this setting (since mmbase 1.8).
       </p>
       <p>
         Since 1.7 there is also a content tag, which is an extension of the locale tag. You could
