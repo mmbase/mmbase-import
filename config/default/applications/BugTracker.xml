@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="BugTracker" maintainer="submarine.nl" version="1" auto-deploy="false">
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="1">pools</builder>
