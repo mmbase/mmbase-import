@@ -24,7 +24,7 @@ import java.util.*;
  * Gives an xml-representation of a dir structure with builders
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.2 2002-11-12 11:37:00 pierre Exp $
+ * @version $Id: BuilderList.java,v 1.3 2002-11-29 08:02:52 gerard Exp $
  */
 public class BuilderList {
     // logger not used at the moment
@@ -63,7 +63,10 @@ public class BuilderList {
         if (!path.endsWith(File.separator)) path+=File.separator;
         File bdir = new File(path);
         if (bdir.isDirectory()) {
-            result+="<buildertype name=\""+bdir.getName()+"\"\n>";
+            //these directory-names must be excluded
+            if (!bdir.getName().equals("builders")&&!bdir.getName().equals("applications")&&!bdir.getName().equals("tools")) {
+                result+="<buildertype name=\""+bdir.getName()+"\"\n>";
+            }
             String files[] = bdir.list();
             if (files!=null) {
                 for (int i=0;i<files.length;i++) {
@@ -78,22 +81,28 @@ public class BuilderList {
                             db.setEntityResolver(new XMLEntityResolver(false,this.getClass()));
                             Document document = db.parse(path+File.separator+bname);
                             StringWriter strw=new StringWriter(500);
-                            write(document, new StreamResult(strw));
-                            result+=strw.toString();
+                            //only process builder config files
+                            if (document.getDocumentElement().getTagName().equals("builder")) {
+                                write(document, new StreamResult(strw));
+                                result+=strw.toString();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             throw new RuntimeException(""+e);
                         }
                     } else {
                         if (!bname.equals("CVS")) {
-                            result=listBuilders(path +  bname + File.separator)+result;
+                            result=result+listBuilders(path +  bname + File.separator);
                         }
                     }
                 }
             } else {
                 throw new RuntimeException("Cannot find builders in "+path);
             }
-            result+="</buildertype>\n";
+            //these directory-names must be excluded
+            if (!bdir.getName().equals("builders")&&!bdir.getName().equals("applications")&&!bdir.getName().equals("tools")) {
+                result+="</buildertype>\n";
+            }
         }
         return result;
     }
@@ -102,12 +111,30 @@ public class BuilderList {
      * Main method can be called from an Ant build file and will return
      * the xml with a listing of all the builders
      *
-     * @param args base dir to start with
+     * @param args base dir to start with, it's possible to use more than one dir seperated by ;
      */
     public static void main(String[] args) throws java.io.UnsupportedEncodingException {
         if (args.length != 0) {
             BuilderList bulList = new BuilderList();
-            String s="<builders>\n"+bulList.listBuilders(args[0])+"</builders>\n";
+            String s="<builders>\n";
+            String builderDir = args[0];
+            if (builderDir.indexOf(';')==-1) {
+                s=s+bulList.listBuilders(builderDir);
+            } else {
+                int seperatorIndex = -1;
+                do {
+                    seperatorIndex =  builderDir.indexOf(';');
+                    //this will be the last dir
+                    if (seperatorIndex==-1) {
+                        s=s+bulList.listBuilders(builderDir.substring(0,builderDir.length()));
+                    } else {
+                        //there are more dirs
+                        s=s+bulList.listBuilders(builderDir.substring(0,seperatorIndex));
+                        builderDir=builderDir.substring(seperatorIndex+1,builderDir.length());
+                    }
+                } while (seperatorIndex!=-1) ;
+            }
+            s=s+"</builders>\n";
             byte[] bytes= s.getBytes("utf-8");
             System.out.write(bytes,0,bytes.length);
         } else {
