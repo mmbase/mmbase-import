@@ -10,7 +10,7 @@
   </xsl:template>
 
    <xsl:template name="extrajavascript">
-     <script language="javascript" src="{$referrerdir}style/streammanager.js.jsp?dir={$referrerdir}&amp;fragment={/wizard/form/list/item[@role='parent']/@destination}&amp;language={$language}"><xsl:comment>help IE</xsl:comment></script>
+     <script language="javascript" src="{$referrerdir}style/streammanager.js.jsp?dir={$referrerdir}&amp;fragment={/wizard/form/list[@searchdir='source']/item[@role='posrel']/@source}&amp;language={$language}"><xsl:comment>help IE</xsl:comment></script>
   </xsl:template>
 
    
