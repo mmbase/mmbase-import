@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 import java.util.Iterator;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 /**
  *
  * Class to convert from/to a string (byte[]) from/to a encoded string (byte[])
@@ -49,6 +52,8 @@ import java.util.Iterator;
  *  </pre>
  **/
 public class Encode {  
+
+    private static Logger log = Logging.getLoggerInstance(Encode.class.getName()); 
 
     private Transformer trans; // the instance of the object doing the actual work.
 
@@ -105,6 +110,7 @@ public class Encode {
 
     public static void register(String clazz) {
         if (! registered.contains(clazz)) { // if already registered, do nothing.
+            log.info("registering encode class " + clazz);
             try {
                 Class atrans = Class.forName(clazz);
                 Class trans  = Class.forName("org.mmbase.util.transformers.Transformer");
