@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Applications</title>
     <date>2003-02-27</date>
-    <edition>$Id: applications.xml,v 1.10 2004-01-22 13:49:55 michiel Exp $</edition>
+    <edition>$Id: applications.xml,v 1.11 2004-10-28 08:22:36 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -188,40 +188,6 @@
           <para>Specifies the depth of the search (the maximum number of nested searches) used in the backup algorithm (in the example this is 5 levels deep).</para>
         </listitem>
       </itemizedlist>
-    </section>
-    <section>
-      <title>Creating a Graphical Representation of Your Application</title>
-      <para>When you finished the [application].xml file of your application, it is possible to make a graphical representation of your application. One remark: it is only possible to see the graphical representation if the  MMBase installation you are working with is running on the computer on which you want to view the graphical representation. To view the graphical representation:
-        <orderedlist>
-          <listitem>
-            <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on "admin" and log on (in a fresh MMBase install the loginname is admin and the password is admin2k)</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on  "applications"</simpara>
-          </listitem>
-          <listitem>
-            <simpara>select your application by clicking one of the triangles at the right side of the table</simpara>
-          </listitem>
-          <listitem>
-            <simpara>find the  "Application Tool" at the bottom of the page and click on  "Yes"</simpara>
-          </listitem>
-          <listitem>
-            <simpara>wait a few seconds for the MMAppTool to start and view your application</simpara>
-          </listitem>
-         </orderedlist>
-      </para>
-      <note>
-        <para>Sometimes the MMAppTool does not become the active window. So if you do not see anything happening after clicking "Yes", it might be that the MMAppTool is hidden behind the active window.</para>
-      </note>
-	  <note>
-	    <para>It is possible to change the layout of the graphical representation. See for instance the file MyNews/tools/mmapptoolconfig.xml for an overview of the possible settings that can be configured.</para>
-      </note>
-	  <note>
-	    <para>There exists a second tool for graphical representations of your application, which is developed by the Publieke Omroepen and provides fancier graphics. This tool is not included in the MMBase 1.6 release. If you would to try it out use the MMBase developers list to get a copy of this alternative tool.</para>
-      </note>
     </section>
   </section>
   <section>
