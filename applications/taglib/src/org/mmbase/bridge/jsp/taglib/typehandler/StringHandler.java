@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.14 2003-08-11 15:27:30 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.15 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -37,8 +37,8 @@ public class StringHandler extends AbstractTypeHandler {
     /**
      * Constructor for StringHandler.
      */
-    public StringHandler(FieldInfoTag context) {
-        super(context);
+    public StringHandler(FieldInfoTag tag) {
+        super(tag);
     }
 
     /**
@@ -48,13 +48,43 @@ public class StringHandler extends AbstractTypeHandler {
             
         StringBuffer buffer = new StringBuffer();
         if(! search) {
-            if(field.getMaxLength() > 2048)  {
+            if (field.getName().equals("owner")) {
+                Cloud cloud = tag.getCloud();
+                if (node == null) {
+                    buffer.append(cloud.getUser().getOwnerField());
+                } else if (! node.mayChangeContext()) {
+                    buffer.append(node.getContext());
+                } else {
+                    
+                    String value = node.getContext();
+                    buffer.append("<select name=\"" + prefix("owner") + "\">\n");
+                    
+                    
+                    StringList possibleContexts = node.getPossibleContexts();
+
+                    if (! possibleContexts.contains(value)) {
+                        possibleContexts.add(0, value);
+                    }
+                    StringIterator i = possibleContexts.stringIterator();
+                    while (i.hasNext()) {
+                        String listContext = i.nextString();
+                        buffer.append("  <option ");
+                        if (value.equals(listContext)){
+                            buffer.append("selected=\"selected\"");                
+                        }
+                        buffer.append("value=\"" + listContext+ "\">");
+                        buffer.append(listContext);
+                        buffer.append("</option>\n");
+                    }
+                    buffer.append("</select>");
+                }
+            } else if(field.getMaxLength() > 2048)  {
                 // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                 buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
                 buffer.append(prefix(field.getName()));
                 buffer.append("\">");
                 if (node != null) {
-                    buffer.append(Encode.encode("ESCAPE_XML", context.decode(node.getStringValue(field.getName()), node)));
+                    buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
                 }
                 buffer.append("</textarea>");
             } else if(field.getMaxLength() > 255 )  {
@@ -62,7 +92,7 @@ public class StringHandler extends AbstractTypeHandler {
                 buffer.append(prefix(field.getName()));
                 buffer.append("\">");
                 if (node != null) {
-                    buffer.append(Encode.encode("ESCAPE_XML", context.decode(node.getStringValue(field.getName()), node)));
+                    buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
                 }
                 buffer.append("</textarea>");
             } else {
@@ -74,7 +104,7 @@ public class StringHandler extends AbstractTypeHandler {
                 buffer.append(prefix(field.getName()));
                 buffer.append("\" value=\"");
                 if (node != null) {
-                    buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", context.decode(node.getStringValue(field.getName()), node)));
+                    buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
                 }
                 buffer.append("\" />");
             }
@@ -90,10 +120,16 @@ public class StringHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
-        String fieldValue =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName));
-        fieldValue = context.encode(fieldValue, field);
-        if (fieldValue != null) {
-            node.setValue(fieldName,  fieldValue);
+        String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+        if (fieldName.equals("owner")) {
+            if (fieldValue != null) {
+                node.setContext(fieldValue);
+            }
+        } else {
+            fieldValue = tag.encode(fieldValue, field);
+            if (fieldValue != null) {
+                node.setValue(fieldName,  fieldValue);
+            }
         }
         return "";
     }

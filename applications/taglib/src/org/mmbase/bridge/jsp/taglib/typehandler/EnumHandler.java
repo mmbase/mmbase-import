@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.12 2003-08-11 15:27:29 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.13 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -36,8 +36,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @param context
      */
-    public EnumHandler(FieldInfoTag context, String enumType) throws JspTagException {
-        super(context);
+    public EnumHandler(FieldInfoTag tag,  String enumType) throws JspTagException {
+        super(tag);
         try {
             Class.forName(enumType);
         } catch (Exception ee) {
@@ -49,7 +49,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                     resource = enumType;
                     
                 }
-                bundle    = ResourceBundle.getBundle(resource, context.getCloud().getLocale(), getClass().getClassLoader());
+                bundle    = ResourceBundle.getBundle(resource, tag.getCloud().getLocale(), getClass().getClassLoader());
                 available = true;
             } catch (java.util.MissingResourceException e) {
                 log.warn(e.toString());
@@ -90,7 +90,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
                 try {
-                    int searchi = Integer.parseInt( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(field.getName())));
+                    int searchi = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName())));
                     if (searchi == key.intValue()) {
                         buffer.append(" selected=\"selected\"");
                     }
@@ -105,7 +105,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         buffer.append("</select>");
         if (search) {
             String name = prefix(field.getName()) + "_search";
-            String searchi =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), name);
+            String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
             buffer.append("<input type=\"checkbox\" name=\"");
             buffer.append(name);            
             buffer.append("\" ");
@@ -124,7 +124,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
+        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
             return "";
         } else {
             return super.whereHtmlInput(field);
@@ -135,7 +135,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
+        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
             return null;
         } else {
             return super.whereHtmlInput(field, query);

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.15 2003-08-11 15:27:30 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.16 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -40,9 +40,9 @@ public class IntegerHandler extends AbstractTypeHandler {
      * Constructor for IntegerHandler.
      * @param context
      */
-    public IntegerHandler(FieldInfoTag context) {
-        super(context);
-        dateHandler = new IntegerDateHandler(context);
+    public IntegerHandler(FieldInfoTag tag) {
+        super(tag);
+        dateHandler = new IntegerDateHandler(tag);
     }
 
     /**
@@ -75,7 +75,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all node managers.
-            org.mmbase.bridge.Cloud cloud = context.getCloud();
+            org.mmbase.bridge.Cloud cloud = tag.getCloud();
             org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
             org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
             //java.util.Collections.sort(l);
@@ -116,7 +116,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all roles
-            org.mmbase.bridge.Cloud cloud = context.getCloud();
+            org.mmbase.bridge.Cloud cloud = tag.getCloud();
             org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
             org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
 
@@ -150,7 +150,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.htmlInput(node, field, search);
         } else {
-            EnumHandler eh = new EnumHandler(context, guiType);
+            EnumHandler eh = new EnumHandler(tag, guiType);
             if (eh.isAvailable()) {
                 return eh.htmlInput(node, field, search);
             }
@@ -166,8 +166,8 @@ public class IntegerHandler extends AbstractTypeHandler {
         String guiType = field.getGUIType();
         String fieldName = field.getName();
         if (guiType.equals("boolean")) {
-            String fieldValue =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName));
-            fieldValue = context.encode(fieldValue, field);
+            String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+            fieldValue = tag.encode(fieldValue, field);
             if (fieldValue == null) {
                 node.setIntValue(fieldName, 0);
             } else {
@@ -179,7 +179,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.useHtmlInput(node, field);
         } else {
-            EnumHandler eh = new EnumHandler(context, guiType);
+            EnumHandler eh = new EnumHandler(tag, guiType);
             if (eh.isAvailable()) {
                 return eh.useHtmlInput(node, field);
             }
@@ -198,7 +198,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
+            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field);
@@ -206,7 +206,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field);
         } else {
-            EnumHandler eh = new EnumHandler(context, guiType);
+            EnumHandler eh = new EnumHandler(tag, guiType);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field);
             }
@@ -221,7 +221,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field, query);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
+            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field, query);
@@ -229,7 +229,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field, query);
         } else {
-            EnumHandler eh = new EnumHandler(context, guiType);
+            EnumHandler eh = new EnumHandler(tag, guiType);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field, query);
             }
@@ -239,8 +239,8 @@ public class IntegerHandler extends AbstractTypeHandler {
     }
 
     private class IntegerDateHandler extends DateHandler {
-        public IntegerDateHandler(FieldInfoTag context) {
-            super(context);
+        public IntegerDateHandler(FieldInfoTag tag) {
+            super(tag);
         }
         
         protected int checkYear(Integer year, String fieldName) throws JspTagException {
