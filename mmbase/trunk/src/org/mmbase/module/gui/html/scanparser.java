@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.18 2000-07-18 19:00:52 daniel Exp $
+$Id: scanparser.java,v 1.19 2000-07-22 15:13:49 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2000/07/18 19:00:52  daniel
+add support for mmdemo
+
 Revision 1.17  2000/07/15 23:34:28  daniel
 trimmed some filename seems to give problems on NT
 
@@ -74,7 +77,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.18 $ $Date: 2000-07-18 19:00:52 $
+ * @$Revision: 1.19 $ $Date: 2000-07-22 15:13:49 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -668,7 +671,7 @@ public class scanparser extends ProcessorModule {
 		// org.mmbase if (fileroot==null) fileroot=(String)Roots.get("www");
 
 		if (htmlroot==null) {
-			debug("getfile("+where+"): mmbase.htmlroot="+System.getProperty("mmbase.htmlroot"));
+			if (debug) debug("getfile("+where+"): mmbase.htmlroot="+System.getProperty("mmbase.htmlroot"));
 
 			String dtmp=System.getProperty("mmbase.mode");
 			if (dtmp!=null && dtmp.equals("demo")) {
