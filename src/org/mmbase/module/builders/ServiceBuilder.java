@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.22 $ $Date: 2001-05-07 12:44:26 $
+ * @version $Revision: 1.23 $ $Date: 2001-05-07 15:33:55 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -67,7 +67,12 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 			String cdplayernumber=tok.nextToken();
 			if (tok.hasMoreTokens()) {
 				String user=tok.nextToken();
-				MMObjectNode node=getNode(cdplayernumber);
+				MMObjectNode node = null;
+				try {
+					node=getHardNode(Integer.parseInt(cdplayernumber));
+				} catch (NumberFormatException nfe) {
+					log.error("cdplayerobjnumber:"+cdplayernumber+" is not an integer!, "+Logging.stackTrace(nfe));
+				}
 				if (node!=null) {
 					String name=node.getStringValue("name");
 					
@@ -218,11 +223,15 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
 		// Print state and info contents.
 		if (!ctype.equals("d")) {
-			MMObjectNode node = getNode(number);
-			if (log.isDebugEnabled()) {
-				log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
-				        + node.getStringValue("state") + " and info="
-				        + node.getStringValue("info") + " , returning.");
+			try {
+				MMObjectNode node = getHardNode(Integer.parseInt(number));
+				if (log.isDebugEnabled()) {
+					log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
+				            + node.getStringValue("state") + " and info="
+				            + node.getStringValue("info") + " , returning.");
+				}
+			} catch (NumberFormatException nfe) {
+				log.error("number:"+number+" is not an integer!, " + Logging.stackTrace(nfe));
 			}
 		}
 
@@ -242,22 +251,27 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 */
 	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
 		super.nodeLocalChanged(machine,number,builder,ctype);
-
-		// Print state and info contents.
-		if (!ctype.equals("d")) {
-			MMObjectNode node = getNode(number);
-			if (log.isDebugEnabled()) {
-				log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
-				        + node.getStringValue("state") + " and info="
-				        + node.getStringValue("info") + " , returning.");
+		try {
+			int num = 0;
+			// Print state and info contents.
+			if (!ctype.equals("d")) {
+					num = Integer.parseInt(number);
+					MMObjectNode node = getHardNode(num);
+					if (log.isDebugEnabled()) {
+						log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
+								+ node.getStringValue("state") + " and info="
+								+ node.getStringValue("info") + " , returning.");
+					}
 			}
-		}
 
-		// You can't signal new or delete changes because there's no 
-		// mmserver related when these changes occur.
-		if (!(ctype.equals("n") || ctype.equals("d")) ) {
-			log.debug("Calling sendToRemoteBuilder to send node change to remote side.");
-			sendToRemoteBuilder(number,builder,ctype);
+			// You can't signal new or delete changes because there's no 
+			// mmserver related when these changes occur.
+			if (!(ctype.equals("n") || ctype.equals("d")) ) {
+				log.debug("Calling sendToRemoteBuilder to send node change to remote side.");
+				sendToRemoteBuilder(num,builder,ctype);
+			}
+		} catch (NumberFormatException nfe) {
+			log.error("number:"+number+" is not an integer!, wont signal to remote builder! " + Logging.stackTrace(nfe));
 		}
 		return true;
 	}
@@ -271,7 +285,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 * @param builder The buildername of changed service.
 	 * @param ctype The node change type.
 	 */
-	public void sendToRemoteBuilder(String number,String builder,String ctype) {
+	public void sendToRemoteBuilder(int number,String builder,String ctype) {
 		//Get the first mmserver that's attached to the service node number
 		Enumeration e=mmb.getInsRel().getRelated(number,"mmservers");
 		if  (e.hasMoreElements()) {
@@ -283,7 +297,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 			MMServers bul = (MMServers)mmb.getMMObject("mmservers");
 			ProtocolDriver pd=bul.getDriverByName(mmservername);
 			log.debug("("+number+","+builder+","+ctype+"): Retrieved its protocoldriver: "+pd);
-			MMObjectNode node=getNode(number);
+			MMObjectNode node=getHardNode(number);
 			if (node!=null) {
 				String servicename = node.getStringValue("name");
 				log.debug("("+number+","+builder+","+ctype+"): Sending signal to remote "
