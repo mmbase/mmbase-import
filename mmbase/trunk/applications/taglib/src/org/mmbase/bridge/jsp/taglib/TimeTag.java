@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.7 2002-05-01 21:03:30 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.8 2002-05-03 10:04:38 eduard Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -108,8 +108,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             dateFormat = new SimpleDateFormat(format, locale);
         }
 
-    }
-    
+    }    
     
     public void setInputformat(String inputformat) throws JspTagException {
         this.inputformat = getAttributeValue(inputformat);
@@ -207,6 +206,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 // perhaps it was a keyWord... 
                 // this will be explored hereafter.
                 // TODO Should we depend on exceptions? I think this is slow (?), and also ugly (though that is a matter of taste).
+                // indeed, using exceptions as if statements is rather low performance.
             }
         }
         
@@ -214,8 +214,11 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         if(date==null && isDay(time)) {
             try {
                 date = handleDay(time);
-            } catch (ParseException e) {               
-                log.error("Cannot evaluate handleDay with time "+time);
+            } catch (ParseException e) {  
+                String msg = "Cannot evaluate handleDay with time '" + time + "' (exception:" + e + ")";
+                // Why should we log this? designers dont have access to logs
+                // log.error(msg);
+                throw new JspTagException(msg);
             }
         }
         // Is a month specified, like: january, february ?
@@ -223,15 +226,21 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             try {
                 date = handleMonth(time);
             } catch (ParseException e) {
-                log.error("Cannot evaluate handleMonth with time "+time);
+                String msg = "Cannot evaluate handleMonth with time '" + time + "' (exception:" + e + ")";
+                // Why should we log this? designers dont have access to logs
+                // log.error(msg);
+                throw new JspTagException(msg);
             }
         }
         // Is a keyword used, like: yesterday, today ?
         if(date==null && isKeyword(time)) {
             try {
                 date = handleKeyword(time);
-            } catch (ParseException t) {
-                log.error("Cannot evaluate handleKeyword with time "+time);
+            } catch (ParseException e) {
+                String msg = "Cannot evaluate handleKeyword with time '" + time + "' (exception:" + e + ")";
+                // Why should we log this? designers dont have access to logs
+                // log.error(msg);
+                throw new JspTagException(msg);
             }
         }
         
@@ -241,7 +250,10 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             try {
                 setTime();
             } catch (Exception e) {
-                return "Cannot evaluate time "+time;
+                String msg = "Cannot evaluate time '" + time + "' (exception:" + e + ")";
+                // Why should we return this, we need an exception incase of failure
+                // return msg
+                throw new JspTagException(msg);
             }
         }
         // The input format is provided. We use that to parse the time attribute
@@ -250,7 +262,10 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 parseFormat.applyPattern(inputformat);
                 date = parseFormat.parse(time);
             } catch (Exception e) {
-                return "Cannot evaluate time "+time+" inputformat "+inputformat;
+                String msg = "Cannot evaluate time '" + time + "' inputformat: '" + inputformat + "' (exception:" + e + ")";
+                // Why should we return this, we need an exception incase of failure
+                // return msg
+                throw new JspTagException(msg);
             }
         }
         
@@ -298,7 +313,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * The time is giving in a standard format
      * i.e. yyyy/mm/dd hh:mm:ss, yyyy/mm/dd, or hh:mm:ss
      */
-    private void setTime() throws Exception {
+    private void setTime() throws JspTagException {
         Date date = new Date();
         inputformat="y/M/d H:m:s";
         
@@ -311,7 +326,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 time+=" "+parseFormat.format(date);
             } else {
                 if(time.length()!=19) {
-                    throw new Exception();
+                    throw new JspTagException("time it's length was noet equal 19");
                 }
             }
         }
