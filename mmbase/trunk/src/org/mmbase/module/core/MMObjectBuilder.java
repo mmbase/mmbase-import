@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.218 2003-03-12 15:03:15 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.219 2003-03-12 16:16:13 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -965,7 +965,8 @@ public class MMObjectBuilder extends MMTable {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
                 String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
-
+ 
+		ResultSet rs = stmt.executeQuery(query);
                 if (rs.next()) {
                     // create a new object and add it to the result vector
                     MMObjectBuilder bu = mmb.getBuilder(bul);
