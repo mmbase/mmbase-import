@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.10 $ $Date: 2000-05-18 15:47:54 $
+ * @$Revision: 1.11 $ $Date: 2000-05-18 16:04:38 $
  */
 public class INFO extends ProcessorModule {
 
@@ -357,7 +357,6 @@ public class INFO extends ProcessorModule {
 				whichname=INFO.Dutch;
 				if (tok.hasMoreTokens()) cmd=tok.nextToken();
 			} else if (cmd.equals("NUMBER")) {
-				System.out.println("number detected");
 				whichname=INFO.Not;
 				if (tok.hasMoreTokens()) cmd=tok.nextToken();
 			} else {
@@ -404,7 +403,7 @@ public class INFO extends ProcessorModule {
 				return(rtn);
 			}
 			if (cmd.equals("DAY")) return(""+d.getDate());
-			if (cmd.equals("WEEKDAY")) {
+			if (cmd.equals("WEEKDAY") || cmd.equals("DAYOFWEEK")) {
 				switch(whichname) {
 					case INFO.Not:
 						rtn=""+(d.getDay()+1);
@@ -423,7 +422,7 @@ public class INFO extends ProcessorModule {
 			}
 			long secInYear=calcsec(d);
 			int days=(int)(secInYear/(3600*24));
-			if (cmd.equals("YDAY")) return(""+(days+1));
+			if (cmd.equals("YDAY") || cmd.equals("DAYOFYEAR")) return(""+(days+1));
 			if (cmd.equals("WEEK")) return(""+((days/7)+1)); 
 			if (cmd.equals("GWEEK")) return(""+(((days+3)/7))); // +3 days
 			if (cmd.equals("PREVWEEK")) {
