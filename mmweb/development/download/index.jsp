@@ -29,15 +29,6 @@
 </mm:list>
 </ul>
 
-<h2>latest occasional builds</h2> 
-<% Iterator i = getOccasionalBuilds(5).iterator() ;%>
-<ul>
-<% while (i.hasNext()) {
- BuildInfo info = (BuildInfo) i.next(); %>
-  <li>	<%= info.dateString %> <%= info.remarks %> <a href="<%= info.link %>">view</a>  </li>
-<% } %>
-</ul>
-
 <h2>latest builds from the stable branch(MMBase-1_7)</h2>
 <% Iterator j = getStableBuilds(5).iterator() ;%>
 <ul>
@@ -55,6 +46,16 @@
  <li><%= info.dateString %> <%= info.remarks %> <a href="<%= info.link %>">view</a></li>
 <% } %>
 </ul>
+
+<h2>latest occasional builds</h2> 
+<% Iterator i = getOccasionalBuilds(5).iterator() ;%>
+<ul>
+<% while (i.hasNext()) {
+ BuildInfo info = (BuildInfo) i.next(); %>
+  <li>	<%= info.dateString %> <%= info.remarks %> <a href="<%= info.link %>">view</a>  </li>
+<% } %>
+</ul>
+
 
 </td>
 <%@include file="/includes/footer.jsp" %>
