@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.6 2000-10-15 22:50:25 gerard Exp $
+$Id: MMBaseContext.java,v 1.7 2000-12-24 23:26:25 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/10/15 22:50:25  gerard
+gerard: added some checks
+submitted by Eduard Witteveen
+
 Revision 1.5  2000/03/30 13:11:39  wwwtech
 Rico: added license
 
@@ -42,7 +46,7 @@ import org.mmbase.module.database.*;
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.6 $ $Date: 2000-10-15 22:50:25 $
+ * @$Revision: 1.7 $ $Date: 2000-12-24 23:26:25 $
  */
 public class MMBaseContext {
     private static String   classname   = "org.mmbase.module.core.MMBaseContext";
@@ -90,7 +94,7 @@ public class MMBaseContext {
                 returnValue = false;
             }
             if(! modules.exists()) {
-                debug("ERROR: file 'modules.xml' missing in mmbase.config dir");                                         
+               // debug("ERROR: file 'modules.xml' missing in mmbase.config dir");                                         
                 returnValue = false;
             }
             if(! mmbaseroot.exists()) {
