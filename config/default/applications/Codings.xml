@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
+<application name="codings" maintainer="codings.mmbase.omroep.nl" version="1" auto-deploy="false">
+  <neededbuilderlist>
+	<builder maintainer="mmbase.org" version="1">news</builder>
+  </neededbuilderlist>
+  
+  <neededreldeflist>
+  </neededreldeflist>
+  
+  <allowedrelationlist>
+  </allowedrelationlist>
+  
+  <datasourcelist>
+	<datasource builder="news" path="Codings/news.xml" />
+  </datasourcelist>
+  
+  <relationsourcelist>
+  </relationsourcelist>
+  
+  <contextsourcelist>
+	<contextsource path="Codings/backup.xml" type="depth" goal="backup"/>
+  </contextsourcelist>
+  
+  <description>
+	Encodings test article.
+  </description>
+  
+  <install-notice>
+	You have just installed the encodings test article. It is available with alias 'codings'.
+  </install-notice>
+</application>
