@@ -37,52 +37,52 @@
 
 <mm:listrelations role="<%=role%>" type="<%=otherManager.getName()%>" searchdir="<%=searchDir%>">
 <tr>
-    <%-- skip first field --%>
-    <td>&nbsp;</td>
+  <%-- skip first field --%>
+  <td>&nbsp;</td>
+  <td class="data">
+    #<mm:field name="number" />
+  </td>
+  <td class="data">
+    <mm:nodeinfo type="gui" />  (<mm:field name="owner" />)
+  </td>
+  <td class="navigate">
+    <mm:maydelete>
+      <%-- delete the relation node, not sure about the node_type argument! --%>
+      <a href='<mm:url page="commit_node.jsp">
+        <mm:param name="node_number"><mm:field name="number" /></mm:param>
+        <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
+        <mm:param name="delete">true</mm:param>
+        </mm:url>' >
+        <span class="delete"></span><span class="alt">x</span>
+      </a>
+    </mm:maydelete>
+    <mm:maywrite>
+      <%-- edit the relation --%>
+      <a href='<mm:url page="change_node.jsp?push=url">
+        <mm:param name="node_number"><mm:field name="number" /></mm:param>
+        </mm:url>' >
+        <span class="select"></span><span class="alt">-&gt;</span>
+      </a>
+    </mm:maywrite>
+  </td>
+  <mm:relatednode>
     <td class="data">
-        #<mm:field name="number" />
+      #<mm:field name="number" />
     </td>
     <td class="data">
-        <mm:nodeinfo type="gui" />
+      <mm:nodeinfo type="gui" /> (<mm:field name="owner" />)
     </td>
     <td class="navigate">
-        <mm:maydelete>
-        <%-- delete the relation node, not sure about the node_type argument! --%>
-        <a href='<mm:url page="commit_node.jsp" referids="backpage_cancel,backpage_ok">
-            <mm:param name="node_number"><mm:field name="number" /></mm:param>
-            <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
-            <mm:param name="delete">true</mm:param>
-            </mm:url>' >
-          <span class="delete"></span><span class="alt">x</span>
-        </a>
-        </mm:maydelete>
-        <mm:maywrite>
-        <%-- edit the relation --%>
-        <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
-            <mm:param name="node_number"><mm:field name="number" /></mm:param>
-            </mm:url>' >
-          <span class="select"></span><span class="alt">-&gt;</span>
-        </a>
-        </mm:maywrite>
-    </td>
-    <mm:relatednode>
-    <td class="data">
-        #<mm:field name="number" />
-    </td>
-    <td class="data">
-        <mm:nodeinfo type="gui" />
-    </td>
-    <td class="navigate">
-        <%-- edit the related node --%>
-        <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
-            <mm:param name="node_number"><mm:field name="number" /></mm:param>
-              </mm:url>'>
-          <span class="select"></span><span class="alt">-&gt;</span>
-        </a>
-    </td>
-    </mm:relatednode>
-    <%-- skip last field --%>
-    <td>&nbsp;</td>
+       <%-- edit the related node --%>
+      <a href='<mm:url page="change_node.jsp?push=url">
+      <mm:param name="node_number"><mm:field name="number" /></mm:param>
+      </mm:url>'>
+      <span class="select"></span><span class="alt">-&gt;</span>
+    </a>
+  </td>
+</mm:relatednode>
+<%-- skip last field --%>
+<td>&nbsp;</td>
 </tr>
 </mm:listrelations>
 </mm:context>
