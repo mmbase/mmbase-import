@@ -725,6 +725,10 @@ Build-compiler: ${build.compiler}
           depends="init,lib.compile"
           unless="did.javadocs"
     >
+    <antcall target="download">
+      <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
+      <param name="destfile"   value="${download.dir}/package-list" />
+    </antcall>
     <mkdir dir="${build.dir}/mmbase-src/docs"/>
     <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
@@ -738,6 +742,7 @@ Build-compiler: ${build.compiler}
              maxmemory="100M"
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
+      <link offline="true" packagelistLoc="${download.dir}" href="${j2se-javadoc.loc}" />
       <fileset dir="${source.dir}" defaultexcludes="yes">
         <include name="src/**/*.java" />
         <include name="applications/*/src/**/*.java" />
