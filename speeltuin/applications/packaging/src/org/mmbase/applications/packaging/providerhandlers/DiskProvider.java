@@ -29,9 +29,8 @@ import org.w3c.dom.*;
  * @author     Daniel Ockeloen (MMBased)
  * @created    July 20, 2004
  */
-public class DiskProvider extends BasicProvider implements ProviderInterface, Runnable {
+public class DiskProvider extends BasicProvider implements ProviderInterface {
     private static Logger log = Logging.getLoggerInstance(DiskProvider.class);
-    private Thread kicker;
 
     /**
      * DTD resource filename of the package DTD version 1.0
@@ -97,7 +96,6 @@ public class DiskProvider extends BasicProvider implements ProviderInterface, Ru
 
         baseScore = 5000;
         getPackages();
-        start();
     }
 
 
@@ -113,7 +111,6 @@ public class DiskProvider extends BasicProvider implements ProviderInterface, Ru
         super.init(name, method, maintainer, path);
         this.path = path;
         baseScore = 5000;
-        start();
     }
 
 
@@ -192,61 +189,6 @@ public class DiskProvider extends BasicProvider implements ProviderInterface, Ru
         }
         setState("up");
     }
-
-
-    /**
-     * Starts the main Thread.
-     */
-    public void start() {
-        /*
-         *  Start up the main thread
-         */
-        if (kicker == null) {
-            kicker = new Thread(this, "Disk provider thread");
-            kicker.start();
-        }
-    }
-
-
-    /**
-     *  Description of the Method
-     */
-    public void stop() {
-        kicker = null;
-    }
-
-
-    /**
-     * Main loop, exception protected
-     */
-    public void run() {
-        kicker.setPriority(Thread.MIN_PRIORITY + 1);
-        while (kicker != null) {
-            try {
-                doWork();
-            } catch (Exception e) {
-                log.error("run(): ERROR: Exception in emailqueueprobe thread!");
-                log.error(Logging.stackTrace(e));
-            }
-        }
-    }
-
-
-    /**
-     * Main work loop
-     */
-    public void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY + 1);
-
-        while (kicker != null) {
-            getPackages();
-            PackageManager.removeOfflinePackages(this);
-            try {
-                Thread.sleep(10 * 1000);
-            } catch (InterruptedException e) {}
-        }
-    }
-
 
     /**
      *  Gets the includedPackageJarFile attribute of the DiskProvider object
@@ -347,7 +289,6 @@ public class DiskProvider extends BasicProvider implements ProviderInterface, Ru
      * @return    Description of the Return Value
      */
     public boolean close() {
-        stop();
         return super.close();
     }
 
