@@ -29,7 +29,7 @@ import javax.xml.transform.dom.DOMSource;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.1 2002-03-26 12:45:20 pierre Exp $
+ * @version $Id: DocumentWriter.java,v 1.2 2002-04-03 12:26:26 michiel Exp $
  */
 abstract public class DocumentWriter  {
 
@@ -160,7 +160,7 @@ abstract public class DocumentWriter  {
      * @param key the key of the comment to add as a string
      * @param out the element to which to add the new Comment.
      * @return the newly created comment or null if nothing was added
-     * @see includeComment()
+     * @see #setIncludeComments
      */
     protected Comment addComment(String key, Element out) {
         return addComment(key, "", "", out);
@@ -175,7 +175,7 @@ abstract public class DocumentWriter  {
      * @param a1 the first parameter to substitute in the comment
      * @param out the element to which to add the new Comment.
      * @return the newly created comment or null if nothing was added
-     * @see includeComment()
+     * @see #setIncludeComments
      */
     protected Comment addComment(String key, String a1, Element out) {
         return addComment(key, a1, "", out);
@@ -191,7 +191,7 @@ abstract public class DocumentWriter  {
      * @param a2 the second parameter to substitute in the comment
      * @param out the element to which to add the new Comment.
      * @return the newly created comment or null if nothing was added
-     * @see includeComment()
+     * @see #setIncludeComments
      */
     protected Comment addComment(String key, String a1, String a2, Element out) {
         Comment comm=null;
