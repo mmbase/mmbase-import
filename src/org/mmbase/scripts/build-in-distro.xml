@@ -234,13 +234,16 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <target name="compile" depends="prepare"> 
 
-    <copydir src="${src.dir}" dest="${build.dest}">
-      <include name="**/scripts/**" />
-      <include name="**/platform/**" />
-      <include name="**/*.properties" />
-      <include name="**/*.sh" />
-      <include name="**/LICENSE" />
-    </copydir>
+    <copy todir="${build.dest}">
+      <fileset dir="${src.dir}" >
+        <include name="**/scripts/**" />
+        <include name="**/platform/**" />
+        <include name="**/*.properties" />
+        <include name="**/*.sh" />
+        <include name="**/LICENSE" />
+        <exclude name="**/*.java" />
+      </fileset>
+    </copy>
 
     <javac srcdir="${src.dir}"
            destdir="${build.dest}"
@@ -249,11 +252,6 @@ about the Ant build tool.
            deprecation="${deprecation}">
       <exclude name="**/jumpersInterceptor.java" unless="tomcat.present" />
       <exclude name="**/ConvertJAI.java" unless="jai.present" />
-      <exclude name="**/hitlisted/**" />
-      <exclude name="**/scripts/**" />
-      <exclude name="**/*.properties" />
-      <exclude name="**/*.sh" />
-      <exclude name="**/LICENSE" />
     </javac>
   </target>
 
@@ -261,10 +259,8 @@ about the Ant build tool.
   <!-- Creates the jar file                                                -->
   <!-- =================================================================== -->
   <target name="jar" depends="clean,compile">
-    <jar jarfile="${build.dir}/${name}.jar"
-         basedir="${build.dest}"
-         includes="org/**"/>
-    <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
+    <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"/>
+    <copy file="${build.dir}/${name}.jar" tofile="${dist.lib}/${name}.jar"/>
   </target>
 
   <!-- =================================================================== -->
@@ -281,7 +277,7 @@ about the Ant build tool.
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             bottom="MMBase 2000"
+             bottom="MMBase 2001"
     />
   </target>
 
@@ -301,43 +297,55 @@ about the Ant build tool.
     <mkdir dir="${dist.html}"/>
 
     <!-- copy the java-sources -->
-    <copydir src="${src.dir}" dest="${dist.src}">
-      <exclude name="**/scripts/**" />
-    </copydir>
+    <copy todir="${dist.src}">
+      <fileset dir="${src.dir}">
+        <exclude name="**/scripts/**" />
+      </fileset>
+    </copy>
 
     <!-- copy the scripts -->
-    <copydir src="${top.dir}/scripts" dest="${dist.scripts}">
-      <exclude name="compile"/>
-      <exclude name="compile2"/>
-      <exclude name="createjar"/>
-      <exclude name="oriondoc"/>
-    </copydir>
+    <copy todir="${dist.scripts}">
+      <fileset dir="${top.dir}/scripts">
+        <exclude name="compile"/>
+        <exclude name="compile2"/>
+        <exclude name="createjar"/>
+        <exclude name="oriondoc"/>
+      </fileset>
+    </copy>
 
     <!-- make scripts executable -->
-    <chmod perm="ugo+x" file="${dist.scripts}/orion/startorion"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/tomcat/tomcat_mmbase.sh"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/tomcat/startup_tomcat_mmbase.sh"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/tomcat/shutdown_tomcat_mmbase.sh"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/ant"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/antRun"/>
+    <chmod perm="ugo+x" >
+      <fileset dir="${dist.scripts}">
+        <exclude name="**/*.xml"/>
+      </fileset>
+    </chmod>
 
     <!-- copy the javadocs -->
-    <copydir src="${build.javadocs}" dest="${dist.docs}/api"/>
+    <copy todir="${dist.docs}/api" >
+      <fileset dir="${build.javadocs}" />
+    </copy>
     
     <!-- copy a readme from somewhere -->
-    <copyfile src="${top.dir}/docs/readme.txt" dest="${dist.docs}/readme.txt"/>
+   <copy file="${top.dir}/docs/readme.txt" tofile="${dist.docs}/readme.txt" />
+
     <!-- copy the config -->
-    <copydir src="${top.dir}/config" dest="${dist.config}"/>
+    <copy todir="${dist.config}" >
+      <fileset dir="${top.dir}/config" />
+    </copy>
 
     <!-- copy the html -->
-    <copydir src="${top.dir}/html" dest="${dist.html}"/>
+    <copy todir="${dist.html}" >
+      <fileset dir="${top.dir}/html" />
+    </copy>
 
     <!-- copy the libs from somewhere -->
-    <copydir src="${top.dir}/lib" dest="${dist.lib}">
-      <exclude name="mmbase.jar"/>
-    </copydir>
+    <copy todir="${dist.lib}" >
+      <fileset dir="${top.dir}/lib" >
+        <exclude name="mmbase.jar"/>
+      </fileset>
+    </copy>
 
-    <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
+    <copy file="${build.dir}/${name}.jar" tofile="${dist.lib}/${name}.jar" />
 
     <!-- zip -->
     <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.version}"/>
@@ -361,13 +369,13 @@ about the Ant build tool.
   <!-- Clean target                                                        -->
   <!-- =================================================================== -->
   <target name="clean" depends="init">
-    <deltree dir="${build.dir}"/>
+    <delete dir="${build.dir}"/>
   </target>
 
   <!-- =================================================================== -->
   <!-- Clean dist target                                                   -->
   <!-- =================================================================== -->
   <target name="clean-dist" depends="init">
-    <deltree dir="${dist.root}"/>
+    <delete dir="${dist.root}"/>
   </target>
 </project>
