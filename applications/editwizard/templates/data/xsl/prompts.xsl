@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.25 2005-01-04 16:17:05 michiel Exp $
+    @version $Id: prompts.xsl,v 1.26 2005-01-17 17:19:00 michiel Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -16,7 +16,11 @@
   <xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
   <xsl:template name="prompt_edit_wizard">
     <xsl:choose>
-      <xsl:when test="prompt"><xsl:apply-templates select="prompt"/></xsl:when>
+      <xsl:when test="prompt">
+        <xsl:call-template name="i18n">
+          <xsl:with-param name="nodes" select="prompt"/>
+        </xsl:call-template>
+      </xsl:when>
       <xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -24,12 +28,18 @@
   <xsl:variable name="tooltip_add_wizard">New</xsl:variable>
   <xsl:template name="prompt_add_wizard">
     <xsl:if test="prompt">
-      <xsl:apply-templates select="prompt"/>
+      <xsl:call-template name="i18n">
+        <xsl:with-param name="nodes" select="prompt"/>
+      </xsl:call-template>
     </xsl:if>
     <img src="{$mediadir}new.gif" class="imgbutton">
       <xsl:choose>
         <xsl:when test="prompt">
-          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+          <xsl:attribute name="alt">
+            <xsl:call-template name="i18n">
+              <xsl:with-param name="nodes" select="prompt"/>
+            </xsl:call-template>
+          </xsl:attribute>
         </xsl:when>
         <xsl:otherwise>
           <xsl:attribute name="alt"><xsl:value-of select="$tooltip_add_wizard" /></xsl:attribute>
