@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.55 2004-02-24 17:32:53 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.56 2004-02-25 10:19:20 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -942,8 +942,10 @@ public class DatabaseStorageManager implements StorageManager {
                 if (field.inStorage()) {
                     if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
                         String fieldName = field.getDBName();
-                        File binaryFile = getBinaryFile(node, fieldName);
-                        if (! binaryFile.delete()) {
+                        File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
+                        if (binaryFile == null) {
+                            log.warn("Could not find blob for field '" + fieldName + "' of node " + node.getNumber());
+                        } else if (! binaryFile.delete()) {
                             log.warn("Could not delete '" + binaryFile + "'");
                         } else {
                             log.debug("Deleted '" + binaryFile + "'");
