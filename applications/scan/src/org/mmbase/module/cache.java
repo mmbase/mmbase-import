@@ -1,6 +1,6 @@
 /*
 
-$Id: cache.java,v 1.2 2000-02-24 13:48:10 wwwtech Exp $
+$Id: cache.java,v 1.3 2000-02-24 13:50:38 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 13:48:10  wwwtech
+- (marcel) changed Hashtable into LRUHashtable and changed System.out into debug
+
 */
 
 package org.mmbase.module;
@@ -24,7 +27,7 @@ import org.mmbase.util.LRUHashtable;
  * Simple file cache system that can be used by any servlet
  *
  * @author  $Author: wwwtech $ 
- * @version $Revision: 1.2 $ $Date: 2000-02-24 13:48:10 $
+ * @version $Revision: 1.3 $ $Date: 2000-02-24 13:50:38 $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -141,11 +144,7 @@ public class cache extends Module implements cacheInterface {
 	* tasks. This can be used instead of its own thread.
 	*/
 	public void maintainance() {
-		// if number of cachelines bigger than allowed delete some
-		Enumeration t=lines.keys();
-		while (lines.size()>MaxLines && t.hasMoreElements()) {
-			lines.remove(t.nextElement());
-		}
+		// do nothing, LRUHashtable does the trick now.
 	}
 
 	void readParams() {
