@@ -26,6 +26,13 @@
       <p>
         MMBase has been build under the <a href="mmbase/mpl-1.0.jsp">Mozilla Public License, Version 1.0</a>
       </p>
+      <p>
+        <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a username and password. <br />
+        Please use the following credentials: <br />
+        <b>Username:</b> <tt>admin</tt><br />
+        <b>Password:</b> <tt>admin2k</tt><br />
+        We strongly advise you to change this administrator password as soon as possible, read the documentation for more details.
+      </p>  
     </td>
   </tr>
   <tr>
