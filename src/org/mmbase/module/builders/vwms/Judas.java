@@ -1034,7 +1034,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			daymark=daymarks.getDayCountByObject(news);
 			curdaymark=daymarks.getDayCount();
 			if ((curdaymark-daymark)<60) {
+				addURL("/3voor12/journalism/journalism.shtml?"+portal+"+"+map+"+"+program+"+0"); // Why the zero ? ask the frigging designer
 				addURL("/3voor12/journalism/journalism.shtml?"+portal+"+"+map+"+"+program);
+				addURL("/3voor12/journalism/type_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+newstype); 
 			}
 		}
 	}
