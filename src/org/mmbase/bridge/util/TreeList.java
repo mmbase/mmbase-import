@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.9 2004-07-23 14:43:57 michiel Exp $
+ * @version $Id: TreeList.java,v 1.10 2004-07-29 17:19:12 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -58,8 +58,6 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         queries.add(q);
         results.add(null); // determin when needed
 
-        Queries.sortUniquely(q);
-
         size = Queries.count(q);
         numberOfSteps = q.getSteps().size();
 
@@ -83,7 +81,8 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
                 count = result.size();
             } else {
                 Query newQuery = (Query) queries.get(topQuery);
-                newQuery.markUsed();
+                Queries.sortUniquely(newQuery); // must be sorted uniquely, otherwise can't be compared with result of next query
+                newQuery.markUsed(); // make sure no extra constraints are added, this would make this result invalid.
                 count = Queries.count(newQuery);
             }
 
@@ -167,6 +166,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         NodeList nodeList = (NodeList)results.get(queryNumber);
         if (nodeList == null) {
             NodeQuery query = (NodeQuery)queries.get(queryNumber);
+            Queries.sortUniquely(query); // must be sorted uniquely, otherwise can't be compared with result of next query
             nodeList = cloud.getList(query);
             results.set(queryNumber, nodeList);
         }
