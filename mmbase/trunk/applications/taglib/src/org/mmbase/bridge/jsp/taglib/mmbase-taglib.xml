@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.286 2005-02-02 20:56:58 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.287 2005-03-01 15:41:04 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6404,7 +6404,11 @@ The 0 is just counter, which starts at 0 on every page.
       </possiblevalue>
       <possiblevalue>
         <value>rank</value>
-        <info>The rank of the user of this cloud</info>
+        <info>The rank of the user of this cloud, as a String</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>rankint</value>
+        <info>The rank of the user of this cloud, as an Integer</info>
       </possiblevalue>
       <possiblevalue>
         <value>mmbaseversion</value>
@@ -6444,14 +6448,14 @@ The 0 is just counter, which starts at 0 on every page.
       <name>minvalue</name>
       <required>false</required>
       <info>
-        A minimal value for the rank. If it is `anonymous' then this is no limitiation, because anonymous is the lowest possible rank.
+        A minimal value for the rank. If it is `anonymous' then this is no limitiation, because anonymous is the lowest possible rank. It can also be specified as an integer.
       </info>
     </attribute>
     <attribute>
       <name>maxvalue</name>
       <required>false</required>
       <info>
-        A maximal value for the rank. If it is `administrator' then this is no limitiation, because admistrator is the highest possible rank.
+        A maximal value for the rank. If it is `administrator' then this is no limitiation, because admistrator is the highest possible rank. It can also be specified as an integer.
       </info>
     </attribute>
   </tag>
