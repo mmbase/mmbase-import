@@ -17,9 +17,10 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of nodes
+ * A list of fields
  *
  * @author Pierre van Rooden
+ * @version $Id: BasicFieldList.java,v 1.5 2002-01-31 10:05:11 pierre Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
     private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
@@ -51,7 +52,7 @@ public class BasicFieldList extends BasicList implements FieldList {
     public Field getField(int index) {
         return (Field)get(index);
     }
-    
+
     /**
     *
     */
@@ -59,14 +60,14 @@ public class BasicFieldList extends BasicList implements FieldList {
         return new BasicFieldIterator(this);
     };
 
-    
+
     public class BasicFieldIterator extends BasicIterator implements FieldIterator {
-    
+
         BasicFieldIterator(BasicList list) {
             super(list);
         }
 
-        
+
         public void set(Object o) {
             if (! (o instanceof Field)) {
                 String message;
@@ -92,10 +93,10 @@ public class BasicFieldList extends BasicList implements FieldList {
         public void add(Field f) {
             list.add(index, f);
         }
-    
+
         public Field nextField() {
             return (Field) next();
         }
-    
+
     }
 }

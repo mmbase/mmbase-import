@@ -15,33 +15,35 @@ import org.mmbase.security.UserContext;
 import org.mmbase.security.MMBaseCop;
 
 /**
- * dum da di da.. wrap the whole thing !!
+ * @javadoc
+ * @author Eduard Witteveen
+ * @version $Id: BasicUser.java,v 1.4 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicUser implements User {
     private MMBaseCop securityManager;
     private UserContext usercontext;
-    
+
     BasicUser(MMBaseCop securityManager, UserContext usercontext) {
-    	this.securityManager = securityManager;
-    	this.usercontext = usercontext;
+        this.securityManager = securityManager;
+        this.usercontext = usercontext;
     }
-    
+
     public String getRank() {
-    	if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
-    	return usercontext.getRank().toString();
+        if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
+        return usercontext.getRank().toString();
     }
-    
+
     public String getIdentifier() {
-    	if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
-    	return usercontext.getIdentifier();
+        if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
+        return usercontext.getIdentifier();
     }
-    
+
     UserContext getUserContext() {
-    	// if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
-    	return usercontext;
+        // if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
+        return usercontext;
     }
-    
+
     public boolean isValid() {
-    	return securityManager.getAuthentication().isValid(usercontext);
+        return securityManager.getAuthentication().isValid(usercontext);
     }
 }

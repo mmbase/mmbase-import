@@ -15,34 +15,35 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: Relation.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
  */
 public interface Relation extends Node {
 
-	/** 
-	 * Retrieves the source of the relation
-	 * @return the source node
-	 */
-	public Node getSource();
+    /**
+     * Retrieves the source of the relation
+     * @return the source node
+     */
+    public Node getSource();
 
-	/**
-	 * Retrieves the destination of the relation
-	 * @return the destination node
-	 */
-	public Node getDestination();
+    /**
+     * Retrieves the destination of the relation
+     * @return the destination node
+     */
+    public Node getDestination();
 
-	/** 
-	 * set the source of the relation
-	 * @param the source node
-	 */
-	public void setSource(Node node);
+    /**
+     * set the source of the relation
+     * @param the source node
+     */
+    public void setSource(Node node);
 
-	/**
-	 * set the destination of the relation
-	 * @param the destination node
-	 */
-	public void setDestination(Node node);
+    /**
+     * set the destination of the relation
+     * @param the destination node
+     */
+    public void setDestination(Node node);
 
- 	/**
+    /**
      * Retrieves the RelationManager used
      * @return the RelationManager
      */

@@ -19,9 +19,11 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * @javadoc
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: BasicRelationManager.java,v 1.14 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
@@ -141,10 +143,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     public RelationList getRelations(Node node) {
         // XXX: no caching is done here?
         Vector result = new Vector();
-        InsRel insRel = (InsRel) builder; 
+        InsRel insRel = (InsRel) builder;
         for (Iterator i = insRel.getRelationsVector(node.getNumber()).iterator(); i.hasNext(); ) {
             MMObjectNode r = (MMObjectNode) i.next();
-            result.add(r);            
+            result.add(r);
         }
         return new BasicRelationList(result, cloud, this);
     }

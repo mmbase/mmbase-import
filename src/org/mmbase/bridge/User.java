@@ -11,32 +11,35 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 /**
- *  This User interface defines the storage for the authentication
- *  and authorization, so that information can be shared.
- *  This interface is NOT a container class for client related stuff, altrough 
- *  this is possible. Notice that after the login on the cloud it is not 
- *  certain that you will receive the same User interface back !
+ * This User interface defines the storage for the authentication
+ * and authorization, so that information can be shared.
+ * This interface is NOT a container class for client related stuff, altrough
+ * this is possible. Notice that after the login on the cloud it is not
+ * certain that you will receive the same User interface back !
+ *
+ * @author Eduard Witteveen
+ * @version $Id: User.java,v 1.6 2002-01-31 10:05:09 pierre Exp $
  */
 public interface User {
 
     /**
-     *  Get the unique identifier for this user. This should be unique 
+     *  Get the unique identifier for this user. This should be unique
      *  for every different user inside a cloud.
      *	@return an unique id for the current user
      */
     public String getIdentifier();
-    
+
     /**
-     *  Get the rank of this user. 
+     *  Get the rank of this user.
      *	@return the rank of this user
      */
     public String getRank();
-    
+
     /**
      *  Is valid
-     *	@return <code>true</code>   if the user is still valid.
-     *      	<code>false</code>  if the user is expired..
+     *	@return <code>true</code> if the user is still valid.
+     *      	<code>false</code> if the user is expired..
      */
     public boolean isValid();
-    
+
 }

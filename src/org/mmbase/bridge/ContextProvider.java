@@ -1,18 +1,18 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.bridge;
 
 /**
- * Main class to aquire CloudContexts 
+ * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.1 2001-11-21 12:30:13 kees Exp $
+ * @version $Id: ContextProvider.java,v 1.2 2002-01-31 10:05:07 pierre Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider{
@@ -32,7 +32,7 @@ public class ContextProvider{
      */
     public static CloudContext getCloudContext(String uri) {
         if (uri == null) uri="";
-        
+
         if (uri.startsWith("rmi")){
             return RemoteContext.getCloudContext(uri);
         } else if (uri.startsWith("local")){

@@ -18,6 +18,7 @@ import java.util.List;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
+ * @version $Id: Cloud.java,v 1.23 2002-01-31 10:05:07 pierre Exp $
  */
 public interface Cloud {
 

@@ -17,6 +17,7 @@ import java.util.List;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: Node.java,v 1.24 2002-01-31 10:05:07 pierre Exp $
  */
 public interface Node {
 

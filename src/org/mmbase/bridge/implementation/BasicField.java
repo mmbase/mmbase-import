@@ -14,20 +14,21 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
+ * @javadoc
  *
  * @author Pierre van Rooden
+ * @version $Id: BasicField.java,v 1.5 2002-01-31 10:05:11 pierre Exp $
  */
-
 public class BasicField implements Field {
 
     NodeManager nodeManager=null;
     FieldDefs field=null;
 
-  	BasicField(FieldDefs field, NodeManager nodeManager) {
-  	    this.nodeManager=nodeManager;
-  	    this.field=field;
-  	}
-  	
+    BasicField(FieldDefs field, NodeManager nodeManager) {
+        this.nodeManager=nodeManager;
+        this.field=field;
+    }
+
     public NodeManager getNodeManager() {
         return nodeManager;
     }
@@ -35,26 +36,26 @@ public class BasicField implements Field {
     public String getName() {
         return field.getDBName();
     }
- 	
+
     public String getGUIType() {
         return field.getGUIType();
     }
- 	
+
     public String getGUIName() {
         return field.getGUIName(((BasicCloud)nodeManager.getCloud()).language);
     }
 
-	public int getType() {
+    public int getType() {
         return field.getDBType();
-	}
+    }
 
-	public int getState() {
+    public int getState() {
         return field.getDBState();
-	}
+    }
 
-	public int getMaxLength() {
-	    return field.getDBSize();
-	}
+    public int getMaxLength() {
+        return field.getDBSize();
+    }
 
     /**
     * Compares two fields, and returns true if they are equal.

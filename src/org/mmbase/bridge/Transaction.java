@@ -20,21 +20,22 @@ package org.mmbase.bridge;
  * back by calling the transaction's cancel method.
  *
  * @author Pierre van Rooden
+ * @version $Id: Transaction.java,v 1.3 2002-01-31 10:05:09 pierre Exp $
  */
 public interface Transaction extends Cloud {
 
-  	/**
+    /**
      * Commits this transaction. This has no effect if the transaction itself
      * was 'nested' in another transaction. In that case, nothing happens until
      * the 'outer' transaction commits. This routine also removes the
      * transaction as an 'active' transaction (it cannot be opened again).
-     * 
+     *
      * @return <code>true</code> if the commit succeeded, <code>false</code>
      *         otherwise
      */
     public boolean commit();
 
-  	/**
+    /**
      * Cancels this transaction. If the transaction itself was 'nested' in
      * another transaction, that 'outer' transaction is also canceled.
      * This routine also removes the transaction (and all outer transactions)

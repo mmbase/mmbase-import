@@ -16,21 +16,25 @@ import java.util.List;
  * A list of nodes
  *
  * @author Pierre van Rooden
+ * @version $Id: NodeList.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
  */
 public interface NodeList extends List {
 
-	/**
-	*
-	*/
-	public Node getNode(int index);
-
-	/**
-	*
-	*/
-	public NodeIterator nodeIterator();
+    /**
+     * Returns the Node at the indicated postion in the list
+     * @param index the position of the Node to retrieve
+     */
+    public Node getNode(int index);
 
     /**
-	*
-	*/
-	public NodeList subNodeList(int fromIndex, int toIndex);
+     * Returns an type-specific iterator for this list.
+     */
+    public NodeIterator nodeIterator();
+
+    /**
+     * Returns a sublist of this list.
+     * @param fromIndex the position in the current list where the sublist starts (inclusive)
+     * @param toIndex the position in the current list where the sublist ends (exclusive)
+     */
+    public NodeList subNodeList(int fromIndex, int toIndex);
 }

@@ -17,8 +17,9 @@ import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.logging.*;
 
 /**
- *
+ * @javadoc
  * @author Pierre van Rooden
+ * @version $Id: BasicTransaction.java,v 1.10 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());
@@ -26,11 +27,11 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     /**
      * The id of the transaction for use with the transaction manager.
      */
-	protected String transactionContext;
-	/**
-	 * The name of the transaction as used by the user.
-	 */
-	protected String transactionName = null;
+    protected String transactionContext;
+    /**
+     * The name of the transaction as used by the user.
+     */
+    protected String transactionName = null;
 
     /*
      * Constructor to call from the CloudContext class.
@@ -76,7 +77,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             // do nothing
         } else {
             try {
-    		// BasicCloudContext.transactionManager.commit(account, transactionContext);
+            // BasicCloudContext.transactionManager.commit(account, transactionContext);
                 BasicCloudContext.transactionManager.commit(userContext.getUserContext(), transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
@@ -107,7 +108,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             ((Transaction)parentCloud).cancel();
         } else {
             try {
-	    	//   BasicCloudContext.transactionManager.cancel(account, transactionContext);
+            //   BasicCloudContext.transactionManager.cancel(account, transactionContext);
                 BasicCloudContext.transactionManager.cancel(userContext.getUserContext(), transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
