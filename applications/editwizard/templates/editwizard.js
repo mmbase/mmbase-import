@@ -166,7 +166,11 @@ function doclicksearch(el, cmd) {
 	url += setParam("type", el.getAttribute("type"));
 	url += "&cmd="+cmd;
 	
-	status = "...searching...";
+
+        try {
+	    window.status = "...searching...";
+        }
+        catch(e) {}
 
 	var mif = document.getElementById("modaliframe");
 	if (!window.frames[0] || !window.frames[0].document || (window.frames[0].document.location.href.indexOf(url) == -1)) {
@@ -225,7 +229,10 @@ function doclicksearch(el, cmd) {
 }
 
 function removemodaliframe() {
-	status = "";
+        try {
+	    window.status = "";
+        }
+        catch(e) {}
 
 	var mif = document.getElementById("modaliframe");
 	if (window.frames[0] && window.frames[0].document) window.frames[0].document.location.replace("searching.html");

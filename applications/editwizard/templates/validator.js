@@ -44,8 +44,11 @@ function validateElement_validator(el, silent) {
 	if (dttype==null || dttype=="") {
 		// use ftype if dttype is not given. Useful for uploads, enums, dates
 		dttype = el.getAttribute("ftype");
-                // this is not allowed in mozilla 0.9.8 --> Permission denied exception
-		// window.status=dttype;
+                
+                try {
+		    window.status = "The '" + prompt.getAttribute("prompt") + "' is not valid: " + err;
+                }
+                catch(e) {}
 	}
 	switch (dttype) {
 		case "string":
@@ -136,16 +139,22 @@ function validateElement_validator(el, silent) {
 		if (err.length > 0) {
 			var t = prompt.title.split("\n");
 			prompt.title = t[0] + "\n\nThis field is not valid:\n" + err.substring(0, err.length-1);
-                        // this is not allowed in mozilla 0.9.8 --> Permission denied exception
-			// window.status = "The '" + prompt.getAttribute("prompt") + "' is not valid: " + err;
-                        alert("The '" + prompt.getAttribute("prompt") + "' is not valid: " + err);
+                       
+                        try {
+			    window.status = "The '" + prompt.getAttribute("prompt") + "' is not valid: " + err;
+                        }
+                        catch(e) {}
+                        
 			prompt.className = "notvalid";
 		} else {
 			prompt.className = "valid";
 			var t = prompt.title.split("\n");
 			prompt.title = t[0];
-                        // this is not allowed in mozilla 0.9.8 --> Permission denied exception                        
-			// window.status = "";
+
+                        try {
+			    window.status = "";
+                        }
+                        catch(e) {}
 		}
 	}
 
