@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.13 2000-11-09 12:16:49 eduard Exp $
+	$Id: MultiRelations.java,v 1.14 2000-11-16 18:04:07 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2000/11/09 12:16:49  eduard
+	Eduard : searchMultiLevelVector now supports OAliases
+	
 	Revision 1.12  2000/07/15 19:18:09  daniel
 	Fixed a bug with new DBType
 	
@@ -58,7 +61,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.13 2000-11-09 12:16:49 eduard Exp $
+ * @version $Id: MultiRelations.java,v 1.14 2000-11-16 18:04:07 vpro Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -221,7 +224,7 @@ public class MultiRelations extends MMObjectBuilder {
 					snode = mmb.OAlias.getNumber(str);
 				}
 				snodes.setElementAt(""+snode, i);
-      }
+      		}
 
 			int sidx;			
 			StringBuffer bb=new StringBuffer();			
@@ -543,13 +546,51 @@ public class MultiRelations extends MMObjectBuilder {
 		insrel=mmb.getInsRel();
 		siz=alltables.size()-2;
 		for (int i=0;i<siz;i+=2) {
-			src=(String)alltables.elementAt(i);
-			rel=(String)alltables.elementAt(i+1);
-			dst=(String)alltables.elementAt(i+2);
-			so=typedef.getIntValue(src);
-			ro=typedef.getIntValue(dst);
+			src=(String)alltables.elementAt(i);							// name of table (eg. image)
+			rel=(String)alltables.elementAt(i+1);						// relation type (eg. insrel)
+			dst=(String)alltables.elementAt(i+2);						// name of table (eq. audiopart)
 
-			rnum=typerel.getAllowedRelationType(so,ro);
+			so=typedef.getIntValue(src);								// get the number of image
+			ro=typedef.getIntValue(dst);								// get the number of audiopart
+
+			MMObjectNode nodes = mmb.getMMObject(src).getNode(so);		// transform them to MMObjectNodes
+			MMObjectNode noded = mmb.getMMObject(dst).getNode(ro);
+			Vector types = typerel.getAllowedRelationsTypes(so, ro);	// get the allowed relations
+
+			Enumeration e= types.elements();
+			MMObjectNode reltypeNode;
+			int x = 0, y=0;
+			rnum = -1;
+			if( e.hasMoreElements() ) { 
+																	// check if specified relation is a valid one
+				// if specified reltype is insrel, check all 
+
+				if( rel.equals("insrel") ) {
+					while( e.hasMoreElements() ) { 
+						reltypeNode = (MMObjectNode)e.nextElement();	
+						if( debug ) debug("getRelationString(): reltypeNode("+reltypeNode+")");
+						rnum = reltypeNode.getIntValue("number");
+						if( debug ) debug("getRelationString(): rnum("+rnum+")");
+						if (insrel.reldefCorrect(so,ro,rnum)) {				// relations all in same directions?
+							x++;
+						} else {
+							y++;
+						}
+					}
+					if( x==0 || y==0 ) {									// allowed when all in same directions
+						if( debug ) 
+							debug("getRelationString(): x("+x+") y("+y+")");
+					} else {
+						debug("getRelationString(): ERROR: src("+src+") has NO unidirectional relations with dst("+dst+")!");
+					}
+				} else {
+					reltypeNode = (MMObjectNode)e.nextElement();	
+					rnum = reltypeNode.getIntValue("number");
+					if( debug ) debug("getRelationString(): one entry found, rnum("+rnum+")");
+				}
+			} else {
+				debug("getRelationString(): ERROR: src("+src+") -> rel("+rel+") -> dst("+dst+") not allowed!");
+			}
 
 			if (!result.toString().equals("")) result.append(" AND ");
 			if (insrel.reldefCorrect(so,ro,rnum)) {
@@ -646,7 +687,5 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 		return(null);
 	}
-
-
 
 }
