@@ -16,7 +16,7 @@
       boolean interactive = new Boolean(request.getParameter("interactive")
       ).booleanValue();
       consultant.setInteractive(interactive);
-      java.io.Reader readr = new FileReader(importFile);
+      java.io.Reader readr = new InputStreamReader(new FileInputStream(importFile),"ISO-8859-1");
       org.mmbase.applications.xmlimporter.TransactionHandler th =
          (org.mmbase.applications.xmlimporter.TransactionHandler)
          org.mmbase.module.Module.getModule("transactionhandler");
