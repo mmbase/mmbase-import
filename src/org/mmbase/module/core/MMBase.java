@@ -53,7 +53,6 @@ public class MMBase extends ProcessorModule  {
 	public TypeDef TypeDef;
 	public RelDef RelDef;
 	public OAlias OAlias;
-	public FieldDef FieldDef;
 	public InsRel InsRel;
 	public TypeRel TypeRel;
 
@@ -248,10 +247,6 @@ public class MMBase extends ProcessorModule  {
 
 	public TypeRel getTypeRel() {
 		return(TypeRel);
-	}
-
-	public FieldDef getFieldDef() {
-		return(FieldDef);
 	}
 
 	/**
@@ -491,9 +486,6 @@ public class MMBase extends ProcessorModule  {
 		TypeDef=(TypeDef)getMMObject("typedef");
 		TypeDef.init();
 
-		initBuilder("fielddef",path);
-		FieldDef=(FieldDef)getMMObject("fielddef");
-		FieldDef.init();
 
 		initBuilder("reldef",path);
 		RelDef=(RelDef)getMMObject("reldef");
@@ -586,104 +578,6 @@ public class MMBase extends ProcessorModule  {
 	}
 
 
-	/*
-	boolean startBuilder(String classname,String objectname, String description, String dutchsname,String searchage, Vector fields) {
-		if (searchage==null) searchage="14";
-		if (!classname.equals("core")) {
-			debug(" Starting builder : "+objectname);
-			try {
-				// is it a full name or inside the org.mmase.* path
-				int pos=classname.indexOf('.');
-				Class newclass=null;
-				if	(pos==-1) {
-					newclass=Class.forName("org.mmbase.module.builders."+classname);
-				} else {
-					newclass=Class.forName(classname);
-				}
-				//debug("Vwms -> Loaded load class : "+newclass);
-
-				MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
-				// debug("MMBase -> started : "+newclass);
-
-				bul.setMMBase(this);
-				bul.setTableName(objectname);
-				bul.setDescription(description);
-				bul.setDutchSName(dutchsname);
-				bul.setClassName(classname);
-				bul.setSearchAge(searchage);
-				bul.init();
-				mmobjs.put(objectname,bul);
-
-				// oke set the huge hack for insert layout 
-				bul.setDBLayout(fields);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-					return(false);
-				}
-		} else {
-			// its a core object but to try to set the vars needed
-			MMObjectBuilder bul=getMMObject(objectname);
-			if (bul!=null) {
-				bul.setDescription(description);
-				bul.setDutchSName(dutchsname);
-				bul.setClassName(classname);
-				bul.setSearchAge(searchage);
-				// oke set the huge hack for insert layout 
-				bul.setDBLayout(fields);
-			}
-		}
-	
-
-		// check the fielddefs defined for this object
-		if (FieldDef!=null) {
-			//debug("MMBase-> checking fielddefs");
-			for (Enumeration e=fields.elements();e.hasMoreElements();) {
-				String field=(String)e.nextElement();
-				StringTokenizer tok = new StringTokenizer(field,",\n\r");
-				String dbtype=tok.nextToken();	
-				String guiname=tok.nextToken();	
-				String guitype=tok.nextToken();	
-				String guipos=tok.nextToken();	
-				String guilist=tok.nextToken();	
-				String guisearch=tok.nextToken();	
-				String dbstate=tok.nextToken();	
-				String dbname=tok.nextToken();	
-
-				// get the object number of this builder
-				int objectid=TypeDef.getIntValue(objectname);
-				Vector f=FieldDef.searchVector("WHERE dbtable="+objectid+" AND dbname='"+dbname+"'");
-				if (f==null || f.size()==0) {
-					if (debug) debug("No fielddef for : "+objectname+"("+objectid+") field : "+dbname);
-					MMObjectNode node=FieldDef.getNewNode("system");
-					node.setValue("dbtable",objectid);
-					node.setValue("dbtype",dbtype);
-					node.setValue("guiname",guiname);
-					node.setValue("guitype",guitype);
-					node.setValue("dbname",dbname);
-					try {
-						int i=Integer.parseInt(guipos);
-						node.setValue("guipos",i);
-						i=Integer.parseInt(guilist);
-						node.setValue("guilist",i);
-						i=Integer.parseInt(guisearch);
-						node.setValue("guisearch",i);
-						i=Integer.parseInt(dbstate);
-						node.setValue("dbstate",i);
-					} catch(Exception u) {
-						debug("MMBase -> can't make new FieldDef node invalid int");
-					}
-					if (objectid!=-1) FieldDef.insert("system",node);
-				} else {
-					if (debug) debug("found fielddef for : "+objectname+"("+objectid+") field : "+dbname);
-				}
-
-			}
-		}
-		return(true);
-	}
-	*/
-	
 	public String getDTDBase() {	
 		return(dtdbase);
 	}
