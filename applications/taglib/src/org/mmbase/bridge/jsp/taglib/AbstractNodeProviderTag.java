@@ -12,7 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.30 2004-03-23 21:42:46 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.31 2004-09-14 17:59:36 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -66,6 +66,9 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
                
     public void setModified() {
         nodeHelper.setModified();
+    }
+    public  Query getGeneratingQuery() throws JspTagException {
+        return nodeHelper.getGeneratingQuery();
     }
 
     /**
