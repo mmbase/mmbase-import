@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.9 2004-12-16 18:11:49 michiel Exp $
+ * @version $Id: Configurable.java,v 1.10 2005-03-01 14:13:31 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -56,7 +56,7 @@ public abstract class Configurable {
      * This methods sets the member variables of this object and then
      * calls the method load();
      * @param manager The class that created this instance.
-     * @param resourceWatcher checks the files
+     * @param configWatcher checks the files for changes
      * @param configPath The url which contains the config information for the authorization (e.g. context/config.xml). Or null (if configured to be "")
      * @see #load
      */
