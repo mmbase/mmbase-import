@@ -6,7 +6,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.4 2002-05-17 10:52:02 pierre Exp $
+  @version $Id: base.xsl,v 1.5 2002-05-17 11:07:17 michiel Exp $
   -->
   <xsl:output
     method="xml"
@@ -21,6 +21,9 @@
   <xsl:param name="ew_path"></xsl:param>
   <xsl:param name="ew_context"></xsl:param>
   <xsl:param name="ew_imgdb"><xsl:value-of select="$ew_context" />/img.db?</xsl:param>
+
+  <xsl:param name="username">(unknown)</xsl:param>
+
   <xsl:param name="sessionid"></xsl:param>
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" /></xsl:param>
