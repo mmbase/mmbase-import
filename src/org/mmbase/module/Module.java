@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.29 $ $Date: 2001-04-10 20:37:41 $
+ * @version $Revision: 1.30 $ $Date: 2001-05-07 09:11:31 $
  */
 public abstract class Module {
 
@@ -386,6 +386,15 @@ public abstract class Module {
             mmbaseconfig=System.getProperty("mmbase.config");
             if (mmbaseconfig == null) {
                 log.error("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
+            } else {
+                File file = new File(mmbaseconfig);
+                if (!file.isDirectory()) {
+                    log.error("mmbase.config is not a valid directory");
+                } else {
+                    // Make it absolute. Needed for servscan and servdb to
+                    // to startup properly.
+                    mmbaseconfig = file.getAbsolutePath();
+                }
             }
         }
         MMBaseContext.setConfigPath(mmbaseconfig);

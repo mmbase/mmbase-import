@@ -377,7 +377,11 @@ public class MMObjectNode {
 		String tmp = "";
 		Object o=getValue(fieldname);
 		if (o!=null) {
-		    tmp=""+o;
+		    if (o instanceof byte[]) {
+		        tmp = new String((byte[])o);
+		    } else {
+		        tmp=""+o;
+		    }
 		}
 //		String tmp=(String)values.get(prefix+fieldname);
 
@@ -468,15 +472,25 @@ public class MMObjectNode {
 			return (byte[])values.get(prefix+fieldname);
 		} else {
 
-			// call our builder with the convert request this will probably
-			// map it to the database we are running.
-			byte[] b=parent.getShortedByte(fieldname,getNumber());
-
-			
-			// we could in the future also leave it unmapped in the values
-			// or make this programmable per builder ?
-			values.put(prefix+fieldname,b);
-
+			byte[] b;
+			if (getDBType(fieldname) == FieldDefs.TYPE_BYTE) {
+			    // call our builder with the convert request this will probably
+			    // map it to the database we are running.
+			    b=parent.getShortedByte(fieldname,getNumber());
+			    if (b == null) {
+			        b = new byte[0];
+			    }
+			    // we could in the future also leave it unmapped in the values
+			    // or make this programmable per builder ?
+			    values.put(prefix+fieldname,b);
+			} else {
+			    if (getDBType(fieldname) == FieldDefs.TYPE_STRING) {
+			        String s = getStringValue(fieldname);
+			        b = s.getBytes();
+			    } else {
+			        b = new byte[0];
+			    }
+			}
 			// return the unmapped value
 			return b;
 		}
