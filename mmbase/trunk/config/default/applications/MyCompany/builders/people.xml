@@ -52,8 +52,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Person's first name or initials</description>
+          <description xml:lang="nl">De voornaam of initialen van het persoon</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -86,8 +86,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Person's last name</description>
+          <description xml:lang="nl">De achternaam van het persoon</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -120,8 +120,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Person's email address</description>
+          <description xml:lang="nl">Het electronich postadres van de persoon</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -154,8 +154,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Internal account name, for association with security data (i.e. a user login name)</description>
+          <description xml:lang="nl">Intern account, voor de koppeling met ene authorisatiesysteem (bijv. een login naam)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
