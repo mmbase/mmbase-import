@@ -364,7 +364,7 @@ public class BasicNode implements Node {
                 // option unset, fail if any relations exit
                 if(getNode().hasRelations()) {
                     String message;
-                    message = "This node cannot be deleted. It still has relations attached to it.";
+                    message = "This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.";
                     log.error(message);
                     throw new BridgeException(message);
                 }
@@ -527,7 +527,7 @@ public class BasicNode implements Node {
         return getNode().getRelationCount(type);
     };
 
-    public List getAliases() {
+    public StringList getAliases() {
         Vector aliasvector=new Vector();
         OAlias alias=mmb.OAlias;
         if (alias!=null) {
@@ -536,7 +536,7 @@ public class BasicNode implements Node {
                 aliasvector.add(node.getStringValue("name"));
             }
         }
-        return aliasvector;
+        return new BasicStringList(aliasvector);
     };
 
     public void createAlias(String aliasName) {
