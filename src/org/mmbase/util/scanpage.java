@@ -31,7 +31,7 @@ import org.mmbase.servlet.JamesServlet;
  *
  * @rename Scanpage
   * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.18 2001-12-19 17:37:56 vpro Exp $
+ * @version $Id: scanpage.java,v 1.19 2002-05-14 12:03:14 eduard Exp $
  */
 public class scanpage {
     // logger
@@ -99,7 +99,7 @@ public class scanpage {
 	public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
 		setReq(req);
 		setRes(res);
-		req_line = req.getRequestURI();
+		req_line = req.getServletPath();
 		querystring = req.getQueryString();
 
 		// needs to be replaced (get the context ones)
