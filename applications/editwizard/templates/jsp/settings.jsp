@@ -2,13 +2,13 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
-%><%@ page import="org.mmbase.applications.editwizard.SecurityException,org.mmbase.applications.editwizard.Config"
+%><%@ page import="org.mmbase.applications.editwizard.Config"
 %><%
 /**
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.36 2003-07-03 10:57:27 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.37 2003-09-03 09:47:00 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
