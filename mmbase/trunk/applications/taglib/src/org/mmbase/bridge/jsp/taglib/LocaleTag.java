@@ -29,7 +29,7 @@ public class LocaleTag extends ContextReferrerTag  {
     private Attribute language = Attribute.NULL;
     private Attribute country =  Attribute.NULL;
 
-    private Locale locale;
+    protected Locale locale;
     private String jspvar = null;
 
     // ------------------------------------------------------------

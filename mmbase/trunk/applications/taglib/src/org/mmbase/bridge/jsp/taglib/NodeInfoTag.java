@@ -32,21 +32,6 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     private static final int TYPE_DESCRIPTION = 4;
 
 
-    protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
-
     private Attribute type = Attribute.NULL;
 
     public void setType(String tu) throws JspTagException {

@@ -29,22 +29,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
     private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
 
-    // Writer implementation:
-    protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() {  helper.haveBody(); }
-
     protected Node   node;
     protected NodeProvider nodeProvider;
     protected Field  field;

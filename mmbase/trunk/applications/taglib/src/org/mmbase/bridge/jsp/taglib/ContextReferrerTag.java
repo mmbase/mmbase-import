@@ -397,4 +397,31 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return o.toString();
     }
 
+    // Writer Implmentation
+    // Not all ContextReferrerTags are actually Writers, but no m.i. in java.
+
+    /**
+     * The helper member is only used by 'Writer' extensions.
+     */
+
+    final protected WriterHelper helper = new WriterHelper();
+    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
+
+    final public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    final public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttribute(w));
+    }
+    final public Object getWriterValue() {
+        return helper.getValue();
+    }
+    final public void haveBody() { helper.haveBody(); }
+
+
+     
+
 }

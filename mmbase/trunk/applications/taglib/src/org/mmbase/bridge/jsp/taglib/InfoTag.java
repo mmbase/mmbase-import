@@ -24,23 +24,6 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     private Attribute module      = Attribute.NULL;
     private Attribute command     = Attribute.NULL;
 
-    protected WriterHelper helper = new WriterHelper();
-    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() {
-        return helper.getValue();
-    }
-    public void haveBody() { helper.haveBody(); }
-
     public void setNodemanager(String nm) throws JspTagException {
         nodeManager = getAttribute(nm);
     }

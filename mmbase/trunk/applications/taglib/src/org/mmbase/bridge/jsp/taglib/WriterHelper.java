@@ -389,7 +389,7 @@ public class WriterHelper extends BodyTagSupport {
             throw new JspTagException(ioe.toString());
         }            
         release();
-        log.debug("End of deEndTag");
+        log.debug("End of doEndTag");
         return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
     }
 
