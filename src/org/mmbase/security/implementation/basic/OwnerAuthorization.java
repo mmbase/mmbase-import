@@ -26,7 +26,7 @@ import java.util.*;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: OwnerAuthorization.java,v 1.10 2003-09-26 19:41:17 michiel Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.11 2004-03-08 17:42:30 michiel Exp $
  */
 public class OwnerAuthorization extends Authorization {
 
@@ -110,7 +110,7 @@ public class OwnerAuthorization extends Authorization {
         case Operation.DELETE_INT:
             // dont think so when we are anonymous...
         case Operation.WRITE_INT:
-        case Operation.CHANGECONTEXT_INT:
+        case Operation.CHANGE_CONTEXT_INT:
             // we are logged in, check if we may edit this node,....
             if(user.getRank() != Rank.ANONYMOUS) {
                 MMObjectNode node = getMMNode(nodeNumber);
@@ -169,7 +169,7 @@ public class OwnerAuthorization extends Authorization {
         }
         
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-        verify(user, nodeNumber, Operation.CHANGECONTEXT);
+        verify(user, nodeNumber, Operation.CHANGE_CONTEXT);
         
         // well now really set it...
         MMObjectNode node = getMMNode(nodeNumber);
