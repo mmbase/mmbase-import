@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.9 2000-11-29 13:57:22 vpro Exp $
+$Id: MMHttpAcceptor.java,v 1.10 2000-12-19 10:57:07 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/11/29 13:57:22  vpro
+davzev: Added more debug and comments
+
 Revision 1.8  2000/11/28 16:41:12  vpro
 davzev: Added some method comments and debug.
 
@@ -24,7 +27,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.9 $ $Date: 2000-11-29 13:57:22 $
+ * @version $Revision: 1.10 $ $Date: 2000-12-19 10:57:07 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
@@ -162,7 +165,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 
 		//System.out.println("DO POST ON : "+xml);
 		try {
-			if (debug) debug("commitNode: Performing HTTP POST and send the xml data to "+remoteHost+", "+remotePort);
+			if (debug) debug("commitNode: Posting "+tableName+" node "+nodename+" in XML format using POST "+url+" HTTP/1.1\r\n to "+remoteHost+":"+remotePort);
 			connect=new Socket(remoteHost,remotePort);
 			try {
 				out=new PrintStream(connect.getOutputStream());
@@ -220,7 +223,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	 * @return true, always
 	 */
 	public boolean getNode(String nodename,String tableName) {
- 		if (debug) debug("getNode("+nodename+","+tableName+"): Getting node!");
+ 		if (debug) debug("getNode("+nodename+","+tableName+"): Request for node and store it");
 
 		// connects to the server to obtain this node in xml
 		// and parse it back to a node
@@ -228,7 +231,6 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			String proto=getProtocol();
 			String host =getLocalHost();
 			String sport=""+getLocalPort();
-			if (debug) debug("getNode("+nodename+","+tableName+"): proto:"+proto+", host:"+host+", sport:"+sport);
  
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
