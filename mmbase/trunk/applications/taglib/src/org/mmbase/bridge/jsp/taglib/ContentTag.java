@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.User;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 import java.util.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.20 2004-03-19 23:20:53 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.21 2004-03-24 10:51:24 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -151,6 +152,8 @@ public class ContentTag extends LocaleTag  {
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
 
+    private User     user = null;
+
     public void setType(String ct) throws JspTagException {
         type = getAttribute(ct);
     }
@@ -257,6 +260,7 @@ public class ContentTag extends LocaleTag  {
 
 
     public int doStartTag() throws JspTagException {
+        user = null;
         super.doStartTag();
         String type = getType();
 
@@ -279,6 +283,15 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
+    /** 
+     * Sets a user. This is used by cloud-tag. It does not do it if the user is anonymous, so for
+     * the moment it is only checked for 'null'.
+     */
+
+    void setUser(User newUser) {
+        user = newUser;
+    }
+
     public int doAfterBody() throws JspTagException {       
         if (bodyContent != null) {
             if (! getType().equals("")) {
@@ -289,6 +302,8 @@ public class ContentTag extends LocaleTag  {
                     response.setDateHeader("Expires", later);
                     response.setHeader("Cache-Control", "public");
                 } else {
+                    // there is a session, or 'expires' was set explicitely
+
                     // perhaps default cache behaviour should be no-cache if there is a session?
                     long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
                     if (exp == 0) { // means : cannot be cached!
@@ -296,9 +311,14 @@ public class ContentTag extends LocaleTag  {
                         response.setHeader("Pragma","no-cache");
                         response.setDateHeader("Expires",  0); //System.currentTimeMillis());
                     } else {
+                        String cacheControl = "public";
+                        if (user != null) {
+                            // This page is using the non-anonymous cloud. Cache control must be private.
+                            cacheControl = "private";
+                        }
                         long later = System.currentTimeMillis() + exp * 1000;
                         response.setDateHeader("Expires", later);
-                        response.setHeader("Cache-Control", "public");
+                        response.setHeader("Cache-Control", cacheControl);
                     }
                     
                 }
@@ -311,7 +331,6 @@ public class ContentTag extends LocaleTag  {
                 }
                
                 post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
-                // bodyContent.getEnclosingWriter().flush();
 
             } else {
                 if (EVAL_BODY == EVAL_BODY_BUFFERED) {
@@ -319,8 +338,6 @@ public class ContentTag extends LocaleTag  {
                     try {
                         if (bodyContent != null) {
                             bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                            //log.info("flushing");
-                            //bodyContent.getEnclosingWriter().flush();
                         }
                     } catch (java.io.IOException ioe){
                         throw new TaglibException(ioe);
