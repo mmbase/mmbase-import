@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.11 2004-11-23 10:11:26 michiel Exp $
+#  $Id: cvsmail,v 1.12 2004-11-23 10:12:51 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -18,7 +18,7 @@ my $cvs         = "/usr/bin/cvs";
 
 
 if (! defined $files) {
-    print "Needs (at least) three arguments\n";
+    print "Needs (at least) three arguments\n";	
     exit 0;
 }
 
@@ -32,6 +32,7 @@ my $dir = shift @files;
 
 my $child;
 if ($child = fork()) {
+	# would need to disown here!
     exit 0; # be 'ready' immediatiely, don't let the commiter wait
 } else { 
     sleep 5;
