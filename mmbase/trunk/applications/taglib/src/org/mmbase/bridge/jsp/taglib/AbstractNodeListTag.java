@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.64 2004-09-14 17:59:36 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.65 2004-12-14 15:15:53 pierre Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -57,21 +57,17 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected Attribute constraints = Attribute.NULL;
 
-
     protected NodeListHelper listHelper = new NodeListHelper(this, nodeHelper);
 
     private Query generatingQuery;
 
-
     protected NodeList getReturnList() {
         return listHelper.getReturnList();
     }
-    
 
     public Object getCurrent() {
         return listHelper.getCurrent();
     }
-
 
     public int getIndex() {
         return listHelper.getIndex();
@@ -87,7 +83,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public Query getGeneratingQuery() {
         return generatingQuery;
     }
-
 
     /**
      * Sets the fields to sort on.
@@ -116,35 +111,16 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     /**
-     * Sets the list maximum with an integer argument. Tomcat needs
-     * this if you feed it with an rtexprvalue of type int.
-     *
-
-     commented out, use "" + for tomcat!
-    public void setMax(int m) {
-        max = m;
-    }
-     */
-
-    /**
      * Set the list offset
      * @param o Offset for the returned list.
      */
     public void setOffset(String o) throws JspTagException {
         listHelper.setOffset(o);
     }
-    /*
-    public void setOffset(int o) { // also need with integer argument for Tomcat.
-        offset = o;
-    }
-
-    */
-
 
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
-
 
     /**
      * Sets the selection query
@@ -154,8 +130,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         constraints = getAttribute(where);
     }
 
-
-
     protected static class NodesAndTrim {
         boolean  needsTrim;
         NodeList nodeList;
@@ -164,6 +138,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected final NodesAndTrim getNodesAndTrim(Query query) throws JspTagException {
         return getNodesAndTrim(query, 0);
     }
+
     /**
      *
      * @param more  How many more than max must be queried (if something will be subtracted later)
@@ -191,7 +166,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 result.nodeList = query.getCloud().getList(query);
             }
             result.needsTrim = more > 0;
-        } else { 
+        } else {
             // using comparator, doing max and offset programmaticly, otherwise the comparator is loosing most of its use
             if (query instanceof NodeQuery) {
                 NodeQuery nq = (NodeQuery) query;
@@ -202,9 +177,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
             // give a warning if what you are doing right now is not very smart
             if(result.nodeList.size() > QUERY_WARN_SIZE) {
-                log.warn("Trying to use compare on a query with result size " + result.nodeList.size() + " > " + QUERY_WARN_SIZE + " in page " + 
-                         ((HttpServletRequest)pageContext.getRequest()).getRequestURI() + "." + 
-                         " Note that the attribute 'max' will in combination with the 'comparator' attribute not set a limit on the query" + 
+                log.warn("Trying to use compare on a query with result size " + result.nodeList.size() + " > " + QUERY_WARN_SIZE + " in page " +
+                         ((HttpServletRequest)pageContext.getRequest()).getRequestURI() + "." +
+                         " Note that the attribute 'max' will in combination with the 'comparator' attribute not set a limit on the query" +
                          " (but the result will be limited afterwards). You might want to limit the query in another way (use a container?)");
             }
             result.needsTrim = true;
@@ -212,17 +187,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         return result;
     }
 
-
-
-
-
-
     // ContextProvider implementation
     public ContextContainer getContextContainer() throws JspTagException {
         return listHelper.getContextContainer();
     }
 
     protected static int NOT_HANDLED = -100;
+
     protected int doStartTagHelper() throws JspTagException {
         log.debug("doStartTaghelper");
 
@@ -250,6 +221,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         }
         return NOT_HANDLED;
     }
+
     /**
      * Creates the node iterator and sets appropriate variables (such as listsize)
      * from a passed node list.
@@ -262,8 +234,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected int setReturnValues(NodeList nodes) throws JspTagException {
         return setReturnValues(nodes, false);
     }
-
-
 
     /**
      * Creates the node iterator and sets appropriate variables (such as listsize).
@@ -301,7 +271,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
         return listHelper.doAfterBody();
-
     }
 
     public int doEndTag() throws JspTagException {
