@@ -4,7 +4,7 @@
   <id>mmbase-taglib</id>
   <name>mmbase-taglib</name>
   <groupId>mmbase</groupId>
-  <currentVersion>1.1</currentVersion>
+  <currentVersion>2.0-SNAPSHOT</currentVersion>
   <organization>
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
@@ -17,28 +17,6 @@
     <connection>scm:cvs:pserver:guest@www.mmbase.org:/usr/local/cvs:mmbase-taglib</connection>
     <url>http://www.mmbase.org/viewcvs/</url>
   </repository>
-  <mailingLists>
-    <mailingList>
-      <name>MMBase User List</name>
-      <subscribe>users-request@mmbase.org?subject=subscribe</subscribe>
-      <unsubscribe>users-request@mmbase.org?subjet=unsubscribe</unsubscribe>
-      <archive>http://www.mail-archive.com/users@mmbase.org/</archive>
-    </mailingList>
-    <mailingList>
-      <name>MMBase Developer List</name>
-      <subscribe>developers-request@mmbase.org?subject=subscribe</subscribe>
-      <unsubscribe>developers-request@mmbase.org?subjet=unsubscribe</unsubscribe>
-      <archive>http://www.mail-archive.com/developers@mmbase.org/</archive>
-    </mailingList>
-  </mailingLists>
-  <developers>
-    <developer>
-      <name>Michiel Meeuwissen</name>
-      <id>michiel</id>
-      <email>Michiel.Meeuwissen@omroep.nl</email>
-      <organization>Publieke Omroep</organization>
-    </developer>
-  </developers>
   <dependencies>
     <dependency>
       <id>servletapi</id>
@@ -47,8 +25,20 @@
     <dependency>
       <groupId>mmbase</groupId>
       <artifactId>mmbase-core</artifactId>
-      <version>1.7-rc3</version>
+      <version>1.8.0-SNAPSHOT</version>
       <url>http://www.mmbase.org/</url>
+    </dependency>
+    <dependency>
+      <id>commons-fileupload</id>
+      <version>1.0</version>
+      <url>http://jakarta.apache.org/commons/</url>
+    </dependency>
+    <dependency>
+      <groupId>maven-taglib</groupId>
+      <artifactId>maven-taglib-plugin</artifactId>
+      <version>1.2.2</version>
+      <type>plugin</type>
+      <url>http://maven-taglib.sourceforge.net</url>
     </dependency>
   </dependencies>
   <reports>
@@ -62,11 +52,13 @@
     <report>maven-jxr-plugin</report>
     <report>maven-license-plugin</report>
     <report>maven-linkcheck-plugin</report>
+    <report>maven-checkstyle-plugin</report>
     <report>maven-pmd-plugin</report>
+    <report>taglib</report>
   </reports>
   <build>
     <nagEmailAddress>maven@keesj.dds.nl</nagEmailAddress>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
     <aspectSourceDirectory/>
     <integrationUnitTest/>
     <jars/>
