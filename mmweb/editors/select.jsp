@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud">
+<mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud" sessionname="editwizard">
+
 
 <%	String userconstraint="mmbaseusers.username='" + cloud.getUser().getIdentifier() + "'"; %>
 
