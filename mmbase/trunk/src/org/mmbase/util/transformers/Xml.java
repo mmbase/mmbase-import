@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.9 2003-05-10 22:23:52 michiel Exp $
+ * @version $Id: Xml.java,v 1.10 2003-05-12 14:33:00 kees Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {

@@ -9,16 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.Reader;
-import java.io.Writer;
-
 /**
  * Do MD5 encoding. Decoding is of course not possible. MD5 encoding
  * can not be efficiently 'piped', because the complete String is
  * needed. So, be careful 'chaining' it.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: MD5.java,v 1.6 2003-05-11 10:19:28 michiel Exp $
+ * @version $Id: MD5.java,v 1.7 2003-05-12 14:33:00 kees Exp $
  */
 
 public class MD5 extends StringTransformer implements CharTransformer {

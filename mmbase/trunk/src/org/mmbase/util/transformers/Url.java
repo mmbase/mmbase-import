@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.*;
 import org.mmbase.util.URLParamEscape;
 
