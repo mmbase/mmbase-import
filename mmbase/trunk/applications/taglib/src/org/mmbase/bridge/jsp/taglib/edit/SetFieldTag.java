@@ -24,11 +24,15 @@ import org.mmbase.util.logging.*;
  */
 public class SetFieldTag extends NodeReferrerTag {
     private static Logger log = Logging.getLoggerInstance(SetFieldTag.class.getName()); 
-    private Node node;
+    protected Node node;
     private String fieldname;   
     
     public void setName(String fieldname) {
         this.fieldname = fieldname;
+    }
+
+    protected String getName() {
+        return fieldname;
     }
         
     public int doStartTag() throws JspTagException{
@@ -36,6 +40,7 @@ public class SetFieldTag extends NodeReferrerTag {
     }
 
     public void doInitBody() throws JspTagException {
+        NodeProvider np;
         if (fieldname == null) {
             // Get node and fieldname from the fieldlist tag.
             Class fieldClass;
@@ -48,12 +53,15 @@ public class SetFieldTag extends NodeReferrerTag {
             if (fieldTag == null) {
                 throw new JspTagException ("Could not find parent FieldListTag");  
             }
-            node = fieldTag.findNodeProvider().getNodeVar();
+            np = fieldTag.findNodeProvider();
+            node = np.getNodeVar();
             fieldname = fieldTag.getField().getName();
         } else {
             // Find the node.
-            node = findNodeProvider().getNodeVar();
+            np = findNodeProvider();
+            node = np.getNodeVar();
         }
+        np.setModified();
         pageContext.setAttribute("fieldname", fieldname);
     }
     
@@ -62,8 +70,14 @@ public class SetFieldTag extends NodeReferrerTag {
      */
     public int doAfterBody() throws JspTagException {
         // Get the new value from the body.
-        String newValue = bodyContent.getString();
-        node.setValue(fieldname, newValue);
+        if (node.getNodeManager().getField(fieldname).getType() == Field.TYPE_BYTE) {
+            // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
+            node.setValue(fieldname, org.mmbase.util.Encode.decode("BASE64", bodyContent.getString()));
+	} else {           
+            String newValue = bodyContent.getString();
+            node.setValue(fieldname, newValue);
+        }
+        
         return SKIP_BODY;
-    }
+    }   
 }
