@@ -21,9 +21,9 @@ import org.mmbase.util.logging.*;
  * The Netfiles builder stores information on files that need to be transferred
  * to other servers.
  * It is used in the CACHE PAGE routine, that is used to cache SCAN pages.
- * Information in NetFiles is used by a numbe rof VWMs (i.e. (PageMaster and ImageMaster), which schedules the transfer
+ * Information in NetFiles is used by a number of VWMs (i.e. (PageMaster and ImageMaster), which schedules the transfer
  * of the files.<br>
- * Each NetFile entry contains teh following information:<br>
+ * Each NetFile entry contains the following information:<br>
  * <ul>
  * <li>code>filename</code> : the name of the file</li>
  * <li>code>mmserver</code> : the server that should handle the file transfer</li>
@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *             Together with subservice, this determines the VWM that handles the transfer,
  *             i.e. 'pages/main' is handled by the PageMaster VWM.</li>
  * <li>code>subservice</code> : the subservice to perform. i.e. in PageMaster, 'main' determines mirror sites and
- *                schedules tasks for mirroring (by creating net netfile entries), while 'mirror'
+ *                schedules tasks for mirroring (by creating netfile entries), while 'mirror'
  *                performs the actual transfer to a mirror</li>
  *                Often one VWM handles mutliple subservices, but this is not a given.</li>
  * <li>code>filesize</code> : the size of the file. Not currently used, value is always -1</li>
@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * <li>code>ntime</code> : probably the last change time. Currently not used (for future development).</li>
  * <li>code>status</code> : The state of the netfile entry. This can be a {@link #STATUS_REQUEST} when a file waits to be transferred,
  *            {@link #STATUS_ON_ITS_WAY} when it is being transferred, {@link #STATUS_DONE} when
- *            the transfer was handled, {@link #STATUS_CHANGED} when a change occurerd in a file, (indicating it may
+ *            the transfer was handled, {@link #STATUS_CHANGED} when a change occured in a file, (indicating it may
  *            become elligible for resending), and {@link #STATUS_CALC_PAGE} when the page needs to be recalculated
  *            (by SCAN).</li>
  * <li>code>crc</code> : Cyclic Redundancy Check. For use in checking file validity. Currently not used (for future development)</li>
@@ -152,6 +152,4 @@ public class Netfiles extends MMObjectBuilder {
         }
         return true;
     }
-
-
 }
