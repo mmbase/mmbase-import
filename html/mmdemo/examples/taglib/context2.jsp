@@ -41,6 +41,6 @@ the `present' and `notpresent' tags.
   param hi is not present
 </mm:notpresent>
 <hr />
-<a href='<mm:url page="context3\.jsp" />'>next page</a>
+<a href='<mm:url referids="alias" page="context3\.jsp" />'>next page</a>
 </body>
 </html>

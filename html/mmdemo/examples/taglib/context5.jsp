@@ -2,12 +2,13 @@
 %><html>
 <body>
 <h1>context 5</h1>
+<mm:import externid="alias" required="true" />
 <p>
 Perhaps an example with transactions?
 </p>
 <hr />
 <a href='<mm:url page="context\.jsp">
-         <mm:param name="haj">doing it again</mm:param>
+         <mm:param name="haj"><mm:write referid="alias" />(again)</mm:param>
 	 </mm:url>'>back</a>
 </body>
 </html>

@@ -2,6 +2,7 @@
 %><html>
 <body>
 <h1>context 4</h1>
+<mm:import externid="alias" required="true" />
 <p>
 Reusing the node of the previous page.
 </p>
@@ -11,7 +12,7 @@ Reusing the node of the previous page.
      <mm:field name="title" />
 </mm:node>
 <hr />
-<a href='<mm:url page="context5\.jsp" referids="news_node" />'>next page</a>
+<a href='<mm:url page="context5\.jsp" referids="alias,news_node" />'>next page</a>
 </mm:cloud>
 </body>
 </html>
