@@ -4,9 +4,11 @@
     <title>Flash Pagina Editor</title>
 
     <action type="create">
-        <object type="flashpages">
-        </object>
+       <object type="flashpages">
+          <relation destination="$origin" role="posrel" createdir="source"/>
+       </object>
     </action>
+
 
     <action type="load">
         <relation destination="mmevents" role="related" />

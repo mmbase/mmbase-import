@@ -4,11 +4,14 @@
     <title>Multiple Choice Editor</title>
 
     <action type="create">
-        <object type="mcquestions">
-            <field name="layout">0</field>
-            <field name="type">0</field>
-        </object>
+       <object type="mcquestions">
+          <relation destination="$origin" role="posrel" createdir="source"/>
+          <field name="layout">0</field>
+          <field name="type">0</field>
+       </object>
     </action>
+
+
 
     <action type="load">
         <relation destination="mcanswers" role="posrel" />
