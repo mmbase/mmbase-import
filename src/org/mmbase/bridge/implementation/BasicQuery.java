@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.11 2003-08-01 16:31:36 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.12 2003-08-04 20:13:45 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -293,6 +293,11 @@ public class BasicQuery implements Query  {
         return c;
     }
     
+    public FieldConstraint             makeCaseInsensitive(FieldConstraint c) {
+        ((BasicFieldConstraint) c).setCaseSensitive(true);
+        return c;
+        
+    }
     public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
         if (c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
             if (used) throw new BridgeException("Query was used already (so cannot modify composite constraints)");
