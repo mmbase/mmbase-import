@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.3 2004-12-21 12:07:25 pierre Exp $
+ * @version $Id: Lucene.java,v 1.4 2004-12-23 14:19:08 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -121,7 +121,7 @@ public class Lucene extends Module implements MMBaseObserver {
         addFunction(searchSizeFunction);
         scheduler = new Scheduler();
         log.info("Module Lucene started");
-        // fiull index ???
+        // full index ???
         scheduler.fullIndex();
     }
 
@@ -220,6 +220,7 @@ public class Lucene extends Module implements MMBaseObserver {
                     OptimizeBuilderConfig(buildersToIndex);
                     String thisIndex = fullIndexPath + java.io.File.separator + indexName;
                     Indexer indexer = new Indexer(thisIndex,buildersToIndex,storeText,mergeText,mmbase);
+                    log.service("Add lucene index with name " + indexName);
                     indexerMap.put(indexName,indexer);
                     String[]  allIndexedFields = (String[])allIndexedFieldsSet.toArray(new String[0]);
                     Searcher searcher = new Searcher(thisIndex,allIndexedFields,mergeText,mmbase);
