@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.88 2003-05-09 07:47:05 pierre Exp $
+  @version $Id: wizard.xsl,v 1.89 2003-05-09 09:11:25 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -174,10 +174,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-        <a href="{$ew_context}/rastreams.db?{@field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+        <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-        <a href="{$ew_context}/rmstreams.db?{@field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+        <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 
@@ -488,7 +488,7 @@
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
                   <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
-                  <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+                  <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
                   <xsl:call-template name="prompt_image_upload" />
                   </a>
                 </div>
@@ -502,7 +502,7 @@
                   <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text> (<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
                 </span>
                 <br />
-                <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_image_upload" /></a>
+                <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_image_upload" /></a>
               </div>
             </xsl:when>
             <xsl:otherwise>
@@ -526,7 +526,7 @@
                   <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
                 </xsl:choose>
-                <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_do_upload" /></a>
+                <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_do_upload" /></a>
               </nobr>
             </xsl:otherwise>
           </xsl:choose>
@@ -580,7 +580,7 @@
           <tr>
             <td>          
               <!-- the image -->
-              <img src="{node:function($cloud, string(@field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
+              <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
             </td>
             <td colspan="2">
               <xsl:if test="field|fieldset">
