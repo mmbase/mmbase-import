@@ -1,8 +1,8 @@
-
 # default solaris
 # where is java
 JAVAHOME=/usr/java
 # OS type (same as subdir in java tree)
+CC=gcc
 OS=solaris
 LDFLAGS = -dy -G 
 
