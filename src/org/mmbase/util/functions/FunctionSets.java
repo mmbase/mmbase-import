@@ -38,7 +38,7 @@ import org.mmbase.bridge.implementation.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.8 2004-12-15 13:46:51 daniel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.9 2004-12-15 16:08:12 daniel Exp $ 
  */
 public class FunctionSets {
 
@@ -183,17 +183,23 @@ public class FunctionSets {
 
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
+               	ReturnType returnType = ReturnType.UNKNOWN;
+		if (a != null) {
 
-                ReturnType returnType = ReturnType.UNKNOWN;
-                String returnTypeClassName = reader.getElementAttributeValue(a, "type");
-                if (returnTypeClassName != null) {
-                    try {
-                        Class returnTypeClass = getClassFromName(returnTypeClassName);
-                        returnType = new ReturnType(returnTypeClass, "");
-                    } catch (Exception e) {
-                        log.warn("Cannot determine return type : " + returnTypeClassName + ", using UNKNOWN");
-                    }
-                }
+                	String returnTypeClassName = reader.getElementAttributeValue(a, "type");
+                	if (returnTypeClassName != null) {
+                    		try {
+                       			 Class returnTypeClass = getClassFromName(returnTypeClassName);
+                       		 	returnType = new ReturnType(returnTypeClass, "");
+                    		} catch (Exception e) {
+                       		 	log.warn("Cannot determine return type : " + returnTypeClassName + ", using UNKNOWN");
+                    		}
+                	}
+
+		} else {
+               		returnType = ReturnType.NONE;
+		}
+	
 
                 /* obtaining field definitions for a result Node... useful ??
 
