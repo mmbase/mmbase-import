@@ -17,9 +17,6 @@ import java.io.*;
 import org.mmbase.util.*;
 
 /**
- * The module which provides access to a filesystem residing in
- * a database
- *
  * @author Daniel Ockeloen
  */
 public class CALC extends ProcessorModule {
@@ -43,8 +40,7 @@ public class CALC extends ProcessorModule {
 
 
 	/**
-	 * INFO, a support module for servscan. provides const and
-	 * general info like dates, times, browser info etc etc
+	 * CALC, a support module for servscan.
 	 */
 	public CALC() {
 	}
