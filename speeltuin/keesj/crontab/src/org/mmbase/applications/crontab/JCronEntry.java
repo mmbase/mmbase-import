@@ -9,7 +9,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronEntry.java,v 1.6 2004-04-02 09:50:54 michiel Exp $
+ * @version $Id: JCronEntry.java,v 1.7 2004-04-05 18:29:28 michiel Exp $
  */
 
 public class JCronEntry {
@@ -64,9 +64,13 @@ public class JCronEntry {
             ((JCronJob) jCronJob).stop();
         }
     }
+
+    protected boolean isAlive() {
+        return thread != null && thread.isAlive();
+    }
     
     protected boolean kick() {
-        if (thread != null && thread.isAlive()) {
+        if (isAlive()) {
             return false;
         } else {
             count++;
@@ -97,7 +101,7 @@ public class JCronEntry {
         dayOfWeek.setTimeVal(st.nextToken());
     }
     
-    public String getID(){
+    public String getId(){
         return id;
     }
     public String getName(){
@@ -151,6 +155,8 @@ public class JCronEntry {
     public int hashCode() {
         return id.hashCode() + name.hashCode() + className.hashCode() + cronTime.hashCode();
     }
+    
+
     public boolean equals(Object o) {
         if (! (o instanceof JCronEntry)) {
             return false;
