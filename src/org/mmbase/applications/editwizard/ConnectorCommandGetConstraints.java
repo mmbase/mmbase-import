@@ -17,18 +17,18 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetConstraints.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommandGetConstraints.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
  */
 
 public class ConnectorCommandGetConstraints extends ConnectorCommand {
 
-  String objecttype, objectnumber;
-  Document cmd;
-
-  public ConnectorCommandGetConstraints(String objecttype) {
-    super("getconstraints");
-    addCommandAttr("type",objecttype);
-  }
+    /**
+     * @javadoc
+     */
+    public ConnectorCommandGetConstraints(String objecttype) {
+        super("getconstraints");
+        addCommandAttr("type",objecttype);
+    }
 
 
 }

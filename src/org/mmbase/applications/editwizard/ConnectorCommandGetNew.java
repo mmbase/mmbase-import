@@ -17,17 +17,16 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNew.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommandGetNew.java,v 1.3 2002-03-15 09:52:37 pierre Exp $
  */
 
 public class ConnectorCommandGetNew extends ConnectorCommand {
 
-  String objecttype;
-
-  public ConnectorCommandGetNew(String aobjecttype) {
-    super("getnew");
-    objecttype = aobjecttype;
-    addCommandAttr("type", objecttype);
-  }
-
+    /**
+     * @javadoc
+     */
+     public ConnectorCommandGetNew(String objecttype) {
+         super("getnew");
+         addCommandAttr("type", objecttype);
+     }
 }
