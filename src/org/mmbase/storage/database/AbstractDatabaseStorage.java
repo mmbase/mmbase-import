@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.11 2003-05-16 07:27:18 kees Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.12 2003-06-05 09:23:44 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -355,7 +355,8 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     }
 
     /**
-     * can override this, e.g. with tableName.toUpperCase
+     * Maps the full table name to a table name acceptable to the database.
+     *
      * @since MMBase-1.7
      */
     protected String getTableName(String tableName) {
