@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.9 2002-05-23 08:18:59 michiel Exp $
+    @version  $Id: index.jsp,v 1.10 2002-05-27 22:02:04 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -18,7 +18,6 @@
           - javascript for search action
           - jump to create directly
     -->
-
 
    <link rel="stylesheet" type="text/css" href="../style.css" />	
     <script language="javascript"><!--
@@ -44,6 +43,9 @@
    a variant in xsl/list.xsl relative to this file. It also uses it's
    private XML editwizard definitions, which are also placed
    relativily to this file in the 'samples' directory.
+  </p>
+  <p>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/xsl/list.xsl"%></mm:param></mm:url>">view xsl/list.xsl</a></td>
   </p>
   <!-- check if the MyNews application was installed -->
   <mm:cloud>
@@ -75,7 +77,9 @@
    	 step then, you can relate articles to the person. We also
  	   demonstrate here how you can jump directly to the wizard to create a
 	   new person (without having to go to the list first).
-  </td></tr>
+  </td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/people.xml"%></mm:param></mm:url>">view XML</a></td>
+  </tr>
   <tr><td>
    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
            <mm:param name="wizard">samples/imageupload</mm:param>
@@ -88,7 +92,9 @@
    </td><td>
     A very simple image uploader. We show here how you could add
    search criteria. We also see that the delete prompt is overridden.
-    </td><tr>
+    </td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/imageupload.xml"%></mm:param></mm:url>">view XML</a></td>
+ <tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
         	 <mm:param name="wizard">samples/news</mm:param>
@@ -102,7 +108,9 @@
       of XML stored in the editwizard data directory which you can
       include in you own wizards. You'll find an example for
       'subwizards' here as well.
-     </td></tr>
+     </td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/news.xml"%></mm:param></mm:url>">view XML</a></td>
+   </tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
 		       <mm:param name="title">MyNews Magazine news</mm:param>
@@ -126,7 +134,9 @@
            </mm:url>">Magazines</a>
      </td><td>       
        Demonstrated is how to use 'posrel', and how to create 'optionlists'.
-     </td></tr>
+     </td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/mags.xml"%></mm:param></mm:url>">view XML</a></td>
+      </tr>
      </table>
      
    </mm:present>
@@ -137,7 +147,7 @@
    </mm:notpresent>
 
 <hr />
-
+   <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <a href="<mm:url page="../index.html" />">back</a>
 
 
