@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.classsecurity;
 
-import java.io.FileInputStream;
-import java.io.File;
 import java.util.*;
 
 import org.mmbase.security.*;
@@ -20,6 +18,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -29,7 +28,7 @@ import org.xml.sax.InputSource;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.5 2004-11-11 17:10:33 michiel Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.6 2005-01-20 18:20:41 michiel Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
@@ -78,26 +77,15 @@ public class ClassAuthenticationWrapper extends Authentication {
             String wrappedClass = authentication.getAttributes().getNamedItem("class").getNodeValue();
             String wrappedUrl   = authentication.getAttributes().getNamedItem("url").getNodeValue();
             
-            
-            // make the url absolute in case it isn't:
-            File authFile = null;
-            if (! wrappedUrl.equals("")) {
-                authFile = new File(wrappedUrl);
-            }
-            if (authFile != null  && (! authFile.isAbsolute())) { // so relative to current one
-                // being parsed file. make it absolute,
-                log.debug("authentication file was not absolutely given (" + wrappedUrl + ")");
-                authFile = new File(configFile.getParent() + File.separator + wrappedUrl);
-                log.debug("will use: " + authFile.getAbsolutePath());
-            }
             wrappedAuthentication = getAuthenticationInstance(wrappedClass);
             wrappedAuthentication.load(manager, configWatcher, wrappedUrl);
             ClassAuthentication.stopWatching();
-            ClassAuthentication.load(configFile);
+            ClassAuthentication.load(configResource);
 
-
-        } catch (Exception fnfe) {
-            throw new SecurityException(fnfe);
+        } catch (java.io.IOException ioe) {
+            throw new SecurityException(ioe);
+        } catch (SAXException se) {
+            throw new SecurityException(se);
         }
 
     }
