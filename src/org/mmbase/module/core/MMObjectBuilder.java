@@ -892,7 +892,7 @@ public class MMObjectBuilder extends MMTable {
             }
 
             if(numbers.length() > MAX_QUERY_SIZE) {
-                result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+                result.addAll(basicSearch("SELECT " + getNonByteArrayFields() + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
                 numbers = new StringBuffer();
                 first = true;
             }
@@ -901,7 +901,7 @@ public class MMObjectBuilder extends MMTable {
         // now that we have a comma seperated string of numbers, we can
         // the search with a where-clause containing this list
         if(! numbers.toString().equals("")) {
-            result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+            result.addAll(basicSearch("SELECT " + getNonByteArrayFields() + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
         } // else everything from cache
 
         // check that we didnt loose any nodes
@@ -1025,7 +1025,8 @@ public class MMObjectBuilder extends MMTable {
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
-                String query = "SELECT " + getNonByteArrayFields(bul) +" FROM "+mmb.baseName+"_" + bul + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
+                Builder thisbuilder = mmb.getBuilder(bul);
+                String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
                 log.debug("query : " + query );
                 ResultSet rs = stmt.executeQuery(query);
                 if (rs.next()) {
@@ -1222,7 +1223,7 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where = QueryConvertor.altaVista2SQL(where, mmb.getDatabase());
         }
-        return "SELECT " + getNonByteArrayFields(tableName) +" FROM " + getFullTableName() + " " + where;
+        return "SELECT " + getNonByteArrayFields() +" FROM " + getFullTableName() + " " + where;
     }
 
     /**
@@ -1256,7 +1257,7 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String in) {
         // do the query on the database
         if (in==null || in.equals("")) return new Vector();
-        String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+        String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
 
@@ -1412,7 +1413,7 @@ public class MMObjectBuilder extends MMTable {
 
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
-        String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
+        String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
         return basicSearch(query);
     }
 
@@ -1430,7 +1431,7 @@ public class MMObjectBuilder extends MMTable {
         sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in!=null && in.equals("")) return new Vector();
-        String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
+        String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
         return basicSearch(query);
     }
 
@@ -1444,7 +1445,7 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
         if (in==null || in.equals("")) return new Vector();
-        String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+        String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
 
@@ -1467,10 +1468,10 @@ public class MMObjectBuilder extends MMTable {
         sorted=mmb.getDatabase().getAllowedField(sorted);
         String query;
         if (direction) {
-            query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
+            query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
 
         } else {
-            query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
+            query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
         }
         return query;
     }
@@ -1527,7 +1528,7 @@ public class MMObjectBuilder extends MMTable {
                 orderBy += ", ";
             }
         }
-        return "SELECT " + getNonByteArrayFields(tableName) +" FROM " + getFullTableName() + " " + where + " ORDER BY " + orderBy;
+        return "SELECT " + getNonByteArrayFields() +" FROM " + getFullTableName() + " " + where + " ORDER BY " + orderBy;
     }
 
     /**
@@ -1589,10 +1590,10 @@ public class MMObjectBuilder extends MMTable {
         // do the query on the database
         if (in==null || in.equals("")) return new Vector();
         if (direction) {
-            String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
+            String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
             return basicSearch(query);
         } else {
-            String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
+            String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
             return basicSearch(query);
         }
     }
@@ -1606,7 +1607,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public Enumeration searchWithWhere(String where) {
         // do the query on the database
-        String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" where "+where;
+        String query="SELECT " + getNonByteArrayFields() +" FROM "+getFullTableName()+" where "+where;
         Vector results=basicSearch(query);
         if (results!=null) {
             return results.elements();
@@ -3515,11 +3516,12 @@ public class MMObjectBuilder extends MMTable {
     /**
      * This method returns all fields of the builder that have a FieldDefs.DBSTATE_PERSISTENT or a FieldDefs.DBSTATE_SYSTEM DBState ecluding fields  that have a DBType FieldDefs.TYPE_BYTE
      * @param builderName the name of the builder
+     * @since mmbase-1.6.2
      * @return a String containing the fields in the database separated by a comma
      **/
-    private String getNonByteArrayFields(String builderName){
+    private String getNonByteArrayFields(){
         StringBuffer sb = new StringBuffer();
-        Iterator fieldIter = mmb.getBuilder(builderName).getFields(FieldDefs.ORDER_CREATE).iterator();
+        Iterator fieldIter = getFields(FieldDefs.ORDER_CREATE).iterator();
 
         boolean first = true;
 
