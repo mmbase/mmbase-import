@@ -3,14 +3,17 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud sessionname="forum" username="admin" password="admin2k">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
+
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="forumid" />
+
+<!-- login part -->
+<%@ include file="getposterid.jsp" %>
+<!-- end login part -->
+                                                                                                                    
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -27,12 +30,12 @@
                 <mm:createnode id="mail1" type="email">
                         <mm:setfield name="from">daniel@xs4all.nl</mm:setfield>
                         <mm:setfield name="to"><mm:write referid="wemail" /></mm:setfield>
-                        <mm:setfield name="subject">Uw account informatie van het MMBob Forum</mm:setfield>
-                        <mm:setfield name="body"> Uw account informatie van het <mm:write referid="wforum" />  forum :
+                        <mm:setfield name="subject"><mm:write referid="mlg_Your_account_information_for_the_MMBob_forum"/></mm:setfield>
+                        <mm:setfield name="body"> <mm:write referid="mlg_Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
 
 
-			account=<mm:write referid="waccount" />
-			wachtwoord=<mm:write referid="wpassword" />
+			<mm:write referid="mlg_login_name" />=<mm:write referid="waccount" />
+			<mm:write referid="mlg_password" />=<mm:write referid="wpassword" />
 			</mm:setfield>
                 </mm:createnode>
 
@@ -46,6 +49,12 @@
 </mm:compare>
 </mm:present>
 <!-- end action check -->
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
 
 <div class="header">
     <%@ include file="header.jsp" %>
@@ -57,8 +66,8 @@
 <mm:present referid="mailed">
 <form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
 <tr><th align="left" ><p />
-Account informatie gemailed naar : <mm:write referid="wemail" />, <br />
-Met de informatie uit deze mail kunt u opnieuw inloggen.<p />
+<mm:write referid="mlg_Login_mail_sent_to" /> : <mm:write referid="wemail" />, <br />
+
 </th></tr>
 <tr><td>
 <center>
@@ -71,23 +80,23 @@ Met de informatie uit deze mail kunt u opnieuw inloggen.<p />
 <tr><th colspan="3" align="left" >
 <mm:present referid="action">
 <p />
-<center>	** acount naam niet gevonden ** </center>
+<center><mm:write referid="mlg_Login_name_not_found" /></center>
 </mm:present>
 <p />
-Geef uw login naam, let op niet uw email adres !<p />
-Login naam : <input name="wantedaccount" size="15">
+<mm:write referid="mlg_Please_enter_your_login_name" /><p />
+<mm:write referid="mlg_login_name"/> : <input name="wantedaccount" size="15">
 </th></tr>
 <tr><td>
 <input type="hidden" name="action" value="remail">
 <center>
-<input type="submit" value="Stuur de mail">
+<input type="submit" value="<mm:write referid="mlg_Ok"/>, <mm:write referid="mlg_send"/>">
 </form>
 </td>
 <td>
 <form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
 <p />
 <center>
-<input type="submit" value="Laat maar">
+<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
 </form>
 </td>
 </tr>
@@ -103,6 +112,8 @@ Login naam : <input name="wantedaccount" size="15">
                                                                                               
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
 

@@ -81,6 +81,8 @@
 
 <mm:import id="keyword" reset="true">Add_forum</mm:import><mm:import id="mlg_Add_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Remove_forum</mm:import><mm:import id="mlg_Remove_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Remove</mm:import><mm:import id="mlg_Remove"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
 <mm:import id="keyword" reset="true">Forum</mm:import><mm:import id="mlg_Forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Area_name</mm:import><mm:import id="mlg_Area_name"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
@@ -189,5 +191,41 @@
 <mm:import id="keyword" reset="true">Yes_delete</mm:import><mm:import id="mlg_Yes_delete"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 
+<mm:import id="keyword" reset="true">Folder</mm:import><mm:import id="mlg_Folder"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Add_folder</mm:import><mm:import id="mlg_Add_folder"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">folder</mm:import><mm:import id="mlg_folder"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">PM_Quota</mm:import><mm:import id="mlg_PM_Quota"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Subject</mm:import><mm:import id="mlg_Subject"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Date</mm:import><mm:import id="mlg_Date"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">You_are_using</mm:import><mm:import id="mlg_You_are_using"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">of_your_quota</mm:import><mm:import id="mlg_of_your_quota"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">delete</mm:import><mm:import id="mlg_delete"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">forward</mm:import><mm:import id="mlg_forward"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">email</mm:import><mm:import id="mlg_email"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">move</mm:import><mm:import id="mlg_move"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">UNSEEN</mm:import><mm:import id="mlg_UNSEEN"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Actions</mm:import><mm:import id="mlg_Actions"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Sender</mm:import><mm:import id="mlg_Sender"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">delete_mailbox</mm:import><mm:import id="mlg_delete_mailbox"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Mailbox</mm:import><mm:import id="mlg_Mailbox"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Delete_message_from</mm:import><mm:import id="mlg_Delete_message_from"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Email_message_to</mm:import><mm:import id="mlg_Email_message_to"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Move_message_to_different_folder</mm:import><mm:import id="mlg_Move_message_to_different_folder"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Move</mm:import><mm:import id="mlg_Move"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Forward_message_to_other_member</mm:import><mm:import id="mlg_Forward_message_to_other_member"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Forward</mm:import><mm:import id="mlg_Forward"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">from_folder</mm:import><mm:import id="mlg_from_folder"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">to_mailbox</mm:import><mm:import id="mlg_to_mailbox"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">to_your_real_email_account</mm:import><mm:import id="mlg_to_your_real_email_account"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Please_enter_your_login_name</mm:import><mm:import id="mlg_Please_enter_your_login_name"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">send</mm:import><mm:import id="mlg_send"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">login_name</mm:import><mm:import id="mlg_login_name"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Login_name_not_found</mm:import><mm:import id="mlg_Login_name_not_found"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Login_mail_sent_to</mm:import><mm:import id="mlg_Login_mail_sent_to"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Your_account_information_for_the_MMBob_forum</mm:import><mm:import id="mlg_Your_account_information_for_the_MMBob_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 
