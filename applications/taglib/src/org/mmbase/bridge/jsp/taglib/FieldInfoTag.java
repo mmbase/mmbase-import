@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.73.2.1 2004-07-10 12:13:01 nico Exp $
+ * @version $Id: FieldInfoTag.java,v 1.73.2.2 2004-07-26 20:12:17 nico Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -248,7 +248,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         if (localeTag != null) {
             locale = localeTag.getLocale();
         } else {
-            locale = getProviderCloudVar().getLocale();
+            locale = getCloudVar().getLocale();
         }
 
         switch(infoType) {

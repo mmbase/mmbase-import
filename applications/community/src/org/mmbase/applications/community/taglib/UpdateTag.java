@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * Posts a message
  *
  * @author Pierre van Rooden
- * @version $Id: UpdateTag.java,v 1.8.2.1 2004-07-10 12:13:04 nico Exp $
+ * @version $Id: UpdateTag.java,v 1.8.2.2 2004-07-26 20:12:21 nico Exp $
  */
  
 public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
@@ -48,7 +48,7 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         }
         community=getCloudContext().getModule("communityprc");
         // create a temporary message node that holds the new data
-        Node node = getProviderCloudVar().getNodeManager("message").createNode();
+        Node node = getCloudVar().getNodeManager("message").createNode();
         setNodeVar(node);
         return EVAL_BODY_BUFFERED;
     }
@@ -72,7 +72,7 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         }
         Hashtable params=new Hashtable();
         try {
-            Cloud cloud=getProviderCloudVar();
+            Cloud cloud=getCloudVar();
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
         params.put("MESSAGE-BODY",body);

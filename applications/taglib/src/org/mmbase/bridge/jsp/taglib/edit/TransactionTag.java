@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.19.2.1 2004-07-05 17:20:02 michiel Exp $ 
+ * @version $Id: TransactionTag.java,v 1.19.2.2 2004-07-26 20:12:22 nico Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -43,6 +43,12 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         commit = getAttribute(c);
     }
 
+    /**
+     * @since 1.7.1 this method shadows/implements the methods below.
+     * 
+     * @see org.mmbase.bridge.jsp.taglib.CloudReferrerTag#getCloudVar()
+     * @see org.mmbase.bridge.jsp.taglib.CloudProvider#getCloudVar()
+     */
     public Cloud getCloudVar() throws JspTagException {
         return transaction;
     }
