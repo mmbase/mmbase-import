@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.11 $ $Date: 2001-05-04 13:54:56 $ 
+ * @version $Revision: 1.12 $ $Date: 2001-05-07 15:30:24 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
@@ -77,7 +77,7 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 			MMObjectNode newnode=null;
 			while (!changed) {	
 				waitUntilNodeChanged(node);
-				newnode=getNode(node.getIntValue("number"));
+				newnode=getHardNode(node.getIntValue("number"));
 				String state=newnode.getStringValue("state");
 				if (state.equals("waiting"))
 					changed=true;
@@ -125,12 +125,19 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	public Vector getHTMLDir(StringTagger tagger, StringTokenizer tok) {
 		Vector result=new Vector();
 		String id=tagger.Value("NODE");
-		MMObjectNode node=getNode(id);
+		MMObjectNode node = null;
+		try {
+			node=getHardNode(Integer.parseInt(id));
+		} catch (NumberFormatException nfe) {
+			log.error("id:"+id+" is not an integer!, " + Logging.stackTrace(nfe));
+		}
+
 		if (node!=null) {
 			String info=(String)getValue(node,"getdir(info)");
 			StringTagger infotagger=new StringTagger(info);
+			String nroftracks = infotagger.Value("NROFTRACKS");	
 			try {
-				int i=Integer.parseInt(infotagger.Value("NROFTRACKS"));	
+				int i=Integer.parseInt(nroftracks);	
 				for (int j=0;j<i;j++) {
 					String trlen=infotagger.Value("TR"+j+"LEN");
 					String title=infotagger.Value("TR"+j+"TITLE");
@@ -138,9 +145,8 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 					result.addElement(title);
 					result.addElement(trlen);
 				}
-			} catch(Exception e) {
-				log.error("NROFTRACKS value is not an integer!");
-				e.printStackTrace();
+			} catch(NumberFormatException nfe) {
+				log.error("NROFTRACKS:"+nroftracks+" is not an integer!, " + Logging.stackTrace(nfe));
 			}
 		}
 		tagger.setValue("ITEMS","3");
