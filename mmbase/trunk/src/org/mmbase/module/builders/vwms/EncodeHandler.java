@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * is still busy or just finished.
  *
  * @author Rico Jansen?, Daniel?, David van Zeventer
- * @version $Revision: 1.20 $ $Date: 2001-04-27 14:40:53 $
+ * @version $Revision: 1.21 $ $Date: 2001-05-02 15:32:04 $
  */
 public class EncodeHandler implements Runnable {
 	private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -151,7 +151,7 @@ public class EncodeHandler implements Runnable {
 		String owner=node.getStringValue("owner");	
 		log.info("Getting cdplayer that is claimed by owner: "+owner);
 		cdplayers cdpbul=(cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");	
-		MMObjectNode cdpnode=cdpbul.getClaimedBy(owner);
+		MMObjectNode cdpnode=cdpbul.getClaimedService(owner);
 		if (cdpnode!=null) {
 			log.info("Found cdplayer "+cdpnode.getStringValue("name"));
 			// create a new rawaudio for the wav that's will be ripped
