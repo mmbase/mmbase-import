@@ -10,8 +10,17 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.email;
 
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.logging.*;
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
@@ -23,7 +32,10 @@ import org.mmbase.util.logging.*;
 public class EmailBackgroundHandler implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(EmailBackgroundHandler.class);
+    static private Logger log = Logging.getLoggerInstance(EmailBackgroundHandler.class.getName()); 
+
+    // Thread
+    Thread kicker = null;
 
     // email node
     MMObjectNode node;
@@ -32,19 +44,51 @@ public class EmailBackgroundHandler implements Runnable {
     * create a background thread with given email node
     */
     public EmailBackgroundHandler(MMObjectNode node) {
-        this.node = node;
-        Thread kicker = new Thread(this, "emailbackgroundhandler");
-        kicker.setDaemon(true);
-        kicker.start();
-
+        this.node=node;
+        init();
     }
 
-    public void run() {
-        try {
-            EmailHandler.sendMailNode(node);
-        } catch (Exception e) {
-            log.error("run(): ERROR: Exception in emailbackgroundhandler thread!");
-            log.error(Logging.stackTrace(e));
+    /**
+    * init the thread
+    */
+    public void init() {
+        this.start();    
+    }
+
+
+    /**
+     * Starts the main Thread.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            kicker = new Thread(this,"emailbackgroundhandler");
+            kicker.start();
         }
     }
+    
+    /**
+     * Main run, exception protected
+     */
+    public void run () {
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
+        try {
+            doWork();
+        } catch(Exception e) {
+            log.error("run(): ERROR: Exception in emailbackgroundhandler thread!");
+            log.error(Logging.stackTrace(e));
+         }
+    }
+
+    /**
+     * Main work handelr
+     */
+    public void doWork() {
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
+
+	// now we run in a new thread call
+	// the email handler to start sending the node
+        EmailHandler.sendMailNode(node);
+    }
+
 }
