@@ -21,32 +21,21 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* A tag which is a 'NodeReferrerTag's is for example the FieldTag. A
-* FieldTag must be a child of a NodeProvider.
-*
-* Originally, I named it 'NodeRefererTag' but this would have been a
-* misspeling, though a common one. Cite from foldoc:
-* <pre>
-* From The Free On-line Dictionary of Computing (13 Mar 01) [foldoc]:
-*
-*  referer
-*
-*     <World-Wide Web> A misspelling of "referrer" which somehow
-*     made it into the {HTTP} standard.  A given {web page}'s
-*     referer (sic) is the {URL} of whatever web page contains the
-*     link that the user followed to the current page.  Most
-*     browsers pass this information as part of a request.
-*
-*     (1998-10-19)
-*
-* </pre>
-*
-* @author Michiel Meeuwissen 
-**/
+ * A tag which is a 'NodeReferrerTag's can be the child of a
+ * NodeProvider tag, which supplies a 'Node' to its child tags. For
+ * example the FieldTag, needs the use the Node of the parent
+ * NodeProviderTag and therefore would be a NodeReferrerTag.
+ *
+ * @author Michiel Meeuwissen 
+ *
+ */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
+
     private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
-    protected String parentNodeId = null;
+
+    private String parentNodeId = null;
+
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
      * to make it possible to refer to another node than the direct
@@ -62,9 +51,22 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     * @return the NodeProvider if found else an exception.
     *
     */	
-    public NodeProvider findNodeProvider() throws JspTagException {
+    public NodeProvider findNodeProvider() throws JspTagException {        
         return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
     }
+    /**
+    * This method tries to find an ancestor object of type NodeProvider
+    * @return the NodeProvider or null.
+    *
+    */	
+    public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {        
+        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId, throwexception);
+    }
+
+    /**
+     * Gets the Node variable from the parent NodeProvider.
+     * @return a org.mmbase.bridge.Node
+     */
 
     protected Node getNode() throws JspTagException {
         return findNodeProvider().getNodeVar();
