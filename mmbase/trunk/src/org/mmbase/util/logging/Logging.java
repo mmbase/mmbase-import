@@ -58,13 +58,13 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.27 2004-01-22 14:39:49 michiel Exp $
+ * @version $Id: Logging.java,v 1.28 2004-02-19 17:32:10 michiel Exp $
  */
 
 
 public class Logging {
 
-    private static Class  logClass          = SimpleImpl.class; // default Logger Implementation
+    private static Class  logClass          = SimpleTimeStampImpl.class; // default Logger Implementation
     private static File   configurationFile = null;             // Logging is configured with a configuration file. The path of this file can be requested later.
     private static boolean configured = false;
     private static final Logger log = getLoggerInstance(Logging.class); // logger for this class itself
