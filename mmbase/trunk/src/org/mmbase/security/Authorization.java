@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.17 2003-08-05 19:05:21 michiel Exp $
+ * @version $Id: Authorization.java,v 1.18 2003-08-05 21:23:37 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
     private static Logger log = Logging.getLoggerInstance(Authorization.class);
@@ -190,7 +190,7 @@ public abstract class Authorization extends Configurable {
      *
      * @since MMBase-1.7
      */
-    protected static QueryCheck NO_CHECK       = new QueryCheck(false, null);
+    public static QueryCheck NO_CHECK       = new QueryCheck(false, null);
 
     /**
      * Constant which can be used as a result for the check query function. It means: 'No extra
@@ -200,7 +200,7 @@ public abstract class Authorization extends Configurable {
      *
      * @since MMBase-1.7
      */
-    protected  static QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
+    public static QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
 
 
     /**
@@ -215,7 +215,7 @@ public abstract class Authorization extends Configurable {
     public static class QueryCheck {
         Constraint constraint;
         boolean    check;
-        QueryCheck(boolean ch, Constraint co) {
+        public QueryCheck(boolean ch, Constraint co) {
             check = ch; constraint = co;
         }
         public boolean isChecked() {
