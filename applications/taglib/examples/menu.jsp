@@ -27,6 +27,10 @@
   |
   <a href="time.jsp">time</a>
   |
+  <a href="content.jsp">content</a>
+  |
+  <a href="query.jsp">query</a>
+  |
   <a href="tipsandtricks.jsp">Tips and Tricks (FAQ)</a>
   <br />
   <a href="<mm:url page="/mmdocs/reference/taglib/toc.html" />" >Taglib documentation</a>
