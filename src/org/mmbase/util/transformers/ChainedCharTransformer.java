@@ -59,24 +59,25 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
 
     public Writer transform(Reader startReader, Writer endWriter) {
         try {
-            Reader r = startReader;
-            Writer w = null;
-            Iterator i = charTransformers.iterator();
+            Reader r = null; 
+            Writer w = endWriter;
+            ListIterator i = charTransformers.listIterator(charTransformers.size());
             CharTransformer ct = null;
-            while (i.hasNext()) {         
-                ct = (CharTransformer) i.next();
-                if (i.hasNext()) {
-                    w = new PipedWriter();
-                    TransformerLink thread =  new TransformerLink(ct, (PipedWriter) w);
-                    r = thread.getReader();
+            while (i.hasPrevious()) {         
+                ct = (CharTransformer) i.previous();
+                if (i.hasPrevious()) { // needing a new  Threads!
+                    r = new PipedReader();
+                    Thread thread =  new TransformerLink(ct, r, w);
+                    w = new PipedWriter((PipedReader) r);
                     thread.start();
                 } else {
-                    w = endWriter;
+                    r = startReader;
                 }
             }
-            // assert(w == endWriter);
+            // assert(r == startReader);
             if (ct != null) {
-                ct.transform(r, endWriter);            
+                ct.transform(startReader, w);
+                w.flush();
             }
         } catch (IOException e) {
             log.error(e.toString());
@@ -86,30 +87,36 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
     }
 
     public String toString() {
-        return "CHAINED "  + charTransformers;
+        return "CHAINED"  + charTransformers;
     }
 
     private class TransformerLink extends Thread {
         CharTransformer charTransformer;
-        PipedWriter     pw;
-        PipedReader     pr;
-        TransformerLink(CharTransformer ct, PipedWriter w) throws IOException {
-            pw = w;
-            pr = new PipedReader(pw);
+        Writer     writer;
+        Reader     reader;
+        TransformerLink(CharTransformer ct, Reader r, Writer w) throws IOException {
+            reader = r;
+            writer = w;
             charTransformer = ct;
-        }
-        public Reader getReader() {
-            return pr;
         }
 
         public void run() {
-            charTransformer.transform(pr, pw);
+            try {
+                charTransformer.transform(reader, writer);
+                writer.flush();
+            } catch (IOException io) {
+            }
         }
 
     }
 
     public static void main(String[] args) {
-        
+        ChainedCharTransformer t = new ChainedCharTransformer();
+        t.add(new SpaceReducer());
+        t.add(new CopyCharTransformer());
+        System.out.println("Starting transform");
+        t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
+        System.out.println("Finished transform");
     }
     
 }
