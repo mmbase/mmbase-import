@@ -1,147 +1,235 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page import="java.util.*" %>
-<script type="text/javascript" language="javascript">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page import="java.util.*" %>
+<%@page import="java.net.*" %>
+<%@page import="org.mmbase.bridge.*" %>
+<%!
+    /**
+     * any questions -> keesj@dds.nl
+     **/
+    /**
+     * encode a string to be used in an url
+     * this method lowercases the text
+     * replaces spaces quotes an double quotes and amp sings to underscores
+     * after convertion is finished the java.net.URLEncoder is called
+     * to encode the remaining miscoded chars this is a onw way operation in order to keep the url pretty
+     * @param text
+     * @return the encoded url
+     */
+    public static String toURL(String text) {
 
-//HV Menu- by Ger Versluis (http://www.burmees.nl/)
-//Submitted to Dynamic Drive (http://www.dynamicdrive.com)
-//Visit http://www.dynamicdrive.com for this script and more
+        char[] chars = text.toLowerCase().toCharArray();
 
-function Go(){return}
+        StringBuffer sb = new StringBuffer();
 
-</script>
-<script type="text/javascript" language="javascript">
-	var LowBgColor='#E6E9DD';				// Background color when mouse is not over
-	var LowSubBgColor='#E6E9DD';			// Background color when mouse is not over on subs
-	var HighBgColor='#C4E856';				// Background color when mouse is over
-	var HighSubBgColor='#C4E856';			// Background color when mouse is over on subs
-	var FontLowColor='#3E3E3E';				// Font color when mouse is not over
-	var FontSubLowColor='#3E3E3E';			// Font color subs when mouse is not over
-	var FontHighColor='#3E3E3E';			// Font color when mouse is over
-	var FontSubHighColor='#3E3E3E';			// Font color subs when mouse is over
-	var BorderColor='#F9FAFB';				// Border color
-	var BorderSubColor='#F9FAFB';			// Border color for subs
-	var BorderWidth=2;						// Border width
-	var BorderBtwnElmnts=1;					// Border between elements 1 or 0
-	var FontFamily="arial,helvetica,sans-serif"	// Font family menu items
-	var FontSize=8;							// Font size menu items
-	var FontBold=0;							// Bold menu items 1 or 0
-	var FontItalic=0;						// Italic menu items 1 or 0
-	var MenuTextCentered='left';			// Item text position 'left', 'center' or 'right'
-	var MenuCentered='left';				// Menu horizontal position 'left', 'center' or 'right'
-	var MenuVerticalCentered='top';			// Menu vertical position 'top', 'middle','bottom' or static
-	var ChildOverlap=0;						// horizontal overlap child/ parent
-	var ChildVerticalOverlap=0;				// vertical overlap child/ parent
-	var StartTop=77;						// Menu offset x coordinate
-	var StartLeft=0;						// Menu offset y coordinate
-	var VerCorrect=0;						// Multiple frames y correction
-	var HorCorrect=0;						// Multiple frames x correction
-	var LeftPaddng=3;						// Left padding
-	var TopPaddng=6;						// Top padding
-	var FirstLineHorizontal=0;				// SET TO 1 FOR HORIZONTAL MENU, 0 FOR VERTICAL
-	var MenuFramesVertical=1;				// Frames in cols or rows 1 or 0
-	var DissapearDelay=1000;				// delay before menu folds in
-	var TakeOverBgColor=1;					// Menu frame takes over background color subitem frame
-	var FirstLineFrame='navig';				// Frame where first level appears
-	var SecLineFrame='space';				// Frame where sub levels appear
-	var DocTargetFrame='space';				// Frame where target documents appear
-	var TargetLoc='';						// span id for relative positioning
-	var HideTop=0;							// Hide first level when loading new document 1 or 0
-	var MenuWrap=1;							// enables/ disables menu wrap 1 or 0
-	var RightToLeft=0;						// enables/ disables right to left unfold 1 or 0
-	var UnfoldsOnClick=0;					// Level 1 unfolds onclick/ onmouseover
-	var WebMasterCheck=0;					// menu tree checking on or off 1 or 0
-	var ShowArrow=0;						// Uses arrow gifs when 1
-	var KeepHilite=1;						// Keep selected path highligthed
-	var Arrws=['media/tri.gif',5,10,'media/tridown.gif',10,5,'media/trileft.gif',5,10];	// Arrow source, width and height
+        for (int x = 0; x < chars.length; x++) {
+            char current = chars[x];
+            switch (current) {
+                case ' ' :
+                case '"' :
+                case '&' :
+                    sb.append('_');
+                case '\'' :
+                    break;
+                default :
+                    sb.append(current);
+            }
+        }
+        return URLEncoder.encode(sb.toString());
+    }
+%>
+<%!
+   public class Nav{
+	public Vector childs = new Vector();
+	String name;
+	String baseURL;
+	int id;
+	public boolean isPortal = false;
 
-function BeforeStart(){return}
-function AfterBuild(){return}
-function BeforeFirstOpen(){return}
-function AfterCloseAll(){return}
+	Nav parent  =null;
+	public Nav(String name,int id){
+		this.name = name;
+		this.id = id;
+	}
 
-// Menu tree
-//	MenuX=new Array(Text to show, Link, background image (optional), number of sub elements, height, width);
-//	For rollover images set "Text to show" to:  "rollover:Image1.jpg:Image2.jpg"
+	public Nav(String name,int id,String baseURL){
+		this.name = name;
+		this.id = id;
+		this.baseURL = baseURL;
+	}
 
-<%--
+	public Nav addChild(String name,int id){
+		return addChild(new Nav(name,id));	
+	}
 
-count number off first line menus
---%><%	int numberofpages = 0; 
-	Vector currentPath = new Vector(); 
-%><mm:node number="$portal"
-><mm:relatednodes type="pages" role="posrel" 
-	><mm:countrelations type="pages" jspvar="dummy" vartype="Integer" write="false"
-		><% try { 
-			numberofpages += dummy.intValue();
-		} catch(Exception e) { } 
-		%></mm:countrelations
-></mm:relatednodes
-></mm:node>
-var NoOffFirstLineMenus=  <%= numberofpages %>;
-<%--
+	public Nav addChild(Nav nav){
+		nav.setParent(this);
+		nav.baseURL = baseURL;
+		childs.add(nav);
+		return nav;
+	}
 
-********* add pages of this portal to navigation *********
---%>
-<mm:node number="$portal">
-<mm:related path="posrel,pages1">
-<mm:field name="pages1.number" jspvar="pages1_number" vartype="String" write="false">
-<%	
-	int [] offset = new int[10];
-	for(int d=0; d<offset.length; d++) {
-     	   offset[d]= 0;
+	public boolean hasParent(){
+		return parent != null;
+	}
+
+	public Nav getParent(){
+	       return parent;
+	}
+
+	public void setParent(Nav parent){
+	        this.parent = parent;
+	}
+
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		toString(0,sb);
+		return sb.toString();
+	}
+
+	public String toDiv(){
+		StringBuffer sb = new StringBuffer();
+		toDiv("menu",0,0,sb);
+		return sb.toString();
+	}
+
+	public void toDiv(String menuid,int deep,int count ,StringBuffer sb){
+                if (deep == 0 && count ==0){
+		   sb.append("\n<div class='navilayer' style='visibility: visible; left: 0px; z-index: 10' id='"+ menuid +"'>");
+		} else {
+		   sb.append("\n<div class='navilayer' style='left: "+ (deep * 140 )+"px' id='"+ menuid +"'>");
+		}
+		for (int x =0 ; x < count; x++){
+			//sb.append("\n  <div class='fill'><a>&nbsp;</a></div>");
+			sb.append("\n  <div class='fill'>&nbsp;</div>");
+		}
+		for (int y =0 ; y < childs.size() ; y++){
+			Nav nav = (Nav)childs.get(y);
+			sb.append("\n  <div>");
+                        if (nav.childs.size() >0){
+			   sb.append("<a href=\""+ baseURL +"&page="+ nav.id +"\" onMouseOver=\"show('"+menuid+"_"+ y+"',"+deep+",this)\">");
+			} else {
+			   sb.append("<a href=\""+ baseURL +"&page="+ nav.id +"\" onMouseOver=\"show('',"+deep+",this)\">");
+			}
+			sb.append(nav.name);
+			sb.append("</a>");
+			sb.append("</div>");
+		}
+
+		sb.append("\n</div>\n");
+		//sb.append("[" + id +","+ name+"]\n");
+
+		for (int y =0 ; y < childs.size() ; y++){
+			Nav nav = (Nav)childs.get(y);
+			//if has childs..
+			if (nav.childs.size() >0){
+			   nav.toDiv(menuid+"_"+ y,deep +1 , count,sb);
+			}
+			count ++;
+		}
+	}
+
+	public void toString(int indent,StringBuffer sb){
+		for (int x =0 ; x < indent ; x ++){
+			sb.append(" ");
+		}
+		sb.append("[" + id +","+ name+"]\n");
+		for (int y =0 ; y < childs.size() ; y++){
+			Nav nav = (Nav)childs.get(y);
+			nav.toString(indent +1 ,sb);
+		}
+	}
+   }
+%>
+<%!
+
+        public Nav addChildPagesOfPortal(Nav root,NodeList portalPages,NodeList subpages,String currentPage){
+                Nav curentPageNav= null;
+                if (currentPage.equals("" + root.id)){ curentPageNav = root; }
+                int id = root.id;
+                for (int x = 0 ; x < portalPages.size() ; x ++){
+                        Node pNode = portalPages.getNode(x);
+                        if (pNode.getIntValue("portals.number") == id){
+                                Node page = pNode.getNodeValue("pages.number");
+                                Nav childNav = root.addChild(page.getStringValue("title"),page.getNumber());
+                                Nav tmp = addChildPagesOfPages(childNav,subpages,currentPage);
+				if (tmp != null ){ curentPageNav = tmp; }
+                        }
+                }
+                return curentPageNav;
         }
 
-	String [] lastPage = new String[10];
-	for(int d=0; d<lastPage.length; d++) {
-           lastPage[d]= "";
+        public Nav addChildPagesOfPages(Nav root,NodeList subpages,String currentPage){
+                Nav curentPageNav= null;
+                int id = root.id;
+                if (currentPage.equals("" + root.id)){ curentPageNav = root; }
+                for (int x = 0 ; x < subpages.size() ; x ++){
+                        Node pNode = subpages.getNode(x);
+                        if (pNode.getIntValue("pages0.number") == id){
+                                Node page = pNode.getNodeValue("pages1.number");
+                                Nav childNav = root.addChild(page.getStringValue("title"),page.getNumber());
+                                Nav tmp = addChildPagesOfPages(childNav,subpages,currentPage);
+				if (tmp != null ){ curentPageNav = tmp; }
+                        }
+                }
+                return curentPageNav;
         }
-	lastPage[0] = pages1_number;
+%>
+<%
+       Nav nav = null;
+       Nav currentNav = null;
+%>
+<mm:cloud jspvar="cloud">
+<%
+       Node rootNode = cloud.getNode("home");
+       NodeList portals = cloud.getNodeManager("portals").getList(null,null,null);
+       NodeList subportal = rootNode.getRelatedNodes(rootNode.getNodeManager());
 
-	int depth = 1;
-	boolean subPageFound = false;
-while((depth>0||subPageFound)&&depth<10) { 
-	subPageFound = false;
-	%>
-      <mm:list nodes="<%= lastPage[depth-1] %>" path="pages1,posrel,pages2" searchdir="destination" orderby="posrel.pos" directions="UP" max="1" offset="<%= ""+ offset[depth] %>">
-	<mm:field name="pages2.number" jspvar="pages2_number" vartype="String" write="false">
-	<%	
-	subPageFound= true; 
-	offset[depth]++;
-	lastPage[depth] = pages2_number;
-	depth ++;
+        NodeList portalPages = cloud.getList(
+                        "" ,//startNodes
+                        "portals,posrel,pages",//nodePath
+                        "portals.number,posrel.pos,pages.number",//fields
+                        "",//constraints
+                        "posrel.pos",//orderby
+                        "UP",//directions
+                        "destination",//searchDir
+                        false);
 
-	String pageTree = "" + offset[1];
-	int d = 2;
-	while(d<depth) {
-		pageTree += "_" + (offset[d]);
-		d++;
+        NodeList subpages = cloud.getList(
+                        "",//startNodes
+                        "pages0,posrel,pages1",//nodePath
+                        "pages0.number,posrel.pos,pages1.number",//fields
+                        "",//constraints
+                        "posrel.pos",//orderby
+                        "UP",//directions
+                        "destination",//searchDir
+                        false);
+
+
+%>
+<%
+       String pnumber = request.getParameter("portal");
+       String currentPageString = request.getParameter("page");
+       if (currentPageString == null){
+		currentPageString ="";
 	}
-			
-	%>
-<% // had to use the following loop because mm:countrelations has no searchdir: MM: aaarchch it has in 1.7 %>
-        <% int numberOfSubPages=0; %>
-	<mm:node element="pages2"><mm:relatednodes type="pages" role="posrel" searchdir="destination"><% numberOfSubPages++; %></mm:relatednodes></mm:node>
-      Menu<%= pageTree %> = new Array("<mm:field name="pages2.title" />","<mm:url escapeamps="false" page="/index.jsp?portal=$portal"><mm:param name="page"><%= pages2_number %></mm:param></mm:url>","",<%= numberOfSubPages %>,26,142);
-	     <mm:compare referid="page" value="<%= pages2_number %>">
-	      <% for(int c=0; c<d; currentPath.add(lastPage[c++])) ;
-		%>
-	     </mm:compare>
-	  </mm:field>
-        </mm:list>
-        <%
-	if(!subPageFound) { // go one layer back
-		offset[depth] = 0;
-		depth--; 
+       if (pnumber == null){
+		pnumber = "202";
 	}
-} 
-if(currentPath.size()==0) { // curent page not found in the path from homepage, so the current page will be the homepage
-	currentPath.add(pages1_number);
-}
-%></mm:field
-></mm:related>
-</mm:node>
-</script>
-<script type="text/javascript" src="/scripts/menu_com.js" language="javascript"></script>
-<%-- <script language="JavaScript"><%@include file="/scripts/menu_com.js"%></script> --%>
+       Node portal = cloud.getNode(pnumber);
+       nav = new Nav(portal.getStringValue("name"),portal.getNumber(),"index.jsp?portal=202");
+       nav.isPortal = true;
+       currentNav = addChildPagesOfPortal(nav,portalPages,subpages,currentPageString);
+       if (currentNav == null){
+            %><!-- current Nav was null... --><%
+            currentNav = (Nav)nav.childs.get(0);
+       }
+       //for (int x =0 ; x < subportal.size() ; x ++){
+//                Node portalNode = subportal.getNode(x);
+//                Nav realportal = nav.addChild(portalNode.getStringValue("name"),portalNode.getNumber());
+//                realportal.isPortal = true;
+//                addChildPagesOfPortal(realportal,portalPages,subpages,currentPageString);
+//        }
 
-<noscript>Your browser does not support javascripts</noscript>
+%>
+<%= ((Nav)nav.childs.get(0)).toDiv() %>
+</mm:cloud>
