@@ -74,7 +74,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * This routine handles a maximum of 10 page/main, and 50 page/mirror service
      * calls each time it is called.
      * The first time this method is call, nothing happens (?)
-     * <br>
+     * <br />
      * Very similar to {@link #probeCall}.
      *
      * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise

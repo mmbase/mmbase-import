@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * MultiRelations is a builder which creates 'virtual' nodes.
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
- * which is in turn based on the relations that exist between nodes.<br>
+ * which is in turn based on the relations that exist between nodes.<br />
  * The builder supplies a method to retrieve these virtual nodes: {@link
  * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
  * searchMultiLevelVector()}.
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.30 2003-03-07 08:50:09 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.31 2003-03-07 11:49:14 pierre Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {

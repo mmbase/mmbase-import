@@ -20,14 +20,14 @@ import org.mmbase.util.logging.*;
  * It contains a list of possible service/subservice tasks. These tasks are then attached
  * to entries in the VWMs builder, so it is possible to search for a VWM to handle a
  * service/subservice request.
- * The fields of NetFileServ are:<br>
+ * The fields of NetFileServ are:<br />
  * <ul>
  * <li><code>service</code> : the main 'service' to be performed.
  *             Together with subservice, this determines the VWM that handles the transfer,
  *             i.e. 'pages/main' is handled by the {@link PageMaster} VWM.</li>
  * <li><code>subservice</code> : the subservice to perform. i.e. in PageMaster, 'main' determines mirror sites and
  *                schedules tasks for mirroring (by creating net netfile entries), while 'mirror'
- *                performs the actual transfer to a mirror<br>
+ *                performs the actual transfer to a mirror<br />
  *                Often one VWM handles multiple subservices, but this is not a given.</li>
  * <li><code>options</code> : Currently unused (?)</li>
  *</ul>

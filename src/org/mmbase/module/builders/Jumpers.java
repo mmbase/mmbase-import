@@ -18,15 +18,15 @@ import org.mmbase.cache.Cache;
  * Maintains jumpers for redirecting urls.
  * The data stored in this builder is used to redirect urls based ons a specific key.
  * The jumpers builder is called from the {@link org.mmbase.servlet.servjumpers} servlet.
- * <br>
- * The jumpers builder can be configured using two properties:<br>
+ * <br />
+ * The jumpers builder can be configured using two properties:<br />
  * <ul>
  * <li><code>JumperCacheSize</code> determines the size of the jumper cache (in nr of items).
  *                                 The default size is 1000.</li>
  * <li><code>JumperNotFoundURL</code> Determines the default url (such as a home page or error page)
  *              when no jumper is found. If not specified nothing will be done if no jumper is found.</li>
  * </ul>
- * <br>
+ * <br />
  * XXX:Note that this builder is called directly from a servlet, and may therefor
  * be bound to the cloud context rather than a cloud.
  * This would mean that in a multi-cloud environment, this builder will be shared.
@@ -39,8 +39,8 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Default Jump Cache Size.
-	 * Customization can be done through the central caches.xml
-	 * Make an entry under the name "JumpersCache" with the size you want.
+         * Customization can be done through the central caches.xml
+         * Make an entry under the name "JumpersCache" with the size you want.
      */
     private static final int DEFAULT_JUMP_CACHE_SIZE = 1000;
 

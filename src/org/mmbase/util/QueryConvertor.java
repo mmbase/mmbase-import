@@ -34,9 +34,9 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * Comparative operators are the same as those used in SCAN (i.e. '=E', '=N', etc)
  * A wildcarded strings (with '*' or '?' characters) are automatically converted
  * to a LIKE expression.
- * <br>
+ * <br />
  * The resulting converted expression is preceded with the SQL 'WHERE ' keyword.
- * <br>
+ * <br />
  * Note that if the expression to convert starts with "WHERE", it is not converted at all,
  * but returned as is.
  *
@@ -375,13 +375,13 @@ class DBQuery  extends ParseItem {
 /**
  * Class for conversion of boolean xpressions to their SQL equivalent.
  * This class converts the following conditional operators encountered in the
- * parameter passed to the constructor :<br>
- * '=='' or '=E' to '='<br>
- * '=N' to '<>'<br>
- * '=G' to '>'<br>
- * '=g' to '>='<br>
- * '=S' to '<'<br>
- * '=s' to '<='<br>
+ * parameter passed to the constructor :<br />
+ * '=='' or '=E' to '='<br />
+ * '=N' to '<>'<br />
+ * '=G' to '>'<br />
+ * '=g' to '>='<br />
+ * '=S' to '<'<br />
+ * '=s' to '<='<br />
  * It also wraps string values with the SQL lower() function, and uses LIKE
  * when wildcards are used in a stringvalue.
  *
@@ -637,10 +637,10 @@ class DBWildcardStringValue extends DBValue {
 
 /**
  * Class for conversion of operators to their SQL equivalent.
- * This class converts:<br>
- * '+' to 'AND'<br>
- * '-' to 'AND NOT'<br>
- * '|' to 'OR'<br>
+ * This class converts:<br />
+ * '+' to 'AND'<br />
+ * '-' to 'AND NOT'<br />
+ * '|' to 'OR'<br />
  */
 class DBLogicalOperator extends ParseItem {
     public static final char AND = '+';

@@ -17,8 +17,8 @@ import org.mmbase.util.logging.*;
  * to other servers.
  * It is used in the CACHE PAGE routine, that is used to cache SCAN pages.
  * Information in NetFiles is used by a number of VWMs (i.e. PageMaster and ImageMaster), which schedules the transfer
- * of the files.<br>
- * Each NetFile entry contains the following information:<br>
+ * of the files.<br />
+ * Each NetFile entry contains the following information:<br />
  * <ul>
  * <li><code>filename</code> : the name of the file</li>
  * <li><code>mmserver</code> : the server that should handle the file transfer</li>

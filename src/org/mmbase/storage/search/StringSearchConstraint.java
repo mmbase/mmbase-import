@@ -55,14 +55,14 @@ import java.util.*;
  * <li>{@link #PARAM_FUZZINESS PARAM_FUZZINESS}
  *  - <code>Float</code>, specifies maximum allowed number of
  *    typo's per word, expressed as fraction of word length.
- *    (E.g. 0,2 means: maximum 2 typo's for 10 letter words.).<br>
+ *    (E.g. 0,2 means: maximum 2 typo's for 10 letter words.).<br />
  *    This parameter is only relevant when used with match type
- *    <code>MATCH_TYPE_FUZZY</code>. 
- *    It can only be set for this match type, and is cleared when 
+ *    <code>MATCH_TYPE_FUZZY</code>.
+ *    It can only be set for this match type, and is cleared when
  *    the match type is set to another value.
  * <li>{@link #PARAM_PROXIMITY_LIMIT PARAM_PROXIMITY_LIMIT}
  *  - <code>Integer</code>, specifies maximum distance between
- *    searched words.<br>
+ *    searched words.<br />
  *    This parameter is only relevant when used with search type
  *    <code>SEARCH_TYPE_PROXIMITY_ORIENTED</code>.
  *    It can only be set for this search type, and is cleared when
@@ -70,62 +70,62 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface StringSearchConstraint extends FieldConstraint {
-    
+
     /** Search type for <em>word oriented</em> search. */
     public final static int SEARCH_TYPE_WORD_ORIENTED = 1;
-    
+
     /** Search type for <em>phrase oriented</em> search. */
     public final static int SEARCH_TYPE_PHRASE_ORIENTED = 2;
-    
+
     /** Search type for <em>proximity oriented</em> search. */
     public final static int SEARCH_TYPE_PROXIMITY_ORIENTED = 3;
-    
+
     /** Match type for <em>literal</em> matching. */
     public final static int MATCH_TYPE_LITERAL = 1;
-    
+
     /** Match type for <em>fuzzy</em> matching. */
     public final static int MATCH_TYPE_FUZZY = 2;
-    
+
     /** Match type for <em>synonym</em> matching. */
     public final static int MATCH_TYPE_SYNONYM = 3;
-    
+
     /** Name for parameter specifying <em>fuzziness</em> for fuzzy matching. */
     public final static String PARAM_FUZZINESS = "fuzziness";
-    
+
     /**
      * Name for parameter specifying <em>proximity limit</em> for
      * proximity oriented search.
      */
     public final static String PARAM_PROXIMITY_LIMIT = "proximityLimit";
-    
+
     /**
      * Gets the search type, this specifies how the search is performed.
      */
     int getSearchType();
-    
+
     /**
      * Gets value of additional parameters.
      *
      * @return The parameters, as an unmodifiable Map.
      */
     Map getParameters();
-    
+
     /**
      * Gets the match type.
      */
     int getMatchType();
-    
+
     /**
      * Gets the list of searchterms.
      *
      * @return The searchterms, as an unmodifiable List.
      */
     List getSearchTerms();
-    
+
     /**
      * Returns a string representation of this StringSearchConstraint.
      * The string representation has the form
@@ -153,5 +153,5 @@ public interface StringSearchConstraint extends FieldConstraint {
      * @return A string representation of this FieldValueConstraint.
      */
     public String toString();
-    
+
 }

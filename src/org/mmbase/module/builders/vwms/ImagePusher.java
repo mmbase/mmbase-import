@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * A class used to schedule images for transfer.
  * ImagePusher periodically (approx. every 4 seconds) checks it's parent's ({@link ImageMaster}) filelist,
  * and pushes the fields in that list on a {@link Queue}, which is, in turn, handled by a {@link FileCopier}
- * instance.<br>
+ * instance.<br />
  * The reason that this is done by ImagePusher, and not ImageMaster, is that this way double requests
  * for the same file can be filtered out. This seems useful, so perhaps {@link PageMaster} might need to use this
  * scheduling system too (or otherwise this should be build into FileCopier).
