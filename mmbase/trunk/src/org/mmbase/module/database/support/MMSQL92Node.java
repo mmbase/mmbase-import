@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.42 2000-11-19 00:59:54 daniel Exp $
+$Id: MMSQL92Node.java,v 1.43 2000-11-20 14:18:33 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.42  2000/11/19 00:59:54  daniel
+added a check to make sure we start getDBKey at 1
+
 Revision 1.41  2000/11/19 00:00:56  daniel
 removed the lock its not part of sql92, find a new trick !
 
@@ -168,7 +171,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.42 $ $Date: 2000-11-19 00:59:54 $
+* @$Revision: 1.43 $ $Date: 2000-11-20 14:18:33 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -783,10 +786,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private void checkNumberTable() {
 		if (debug) System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
 		if(!created(mmb.baseName+"_numberTable")) {
-			int number = getDBKeyOld();
-
-			// extra check to make sure we start at number=1 if needed
-			if (number==1) number=0;
+			// We want the current number of object, not next number (that's the -1)
+			int number = getDBKeyOld()-1;
 
 	 	 	if (debug) System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
 			String createStatement = getMatchCREATE("numberTable")+"( number integer not null);";
