@@ -1,14 +1,14 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd">
-<%@include file="readconfig.jsp" 
+<%@include file="read.jsp" 
 %><html>
-  <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
+  <link href="../style/streammanager.css" type="text/css" rel="stylesheet" />
   <title>Configuration</title>
 </head>
 <body>
  <h1>Configuration</h1>
- <mm:import externid="referrer">search.jsp</mm:import>
+ <mm:import externid="referrer">../search.jsp</mm:import>
   <form name="config" method="post">
   <table class="edit" summary="streammager configuration">  
    <tr><td>Language</td>  
@@ -28,7 +28,7 @@
          <td>
           <select name="format">
            <mm:write referid="config.format">
-             <option value="" <mm:compare value="">selected="selected"</mm:compare>>Any</option>
+             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>>Any</option>
              <option value="rm"  <mm:compare value="rm">selected="selected"</mm:compare>>Real audio</option>
              <option value="asf" <mm:compare value="asf">selected="selected"</mm:compare>>Windows Media</option>
            </mm:write>
@@ -38,7 +38,7 @@
          <td>
           <select name="quality">
            <mm:write referid="config.quality">
-             <option value="" <mm:compare value="">selected="selected"</mm:compare>>Any</option>
+             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>>Any</option>
              <option value="sb"  <mm:compare value="sb">selected="selected"</mm:compare>>Small band</option>
              <option value="bb" <mm:compare value="bb">selected="selected"</mm:compare>>Broad band</option>
            </mm:write>
@@ -48,9 +48,9 @@
          <td>
           <select name="player">
            <mm:write referid="config.player">
-             <option value="" <mm:compare value="">selected="selected"</mm:compare>>Any</option>
-             <option value="wm"  <mm:compare value="sb">selected="selected"</mm:compare>>window media player</option>
-             <option value="real" <mm:compare value="bb">selected="selected"</mm:compare>>real player</option>
+             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>>Any</option>
+             <option value="wm"  <mm:compare value="wm">selected="selected"</mm:compare>>window media player</option>
+             <option value="real" <mm:compare value="real">selected="selected"</mm:compare>>real player</option>
            </mm:write>
          </select>
          </td></tr>

@@ -1,4 +1,4 @@
-<list role="related" destination="publishtimes" minoccurs="0" maxoccurs="1" hidecommand="delete-item">
+<list role="related" destination="publishtimes" minoccurs="0" maxoccurs="1">
   <title xml:lang="en">Valid period (optional)</title>
   <title xml:lang="nl">Geldigheidsperiode (optioneel)</title>
   <item>
@@ -8,8 +8,8 @@
   <action type="create">
     <relation destinationtype="publishtimes" role="related" >
       <object type="publishtimes">      
-        <field name="begin">0</field>
-        <field name="end">0</field>
+        <field name="begin" />
+        <field name="end" />
       </object>
     </relation>
   </action>
