@@ -29,7 +29,7 @@
 <a name="post"></a>
 <form name="chatlineform" method="post" action="chatline.jsp">
 <input name="body" size="80" /><input type="submit" name="action" value="OK">
-<a href="logoff.jsp" target="_parent">Weggaan</a>
+<a href="logoff.jsp" target="_parent">Leave</a>
 </form>
 </mm:node>
 </mm:cloud>

@@ -6,7 +6,7 @@
 <mm:import externid="pwd"   from="parameters" required="true" />
 <mm:import externid="orgpwd" from="parameters" />
 
-<mm:cloud logon="forum" pwd="shoo_me">
+<mm:cloud logon="forum" pwd="forum">
 
 <mm:present referid="orgpwd">
   <mm:compare referid="orgpwd" value="${pwd}">
@@ -43,24 +43,24 @@
  </mm:listnodes>
  <mm:present referid="usernamefound">
    <body>   
-   <strong>Uw opgegeven wachtwoord is incorrect.</strong>
+   <strong>The given password was incorrect.</strong>
    <form action="login.jsp" method="post">
    <table>
-   <tr><td>Loginnaam:</td><td><input type="text" name="login" size="10" value="<mm:write referid="login" />"></td></tr>
-   <tr><td>Wachtwoord:</td><td><input type="password" name="pwd" size="10"></td></tr>
+   <tr><td>Login:</td><td><input type="text" name="login" size="10" value="<mm:write referid="login" />"></td></tr>
+   <tr><td>Pasword:</td><td><input type="password" name="pwd" size="10"></td></tr>
    </table>
    <input type="submit" value="Aanmelden">   
    </form>
   </mm:present>
   <mm:notpresent referid="usernamefound">
    <body>
-   <strong>Uw bent een nieuwe gebruiker, hertype uw wachtwoord..</strong>
+   <strong>You're a new chatter, retype your password.</strong>
    <form action="login.jsp" method="post">
    <input type="hidden" name="orgpwd" value="<mm:write referid="pwd" />" />
    <input type="hidden" name="login"  value="<mm:write referid="login" />" />
    <table>
-   <tr><td>Loginnaam:</td><td><mm:write referid="login" /></td></tr>
-   <tr><td>Wachtwoord:</td><td><input type="password" name="pwd" size="10"></td></tr>
+   <tr><td>Login:</td><td><mm:write referid="login" /></td></tr>
+   <tr><td>Password:</td><td><input type="password" name="pwd" size="10"></td></tr>
    </table>
       <input type="submit" value="Aanmelden">
    </p>
@@ -73,14 +73,14 @@
   </head>
   <body>
   <mmcommunity:connection channel="Chat" user="${chatter}" action="join" />
-  <p>U bent nu ingelogd als <mm:write referid="chattername" /></p>
-  <p>U kunt nu berichten toevoegen aan <a href="<mm:url page="chats.jsp" />">de MMBase chat</a></p>
+  <p>You're logged on as <mm:write referid="chattername" /></p>
+  <p>You can now use the <a href="<mm:url page="chats.jsp" />">MMBase chat</a></p>
   <mm:node number="Chat" id="channel">
    <mmcommunity:post>
       <mm:setfield name="username"><mm:write referid="chattername"/></mm:setfield>
       <mm:setfield name="user"><mm:write referid="chatter"/></mm:setfield>
       <mm:setfield name="channel"><mm:field name="number" node="channel"/></mm:setfield>
-      <mm:setfield name="body">komt binnen in de MMBase babbeldoos.</mm:setfield>
+      <mm:setfield name="body">enters the MMBase chatbox.</mm:setfield>
    </mmcommunity:post>    
   </mm:node>
 </mm:present>
