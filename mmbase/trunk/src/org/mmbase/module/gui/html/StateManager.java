@@ -147,62 +147,66 @@ public class StateManager implements CommandHandlerInterface {
 	/**
 	* setInsEditor
 	*/
-	boolean newInsNode(EditState ed,String userName,StringTokenizer tok) { 
-		try {
-			// vaag vaag kan ik niet gewoon in de lijst kijken ?
-			//int n1=Integer.parseInt(ed.getHtmlValue("L1"));
-			//int n2=Integer.parseInt(ed.getHtmlValue("L2"));
-			String tmp=tok.nextToken();
-			int n1=Integer.parseInt(tmp);
-			//System.out.println("StateManager -> L1="+n1);	
+    boolean newInsNode(EditState ed,String userName,StringTokenizer tok) {
+        try {
+            String tmp=tok.nextToken();
+            int n1=Integer.parseInt(tmp);
 
-			tmp=tok.nextToken();
-			int n2=Integer.parseInt(tmp);
-			//System.out.println("StateManager -> L2="+n2);	
+            tmp=tok.nextToken();
+            int n2=Integer.parseInt(tmp);
 
+            String builder=tok.nextToken();
 
+            int rtype=-1;
+            if (mmBase.getTypeDef().getIntValue(builder)==-1) {
 
-			String builder=tok.nextToken();
-	
-			//String builder=ed.getHtmlValue("L3");
-			//System.out.println("StateManager -> L3="+builder);
-	
-			if (mmBase.getTypeDef().getIntValue(builder)==-1) {
-				builder="insrel";
-			}
-			//System.out.println("StateManager -> "+builder);
-			ed.popState();
-			ed.setBuilder(builder);
-			MMObjectBuilder bul=ed.getBuilder();
+            // ***
+            // *   Obtain number of the relation in getRelDef
+            // *   This works if 'builder' is a relationname
+            // *   Not very neat, but it works as long as you don't have any relations
+            // *   that are equal to builder names (but that should give you problems in the
+            // *   old situation, too).
+            // ***
 
-			MMObjectNode nn1=bul.getNode(n1);
-			int t1=nn1.getIntValue("otype");
+                rtype = mmBase.getRelDef().getGuessedByName(builder);  
+                // *** added
+                builder="insrel";
+            }
 
+            ed.popState();
+            ed.setBuilder(builder);
+            MMObjectBuilder bul=ed.getBuilder();
 
-			ed.NewNode(userName);
-			MMObjectNode node=ed.getEditNode();
-			node.setValue("snumber",n1);	
-			node.setValue("dnumber",n2);	
-			// hack hack is a default setting
-			//System.out.println("StateManager -> RELATIONS WHAT ABOUT NON-INSREL DIRECTIONS ?");
-			if (builder.equals("insrel")) {
-				/*
-				Enumeration result=mmBase.getTypeRel().getAllowedRelations(bul.getNode(n1),bul.getNode(n2));
-				if (result!=null && result.hasMoreElements()) {
-					MMObjectNode n=(MMObjectNode)result.nextElement();
-					node.setValue("rnumber",n.getIntValue("rnumber"));	
-				}
-				*/
-				int t2=(bul.getNode(n2)).getIntValue("otype");
-				int rtype=mmBase.getTypeRel().getAllowedRelationType(t1,t2);
-				node.setValue("rnumber",rtype);
-			}
-		} catch (Exception e) {
-			System.out.println("StateManager -> Can't create insnode");
-			e.printStackTrace();
-		}
-		return(true);
-	}
+            MMObjectNode nn1=bul.getNode(n1);
+            int t1=nn1.getIntValue("otype");
+
+            ed.NewNode(userName);
+            MMObjectNode node=ed.getEditNode();
+            node.setValue("snumber",n1);
+            node.setValue("dnumber",n2);
+
+            if (builder.equals("insrel")) {
+
+            // ***
+            // *   if rtype was set, use that number, otherwise get the type from TypeRel
+            // ***
+
+                if (rtype==-1) {
+                    int t2=(bul.getNode(n2)).getIntValue("otype");
+
+                    rtype=mmBase.getTypeRel().getAllowedRelationType(t1,t2);
+                }
+                node.setValue("rnumber",rtype);
+            }
+            // ***
+
+            } catch (Exception e) {
+                System.out.println("StateManager -> Can't create insnode");
+                e.printStackTrace();
+            }
+        return(true);
+    }
+
 
 	/**
 	* setSearchVals
