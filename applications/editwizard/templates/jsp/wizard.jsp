@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.19 2003-11-19 13:34:28 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.20 2003-11-26 22:46:02 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -119,7 +119,7 @@ if (wizardConfig.wiz.startWizard()) {
                                  "&objectnumber=" + objectnumber +
                                  "&origin=" + origin +
                                  "&popupid=" + popupId +
-                                 "&context=" + ewconfig.context +
+                                 (ewconfig.context == null ? "" : "&context=" + ewconfig.context) +
                                  "&language=" + ewconfig.language);
     log.debug("Redirecting to " + redirectTo);
     response.sendRedirect(redirectTo);
