@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.3 2003-09-01 12:36:13 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.4 2003-09-03 07:25:20 michiel Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -340,7 +340,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             return factory.getSearchQueryHandler().getSupportLevel(feature, query);
         } catch (StorageException se) {
-            throw new SearchQueryException(se.getMessage());
+            throw new SearchQueryException(se);
         }
     }
 
@@ -348,7 +348,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             return factory.getSearchQueryHandler().getSupportLevel(constraint, query);
         } catch (StorageException se) {
-            throw new SearchQueryException(se.getMessage());
+            throw new SearchQueryException(se);
         }
     }
 
@@ -356,7 +356,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             return factory.getSearchQueryHandler().getNodes(query, builder);
         } catch (StorageException se) {
-            throw new SearchQueryException(se.getMessage());
+            throw new SearchQueryException(se);
         }
     }
 }
