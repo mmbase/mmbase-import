@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.39 2000-11-14 12:27:31 install Exp $
+$Id: MMSQL92Node.java,v 1.40 2000-11-15 09:19:23 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.39  2000/11/14 12:27:31  install
+Rob : added some comments
+
 Revision 1.38  2000/11/07 14:32:27  vpro
 Rico: removed debug
 
@@ -159,7 +162,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.39 $ $Date: 2000-11-14 12:27:31 $
+* @$Revision: 1.40 $ $Date: 2000-11-15 09:19:23 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -186,6 +189,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typeMapping=parser.getTypeMapping();
 		disallowed2allowed=parser.getDisallowedFields();
 		allowed2disallowed=getReverseHash(disallowed2allowed);
+		// Check if the numbertable exists, if not one will be created. 
+		checkNumberTable();
 	}
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
@@ -765,12 +770,58 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 	/**
-	 * gives an unique number
-	 * This method needs to be fixed, while using more mmbases.
+	 * checks if numberTable exists.
+	 * If not this method will create one.
+	 * And inserts the DBKey retrieve by getDBKeyOld
+	 */
+	private void checkNumberTable() {
+		System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
+		if(!created(mmb.baseName+"_numberTable")) {
+			int number = getDBKeyOld();
+	 	 	System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
+			String createStatement = getMatchCREATE("numberTable")+"( number integer not null);";
+			try {
+				MultiConnection con=mmb.getConnection();
+				Statement stmt=con.createStatement();
+				stmt.executeUpdate(createStatement);
+				stmt.executeUpdate("insert into "+mmb.baseName+"_numberTable (number) values("+number+");");
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+				System.out.println("MMSQL92NODE -> ERROR, Wasn't able to create numberTable table.");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * gives an unique number 
+	 * this method will work with multiple mmbases
 	 * @return unique number 
 	 */
 	public synchronized int getDBKey() {
-		// get a new key
+		int number =-1;
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
+			stmt.executeUpdate("update "+mmb.baseName+"_numberTable set number = number+1");
+ 			ResultSet rs=stmt.executeQuery("select number from "+mmb.baseName+"_numberTable;");
+  			while(rs.next()) {
+                number=rs.getInt(1);
+            }
+			stmt.executeUpdate("unlock tables;");
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
+		}
+		System.out.println("MMSQL92NODE -> retrieving number "+number+" from the database");
+		return number; 
+	}
+
+	public synchronized int getDBKeyOld() {
 		int number=-1;
 		try {
 			MultiConnection con=mmb.getConnection();
