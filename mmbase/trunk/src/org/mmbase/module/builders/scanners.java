@@ -35,6 +35,7 @@ import org.mmbase.util.logging.Logging;
  */
 
 /**
+ * This builder is a representation of the scanners used within the MMBase system
  */
 public class scanners extends MMObjectBuilder implements MMBaseObserver {
 
