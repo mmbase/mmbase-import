@@ -15,12 +15,11 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.10 2001-03-02 12:51:44 install Exp $
+ * @version $Id: TransactionResolver.java,v 1.11 2001-03-02 13:56:44 install Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
-
-	MMBase mmbase;
+	private MMBase mmbase;
 
 	public TransactionResolver(MMBase mmbase) {
 		this.mmbase=mmbase;
@@ -61,7 +60,7 @@ public class TransactionResolver {
 						field=fd.getDBName();
 						tmpfield="_"+field;
 						tmpstate=node.getDBState(tmpfield);
-						if (tmpstate==FieldDefs.DBSTATE_VIRTUAL || tmpstate==FieldDefs.DBSTATE_UNKNOWN) {
+						if (tmpstate==FieldDefs.DBSTATE_VIRTUAL) {
 							ikey=node.getIntValue(field);
 							if (ikey<0) {
 								// Key is not set
