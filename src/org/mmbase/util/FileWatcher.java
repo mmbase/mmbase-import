@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.23 2004-08-04 15:07:55 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.24 2004-09-15 12:18:24 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -78,8 +78,9 @@ public abstract class FileWatcher {
      * #DEFAULT_DELAY}.
      */
     private long delay = DEFAULT_DELAY;
+
     private Set files = new HashSet();
-    private Set fileSet = new FileSet();
+    private Set fileSet = new FileSet(); // (automaticly) wraps 'files'.
     private Set removeFiles = new HashSet();
     private boolean stop = false;
     private boolean continueAfterChange = false;
@@ -144,8 +145,9 @@ public abstract class FileWatcher {
     }
 
     /**
-     * Returns a (modifiable) Set of all files of this FileWatcher. If you change it, you change the
-     * FileWatcher. This is not a copy.
+     * Returns a (modifiable) Set of all files (File object) of this FileWatcher. If you change it, you change the
+     * FileWatcher.
+     *
      * @since MMBase-1.8.
      */
     public Set getFiles() {
@@ -153,17 +155,15 @@ public abstract class FileWatcher {
     }
 
     /**
-     * Removes all files, the wachter will end up watching nothing.
+     * Removes all files, this watcher will end up watching nothing.
      * @since MMBase-1.8
      */
     public void clear() {
-        Iterator i = fileSet.iterator();
-        while (i.hasNext()) {
-            i.next(); i.remove();
-        }        
+        fileSet.clear();
     }
 
     /**
+     * Stops watching.
      */
     public void exit() {
         synchronized (this) {
@@ -306,7 +306,7 @@ public abstract class FileWatcher {
 
         FileWatcherRunner() {
             super("MMBase FileWatcher thread");
-            log.info("Starting the file-watcher thread");
+            log.service("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
         }
