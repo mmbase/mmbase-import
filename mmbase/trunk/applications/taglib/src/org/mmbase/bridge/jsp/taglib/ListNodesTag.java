@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.17 2003-11-06 09:07:24 pierre Exp $
+ * @version $Id: ListNodesTag.java,v 1.18 2003-11-07 10:40:30 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -58,19 +58,17 @@ public class ListNodesTag extends AbstractNodeListTag {
     /**
      * @since MMBase-1.7
      */
-    protected int getNodes() throws JspTagException {
+    protected NodeList getNodes() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
 
+        NodeList nodes;
         if (c == null || type != Attribute.NULL) {
             if (type == Attribute.NULL) {
                 throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
             }
             nodeManager = getCloud().getNodeManager(type.getString(this));
-            NodeList nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
-
-            return setReturnValues(nodes, true);
-
+            nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
         } else {
             NodeQuery query = (NodeQuery) c.getQuery();
             if (constraints != Attribute.NULL) {
@@ -79,10 +77,9 @@ public class ListNodesTag extends AbstractNodeListTag {
             if (orderby != Attribute.NULL) {
                 Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
             }
-            NodeList nodes = getCloud().getList(query);
-
-            return setReturnValues(nodes, true, query);
+            nodes = getCloud().getList(query);
         }
+        return nodes;
     }
 
     /**
@@ -93,7 +90,8 @@ public class ListNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        return getNodes();
+        return setReturnValues(getNodes(), true);
+
     }
 
 }
