@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.4 2002-04-11 12:00:14 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.5 2002-04-15 15:18:20 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver {
@@ -296,7 +296,9 @@ public class URIResolver implements javax.xml.transform.URIResolver {
             prefix = p;
             dir    = d;
             prefixLength = prefix.length(); // avoid calculating it again.
-            // XXX: perhaps should throw an exception if File cannot be a directory.
+            if (! d.isDirectory()) {
+                throw new IllegalArgumentException(d.toString() + " is not an existing directory");
+            }
         }
     
         String getPrefix() {
