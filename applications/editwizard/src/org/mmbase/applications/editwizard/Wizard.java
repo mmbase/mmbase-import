@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.49 2002-07-17 11:28:07 pierre Exp $
+ * @version $Id: Wizard.java,v 1.50 2002-07-18 10:44:28 pierre Exp $
  *
  */
 public class Wizard {
@@ -397,7 +397,7 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
         // Build the preHtml version of the form.
         preform = createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
         Validator.validate(preform, schema);
-        Map params = new HashMap();
+        Map params = new HashMap(variables);
         params.put("ew_context", context);
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
@@ -917,6 +917,14 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
         }
     }
 
+    private void expandAttribute(Node node, String name, String defaultvalue) {
+        String value= Utils.transformAttribute(data.getDocumentElement(),
+                                        Utils.getAttribute(node, name,null),
+                                        false,variables);
+        if (value==null) value=defaultvalue;
+        if (value!=null) Utils.setAttribute(node,name,value);
+    }
+    
     /**
      * 	Creates a form item (each of which may consist of several single form fields)
      *  for each given datanode.
@@ -930,7 +938,16 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
 
         // Add the title, description.
         NodeList props = Utils.selectNodeList(fieldlist, "title|description|action|command");
+
         Utils.appendNodeList(props, newlist);
+
+        // expand attribute 'startnodes' for search command
+        Node command = Utils.selectSingleNode(fieldlist,"command[@name='search']");
+        if (command!=null) expandAttribute(command,"startnodes",null);
+
+        // expand attribute 'objectnumber' for editwizard command
+        command = Utils.selectSingleNode(fieldlist,"command[@name='startwizard']");
+        if (command!=null) expandAttribute(command,"objectnumber","new");
 
         String hiddenCommands = "|" + Utils.getAttribute(fieldlist,"hidecommand") + "|";
 
@@ -1053,8 +1070,6 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
             ((Element) form).setAttribute("invalidlist", listTitle);
         }
 
-
-
         log.debug("can we place an add-button?");
         if (hiddenCommands.indexOf("|add-item|") == -1 && (maxoccurs == -1 || maxoccurs > nrOfItems) && (Utils.selectSingleNode(fieldlist, "action[@type='create']")!=null)) {
             String defaultpath=".";
@@ -1114,22 +1129,20 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
 
         // resolve special attributes
         if (ftype.equals("startwizard")) {
-            log.debug("this is a startwizard");
-            String objectNumber = Utils.getAttribute(newfield, "objectnumber", null); // this is shadowing the member!
-            log.debug("What is this number  " +  objectNumber);
+            String wizardObjectNumber = Utils.getAttribute(newfield, "objectnumber", null);
             // if no objectnumber is found, assign the number of the current field.
             // exception is when the direct parent is a form.
-            // in that case, we are editting the current object, so instead asign new
+            // in that case, we are editting the current object, so instead assign new
             // note: this latter does not take into account fieldsets!
-            if (objectNumber == null) {
+            if (wizardObjectNumber == null) {
                 if (form.getNodeName().equals("form")) {
-                    objectNumber = "new";
+                    wizardObjectNumber = "new";
                 } else {
-                    objectNumber = Utils.getAttribute(newfield, "number", "new");
+                    wizardObjectNumber = Utils.getAttribute(newfield, "number", "new");
                 }
             }
-            objectNumber = Utils.transformAttribute(datanode, objectNumber);
-            Utils.setAttribute(newfield, "objectnumber", objectNumber);
+            wizardObjectNumber = Utils.transformAttribute(datanode, wizardObjectNumber);
+            Utils.setAttribute(newfield, "objectnumber", wizardObjectNumber);
         }
 
         // binary type needs special processing
