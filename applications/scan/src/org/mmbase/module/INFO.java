@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.8 $ $Date: 2000-05-18 14:42:41 $
+ * @$Revision: 1.9 $ $Date: 2000-05-18 15:00:08 $
  */
 public class INFO extends ProcessorModule {
 
@@ -350,11 +350,14 @@ public class INFO extends ProcessorModule {
 
 			int whichname=INFO.Not;
 
-			if (cmd.equals("NAME") || cmd.equals("ENGLISH")) {
+			if (cmd.equals("NAME") || cmd.equals("ENGLISH")) { 
 				whichname=INFO.English;
 				if (tok.hasMoreTokens()) cmd=tok.nextToken();
-			} else if (cmd.equals("DUTCHNAME") ||cmd.equals("DUTCH")) {
+			} else if (cmd.equals("DUTCHNAME") || cmd.equals("DUTCH")) {
 				whichname=INFO.Dutch;
+				if (tok.hasMoreTokens()) cmd=tok.nextToken();
+			} else if (cmd.equals("NUMBER")) {
+				whichname=INFO.Not;
 				if (tok.hasMoreTokens()) cmd=tok.nextToken();
 			} else {
 				whichname=INFO.Not;
