@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.138 2002-05-08 13:57:11 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.139 2002-05-08 14:24:25 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -342,10 +342,10 @@ public class MMObjectBuilder extends MMTable {
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
         } catch(Exception e) {
-            log.error("ERROR INSERT PROBLEM ! Error node="+node);
-            log.error(Logging.stackTrace(e));
-            // TODO: Research if we _should_ throw an runtime exception, instead of returning -1
-            return -1;
+            // do we really wanna catch our exceptions here? no need here, since not in throw clause..
+            String msg = "Failure(" + e + ") inserting node:\n" + node;
+            log.error(msg);
+            throw new RuntimeException(msg);
         }
     }
 
@@ -762,10 +762,12 @@ public class MMObjectBuilder extends MMTable {
             }
             else {
                 // smaller then 0, cant be possible!
-                throw new RuntimeException("The nodetype of node #" + number + " could be found(nodetype # " + bi + ")");
+                String msg = "The nodetype of node #" + number + " could not be found(nodetype # " + bi + ")";
+                log.error(msg);
+                throw new RuntimeException(msg);
             }
             if (bul == null) {
-                log.error("The nodetype of node #" + number + " could be found(nodetype # " + bi + "(possible non table query blocked?) )");
+                log.error("The nodetype of node #" + number + " could not be found(nodetype # " + bi + ")");
                 return null;
             }
             
@@ -807,7 +809,10 @@ public class MMObjectBuilder extends MMTable {
             return node;
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            log.error(Logging.stackTrace(e));
+            String msg = "The node #" + number + " could retrieved : " + e + "\n" + Logging.stackTrace(e);
+            log.error(msg);
+            // do we need to throw an exception in this situation, of continue running?
+            // throw new RuntimeException(msg);
             return null;
         }
     }
