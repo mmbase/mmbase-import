@@ -97,7 +97,7 @@ public interface NodeInterface {
 	 * Count the relations of a specific type attached to the Node 
 	 * @return number of relations of a specific type
 	 */
-	public Integer countRelations(String type);
+	public int countRelations(String type);
 
 	/**
 	 * Retrieve all related Nodes
