@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.92 2004-12-06 15:33:53 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.93 2004-12-10 21:09:26 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -60,10 +60,7 @@ public class MMAdmin extends ProcessorModule {
      * @scope private
      */
     String lastmsg = "";
-    /**
-     * @javadoc
-     */
-    private boolean restartwanted = false;
+
     /**
      * @javadoc
      */
@@ -223,8 +220,8 @@ public class MMAdmin extends ProcessorModule {
             StringTokenizer tok = new StringTokenizer(cmdline, "-\n\r");
             token = tok.nextToken();
             if (token.equals("SERVERRESTART")) {
-                String user = (String)cmds.get(cmdline);
-                doRestart(user);
+                lastmsg = "Server restart is not implemented any more";
+                return false;
             } else if (token.equals("LOAD") && !kioskmode) {
                 ApplicationResult result = new ApplicationResult(this);
                 String appname = (String)cmds.get(cmdline);
@@ -592,20 +589,6 @@ public class MMAdmin extends ProcessorModule {
      */
     public void maintainance() {}
 
-    /**
-     * @javadoc
-     * @bad-literal time for MMAdminProbe should be a constant or configurable
-     */
-    public void doRestart(String user) {
-        if (kioskmode) {
-            log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
-            return;
-        }
-        lastmsg = "Server Reset requested by '" + user + "' Restart in 3 seconds\n\n";
-        log.info("Server Reset requested by '" + user + "' Restart in 3 seconds");
-        restartwanted = true;
-        probe = new MMAdminProbe(this, 3 * 1000);
-    }
 
     /**
      * Installs the application
@@ -1359,10 +1342,6 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public void probeCall() throws SearchQueryException {
-
-        if (restartwanted) {
-            System.exit(0);  // jikes
-        }
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
