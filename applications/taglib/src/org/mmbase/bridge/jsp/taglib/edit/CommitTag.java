@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.Tag;
 
@@ -31,9 +32,9 @@ public class CommitTag extends CloudReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
 
-    private String transaction = null;
+    private Attribute transaction = Attribute.NULL;
     public void setTransaction(String t) throws JspTagException {
-        transaction = getAttributeValue(t);
+        transaction = getAttribute(t);
     }
 
     protected void doAction(Transaction t) {
@@ -42,7 +43,7 @@ public class CommitTag extends CloudReferrerTag {
 
     public int doStartTag() throws JspTagException{
         // find the parent transaction:        
-        TransactionTag tt = (TransactionTag)  findParentTag("org.mmbase.bridge.jsp.taglib.edit.TransactionTag", transaction, true);
+        TransactionTag tt = (TransactionTag)  findParentTag("org.mmbase.bridge.jsp.taglib.edit.TransactionTag", transaction.getString(this), true);
         Transaction trans = (Transaction) tt.getCloudVar();
         doAction(trans);
         /*

@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
 import java.io.*;
