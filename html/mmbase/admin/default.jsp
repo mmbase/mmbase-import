@@ -4,32 +4,42 @@
 <head>
    <title>MMBase Administration</title>
    <link rel="stylesheet" href="css/mmbase.css" type="text/css">
-    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </head>
-<%
-    String category=request.getParameter("category");
-    String subcategory=request.getParameter("subcategory");
-    if (category==null) {
-%>
+<mm:import externid="category" />
+<mm:import externid="subcategory" />
+<mm:notpresent referid="category">
         <frameset rows="60,*" border="0" frameborder="0" framespacing="0" >
                 <frame src="<mm:url page="nav.jsp?category=about&subcategory=about"/>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
                 <frame src="<mm:url page="about/about.jsp"/>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         </frameset>
-<% } else { %>
+</mm:notpresent>
+<mm:present referid="category">
         <frameset rows="60,*" border="0" frameborder="0" framespacing="0">
-                <frame src="<mm:url page="<%="nav.jsp?category="+category+"&subcategory="+subcategory%>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
-        <% if (category.equals("examples")) { %>
-                  <frame src="<mm:url page="/mmexamples/index.jsp" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        <% } else if (category.equals("documentation")) { %>
-                  <frame src="<mm:url page="/mmdocs/index.html" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        <% } else if (subcategory==null) { %>
-                  <frame src="<mm:url page="<%=category+"/main.jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        <% } else { %>
-                  <frame src="<mm:url page="<%=category+"/"+subcategory+".jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        <% } %>
+  	    <mm:notpresent referid="subcategory">
+                <frame src="<mm:url page="nav.jsp?category=${category}&subcategory=${subcategory}" />" name="navigatie"
+scrolling="no" marginwidth="1" marginheight="0" />
+          </mm:notpresent>
+  	    <mm:present referid="subcategory">
+                <frame src="<mm:url page="nav.jsp?category=${category}" />" name="navigatie"
+scrolling="no" marginwidth="1" marginheight="0" />
+ 	    </mm:present>
+        <mm:compare referid="category" value="examples">
+		<mm:import id="url">/mmexamples/index.jsp</mm:import>
+        </mm:compare>
+        <mm:compare referid="category" value="documentation">
+		<mm:import id="url">/mmdocs/index.html</mm:import>
+        </mm:compare>
+	  <mm:notpresent referid="url">
+  	    <mm:notpresent referid="subcategory">
+		<mm:import id="url"><mm:write referid="category" />/main.jsp</mm:import>
+          </mm:notpresent>
+  	    <mm:present referid="subcategory">
+		<mm:import id="url"><mm:write referid="category" />/<mm:write referid="subcategory" />.jsp</mm:import>
+          </mm:present>
+          <frame src="<mm:url page="$url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         </frameset>
-<% } %>
-
+	 </mm:notpresent>
+</mm:present>
 <noframes>
 <body class="basic">
 <table summary="navigation">
