@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 *
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.3 2002-05-28 21:45:14 gerard Exp $
+* @version $Id: MMHsqldb2Node.java,v 1.4 2002-05-28 21:49:38 gerard Exp $
 *  
 */
 public class MMHsqldb2Node extends MMSQL92Node {
@@ -65,7 +65,7 @@ public class MMHsqldb2Node extends MMSQL92Node {
         try {
             stmt.setString(i,body);
         } catch (Exception e) {
-            log.error("MMObjectBuilder : Can't set ascii stream");
+            log.error("MMObjectBuilder : Can't set String");
             log.error(Logging.stackTrace(e));
         }
     }
