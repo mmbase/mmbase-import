@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
 
-	<node number="7000" owner="default">
+	<node number="7000" owner="media">
 		<name>Default template</name>
 		<description>Produces simple urls, to be included with object</description>
-		<url>/mediafragment</url>
+		<url>mediafragment.jsp?</url>
 		<mimetype></mimetype>
 	</node>
 
-	<node number="7001" owner="default">
-		<name>Link</name>
-		<description>Produces pieces of HTML to include (with &lt;object&gt;) in your page</description>
-		<url>/mediahtml?type=link&amp;</url>
+	<node number="7001" owner="media">
+		<name>Link (object tag)</name>
+		<description>Produces pieces of HTML to include (with &amp;lt;object&amp;gt;) in your page</description>
+		<url>link.jsp?</url>
 		<mimetype>text/html</mimetype>
 	</node>
 
-	<node number="7002" owner="default">
-		<name>Link + intro</name>
-		<description>Produces pieces of HTML to include (with &lt;object&gt;) in your page</description>
-		<url>/mediahtml?type=link_intro&amp;</url>
+	<node number="7002" owner="media">
+		<name>Link + intro (object tag)</name>
+		<description>Produces pieces of HTML to include (with &amp;lt;object&amp;gt;) in your page</description>
+		<url>linkintro.jsp?</url>
 		<mimetype>text/html</mimetype>
 	</node>
+
+	<node number="7003" owner="media">
+		<name>Link + links naar subfragments (object tag)</name>
+		<description>Produces pieces of HTML to include (with &amp;lt;object&amp;gt;) in your page</description>
+		<url>subfragments.jsp?</url>
+		<mimetype>text/html</mimetype>
+	</node>
+
+	<node number="7004" owner="media">
+		<name>A SMIL with all subfragments</name>
+		<description>Smil example</description>
+		<url>smil.jsp?</url>
+		<mimetype>application/smil</mimetype>
+	</node>
+
 </templates>
