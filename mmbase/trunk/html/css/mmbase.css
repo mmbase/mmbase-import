@@ -1,6 +1,6 @@
 /*
  CSS for MMBase website
- @version $Id: mmbase.css,v 1.1 2003-03-20 14:40:13 kees Exp $;
+ @version $Id: mmbase.css,v 1.2 2003-03-28 10:44:39 michiel Exp $;
 */
 
 body {  
@@ -49,3 +49,19 @@ td.link {
 	font-weight:normal;
 	width:14; 
 }
+
+
+textarea {
+    height: 20em;
+    width: 100%;    
+}
+
+
+textarea.huge {
+   height: 60em;
+}
+
+textarea.small {
+   height: 10em;
+}
+
