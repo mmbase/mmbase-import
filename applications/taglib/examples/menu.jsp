@@ -23,11 +23,7 @@
   |
   <a href="relatednodes.jsp">relatednodes</a>
   |
-  <a href="formatter.jsp">formatter</a>
-  |
-  <a href="time.jsp">time</a>
-  |
   <a href="tipsandtricks.jsp">Tips and Tricks (FAQ)</a>
-  <br />
-  <a href="<mm:url page="/mmdocs/mmbase-taglib.html" />" >Taglib documentation</a>
+  |
+  <a href="<mm:url page="/mmdocs/mmbase-taglib.html" /> ">taglib doc</a>
 </p>

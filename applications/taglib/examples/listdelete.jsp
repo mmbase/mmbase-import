@@ -8,7 +8,6 @@
 
 <head>
   <title>Taglib examples</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 
 <body>
@@ -17,18 +16,53 @@
 
 <h1>List &amp; delete</h1>
 
-<p>
-  We demonstrate a simple editor here.
-</p>
 
-<%@include file="codesamples/listdelete.jsp.1" %>
+<mm:present referid="nodemanager">
+  <mm:present referid="deletenumber">
+    <mm:deletenode referid="deletenumber"/>
+  </mm:present>
+</mm:present>
 
-
-<hr />
-<p>
-It was implemented like this:
-</p>
-<pre><mm:formatter format="escapexml"><mm:include page="codesamples/listdelete.jsp.1" /></mm:formatter></pre>
+<table>
+  <tr>
+    <td valign="top">
+      <mm:listnodes type="typedef">
+       <a href="<mm:url page="listdelete.jsp">
+                   <mm:param name="nodemanager"><mm:field name="name"/></mm:param>
+                </mm:url>"><mm:field name="name"/></a><br />
+      </mm:listnodes>
+    </td>
+    <td valign="top">
+      <mm:present referid="nodemanager">
+        <table>
+          <mm:listnodes type="${nodemanager}">
+            <mm:first>
+              <tr>
+                <mm:fieldlist type="list">
+                  <td>
+                    <mm:fieldinfo type="name"/>
+                  </td>
+                </mm:fieldlist>
+              </tr>
+            </mm:first>
+            <tr>
+              <mm:fieldlist type="list">
+                <td>
+                  <mm:fieldinfo type="value"/>
+                </td>
+              </mm:fieldlist>
+              <td>
+                <a href="<mm:url page="listdelete.jsp" referids="nodemanager">
+							<mm:param name="deletenumber"><mm:field name="number" /></mm:param>
+                         </mm:url>">delete</a>
+              </td>
+            </tr>
+          </mm:listnodes>
+        </table>
+      </mm:present>
+    </td>
+  </tr>
+</table>
 
 </body>
 
