@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.272 2004-09-14 17:53:59 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -693,7 +693,7 @@ version: $Id: mmbase-taglib.xml,v 1.272 2004-09-14 17:53:59 michiel Exp $
     <since>MMBase-1.7</since>
     <attribute>
       <name>name</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
         <p>
@@ -717,6 +717,27 @@ version: $Id: mmbase-taglib.xml,v 1.272 2004-09-14 17:53:59 michiel Exp $
         The 'set' from which the function must be taken. These are a kind of static functions (no
         object is associated with them). These 'sets' of functions are a bit like namespaces.
       </info>
+    </attribute>
+    <attribute>
+      <name>classname</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>      
+      <info>
+        <p>
+          The java class name from which the function must be taken. The function will be
+          interpreted as a 'bean' function, meaning that you can set parameters with 'set' function,
+          and get function values with any function with no further arguments.
+        </p>
+        <p>
+          The one exception is if the value of this attribute is 'THISPAGE' or starts with
+          'THISPAGE.'. In the first case a method of the current JSP will be called (a 'method
+          function') and in the second case a inner class of the current JSP will be used as a bean
+          (the name of the inner class follows the period).
+        </p>
+      </info>
+      <example>
+        <include base="examples.taglib" href="codesamples/functionbean.jsp" />
+      </example>
     </attribute>
     <attribute>
       <name>module</name>
@@ -1996,6 +2017,21 @@ access the value of title:
     <example>
 &lt;mm:function name="gui" escape="none" /&gt;
     </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/functionnode.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/functionbean.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/functionbean2.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/functionmethod.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/functionreferids.jsp" />
+    </example>
   </tag>
   <tag>
     <name>voidfunction</name>
@@ -2012,7 +2048,9 @@ access the value of title:
     <see tag="function" />
     <see tag="booleanfunction" />
     <see tag="listfunction" />
-
+    <example>
+      <include base="examples.taglib" href="codesamples/voidfunction.jsp" />
+    </example>
   </tag>
   <tag>
     <name>booleanfunction</name>
@@ -2029,6 +2067,9 @@ access the value of title:
     <see tag="node" />
     <see tag="function" />
     <see tag="listfunction" />
+    <example>
+      <include base="examples.taglib" href="codesamples/booleanfunction.jsp" />
+    </example>
   </tag>
 
   <tag>
@@ -2060,6 +2101,9 @@ access the value of title:
   </ul>
 </mm:listnodes> 
 ]]></example>
+    <example>
+      <include base="examples.taglib" href="codesamples/listfunction.jsp" />
+    </example>
   </tag>
 
   <tag>
