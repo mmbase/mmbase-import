@@ -34,7 +34,7 @@ public class BundleManager {
     private static Logger log = Logging.getLoggerInstance(BundleManager.class);
 
     // state if this manager is running or not.
-    private static boolean state=false;
+    private static boolean state = false;
     
     // Contains all bundles key=bundlename/maintainer value=reference to bundle
     private static Hashtable bundles = new Hashtable();
@@ -43,7 +43,7 @@ public class BundleManager {
     * init this manager
     */
     public static synchronized void init() {
-	state=true;
+        state = true;
     }
 
 
@@ -51,7 +51,7 @@ public class BundleManager {
     * is this manager running
     */
     public static boolean isRunning() {
-	return(state);
+        return state;
     }
 
     /**
@@ -68,12 +68,12 @@ public class BundleManager {
      * return Bundle (interface) or null if not found
      */
     public static BundleInterface getBundle(String id) {
-	Object o=bundles.get(id);
-	if (o!=null) {
-		return (BundleInterface)o;
-	}
-	log.error("bundle with id = "+id+" not found");
-	return(null);
+        Object o = bundles.get(id);
+        if (o != null) {
+            return (BundleInterface)o;
+        }
+        log.error("bundle with id = "+id+" not found");
+        return null;
     }
 
 
@@ -83,120 +83,119 @@ public class BundleManager {
     * return Bundle (interface) or null if not found
     */
     public static BundleInterface getBundle(String id,String wv,String wp) {
-	Object o=bundles.get(id);
-	if (o!=null) {
-		BundleContainer bc=(BundleContainer)o;
-		ProviderInterface provider=(ProviderInterface)ProviderManager.get(wp);
-		if (provider!=null) {
-			BundleInterface b=bc.getVersion(wv,provider);
-			if (b!=null) {
-				return(b);
-			}
-		}
-	}
-	log.error("bundle with id = "+id+" not found");
-	return(null);
+        Object o = bundles.get(id);
+        if (o != null) {
+            BundleContainer bc = (BundleContainer)o;
+            ProviderInterface provider = (ProviderInterface)ProviderManager.get(wp);
+            if (provider != null) {
+                BundleInterface b = bc.getVersion(wv,provider);
+                if (b != null) {
+                    return b;
+                }
+            }
+        }
+        log.error("bundle with id = "+id+" not found");
+        return null;
     }
 
     public static BundleInterface foundBundle(ProviderInterface provider,org.w3c.dom.Element n,String name,String type,String maintainer,String version,String date,String path) {
-	// create its id (name+maintainer)
-	String id=name+"@"+maintainer+"_"+type;
-	id=id.replace(' ','_');
-	id=id.replace('/','_');
-	
-	// check if we allready have a bundle container for this
-	BundleContainer bc=(BundleContainer)bundles.get(id);
+        // create its id (name+maintainer)
+        String id = name+"@"+maintainer+"_"+type;
+        id = id.replace(' ','_');
+        id = id.replace('/','_');
+    
+        // check if we allready have a bundle container for this
+        BundleContainer bc = (BundleContainer)bundles.get(id);
 
-	boolean found=false;
-	if (bc!=null) {
-		// we allready have a container check if we allready
-		// have this one
-		found=bc.contains(version,provider);
-	}
+        boolean found = false;
+        if (bc != null) {
+            // we allready have a container check if we allready
+            // have this one
+            found = bc.contains(version,provider);
+        }
 
-	if (!found) {	
-		// so we don't have this bundle refernce yet, then
-		// create and store it, should be a config file
-		BundleInterface newbundle=null;
+        if (!found) {    
+            // so we don't have this bundle refernce yet, then
+            // create and store it, should be a config file
+            BundleInterface newbundle = null;
 
-		// hardcoded handlers, need to be loaded using a xml def.
-		if (type.equals("bundle/basic")) {
-			newbundle = new BasicBundle(n,provider,name,type,maintainer,version,date,path);
-		}
-		if (bc==null) {
-			bc=new BundleContainer(newbundle);
-			// since this is a new container store it
-			bundles.put(id,bc);
-		} else {
-			bc.addBundle(newbundle);
-		}
-		((BasicBundle)newbundle).signalUpdate();
-	} else {
-		// get the package to update its available time
-		BasicBundle oldb=(BasicBundle)bc.getVersion(version,provider);
-		if (oldb!=null) oldb.signalUpdate();
-	}
-	return bc;
+            // hardcoded handlers, need to be loaded using a xml def.
+            if (type.equals("bundle/basic")) {
+                newbundle = new BasicBundle(n,provider,name,type,maintainer,version,date,path);
+            } 
+            if (bc == null) {
+                bc = new BundleContainer(newbundle);
+                // since this is a new container store it
+                bundles.put(id,bc);
+            } else {
+                bc.addBundle(newbundle);
+            }
+            ((BasicBundle)newbundle).signalUpdate();
+        } else {
+            // get the package to update its available time
+            BasicBundle oldb = (BasicBundle)bc.getVersion(version,provider);
+            if (oldb != null) oldb.signalUpdate();
+        }
+        return bc;
     }
 
     
     public static boolean updateRegistryInstalled(BundleInterface b) { 
-	try {
-        	Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
-        	if(versions==null) {
-            		log.error("Versions builder not installed.");
-	    		return false;
-        	} 
-		int newversion=Integer.parseInt(b.getVersion());
-		int oldversion=getInstalledVersion(b.getId());
-		if (oldversion==-1) {
-			versions.setInstalledVersion(b.getId(),"bundle",b.getMaintainer(),newversion);
-		} else if (oldversion!=newversion) {
-			versions.updateInstalledVersion(b.getId(),"bundle",b.getMaintainer(),newversion);
-		}
-		return(true);
-	} catch(Exception e) {
-		return false;
-	}
+        try {
+            Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
+            if(versions == null) {
+                log.error("Versions builder not installed.");
+                return false;
+            } 
+            int newversion = Integer.parseInt(b.getVersion());
+            int oldversion = getInstalledVersion(b.getId());
+            if (oldversion == -1) {
+                versions.setInstalledVersion(b.getId(),"bundle",b.getMaintainer(),newversion);
+            } else if (oldversion != newversion) {
+                versions.updateInstalledVersion(b.getId(),"bundle",b.getMaintainer(),newversion);
+            }
+            return true;
+        } catch(Exception e) {
+            return false;
+        } 
     }
 
 
     public static boolean isInstalledVersion(BundleInterface b) {
-	try {
-		int newversion=Integer.parseInt(b.getVersion());
-		if (getInstalledVersion(b.getId())==newversion) {
-			return true;
-		} 
-	} catch(Exception e) {
-		return false;
-	}
-	return false;
+        try {
+            int newversion = Integer.parseInt(b.getVersion());
+            if (getInstalledVersion(b.getId()) == newversion) {
+                return true;
+            } 
+        } catch(Exception e) {
+            return false;
+        }
+        return false;
     }
 
-    public static int getInstalledVersion(String id) 
-        throws SearchQueryException {
+    public static int getInstalledVersion(String id) throws SearchQueryException {
         // Get the versions builder
         Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
         if(versions==null) {
             log.error("Versions builder not installed.");
-	    return -1;
+            return -1;
         } else {
-	    return versions.getInstalledVersion(id,"bundle");	
-	}
+            return versions.getInstalledVersion(id,"bundle");    
+        }
     }
 
     public static boolean updateRegistryUninstalled(BundleInterface b) { 
-	try {
-        	Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
-        	if(versions==null) {
-            		log.error("Versions builder not installed.");
-	    		return false;
-        	} 
-		versions.updateInstalledVersion(b.getId(),"bundle",b.getMaintainer(),0);
-		return(true);
-	} catch(Exception e) {
-		return false;
-	}
+        try {
+            Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
+            if(versions == null) {
+                log.error("Versions builder not installed.");
+                return false;
+            } 
+            versions.updateInstalledVersion(b.getId(),"bundle",b.getMaintainer(),0);
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
     }
 
 
@@ -204,47 +203,46 @@ public class BundleManager {
      * return all bundles versions of this id
      */
     public static Enumeration getBundleVersions(String id) {
-	Object o=bundles.get(id);
-	if (o!=null) {
-		BundleContainer bc=(BundleContainer)o;
-		return bc.getVersions();
-	}
+        Object o = bundles.get(id);
+        if (o != null) {
+            BundleContainer bc = (BundleContainer)o;
+            return bc.getVersions();
+        }
         return null;
     }
 
 
     public static boolean removeOfflineBundles(ProviderInterface wantedprov) {
-	// this checks all the bundles if they are still found at their
-	// providers, this is done by checking the last provider update
-	// against the last bundle update
-	Enumeration e=bundles.elements();
-	while (e.hasMoreElements()) {
-		BundleContainer pc=(BundleContainer)e.nextElement();
-		Enumeration e2=pc.getVersions();
-		while (e2.hasMoreElements()) {
-			BundleVersionContainer pvc=(BundleVersionContainer)e2.nextElement();
-			Enumeration e3=pvc.getBundles();
-			while (e3.hasMoreElements()) {
-				BasicBundle p=(BasicBundle)e3.nextElement();
-				ProviderInterface prov=p.getProvider();
-				if (wantedprov==prov) {
-					long providertime=p.getProvider().lastSeen();
-					long packagetime=p.lastSeen();
-					if (providertime>packagetime) {
-						pvc.removeBundle(p);
-						if (pvc.getBundleCount()==0) {
-							pc.removeBundle(p);
-							if (pc.getBundleCount()==0) {
-								bundles.remove(pc.getId());
-							}
-						}
-					}
-				}
-			}
-		}
-	
-	}
-	return true;
+        // this checks all the bundles if they are still found at their
+        // providers, this is done by checking the last provider update
+        // against the last bundle update
+        Enumeration e = bundles.elements();
+        while (e.hasMoreElements()) {
+            BundleContainer pc = (BundleContainer)e.nextElement();
+            Enumeration e2 = pc.getVersions();
+            while (e2.hasMoreElements()) {
+               BundleVersionContainer pvc = (BundleVersionContainer)e2.nextElement();
+               Enumeration e3 = pvc.getBundles();
+               while (e3.hasMoreElements()) {
+                   BasicBundle p = (BasicBundle)e3.nextElement();
+                   ProviderInterface prov = p.getProvider();
+                   if (wantedprov == prov) {
+                       long providertime = p.getProvider().lastSeen();
+                       long packagetime = p.lastSeen();
+                       if (providertime > packagetime) {
+                           pvc.removeBundle(p);
+                           if (pvc.getBundleCount() == 0) {
+                               pc.removeBundle(p);
+                               if (pc.getBundleCount() == 0) {
+                                   bundles.remove(pc.getId());
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+        }
+        return true;
     }
 
 
