@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.38 2002-07-15 12:34:17 pierre Exp $
+  @version $Id: wizard.xsl,v 1.39 2002-07-15 15:40:31 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -22,13 +22,18 @@
        The following things can be overriden to customize the appearance of wizard
        ================================================================================ -->
 
-  <xsl:template name="style"> <!-- It can be usefull to add a style, change the title -->
+  <!-- It can be usefull to add a style, change the title -->
+  <xsl:template name="style"> 
      <title><xsl:value-of select="title" /></title>
      <link rel="stylesheet" type="text/css" href="../style.css" />
      <xsl:call-template name="extrastyle" /> <!-- see base.xsl -->
   </xsl:template>
 
-  <xsl:template name="body"> <!-- You can put stuff before and after then. Don't forget to call 'bodycontent' -->
+  <!-- You can put stuff before and after then, or change the attributes of body itself. Don't forget to call 'bodycontent' 
+       and to add the on(un)load attributes.
+       It is probably handier to override beforeform of formcontent.       
+       -->
+  <xsl:template name="body"> 
     <body 
       bgcolor="#FFFFFF"
       leftmargin="0"
@@ -40,7 +45,8 @@
     </body>
   </xsl:template>
 
-  <xsl:template name="superhead"><!-- The first row of the the body's table -->
+  <!-- The first row of the the body's table -->
+  <xsl:template name="superhead">
     <tr>
       <td colspan="2" align="center" valign="bottom">
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -55,27 +61,32 @@
     </tr>   
   </xsl:template>
 
-  <xsl:template name="beforeform" /> <!-- can be handy to add something to the top of your page -->
+  <!-- can be handy to add something to the top of your page -->
+  <xsl:template name="beforeform" /> 
 
-  <xsl:template name="bodycontent"> <!-- Madmen can try to override bodycontent.. -->
+  <!-- The body itself, probably no need overriding this -->
+  <xsl:template name="bodycontent">
     <xsl:call-template name="javascript" />
     <xsl:call-template name="beforeform" />
     <xsl:call-template name="bodyform" />
   </xsl:template>
 
 
-  <!-- The form-content is the lay-out of the page. You can make this different, but don't forget to add the elements present in this one -->
+  <!-- The form-content is the lay-out of the page. You can make this different, but don't forget to add the elements present in this one,
+       especially /*/steps-validator and form[..] 
+       -->
   <xsl:template name="formcontent">
     <table cellspacing="0" cellpadding="3" border="0" width="100%">
       <xsl:call-template name="superhead" />
-        <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>
-        
+        <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>        
         <xsl:apply-templates select="form[@id=/wizard/curform]" /><!-- produces <tr />'s -->
-        <xsl:apply-templates select="/*/steps-validator" />         <!-- produces <tr />'s -->
+        <xsl:apply-templates select="/*/steps-validator" />       <!-- produces <tr />'s -->
     </table>
   </xsl:template>
 
-  <!-- buttons are (always) called in the steps-validator -->
+  <!-- Buttons are (always) called in the steps-validator 
+       A <tr> is expected.
+       -->
   <xsl:template name="buttons">
     <!-- our buttons -->
     <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" />
@@ -129,13 +140,12 @@
     <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript">
-    <xsl:text disable-output-escaping="yes">
-<![CDATA[
-    <!--
-         window.history.forward(1);
-    -->
-]]>
-    </xsl:text>
+      <xsl:text disable-output-escaping="yes">
+        <![CDATA[<!--
+          window.history.forward(1);
+          -->
+]]> 
+      </xsl:text>
     </script>
   </xsl:template>
 
@@ -144,6 +154,8 @@
        The following is functionality. You probably don't want to override it.
        ================================================================================ -->
 
+  <!-- Every wizard is based on one 'form', with a bunch of attributes and a few hidden entries.
+       Those are set here -->
   <xsl:template name="bodyform">   
     <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}"
       message_pattern="{$message_pattern}"
@@ -163,17 +175,20 @@
   </xsl:template>
 
 
+  <!-- On default.  All attributes must be copied -->
   <xsl:template match="@*">
     <xsl:copy><xsl:value-of select="." /></xsl:copy>
   </xsl:template>
 
   <xsl:template match="@name"></xsl:template>
 
+  <!-- Wizard is the entry template-->
   <xsl:template match="/">
     <xsl:apply-templates select="wizard" />
   </xsl:template>
 
-  <xsl:template match="wizard"><!-- we produce HTML, this could be overriden, but it does not make sense -->
+  <!-- we produce HTML, this could be overriden, but it does not make sense -->
+  <xsl:template match="wizard">
     <html>
       <head>
         <xsl:call-template name="style" />
@@ -222,7 +237,8 @@
 
 
   <!-- 
-       prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
+       Prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
+       Useful in fieldsets. 
        -->
   <xsl:template name="prefix|postfix">
     <xsl:value-of select="name()" /><xsl:value-of select="." />
@@ -558,12 +574,29 @@
     </xsl:if>
   </xsl:template>
 
+
+  <!-- The age search options of a search item -->
+  <xsl:template name="searchoptions">  
+    <option value="0"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'0'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_now" /></option>
+    <option value="1"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'1'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_day" /></option>
+    <option value="7"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'7'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_week" /></option>
+    <option value="31"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'31'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_month" /></option>
+    <option value="365"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'365'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_year" /></option>
+    <option value="-1"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'-1'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_any" /></option>
+  </xsl:template>
+
+  <!--
+       What to do with 'lists'.
+       @bad-constant: styles should be in the style-sheet, and are then configurable.       
+       -->
   <xsl:template match="list">
     <td align="left" valign="top" colspan="2" class="listcanvas" width="558">
+      
       <div class="subhead" title="{description}">
         <nobr><xsl:value-of select="title" /></nobr>
       </div>
 
+      <!-- show the item's of the list like that -->
       <xsl:if test="item">
         <br />
         <div style="position:relative; top:0; left:0;">
@@ -571,36 +604,40 @@
         </div><br />
       </xsl:if>
 
+
+      <!-- if 'add-item' command and a search, then make a search util-box -->
       <xsl:if test="command[@name='add-item']">
         <xsl:for-each select="command[@name='search']">
-          <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616">
+          <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616"><!-- 616??!! -->
             <tr>
               <td align="right" valign="top" class="search" width="100%">
                 <nobr>
                   <xsl:value-of select="prompt" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                  <select name="searchage_{../command[@name='add-item']/@cmd}" style="width:80">
-                    <option value="0"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'0'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_now" /></option>
-                    <option value="1"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'1'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_day" /></option>
-                    <option value="7"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'7'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_week" /></option>
-                    <option value="31"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'31'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_month" /></option>
-                    <option value="365"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'365'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_year" /></option>
-                    <option value="-1"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'-1'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template><xsl:call-template name="age_any" /></option>
+                  <!-- alway make searching on age possible -->
+                  <select name="searchage_{../command[@name='add-item']/@cmd}" style="width:80"><!-- 80??!! -->
+                    <xsl:call-template name="searchoptions" />
                   </select>
-                  <select name="searchfields_{../command[@name='add-item']/@cmd}" style="width:125;">
+                  <!-- other search-possibilities are given in the xml -->
+                  <select 
+                    name="searchfields_{../command[@name='add-item']/@cmd}" style="width:125;"
+                    onChange="form['searchterm_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('default'); ">
+                    ><!-- 125???!! -->
                     <xsl:choose>
                       <xsl:when test="search-filter">
                         <xsl:for-each select="search-filter">
-                          <option value="{search-fields}"><xsl:value-of select="name" /></option>
+                          <option value="{search-fields}" default="{default}"><xsl:value-of select="name" /></option>
                         </xsl:for-each>
                       </xsl:when>
+                      <!-- if nothing, then search on title -->
                       <xsl:otherwise>
                         <option value="title"><xsl:call-template name="prompt_search_title" /></option>
                       </xsl:otherwise>
                     </xsl:choose>
+                    <!-- always search on owner too -->
                     <option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
                   </select>
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="" style="width:175;" />
+                  <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/default}" style="width:175;" />
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
                   <span title="{$tooltip_search}" class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
@@ -612,66 +649,78 @@
             </tr>
           </table>
         </xsl:for-each>
-      </xsl:if>
+      </xsl:if><!-- if add-item -->
 
+
+      <!-- 
+           Create the '*' (add) buttons.
+           -->
       <xsl:for-each select="command[@name='add-item']">
-        <table border="0" cellspacing="0" cellpadding="0" width="616">
+        <xsl:if test="../command[@name='search' or @name='insert'] and not(command[@name='startwizard'])">
+          <!-- if there is a start-wizard command and not 'search' or 'insert' command then do not add an extra 'add' button (will be added by 'startwizard' -->
+          <table border="0" cellspacing="0" cellpadding="0" width="616"><!-- @bad-constant -->
           <xsl:for-each select="../command[@name='search' or @name='insert']">
-          <xsl:choose>
-            <xsl:when test="@name='search'">
-            <xsl:attribute name="style">display:inline; visibility:hidden; position:absolute; top:0; left:0;</xsl:attribute>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:attribute name="style">display:inline;</xsl:attribute>
-            </xsl:otherwise>
-          </xsl:choose>
+            <xsl:choose>
+              <xsl:when test="@name='search'">
+                <xsl:attribute name="style">display:inline; visibility:hidden; position:absolute; top:0; left:0;</xsl:attribute>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:attribute name="style">display:inline;</xsl:attribute>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:for-each>
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
                 <span class="imagebutton" onclick="doSendCommand('{@cmd}');"><xsl:call-template name="prompt_new" /></span>
                 <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
-              </nobr>
-            </td>
-          </tr>
-        </table>
+                </nobr>
+              </td>
+            </tr>
+          </table>
+        </xsl:if>
       </xsl:for-each>
+
+      <!-- 
+           Create the add-buttons for the startwizard commands.
+           -->
       <xsl:for-each select="command[@name='startwizard']">
         <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616">
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
-           <xsl:if test="@inline='true'">
-                <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
-                <xsl:call-template name="prompt_add_wizard" />
-                </a>
-           </xsl:if>
-           <xsl:if test="not(@inline='true')">
-                <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}"
-                   target="_blank">
-                <xsl:call-template name="prompt_add_wizard" />
-                </a>
-           </xsl:if>
+                <xsl:if test="@inline='true'">
+                  <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
+                    <xsl:call-template name="prompt_add_wizard" />
+                  </a>
+                </xsl:if>
+                <xsl:if test="not(@inline='true')">
+                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}"
+                    target="_blank">
+                    <xsl:call-template name="prompt_add_wizard" />
+                  </a>
+                </xsl:if>
                 <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
-              </nobr>
-            </td>
-          </tr>
-        </table>
-      </xsl:for-each>
-    </td>
-  </xsl:template>
+                </nobr>
+              </td>
+            </tr>
+          </table>
+        </xsl:for-each>
+      </td>
 
-  <xsl:template match="steps-validator">
-    <!-- when multiple steps -->
-    <xsl:if test="count(step) &gt; 1">
-      <xsl:call-template name="steps" />
-      <xsl:call-template name="nav-buttons" />
-    </xsl:if>
-    <xsl:call-template name="buttons" />
-  </xsl:template>
-
-
-  <xsl:template name="savebutton">
+    </xsl:template><!-- list -->
+    
+    <xsl:template match="steps-validator">
+      <!-- when multiple steps, otherwise do nothing -->
+      <xsl:if test="count(step) &gt; 1">
+        <xsl:call-template name="steps" />
+        <xsl:call-template name="nav-buttons" />
+      </xsl:if>
+      <xsl:call-template name="buttons" />
+    </xsl:template>
+          
+          
+    <xsl:template name="savebutton">
     <a href="javascript:doSave();" id="bottombutton-save" unselectable="on"
       titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}" >
       <xsl:if test="@allowsave='true'">
