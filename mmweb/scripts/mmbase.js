@@ -23,8 +23,9 @@ function launchCenter(url, name, height, width) {
 */
 function calcIframeHeight() {
   try {
+    document.getElementById('miframe').height=10;
     var h=document.getElementById('miframe').contentWindow.document.body.scrollHeight;
-    document.getElementById('miframe').height=h;
+    document.getElementById('miframe').height=h+10;
   } catch (exception) {		// Firefox does not permit cross domain checking
     // alert("Exception: " + exception);
     document.getElementById('miframe').height=560;
