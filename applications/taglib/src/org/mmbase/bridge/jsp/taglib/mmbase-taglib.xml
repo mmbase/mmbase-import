@@ -38,7 +38,7 @@ Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 -->
 <taglib>
-  <tlibversion>1.0</tlibversion>
+  <tlibversion>1.0.1</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
@@ -931,9 +931,23 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-       The uri in case the cloud hast to be retreaved using the RRMCI.
-       Valid values are "local" (teh locat cloud) or an rmi uri, i.e. rmi://www.mmbase.org/remotecontext
+       The uri in case the cloud has to be retrieved using the RMMCI.
       </info>
+      <possiblevalue>
+         <value>local</value>
+         <info>    
+		    Get a local cloud
+         </info>
+      </possiblevalue>
+	  <possiblevalue>
+        <value>rmi://...</value>
+		<info>
+		  RMMCI cloud.
+		</info>
+	  </possiblevalue>
+	  <examplevalue>
+		<value>rmi://www.mmbase.org/remotecontext</value>
+	  </examplevalue>
     </attribute>
     <attribute>
       <name>jspvar</name>
@@ -1935,6 +1949,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <value>s(200)+f(gif)+paint(10)</value>
 	  </examplevalue>	  
     </attribute>
+
   </tag>
   <tag>
     <name>include</name>
