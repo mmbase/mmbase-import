@@ -19,41 +19,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Security from within MMBase
- * @javadoc
+ * Very simply security from within MMBase. You might want to look at Cloud Context Security which offers a much more powefull implementation.
+ *
  * @author Eduard Witteveen
- * @version $Id: Authenticate.java,v 1.7 2003-03-04 15:29:37 nico Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: Authenticate.java,v 1.8 2004-04-19 17:00:32 michiel Exp $
  */
-class User extends UserContext {
-    private String user;
-    private Rank rank;
-    private long key;
-
-    User(String user, Rank rank, long key) {
-    this.user = user;
-    this.rank = rank;
-    this.key = key;
-    }
-
-    public String getIdentifier() {
-    return user;
-    }
-
-    public Rank getRank() throws org.mmbase.security.SecurityException {
-    return rank;
-    }
-
-    public String toString() {
-    return user + "[" + rank + "]";
-    }
-
-    long getKey() {
-    return key;
-    }
-}
 
 public class Authenticate extends Authentication {
-    private static Logger log=Logging.getLoggerInstance(Authenticate.class.getName());
+    private static final Logger log=Logging.getLoggerInstance(Authenticate.class);
     private long validKey;
     private static UserBuilder builder = null;
 
@@ -61,66 +35,124 @@ public class Authenticate extends Authentication {
         validKey = System.currentTimeMillis();
     }
 
+    /**
+     * {@inheritDoc}
+     * Implementation is empty here.
+     */
     protected void load() {
-    //log.debug("using: '" + configFile + "' as config file for authentication");
+        //log.debug("using: '" + configFile + "' as config file for authentication");
     }
 
-    public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
-        log.trace("login-module: '"+moduleName+"'");
-    if(moduleName.equals("anonymous")) {
-        log.debug("[anonymous login]");
-        return new User("anonymous", Rank.ANONYMOUS, validKey);
+    /**
+     * Gets rank from user, whici sin
+     * @since MMBase-1.8
+     */
+    protected Rank getRank(String userName) {
+        if(userName.equals("admin")) {
+            log.debug("[admin login]");
+            return Rank.ADMIN;
+        } else {
+            return Rank.BASICUSER;
+        }
     }
-    else if(moduleName.equals("name/password")) {
-        // look if the builder is good and such things....
-        checkBuilder();
-        if(builder==null) {
+
+    /**
+     * {@inheritDoc}
+     */
+    public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+        log.trace("login-module: '" + moduleName + "'");
+        if("anonymous".equals(moduleName)) {
+            log.debug("[anonymous login]");
+            return new User("anonymous", Rank.ANONYMOUS, validKey);
+        } else if("name/password".equals(moduleName)) {
+            // look if the builder is good and such things....
+            checkBuilder();
+            if(builder==null) {
                 throw new org.mmbase.security.SecurityException("builder wasnt loaded");
             }
-            String username = (String)loginInfo.get("username");
-        String password = (String)loginInfo.get("password");
-            log.trace("login-module: '"+moduleName+"' username: '"+username+"' password: '"+password+"'");
-            if(username == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
-        if(username.equals("anonymous")) throw new org.mmbase.security.SecurityException("'anonymous' aint allowed to do a login");
-        if(password == null) throw new org.mmbase.security.SecurityException("expected the property 'password' with login");
+            String userName = (String)loginInfo.get("username");
+            String password = (String)loginInfo.get("password");
+            log.trace("login-module: '" +moduleName + "' username: '" + userName + "' password: '" + password + "'");
+            if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
+            if(userName.equals("anonymous")) throw new org.mmbase.security.SecurityException("'anonymous' is not allowed to do a login");
+            if(password == null) throw new org.mmbase.security.SecurityException("expected the property 'password' with login");
+            
+            if(builder.exists(userName, password)) {
+                return new User(userName, getRank(userName), validKey);
+            } else {
+                // helaas, pindakaas...
+                return null;
+            }
+        } else if ("class".equals(moduleName)) {
+            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+            if (li == null) {
+                throw new SecurityException("Class authentication failed  (class not authorized)");
+            }
+            String userName = (String) li.getMap().get("username");
+            if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
+            if(builder.exists(userName, null)) {
+                return new User(userName, getRank(userName), validKey);
+            } else {
+                return null;
+            }
 
-        if(builder.exists(username, password)) {
-            //yipee, a logon !!!
-        Rank rank;
-        if(username.equals("admin")) {
-            rank = Rank.ADMIN;
-            log.info("[admin login]");
+        } else {
+            throw new org.mmbase.security.UnknownAuthenticationMethodException("login module with name '" + moduleName + "' not found, only know 'anonymous' and 'name/password' ");
         }
-        else {
-            rank = Rank.BASICUSER;
-            log.info("[anonymous login("+username+")]");
-        }
-        return new User(username, rank, validKey);
-        }
-        // helaas, pindakaas...
-        return null;
-    }
-    else {
-        String msg = "login module with name '" + moduleName + "' not found, only know 'anonymous' and 'name/password' ";
-        log.error(msg);
-            throw new org.mmbase.security.SecurityException(msg);
-    }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException {
         log.debug(usercontext);
-    return ((User)usercontext).getKey() == validKey;
+        return ((User)usercontext).getKey() == validKey;
     }
-
+    
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if(builder == null) {
             org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
             builder =  (UserBuilder) mmb.getMMObject("mmbaseusers");
             if(builder == null) {
                 String msg = "builder mmbaseusers not found";
-        log.error(msg);
-            throw new org.mmbase.security.SecurityException(msg);
-        }   // optional check if the user admin does exist...
+                log.error(msg);
+                throw new org.mmbase.security.SecurityException(msg);
+            }   // optional check if the user admin does exist...
         }
     }
+
+
+    /**
+     * The user object for 'cloud' security.
+     */
+    private static class User extends UserContext {
+        private String user;
+        private Rank rank;
+        private long key;
+        
+        User(String user, Rank rank, long key) {
+            this.user = user;
+            this.rank = rank;
+            this.key = key;
+        }
+        
+        public String getIdentifier() {
+            return user;
+        }
+        
+        public Rank getRank() throws org.mmbase.security.SecurityException {
+            return rank;
+        }
+        
+        public String toString() {
+            return user + "[" + rank + "]";
+        }
+        
+        long getKey() {
+            return key;
+        }
+    }
+
 }
+
+
