@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
  
  */
 package org.mmbase.applications.media.builders;
-import org.mmbase.applications.media.filters.MediaSourceFilter;
+import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
 import java.net.URL;
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.1 2003-02-03 17:50:18 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.2 2003-02-03 22:50:48 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -61,7 +61,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     
     // This filter is able to find the best mediasource by a mediafragment.
-    // private  static MediaSourceFilter mediaSourceFilter = null;
+    // private  static MainFilter mediaSourceFilter = null;
     
    // Is the mediafragment builders already inited ?
     // this class is used for several builders (mediafragments and descendants)
@@ -105,7 +105,7 @@ public class MediaFragments extends MMObjectBuilder {
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put("longurl", "(<format>) ");
-            info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.URLComposer's)");
+            info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
             info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
             info.put(FUNCTION_SUBFRAGMENT, "() Wether this fragment is a subfragment (returns a Boolean)");
             info.put(FUNCTION_AVAILABLE, "() Wether this fragment is 'available'. A fragment can be unaivable when there is a related publishtimes which defines it 'unpublished'");
@@ -198,7 +198,7 @@ public class MediaFragments extends MMObjectBuilder {
     public String getGUIIndicator(String field, MMObjectNode node) {
         if ("start".equals(field) || "stop".equals(field)) {
             StringBuffer buf = new StringBuffer();
-            org.mmbase.applications.media.urlcomposers.FragmentURLComposer.appendTime(node.getIntValue(field), buf);
+            org.mmbase.applications.media.urlcomposers.RealURLComposer.appendTime(node.getIntValue(field), buf);
             return buf.toString();
         }
         return super.getGUIIndicator(field, node);
@@ -251,7 +251,7 @@ public class MediaFragments extends MMObjectBuilder {
     protected List getSortedURLs(MMObjectNode fragment, Map info) {
         log.debug("getsortedurls");
         List urls =  getURLs(fragment, info);
-        return MediaSourceFilter.getInstance().filter(urls);
+        return MainFilter.getInstance().filter(urls);
     }
 
       

@@ -23,7 +23,7 @@ import java.io.File;
 import java.lang.Integer;
 
 /**
- * The MediaSourceFilter is involved in finding the appropriate media source 
+ * The MainFilter is involved in finding the appropriate media source 
  * given a certain media fragment. The choice of the media source depends on 
  * the configuration files configured, and the information an user is passing 
  * through the info variable.
@@ -36,13 +36,13 @@ import java.lang.Integer;
  * 1) preferredSource, this is a list of media formats. The first found format is
  * returned.
  *
- * A specific method for RealAudio is implemented. More of these can follow.
+ * @todo javadoc outdated
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
  */
-public class MediaSourceFilter implements MediaFilter {    
-    private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
+public class MainFilter implements Filter {    
+    private static Logger log = Logging.getLoggerInstance(MainFilter.class.getName());
 
     public static final String MAIN_TAG          = "mainFilter";
     public static final String FILTERCONFIGS_TAG = "filterConfigs";
@@ -57,11 +57,11 @@ public class MediaSourceFilter implements MediaFilter {
     private List filters = new ArrayList();
 
     /**
-     * Construct the MediaSourceFilter
+     * Construct the MainFilter
      */
-    private MediaSourceFilter() {
+    private MainFilter() {
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), 
-                                   "media" + File.separator + "mediasourcefilter.xml");
+                                   "media" + File.separator + "filters.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
             return;
@@ -73,10 +73,10 @@ public class MediaSourceFilter implements MediaFilter {
     }
 
     
-    private static MediaSourceFilter filter = null;
+    private static MainFilter filter = null;
 
-    public static MediaSourceFilter getInstance() {
-        if (filter == null) filter = new MediaSourceFilter();
+    public static MainFilter getInstance() {
+        if (filter == null) filter = new MainFilter();
         return filter;
     }
 
@@ -84,7 +84,7 @@ public class MediaSourceFilter implements MediaFilter {
     public void configure(XMLBasicReader reader, Element e) { }
     
     /**
-     * read the MediaSourceFilter configuration
+     * read the MainFilter configuration
      */
     private synchronized void readConfiguration(File configFile) {
         if (log.isServiceEnabled()) {
@@ -102,7 +102,7 @@ public class MediaSourceFilter implements MediaFilter {
             String  elementId    = chainElement.getAttribute("id");
             try {
                 Class newclass = Class.forName(clazz);
-                MediaFilter filter = (MediaFilter) newclass.newInstance();
+                Filter filter = (Filter) newclass.newInstance();
                 if (filter instanceof URLComposerComparator) {
                     chainComp.add((URLComposerComparator) filter);
                 } else {
@@ -143,7 +143,7 @@ public class MediaSourceFilter implements MediaFilter {
     public List filter(List urls) {
         Iterator i = filters.iterator();
         while (i.hasNext()) {
-            MediaFilter filter = (MediaFilter) i.next();
+            Filter filter = (Filter) i.next();
             if (log.isDebugEnabled()) {
                 log.debug("Using filter " + filter);
                 log.debug("before: " + urls);

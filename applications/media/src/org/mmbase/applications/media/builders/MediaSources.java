@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
-import org.mmbase.applications.media.filters.MediaSourceFilter;
+import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.Format;
 
 
@@ -47,7 +47,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.2 2003-02-03 18:11:40 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.3 2003-02-03 22:50:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -278,7 +278,7 @@ public class MediaSources extends MMObjectBuilder {
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("absoluteurl", "(<??>)");
             info.put("urlresult", "(<??>) ");
-            info.put(FUNCTION_URLS, "(fragment) A list of all possible URLs to this source/fragment (Really MediaURLComposer.URLComposer's)");
+            info.put(FUNCTION_URLS, "(fragment) A list of all possible URLs to this source/fragment (Really URLComposer.URLComposer's)");
             info.put(FUNCTION_FORMAT, "() Shorthand for gui(format)");
             info.put(FUNCTION_CODEC, "() Shorthand for gui(codec)");
             info.put(FUNCTION_MIMETYPE, "() Returns the mime-type for this source");
@@ -411,7 +411,7 @@ public class MediaSources extends MMObjectBuilder {
      */
     protected List getSortedURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
         List urls = getURLs(source, fragment, info);
-        return MediaSourceFilter.getInstance().filter(urls);
+        return MainFilter.getInstance().filter(urls);
     }
     
     /**
