@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
-import java.sql.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * One of the core objects, Defines one field of a object type / builder, has its
@@ -22,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.32 2002-11-21 16:04:02 robmaris Exp $
+ * @version $Id: FieldDefs.java,v 1.33 2003-03-04 14:27:05 nico Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
