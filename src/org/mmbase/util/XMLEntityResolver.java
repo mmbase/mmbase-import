@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.33 2003-04-11 11:05:49 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.34 2003-04-19 16:16:07 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -94,7 +94,7 @@ public class XMLEntityResolver implements EntityResolver {
      */
     public static void registerPublicID(String publicID, String dtd, Class c) {
         publicIDtoResource.put(publicID, new Resource(c,dtd));
-        log.info("publicIDtoResource: "+publicID+" "+dtd+c.getName());
+        if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
     }
 
     private String dtdpath;
