@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.19 2001-04-25 14:21:35 daniel Exp $
+ * @version $Id: DayMarkers.java,v 1.20 2001-04-25 15:17:35 daniel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -173,6 +173,7 @@ public class DayMarkers extends MMObjectBuilder {
 		}
 		log.debug("Could not find with daycache " + nodeNumber + ", searching in database now");
 
+
 		MultiConnection con=mmb.getConnection();
 		if (con==null) { log.error("Could not get connection to database"); return(-1);} 
 		try {
@@ -195,6 +196,8 @@ public class DayMarkers extends MMObjectBuilder {
 			} else {
 				// hmm, strange, perhaps we have to seek the oldest daycount, but for the moment:
 				log.error("daycount could not be found");
+				stmt.close();
+				con.close();
 				return 0; // very old.						   
 			}
 
