@@ -5,7 +5,7 @@
 <html>
   <head>
     <title>Welcome to MMBase</title>
-    <link rel="stylesheet" href="mmbase/style/default/css/mmbase.css" type="text/css" />
+    <link rel="stylesheet" href="mmbase/style/css/mmbase.css" type="text/css" />
   </head>
 <body >
 <table>
@@ -41,7 +41,7 @@
       </p>
     </td>
     <td class="link" >
-      <a href="<mm:url page="mmexamples/install.jsp" />"><img alt="&gt;" src="mmbase/style/default/images/next.gif" /></a>
+      <a href="<mm:url page="mmexamples/install.jsp" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
   
@@ -54,7 +54,7 @@
       </p>
     </td>
     <td class="link" >
-      <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/default/images/next.gif"  /></a>
+      <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>
   
@@ -65,7 +65,7 @@
       retrieve data form MMBase in your web pages.
     </td>
     <td class="link" >
-      <a href="<mm:url page="mmexamples/taglib/whatistaglib.jsp" />"><img alt="&gt;" src="mmbase/style/default/images/next.gif" /></a>
+      <a href="<mm:url page="mmexamples/taglib/whatistaglib.jsp" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
   
@@ -75,7 +75,7 @@
       An overview of available MMBase documentation, listed by target group.<br />
     </td>
     <td class="link" >
-      <a href="<mm:url page="mmdocs/" />"><img alt="&gt;" src="mmbase/style/default/images/next.gif" /></a>
+      <a href="<mm:url page="mmdocs/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
   
@@ -88,7 +88,7 @@
       </p>
     </td>
     <td class="link" >
-      <a href="<mm:url page="mmbase/edit/" />"><img alt="&gt;" src="mmbase/style/default/images/next.gif" /></a>
+      <a href="<mm:url page="mmbase/edit/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
   
@@ -101,7 +101,7 @@
       </p>
     </td>
     <td class="link" >
-      <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/default/images/next.gif" /></a>
+      <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
 
@@ -111,7 +111,7 @@
       Link to the MMBase website.
     </td>
     <td class="link" >
-      <a href="http://www.mmbase.org"><img alt="&gt;" src="mmbase/style/default/images/next.gif" /></a>
+      <a href="http://www.mmbase.org"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr> 
 </table>
