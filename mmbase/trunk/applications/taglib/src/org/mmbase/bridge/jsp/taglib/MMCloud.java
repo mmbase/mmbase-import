@@ -18,6 +18,7 @@ import javax.servlet.jsp.tagext.*;
 import sun.misc.BASE64Decoder;
 
 import org.mmbase.bridge.*;
+import org.mmbase.security.Rank; // hmm.
 
 /**
  * MMCloud
@@ -31,13 +32,11 @@ public class MMCloud extends MMTaglib implements BodyTag{
     private String cloudName=DEFAULT_CLOUD_NAME;
 
     public static boolean debug = true;
-    private String authenticate = "PropertiesLogon";
+    private String authenticate = "name/password"; 
 
-    private String method = null; // how to log on.
+    private String method = null; // how to log on, method can only be 'http'.
     private String logon = null;  
     private String pwd = null;
-    private String cache = null;
-    private String expire = "";
     String request_line = null;
     private HttpSession session;
     private HttpServletRequest  request;
@@ -79,10 +78,6 @@ public class MMCloud extends MMTaglib implements BodyTag{
         this.pwd = pwd;
     }
 
-    public void setExpire(String expire){
-        this.expire = expire;
-    }
-
     public void setAuthenticate(String authenticate){
         this.authenticate = authenticate;
     }
@@ -90,13 +85,11 @@ public class MMCloud extends MMTaglib implements BodyTag{
         this.method = m;
     }
 
-    public void setCache(String cache){
-        this.cache = cache;
-    }
-
 
     /**
-     * Deny access to this page
+     *  Deny access to this page
+     *
+     * @return false
      */    
     private boolean deny(HttpServletResponse res) {
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -115,21 +108,45 @@ public class MMCloud extends MMTaglib implements BodyTag{
         response = (HttpServletResponse)pageContext.getResponse();
         Cloud cloud = (Cloud)session.getAttribute("cloud_"+cloudName);
 
-        if (cloud != null && (logon != null || method != null)) { // check if logged on as the right one
+        if ("asIs".equals(method)) {
+            // this is handy. 'logon' will be ignored, the cloud is as is was in the session
+            debug("requested the cloud 'as is'");
+            logon = null;   // that means in practice, to ignore the logon name.  
+        }              
+        
+        if (cloud != null) {         
+            // we have a cloud, check if it is a desired one
+            // otherwise make it null.
 
-            if (method != null) { // we need to know if cloud was logged on at all
-                
-            }
-
-            if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
-                debug("logged on, but as wrong user, logging out first.");
-                cloud = null;
-                session.setAttribute("cloud_" + cloudName, null);
+            if ("anonymous".equals(method)) { 
+                // explicity anonymous. 'logon' will be ignored
+                debug("explicityly requested anonymous cloud");
+                // an anonymous cloud was requested, check if it is.
+                if (cloud.getUser().getRank() != Rank.ANONYMOUS) { 
+                    debug("cloud is not anonymous, throwing it away");
+                    cloud = null;
+                    logon = null;
+                    session.setAttribute("cloud_" + cloudName, null);
+                }
+            } else if (logon == null && method != null) { 
+                // authorisation was requested, but not indicated for whom 
+                if (cloud.getUser().getRank() == Rank.ANONYMOUS) { // so it simply may not be anonymous
+                    debug("there was a cloud, but anonymous. log it on");
+                    cloud = null;
+                    session.setAttribute("cloud_" + cloudName, null);
+                }
+            } else  if (logon != null) { 
+                // a logon name was given, check if logged on as the right one
+                if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
+                    debug("logged on, but as wrong user. log out first.");
+                    cloud = null;
+                    session.setAttribute("cloud_" + cloudName, null);
+                }
             }
         }
 
-        if (cloud == null) {
-            debug("no cloud found. Loggin in...");
+        if (cloud == null) { // we did't have a cloud, or it was not a good one:
+            debug("logging on the cloud...");
             // check how to log on:
             if ("http".equals(method)) {
                 debug("with http");
@@ -161,47 +178,50 @@ public class MMCloud extends MMTaglib implements BodyTag{
                     }
                 } else {
                     debug("http without username");
+                    if (username == null) { // there must be at least known a username...
+                        debug("no username known");
+                        deny(response);
+                    }
                     logon = username;
                 }
                 pwd = password;
-            } 
+            } // http
             
+            // do the MMCI cloud logging on
             if (logon != null) {
                 debug("Username found. logging in");
                 User user = getDefaultCloudContext().getNewUser();
                 user.put("username", logon);
                 user.put("password", pwd);
-                cloud = getDefaultCloudContext().getCloud(cloudName, "name/password", user);
+                try {
+                    cloud = getDefaultCloudContext().getCloud(cloudName, authenticate, user);
+                } catch (BridgeException e) { 
+                    // did not succeed, so problably the password was wrong.
+                    // give a deny, people can retry the password then.
+                    if ( "http".equals(method)) {
+                        deny(response);                    
+                        // in case they give up, give an anonymous cloud:
+                        cloud = getDefaultCloudContext().getCloud(cloudName);
+                    } else { // strange, no method given, password wrong (or missing)
+                        throw new JspTagException("Logon of user " + logon + " failed.");
+                    }
+                }
             } else { 
                 cloud = getDefaultCloudContext().getCloud(cloudName);
             }
+
             if (cloud == null) { // stil null, give it up then...
-                debug ("Could not create Cloud, denying access");
+                debug("Could not create Cloud, denying access");
                 deny(response);
                 return SKIP_BODY;
     	    } else {
     	        session.setAttribute("cloud_"+cloudName,cloud);
     	    }
         }
+        
         setPageCloud(cloud);
-        if (cache!=null) { // cache spul
-            Module cacher = getDefaultCloudContext().getModule("scancache");
-            if (cacher instanceof CacheModule) {
-                try {
-                    // caching of cloud=part of page
-                    request_line = request.getRequestURI();
-                    String reload = (String)session.getAttribute("reload");
-                    String rst=((CacheModule)cacher).get(cache,request_line,expire+">");
-	                if (rst!=null && !("Y".equals(reload))) {
-	                    pageContext.getOut().write(rst);
-                        return Tag.SKIP_BODY;
-                    }
-                } catch (IOException ioe){
-                    throw new JspTagException(ioe.toString());
-                }
-            }
-        }
-    	return EVAL_BODY_TAG;
+
+        return EVAL_BODY_TAG;
     }
 
     public void doInitBody() throws JspException {
@@ -210,12 +230,6 @@ public class MMCloud extends MMTaglib implements BodyTag{
     
     public int doAfterBody() throws JspException {
         try {
-            if (cache!=null) {
-                Module cacher = getDefaultCloudContext().getModule("scancache");
-                if (cacher instanceof CacheModule) {
-                    ((CacheModule)cacher).put(cache,request_line,bodyOut.getString());
-                }
-            }
             bodyOut.writeOut(bodyOut.getEnclosingWriter());
             return Tag.SKIP_BODY;
         } catch (IOException ioe){
