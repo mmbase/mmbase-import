@@ -264,6 +264,7 @@ one or more examplevalue tags is you want to give some example values.
       <possiblevalue><value>Node</value>    <info>org.mmbase.bridge.Node</info></possiblevalue>
       <possiblevalue><value>Cloud</value>    <info>org.mmbase.bridge.Cloud</info></possiblevalue>
       <possiblevalue><value>Transaction</value>    <info>org.mmbase.bridge.Transaction</info></possiblevalue>
+      <possiblevalue><value>decimal</value> <info>java.math.BigDecimal</info></possiblevalue>
       <possiblevalue><value>Integer</value> <info>java.lang.Integer</info></possiblevalue>
       <possiblevalue><value>Vector</value>  <info>java.util.Vector. It's better to use List, normally.</info></possiblevalue>
       <possiblevalue><value>List</value>    <info>java.util.List</info></possiblevalue>
@@ -1871,13 +1872,25 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <see>isempty</see>
     <see>isnotempty</see>
     <attribute>
-        <name>value</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
-        <refercontext>true</refercontext>
-    <info>
-    The value which the context variable must have.
-    </info>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <requirednote>
+		Either `value' or `referid2' must be present.
+      </requirednote>
+      <info>
+		The value which the context variable must have, this is always a String.
+      </info>
+    </attribute>
+    <attribute>
+      <name>referid2</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+	  <info>
+		The value can also be another context variable, which is not necessarely a string.
+	  </info>
     </attribute>
   </tag>
   <tag>
@@ -1896,6 +1909,22 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsEmptyTag</tagclass>
     <info>
       Checks if parent writer is empty.
+    </info>
+  </tag>
+  <tag>
+    <name>isgreaterthan</name>
+    <extends>compare</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
+    <info>
+	  
+    </info>
+  </tag>
+  <tag>
+    <name>islessthan</name>
+    <extends>compare</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
+    <info>
+	  
     </info>
   </tag>
   <tag>
