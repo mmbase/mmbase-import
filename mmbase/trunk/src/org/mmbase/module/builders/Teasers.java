@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.9 2000-04-05 15:24:09 wwwtech Exp $
+$Id: Teasers.java,v 1.10 2000-04-07 09:57:48 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/04/05 15:24:09  wwwtech
+Wilbert: commented out some currently dead code
+
 Revision 1.8  2000/03/31 13:27:52  wwwtech
 Wilbert: Introduction of ParseException for method getList
 
@@ -48,7 +51,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.9 $ $Date: 2000-04-05 15:24:09 $ 
+ * @version $Revision: 1.10 $ $Date: 2000-04-07 09:57:48 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -338,13 +341,18 @@ public class Teasers extends MMObjectBuilder {
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
         super.nodeLocalChanged(number,builder,ctype);
 		if (builder.equals(tableName)) {
-			System.out.println("Teasers -> change detected in "+number+" "+builder+" "+ctype);
+			debug("Teasers -> change detected in "+number+" "+builder+" "+ctype);
 			int nr = Integer.parseInt(number);
 			if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
 				MMObjectNode node=getNode(number);
 				if (node!=null) {
 					fillTeaserSearchTable(nr);
 					// fillTeaserUrl(nr);
+					if (ctype.equals("r")) {
+						debug("Removing "+number+" from jumper cache");
+						Jumpers jumpers = (Jumpers)mmb.getMMObject("Jumpers");
+						if (jumpers!=null) jumpers.delJumpCache(number);
+					}
 				}
 			}
 			else if (ctype.equals("d")) {
