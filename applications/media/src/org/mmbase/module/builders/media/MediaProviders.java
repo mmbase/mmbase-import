@@ -13,7 +13,7 @@ package org.mmbase.module.builders.media;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
-import java.util.Hashtable;
+import java.util.*;
 
 
 /**
@@ -57,4 +57,21 @@ public class MediaProviders extends MMObjectBuilder {
         int formatnr = mediasource.getIntValue("format");
         return getDefaultProtocol(MediaSources.convertNumberToFormat(formatnr));
     }
+ 
+    /** 
+     * get a provider with a certain name
+     * @param providername the name of the provider
+     * @return the provider
+     */
+    public MMObjectNode getProvider(String providername) {
+        MMObjectNode provider = null;
+        Enumeration e = search("name='"+providername+"'");
+        if (e.hasMoreElements()) {
+            provider = (MMObjectNode)e.nextElement();
+        }
+        if(e.hasMoreElements()) {
+            log.warn("there are more providers with the same name : "+providername);
+        }
+        return provider;
+    }   
 }
