@@ -16,6 +16,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import java.util.List;
 import java.util.ArrayList;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
@@ -25,7 +27,7 @@ import java.util.ArrayList;
  * @since  MMBase-1.6
  */
 public class ByteHandler extends AbstractTypeHandler {
-    
+    private static Logger log = Logging.getLoggerInstance(ByteHandler.class.getName());
     /**
      * Constructor for ByteHandler.
      * @param context
@@ -43,7 +45,7 @@ public class ByteHandler extends AbstractTypeHandler {
         args.add(context.getSessionName());
         args.add(context.getCloud().getLocale().getLanguage());
         return  (node != null ? node.getFunctionValue("gui", args).toString() : "") +
-                                "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
+                 "<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" />";
     }
     
     /**
@@ -62,7 +64,8 @@ public class ByteHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        throw new JspTagException("Don't know what to do with bytes()");
+        log.error("Don't know what to do with byte[]");
+        return super.whereHtmlInput(field);
     }
     
 }
