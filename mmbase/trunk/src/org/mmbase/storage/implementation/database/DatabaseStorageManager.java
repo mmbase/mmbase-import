@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.37 2004-01-11 15:43:58 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.38 2004-01-13 09:59:00 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1446,7 +1446,7 @@ public class DatabaseStorageManager implements StorageManager {
                     Object id = field.getStorageIdentifier();
                     Map colInfo = (Map)columns.get(id);
                     if ((colInfo == null)) {
-                        log.error("VERIFY: Field " + field.getDBName() + " does NOT exist in storage! Field will be concidered virtual.");
+                        log.error("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be concidered virtual.");
                         // set field to virtual so it will not be stored -
                         // prevents future queries or statements from failing
                         field.setDBState(FieldDefs.DBSTATE_VIRTUAL);
@@ -1458,9 +1458,9 @@ public class DatabaseStorageManager implements StorageManager {
                         int type = getJDBCtoMMBaseType(storageType, curtype);
                         if (type != curtype) {
                             log.error(
-                                "VERIFY: Field "
+                                "VERIFY: Field '"
                                     + field.getDBName()
-                                    + " mismatch : type defined as "
+                                    + "' of builder '" + builder.getTableName() + "' mismatch : type defined as "
                                     + FieldDefs.getDBTypeDescription(curtype)
                                     + ", but in storage "
                                     + FieldDefs.getDBTypeDescription(type)
@@ -1473,9 +1473,9 @@ public class DatabaseStorageManager implements StorageManager {
                                 // only correct if storage is more restrictive
                                 if (!nullable) {
                                     field.setDBNotNull(!nullable);
-                                    log.warn("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
+                                    log.warn("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
                                 } else {
-                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable);
+                                    log.debug("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' mismatch : notnull in storage is " + !nullable);
                                 }
                             }
                             // compare size
@@ -1486,9 +1486,9 @@ public class DatabaseStorageManager implements StorageManager {
                                     // only correct if storage is more restrictive
                                     field.setDBSize(size);
                                     log.warn(
-                                        "VERIFY: Field "
+                                        "VERIFY: Field '"
                                             + field.getDBName()
-                                            + " mismatch : size defined as "
+                                            + "' of builder '" + builder.getTableName() + "' mismatch : size defined as "
                                             + cursize
                                             + ", but in storage "
                                             + size
@@ -1496,7 +1496,7 @@ public class DatabaseStorageManager implements StorageManager {
                                 } else if (cursize <= 255) {
                                     // ignore the size difference for large fields (blobs or texts) if
                                     // the storage size is larger than that defined for the builder
-                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size);
+                                    log.debug("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size);
                                 }
                             }
                         }
@@ -1507,7 +1507,7 @@ public class DatabaseStorageManager implements StorageManager {
             // if any are left, these fields were removed!
             for (Iterator i = columns.keySet().iterator(); i.hasNext();) {
                 String column = (String)i.next();
-                log.warn("VERIFY: Column " + column + " in Storage but not defined!");
+                log.warn("VERIFY: Column '" + column + "' for builder '" + builder.getTableName() + "' in Storage but not defined!");
             }
         } catch (Exception e) {
             log.error("Error during check of table. Asuming it correct." + e.getMessage() + Logging.stackTrace(e));
