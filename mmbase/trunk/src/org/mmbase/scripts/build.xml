@@ -21,17 +21,18 @@ about the Ant build tool.
     <property name="optimize"       value="on"/>
     <property name="deprecation"    value="off"/>
 
-    <property name="src.dir"     value="../../.."/>
+    <property name="top.dir" value="../../../../"/>
+    <property name="src.dir"     value="${top.dir}/src"/>
     <property name="packages"    value="org.mmbase.*"/>
 
     <!-- build dirs -->
-    <property name="build.dir"     value="../../../../build"/>
+    <property name="build.dir"     value="${top.dir}/build"/>
     <property name="build.dest"     value="${build.dir}/classes"/>
     <property name="build.javadocs" value="${build.dir}/javadocs"/>
 
     <!-- distribution dirs -->
-    <property name="dist.root"     value="../../../../dist"/>
-    <property name="dist.dir"     value="${dist.root}/${name}-${version}"/>
+    <property name="dist.root" value="${top.dir}/dist"/>
+    <property name="dist.dir" value="${dist.root}/${name}-${version}"/>
     <property name="dist.lib" value="${dist.dir}/lib"/>
     <property name="dist.src" value="${dist.dir}/src"/>
     <property name="dist.log" value="${dist.dir}/log"/>
@@ -246,7 +247,7 @@ about the Ant build tool.
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
 
-  <target name="dist" depends="compile,jar">
+  <target name="dist" depends="compile,jar,javadocs">
 
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.dir}"/>
@@ -259,18 +260,32 @@ about the Ant build tool.
     <mkdir dir="${dist.html}"/>
 
     <!-- copy the java-sources -->
-    <copydir src="${src.dir}" dest="${dist.src}"/>
+    <copydir src="${src.dir}" dest="${dist.src}">
+      <exclude name="**/scripts/**" />
+    </copydir>     
 
     <!-- copy the scripts -->
     <copydir src="${src.dir}/org/mmbase/scripts" dest="${dist.scripts}"/>
 
-    <!-- copy the config -->
+    <!-- make scripts executable -->
     <!-- ToDo -->
 
+    <!-- copy the javadocs -->
+    <copydir src="${build.javadocs}" dest="${dist.docs}/api"/>
+    
+    <!-- copy a readme from somewhere -->
+    <!-- ToDo -->
+
+    <!-- copy the config -->
+    <copydir src="${top.dir}/config" dest="${dist.config}"/>
+
     <!-- copy the html -->
-    <!-- ToDo --> 
+    <copydir src="${top.dir}/html" dest="${dist.html}"/>
 
     <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
+
+    <!-- zip -->
+    <!-- ToDo -->
 
   </target>
  
