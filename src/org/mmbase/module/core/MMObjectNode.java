@@ -39,21 +39,11 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.95 2003-02-14 09:13:34 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.96 2003-02-14 10:03:45 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(MMObjectNode.class.getName());
-
-    /**
-     * multirelationsbuilder
-     * Earlier MMbase versions use MultiRelation Builder to create a query over
-     * multiple tables.
-     * The ClusterBuilder is the new version of the MultiRelation
-     * The clusterBuilder in this class is used to find relatedNodes
-     */
-    private ClusterBuilder clusterBuilder = null;
-    //	private MultiRelations clusterBuilder = null;
     /**
      * Holds the name - value pairs of this node (the node's fields).
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
@@ -130,8 +120,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public MMObjectNode(MMObjectBuilder parent) {
         if (parent!=null) {
             this.parent=parent;
-            //			clusterBuilder = (MultiRelations) this.parent.mmb.getMMObject("multirelations");
-            clusterBuilder = this.parent.mmb.getClusterBuilder();
         } else {
             log.error("MMObjectNode-> contructor called with parent=null");
             throw new NullPointerException("contructor called with parent=null");
