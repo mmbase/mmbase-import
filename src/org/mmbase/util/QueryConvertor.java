@@ -50,6 +50,8 @@ public class QueryConvertor {
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
      * @param db the database to use when converting fieldnames
+     * @deprecated Use {@link #setConstraint() setConstraint()} to parse 
+     *        these expressions.
      */
     public static String altaVista2SQL(String query,MMJdbc2NodeInterface db) {
         database=db;
@@ -59,6 +61,8 @@ public class QueryConvertor {
     /**
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
+     * @deprecated Use {@link #setConstraint() setConstraint()} to parse 
+     *        these expressions.
      */
     public static String altaVista2SQL(String query) {
         if (query.indexOf("where")!=-1 || query.indexOf("WHERE")!=-1) {
@@ -77,30 +81,24 @@ public class QueryConvertor {
     }
     
     /**
-     * Converts query to a 
-     * {@link org.mmbase.storage.search.implementation.NodeSearchQuery
-     * NodeSearchQuery} object.
-     *
-     * @param where The constraint.
-     * @param builder The builder for the corresponding nodetype.
-     */
-    public static NodeSearchQuery altaVista2SearchQuery(
-        String where, MMObjectBuilder builder) {
-            
-        NodeSearchQuery query = new NodeSearchQuery(builder);
-        setConstraint(query, where);
-        return query;
-    }
-
-    /**
      * Sets constraint for a
      * {@link org.mmbase.storage.search.BasicSearchQuery
      * BasicSearchQuery} object.
+     * <p>
+     * The constraint may be specified as either one of these formats:
+     * <ul>
+     * <li><code>null</code> or empty.
+     * <li>A SQL search condition, starting with "WHERE ".
+     * <li>Altavista format.
+     * </ul>
+     * If the query contains more than one step, the fields must be of the form
+     * <em>stepalias.fiels</em>.
+     * <p>See {@link org.mmbase.storage.search.legacy.ConstraintParser} for 
+     * more on how SQL search conditions are supported.
      *
      * @param query The query.
      * @param where The constraint.
      */
-    // TODO RvM: more javadoc on possible formats.
     public static void setConstraint(BasicSearchQuery query, String where) {
 
         Constraint constraint = null;
