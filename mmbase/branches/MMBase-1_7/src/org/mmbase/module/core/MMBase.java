@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.113 2004-03-15 16:20:45 michiel Exp $
+ * @version $Id: MMBase.java,v 1.113.2.1 2004-07-08 17:27:25 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -301,7 +301,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
-     * Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
+     * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
     public void init() {
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
@@ -459,7 +459,7 @@ public class MMBase extends ProcessorModule {
         try {
             mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
         } catch (Exception e) {
-            log.fatal("error loading the mmbase cop: " + e.toString());
+            log.fatal("error loading the mmbase cop: " + e.getMessage());
             log.error(Logging.stackTrace(e));
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
@@ -509,6 +509,23 @@ public class MMBase extends ProcessorModule {
         return getDatabase().created(baseName + "_object");
     }
 
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    private MMObjectBuilder loadRootBuilder() {
+        if (rootBuilder != null) return rootBuilder;
+        try {
+            rootBuilder = loadBuilder("object");
+        } catch (BuilderConfigurationException e) {
+            // object builder was not defined -
+            // builder is optional, so this is not an error
+            rootBuilder = null;
+        }
+
+        return rootBuilder;
+    }
+
     /**
      * Create a new database.
      * The database created is based on the baseName provided in the configuration file.
@@ -526,18 +543,13 @@ public class MMBase extends ProcessorModule {
 
         getDatabase();
 
-        rootBuilder = null;
-        try {
-            rootBuilder = loadBuilder("object");
-        } catch (BuilderConfigurationException e) {
-            // object builder was not defined -
-            // builder is optional, so this is not an error
-        }
-        if (rootBuilder != null) {
+        if (loadRootBuilder() != null) {
             rootBuilder.init();
         } else {
+            // if no rootbuilder defined (no object.xml)
             database.createObjectTable(baseName);
         }
+
         return true;
     }
 
@@ -667,7 +679,8 @@ public class MMBase extends ProcessorModule {
      * @since MMBase1,6
      */
     public MMObjectBuilder getRootBuilder() {
-        if (rootBuilder == null) {
+        if (loadRootBuilder() == null) {
+            log.info("No object.xml found, taking defaults.");
             // instantiate a virtual 'object' builder if none is specified
             rootBuilder = new MMObjectBuilder();
             rootBuilder.setMMBase(this);
@@ -758,7 +771,8 @@ public class MMBase extends ProcessorModule {
                 // lock until up. (Init is synchronized on this too)
             }
         }
-    }
+    }        
+
 
     /**
      * Get a database connection that is multiplexed and checked.
@@ -775,11 +789,8 @@ public class MMBase extends ProcessorModule {
             try {
                 con = database.getConnection(jdbc);
             } catch (SQLException sqle) {
-                log.fatal(
-                    "Could not get a multi-connection, will try again over "
-                        + timeout
-                        + " seconds: "
-                        + sqle.getMessage());
+                log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
+
                 if (tries == 1) {
                     log.error(Logging.stackTrace(sqle));
                 } else {
@@ -1070,6 +1081,8 @@ public class MMBase extends ProcessorModule {
         // remarks:
         //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.oType, so typerel must be started after insrel and reldef. (bug #6237)
 
+        loadRootBuilder(); // loads object.xml if present.
+
         TypeDef = (TypeDef)loadCoreBuilder("typedef");
         RelDef = (RelDef)loadCoreBuilder("reldef");
         InsRel = (InsRel)loadCoreBuilder("insrel");
@@ -1105,7 +1118,7 @@ public class MMBase extends ProcessorModule {
         TypeDef.init();
 
         // first initialize versions, if available (table must exist for quereis to succeed)
-        log.debug("Versionves:");
+        log.debug("Versions:");
         Versions versions = (Versions)getMMObject("versions");
         if (versions != null) {
             versions.init();
@@ -1504,12 +1517,21 @@ public class MMBase extends ProcessorModule {
     /**
      * Retrieves the current language.
      * This value is set using the configuration file.
-     * Examples are 'us' or 'nl'.
+     * Examples are 'en' or 'nl'.
      * @return the language as a <code>String</code>
      */
     public String getLanguage() {
         return locale.getLanguage();
     }
+
+    /**
+     * Retrieves the current locale. 
+     * @since MMBase-1.8
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
 
     /**
      * Retrieves the encoding.
