@@ -23,6 +23,9 @@ import org.mmbase.bridge.Field;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.Arguments;
+import org.mmbase.module.core.MMObjectBuilder;
+
 
 import org.mmbase.bridge.jsp.taglib.typehandler.TypeHandler;
 import org.mmbase.bridge.jsp.taglib.typehandler.DefaultTypeHandler;
@@ -38,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.60 2003-04-16 08:12:53 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.61 2003-05-19 10:01:20 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -247,12 +250,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
 
-            List args = new ArrayList();
-            args.add(field.getName());
-            args.add(getCloud().getLocale().getLanguage());
-            args.add(sessionName);
-            args.add(pageContext.getResponse());
-            args.add(pageContext.getRequest());
+            Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
+            args.set("field",    field.getName());
+            args.set("language", getCloud().getLocale().getLanguage());
+            args.set("session",  sessionName);
+            args.set("response", pageContext.getResponse());
+            args.set("request",  pageContext.getRequest());
             show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
@@ -283,6 +286,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         }
         helper.setTag(this);
+        helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
