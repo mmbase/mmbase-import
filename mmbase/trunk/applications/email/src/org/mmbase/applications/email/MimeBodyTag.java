@@ -28,8 +28,8 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * @javadoc
  * @author Daniel Ockeloen
- * 
  */
 public class MimeBodyTag {
 
@@ -55,6 +55,11 @@ public class MimeBodyTag {
         this.formatter = formatter;
     }
 
+
+    /**
+     * @javadoc
+     */
+
     public void addAlt(MimeBodyTag sub) {
         if (altnodes==null) {
             //altnodes=new MimeMultipart("alternative");
@@ -65,6 +70,11 @@ public class MimeBodyTag {
         altnodes.addElement(sub);
     }
 
+
+
+    /**
+     * @javadoc
+     */
 
     public void addRelated(MimeBodyTag sub) {
         try {
@@ -157,15 +167,12 @@ public class MimeBodyTag {
     public void setNumber(String number) {
         this.number=number;
     }
-
     public void setField(String field) {
         this.field=field;
     }
-
     public void setText(String text) {
         this.text=text;
     }
-
     public String getText() {
         // is there a formatter requested ??
         if (formatter!=null) {
@@ -213,7 +220,9 @@ public class MimeBodyTag {
         return result;
     }
 
-
+    /**
+     * @javadoc
+     */
     public MimeMultipart getMimeMultipart() {
         try {
             if (altnodes!=null) {
@@ -251,10 +260,16 @@ public class MimeBodyTag {
         return null;
     }
 
+    /**
+     * @javadoc
+     */
     public MimeMultipart getRelatedpart() {
         return relatednodes;
     }
 	
+    /**
+     * @javadoc
+     */
     public MimeBodyPart getMimeBodyPart() {
         MimeBodyPart mmbp=new MimeBodyPart();
         try {
@@ -303,9 +318,19 @@ public class MimeBodyTag {
         return mmbp;
     }
 
+
+    /**
+     * @javadoc
+     */
+
     private DataHandler getMMBaseObject(String number) {
         return getMMBaseObject(number,"");
     }
+
+
+    /**
+     * @javadoc
+     */
 
     private DataHandler getMMBaseObject(String number,String field) {
         Cloud cloud=LocalContext.getCloudContext().getCloud("mmbase");

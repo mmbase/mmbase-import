@@ -27,6 +27,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * @javadoc
  * @author Daniel Ockeloen
  * 
  */
@@ -36,7 +37,11 @@ public class MimeMessageGenerator {
 
 
 
+    /**
+     * @javadoc
+     */
     public static MimeMultipart getMimeMultipart(String text) {
+        
         Hashtable nodes = new Hashtable();
         Vector rootnodes = new Vector();
 

@@ -9,154 +9,78 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import java.util.*;
-import java.net.*;
 import java.io.*;
-import javax.naming.*;
-import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
+import java.net.*;
+import java.util.*;
+import javax.mail.internet.MimeMultipart;
 
-import org.mmbase.module.core.*;
-import org.mmbase.module.*;
+import org.mmbase.util.StringObject;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 
-import org.mmbase.util.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @author Daniel Ockeloen
+ * This is a helper class for EmailBuilder. It contains a lot of methods which deal with
+ * MMObjectNodes of type 'email' (So actually one would expect those functions to be member of
+ * EmailBuilder itself).
  *
- * base implemenation and support class for all the email handlers
- * normally you extend this class for implementing a new mailtype
+ * @author Daniel Ockeloen
+ * @author Michiel Meeuwissen
+ * @verson $Id: EmailHandler.java,v 1.10 2004-04-14 18:53:01 michiel Exp $
+ * @since  MMBase-1.7
  */
 public class EmailHandler {
 
 
     private static final Logger log = Logging.getLoggerInstance(EmailHandler.class);
-    
+
 
     /**
-     * @javadoc
-     *
      * Send the email node.
      * firsts finds all out all the related users and groups (or not)
      * then parse the content for subject and body
      * lastly mail it using the sendmail module
      */
     public static MMObjectNode sendMailNode(MMObjectNode node) {
-    // get the sendmail module
-        SendMailInterface sendmail=EmailBuilder.getSendMail();
-        if (sendmail==null) {
+        // get the sendmail module
+        SendMailInterface sendmail = EmailBuilder.getSendMail();
+        if (sendmail == null) {
             log.error("sendmail module not active, cannot send email");
-        node.commit();
+
+            //node.commit(); // why is the node committed here?
+
             return node; // STATE_FAILED ?
         }
 
-        // get subject of the mail (including url based)
-        String subject=node.getStringValue("subject");
-        String osubject=subject;
 
-        // get To of the mail (to field + related users + related users in groups
-        Vector toUsers = getAttachedUsers(node);
 
-        // get From of the mail
-        String from=node.getStringValue("from");
-
-        // get ReplyTo of the mail
-        String replyto=node.getStringValue("replyto");
+        String from = node.getStringValue("from");
+        Set   toGroup = getAttachedGroups(node);
 
         // get Body of the mail (including url based)
-        String body=node.getStringValue("body");
-        String obody=body;
+        String body = node.getStringValue("body");
 
-        // loop all the users we need to mail
-        Enumeration e = toUsers.elements();
-        while (e.hasMoreElements()) {
+        Map headers = getHeaders(node);
 
-            // get the next user we need to email
-            String to_one = (String)e.nextElement();
+        if (toGroup.size() > 0) {
+            // bulk-mailing
+            Set toUsers = new LinkedHashSet(getTo(node));
+            toUsers.addAll(toGroup);
 
-            // mmbase number of the user
-            String to_number = null;
-            
-            // parse the to field ( format mmbasenumber,emailadr )
-            int pos=to_one.indexOf(",");
-            if (pos!=-1) {
-                to_number=to_one.substring(0,pos);
-                to_one=to_one.substring(pos+1);
-            }
-            
-            
-            // if the body starts with a url call that url
-            if (obody.indexOf("http://") == 0) {
-                body = getUrlExtern(obody,"",to_number);
-                
-                // convert html to plain text unless a the html tag is found
-                if (body.indexOf("<html>")==-1 && body.indexOf("<HTML>")==-1) {
-                    //body=html2plain(body);
-                }
-            }
-            
-            // if the subject starts with a url call that url
-            if (osubject.indexOf("http://")==0) {
-                subject=getUrlExtern(osubject,"",to_number);
-                subject=stripToOneLine(subject);
-            }
-            
-            
-            // create new (sendmail) object
-            Mail mail=new Mail(to_one,from);
-            
-            // set the subject
-            mail.setSubject(subject);
-            
-            // set default date
-            mail.setDate();
-
-            // set the reply header if defined
-            if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto);
-
-            // fill the body
-            mail.setText(body);
-
-            // little trick if it seems valid html page set
-            // the headers for html mail
-            if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
-                 mail.setHeader("Mime-Version", "1.0");
-                 mail.setHeader("Content-Type", "text/html; charset=\"ISO-8859-1\"");
-            }
-
-            // is the don't mail tag set ? this allows
-            // a generated body to signal it doesn't
-            // want to be mailed since for some reason
-            // invalid (for example there is no news for
-            // you
-            if (body.indexOf("<DONTMAIL>")==-1) {
-                // if the subject contains 'fakemail'
-                // perform all actions butt don't really
-                // mail. This is done for testing
-                if (subject!=null && subject.indexOf("fakemail")!=-1) {
-                    // add one to the sendmail counter
-                    // refix numberofmailsend++;
-                    log.info("Email -> fake send to "+to_one);
-                    node.setValue("mailstatus",EmailBuilder.STATE_DELIVERED);
-                } else {
-                if (to_one==null || sendMail(mail)==false) {
-                    log.debug("Email -> mail failed");
-                    node.setValue("mailstatus",EmailBuilder.STATE_FAILED);
-                    // add one to the sendmail counter
-                    // refix numberofmailsend++;
-                } else {
-                    // add one to the sendmail counter
-                    // refix numberofmailsend++;
-                    log.debug("Email -> mail send");
-                    node.setValue("mailstatus",EmailBuilder.STATE_DELIVERED);
-                }
-                }
-            } else {
-                log.debug("Don't mail tag found");
-            }
+            // loop all the users we need to mail
+            Iterator i = toUsers.iterator();
+            while (i.hasNext()) {
+                // get the next user we need to email
+                NodeRecipient to = (NodeRecipient) i.next();
+                sendMail(node, from, to, body, headers);
+            } 
+        } else {            
+            // one simple mail
+            NodeRecipient to = new NodeRecipient(-1, node.getStringValue("to"));
+            sendMail(node, from, to, body, headers);
         }
         // set the new mailedtime, that can be used by admins
         // to see when it was mailed vs the requested mail
@@ -164,8 +88,34 @@ public class EmailHandler {
         node.setValue("mailedtime", (int)(System.currentTimeMillis()/1000));
 
         // commit the changes to the cloud
-        node.commit();
+        if (node.getNumber() > 0) {
+            node.commit();
+        }
         return node;
+    }
+
+    /**
+     * Reads some fields from the given node and returns it as a Map with mail-headers.
+     * The considered fields are replyto, cc, bcc and subject.
+     */
+    private static Map getHeaders(MMObjectNode node) {
+        Map headers = new HashMap();
+       
+        // headers.put("From", node.getStringValue("from"));
+        headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
+        headers.put("CC",       unemptyString(node.getStringValue("cc")));
+        headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
+        headers.put("Subject",  unemptyString(node.getStringValue("subject")));
+        return headers;
+    }
+
+    /**
+     * Utility function.
+     * @return null if empty string, string otherwise
+     */
+
+    private static String unemptyString(String string) {
+        return "".equals(string) ? null : string;
     }
 
 
@@ -173,11 +123,11 @@ public class EmailHandler {
      * get the To header if its not set directly
      * try to obtain it from related objects.
      */
-    private static Vector getTo(MMObjectNode node) {
-        Vector toUsers = new Vector();
+    private static Set getTo(MMObjectNode node) {
+        Set toUsers = new LinkedHashSet();
         String to = node.getStringValue("to");
         if (to != null) {
-            toUsers.addElement(to);
+            toUsers.add(new NodeRecipient(-1, to));
         }
         return toUsers;
     }
@@ -185,48 +135,43 @@ public class EmailHandler {
 
 
     /**
-     * get the email addresses of related people
+     * Get the email addresses of related users, which are related to related groups.
      */
-    private static Vector getAttachedUsers(MMObjectNode node) {
-        Vector toList = getTo(node);
-        toList=getAttachedUsers(node,toList);
-        
-        Vector rels=node.getRelatedNodes("groups");
-        if (rels!=null) {
-            Enumeration enumeration=rels.elements();
-            while (enumeration.hasMoreElements()) {
-                MMObjectNode pnode=(MMObjectNode)enumeration.nextElement();
-                toList=getAttachedUsers(pnode,toList);
-            }
-        }
-        
-        
-        if (toList.size()>0) {
-            return toList;
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * get the email addresses of related people
-     */
-    private static Vector getAttachedUsers(MMObjectNode node,Vector toList) {
-        // try and find related users
-        Vector rels = node.getRelatedNodes("users");
-        if (rels != null) {
-            Enumeration enumeration=rels.elements();
-            while (enumeration.hasMoreElements()) {
-                MMObjectNode pnode=(MMObjectNode)enumeration.nextElement();
-                String to=""+pnode.getNumber()+","+pnode.getStringValue("email");
-                if (!toList.contains(to)) {
-                    toList.addElement(to);
+    private static Set getAttachedGroups(MMObjectNode node) {
+        Set toUsers = new LinkedHashSet();
+        if (MMBase.getMMBase().getMMObject(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
+            List rels = node.getRelatedNodes(EmailBuilder.groupsBuilder);
+            if (rels != null) {
+                Iterator i = rels.iterator();
+                while (i.hasNext()) {
+                    MMObjectNode pnode = (MMObjectNode) i.next();
+                    toUsers.addAll(getAttachedUsers(pnode));
                 }
             }
         }
-        return toList;
-    }
 
+        return toUsers;
+
+    }
+    
+    /**
+     * Get the email addresses of related users;
+     */
+    private static Set getAttachedUsers(MMObjectNode node) {
+        Set toUsers = new LinkedHashSet();
+        // try and find related users
+        if (MMBase.getMMBase().getMMObject(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
+            List rels = node.getRelatedNodes(EmailBuilder.usersBuilder);
+            if (rels != null) {
+                Iterator i = rels.iterator();
+                while (i.hasNext()) {
+                    MMObjectNode pnode = (MMObjectNode) i.next();
+                    toUsers.add(new NodeRecipient(pnode.getNumber(), pnode.getStringValue(EmailBuilder.usersEmailField)));
+                }
+            }
+        }
+        return toUsers;
+    }  
 
 
 
@@ -249,8 +194,8 @@ public class EmailHandler {
             while ((len = in.read(buffer, 0, buffersize)) != -1) {
                 string.append(buffer, 0, len);
             }
-            String result=string.toString();
-            return(result);
+            String result = string.toString();
+            return result;
 
         } catch(Exception e) {
             // this is weird needs to be checked
@@ -305,18 +250,116 @@ public class EmailHandler {
         return obj.toString();
     }
 
-    private static boolean sendMail(Mail mail) {
-        boolean result=true;
-        
-        // get mail text to see if we have a mime msg
-        String text = mail.text;
-        if (text.indexOf("<multipart") == -1) {
-            result = EmailBuilder.getSendMail().sendMail(mail);
-        } else {            
-            MimeMultipart mmpart=MimeMessageGenerator.getMimeMultipart(text);            
-            result = ((SendMail)EmailBuilder.getSendMail()).sendMultiPartMail(mail,mmpart);
+    /**
+     * Sends one email. The body is a bit parsed. It can be an URL, in which case the result will be
+     * fetched, and the body replaced.  It can also contain with &lt;DONTMAIL&gt; (why not at least
+     * start??) in which case nothing happens. It can contain &lt;multipart (why not at least
+     * starts) in which case the body will be considered a representation of a 'multipart' message
+     * (in a kind of XML format).
+     *
+     * @return whether successful
+     */
+
+    private static boolean sendMail(MMObjectNode node, String from, NodeRecipient to,  String body, Map headers) {
+        String obody = body;
+
+        // if the body starts with a url call that url
+        if (obody.indexOf("http://") == 0) {
+            body = getUrlExtern(obody, "", "" + to.nodeNumber);
+            
+                // convert html to plain text unless a the html tag is found
+            if (body.indexOf("<html>")==-1 && body.indexOf("<HTML>")==-1) {
+                //body=html2plain(body);
+            }
         }
-        return result;
+            
+        String osubject = (String) headers.get("Subject");
+
+        // if the subject starts with a url call that url
+        if (osubject.indexOf("http://") == 0) {
+            String subject = getUrlExtern(osubject, "" , "" + to.nodeNumber);
+            subject = stripToOneLine(subject);
+            headers.put("Subject", subject);
+        }
+
+
+        // little trick if it seems valid html page set
+        // the headers for html mail
+        if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
+            headers.put("Mime-Version", "1.0");
+            headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\"");
+        }
+        
+        // is the don't mail tag set ? this allows
+        // a generated body to signal it doesn't
+        // want to be mailed since for some reason
+        // invalid (for example there is no news for
+            // you
+        if (body.indexOf("<DONTMAIL>") == -1) {
+            // if the subject contains 'fakemail'
+            // perform all actions butt don't really
+            // mail. This is done for testing
+            String subject = (String) headers.get("Subject");
+            if (subject != null && subject.indexOf("fakemail")!=-1) {
+                // add one to the sendmail counter
+                // refix numberofmailsend++;                
+                log.info("Email -> fake send to " + to);
+                return true;
+            } else {
+                
+                boolean mailResult;
+                // get mail text to see if we have a mime msg
+                if (body.indexOf("<multipart") == -1) {
+                    mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
+                } else {            
+                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body);            
+                    mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
+                }
+
+                
+                if (! mailResult) {
+                    log.debug("Email -> mail failed");
+                    node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
+                    // add one to the sendmail counter
+                    // refix numberofmailsend++;
+                } else {
+                    // add one to the sendmail counter
+                    // refix numberofmailsend++;
+                    log.debug("Email -> mail send");
+                    node.setValue("mailstatus", EmailBuilder.STATE_DELIVERED);
+                }
+                return true;
+            }
+        } else {
+            log.debug("Don't mail tag found");
+            return true;
+        }
+    }
+    /** 
+     * Simple structure representing an email-adres which is associated with a node-number.
+     */
+
+    static class NodeRecipient {
+        int nodeNumber;
+        String email;
+        NodeRecipient(int i, String s) {
+            nodeNumber = i;
+            email = s;
+        }
+        public boolean equals(Object o) {
+            if (o instanceof NodeRecipient) {
+                NodeRecipient other = (NodeRecipient) o;
+                return other.nodeNumber == nodeNumber && other.email.equals(email);
+            } else {
+                return false;
+            }
+        }
+        public int hashcode() {
+            return email.hashCode() + nodeNumber;
+        }
+        public String toString() {
+            return email;
+        }
     }
 
 }

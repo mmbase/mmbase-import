@@ -23,11 +23,11 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * @author Daniel Ockeloen
  * 
  * background hanlder for sending email, a call backthread
  * that is used to send email (one thread per active email
  * node)
+ * @author Daniel Ockeloen
  */
 public class EmailBackgroundHandler implements Runnable {
 
