@@ -27,6 +27,8 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.security.MMBaseCop;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -43,6 +45,11 @@ import org.mmbase.util.logging.Logging;
  * @version 31 januari 2001
  */
 public class MMBase extends ProcessorModule  {
+
+	/**
+	*  our securityManager (MMBaseCop)
+	*/
+	private MMBaseCop mmbaseCop = null;
 
 	/**
 	*  Defines what 'channel' we are talking to when using multicast.
@@ -198,6 +205,14 @@ public class MMBase extends ProcessorModule  {
 	* Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
 	*/	
 	public void init() {
+		// first thing to do is load our security system....
+		try {
+	        mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath()+File.separator+"security"+File.separator+"security.xml");		
+		}
+		catch(Exception e)	{
+			log.fatal("error loading the mmbase cop: " + e.toString());
+			// System.exit(0);
+		}
 		// is there a basename defined in MMBASE.properties ?
 		String tmp=getInitParameter("BASENAME");
 		if (tmp!=null) {
@@ -370,6 +385,15 @@ public class MMBase extends ProcessorModule  {
 		Object o=mmobjs.get(name);
   		return (MMObjectBuilder)o;
 	}
+
+    /**
+    * Retrieves the loaded security manager(MMBaseCop).
+    * @return the loaded security manager(MMBaseCop) 
+    */
+	public MMBaseCop getMMBaseCop() {
+		return mmbaseCop;
+	}
+
 
     /**
     * Retrieves the loaded builders.
