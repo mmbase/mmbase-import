@@ -1895,6 +1895,26 @@ transaction was commited, following should result anything:
         </info>
       </possiblevalue>
     </attribute>
+    <attribute>
+      <name>options</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Sprecify addtional parameters for the presentation/manipulation of the field. [***EXPERIEMENTAL***]
+      </info>      
+      <examplevalue>
+        <value>daytime</value>
+        <info>a date time combination thingie[***EXPERIEMENTAL***]</info>
+      </examplevalue>
+      <examplevalue>
+        <value>time</value>
+        <info>a time thingie[***EXPERIEMENTAL***]</info>
+      </examplevalue>
+      <examplevalue>
+        <value>date</value>
+        <info>a date thingie[***EXPERIEMENTAL***]</info>
+      </examplevalue>
+    </attribute>
     <example>See the example for tags 'cloud' and 'nodeinfo'.</example>
   </tag>
   <tag>
