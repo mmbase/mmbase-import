@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.1.2.2 2003-03-20 10:57:14 pierre Exp $
+ * @version $Id: DateHandler.java,v 1.1.2.3 2003-05-09 15:13:37 vpro Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -226,7 +226,7 @@ public class DateHandler extends AbstractTypeHandler {
         }
         // check if changed:
         if (! context.getContextTag().findAndRegisterString(prefix(fieldName)).equals("" + cal.getTime().getTime() / DATE_FACTOR)) {
-            buffer.append("(" + fieldName + ">" + (cal.getTime().getTime() / DATE_FACTOR) + ")");
+            buffer.append("( [" + fieldName + "] >" + (cal.getTime().getTime() / DATE_FACTOR) + ")");
         } else {
             return null;
         }

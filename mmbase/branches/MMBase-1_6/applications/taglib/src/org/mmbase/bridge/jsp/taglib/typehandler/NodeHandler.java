@@ -108,7 +108,7 @@ public class NodeHandler extends IntegerHandler {
                 if (search == null || "".equals(search)) {
                     return null;
                 }
-                return "(" + fieldName + "=" + search + ")";
+                return "( [" + fieldName + "] =" + search + ")";
             }
         }
         return super.whereHtmlInput(field);
