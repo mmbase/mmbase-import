@@ -307,7 +307,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Comma-separated list of nodes that should be used as start nodes.  The start nodes don't
+        Comma-separated list of node numbers that should be used as start nodes. The start nodes don't
         have to be a member of the first nodemanager in the path. For example, if the start nodes
         belong to the second nodemanager in a path with a length of three nodemanagers, traversals
         will go into two directions at the same time. All traversals that make up a complete path
@@ -546,15 +546,6 @@ one or more examplevalue tags is you want to give some example values.
     <see>relatednodes</see>
     <see>node.element</see>
     <attribute>
-      <name>number</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The number attribute overrides the default node for a related tag,
-        using instead retrieving the node from the cloud using the attribute.
-      </info>
-    </attribute>
-    <attribute>
       <name>node</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -568,9 +559,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        If the nodes attribute is given, the related tag will add these nodes
-        to the nodes used (in additon to the node identified by the parent node
-        tag).
+        Comma separated list of node numbers that should be used instead of the
+        default node.
       </info>
     </attribute>
     <attribute>
