@@ -42,6 +42,13 @@
 	<description xml:lang="us">A message posted in a Community</description>
 </descriptions>
 
+<properties>
+    <!-- the value of the owner field for a message when posted in a forum -->
+    <property name="postas">system</property>
+    <!-- the maximum size of the message body text -->
+    <property name="maxbodysize">2024</property>
+</properties>
+
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
 	once defined keep them in the same order.
