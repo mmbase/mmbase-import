@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.257 2004-06-16 10:44:33 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.258 2004-06-17 11:35:49 johannes Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5694,6 +5694,24 @@ The 0 is just counter, which starts at 0 on every page.
 				a 'network' of nodes), there should always be a 'maximal' depth to which relations are followed. This defaults to 5.
 			</info>
 		</attribute>
+		<attribute>
+			<name>orderby</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+                It is possible to order the elements of a level of a tree by using the 'orderby' field. If you wish
+                to order using the fieldvalue of the relation from one level to another, prefix the field with 
+                the buildername (for example: "posrel.pos").
+			</info>
+        </attribute>
+		<attribute>
+			<name>direction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+                Search direction for the 'orderby' argument.
+			</info>
+        </attribute>
 	</tag>
 
 
