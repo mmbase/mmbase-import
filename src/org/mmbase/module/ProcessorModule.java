@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -18,6 +18,9 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * The Processor Module extends the baisc module to the Processor
@@ -27,15 +30,11 @@ import org.mmbase.util.*;
  */
 public class ProcessorModule extends Module implements ProcessorInterface {
 
-	private String  classname   = getClass().getName();
-	private boolean debug       = true;
-	private void    debug( String msg ) { System.out.println( classname +":"+ msg ); } 
-
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
 	public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
-		throw new ParseException("Module "+classname+" does not implement LIST");
+		throw new ParseException("Module " + this.getClass().getName() + " does not implement LIST");
 	}
 
 	/**
