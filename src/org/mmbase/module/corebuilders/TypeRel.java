@@ -17,18 +17,18 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.ParseException;
 
 /**
- * TypeRel, one of the meta stucture nodes it is used to define the
- * allowed relations between two object types this is used by editors
- * and other software to see/enforce the wanted structure
+ * TypeRel defines the allowed relations between two object types.
  *
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @author Pierre van Rooden
+ * @version 2 jan 2001
  */
 public class TypeRel extends MMObjectBuilder {
 
-	// Cache, holds the last 128 verified type-relation nodes
-	
-	LRUHashtable artCache			=new LRUHashtable(128);
+	/**
+	 * Cache, holds the last 128 verified type-relation nodes
+	 */
+	LRUHashtable artCache=new LRUHashtable(128);
 
 	/**
 	* Constructor for the TypeRel builder
