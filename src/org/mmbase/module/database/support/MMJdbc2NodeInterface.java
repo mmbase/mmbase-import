@@ -14,6 +14,8 @@ import java.net.*;
 import java.sql.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.database.*;
+import org.mmbase.module.database.support.*;
 import org.mmbase.util.*;
 
 //XercesParser
@@ -42,4 +44,5 @@ public interface MMJdbc2NodeInterface {
 	public boolean created(String tableName);
 	public boolean create(MMObjectBuilder bul);
 	public boolean createObjectTable(String baseName);
+ 	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
 }
