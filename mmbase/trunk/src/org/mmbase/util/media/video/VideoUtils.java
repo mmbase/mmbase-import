@@ -29,32 +29,35 @@ import org.mmbase.module.core.MMObjectNode;
 
 import java.util.Vector;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class VideoUtils extends MediaUtils
 {
-	private String classname = getClass().getName();
-	private static boolean debug 	 = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-	private static void debug2( String msg ) { System.out.println( "org.mmbase.util.media.video.VideoUtils():"+ msg ); }
 
-	// ---	
+    private static Logger log = Logging.getLoggerInstance(VideoUtils.class.getName());
 
-	/**
-	* Vector with MMObjectNodes (rawvideos), number can be cdtrack or videopart
-	*/
+    // ---    
 
-	public static Vector getRawVideos( MMBase mm, int number )
-	{
-		Vector			result 	= null;
-		MMObjectBuilder builder	= mm.getMMObject("rawvideos");
-		String			where	= "id==" + number;
+    /**
+    * Vector with MMObjectNodes (rawvideos), number can be cdtrack or videopart
+    */
 
-		result = builder.searchVector( where );	
-		debug2("getRawVideos("+number+"): found "+result.size()+" rawvideos");
+    public static Vector getRawVideos( MMBase mm, int number )
+    {
+        Vector            result     = null;
+        MMObjectBuilder builder    = mm.getMMObject("rawvideos");
+        String            where    = "id==" + number;
 
-		return result;
-	}
+        result = builder.searchVector( where );    
+        if (log.isDebugEnabled()) {
+            log.debug("getRawVideos("+number+"): found "+result.size()+" rawvideos");
+        }
 
-	/*
+        return result;
+    }
+
+    /*
     * Find a best match in rawvideos:
     *   - if a g2 file is found which is encoded (status=done), set this as preffered
     *   - else find r5 file with best match with respect to wanted speed/channels
@@ -69,23 +72,22 @@ public class VideoUtils extends MediaUtils
 
         if( wantedspeed < RawVideoDef.MINSPEED )
         {
-            debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: wantedspeed("+wantedspeed+") less than minspeed("+RawVideoDef.MINSPEED+")");
+            log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): wantedspeed("+wantedspeed+") less than minspeed("+RawVideoDef.MINSPEED+")");
             wantedspeed = RawVideoDef.MINSPEED;
         }
         if( wantedspeed > RawVideoDef.MAXSPEED )
         {
-            debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: wantedspeed("+wantedspeed+") greater than maxspeed("+RawVideoDef.MAXSPEED+")"
-);
+            log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): wantedspeed("+wantedspeed+") greater than maxspeed("+RawVideoDef.MAXSPEED+")");
             wantedspeed = RawVideoDef.MAXSPEED;
         }
         if( wantedchannels < 1 )
         {
-            debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: wantedchannels("+wantedchannels+") less than 1!");
+            log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): wantedchannels("+wantedchannels+") less than 1!");
             wantedchannels = 1;
         }
         if( wantedchannels > 2 )
         {
-            debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: wantedchannels("+wantedchannels+") greater than 2!");
+            log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): wantedchannels("+wantedchannels+") greater than 2!");
             wantedchannels = 2;
         }
 
@@ -137,7 +139,7 @@ public class VideoUtils extends MediaUtils
                                 rawvideo = ra;
                         }
                         else
-                            debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: format("+ra.format+") of unknown type!");
+                            log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): format("+ra.format+") of unknown type!");
                     }
                 }
 
@@ -149,10 +151,10 @@ public class VideoUtils extends MediaUtils
                 }
             }
             else
-                debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: no videoelements to search in vector (empty)!");
+                log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): no videoelements to search in vector (empty)!");
         }
         else
-            debug2("getBestRawVideo("+wantedspeed+","+wantedchannels+"): ERROR: no rawvideo-elements("+rawvideos+") to search (null)!");
+            log.error("getBestRawVideo("+wantedspeed+","+wantedchannels+"): no rawvideo-elements("+rawvideos+") to search (null)!");
 
         return result;
     }
@@ -189,25 +191,27 @@ public class VideoUtils extends MediaUtils
                             result = sort( result );
                     }
                     else
-                        if( debug )
-                            debug2("getRawVideos("+mmbase+","+tracknumber+"): no rawvideos found for this number!");
+                        if (log.isDebugEnabled()) {
+                            log.debug("getRawVideos("+mmbase+","+tracknumber+"): no rawvideos found for this number!");
+                        }
                 }
                 else
-                    if( debug )
-                        debug2("getRawVideos("+mmbase+","+tracknumber+"): no vector(rawvideos) found for this number!");
+                    if (log.isDebugEnabled()) {
+                        log.debug("getRawVideos("+mmbase+","+tracknumber+"): no vector(rawvideos) found for this number!");
+                    }
             }
             else
-                debug2("getRawVideos("+mmbase+","+tracknumber+"): ERROR: mmbase did not return valid MMObject(rawvideos)!");
+                log.error("getRawVideos("+mmbase+","+tracknumber+"): mmbase did not return valid MMObject(rawvideos)!");
         }
         else
-            debug2("getRawVideos("+mmbase+","+tracknumber+"): ERROR: number("+tracknumber+") is is less than 1!");
+            log.error("getRawVideos("+mmbase+","+tracknumber+"): number("+tracknumber+") is is less than 1!");
 
         return result;
     }
 
     private static Vector sort( Vector unsorted )
     {
-		return SortedVector.SortVector(unsorted);
+        return SortedVector.SortVector(unsorted);
     }
 
     public static String getVideoUrl( MMBase mmbase, scanpage sp, int number, int speed, int channels )
@@ -221,18 +225,20 @@ public class VideoUtils extends MediaUtils
             {
                 if( n.getName().equals("videoparts"))
                 {
-                    debug2("getVideoUrl("+number+","+speed+","+channels+"): number("+number+") is an videopart");
+                    if (log.isDebugEnabled()) {
+                        log.debug("getVideoUrl("+number+","+speed+","+channels+"): number("+number+") is a videopart");
+                    }
                     VideoPartDef ap = new VideoPartDef();
                     if( ap.setparameters( mmbase, n ))
                     {
                         if( ap.getRawVideos( mmbase, speed, channels, true) )
                         {
                             url = ap.getRealVideoUrl(sp);
-                            if( debug )
+                            if (log.isDebugEnabled())
                             {
-                                debug2("getVideoUrl("+number+","+speed+","+channels+"): for videopart: Found a node for number("+number+"), speed("+speed+"), channels("+channels+"), printing. ..");
-                                debug2( ap.toText() );
-                                debug2("getVideoUrl("+number+","+speed+","+channels+"): for videopart: url(" + url +")");
+                                log.debug("getVideoUrl("+number+","+speed+","+channels+"): for videopart: Found a node for number("+number+"), speed("+speed+"), channels("+channels+"), printing. ..");
+                                log.debug( ap.toText() );
+                                log.debug("getVideoUrl("+number+","+speed+","+channels+"): for videopart: url(" + url +")");
                             }
 
                             String author=null;
@@ -251,28 +257,30 @@ public class VideoUtils extends MediaUtils
                                 }
                             }
                             if (author==null) author="";
-                            debug2("getVideoUrl("+number+","+speed+","+channels+"): for videopart: found author("+author+").");
+                            if (log.isDebugEnabled()) {
+                                log.debug("getVideoUrl("+number+","+speed+","+channels+"): for videopart: found author("+author+").");
+                            }
                             //url += "&author=\""+author+"\"";
-                			//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
-                			//url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
-							//Our realserver can't handle URLEncoded strings.
-							author=makeRealCompatible(author);
-                			url += "&author="+author; 
+                            //Removed double quotes in author value since Real SMIL doesn't handle it correctly.
+                            //url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
+                            //Our realserver can't handle URLEncoded strings.
+                            author=makeRealCompatible(author);
+                            url += "&author="+author; 
 
                         }
                     }
                     else
-                        debug2("getVideoUrl("+number+","+speed+","+channels+"): ERROR: Could not find a best match speed("+speed+")/channels("+channels+") for this videopart!");
+                        log.error("getVideoUrl("+number+","+speed+","+channels+"): Could not find a best match speed("+speed+")/channels("+channels+") for this videopart!");
                 }
                 else
-                    debug2("getVideoUrl("+number+","+speed+","+channels+"): ERROR: number("+number+") buildername("+n.getName()+"), this is not a videopart!");
+                    log.error("getVideoUrl("+number+","+speed+","+channels+"): number("+number+") buildername("+n.getName()+"), this is not a videopart!");
             }
             else
-                debug2("getVideoUrl("+number+","+speed+","+channels+"): ERROR: No videonode found with this number, maybe deleted?!");
+                log.error("getVideoUrl("+number+","+speed+","+channels+"): No videonode found with this number, maybe deleted?!");
         }
         else
-            debug2("getVideoUrl("+number+","+speed+","+channels+"): ERROR: parameters not correct!");
+            log.error("getVideoUrl("+number+","+speed+","+channels+"): parameters not correct!");
 
         return url;
-    }	
+    }    
 }
