@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.40 2001-05-11 12:10:38 vpro Exp $
+	$Id: HtmlBase.java,v 1.41 2001-05-17 17:28:41 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.40  2001/05/11 12:10:38  vpro
+	Davzev: Added replace command FIELDLENGTH to determine the length of a field value.
+	If value is null, then FIELDLENGTH returns 0, otherwise it returns the value.length().
+	
 	Revision 1.39  2001/03/12 09:00:12  pierre
 	pierre: added SEARCH attribute to the LIST MULTILEVEL tag. Values are BOTH, DESTINATION, SOURCE, ALL, and EITHER.
 	Default value of this attribute is EITHER, which simulates the old list behavior.
@@ -151,7 +155,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.40 2001-05-11 12:10:38 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.41 2001-05-17 17:28:41 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -184,7 +188,7 @@ public class HtmlBase extends ProcessorModule {
 	String databasename;
 	
 	private int multilevel_cachesize=300;
-	private LRUHashtable multilevel_cache;
+	private MultilevelCacheHandler multilevel_cache;
 	private boolean cachedebug=false;
 	private SendMailInterface sendmail;
 	private String dtdbase="http://www.mmbase.org";
@@ -200,7 +204,7 @@ public class HtmlBase extends ProcessorModule {
 		sessions=(sessionsInterface)getModule("SESSION");		
 
 		// get size from properties
-		multilevel_cache=new LRUHashtable(multilevel_cachesize);
+		multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
 	}
 
 
@@ -959,7 +963,7 @@ public class HtmlBase extends ProcessorModule {
 				}
 			}
 	
-			multilevel_cache.put(hash,results);
+			multilevel_cache.put(hash,results,type);
 			long end=(long)System.currentTimeMillis();
 			len=(end-begin);
 			if (len>200) {
