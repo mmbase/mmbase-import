@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.1 2003-07-25 14:10:56 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.2 2003-07-25 14:23:18 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -39,8 +39,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return nodeManager;
     }
 
-    public SortOrder addSortOrder(Field f, int direction) {
-        return addSortOrder(((NodeSearchQuery) query).getField(((BasicField) f).field), direction);
+    public StepField getStepField(String fieldName) {
+        return ((NodeSearchQuery) query).getField(((BasicField) nodeManager.getField(fieldName)).field);
     }
 
 }
