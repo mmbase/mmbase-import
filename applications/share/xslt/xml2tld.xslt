@@ -16,21 +16,23 @@
   
   <!-- main entry point -->
   <xsl:template match="taglib">
-    <xsl:if test="$version = '1.2'">        
-        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE taglib  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" 
-        "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd"&gt;
+    <xsl:choose>
+      <xsl:when test="$version &lt; 2.0">        
+        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE taglib  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" 
+        "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd"&gt;
 </xsl:text>
         <taglib>
           <xsl:call-template name="taglib"  />
         </taglib>
-      </xsl:if>
-      <xsl:if test="$version = '2.0'">       
-      <taglib  xmlns="http://java.sun.com/xml/ns/j2ee">
-        <xsl:attribute namespace="http://www.w3.org/2001/XMLSchema-instance" name="schemaLocation">http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd</xsl:attribute>
-        <xsl:attribute name="version">2.0</xsl:attribute>
-        <xsl:call-template name="taglib"  />
+      </xsl:when>
+      <xsl:otherwise>        
+        <taglib xmlns="http://java.sun.com/xml/ns/j2ee">
+          <xsl:attribute namespace="http://www.w3.org/2001/XMLSchema-instance" name="schemaLocation">http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd</xsl:attribute>
+          <xsl:attribute name="version">2.0</xsl:attribute>
+          <xsl:call-template name="taglib"  />
         </taglib>
-      </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>>
   </xsl:template>
   
 
