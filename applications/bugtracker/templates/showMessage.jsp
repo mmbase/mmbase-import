@@ -70,11 +70,21 @@ function hide(name){
             you using email when its status is changed
             
           </mm:compare>
+          <mm:compare referid="message" value="maintaineradded">
+              The maintainer was added to the bug report
+          </mm:compare>
+          <mm:compare referid="message" value="maintainerremoved">
+              The maintainer was removed from the bug report
+          </mm:compare>
+          <mm:compare referid="message" value="myselfinterestedadded">
+              You where added as interested to the bug report
+          </mm:compare>
+          <mm:compare referid="message" value="removedmyselfinterested">
+              You where removed as interested to the bug report
+          </mm:compare>
           <mm:compare referid="message" value="updatebug">
-            The bug was updated into the bugtracker. 
-            Thanks for reporting the change we will report back to
+            The bug report was updated. Thanks for reporting the change we will report back to
             you using email when its status is changed
-            
           </mm:compare>
         </p>
       </td>
