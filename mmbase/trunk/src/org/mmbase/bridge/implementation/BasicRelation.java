@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.33 2004-01-16 13:29:25 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.34 2004-02-26 19:51:39 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -29,8 +29,10 @@ public class BasicRelation extends BasicNode implements Relation {
     protected int snum;
     protected int dnum;
 
-    private int snumtype;
-    private int dnumtype;
+    private static final int UNSET = -999;
+
+    private int sourceNodeType      = UNSET;
+    private int destinationNodeType = UNSET;
 
     protected boolean relationChanged = false; // Indicates a change in snum or dnum
 
@@ -66,11 +68,8 @@ public class BasicRelation extends BasicNode implements Relation {
             relationManager=(RelationManager)nodeManager;
         }
         snum = getIntValue("snumber");
-        snumtype = -1;
-        if (snum!=-1) snumtype = mmb.getTypeDef().getNodeType(snum);
         dnum = getIntValue("dnumber");
-        dnumtype = -1;
-        if (dnum!=-1) dnumtype = mmb.getTypeDef().getNodeType(dnum);
+
     }
 
 
@@ -99,7 +98,7 @@ public class BasicRelation extends BasicNode implements Relation {
           getNode().setValue("snumber",source);
         }
         snum = node.getNumber();
-        snumtype = node.getIntValue("otype");
+        sourceNodeType = node.getIntValue("otype");
     }
 
     public void setDestination(Node node) {
@@ -115,13 +114,13 @@ public class BasicRelation extends BasicNode implements Relation {
           getNode().setValue("dnumber",dest);
         }
        dnum = node.getNumber();
-       dnumtype = node.getIntValue("otype");
+       destinationNodeType = node.getIntValue("otype");
     }
 
     public RelationManager getRelationManager() {
-        if (relationManager==null) {
-            int stypenum=mmb.getTypeRel().getNodeType(snum);
-            int dtypenum=mmb.getTypeRel().getNodeType(dnum);
+        if (relationManager == null) {
+            int stypenum = mmb.getTypeRel().getNodeType(snum);
+            int dtypenum = mmb.getTypeRel().getNodeType(dnum);
             if (log.isDebugEnabled()) {
                 log.debug(stypenum + ", " + dtypenum + ", " + getNode().getIntValue("rnumber"));
             }
@@ -142,12 +141,22 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         //int snumber = snumtype.getNumber();
         //int dnumber = dnumtype.getNumber();
+        
+        if (sourceNodeType == UNSET) {
+            sourceNodeType = -1;
+            if (snum != -1) sourceNodeType = mmb.getTypeDef().getNodeType(snum);
+        }
+        if (destinationNodeType == UNSET) {
+            destinationNodeType = -1;
+            if (dnum!=-1) destinationNodeType = mmb.getTypeDef().getNodeType(dnum);
+        }
+
         int rnumber = getNode().getIntValue("rnumber");
-        if (!mmb.getTypeRel().contains(snumtype, dnumtype, rnumber)) {
-            if (!mmb.getTypeRel().contains(dnumtype,snumtype,rnumber)) {
+        if (!mmb.getTypeRel().contains(sourceNodeType, destinationNodeType, rnumber)) {
+            if (!mmb.getTypeRel().contains(destinationNodeType, sourceNodeType, rnumber)) {
                 throw new BridgeException("Source and/or Destination node are not of the correct type. ("
-                          + cloud.getNode(snumtype).getValue("name") + ","
-                          + cloud.getNode(dnumtype).getValue("name") + ","
+                          + cloud.getNode(sourceNodeType).getValue("name") + ","
+                          + cloud.getNode(destinationNodeType).getValue("name") + ","
                           + cloud.getNode(rnumber).getValue("sname") + ")");
             }
         }
