@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ImageRequestProcessor.java,v 1.3 2000-06-08 18:00:11 wwwtech Exp $
+	$Id: ImageRequestProcessor.java,v 1.4 2000-10-19 14:44:14 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/06/08 18:00:11  wwwtech
+	Rico: reduced/switched-off debug
+	
 	Revision 1.2  2000/06/06 21:31:58  wwwtech
 	Rico: fixed a serious bug in which incorrect icaches entries where created
 	
@@ -27,7 +30,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.3 2000-06-08 18:00:11 wwwtech Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.4 2000-10-19 14:44:14 vpro Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 	private String classname = getClass().getName();
@@ -98,6 +101,7 @@ public class ImageRequestProcessor implements Runnable {
 			}
 		} else {
 			debug("processRequest(): Convert problem params : "+params);
+			picture=new byte[0];
 		}
 		req.setOutput(picture);
 		table.remove(ckey);
