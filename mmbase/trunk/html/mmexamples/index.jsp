@@ -1,13 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html">
-<%@page import="org.mmbase.bridge.*" %>
-<%@page import="java.util.*" session="false" %>
+<%@page session="false" %>
 <mm:cloud jspvar="cloud">
 <html>
 <head>
   <title>MMBase Demos</title>
   <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
+  <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+  <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
 </head>
 
 <body >      
@@ -28,7 +29,6 @@
       </td>
     </tr>
     
-    <tr><td colspan="3">&nbsp;</td></tr>
     
     <tr>
       <th class="main" colspan="3">Jsp/Taglib Demo's</th>
@@ -88,11 +88,8 @@
       </td>
     </tr>
     
-    
-    <tr><td colspan="3">&nbsp;</td></tr>
-    
     <tr>
-      <th class="main" colspan="3">Other Demo's</th>
+      <th class="header" colspan="3">Other Demo's</th>
     </tr>
     
     <tr>
@@ -120,8 +117,6 @@
         <a href="<mm:url page="codings/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
-    
-    <tr><td colspan="3">&nbsp;</td></tr>
     
   </table>
   <div class="link">
