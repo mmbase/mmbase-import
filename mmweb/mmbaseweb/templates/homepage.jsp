@@ -35,7 +35,7 @@
 		path="portals,category,news,mmevents" searchdir="destination"
 		fields="category.number,category.title,news.number,news.title,mmevents.start" 
 		orderby="mmevents.start" directions="DOWN"
-		max="3">
+		max="4">
 		<mm:first>
 			<h2>News</h2>		<!-- category : <mm:field name="category.title" /> -->
 			<mm:field name="category.number" id="cat_nr" write="false" />
@@ -52,7 +52,7 @@
 	
 	<mm:notpresent referid="nonewsyet">
 		<h2>News</h2>
-		<mm:listnodes type="news" max="3" orderby="number" directions="DOWN">
+		<mm:listnodes type="news" max="4" orderby="number" directions="DOWN">
 			<mm:field name="number" id="newsnr" write="false" />
 			<p><a href="<mm:url page="index.jsp" referids="portal,newsnr"><mm:param name="page">mmbase_news</mm:param></mm:url>"><mm:field name="title" /></a>
 			<br /><mm:related path="mmevents"><mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field></mm:related>
@@ -184,7 +184,7 @@
 	  <a title="More about <mm:write referid="org_name" />" href="<mm:url referids="org"
 		  ><mm:param name="portal">foundation</mm:param
 		  ><mm:param name="page">organisations</mm:param></mm:url>"><img src="<mm:image template="s(60x35)" />" 
-			  border="0" hspace="6" vspace="4" alt="<mm:write referid="org_name" />" /></a>
+			  border="0" hspace="4" vspace="4" alt="<mm:write referid="org_name" />" /></a>
 	  <mm:last></div></mm:last>
 	</mm:node>
 </mm:related>
