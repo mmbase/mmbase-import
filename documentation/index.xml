@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.31 2003-06-30 17:28:04 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.32 2003-07-01 13:20:51 johannes Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -220,6 +220,16 @@
           </ulink>
           <ulink url="frontenddevelopers/taglib/taglib-tutorial.pdf" id="taglibtutorial.pdf">
            (pdf)
+          </ulink>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <ulink url="frontenddevelopers/taglib/include.html" id="includedocs">
+            MMBase Include / TreeInclude / LeafInclude
+          </ulink>
+          <ulink url="frontenddevelopers/taglib/include.pdf" id="includedocs.pdf">
+            (pdf)
           </ulink>
         </para>
       </listitem>
