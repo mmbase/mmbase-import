@@ -1,6 +1,5 @@
 <% String title = "Configure"; %>
 <%@ include file="inc_top.jsp" %>
-<<<<<<< config.jsp
 <mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="savethis" />
 <mm:import jspvar="ntype" externid="ntype" />
