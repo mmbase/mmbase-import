@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.14 2002-05-28 14:15:15 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.15 2002-07-04 08:32:51 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -36,7 +36,49 @@
             c.fields      = getParam("fields", c.fields);
             c.age         = getParam("age", new Integer(c.age)).intValue();
             c.start       = getParam("start", new Integer(c.start)).intValue();
-            c.constraints = getParam("constraints", c.constraints);
+            String searchfields=getParam("searchfields");
+            if (searchfields==null) {
+                c.constraints = getParam("constraints", c.constraints);
+            } else {
+                c.constraints=null;
+                String baseconstraints = getParam("constraints");
+                String searchtype=getParam("searchtype","like");
+                String search=getParam("searchvalue","");
+                if (searchtype.equals("like")) {
+                    // actually we should unquote search...
+                    search=" like '%"+search+"%'";
+                } else if (searchtype.equals("string")) {
+                    search=" = '"+search+"'";
+                } else {
+                    if (search.equals("")) {
+                        search="0";
+                    }
+                    if (searchtype.equals("greaterthan")) {
+                        search=" > "+search;
+                    } else if (searchtype.equals("lessthan")) {
+                        search=" < "+search;
+                    } else if (searchtype.equals("notgreaterthan")) {
+                        search=" <= "+search;
+                    } else if (searchtype.equals("notlessthan")) {
+                        search=" >= "+search;
+                    } else {
+                        search=" = "+search;
+                    }
+                }
+                StringTokenizer searchtokens= new StringTokenizer(searchfields,",");
+                while (searchtokens.hasMoreTokens()) {
+                    String tok=searchtokens.nextToken();
+                    if (c.constraints!=null) {
+                        c.constraints+=" or ";
+                    } else {
+                        c.constraints="";
+                    }
+                    c.constraints+=tok+search;
+                }
+                if (baseconstraints!=null) {
+                    c.constraints="("+baseconstraints+") and ("+c.constraints+")";
+                }
+            }
             c.directions  = getParam("directions", c.directions);
             c.orderBy     = getParam("orderby", c.orderBy);
             c.distinct    = getParam("distinct", new Boolean(true)).booleanValue();
