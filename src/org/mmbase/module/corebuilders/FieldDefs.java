@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
-import org.mmbase.util.logging.*;
+
 import org.mmbase.module.core.*;
+import org.mmbase.storage.*;
+import org.mmbase.util.logging.*;
 
 /**
  * One of the core objects. It is not itself a builder, but is used by builders. Defines one field
@@ -20,10 +22,10 @@ import org.mmbase.module.core.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.35 2003-07-03 16:46:21 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.36 2003-09-04 11:04:12 pierre Exp $
  * @see    org.mmbase.bridge.Field
  */
-public class FieldDefs implements Comparable {
+public class FieldDefs implements Comparable, Storable {
     public final static int DBSTATE_MINVALUE    = 0;
     public final static int DBSTATE_VIRTUAL     = 0;
     public final static int DBSTATE_PERSISTENT  = 2;
@@ -50,14 +52,14 @@ public class FieldDefs implements Comparable {
 
     private static Logger log = Logging.getLoggerInstance(FieldDefs.class);
 
-    private final static String[] DBSTATES = { 
-        "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM" 
+    private final static String[] DBSTATES = {
+        "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM"
     };
 
-    private final static String[] DBTYPES = { 
-        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE" 
+    private final static String[] DBTYPES = {
+        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE"
     };
-    
+
     /**
      */
     private Map descriptions = new Hashtable();
@@ -78,6 +80,7 @@ public class FieldDefs implements Comparable {
     private int     size    = -1;
 
     private MMObjectBuilder parent = null;
+    private Object storageIdentifier = null;
 
     /**
      * Constructor for default FieldDefs.
@@ -534,6 +537,20 @@ public class FieldDefs implements Comparable {
                " DBSTATE=" + getDBStateDescription() +
                " DBNOTNULL=" + notNull + " DBPos=" + pos + " DBSIZE=" + size +
                " isKey=" + isKey + " DBDocType=" + docType;
+    }
+
+    // Storable interaces
+
+    public Object getStorageIdentifier() throws StorageException {
+        // determine the storage identifier from the name
+        if (storageIdentifier == null) {
+            storageIdentifier = parent.getMMBase().getStorageManagerFactory().getStorageIdentifier(this);
+        }
+        return storageIdentifier;
+    }
+
+    public boolean inStorage() {
+        return (state == DBSTATE_PERSISTENT) || (state == DBSTATE_SYSTEM);
     }
 
     /**
