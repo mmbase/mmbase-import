@@ -282,8 +282,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         previousValue = null;
         changed = true;
         if (returnValues.hasNext()) {
-            doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
-            return EVAL_BODY_INCLUDE;
+            //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
+            //return EVAL_BODY_INCLUDE;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }
@@ -306,7 +307,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             return EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
-            /*
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -314,7 +314,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                     throw new JspTagException(ioe.toString());
                 }
             }
-            */
             return SKIP_BODY;
         }
 

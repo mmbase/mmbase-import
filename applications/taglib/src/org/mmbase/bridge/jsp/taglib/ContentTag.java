@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.9 2003-05-13 12:10:11 kees Exp $
+ * @version $Id: ContentTag.java,v 1.10 2003-05-27 15:24:41 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -249,7 +249,8 @@ public class ContentTag extends LocaleTag  {
         response.setContentType(getType() + "; charset=" + getEncoding());
         if (getPostProcessor() == null) {
             log.debug("no postprocessor");
-            return EVAL_BODY_INCLUDE;
+            //return EVAL_BODY_INCLUDE; // some appserver don't support this (orion)
+            return EVAL_BODY_BUFFERED;
         } else {
             return EVAL_BODY_BUFFERED; 
             // don't really need buffering, but cant figure out to avoid
@@ -264,6 +265,15 @@ public class ContentTag extends LocaleTag  {
                     log.debug("A postprocessor was defined " + post);
                 }
                 post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
+            } else {
+                // only needed for lousy app-servers
+                try {
+                    if (bodyContent != null) {
+                        bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                    }
+                } catch (java.io.IOException ioe){
+                    throw new JspTagException(ioe.toString());
+                }                 
             }
         }
         return SKIP_BODY;
