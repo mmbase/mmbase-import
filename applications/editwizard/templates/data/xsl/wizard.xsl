@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.66 2002-08-15 14:35:40 michiel Exp $
+  @version $Id: wizard.xsl,v 1.67 2002-08-15 15:25:24 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -276,12 +276,14 @@
       <xsl:call-template name="prompt" />
     </td>
     <td class="field" colspan="{$colspan}">
-      <nobr>
+      <table><tr>
       <xsl:for-each select="field">
+        <td><nobr>
         <xsl:call-template name="fieldintern" />
         <xsl:text disable-output-escaping="yes"> </xsl:text>
+      </nobr></td>
       </xsl:for-each>
-    </nobr>
+    </tr></table>
     </td>
   </xsl:template>
 
@@ -744,7 +746,7 @@
            -->
 
       <!-- only if less then maxoccurs -->
-      <xsl:if test="not(ancestor::list/@maxoccurs) or (ancestor::list/@maxoccurs = '*') or count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
+      <xsl:if test="not(@maxoccurs) or (@maxoccurs = '*') or count(item) &lt; @maxoccurs">
         <xsl:if test="command[@name='startwizard']">
           
           <table class="itemadd">
