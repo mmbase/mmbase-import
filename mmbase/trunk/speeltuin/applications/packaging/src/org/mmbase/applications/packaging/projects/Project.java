@@ -268,10 +268,7 @@ public class Project {
         Iterator e = packagetargets.values().iterator();
         while (e.hasNext()) {
             Target t = (Target) e.next();
-	    log.info("T="+t.getId());
-	    log.info("T2="+id);
 	    if (t.getId().equals(id)) {
-	    	log.info("T3="+id);
 		return t;
 	    }
 	}

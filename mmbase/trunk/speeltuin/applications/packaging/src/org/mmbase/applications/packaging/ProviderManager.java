@@ -84,6 +84,21 @@ public class ProviderManager {
         return providers.values().iterator();
     }
 
+
+    /**
+     * return all packages based on the input query
+     * @return all packages
+     */
+    public static ProviderInterface getProvider(String name) {
+        if (providers == null) init();
+	Object o = providers.get(name);
+	if (o != null) {
+		return (ProviderInterface)o;	
+	} else {
+		return null;
+	}
+    }
+
     public static void resetSleepCounter() {
         packagediscovery.resetSleepCounter();
     } 

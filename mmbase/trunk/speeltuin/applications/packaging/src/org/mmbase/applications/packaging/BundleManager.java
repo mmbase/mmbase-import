@@ -98,6 +98,21 @@ public class BundleManager {
         return null;
     }
 
+
+    public static BundleInterface getBundle(String id,String wv) {
+        Object o = bundles.get(id);
+        if (o != null) {
+            BundleContainer pc = (BundleContainer)o;
+            BundleInterface p = pc.getBundleByScore(wv);
+            if (p != null) {
+                return p;
+            }
+        }
+        log.error("bundle with id = "+id+" not found");
+        return null;
+    }
+
+
     public static BundleInterface foundBundle(ProviderInterface provider,org.w3c.dom.Element n,String name,String type,String maintainer,String version,String date,String path) {
         // create its id (name+maintainer)
         String id = name+"@"+maintainer+"_"+type;

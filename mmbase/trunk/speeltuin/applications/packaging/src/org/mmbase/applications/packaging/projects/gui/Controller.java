@@ -263,6 +263,9 @@ public class Controller {
                 virtual.setValue("description", t.getDescription());
                 virtual.setValue("maintainer", t.getMaintainer());
                 virtual.setValue("syntaxerrors", t.hasSyntaxErrors());
+                virtual.setValue("publishprovider", t.getPublishProvider());
+                virtual.setValue("publishstate", t.getPublishState());
+                virtual.setValue("publishsharepassword", t.getPublishSharePassword());
                 if (t.getRelatedPeople("initiators") == null || t.getRelatedPeople("initiators").size() == 0) {
                     virtual.setValue("haveinitiators", "false");
                 } else {
@@ -406,7 +409,7 @@ public class Controller {
      * @param  newversion  Description of the Parameter
      * @return             Description of the Return Value
      */
-    public boolean packageTarget(String project, String target, int newversion,String latest,String createnew) {
+    public boolean packageTarget(String project, String target, int newversion,String latest,String createnew,String publishprovider,String publishstate,String publishsharepassword) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
         Project p = ProjectManager.getProject(project);
@@ -446,8 +449,17 @@ public class Controller {
 				}
 			}
 		}
-
             Target t = p.getTarget(target);
+
+            // set publish changes
+	    t.setPublishProvider(publishprovider);
+	    t.setPublishSharePassword(publishsharepassword);
+	    if (publishstate.equals("true")) {
+	    	t.setPublishState(true);
+	    } else {
+	    	t.setPublishState(false);
+	    }
+	    
             t.createPackage(newversion);
         }
         return true;
@@ -472,6 +484,51 @@ public class Controller {
             }
         }
         return "";
+    }
+
+
+    /**
+     *  Turn publish mode on for this target
+     *
+     * @return          result true/false
+     */
+    public boolean setPublishModeOn(String project, String target,String publishprovider,String sharepassword) {
+	log.info("PROJECT="+project);
+        Project p = ProjectManager.getProject(project);
+        if (p != null) {
+	    log.info("TARGET="+target);
+            Target t = p.getTarget(target);
+            if (t != null) {
+	    	log.info("PROVIDER="+publishprovider);
+		t.setPublishProvider(publishprovider);	
+		t.setPublishState(true);	
+		t.setPublishSharePassword(sharepassword);	
+		t.save();
+		return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     *  Turn publish mode off for this target
+     *
+     * @return          result true/false
+     */
+    public boolean setPublishModeOff(String project, String target) {
+        Project p = ProjectManager.getProject(project);
+        if (p != null) {
+            Target t = p.getTarget(target);
+            if (t != null) {
+		t.setPublishProvider("");	
+		t.setPublishState(false);	
+		t.setPublishSharePassword("");	
+		t.save();
+		return true;
+            }
+        }
+        return false;
     }
 
 
