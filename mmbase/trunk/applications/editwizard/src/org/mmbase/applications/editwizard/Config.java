@@ -23,10 +23,14 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.3 2002-05-07 13:28:10 michiel Exp $
+ * @version $Id: Config.java,v 1.4 2002-05-08 08:34:07 pierre Exp $
  */
 
-public class Config {   
+public class Config {
+
+    // protocol string to test referrer pages
+    private final static String PROTOCOL="http://";
+
     public String      sessionKey        = null;
     public URIResolver uriResolver       = null;
     public int         list_pagelength   = 50;
@@ -88,11 +92,13 @@ public class Config {
                 log.trace("creating uriresolver (backpage = " + config.backPage + ")");
                 URIResolver.EntryList extraDirs = new URIResolver.EntryList();
                 File refFile;
-                if (config.backPage.startsWith("http:")) { // given absolutely               
-                    String path =  config.backPage.substring(config.backPage.indexOf('/', config.backPage.indexOf('.') + 1));
+                // capture direct reference of http:// and shttp:// referers
+                int protocolPos= config.backPage.indexOf(PROTOCOL);
+                if (protocolPos>=0) { // given absolutely
+                    String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos+PROTOCOL.length()));
                     // Using URL.getPath() would be nicer, but is not availeble in java 1.2
                     // suppose it is from the same server, we can find back the directory then:
-                        refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
+                    refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
                 } else {
                     refFile = new File(request.getRealPath(config.backPage)).getParentFile();
                 }
