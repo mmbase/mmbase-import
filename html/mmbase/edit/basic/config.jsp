@@ -38,6 +38,7 @@
      </tr>
      <tr><td><%= m.getString("config.stylesheet") %></td>
          <td><select name="style_sheet">
+             <option value="base.css" <mm:compare referid="config.style_sheet" value="base.css">selected="selected"</mm:compare>>basic</option>
              <option value="mmbase.css" <mm:compare referid="config.style_sheet" value="mmbase.css">selected="selected"</mm:compare>>default</option>
              <option value="classic.css" <mm:compare referid="config.style_sheet" value="classic.css">selected="selected"</mm:compare>>classic</option>
              <option value="red.css" <mm:compare referid="config.style_sheet" value="red.css">selected="selected"</mm:compare>>red</option>
