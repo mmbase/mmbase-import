@@ -421,10 +421,10 @@ public class MMObjectBuilder extends MMTable {
 		return(node);
 	}
 	
-	/*
-	 * added JohnB 20/10/2000
+	/**
+	 * Put a Node in the temporary node list
 	 */
-	public void putinTemporaryNodes(String key, MMObjectNode node) {
+	public void putTmpNode(String key, MMObjectNode node) {
 		node.setValue("_number",key);
 		TemporaryNodes.put(key,node);
 	}
