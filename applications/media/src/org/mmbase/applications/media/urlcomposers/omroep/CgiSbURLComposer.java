@@ -23,7 +23,7 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiSbURLComposer.java,v 1.1 2003-11-26 16:48:37 michiel Exp $
+ * @version $Id: CgiSbURLComposer.java,v 1.2 2004-01-07 20:54:26 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiSbURLComposer extends RamURLComposer {
@@ -60,8 +60,8 @@ public class CgiSbURLComposer extends RamURLComposer {
 
 
     protected StringBuffer getURLBuffer() {
-        String rootpath = provider.getStringValue("rootpath").substring(1);
-        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootpath);
+        String rootPath = provider.getStringValue("rootpath").substring(1);
+        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootPath);
         int lastSlash = RealSbURLComposer.addURL(buff, source.getStringValue("url"));
         buff.insert(lastSlash + 1, getBandPrefix());
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title
