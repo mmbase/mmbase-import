@@ -37,6 +37,9 @@ public class WriterHelper {
     static final int TYPE_STRING  = 4;
     static final int TYPE_NODE    = 5;
     static final int TYPE_BYTES   = 6;
+    static final int TYPE_DOUBLE  = 7;
+    static final int TYPE_LONG    = 8;
+    static final int TYPE_FLOAT   = 9;
 
 
     static final int stringToType(String t) {
@@ -46,6 +49,12 @@ public class WriterHelper {
             return TYPE_NODE;
         } else if ("Integer".equalsIgnoreCase(t)) {
             return TYPE_INTEGER;
+        } else if ("Long".equalsIgnoreCase(t)) {
+            return TYPE_LONG;
+        } else if ("Double".equalsIgnoreCase(t)) {
+            return TYPE_DOUBLE;
+        } else if ("Float".equalsIgnoreCase(t)) {
+            return TYPE_FLOAT;
         } else if ("Vector".equalsIgnoreCase(t)) {
             return TYPE_VECTOR;
         } else if ("List".equalsIgnoreCase(t)) {
@@ -160,6 +169,24 @@ public class WriterHelper {
                 return;
             } 
             break;
+        case TYPE_DOUBLE:
+            if (! (value instanceof Double)) {
+                pageContext.setAttribute(jspvar, new Double(value.toString()));
+                return;
+            }
+            break;
+        case TYPE_LONG:
+            if (! (value instanceof Long)) {
+                pageContext.setAttribute(jspvar, new Long(value.toString()));
+                return;
+            }
+            break;
+        case TYPE_FLOAT:
+            if (! (value instanceof Float)) {
+                pageContext.setAttribute(jspvar, new Float(value.toString()));
+                return;
+            }
+            break;
         case TYPE_STRING:
             if (! (value instanceof String)) {
                 pageContext.setAttribute(jspvar, value.toString());
@@ -172,6 +199,7 @@ public class WriterHelper {
             }
             break;
         }
+        log.trace("setting as object");
         pageContext.setAttribute(jspvar, value);
 
     }

@@ -508,7 +508,7 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
 
-<example>&lt;mm:listnodes type="mags" fields="title" &gt;
+<example>&lt;mm:listnodes type="mags"  &gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
   &lt;mm:field name="title" /&gt;
 &lt;/mm:listnodes&gt;</example>
@@ -600,7 +600,7 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
 <example>&lt;mm:node number="Magazine" &gt;
-&lt;mm:relatednodes type="news" fields="title" &gt;
+&lt;mm:relatednodes type="news" &gt;
   &lt;mm:first&gt;news in this magazine&lt;/mm:first&gt;
   &lt;mm:field name="title" /&gt;
 &lt;/mm:relatednodes&gt;</example>
@@ -983,6 +983,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
     </attribute>
+    <attribute>
+        <name>vartype</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	</attribute>
     <attribute>
         <name>write</name>
         <required>false</required>
@@ -1704,6 +1709,12 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <rtexprvalue>true</rtexprvalue>
 	    <info>You can also put things into the session with this.</info>
     </attribute>
+    <attribute>
+        <name>cookie</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	    <info>Writing thinks to cookie is also possible.</info>
+    </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
 
@@ -1919,16 +1930,6 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <examplevalue>
         <value>s(100x100)</value>
     </examplevalue>
-    </attribute>
-    <attribute>
-        <name>page</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-	The url to refer to. If not specified, then it becomes the
-        result of getRequestURI. 
-	</info>
     </attribute>
     <attribute>
        <name>id</name>
