@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.65 2003-04-10 07:59:41 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.66 2003-04-18 07:27:23 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -921,7 +921,7 @@ public class MMAdmin extends ProcessorModule {
                 if(path != null) {
                     result.error("The builder '" + name + "' was already on our system, but inactive."+
                                   "To install this application, make the builder '" +
-                                  path + java.io.File.separator + name +  ".xml" + "' active");
+                                  path + name +  ".xml" + "' active");
                     continue;
                 }
                 // attempt to open the application root
