@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.74 2002-11-10 21:15:52 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.75 2002-11-14 15:58:01 robmaris Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -583,8 +583,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
                 n1.delRelationsCache();
                 n2.delRelationsCache();
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
             } else {
                 mmb.mmc.changedNode(node.getIntValue("number"),tableName,"n");
             }
@@ -792,8 +792,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 // figure out tables to send the changed relations
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
             } else {
                 mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"c");
             }
@@ -886,8 +886,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             if (bul instanceof InsRel) {
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
             }
         }
     }
