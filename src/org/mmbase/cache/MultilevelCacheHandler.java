@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.12 2003-03-07 08:50:04 pierre Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.13 2003-03-07 09:31:03 pierre Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 
@@ -84,7 +84,7 @@ public class MultilevelCacheHandler extends Cache {
 
     /**
      * @javadoc
-     * @badliteral default size of cache should be configurable
+     * @bad-literal default size of cache should be configurable
      * @todo needs MMbase parameter for initialization
      * @deprecated use getCache
      */

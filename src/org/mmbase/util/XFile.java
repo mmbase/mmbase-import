@@ -16,7 +16,7 @@ import java.io.File;
  * Eg: the files' modification time will be stored as a moddate long variabele.
  *
  * @author David V van Zeventer
- * @version: 13 nov 1998
+ * @version $Id: XFile.java,v 1.6 2003-03-07 09:31:16 pierre Exp $
  */
 public class XFile {
 

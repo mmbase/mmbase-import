@@ -16,16 +16,14 @@ import javax.servlet.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
 /**
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.33 2003-03-04 14:19:00 nico Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.33 $ $Date: 2003-03-04 14:19:00 $
+ * @version $Id: MMBaseContext.java,v 1.34 2003-03-07 09:31:07 pierre Exp $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -50,14 +48,14 @@ public class MMBaseContext {
      *
      */
     public synchronized static void init(ServletContext servletContext) throws ServletException {
-        if (!initialized) {    	
-	    // store the current context    
+        if (!initialized) {
+            // store the current context
             sx = servletContext;
-	    
+
             // Get the current directory using the user.dir property.
             userDir = System.getProperty("user.dir");
-	    
-	    // Init outputfile.
+
+            // Init outputfile.
             {
                 String outputfile = sx.getInitParameter("mmbase.outputfile");
                 if (outputfile == null) {
@@ -80,11 +78,11 @@ public class MMBaseContext {
                     initConfigpath(configpath);
                 } catch(Exception e) {
                     throw new ServletException(e.getMessage());
-		}
+                }
             }
             // Init logging.
             initLogging();
-	    
+
             initialized = true;
         }
     }
@@ -97,13 +95,13 @@ public class MMBaseContext {
      * @throws Exception  if mmbase.config is not set or is not a
      *                    directory or doesn't contain the expected
      *                    config files.
-     * 
+     *
      */
     public synchronized static void init(String configPath, boolean initlogging) throws Exception {
         if (!initialized) {
             // Get the current directory using the user.dir property.
             userDir = System.getProperty("user.dir");
-            
+
             // Init outputfile. // use of mmbase.outputfile  is deprecated!
             initOutputfile(System.getProperty("mmbase.outputfile"));
 
@@ -133,7 +131,7 @@ public class MMBaseContext {
     public synchronized static void init() throws Exception {
         init(System.getProperty("mmbase.config"), true);
     }
-    
+
 
 
     private static void initOutputfile(String o) {
@@ -170,7 +168,7 @@ public class MMBaseContext {
         if (userDir != null && !fileConfigpath.isAbsolute()) {
             configPath = userDir + File.separator + configPath;
             fileConfigpath = new File(configPath);
-        } 
+        }
         // Make it absolute. Needed for servscan and servdb to
         // to startup properly.
         configPath = fileConfigpath.getAbsolutePath();
@@ -247,7 +245,7 @@ public class MMBaseContext {
     }
 
     private static void initLogging() {
-        // Starting the logger 
+        // Starting the logger
         Logging.configure(configPath + "/log/log.xml");
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(MMBaseContext.class.getName());
@@ -263,7 +261,7 @@ public class MMBaseContext {
         rt.gc();
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
         log.info("system locale     : " + Locale.getDefault());
-                 
+
     }
 
     /**
@@ -352,22 +350,22 @@ public class MMBaseContext {
                 System.err.println(message);
                 throw new RuntimeException(message);
             } else {
-		File configDir = new File(config);
-		if(!configDir.exists()) {
-		    String message = "Config directory could not be found, does it exist? (" + configDir.getAbsolutePath()  + ")";
-		    System.err.println(message);
-		    throw new RuntimeException(message);
-		}
-		if(!configDir.canRead()) {
-		    String message = "Config directory could not be read, is it readable? (" + configDir.getAbsolutePath()  + ")";
-		    System.err.println(message);
-		    throw new RuntimeException(message);
-		}
-		if(!configDir.isDirectory()) {
-		    String message = "Config directory is not a directory (" + configDir.getAbsolutePath()  + ")";
-		    System.err.println(message);
-		    throw new RuntimeException(message);
-		}		
+                File configDir = new File(config);
+                if(!configDir.exists()) {
+                    String message = "Config directory could not be found, does it exist? (" + configDir.getAbsolutePath()  + ")";
+                    System.err.println(message);
+                    throw new RuntimeException(message);
+                }
+                if(!configDir.canRead()) {
+                    String message = "Config directory could not be read, is it readable? (" + configDir.getAbsolutePath()  + ")";
+                    System.err.println(message);
+                    throw new RuntimeException(message);
+                }
+                if(!configDir.isDirectory()) {
+                    String message = "Config directory is not a directory (" + configDir.getAbsolutePath()  + ")";
+                    System.err.println(message);
+                    throw new RuntimeException(message);
+                }
                 return config;
             }
         }
@@ -412,31 +410,31 @@ public class MMBaseContext {
 
     /**
      * converts a url with a given context, to the resource url.
-     * @param servletContext 
+     * @param servletContext
      * @param url A url to the resource, which must exist
      * @return null on failure, otherwise a resource url.
      */
     private static String convertResourceUrl(ServletContext servletContext, String url) {
-    	// return null on failure
-    	if(servletContext == null) return null;
-	
-    	try {
+        // return null on failure
+        if(servletContext == null) return null;
+
+        try {
             java.net.URL transformed = servletContext.getResource(url);
             if(transformed == null){
-            	servletContext.log("no resource is mapped to the pathname: '"+url+"'");
+                servletContext.log("no resource is mapped to the pathname: '"+url+"'");
                 return null;
             }
             return transformed.toString();
-      	}
+        }
         catch (java.net.MalformedURLException e) {
             servletContext.log("could not convert the url: '" + e + "'(error converting)", e);
         }
         return null;
     }
 
-    private static String CONTEXT_URL_IDENTIFIER = "jndi:/";    
+    private static String CONTEXT_URL_IDENTIFIER = "jndi:/";
     /**
-     * Returns a string representing the HtmlRootUrlPath, this is the path under 
+     * Returns a string representing the HtmlRootUrlPath, this is the path under
      * the webserver, what is the root for this instance.
 w
      * this will return '/' or something like '/mmbase/' or so...
@@ -444,14 +442,14 @@ w
      * @deprecated  should not be needed, and this information should be requested from the ServletRequest
      */
     public synchronized static String getHtmlRootUrlPath() {
-        if (! htmlRootUrlPathInitialized) {            
+        if (! htmlRootUrlPathInitialized) {
             if (! initialized) {
                 String message = "The init method should be called first.";
                 System.err.println(message);
                 throw new RuntimeException(message);
             }
             if (sx == null) {
-                htmlRootUrlPathInitialized = true; 
+                htmlRootUrlPathInitialized = true;
                 return htmlRootUrlPath;
             }
             String initPath = sx.getInitParameter("mmbase.htmlrooturlpath");
@@ -461,13 +459,13 @@ w
                 // init the htmlRootUrlPath
                 // fetch resource path for the current serletcontext root...
                 String contextUrl = convertResourceUrl(sx, "/");
-                
+
                 // fetch resource path for the root serletcontext root...
                 ServletContext rootContext = sx.getContext("/");
                 String rootContextUrl = convertResourceUrl(rootContext, "/");
-                
+
                 if(contextUrl != null && rootContextUrl != null) {
-                    // the beginning of contextUrl is the same as the string rootContextUrl, 
+                    // the beginning of contextUrl is the same as the string rootContextUrl,
                     // the left part is the current urlPath on the server...
                     if(contextUrl.startsWith(rootContextUrl)) {
                         // htmlUrl is gonna be filled
@@ -476,31 +474,31 @@ w
                     else {
                         log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
                     }
-                } 
+                }
                 // This works on my tomcat (4.03),.. this is supposed to be the reference implementation?
                 // so what should be the code?
                 else if (rootContextUrl == null && contextUrl != null && contextUrl.startsWith(CONTEXT_URL_IDENTIFIER)) {
-                    // the String will be typically something like "jndi:/hostname/contextname/", so we are looking for the first '/' after the hostname..                    
+                    // the String will be typically something like "jndi:/hostname/contextname/", so we are looking for the first '/' after the hostname..
                     int contextStart = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length()).indexOf('/');
                     if(contextStart != -1) {
                         htmlRootUrlPath = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length() + contextStart);
                     }
                     else {
-                        log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
+                        log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath
                                  + "\nbut  contextUrl     : '" + contextUrl + "' did start with: '"+CONTEXT_URL_IDENTIFIER + "'");
                     }
                 }
                 else {
-                    log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
+                    log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath
                              + "\n  contextUrl     :" + contextUrl
                              + "\n  rootContextUrl :" + rootContextUrl );
                 }
             }
-	    htmlRootUrlPathInitialized = true;                      
-        } 
+            htmlRootUrlPathInitialized = true;
+        }
         return htmlRootUrlPath;
     }
-    
+
     /**
      * Returns whether this class has been initialized.
      * This can be used to determine whether MMBase specific configuration data is accessible.

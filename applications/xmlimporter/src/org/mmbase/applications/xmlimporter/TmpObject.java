@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.5 2003-03-07 08:50:03 pierre Exp $
+ * @version $Id: TmpObject.java,v 1.6 2003-03-07 09:30:59 pierre Exp $
  */
 public class TmpObject {
 
@@ -334,7 +334,7 @@ public class TmpObject {
     }
 
     /**
-     * Displays XML representation of this object, e.g. the XML code
+     * Displays XML representation of this object, such as the XML code
      * necessary to create this object in a transaction.
      * @return XML representation of this object.
      */

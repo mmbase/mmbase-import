@@ -35,13 +35,13 @@ public class ListTag extends AbstractNodeListTag {
 
     protected String fields = null;
 
-    /** 
+    /**
      * @param fields a comma separated list of fields of the nodes.
      **/
     public void setFields(String fields) throws JspTagException {
         this.fields = getAttributeValue(fields);
     }
-    
+
 
 
     /**
@@ -71,7 +71,7 @@ public class ListTag extends AbstractNodeListTag {
 
     /**
      * @param type a comma separated list of nodeManagers
-     * @depercated use setPath instead
+     * @deprecated use setPath instead
      */
     public void setType(String type) throws JspTagException {
         this.pathString = getAttributeValue(type);
@@ -110,7 +110,7 @@ public class ListTag extends AbstractNodeListTag {
      * Performs the search
      */
     public int doStartTag() throws JspTagException{
-        int superresult =  doStartTagHelper(); 
+        int superresult =  doStartTagHelper();
         if (superresult != NOT_HANDLED) {
             return superresult;
         }

@@ -72,7 +72,7 @@ public class DirectoryLister {
 
     /**
      * Returns all filepaths that follow a certain pattern.
-     * @params args The requeststring to be used. This string consists of a directory,
+     * @param args The requeststring to be used. This string consists of a directory,
      * followed by an extension.
      * @return a <code>vector</code> containing all filepaths requested.
      */

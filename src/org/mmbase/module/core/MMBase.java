@@ -34,12 +34,12 @@ import org.mmbase.util.logging.Logging;
  * by the provided name/setup.
  * It holds the overal object cloud made up of builders, objects and relations and
  * all the needed tools to use them.
- * @deprecation contains commented-out code
+ * @deprecation-used contains commented-out code
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.84 2003-02-26 15:42:36 johannes Exp $
+ * @version $Id: MMBase.java,v 1.85 2003-03-07 09:31:07 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -230,7 +230,7 @@ public class MMBase extends ProcessorModule  {
     private MMBaseCop mmbaseCop = null;
 
     /**
-     * Reference to the cluster builder, a virtual builder used to perform 
+     * Reference to the cluster builder, a virtual builder used to perform
      * multilevel searches.
      * @see ClusterBuilder
      */
@@ -471,7 +471,7 @@ public class MMBase extends ProcessorModule  {
         log.debug(" creating new multimedia base : "+baseName);
         Vector v;
 
- 	    // why are we giving our member variable it's own value here?
+            // why are we giving our member variable it's own value here?
         // database=getDatabase();
         getDatabase();
 
@@ -628,9 +628,9 @@ public class MMBase extends ProcessorModule  {
     }
 
     /**
-     * Returns a reference to the cluster builder, a virtual builder used to 
+     * Returns a reference to the cluster builder, a virtual builder used to
      * perform multilevel searches.
-     * 
+     *
      * @return The cluster builder.
      * @see ClusterBuilder
      */
@@ -652,16 +652,16 @@ public class MMBase extends ProcessorModule  {
      * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
      */
     public void closeConnection(MultiConnection con, Statement stmt) {
-	try {
-	    if (stmt!=null) stmt.close();
-	}
-	catch(Exception g) {
-	}
-	try {
-	    if (con!=null) con.close();
-	}
-	catch(Exception g) {
-	}
+        try {
+            if (stmt!=null) stmt.close();
+        }
+        catch(Exception g) {
+        }
+        try {
+            if (con!=null) con.close();
+        }
+        catch(Exception g) {
+        }
     }
 
 
@@ -670,34 +670,34 @@ public class MMBase extends ProcessorModule  {
      * @return a <code>MultiConnection</code>
      */
     public MultiConnection getConnection() {
-	MultiConnection con = null;
+        MultiConnection con = null;
         int timeout = 10; //seconds
 
         int tries = 1;
-	// always return a connection, maybe database down,... so wait in that situation....
-	while(con == null) {
-	    try {
-		con=database.getConnection(jdbc);
-	    }
-	    catch (SQLException sqle){
-		log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
+        // always return a connection, maybe database down,... so wait in that situation....
+        while(con == null) {
+            try {
+                con=database.getConnection(jdbc);
+            }
+            catch (SQLException sqle){
+                log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
                 if (tries == 1) {
                     log.error(Logging.stackTrace(sqle));
                 } else {
                     log.debug(Logging.stackTrace(sqle));
                 }
                 tries++;
-		try {
-		    wait(timeout * 1000);
-		}
-		catch(InterruptedException ie) {
-		    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
-		    log.warn(msg);
-		    throw new RuntimeException(msg);
-		}
-	    }
-	}
-	return con;
+                try {
+                    wait(timeout * 1000);
+                }
+                catch(InterruptedException ie) {
+                    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
+                    log.warn(msg);
+                    throw new RuntimeException(msg);
+                }
+            }
+        }
+        return con;
     }
 
     /**
@@ -706,31 +706,31 @@ public class MMBase extends ProcessorModule  {
      * interface calls. Use very sparingly.
      */
     public Connection getDirectConnection() {
-	Connection con = null;
-	int timeout = 10;
+        Connection con = null;
+        int timeout = 10;
 
         int tries = 1;
-	// always return a connection, maybe database down,... so wait in that situation....
-	while(con == null) {
-	    try {
-		con=jdbc.getDirectConnection(jdbc.makeUrl());
-	    } catch (SQLException sqle){
-		log.fatal("Could not get a connection, will try again after " + timeout + " seconds: " + sqle.getMessage());
-		if (tries ==1) {
+        // always return a connection, maybe database down,... so wait in that situation....
+        while(con == null) {
+            try {
+                con=jdbc.getDirectConnection(jdbc.makeUrl());
+            } catch (SQLException sqle){
+                log.fatal("Could not get a connection, will try again after " + timeout + " seconds: " + sqle.getMessage());
+                if (tries ==1) {
                     log.error(Logging.stackTrace(sqle));
                 } else {
                     log.debug(Logging.stackTrace(sqle));
                 }
-		try {
-		    wait(timeout * 1000);
-		} catch(InterruptedException ie) {
-		    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
-		    log.warn(msg);
-		    throw new RuntimeException(msg);
-		}
-	    }
-	}
-	return con;
+                try {
+                    wait(timeout * 1000);
+                } catch(InterruptedException ie) {
+                    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
+                    log.warn(msg);
+                    throw new RuntimeException(msg);
+                }
+            }
+        }
+        return con;
     }
 
     /**
@@ -762,7 +762,7 @@ public class MMBase extends ProcessorModule  {
      * Starts a separate thread that probes the builders by calling {@link #doProbeRun}.
      * The reference to the thread is cleared when it dies (scehduled every 10 minutes), prompting
      * the system to start a new thread.
-     * @deprecation contains commented-out code
+     * @deprecation-used contains commented-out code
      * @see MMBaseProbe
      */
     public void maintainance() {
@@ -1169,7 +1169,7 @@ public class MMBase extends ProcessorModule  {
      * If the builder already exists, the existing object is returned instead.
      * Note that the builder's init() method is NOT called (since some builders need other builders in memory when their init() is called,
      * this method is called seperately after all builders are loaded).
-     * @deprecation uses deprecated buidedr methods, contains commented-out code
+     * @deprecation-used uses deprecated buidedr methods, contains commented-out code
      * @param builder name of the builder to initialize
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      * @return the loaded builder object.
@@ -1290,8 +1290,8 @@ public class MMBase extends ProcessorModule  {
             }
             // print information about our database connection..
             log.info("Using class: '"+database.getClass().getName()+"' with config: '"+databaseConfig+"'." );
-	        // init the database..
-	        database.init(this, dbdriver);
+                // init the database..
+                database.init(this, dbdriver);
         }
         return database;
     }

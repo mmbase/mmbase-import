@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.31 2003-03-04 14:19:01 nico Exp $
+ * @version $Id: ClusterBuilder.java,v 1.32 2003-03-07 09:31:06 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1049,7 +1049,8 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Get text from a blob field. the text is cut if it is to long.
+     * Get text from a blob field.
+     * The text is cut if it is to long.
      * @param fieldname name of the field
      * @param number number of the object in the table
      * @return a <code>String</code> containing the contents of a field as text
@@ -1065,7 +1066,8 @@ public class ClusterBuilder extends VirtualBuilder {
 
 
     /**
-     * Get binary data of a database blob field. the data is cut if it is to long.
+     * Get binary data of a database blob field.
+     * The data is cut if it is to long.
      * @param fieldname name of the field
      * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text

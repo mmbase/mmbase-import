@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.47 2003-03-07 08:50:05 pierre Exp $
+ * @version $Id: INFO.java,v 1.48 2003-03-07 09:31:04 pierre Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -76,7 +76,7 @@ public class INFO extends ProcessorModule {
 
 
     /**
-     * Generate a list of values from a command to the processor.<br />
+     * Generate a list of values from a command to the processor.
      * The commands processed are : <br />
      * COLOR-BASIC : returns a list of (system) color names and their RGB values<br />
      * RANGE-X-Y-Z : returns a list of values in the numeric range X to Y, using Z as the increment factor (step) i.e
@@ -90,7 +90,7 @@ public class INFO extends ProcessorModule {
      * @param tagger the parameters (name-value pairs) belonging to the command to process
      * @param value the command to process
      * @return a <code>Vector</code> containing the requested values.
-     * @throw ParseException
+     * @throws ParseException
      */
      public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
