@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.29 2003-02-19 20:23:51 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.30 2003-02-21 14:50:52 michiel Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -228,18 +228,20 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // Start to add the actual definition, this is then afterwards again, except if one of the builders could not be found
         added.add(typerel); 
 
-        if (buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
+
+        inheritance:
+        if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
 
             MMObjectBuilder sourceBuilder      = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("snumber")));
             if (sourceBuilder == null) {
                 log.warn("The source of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
-                return added;
+                break inheritance;
             }
             
             MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("dnumber")));
             if (destinationBuilder == null) {
                 log.warn("The destination of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
-                return added;
+                break inheritance;
             }
             
             int rnumber = typerel.getIntValue("rnumber");
@@ -261,8 +263,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                     added.add(vnode);
                 }
             }
+
+            added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         }        
-        added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         typeRelNodes.addAll(added);
         log.debug("Added to typerelcache: " + added);
         return added;

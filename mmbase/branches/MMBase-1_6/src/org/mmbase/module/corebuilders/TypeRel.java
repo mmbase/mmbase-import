@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.3 2003-02-19 19:03:10 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.4 2003-02-21 14:49:10 michiel Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -228,18 +228,20 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // Start to add the actual definition, this is then afterwards again, except if one of the builders could not be found
         added.add(typerel); 
 
-        if (buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
+
+        inheritance:
+        if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
 
             MMObjectBuilder sourceBuilder      = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("snumber")));
             if (sourceBuilder == null) {
                 log.warn("The source of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
-                return added;
+                break inheritance;
             }
             
             MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("dnumber")));
             if (destinationBuilder == null) {
                 log.warn("The destination of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
-                return added;
+                break inheritance;
             }
             
             int rnumber = typerel.getIntValue("rnumber");
@@ -261,8 +263,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                     added.add(vnode);
                 }
             }
+
+            added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         }        
-        added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         typeRelNodes.addAll(added);
         log.debug("Added to typerelcache: " + added);
         return added;
@@ -429,15 +432,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * Checks whether a specific relation exists.
+     * Tests if a specific relation type is defined.
+     * <p>
+     * Note that this routine returns false both when a snumber/dnumber 
+     * are swapped, and when a typecombo does not exist - 
+     * it is not possible to derive whether one or the other has occurred.
+     * <p>
      *
-     * Note that this routine returns false both when a snumber/dnumber are swapped, and when a typecombo
-     * does not exist -  it is not possible to derive whether one or the other has occurred.
+     * @param n1 The source type number.
+     * @param n2 The destination type number.
+     * @param r The relation definition (role) number.
+     * @return <code>true</code> when the relation exists, false otherwise.
      *
-     * @param n1 Number of the source builder
-     * @param n2 Number of the destination builder
-     * @param r  Number of the relation definition
-     * @return A <code>boolean</code> indicating success when the relation exists, failure if it does not.
      */
     public boolean reldefCorrect(int n1,int n2, int r) {
         return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
