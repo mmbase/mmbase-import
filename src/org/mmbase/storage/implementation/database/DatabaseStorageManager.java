@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.87 2005-02-28 20:13:50 eduard Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.88 2005-03-09 13:20:16 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1217,24 +1217,28 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, setValue);
 
         }
-        if (! encoding.equalsIgnoreCase("UTF-8")) {                
-            try {
-                value = new String(value.getBytes(encoding), encoding);
-            } catch(java.io.UnsupportedEncodingException uee) {
-                log.error(uee);
-                // cannot happen
+        if (value != null) {            
+            if (! encoding.equalsIgnoreCase("UTF-8")) {                
+                try {
+                    value = new String(value.getBytes(encoding), encoding);
+                } catch(java.io.UnsupportedEncodingException uee) {
+                    log.error(uee);
+                    // cannot happen
+                }
+            }            
+
+            // execute also getSurrogator, to make sure that it does not confuse, and the node contains what it would contain if fetched from database.
+            if (factory.getGetSurrogator() != null) { 
+                value = factory.getGetSurrogator().transform(value);
+            }            
+            if (factory.hasOption(Attributes.TRIM_STRINGS)) {
+                value = value.trim();
             }
         }
+        
+        
+        if (objectValue == null) node.storeValue(field.getDBName(), value);
 
-        if (objectValue == null) node.storeValue(field.getDBName(),value);
-
-        // execute also getSurrogator, to make sure that it does not confuse, and the node contains what it would contain if fetched from database.
-        if (factory.getGetSurrogator() != null) { 
-            value = factory.getGetSurrogator().transform(value);
-        }            
-        if (factory.hasOption(Attributes.TRIM_STRINGS)) {
-            value = value.trim();
-        }
         return value;
     }
 
@@ -1445,7 +1449,10 @@ public class DatabaseStorageManager implements StorageManager {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
             if (field != null) {
                 dbtype = field.getDBType();
-            }
+            } else { // use database type.
+                dbtype = getJDBCtoMMBaseType(result.getMetaData().getColumnType(index), dbtype);
+            }            
+            
             switch (dbtype) {
                 // string-type fields
                 case FieldDefs.TYPE_XML : {
