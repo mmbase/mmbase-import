@@ -3,16 +3,16 @@
 <mm:import externid="usernumber" />
 <mm:node number="$usernumber">
 Hi <mm:field name="firstname" /> <mm:field name="lastname" /> !
-<p />
+
 Nice to see you again, These are your settings :
-<p>
-firstname : <mm:field name="firstname" /><br/>
-lastname : <mm:field name="lastname" /><br/>
-email : <mm:field name="email" /><br/>
-account : <mm:field name="account" /><br/>
-password : <mm:field name="password" /><br/>
-<p>
-Bye,<br />
+
+firstname : <mm:field name="firstname" />
+lastname : <mm:field name="lastname" />
+email : <mm:field name="email" />
+account : <mm:field name="account" />
+password : <mm:field name="password" />
+
+Bye,
 MMBase Email Team.
 </mm:node>
 </mm:cloud>
