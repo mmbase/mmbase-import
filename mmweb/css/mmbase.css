@@ -185,8 +185,7 @@ strong
 
 .relationcontainer
 {
-	margin: 4px;
-	margin-top: 10px;
+	margin: 4px 4px 4px 0;
 	width: 200px;
 	border: 1px solid #797868;
 }
@@ -195,9 +194,7 @@ strong
 {
 	background-color: #CCEB6F;
 	border: 0px;
-	padding: 3px;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding: 3px 4px 3px 4px;
 	margin: 0px;
 }
 
@@ -205,11 +202,10 @@ strong
 {
 	border: 0px;
 	border-top: 1px solid #D8D8D8;
-	padding: 3px;
-	margin-left: 5px;
-	padding-right: 5px;
-	margin: 0px;
+	padding: 0 4px 3px 4px;
 }
+
+.relationcontainer p { padding: 4px 0 1px 0; }
 
 .subnav { height: 28px; }
 
