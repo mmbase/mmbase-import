@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.5 2003-07-23 14:34:57 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.6 2003-07-24 10:11:03 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -36,13 +36,13 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     protected Class storageManagerClass;
 
     // the map with configuration data
-    private Map attributes;
+    protected Map attributes;
     
     // the map with disallowed fieldnames and (if given) alternates
-    private Map disallowedFields;
+    protected Map disallowedFields;
     
     // the map with type mapping data
-    private List typeMappings;
+    protected List typeMappings;
 
     /**
      * Stores the MMBase reference, and initializes the attribute map.
@@ -59,7 +59,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
 
     /**
      * Opens and reads the storage configuration document.
-     * Override this method to add additional configuration code.
+     * Override this method to add additional configuration code before or after the configuration document is read.
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
     protected void load() throws StorageException {
@@ -154,5 +154,8 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     }
 
     abstract public double getVersion();
+    
+	abstract public boolean supportsTransactions();
+    
 
 }
