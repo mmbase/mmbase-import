@@ -16,9 +16,11 @@ import org.mmbase.module.core.*;
  * A VWM that runs a scheduler should implement this interface.
  * The routines defined here are entry routines for the probe, needed to perform scheduled tasks.
  *
+ * @application VWMs
+ * @deprecated with only one implementation, better to not use an interface?
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmProbeInterface.java,v 1.6 2003-03-10 11:50:26 pierre Exp $
+ * @version $Id: VwmProbeInterface.java,v 1.7 2004-10-08 10:57:57 pierre Exp $
  */
 public interface VwmProbeInterface {
 

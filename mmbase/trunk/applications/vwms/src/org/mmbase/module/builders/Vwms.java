@@ -35,12 +35,12 @@ import org.mmbase.util.logging.*;
  *
  * Note that currently, vwms are only started during startup.
  *
+ * @application VWMs
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.18 2003-07-02 06:20:45 keesj Exp $
+ * @version $Id: Vwms.java,v 1.19 2004-10-08 10:59:39 pierre Exp $
  */
-
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
     /**
@@ -161,11 +161,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         if (node!=null) {
 */
 
-			// Only one mmserver instance may exist, so print ERROR when you find multiple.
-			if (e.hasMoreElements()) {
-				log.error("Multiple mmserver nodes found named: "+getMachineName()+", only single node allowed!!!!");
-				log.error("Please delete all but one mmservers named: "+getMachineName());
-			}
+            // Only one mmserver instance may exist, so print ERROR when you find multiple.
+            if (e.hasMoreElements()) {
+                log.error("Multiple mmserver nodes found named: "+getMachineName()+", only single node allowed!!!!");
+                log.error("Please delete all but one mmservers named: "+getMachineName());
+            }
 
             for (Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms"); f.hasMoreElements();) {
                 MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
@@ -298,7 +298,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Passes a remote change of a vwms node to the appropriate (active) vwm.
-	 * @param machine Name of the machine that changed the node.
+     * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, not very well documented
@@ -332,7 +332,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Passes a local change of a vwms node to the appropriate (active) vwm.
-	 * @param machine Name of the machine that changed the node.
+     * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, not very well documented
