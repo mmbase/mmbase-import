@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 
@@ -18,7 +13,21 @@
 <mm:present referid="action">
  <mm:include page="actions.jsp" />
 </mm:present>
+
+<!-- login part -->
+  <%@ include file="getposterid.jsp" %>
+<!-- end login part -->
+
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
 <!-- end action check -->
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
 
 <div class="header">
     <%@ include file="header.jsp" %>
@@ -27,7 +36,7 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3" align="left" >Moderator toevoegen voor : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
+  <tr><th colspan="3" align="left" ><mm:write referid="mlg_Add_moderator_for" /> : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
   
   </th></tr>
 
@@ -36,13 +45,13 @@
 					<mm:param name="postareaid" value="$postareaid" />
 					<mm:param name="admincheck" value="true" />
 				</mm:url>" method="post">
-	<tr><th align="left">Huidige Moderators</th><td colspan="2" align="left">
+	<tr><th align="left"><mm:write referid="mlg_Current_moderators" /></th><td colspan="2" align="left">
   		  <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
 		  </mm:nodelistfunction>
 	<p />
 	</td></tr>
-	<tr><th align="left">Mogelijke Moderators</th><td colspan="2">
+	<tr><th align="left"><mm:write referid="mlg_Possible_moderators" /></th><td colspan="2">
 		  <select name="newmoderator">
   		  <mm:nodelistfunction set="mmbob" name="getNonModerators" referids="forumid,postareaid">
 				<option value="<mm:field name="id" />"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
@@ -52,7 +61,7 @@
 	<input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="newmoderator">
 	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="Toevoegen">
+	<input type="submit" value="<mm:write referid="mlg_Add" />">
   	</form>
 	</td>
 	<td>
@@ -63,7 +72,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Laat maar">
+	<input type="submit" value="<mm:write referid="mlg_Cancel" />">
   	</form>
 	</td>
 	</tr>
@@ -77,6 +86,8 @@
                                                                                               
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
 

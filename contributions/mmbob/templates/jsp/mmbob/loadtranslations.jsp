@@ -13,6 +13,7 @@
 <mm:import id="keyword" reset="true">number_of_messages</mm:import><mm:import id="mlg_number_of_messages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Areas</mm:import><mm:import id="mlg_Areas"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Area</mm:import><mm:import id="mlg_Area"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Messages</mm:import><mm:import id="mlg_Messages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
@@ -148,4 +149,45 @@
 <mm:import id="keyword" reset="true">Cancel</mm:import><mm:import id="mlg_Cancel"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Message</mm:import><mm:import id="mlg_Message"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Edit_message</mm:import><mm:import id="mlg_Edit_message"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Edit_postthread</mm:import><mm:import id="mlg_Edit_postthread"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Access_denied</mm:import><mm:import id="mlg_Access_denied"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Status</mm:import><mm:import id="mlg_Status"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">normal</mm:import><mm:import id="mlg_normal"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">closed</mm:import><mm:import id="mlg_closed"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">pinned</mm:import><mm:import id="mlg_pinned"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Mood</mm:import><mm:import id="mlg_Mood"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">mad</mm:import><mm:import id="mlg_mad"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">happy</mm:import><mm:import id="mlg_happy"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">sad</mm:import><mm:import id="mlg_sad"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">question</mm:import><mm:import id="mlg_question"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">warning</mm:import><mm:import id="mlg_warning"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">joke</mm:import><mm:import id="mlg_joke"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">idea</mm:import><mm:import id="mlg_idea"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">surprised</mm:import><mm:import id="mlg_surprised"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">note</mm:import><mm:import id="mlg_note"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">faq</mm:import><mm:import id="mlg_faq"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">announcement</mm:import><mm:import id="mlg_announcement"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Administrators</mm:import><mm:import id="mlg_Administrators"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Add_moderator_for</mm:import><mm:import id="mlg_Add_moderator_for"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Current_moderators</mm:import><mm:import id="mlg_Current_moderators"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Possible_moderators</mm:import><mm:import id="mlg_Possible_moderators"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Add</mm:import><mm:import id="mlg_Add"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Add_new_postarea</mm:import><mm:import id="mlg_Add_new_postarea"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Add_new_topic</mm:import><mm:import id="mlg_Add_new_topic"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Topic_closed_by_moderator</mm:import><mm:import id="mlg_Topic_closed_by_moderator"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Compose_message</mm:import><mm:import id="mlg_Compose_message"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Ok</mm:import><mm:import id="mlg_Ok"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Remove_moderator_for</mm:import><mm:import id="mlg_Remove_moderator_for"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Delete</mm:import><mm:import id="mlg_Delete"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Are_you_sure</mm:import><mm:import id="mlg_Are_you_sure"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Yes_delete</mm:import><mm:import id="mlg_Yes_delete"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+
+
 

@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -22,6 +17,20 @@
 </mm:present>
 <!-- end action check -->
 
+<!-- login part -->
+  <%@ include file="getposterid.jsp" %>
+<!-- end login part -->
+                                                                                                                    
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
+
 <div class="header">
     <%@ include file="header.jsp" %>
 </div>
@@ -30,7 +39,7 @@
 
 <mm:node referid="postingid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
-  <tr><th width="25%" align="left">Poster</th><th align="left">Onderwerp : <mm:field name="subject" /></th></tr>
+  <tr><th width="25%" align="left"><mm:write referid="mlg_Member" /></th><th align="left"><mm:write referid="mlg_Topic"/> : <mm:field name="subject" /></th></tr>
   <mm:import id="tdvar">listpaging</mm:import>
   <tr>
     <td class="<mm:write referid="tdvar" />" align="left">
@@ -47,7 +56,7 @@
   </td>
 
   <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** Laatste keer aangepast op : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
+    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** <mm:write referid="last_time_edited"/> **<mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
                                                                                                 
                <mm:formatter xslt="xslt/posting2xhtmlLight.xslt">
                 <mm:function referids="imagecontext,themeid" name="escapesmilies">
@@ -62,7 +71,7 @@
 </mm:node>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
-  <tr><th colspan="3" align="center" >Bericht echt verwijderen ??</th></tr>
+  <tr><th colspan="3" align="center"><mm:write referid="mlg_Are_you_sure"/></th></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp">
 					<mm:param name="forumid" value="$forumid" />
@@ -74,7 +83,7 @@
 	<input type="hidden" name="action" value="removepost">
 	<p />
 	<center>
-	<input type="submit" value="Ja, Verwijderen">
+	<input type="submit" value="<mm:write referid="mlg_Yes_delete"/>">
   	</form>
 	</td>
 	<td>
@@ -86,7 +95,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Oops, Nee">
+	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
   	</form>
 	</td>
 	</tr>
@@ -100,6 +109,8 @@
 
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
 

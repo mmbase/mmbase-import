@@ -4,14 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-   <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 
-</head>
-<body>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -19,6 +12,9 @@
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
+
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -34,6 +30,14 @@
   </mm:field>
 </mm:node>
 
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+   <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
+</head>
+<body>
+
 <div class="header">
     <%@ include file="header.jsp" %>
 </div>
@@ -44,7 +48,7 @@
   <mm:import externid="postingid" />
   
   <mm:notpresent referid="noedit">
-  <tr><th colspan="3" >Bewerk Bericht</th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg_Compose_message" /></th></tr>
   <mm:node referid="postingid">
   <form action="<mm:url page="thread.jsp">
 	<mm:param name="forumid" value="$forumid" />
@@ -52,7 +56,7 @@
 	<mm:param name="postthreadid" value="$postthreadid" />
 	<mm:param name="postingid" value="$postingid" />
 	</mm:url>" method="post" name="posting">
-	<tr><th>Naam</th><td colspan="2">
+	<tr><th><mm:write referid="mlg_Name" /></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
 		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
@@ -63,11 +67,11 @@
 		<input name="poster" size="32" value="gast" >
 		</mm:compare>
 	</td></tr>
-	<tr><th>Onderwerp</th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />" ></td></th>
-	<tr><th valign="top">Bericht <center><table width="99"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><quote poster="<mm:field name="c_poster"/>"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></quote></textarea></td></tr>
+	<tr><th><mm:write referid="mlg_Topic" /></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />" ></td></th>
+	<tr><th valign="top"><mm:write referid="mlg_Message" /><center><table width="99"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><quote poster="<mm:field name="c_poster"/>"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></quote></textarea></td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="postreply">
-	<center><input type="submit" value="plaats bericht">
+	<center><input type="submit" value="<mm:write referid="mlg_Save" />">
   	</form>
 	</td>
 	<td>
@@ -80,13 +84,13 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Laat maar">
+	<input type="submit" value="<mm:write referid="mlg_Cancel" />">
   	</form>
 	</td>
 	</tr>
 	</mm:notpresent>
         <mm:present referid="noedit">
-  	<tr><th colspan="3">Onderwerp gesloten door beheerders</th></tr>
+  	<tr><th colspan="3"><mm:write referid="mlg_Topic_closed_by_moderator" /></th></tr>
 	<td>
   	<form action="<mm:url page="thread.jsp">
 	<mm:param name="forumid" value="$forumid" />
@@ -96,7 +100,8 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Ok">
+	<input type="submit" value="<mm:write referid="mlg_Ok"/>">
+
   	</form>
 	</td>
 	</tr>
@@ -111,6 +116,8 @@
                                                                                               
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
 
