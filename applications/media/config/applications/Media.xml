@@ -70,7 +70,7 @@
 
 	<relationsourcelist>
 		<relationsource builder="insrel" path="Media/insrel.xml" />
-		<relationsource builder="insrel" path="Media/posrel.xml" />
+		<relationsource builder="posrel" path="Media/posrel.xml" />
   </relationsourcelist>
   
   <contextsourcelist>

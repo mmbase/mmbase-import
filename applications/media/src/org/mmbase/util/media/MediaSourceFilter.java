@@ -202,7 +202,7 @@ public class MediaSourceFilter {
         
         for (Iterator i = preferredSources.iterator(); i.hasNext();) {
             String format = (String) i.next();
-            log.debug("checking format "+format);
+            if (log.isDebugEnabled()) log.debug("checking format "+format);
             if(format.equals("ra")) {
                 node = getRealAudio(mediasources, info);
             } else {
@@ -213,7 +213,7 @@ public class MediaSourceFilter {
                 node = getFormat(mediasources, formatnumber);
             } 
             if (node!=null) {
-                log.debug("found mediasource format "+format);
+                if (log.isDebugEnabled()) log.debug("found mediasource format "+format);
                 List mediasource = new Vector();
                 mediasource.add(node);
                 return mediasource;
@@ -224,7 +224,7 @@ public class MediaSourceFilter {
     }
     
     /**
-     * select the mediasource that is of the approriate format
+     * Select the mediasource that is of the approriate format
      * @param mediaSources the list of appropriate mediasources
      * @param format the wanted format
      * @return a mediasource of wanted format

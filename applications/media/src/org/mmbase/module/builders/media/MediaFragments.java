@@ -37,6 +37,7 @@ import javax.servlet.http.*;
  * Please if you have more comments add them here.
  *
  * @author Rob Vermeulen (VPRO)
+ * @author Michiel Meeuwissen
  */
 
 public class MediaFragments extends MMObjectBuilder {
@@ -101,19 +102,17 @@ public class MediaFragments extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }            
-        } else if (args != null && args.size() > 0) {
-            if (function.equals("showurl")) {
+        } else if (function.equals("showurl")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
-                return getURL(node, new Hashtable());
-            } else if (function.equals("longurl")) {
-                // hashtable can be filled with speed/channel/ or other info to evalute the url.
-                return getLongURL(node, new Hashtable());
-            } else if (function.equals("contenttype")) {
-                // hashtable can be filled with speed/channel/ or other info to evalute the url.
-                return getContentType(node, new Hashtable());
-            } else if (function.equals("showlength")) {
-                return ""+calculateLength(node);
-            }
+            return getURL(node, new Hashtable());
+        } else if (function.equals("longurl")) {
+            // hashtable can be filled with speed/channel/ or other info to evalute the url.
+            return getLongURL(node, new Hashtable());
+        } else if (function.equals("contenttype")) {
+            // hashtable can be filled with speed/channel/ or other info to evalute the url.
+            return getContentType(node, new Hashtable());
+        } else if (function.equals("showlength")) {
+            return ""+calculateLength(node);
         }
         log.debug("Function not matched in mediafragments");
         return super.executeFunction(node, function, args);
@@ -228,7 +227,7 @@ public class MediaFragments extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    protected boolean isSubFragment(MMObjectNode mediafragment) {
+    public boolean isSubFragment(MMObjectNode mediafragment) {
         int mediacount = mediafragment.getRelationCount("mediasources");        
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
@@ -238,7 +237,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediafragment sub media fragment
      * @return the parent media fragment
      */
-    protected MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+    public MMObjectNode getParentFragment(MMObjectNode mediafragment) {
         Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
         if(!e.hasMoreElements()) {
@@ -254,7 +253,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediafragment the mediafragment
      * @return All mediasources related to given mediafragment
      */
-    protected List getMediaSources(MMObjectNode mediafragment) {
+    public List getMediaSources(MMObjectNode mediafragment) {
         if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
         while(isSubFragment(mediafragment)) {
             if (log.isDebugEnabled()) log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");

@@ -57,7 +57,7 @@
         <!-- name of the field in the database -->
         <name>create</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">LONG</type>
       </db>
     </field>
     <!-- POS 4 : <field> 'start'  -->
@@ -112,7 +112,7 @@
         <!-- name of the field in the database -->
         <name>end</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">LONG</type>
       </db>
     </field>
 
