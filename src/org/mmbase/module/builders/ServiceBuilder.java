@@ -8,8 +8,11 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: ServiceBuilder.java,v 1.10 2000-11-27 13:28:58 vpro Exp $
+$Id: ServiceBuilder.java,v 1.11 2000-12-20 16:33:00 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/11/27 13:28:58  vpro
+davzev: Disabled sendToRemote call in method nodeRemoteChanged since nodeLocalChanged already calls it, also added several method comments.
+
 */
 package org.mmbase.module.builders;
 
@@ -27,7 +30,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.10 $ $Date: 2000-11-27 13:28:58 $
+ * @version $Revision: 1.11 $ $Date: 2000-12-20 16:33:00 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -213,7 +216,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 * @return true, always!?
 	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+") Node Remote Changed!?,do nothing");
+		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Node Remote Changed!?,do nothing");
 		// Disabled since the localchanged already sends signal to remote side 
 		//sendToRemote(number,builder,ctype); 
 		return(true);
@@ -258,7 +261,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 				String servicename = node.getStringValue("name");
 				if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Sending signal to remote side using remote service reference:"+servicename);
 				pd.signalRemoteNode(servicename,builder,ctype);
-				if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Signal send performed with remote service reference used:"+servicename);
+				if (debug) debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): Signal has been send with remote service reference used:"+servicename);
 			}else
 				debug("sendToRemoteBuilder("+number+","+builder+","+ctype+"): ERROR: Couldn't get node("+number+")!");
 		} else {
