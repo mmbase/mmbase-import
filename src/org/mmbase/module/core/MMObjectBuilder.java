@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.163 2002-10-08 19:13:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.164 2002-10-09 09:29:29 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -367,20 +367,22 @@ public class MMObjectBuilder extends MMTable {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-        try {
+	try {
             int n;
             n=mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
-        } catch(Exception e) {
-            // do we really wanna catch our exceptions here? no need here, since not in throw clause..
-            String msg = "Failure(" + e + ") inserting node:\n" + node;
-            log.error(msg);
-            log.error(Logging.stackTrace(e));
-            throw new RuntimeException(msg);
-        }
+	} 
+	catch(RuntimeException e) {
+	    // do we really wanna catch our exceptions here? 
+	    // the only purpose now to catch them here, is to log 
+	    // failures of inserts..
+	    String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
+	    log.error(msg);
+            throw e;
+	}
     }
 
     /**
