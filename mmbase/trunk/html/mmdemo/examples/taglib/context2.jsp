@@ -2,20 +2,47 @@
 %><html>
 <body>
 <h1>context 2</h1>
-<mm:cloud>
-<mm:context type="session">
-Reusing the node: <br />
-<mm:node id="url_node">
-  <mm:fieldlist type="edit">
-    <em><mm:fieldinfo type="guiname" /></em> <mm:fieldinfo type="value" /><br />
-  </mm:fieldlist> 
-</mm:node>
-Demonstrating export to jsp-variable:<br />
-<mm:export type="Node" key="url_node" jspvar="node" />
-<% out.println(node.getStringValue("gui()")); %><br />
+<p>
+Two parameters were passed to this page. We show how to use a context
+inside another context, and how to use the `present' and `notpresent'
+tags.
+</p>
+<mm:context>
+<mm:import id="a"     externid="hello"  />
+<mm:import id="b"     externid="hi"  />
+<mm:import id="alias" externid="hoi"    required ="true" />
+
+<mm:context id="other_context">
+  <mm:import externid="alias" />
+  <mm:import id="foo">bar</mm:import>
+  <mm:write referid="foo" />
 </mm:context>
-</mm:cloud>
+<br />
+
+<mm:present referid="alias">
+   param alias is present (<mm:write referid="alias" />)
+</mm:present>
+<mm:notpresent referid="alias">
+   param alias is not present (cannot happen)
+</mm:notpresent>
+<br />
+
+<mm:present referid="a">
+  param hello is present (<mm:write referid="a" />)
+</mm:present>
+<mm:notpresent referid="a">
+  param hello is not present
+</mm:notpresent>
+<br />
+
+<mm:present referid="b">
+  param hi is present (<mm:write referid="b" />)
+</mm:present>
+<mm:notpresent referid="b">
+  param hi is not present
+</mm:notpresent>
+</mm:context>
 <hr />
-<a href="context3.jsp">next</a>
+<a href='<mm:url page="context3\.jsp" />'>next page</a>
 </body>
 </html>

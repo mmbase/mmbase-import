@@ -3,21 +3,24 @@
 <body>
 <h1>context 3</h1>
 <mm:cloud>
-Selecting a news node: <br />
-<mm:list type="news" max="1">
+<p>
+Selecting a news node:
+</p>
+<mm:listnodes type="news" max="1">
 <mm:node id="news_node" >
   <mm:fieldlist type="edit">
     <em><mm:fieldinfo type="guiname" /></em> <mm:fieldinfo type="value" /><br />
   </mm:fieldlist> 
 </mm:node>
-</mm:list>
-<br />
+</mm:listnodes>
+<p>
 Reusing it in the same page:
-<mm:node id="news_node">
+</p>
+<mm:node referid="news_node">
    <mm:field name="title" />
 </mm:node>
 <hr />
-<a href="context4.jsp">next page</a>
+<a href='<mm:url page="context4\.jsp" referids="news_node" />'>next page</a>
 </mm:cloud>
 </body>
 </html>
