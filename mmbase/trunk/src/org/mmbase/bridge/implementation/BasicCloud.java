@@ -13,7 +13,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.TypeDef;
-import org.mmbase.module.builders.MultiRelations;
 import org.mmbase.util.StringTagger;
 import java.util.*;
 
@@ -93,8 +92,8 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // do authentication.....
         MMBaseCop mmbaseCop = mmb.getMMBaseCop();
-        if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");       
-	org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);	
+        if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");
+	org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if ( uc == null ) throw new BasicBridgeException("login invalid");
 	userContext = new BasicUser(mmbaseCop, uc);
         // end authentication...
@@ -171,7 +170,6 @@ public class BasicCloud implements Cloud, Cloneable {
         for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
             if(!bul.isVirtual()) {
-//            if (!(bul instanceof org.mmbase.module.builders.MultiRelations)) {
                 nodeManagers.add(bul.getTableName());
             }
         }
@@ -417,7 +415,7 @@ public class BasicCloud implements Cloud, Cloneable {
             String searchDir, boolean distinct) {
 
         String sdistinct="";
-        int search = MultiRelations.SEARCH_BOTH;
+        int search = ClusterBuilder.SEARCH_BOTH;
         String pars ="";
 
         if (startNodes!=null) {
@@ -443,15 +441,15 @@ public class BasicCloud implements Cloud, Cloneable {
         if (searchDir!=null) {
             searchDir = searchDir.toUpperCase();
             if ("DESTINATION".equals(searchDir)) {
-                search = MultiRelations.SEARCH_DESTINATION;
+                search = ClusterBuilder.SEARCH_DESTINATION;
             } else if ("SOURCE".equals(searchDir)) {
-                search = MultiRelations.SEARCH_SOURCE;
+                search = ClusterBuilder.SEARCH_SOURCE;
             } else if ("BOTH".equals(searchDir)) {
-                search = MultiRelations.SEARCH_BOTH;
+                search = ClusterBuilder.SEARCH_BOTH;
             } else if ("ALL".equals(searchDir)) {
-                search = MultiRelations.SEARCH_ALL;
+                search = ClusterBuilder.SEARCH_ALL;
             } else if ("EITHER".equals(searchDir)) {
-                search = MultiRelations.SEARCH_EITHER;
+                search = ClusterBuilder.SEARCH_EITHER;
             }
         }
 
@@ -465,7 +463,7 @@ public class BasicCloud implements Cloud, Cloneable {
             sdirection=new Vector();
             sdirection.addElement("UP"); // UP == ASC , DOWN =DESC
         }
-        MultiRelations multirel = (MultiRelations)cloudContext.mmb.getMMObject("multirelations");
+        ClusterBuilder clusters = cloudContext.mmb.getClusterBuilder();
         if (constraints!=null) {
             if (constraints.trim().equals("")) {
                 constraints = null;
@@ -473,7 +471,7 @@ public class BasicCloud implements Cloud, Cloneable {
                 constraints="WHERE "+constraints;
             }
         }
-        Vector v = multirel.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,
+        Vector v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,
                                                    orderVec,sdirection,search);
         if (v!=null) {
             NodeManager tempNodeManager = null;
@@ -484,26 +482,26 @@ public class BasicCloud implements Cloud, Cloneable {
         } else {
             throw new BasicBridgeException("getList failed, parameters are invalid :" +pars+" - "+constraints);
         }
-    }    
+    }
 
     /**
      * set the Context of the current Node
-     */    
+     */
     void setContext(int nodeNumber, String context) {
     	authorization.setContext(userContext.getUserContext(), nodeNumber, context);
     }
 
     /**
      * get the Context of the current Node
-     */    
+     */
     String getContext(int nodeNumber) {
     	return authorization.getContext(userContext.getUserContext(), nodeNumber);
     }
-    
+
     /**
      * get the Contextes which can be set to this specific node
-     */            
+     */
     StringList getPossibleContexts(int nodeNumber) {
     	return new BasicStringList(authorization.getPossibleContexts(userContext.getUserContext(), nodeNumber));
-    }        
+    }
 }

@@ -195,17 +195,17 @@ public class BasicNode implements Node {
     }
 
     public void setValue(String attribute, Object value) {
-        edit(ACTION_EDIT);               
+        edit(ACTION_EDIT);
         if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
             //|| "snumber".equals(attribute) || "dnumber".equals(attribute) || "rnumber".equals(attribute)
             ) {
             throw new BasicBridgeException("Not allowed to change field " + attribute);
-        }        
+        }
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
             throw new BasicBridgeException("Can't change unknown field " + attribute);
         }
-        
+
     }
 
     public void setBooleanValue(String attribute, boolean value) {
@@ -242,6 +242,15 @@ public class BasicNode implements Node {
 
     public boolean getBooleanValue(String attribute) {
         return noderef.getBooleanValue(attribute);
+    }
+
+    public Node getNodeValue(String attribute) {
+        MMObjectNode noderes=noderef.getNodeValue(attribute);
+        if (noderes!=null) {
+            return new BasicNode(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
+        } else {
+            return null;
+        }
     }
 
     public int getIntValue(String attribute) {
@@ -490,7 +499,7 @@ public class BasicNode implements Node {
     };
 
     public void addAlias(String aliasName) {
-        edit(ACTION_EDIT);             
+        edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
             NodeManager aliasManager=cloud.getNodeManager("oalias");
             Node aliasNode=aliasManager.createNode();
@@ -502,7 +511,7 @@ public class BasicNode implements Node {
             throw new BasicBridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
             getNode().parent.createAlias(getNumber(),aliasName);
-        }        
+        }
     }
 
     /*
@@ -569,37 +578,37 @@ public class BasicNode implements Node {
     public int hashCode() {
         return getNumber();
     };
-    
+
     /**
      * set the Context of the current Node
      *
      * @param context	    	    The context to which the current node should belong,
      * @throws BridgeException      Dunno?
      * @throws SecurityException    When not the approperate rights (change context)
-     */    
+     */
     public void setContext(String context) {
-    	cloud.setContext(getNumber(), context);    
+    	cloud.setContext(getNumber(), context);
     }
-    
+
     /**
      * get the Context of the current Node
      *
      * @return the current context of the node
      * @throws BridgeException      Dunno?
      * @throws SecurityException    When not the approperate rights (read rights)
-     */    
+     */
     public String getContext() {
-    	return cloud.getContext(getNumber());    
+    	return cloud.getContext(getNumber());
     }
-    
+
     /**
      * get the Contextes which can be set to this specific node
      *
      * @return the contextes from which can be chosen
      * @throws BridgeException      Dunno?
      * @throws SecurityException    When not the approperate rights (read rights)
-     */        
+     */
     public StringList getPossibleContexts() {
-    	return new BasicStringList(cloud.getPossibleContexts(getNumber()));    
-    }    
+    	return new BasicStringList(cloud.getPossibleContexts(getNumber()));
+    }
 }
