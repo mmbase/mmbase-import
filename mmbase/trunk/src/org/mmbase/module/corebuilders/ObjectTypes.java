@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.2 2002-05-06 11:08:52 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.3 2002-05-06 11:16:57 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -340,7 +340,7 @@ public class ObjectTypes extends TypeDef {
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
         }
         catch(javax.xml.transform.TransformerException te) {
-            throw new RuntimeException(Logging.stackTrace(te));
+            throw new RuntimeException(te.toString() + Logging.stackTrace(te));
         }
         return file;
     }
