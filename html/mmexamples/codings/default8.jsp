@@ -105,6 +105,8 @@
   </mm:write>
   )
 </h2>
+
+<mm:log>mm:include-ing XML's</mm:log>
 <p><em>With mm:include (iso-8859-1 xml<mm:compare referid="cite" value="true">, Cite</mm:compare>):</em></p>
 <pre>
 <mm:include page="included1.xml" escape="text/xml" cite="$cite" />
@@ -121,24 +123,36 @@
 <pre>
 <mm:include page="<%= thisDir + "included8.xml"%>" escape="text/xml" />
 </pre>
-
-
+<mm:log>jsp:include-ing XML's</mm:log>
       <p><em>With jsp:include (iso-8859-1 xml):</em></p>
 <pre>
+<mm:log>i1</mm:log>
+<% try { %>
 <mm:import id="i1"><jsp:include page="included1.xml"  /></mm:import><mm:write referid="i1" escape="text/xml" />
+<% } catch (Exception e) { %> 
+<p>Did not work (<%=e.toString()%>)</p>
+<% } %>
 </pre>
       <p><em>With jsp:include (UTF-8 xml):</em></p>
 <pre>
+<mm:log>i8</mm:log>
+<% try { %>
 <mm:import id="i8"><jsp:include page="included8.xml"  /></mm:import><mm:write referid="i8" escape="text/xml" />
+<% } catch (Exception e) { %> 
+<p>Did not work (<%=e.toString()%>)</p>
+<% } %>
 </pre>
       <p><em>With &lt;%@include (iso-8859-1 xml):</em></p>
 <pre>
+<mm:log>ai1</mm:log>
 <mm:import id="ai1"><%@include file="included1.xml" %></mm:import><mm:write referid="ai1" escape="text/xml" />
 </pre>
       <p><em>With &lt;%@include (UTF-8 xml):</em></p>
 <pre>
+<mm:log>ai8</mm:log>
 <mm:import id="ai8"><%@include file="included8.xml" %></mm:import><mm:write referid="ai8" escape="text/xml" />
 </pre>
+<mm:log>formatter</mm:log>
    <h2>Formatter-tag</h2>
    <p><em>In-page XML, explicitely specifying encoding:</em></p>
 <pre>
