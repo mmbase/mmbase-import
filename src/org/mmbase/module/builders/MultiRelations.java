@@ -30,13 +30,19 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.18 2001-03-09 13:15:09 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.19 2001-03-09 15:11:31 pierre Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
     // logging variable
 	private static Logger log = Logging.getLoggerInstance(MultiRelations.class.getName());
 
+	// if set to true, the old multilevel functionality will be used
+	// this means that if relations exists in two directions, only one direction will be concidered valid,
+	// so not all relations may be returned.
+	// if set to false, multirelations uses the new functionality (which will return all relations)
+	private static final boolean supportoldway=false;
+	
     /**
     * Creates an instance of the MultiRelations builder.
     * Called from the MMBase class.
@@ -713,8 +719,8 @@ public class MultiRelations extends MMObjectBuilder {
 			    for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
 			        // get the allowed relation definitions
 			        typenode = (MMObjectNode)e.nextElement();
-			        desttosrc= desttosrc || typenode.getIntValue("snumber")==so;
-			        srctodest= srctodest || typenode.getIntValue("snumber")==ro;
+			        desttosrc= desttosrc || typenode.getIntValue("snumber")==ro;
+			        srctodest= srctodest || typenode.getIntValue("snumber")==so;
 			        if (desttosrc && srctodest) break;
 			    }
             }
@@ -724,10 +730,13 @@ public class MultiRelations extends MMObjectBuilder {
 			if (InsRel.usesdir) {
 			    dirstring=" AND "+idx2char(i+1)+".dir=2";
 			}
-			if (desttosrc) {
+			if (desttosrc && srctodest && supportoldway) { // support old
+			    desttosrc=false;
+			}			
+            if (desttosrc) {
 			    // there is a typed relation from destination to src
                 if (srctodest) {
-                    // there is ALSO a typed relation from src to destination - make a more complex query
+			        // there is ALSO a typed relation from src to destination - make a more complex query
                     result.append(
     	    			   "(("+numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
 	    			            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber ) OR ("+
@@ -735,13 +744,13 @@ public class MultiRelations extends MMObjectBuilder {
 			    	            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring+"))");
 	            } else {
 			        // there is ONLY a typed relation from destination to src - optimized query
-                    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
-	    			            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber");
+			        result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
+			                    numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring);
 	            }
 		    } else {
 			    // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-			    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
-			                    numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring);
+                result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
+	    			        numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber");
 			}
 			
 		}
