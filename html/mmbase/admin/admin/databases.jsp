@@ -44,8 +44,10 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <td class="data"><%=database.getStringValue("item2")%></td>
   <td class="data"><%=database.getStringValue("item3")%></td>
   <td class="data"><%=database.getStringValue("item4")%></td>
-  <td class="navigate">
-    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="view" /></a>
+  <td class="navigate">    
+    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />">
+      <img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="view" />
+    </a>
   </td>
 </tr>
 <% } %>
@@ -61,9 +63,9 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <th class="navigate">View</th>
 </tr>
 <%
-   Module jdbc=ContextProvider.getDefaultCloudContext().getModule("jdbc");
+   Module jdbc = ContextProvider.getDefaultCloudContext().getModule("jdbc");
    NodeList pools=jdbc.getList("POOLS",params,request,response);
-   for (int i=0; i<pools.size(); i++) {
+   for (int i=0; i< pools.size(); i++) {
     Node pool=pools.getNode(i);
 %>
 <tr>
@@ -71,7 +73,8 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <td class="data"><%=pool.getStringValue("item2")%></td>
   <td class="data"><%=pool.getStringValue("item3")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="database/connections.jsp?pool="+pool.getStringValue("item1")%>"/>"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="next" /></a>
+    <a href="<mm:url page="database/connections.jsp">
+                 <mm:param name="item1"><%=pool.getStringValue("item1")%></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="next" /></a>
   </td>
 </tr>
 <% } %>

@@ -11,6 +11,7 @@
   </head>
   <mm:import externid="cache" jspvar="cacheName" vartype="String" required="true" />
   <mm:import externid="deleteentry" jspvar="deleteentry" vartype="integer">-1</mm:import>
+  <mm:import externid="deletekey"   jspvar="deletekey" vartype="string" />
   
 <body class="basic" >
 
@@ -38,32 +39,41 @@
   <th class="header"><input type="submit" value="search" /></th>
 </tr>
 <%
+
+synchronized(cache) {
    Iterator i = cache.entrySet().iterator();
    int j = 0;
    Pattern keyPattern = Pattern.compile(key);
    Pattern valuePattern = Pattern.compile(value);
-   int deleted = 0;
+   int deleted = 0;  
    while(i.hasNext() && j < 500 + deleted) {
      Map.Entry entry = (Map.Entry) i.next();
      String k = entry.getKey().toString();
      String v = "" + entry.getValue();
      if(!keyPattern.matcher(k).matches()) continue;
      if(!valuePattern.matcher(v).matches()) continue;
-     if(deleteentry.intValue() == j) {
-       i.remove();
-       j++;
-       continue;
-}
+     try {
+       if(deleteentry.intValue() == j && deletekey.equals(k)) {
+         i.remove();
+         j++;
+         continue;
+       }
+     } catch (Exception e) { 
+     %>
+     <tr><td class="data" colsan="5">ERROR<%=e.toString() %></td></tr>
+<%
+     }
 %>
 <tr>
   <td class="data"><%=j%></td>
   <td class="data"><%=cache.getCount(k)%></td>
   <td class="data"><%=k%></td>
   <td class="data"><%=v%></td>
-  <td class="data"><a href="<mm:url referids="cache"><mm:param name="deleteentry" value="<%="" + j%>" /></mm:url>">remove</a></td>
+  <td class="data"><a href="<mm:url referids="cache"><mm:param name="deletekey" value="<%=k%>" /><mm:param name="deleteentry" value="<%="" + j%>" /></mm:url>">remove</a></td>
   <% j++; %>
 </tr>
-<% } %>
+<% } }%>
+
 <tr><td>&nbsp;</td></tr>
 <% } %>
 <tr class="footer">
