@@ -42,7 +42,7 @@ public interface Cloud {
      * @throws NodeNotFoundException  if the specified node could not be found
      */
     public Node getNode(String number);
-	
+
 
     /**
      * Returns the node with the specified alias from this cloud. The returned
@@ -96,7 +96,7 @@ public interface Cloud {
      *          managers available in this cloud
      */
     public RelationManagerList getRelationManagers();
-	
+
     /**
      * Returns the context to which this cloud belongs.
      *
@@ -149,8 +149,8 @@ public interface Cloud {
      * @return      the requested transaction
      */
     public Transaction getTransaction(String name);
-   	
-     
+
+
     /**
      * Returns the name of this cloud.
      *
@@ -164,14 +164,24 @@ public interface Cloud {
      * @return the description of this cloud
      */
     public String getDescription();
-	
+
+    /**
+     * Returns a list of virtual nodes that are composed by fields of other
+     * nodes. Searches by default for all valid relations in path (searchDir="both").
+     *
+     * @see getList(String,String,String,String,String,String,String,boolean)
+     */
+    public NodeList getList(String startNodes, String nodePath, String fields,
+            String constraints, String orderby, String directions,
+            boolean distinct);
+
     /**
      * Returns a list of virtual nodes that are composed by fields of other
      * nodes.
      * Starting at one or more specified nodes traversals are made according to
      * a specified path. One traversal makes up one virtual node. All possible
      * traversals that can be made starting at one or more nodes of the same
-     * type and following a specified path are stored in the returned list. 
+     * type and following a specified path are stored in the returned list.
      *
      * Suppose we have defined the following:
      *
@@ -191,7 +201,7 @@ public interface Cloud {
      * the homepagerel relation):
      * <pre>
      * getList("100", "recordcompany,artist,url",
-     *         "artist.name,description,url", null, null, null, true);
+     *         "artist.name,description,url", null, null, null, null, true);
      * </pre>
      * This call returns a list of virtual nodes with the fields artist.name,
      * description and url for every valid traversal.
@@ -201,14 +211,14 @@ public interface Cloud {
      * <pre>
      * getList("100", "recordcompany,artist,url",
      *         "artist.name,description,homepagerel,url", null, null, null,
-     *         true);
+     *         null, true);
      * </pre>
      *
      * <p>
      * If we want to list all url's except the the homepage urls we do:
      * <pre>
      * getList("100", "recordcompany,artist,url",
-     *         "artist.name,description,related,url", null, null, null, true);
+     *         "artist.name,description,related,url", null, null, null, null, true);
      * </pre>
      *
      * <p>
@@ -217,12 +227,12 @@ public interface Cloud {
      * first company by also putting number 200 in the first parameter:
      * <pre>
      * getList("100,200", "recordcompany,artist,url",
-     *         "artist.name,description,related,url", null, null, null, true);
+     *         "artist.name,description,related,url", null, null, null, null, true);
      * </pre>
      *
      * For more information about the <code>constraints</code> parameter consult
      * {@link NodeManager#getList(String constraints, String orderby, String
-     * directions)}. 
+     * directions)}.
      *
      * @param startNodes    A comma separated list of node numbers that should
      *                      be used as a
@@ -268,6 +278,22 @@ public interface Cloud {
      *                      don't have a corresponding direction value are
      *                      sorted according to the last specified direction
      *                      value.
+     * @param searchDir     Determines how directionality affects the search.
+     *                      This is a string with the following possible values:<br>
+     *                      <code>"both"</code>, which is the default, searches for all
+     *                      valid relations through a path, checking full directionality
+     *                      of relations where appropriate.
+     *                      <code>"destination"</code> searches for only those relations
+     *                      in a path where valid relations exist from source to destination,
+     *                      in the order of the nodemanagers given in the nodePath.
+     *                      <code>"source"</code> searches for only those relations
+     *                      in a path where valid relations exist from destination to source,
+     *                      in the order of the nodemanagers given in the nodePath.
+     *                      <code>"all"</code> searches all existing relations, and does
+     *                      not check on directionality.
+     *                      A value of <code>null</code> or any other values than those
+     *                      listed above are ignored. In that case, search is
+     *                      treated as if the default (<code>"both"</code>) was specified.
      * @param distinct      <code>true</code> if nodes who allready exist in
      *                      the list should not be added to the list.
      *                      <code>false</code> if all nodes should be added to
@@ -277,6 +303,5 @@ public interface Cloud {
      */
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
-            boolean distinct);
-
+            String searchDir, boolean distinct);
 }
