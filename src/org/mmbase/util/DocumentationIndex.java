@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
  * Creates the index page for the documentation.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DocumentationIndex.java,v 1.2 2004-11-01 13:39:23 pierre Exp $
+ * @version $Id: DocumentationIndex.java,v 1.3 2004-11-01 13:50:50 pierre Exp $
  */
 public class DocumentationIndex {
 
@@ -92,7 +92,7 @@ public class DocumentationIndex {
 
     /**
      * Instantiates a class for a specific documentation root.
-     * @param servletContext tehs ervletContext form teh calling servlet/jsp, or <code>null</code>
+     * @param servletContext the servletContext from the calling servlet/jsp, or <code>null</code>
      *        if documentationRoot refers a path in a file system.
      * @param documentationRoot the path to the documentation directory. This can be a File object, or,
      *      if the class was instantiated with a ServletContexct, a path to a resource in that context.
@@ -324,7 +324,11 @@ public class DocumentationIndex {
                              if (parentPath != null) {
                                  path = parentPath + "/" + path;
                              }
-                             out.write("<li><p>"+name+" (<a href=\""+path+"\" target=\"_top\">HTML</a>");
+                             if (path.endsWith(".txt")) {
+                                 out.write("<li><p>"+name+" (<a href=\""+path+"\" target=\"_top\">Text</a>");
+                             } else {
+                                 out.write("<li><p>"+name+" (<a href=\""+path+"\" target=\"_top\">HTML</a>");
+                             }
                              if (path.endsWith(".html")) {
                                  String fullPath = resource.toString();
                                  Object pdfResource = fullPath.substring(0,fullPath.length()-5)+".pdf";
