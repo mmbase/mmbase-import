@@ -30,6 +30,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="debug" value="off" />
   <property name="deprecation" value="on" />
 
+  <property name="applications.dir"   location=".." />
   <property name="project.source.dir" location="." />
   <property name="project.templates.dir" value="${project.source.dir}/templates" />
   <property name="project.examples.dir"  value="${project.source.dir}/examples" />
@@ -38,6 +39,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
+
+  <property name="project.extra.path" value="" />
 
   <property name="project.package" value="org/mmbase" />
   <property name="project.main.class"        value="${project.package}/Version" />
@@ -55,7 +58,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
-  <property name="mmbase.jar"      value="${release.lib.dir}/lib/mmbase.jar"/>
+  <property name="mmbase.jar"      value="${release.lib.dir}/mmbase.jar"/>
   <property name="mmbase.config"   value="${web.dir}/config"/>
   <property name="documentation.home" value="../../documentation" />
   <property name="build.documentation" value="true" />
@@ -224,8 +227,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="compile" description="Compile the source directory"
-          depends="init" if="src.available">
+  <target name="compile" description="Compile the source directory" depends="init" if="src.available">
 
     <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
@@ -255,6 +257,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
         <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
       </classpath>
       <include name="**/*.java"/>
     </javac>
