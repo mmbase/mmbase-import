@@ -450,6 +450,18 @@ builddate=${builddate}
         <include name="**/*.xml"/>
       </fileset>
     </copy>
+    <mkdir dir="${build.dir}/classes/org/mmbase/config"/>
+    <copy todir="${build.dir}/classes/org/mmbase/config"  preservelastmodified="true">
+      <fileset dir="${source-config.dir}">
+        <include name="caches.xml"/>
+        <include name="magic.xml"/>
+        <include name="applications/Basics.xml"/>
+        <include name="builders/core/*.xml"/>
+        <include name="functions/**/*.xml"/>
+        <include name="storage/**/*.xml"/>
+        <include name="utils/**/*.xml"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="compile" description="Compile the source directory" depends="init.compile">
