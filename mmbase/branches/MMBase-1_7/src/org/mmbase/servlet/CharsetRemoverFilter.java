@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.1.2.4 2005-03-09 16:53:43 michiel Exp $
+ * @version $Id: CharsetRemoverFilter.java,v 1.1.2.5 2005-03-10 11:35:11 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -80,12 +80,18 @@ public class CharsetRemoverFilter implements Filter {
         throws java.io.IOException, ServletException {
 
         HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
-                private String contentType;
+                private String contentType = null;
                 private PrintWriter writer = null;
 
                 
                 public void setContentType(String ct) {
-                    contentType = ct;
+                    if (contentType == null) {                        
+                        contentType = ct;
+                    }     
+                    if (log.isDebugEnabled()) {
+                        log.trace("Setting contentType to " + ct + " " + Logging.stackTrace(new Exception()));
+                    }
+                    getResponse().setContentType(ct);                    
                 }
                 /**
                  * This is the essence of this whole thing. The idea
@@ -98,9 +104,7 @@ public class CharsetRemoverFilter implements Filter {
                     if (writer == null) {                        
                         String charSet = contentType == null ? null : (String) contentTypes.get(contentType);
                         if (charSet != null) {
-                            if (contentType != null) {                                
-                                super.setContentType(contentType);                            
-                            }
+                            if (charSet.equals("")) charSet = "ISO-8859-1"; // default for HTTP, IIRC.                             
                             if (log.isDebugEnabled()) {
                                 log.debug("Wrapping outputstream to avoid charset " + charSet);
                             }
@@ -117,10 +121,6 @@ public class CharsetRemoverFilter implements Filter {
                                 writer = super.getWriter();
                             }
                         } else {
-                            if (contentType != null) {
-                                super.setContentType(contentType);
-                            }
-
                             if (log.isDebugEnabled()) {
                                 log.debug(" " + contentType + " is not contained by " + contentTypes);
                             }
