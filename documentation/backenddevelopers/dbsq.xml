@@ -4,8 +4,8 @@
 <article>
 	<articleinfo>
 		<title>SearchQuery introduction</title>
-		<date>oct 23rd 2002</date>
-		<edition>$Id: dbsq.xml,v 1.1.2.1 2002-12-04 16:08:40 pierre Exp $</edition>
+		<date>12 October 2002</date>
+		<edition>$Id: dbsq.xml,v 1.1.2.2 2003-02-14 14:51:06 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Rob</firstname>
@@ -22,7 +22,7 @@
 	</articleinfo>
 
 	<section>
-		<title>background</title>
+		<title>Background</title>
 
 		<para>The database search queries project addresses the following needs:</para>
 
@@ -62,7 +62,7 @@
 	</section>
 
 	<section>
-		<title>resources</title>
+		<title>Resources</title>
 
 		<itemizedlist>
 			<listitem>
@@ -84,7 +84,7 @@
 	</section>
 
 	<section>
-		<title>package descriptions</title>
+		<title>Package Descriptions</title>
 
 		<para></para>
 
