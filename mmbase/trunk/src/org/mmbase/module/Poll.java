@@ -31,6 +31,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Arjan Houtman
  * @author Rico Jansen
+ * @obsolete
  */
 public class Poll extends ProcessorModule  {
 
