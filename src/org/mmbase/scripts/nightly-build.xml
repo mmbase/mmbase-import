@@ -4,7 +4,7 @@
 
    @author Eduard Witteveen
    @author Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.5 2002-08-05 22:45:32 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.6 2002-08-06 07:04:53 michiel Exp $
    
 -->
 <project name="project naam" default="full" basedir=".">
@@ -97,25 +97,33 @@
   <!-- store / zip the current sources--> 
   <target name="storesource" depends="mirror">
     <mkdir dir="${destination.dir}"/>
-     <echo file="${destination.dir}/README">
+     <echo file="${destination.dir}/README.txt">
 This is the nightly build ${version}.
 It contains the following:
-README         This file
+README.txt     This file
 mmbase-src.zip The source from which this build was made
 mmbase-lib.zip The libraries against which the source were compiled
-mmbase.zip     Contains among others an mmbase.jar
-mmbase.war     A web-application archive, configured for an hsql database
+mmbase.jar     Contains among others an mmbase.jar
+mmbase.war     A web-application archive, configured for an hsql database, and complete with documentation, editors and admin-pages
 dtd            The dtd's unpacked from the source directory
 api            API-documentation
+mmdocs         Other documentation (also in mmbase.war)
+nightly-build.xml  Used the generate all this with ant. You can download only this and redo everything locally (you need ant + jdk)
 </echo>
 
     <zip zipfile="${sourcepackage.path}"
       basedir="${buildlocation.dir}"
-      />
+     >
+      <patternset>
+        <exclude name="build/**"/> <!-- handy if you (temporary) remove the clean target -->
+      </patternset>
+    </zip>
 		
     <copy todir="${destination.dir}/dtd">
       <fileset dir="${base.cvs.config.dir}/config/default/dtd"/>
     </copy>
+
+    <copy todir="${destination.dir}" file="${base.cvs.src.dir}/mmbase/scripts/nightly-build.xml" />
     
   </target>       
   
@@ -183,12 +191,17 @@ api            API-documentation
 		<!-- the war... -->
     <copy file="${buildlocation.dir}/build/mmbase/mmbase.war" tofile="${warpackage.file}"/>
 
+    <!-- mmdocs -->
+    <copy todir="${destination.dir}/mmdocs">
+			<fileset dir="${buildlocation.dir}/build/mmbase/mmbase-webapp/mmdocs" />
+    </copy>
 	</target>       
   
   
-  <!-- remove all our crap -->
-  <target name="clean">
-		<delete dir="${buildlocation.dir}"/>
+  <!-- clean for a new compile -->
+  <target name="clean" depends="mirror">
+    <ant antfile="${buildlocation.buildfile.path}" dir="${buildlocation.buildscript.dir}" target="clean.build" />	
+		<!-- delete dir="${buildlocation.dir}"/--> <!-- I don't think it is necessary to be this extreme.. -->
   </target>
   
   <!-- ================================================================================
