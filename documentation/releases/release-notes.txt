@@ -151,9 +151,6 @@ Generic Bug Fixes:
   xerces/xalan/xml-apis when running under java 1.4 you can remove
   those files 
 
-- Logging: The mmbase logger now uses a wrapper so that at startup it
-  first caches the messages until the logger is initialized
-
 - The HandleServlet now remove additional information left in jpeg
   file by PhotoShop 7 This extra information crashes the image Thread
   of Internet Exploder. While this was not a bug it is very convenient 
