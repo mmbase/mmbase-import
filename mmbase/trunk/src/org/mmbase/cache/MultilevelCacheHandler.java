@@ -44,7 +44,6 @@ public class MultilevelCacheHandler extends LRUHashtable {
 	}
 
 	public Object put(Object hash,Object o,Vector types,StringTagger tagger) {
-		System.out.println("P="+tagger.toString());
 		MultilevelCacheEntry n=new MultilevelCacheEntry(this,hash,o,tagger);
 		addListeners(types,n);
 		return(put(hash,n));
