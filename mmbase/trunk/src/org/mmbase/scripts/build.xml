@@ -669,7 +669,7 @@ Distribution: ${distro}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init">
+          depends="init,lib">
     <mkdir dir="${build.dir}/mmbase-src/docs"/>
     <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
@@ -1256,7 +1256,7 @@ Version: MMBase build ${version}
     <mkdir dir="${mmdocs.dir}/html" />
     <style 
       basedir="${source-documentation.dir}" 
-      destdir="${mmdocs.dir}/html"
+      destdir="${mmdocs.dir}/html"      
       style="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl">
       <include name="**/*.xml" />
     </style>
