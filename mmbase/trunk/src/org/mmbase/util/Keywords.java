@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
+
 /**
  * Class Keywords is a util class to extract keywords from a string
  * See method getIgnoreVector for config options
@@ -13,6 +14,7 @@ public class Keywords
 {
 	private static final int MINKEYWORDLENGTH = 3;
 	private static Vector ignoreVector;
+
 
 	/** getIgnoreVector retrieves the list of words from keywordstoignore.txt in the
 	 * MMBase config dir and stores them in the Vector ignoreVector. Each word should be 
@@ -27,12 +29,15 @@ public class Keywords
 	{
 		ignoreVector = new Vector();
 		
-		String fileName = System.getProperty("mmbase.config")+"/keywordstoignore.txt";		char sep = System.getProperty("file.separator").charAt(0);
+
+		String fileName = System.getProperty("mmbase.config")+"/keywordstoignore.txt";
+		char sep = System.getProperty("file.separator").charAt(0);
 		fileName = fileName.replace('/', sep);
 		fileName = fileName.replace('\\', sep);
 		try {
 			BufferedReader f = new BufferedReader( new FileReader(fileName) );
 			String line;
+
 			do {
 				line = f.readLine();
 				if (line == null) break;
@@ -47,7 +52,7 @@ public class Keywords
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * createKeywords creates keywords from the passed string s
 	 * It ignores words shorter than MINKEYWORDLENGTH and words
@@ -61,6 +66,7 @@ public class Keywords
 		if (ignoreVector == null) getIgnoreVector();
 		StringTokenizer tok = new StringTokenizer( s, " \t\n\r,.;~`!#&()+={}[]:;\"'<>?/\\|" );
 		String token;
+
 		while (tok.hasMoreTokens()) {
 			token = tok.nextToken().toLowerCase();
 			if ((token.length()>=MINKEYWORDLENGTH) && !ignoreVector.contains(token)
@@ -70,3 +76,4 @@ public class Keywords
 		return results;
 	}// createKeywords
 }
+
