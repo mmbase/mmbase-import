@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.19 2001-03-08 18:46:52 michiel Exp $
+ * @version $Id: servscan.java,v 1.20 2001-03-29 22:37:57 daniel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -128,6 +128,7 @@ public class servscan extends JamesServlet {
 			sp.setReq(req);
 			sp.setRes(res);
 	
+
 			String sname=getCookie(sp.req,res);
 			sp.sname=sname;
 			sessionInfo session=sessions.getSession(sp,sname);
@@ -147,6 +148,9 @@ public class servscan extends JamesServlet {
 				sp.rstatus=0;
 				sp.body=parser.getfile(sp.req_line);
 				log.trace("body :" + sp.body);
+				if (!doCrcCheck(sp,res)) {
+					throw new PageCRCException("invalid crc");
+				}
 				doSecure(sp,res); // name=doSecure(sp,res); but name not used here
 				long stime=handleTime(sp);
 
@@ -208,7 +212,9 @@ public class servscan extends JamesServlet {
 			out.flush();
 			out.close();
 		} catch(NotLoggedInException e) {
-			log.debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: " + e );
+			log.debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: ");
+		} catch(PageCRCException e) {
+			log.warn( "service(): page("+getRequestURL(req)+"): Invalid CRC");
 		} catch(Exception a) {
 			log.debug( "service(): exception on page: "+getRequestURL(req));
 			a.printStackTrace();
@@ -424,6 +430,35 @@ public class servscan extends JamesServlet {
 		return(-1);
 	}
 
+
+	private boolean doCrcCheck(scanpage sp,HttpServletResponse res) {
+		if (sp.body!=null && sp.body.indexOf("<CRC>")!=-1) {
+			Vector p=sp.getParamsVector();
+			String value=null;
+			String checker=null;
+			for (Enumeration t=p.elements();t.hasMoreElements();) {
+				String part=(String)t.nextElement();
+				if (!((String)p.lastElement()).equals(part)) {
+					if (value==null) {
+						value=part;
+					} else {
+						value+="+"+part;
+					}
+				} else {
+					checker=part;
+				}
+			}
+			value=sp.req.getRequestURI()+"?"+value;
+			int crc=scanparser.calccrc32(value);
+			String thiscrc="CRC"+crc;
+			System.out.println("CRC = "+crc);
+			if (checker!=null && checker.equals(thiscrc)) {
+				return(true);
+			}	
+			return(false);
+		}
+		return(true);
+	}
 
 	private String doSecure(scanpage sp,HttpServletResponse res) throws Exception {
 		String name=null;
