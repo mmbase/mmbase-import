@@ -138,17 +138,13 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ChainedCharTransformer t = new ChainedCharTransformer().add(new SpaceReducer()).add(new UpperCaser());
         System.out.println("Starting transform");
-        Writer w = new OutputStreamWriter(System.out);
-        t.transform(new InputStreamReader(System.in), w);
-        try {
-            w.flush();
-        } catch (IOException i) {}
-        //StringWriter w = new StringWriter();
-        //t.transform(new StringReader("hello      world"), w);
-        //System.out.println(w.toString());
+        
+        t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out)).flush();
+        //System.out.println(t.transform(new StringReader("hello      world"), new StringWriter()));
+
         System.out.println("Finished transform");
  
     }
