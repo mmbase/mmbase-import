@@ -1,9 +1,11 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
 -->
-<status>inactive</status>
+<status>active</status>
 
 <!-- <classfile>
 	This is a optional tag, it names the classfile that allows you to add
@@ -16,9 +18,14 @@
 
 		long name : nl.vpro.mmbase.module.builders.Urls will start that class
 -->
-<classfile>Dummy</classfile>
+<classfile>Users</classfile>
 
-<searchage>0</searchage>
+<searchage>7</searchage>
+
+
+<properties>
+    <property name="useproperties">false</property>
+</properties>
 
 <!-- <names>
 	names defines the different names used in user visible parts, singular for
@@ -26,24 +33,24 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language  as defined by RFC xxx -->
-	<singular xml:lang="us">User</singular>
-	<singular xml:lang="en">User</singular>
+	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">Gebruiker</singular>
-	<!-- multiple per language  as defined by RFC xxx -->
-	<plural xml:lang="us">Users</plural>
-	<plural xml:lang="en">Users</plural>
+	<singular xml:lang="en">User</singular>
+	<singular xml:lang="us">User</singular>
+	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="nl">Gebruikers</plural>
+	<plural xml:lang="en">Users</plural>
+	<plural xml:lang="us">Users</plural>
 </names>
 
 <!-- <descriptions>
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
-	<description xml:lang="us">undefined users of our website(s)</description>
-	<description xml:lang="en">undefined users of our website(s)</description>
+<!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="nl">onbekende gebruikers van de website(s)</description>
+	<description xml:lang="en">undefined users of our website(s)</description>
+	<description xml:lang="us">undefined users of our website(s)</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -56,10 +63,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="nl">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -77,7 +84,7 @@
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true" key="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -85,10 +92,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="nl">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="nl">Eigenaar</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Owner</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -106,18 +113,20 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="true">VARCHAR</type>
+			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<!-- POS 3 : <field> 'description'  -->
+
+	<!-- POS 3 : <field> 'firstname'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Remarks</name>
-			<name xml:lang="en">Remarks</name>
-			<name xml:lang="us">Opmerkingen</name>
-			<type>field</type>
+			<guiname xml:lang="nl">Voornaam</guiname>
+			<guiname xml:lang="fr">firstname</guiname>
+			<guiname xml:lang="en">FirstName</guiname>
+			<guiname xml:lang="us">FirstName</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -133,9 +142,157 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
+			<name>firstname</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 4 : <field> 'lastname'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Achternaam</guiname>
+			<guiname xml:lang="fr">nomDeFamille</guiname>
+			<guiname xml:lang="en">LastName</guiname>
+			<guiname xml:lang="us">LastName</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>2</input>
+				<!-- position in list area of the editor -->
+				<list>2</list>
+				<!-- position in search area of the editor -->
+				<search>2</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>lastname</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 5 : <field> 'email'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Email</guiname>
+			<guiname xml:lang="fr">Email</guiname>
+			<guiname xml:lang="en">Email</guiname>
+			<guiname xml:lang="us">Email</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>3</input>
+				<!-- position in list area of the editor -->
+				<list>3</list>
+				<!-- position in search area of the editor -->
+				<search>3</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>email</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 6 : <field> 'account'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Account</guiname>
+			<guiname xml:lang="fr">Compte</guiname>
+			<guiname xml:lang="en">Account</guiname>
+			<guiname xml:lang="us">Account</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>4</input>
+				<!-- position in list area of the editor -->
+				<list>4</list>
+				<!-- position in search area of the editor -->
+				<search>4</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>account</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
+		</db>
+	</field>
+
+
+	<!-- POS 6 : <field> 'password'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Wachtwoord</guiname>
+			<guiname xml:lang="en">Password</guiname>
+			<guiname xml:lang="us">Password</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>4</input>
+				<!-- position in list area of the editor -->
+				<list>4</list>
+				<!-- position in search area of the editor -->
+				<search>4</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>password</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 3 : <field> 'description'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="en">Remarks</guiname>
+			<guiname xml:lang="us">Opmerkingen</guiname>
+			<guitype>field</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>10</input>
+				<!-- position in list area of the editor -->
+				<list>-1</list>
+				<!-- position in search area of the editor -->
+				<search>-1</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
 			<name>description</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="1024" notnull="true">VARCHAR</type>
+			<type state="persistent" size="1024" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
