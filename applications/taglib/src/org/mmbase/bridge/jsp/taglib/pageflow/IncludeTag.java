@@ -34,12 +34,20 @@ public class IncludeTag extends UrlTag {
             // if not absolute, make it absolute:
             // (how does one check something like that?)
             String urlString;
-            if (gotUrl.indexOf(':') == -1) {
+
+            // Do some things to make the URL absolute.
+
+            if (gotUrl.indexOf('/') == 0) { // absolute on server
+                javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+                urlString = 
+                    request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                    +  request.getContextPath() + gotUrl;                
+            } else if (gotUrl.indexOf(':') == -1) { // relative
                 javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                 urlString = 
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                     + new java.io.File(request.getRequestURI()).getParent().toString() + "/" + gotUrl;
-            } else {
+            } else { // really absolute
                 urlString = gotUrl;
             }                
                 
