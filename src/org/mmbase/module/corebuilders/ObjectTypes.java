@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.9 2002-05-13 09:40:17 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.10 2002-05-28 09:20:19 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -83,7 +83,7 @@ public class ObjectTypes extends TypeDef {
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
-    public Object getValue(MMObjectNode node,String field) {       
+    public Object getValue(MMObjectNode node,String field) {
         log.debug("node:" + node + " field: " + field);
         
         // return the Document from the config file..
@@ -127,12 +127,15 @@ public class ObjectTypes extends TypeDef {
     public int insert(String owner, MMObjectNode node) {
         log.info("[insert of builder-node with name '" + node.getStringValue("name") + "' ]");
         
-        // look if we can store to file...
-        if(!creationEnabled) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");        
+        // look if we can store to file, if it aint there yet...
+        java.io.File file = new java.io.File(getBuilderFilePath(node));
+        if(!file.exists()) {
+            if(!creationEnabled) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
+            // first store our config....
+            storeBuilderFile(node);
+        }
         
-        // first store our config....
-        storeBuilderFile(node);
-           
+        // TODO: more generic code?                   
         // try if it still not here...HACK HACK
         if(getIntValue(node.getStringValue("name")) > 0) {
             // there was already a node for the builder with this name!
@@ -147,7 +150,6 @@ public class ObjectTypes extends TypeDef {
         loadBuilder(node);
         return result;
     }
-
 
     /**
      * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
