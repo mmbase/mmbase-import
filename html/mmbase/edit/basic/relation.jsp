@@ -40,7 +40,7 @@
   <%-- skip first field --%>
   <td>&nbsp;</td>
   <td class="data">
-    #<mm:field name="number" />
+    #<mm:field id="node_number"  name="number" />
   </td>
   <td class="data">
     <mm:nodeinfo type="gui" />  (<mm:field name="owner" />)
@@ -58,25 +58,21 @@
     </mm:maydelete>
     <mm:maywrite>
       <%-- edit the relation --%>
-      <a href='<mm:url page="change_node.jsp?push=url">
-        <mm:param name="node_number"><mm:field name="number" /></mm:param>
-        </mm:url>' >
+      <a href="<mm:url referids="node_number,node_number@push" page="change_node.jsp" />" >
         <span class="select"></span><span class="alt">-&gt;</span>
       </a>
     </mm:maywrite>
   </td>
   <mm:relatednode>
     <td class="data">
-      #<mm:field name="number" />
+      #<mm:field id="relatednumber" name="number" />
     </td>
     <td class="data">
       <mm:nodeinfo type="gui" /> (<mm:field name="owner" />)
     </td>
     <td class="navigate">
        <%-- edit the related node --%>
-      <a href='<mm:url page="change_node.jsp?push=url">
-      <mm:param name="node_number"><mm:field name="number" /></mm:param>
-      </mm:url>'>
+      <a href="<mm:url referids="relatednumber@node_number,relatednumber@push" page="change_node.jsp" />">
       <span class="select"></span><span class="alt">-&gt;</span>
     </a>
   </td>

@@ -13,6 +13,7 @@
    <title><%=m.getString("new_relation.new")%></title>
    </head>
    <body class="basic" onLoad="document.search.elements[0].focus();">
+<p><%= toHtml(urlStack, request) %></p>
    <mm:import externid="to_page"><mm:url referids="role_name,node_type,node,direction">
                                  <mm:param name="create_relation">yes</mm:param>  
                                  </mm:url></mm:import>
@@ -31,7 +32,7 @@
     </mm:compare>     
      
      <tr><td>
-		<mm:include  referids="to_page" page="search_node_with_type.jsp" />
+		<mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
         <mm:maycreate type="$node_type">
                  <table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
                  <tr>
@@ -87,6 +88,7 @@
         <mm:write referid="style" />
         </head>
         <body class="basic" onLoad="document.new.elements[4].focus();">
+          <p><%= toHtml(urlStack, request) %></p>
         <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name,direction" />' >
         <input type="hidden" name="create_relation" value="yes" />
         <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">

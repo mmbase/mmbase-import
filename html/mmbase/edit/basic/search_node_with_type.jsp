@@ -16,6 +16,8 @@
 <mm:import externid="search"     from="parameters" />
 <mm:import externid="maylink"    from="parameters" />
 
+<mm:import externid="nopush"    from="parameters" />
+
 <mm:import externid="orderby"      from="parameters">number</mm:import>
 <mm:import externid="directions"  from="parameters">DOWN</mm:import>
 
@@ -195,7 +197,7 @@
      </td>    
      <td class="navigate">  
     <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink)) { %>
-            <a href="<mm:url page="$to_page" referids="node_number"><mm:param name="push" value="url" /></mm:url>">
+            <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
                   <span class="change"></span><span class="alt">[change]</span>
             </a>
      <% } else { %>&nbsp;<% } %>

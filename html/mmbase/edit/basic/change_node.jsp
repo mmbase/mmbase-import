@@ -4,11 +4,22 @@
 <title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
+<p><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
 <mm:import externid="node_number" required="true" from="parameters"/>
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
 
-<mm:node id="this_node" referid="node_number" notfound="skipbody">
+<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="node">
+
+<% if (urlStack.size() == 0) {
+    push(urlStack, "home", "search_node.jsp?node_type=" + node.getNodeManager().getName());
+   }
+   if (urlStack.size() == 1) {
+       push(urlStack, "" + node.getNumber(), request);
+   }
+ %>
+
+
 <mm:import id="found" />
 
 <mm:maywrite>
@@ -22,7 +33,7 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp?pop=url" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
   <mm:nodeinfo type="gui" />:
@@ -40,7 +51,7 @@
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
-   <input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" />
+   <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
    <input class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
 </mm:maydelete>
 </td>
