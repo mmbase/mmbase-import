@@ -16,6 +16,7 @@
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
 	<CENTER><A HREF="/mmadmin/builders.shtml"><B>Builders</B></A>
 	</TD>
+	<!--
 	<IF $PARAM1==3>
 	<TD BGCOLOR="#DDDDFF">
 	<ELSE>
@@ -24,6 +25,7 @@
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
 	<CENTER><A HREF="/mmadmin/wizards.shtml"><B>Wizards</B></A>
 	</TD>
+	-->
 	<IF $PARAM1==4>
 	<TD BGCOLOR="#DDDDFF">
 	<ELSE>
