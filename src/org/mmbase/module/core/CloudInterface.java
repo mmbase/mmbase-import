@@ -36,7 +36,7 @@ public interface CloudInterface {
 	 * gets all Builders
 	 * @return a enumeration of all Builders
 	 */
-	public Enumeration getBuilders();
+	public Enumeration getNodeTypes();
 	
 	/**
 	 * gets a builder
