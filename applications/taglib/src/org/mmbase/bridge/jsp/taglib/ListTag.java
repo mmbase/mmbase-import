@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.32 2003-08-27 21:33:34 michiel Exp $ 
+ * @version $Id: ListTag.java,v 1.33 2003-09-08 12:05:13 michiel Exp $ 
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -126,7 +126,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         NodeListContainer c = getListContainer();
 
 
-        if (c == null) {
+        if (c == null || path != Attribute.NULL) {
             // old-style, container-less working
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory if referid not speficied");
