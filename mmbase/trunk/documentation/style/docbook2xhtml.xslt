@@ -37,6 +37,8 @@
   <xsl:param name="use.id.as.filename" select="'$chunk.section.depth'"/>
   <xsl:param name="chunk.quietly" select="$chunk.section.depth"/>
 
+  <xsl:param name="glossentry.show.acronym">yes</xsl:param>
+
   <!-- set to 0 if you want to know what's happening -->
 
   <!-- use a custom css -->
