@@ -25,10 +25,10 @@ public class MultiPoolHandler {
     private static Logger log = Logging.getLoggerInstance(MultiPoolHandler.class.getName());
     private int maxConnections;
     private int maxQuerys;
-    Hashtable Pools=new Hashtable();
-    DatabaseSupport databasesupport;
+    private Map pools = new Hashtable();
+    private DatabaseSupport databasesupport;
 
-    public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections) {
+    public MultiPoolHandler(DatabaseSupport databasesupport, int maxConnections) {
 	this.maxConnections=maxConnections;
 	this.maxQuerys=500;
 	this.databasesupport=databasesupport;
@@ -41,33 +41,35 @@ public class MultiPoolHandler {
     }
 
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-	MultiPool pool = (MultiPool) Pools.get(url+","+name+","+password);
+	MultiPool pool = (MultiPool) pools.get(url+","+name+","+password);
 	if (pool!=null) {
 	    return pool.getFree();
 	} else {
-	    pool=new MultiPool(databasesupport,url,name,password,maxConnections,maxQuerys);
-	    Pools.put(url+","+name+","+password,pool);
+	    pool = new MultiPool(databasesupport, url, name, password, maxConnections, maxQuerys);
+	    pools.put(url+","+name+","+password, pool);
 	    return pool.getFree();
 	}
     }
 
     public void checkTime() {
-	for (Enumeration e=Pools.elements();e.hasMoreElements();) {
-	    MultiPool pool=(MultiPool)e.nextElement();
+	for (Iterator i = pools.values().iterator(); i.hasNext();) {
+	    MultiPool pool = (MultiPool) i.next();
 	    pool.checkTime();
 	}
     }
 
-    public Enumeration elements() {
-	return Pools.elements();
+    public Set keySet() {
+	return pools.keySet();
     }
 
+    /*
     public Enumeration keys() {
-	return Pools.keys();
+	return pools.keys();
     }
+    */
 
     public MultiPool get(String id) {
-        return (MultiPool)Pools.get(id);
+        return (MultiPool) pools.get(id);
     }
 
     public void setMaxConnections(int max) {
@@ -79,7 +81,7 @@ public class MultiPoolHandler {
     }
 
     public void setMaxQuerys(int max) {
-	maxQuerys=max;
+	maxQuerys = max;
     }
 
     public int getMaxQuerys() {
