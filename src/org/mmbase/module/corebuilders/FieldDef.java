@@ -8,9 +8,12 @@ MMBase partners.
 
 */
 /*
-	$Id: FieldDef.java,v 1.2 2000-02-25 12:52:15 wwwtech Exp $
+	$Id: FieldDef.java,v 1.3 2000-03-07 09:20:41 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/02/25 12:52:15  wwwtech
+	Rico: removed the insert method.
+	
 */
 package org.mmbase.module.corebuilders;
 
@@ -26,7 +29,7 @@ import org.mmbase.module.database.*;
  *
  *
  * @author Daniel Ockeloen
- * @version $Id: FieldDef.java,v 1.2 2000-02-25 12:52:15 wwwtech Exp $
+ * @version $Id: FieldDef.java,v 1.3 2000-03-07 09:20:41 wwwtech Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 
@@ -46,6 +49,63 @@ public class FieldDef extends MMObjectBuilder {
 		return(null);
 	}
 
+ 	/**
+ 	* insert a new object, normally not used (only subtables are used)
+ 	*/
+ 	public int insert(String owner,MMObjectNode node) {
+ 		int dbtable=node.getIntValue("dbtable");
+ 		String dbname=node.getStringValue("dbname");
+ 		String dbtype=node.getStringValue("dbtype");
+ 		String guiname=node.getStringValue("guiname");
+ 		String guitype=node.getStringValue("guitype");
+ 		int guipos=node.getIntValue("guipos");
+ 		int guilist=node.getIntValue("guilist");
+ 		int guisearch=node.getIntValue("guisearch");
+ 		int dbstate=node.getIntValue("dbstate");
+ 
+ 		int number=getDBKey();
+ 		try {
+ 			MultiConnection con=mmb.getConnection();
+ 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_fielddef values(?,?,?,?,?,?,?,?,?,?,?,?)");
+ 			stmt.setInt(1,number);
+ 			stmt.setInt(2,oType);
+ 			stmt.setString(3,owner);
+ 			stmt.setInt(4,dbtable);
+ 			stmt.setString(5,dbname);
+ 			stmt.setString(6,dbtype);
+ 			stmt.setString(7,guiname);
+ 			stmt.setString(8,guitype);
+ 			stmt.setInt(9,guipos);
+ 			stmt.setInt(10,guilist);
+ 			stmt.setInt(11,guisearch);
+ 			stmt.setInt(12,dbstate);
+ 			stmt.executeUpdate();
+ 			stmt.close();
+ 			con.close();
+ 		} catch (SQLException e) {
+ 			e.printStackTrace();
+ 			System.out.println("Error on : "+number+" "+owner+" fake");
+ 			return(-1);
+ 		}
+ 			
+ 		// THIS MUST BE CHANGED TO SUPPORT MULTI DATABASE
+		// LEAVE THIS INSERT IN FOR NOW
+ 		try {
+ 			MultiConnection con=mmb.getConnection();
+ 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
+ 			stmt.setInt(1,number);
+ 			stmt.setInt(2,oType);
+ 			stmt.setString(3,owner);
+ 			stmt.executeUpdate();
+ 			stmt.close();
+ 			con.close();
+ 		} catch (SQLException e) {
+ 			e.printStackTrace();
+ 			System.out.println("Error on : "+number+" "+owner+" fake");
+ 			return(-1);
+ 		}
+ 		return(number);
+ 	}
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
 		super.nodeRemoteChanged(number,builder,ctype);
