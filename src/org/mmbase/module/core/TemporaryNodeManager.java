@@ -16,9 +16,12 @@ import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
 /*
-	$Id: TemporaryNodeManager.java,v 1.14 2001-01-08 12:31:58 install Exp $
+	$Id: TemporaryNodeManager.java,v 1.15 2001-03-02 13:56:44 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.14  2001/01/08 12:31:58  install
+	Rob: fixed bug 5180, added check for valid relationname
+	
 	Revision 1.13  2000/12/30 14:06:56  daniel
 	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
 	
@@ -64,7 +67,7 @@ import org.mmbase.module.corebuilders.RelDef;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.14 2001-01-08 12:31:58 install Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.15 2001-03-02 13:56:44 install Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -110,6 +113,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
 		// Create node
 		createTmpNode(bulname,owner,key);
+		builder.checkAddTmpField("_snumber");
+		builder.checkAddTmpField("_dnumber");
 		setObjectField(owner,key,"_snumber",getTmpKey(owner,source));
 		setObjectField(owner,key,"_dnumber",getTmpKey(owner,destination));
 		setObjectField(owner,key,"rnumber",""+rnumber);

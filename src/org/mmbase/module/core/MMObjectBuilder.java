@@ -697,6 +697,7 @@ public class MMObjectBuilder extends MMTable {
 	public MMObjectNode getNewTmpNode(String owner,String key) {
 		MMObjectNode node=null;
 		node=getNewNode(owner);
+		checkAddTmpField("_number");
 		node.setValue("_number",key);
 		TemporaryNodes.put(key,node);
 		return node;
@@ -708,8 +709,20 @@ public class MMObjectBuilder extends MMTable {
     * @param node The node to store
     */
 	public void putTmpNode(String key, MMObjectNode node) {
+		checkAddTmpField("_number");
 		node.setValue("_number",key);
 		TemporaryNodes.put(key,node);
+	}
+
+	public boolean checkAddTmpField(String field) {
+		boolean rtn=false;
+		if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
+			FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
+			log.debug("checkAddTmpField(): adding tmp field "+field);
+			addField(fd);
+			rtn=true;
+		}
+		return(false);
 	}
 
     /**
@@ -2478,4 +2491,5 @@ public class MMObjectBuilder extends MMTable {
 			dst.append(word);
 		}
 		return(dst.toString());
-	}}
+	}
+}
