@@ -830,7 +830,7 @@ public class MMObjectNode {
 	public int getRelationCount(String wantedtype) {
 	    int count=0;
 		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
-		if (otype!=0) {
+		if (otype!=-1) {
 		    if (relations==null) {	
 			    Vector re=parent.getRelations_main(this.getIntValue("number"));
 			    if (re!=null) {
@@ -925,11 +925,12 @@ public class MMObjectNode {
      * Get the related nodes of a certain type. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
-     * @param type the type of objects to be returned
+     * @param type the type of objects to be returned (<code>null</code> = don't care)
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
         Vector allNodes = getRelatedNodes();
+        if (type == null) { return allNodes; }
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
             MMObjectNode node = (MMObjectNode)e.nextElement();
