@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.14 2002-03-29 20:14:00 michiel Exp $
+ * @version $Id: Wizard.java,v 1.15 2002-04-02 13:40:20 michiel Exp $
  *
  */
 public class Wizard {
@@ -41,7 +41,9 @@ public class Wizard {
     private Cloud cloud;
 
     // basepath where all data files reside. Will be set from the jsp files.
-    public String path="";
+    private String path="";
+
+    private String context = null;
 
     // schema / session data
     private String name;
@@ -112,7 +114,8 @@ public class Wizard {
      *
      * @param apath       the path should point to the data directory of the editwizard. From that dir the wizard schema's and the xsl's will be loaded
      */
-    public Wizard(String apath) throws WizardException{
+    protected Wizard(String c, String apath) throws WizardException{
+        context = c;
         path = apath;
         uploads = new HashMap();
         uploadnames = new HashMap();
@@ -129,8 +132,8 @@ public class Wizard {
      *
      * @param apath       the path should point to the data directory of the editwizard. From that dir the wizard schema's and the xsl's will be loaded
      */
-    public Wizard(String apath, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
-        this(apath);
+    public Wizard(String context, String apath, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
+        this(context, apath);
         initialize(wizardname,dataid,cloud);
     }
 
@@ -247,7 +250,11 @@ public class Wizard {
         // Build the preHtml version of the form.
         preform = createPreHtml(schema.getDocumentElement(), currentformid, datastart, instancename);
         Validator.validate(preform, schema);
-        Utils.transformNode(preform, wizardStylesheetFilename, out, null);
+        Map params = new HashMap();
+        params.put("ew_path", path);
+        params.put("ew_context", context);
+        params.put("ew_imgdb", context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);
+        Utils.transformNode(preform, wizardStylesheetFilename, out, params);
     }
 
     /////////////////////////////////////
