@@ -118,6 +118,7 @@ Change directory to ${build.dir}/orion and run:
     <mkdir dir="${build.dir}"/>
     <property name="name" value="mmbase"/>
     <property name="version" value="${DSTAMP}"/>
+    <replace file="${source-src.dir}/org/mmbase/Version.java" token="/*BUILDDATE*/" value="/*BUILDDATE*/ +&quot;.${DSTAMP}&quot; //" />
   </target>
 
 
