@@ -39,11 +39,10 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.97 2003-07-08 14:26:02 nico Exp $
+ * @version $Id: Wizard.java,v 1.98 2003-07-09 17:37:18 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
-   // logging
    private static Logger log = Logging.getLoggerInstance(Wizard.class);
 
    // File -> Document (resolved includes/shortcuts)
@@ -138,11 +137,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     */
    private boolean committed = false;
 
-   /**
-    * This list stores all errors and warnings occured
-    *
-    */
-   private List errors = new Vector();
 
    /**
     *
@@ -160,8 +154,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     * @param dataid the objectnumber
     * @param cloud the Cloud to use
     */
-   public Wizard(String context, URIResolver uri, String wizardname,
-      String dataid, Cloud cloud) throws WizardException {
+   public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud) throws WizardException {
       Config.WizardConfig wizardConfig = new Config.WizardConfig();
       wizardConfig.objectNumber = dataid;
       wizardConfig.wizard = wizardname;
@@ -256,24 +249,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          datastart, instanceName);
    }
 
-   public boolean error() {
-      return errors.size() > 0;
-   }
-
-   public Iterator getErrors() {
-      return errors.iterator();
-   }
-
-   public String getErrorString() {
-      String str = "";
-      Iterator iter = getErrors();
-
-      while (iter.hasNext()) {
-         str += ((String) iter.next() + "\n");
-      }
-
-      return str;
-   }
 
    /**
     * Returns whether the wizard may be closed
@@ -575,19 +550,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                   // lets make sure it is right:
                   try {
                      if (cloud != null) {
-                        log.debug("Cloud found, supposing parameter in " +
-                           cloud.getCloudContext().getDefaultCharacterEncoding());
+                        log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
                         result = new String(req.getParameter(name).getBytes(),
-                              cloud.getCloudContext()
-                                   .getDefaultCharacterEncoding());
+                                            cloud.getCloudContext() .getDefaultCharacterEncoding());
                      } else { // no cloud? I don't know how to get default char encoding then.
-
                         // suppose it utf-8
-                        log.debug(
-                           "No cloud found, supposing parameter in UTF-8" +
-                           req.getParameter(name));
-                        result = new String(req.getParameter(name).getBytes(),
-                              "UTF-8");
+                        log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
+                        result = new String(req.getParameter(name).getBytes(), "UTF-8");
                      }
                   } catch (java.io.UnsupportedEncodingException e) {
                      log.warn(e.toString());
@@ -596,7 +565,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
                   result = req.getParameter(name);
                }
-
+               if (log.isDebugEnabled()) {
+                   log.debug("Found in post '" + result + "'");
+               }
                storeValue(ids[0], ids[1], result);
             }
          }
@@ -1132,8 +1103,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     * @param   schemanode  The schemanode from were to start searching
     * @param   recurse     Set to true if you want to let the process search in-depth through the entire tree, false if you just want it to search the first-level children
     */
-   private void resolveShortcuts(Node schemanode, boolean recurse)
-      throws WizardException {
+   private void resolveShortcuts(Node schemaNode, boolean recurse) throws WizardException {
       String xpath;
 
       if (recurse) {
@@ -1142,11 +1112,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          xpath = "field|list";
       }
 
-      NodeList children = Utils.selectNodeList(schemanode, xpath);
+      NodeList children = Utils.selectNodeList(schemaNode, xpath);
 
       if (children == null) {
-         throw new RuntimeException("could not perform xpath:" + xpath +
-            " for schemanode:\n" + schemanode);
+         throw new RuntimeException("could not perform xpath:" + xpath + " for schemanode:\n" + schemaNode);
       }
 
       Node node;
@@ -1156,25 +1125,25 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       }
 
       // if no <steps /> node exist, a default node is created with all form schema's in found order
-      if (Utils.selectSingleNode(schemanode, "steps") == null) {
-         Node stepsnode = schemanode.getOwnerDocument().createElement("steps");
-         NodeList forms = Utils.selectNodeList(schemanode, "form-schema");
+      if (Utils.selectSingleNode(schemaNode, "steps") == null) {
+         Node stepsNode = schemaNode.getOwnerDocument().createElement("steps");
+         NodeList forms = Utils.selectNodeList(schemaNode, "form-schema");
 
          for (int i = 0; i < forms.getLength(); i++) {
-            Node formstep = schemanode.getOwnerDocument().createElement("step");
-            String formid = Utils.getAttribute(forms.item(i), "id", null);
+            Node formStep = schemaNode.getOwnerDocument().createElement("step");
+            String formId = Utils.getAttribute(forms.item(i), "id", null);
 
-            if (formid == null) {
-               formid = "tempformid_" + i;
-               Utils.setAttribute(forms.item(i), "id", formid);
+            if (formId == null) {
+               formId = "tempformid_" + i;
+               Utils.setAttribute(forms.item(i), "id", formId);
             }
 
-            Utils.setAttribute(formstep, "form-schema", formid);
-            stepsnode.appendChild(formstep);
+            Utils.setAttribute(formStep, "form-schema", formId);
+            stepsNode.appendChild(formStep);
          }
 
          // TODO: according to the dtd, schemanode should be inserted before any form-schema nodes
-         schemanode.appendChild(stepsnode);
+         schemaNode.appendChild(stepsNode);
       }
    }
 
@@ -1782,8 +1751,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
    private void storeValue(String did, String fid, String value)
       throws WizardException {
       if (log.isDebugEnabled()) {
-         log.debug("String value " + value + " in " + did + " for field " +
-            fid);
+         log.debug("String value " + value + " in " + did + " for field " + fid);
          log.trace("Using data: " +
             Utils.getSerializedXML(Utils.selectSingleNode(schema,
                   ".//*[@fid='" + fid + "']")));
@@ -1847,50 +1815,47 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       startWizardCmd = null;
 
       boolean found = false;
-      String commandname = "";
+      String commandName = "";
 
-      List errors = new Vector();
+      List errors = new ArrayList();
       Enumeration list = req.getParameterNames();
 
       while (list.hasMoreElements()) {
-         commandname = (String) list.nextElement();
+         commandName = (String) list.nextElement();
 
-         if ((commandname.indexOf("cmd/") == 0) && !commandname.endsWith(".y")) {
+         if ((commandName.indexOf("cmd/") == 0) && !commandName.endsWith(".y")) {
             if (log.isDebugEnabled()) {
-               log.debug("found a command " + commandname);
+               log.debug("found a command " + commandName);
             }
 
             // this is a command.
-            String commandvalue = req.getParameter(commandname);
+            String commandValue = req.getParameter(commandName);
 
             try {
-               WizardCommand wc = new WizardCommand(commandname, commandvalue);
+               WizardCommand wc = new WizardCommand(commandName, commandValue);
                processCommand(wc);
             } catch (RuntimeException e) {
                // Have to accumulate the exceptions and report them at the end.
                // Michiel XXX Why? What's the point?
-               // I think the code can be simplied by taking away all exception handlin in this function.
-               String errormsg = Logging.stackTrace(e);
-               log.error(errormsg);
-               errors.add(new WizardException("* Could not process command:" +
-                     commandname + "=" + commandvalue + "\n" + errormsg));
+               // I think the code can be simplied by taking away all exception handling in this function.
+               String errorMessage = Logging.stackTrace(e);
+               log.error(errorMessage);
+               errors.add(new WizardException("* Could not process command:" + commandName + "=" + commandValue + "\n" + errorMessage));
             }
          } else {
             if (log.isDebugEnabled()) {
-               log.trace("ignoring non-command " + commandname);
+               log.trace("ignoring non-command " + commandName);
             }
          }
       }
 
       if (errors.size() > 0) {
-         String errorMessage = "Errors during command processing:";
+         StringBuffer errorMessage = new StringBuffer("Errors during command processing:");
 
          for (int i = 0; i < errors.size(); i++) {
-            errorMessage = errorMessage + "\n" +
-               ((Exception) errors.get(i)).toString();
+            errorMessage.append('\n').append(((Exception) errors.get(i)).toString());
          }
-
-         throw new WizardException(errorMessage);
+         throw new WizardException(errorMessage.toString());
       }
    }
 
@@ -1919,26 +1884,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          // The command parameters is the did of the node to delete.
          // note that a fid parameter is expected in the command syntax but ignored
          String did = cmd.getDid();
-         Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did +
-               "']");
+         Node dataNode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
 
-         if (datanode != null) {
+         if (dataNode != null) {
             // Step one: determine what should eb deleted
             // if an <action name="delete"> exists, and it has an <object> child,
             // the object of the relatiosn should be deleted along with the relation
             // if there is no delete action defined, or object is not a child,
             // only the relation is deleted
             String fid = cmd.getFid();
-            Node itemnode = Utils.selectSingleNode(schema,
-                  ".//*[@fid='" + fid + "']");
-            Node listnode = itemnode.getParentNode();
-            Node objectdef = Utils.selectSingleNode(listnode,
-                  "action[@type='delete']/object");
+            Node itemNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']");
+            Node listNode = itemNode.getParentNode();
+            Node objectDef = Utils.selectSingleNode(listNode, "action[@type='delete']/object");
 
-            Node dataobjectnode = datanode;
+            Node dataObjectNode = dataNode;
 
-            if (objectdef != null) {
-               dataobjectnode = Utils.selectSingleNode(datanode, "object");
+            if (objectDef != null) {
+               dataObjectNode = Utils.selectSingleNode(dataNode, "object");
             }
 
             // all child objects of the object to be deleted are added to a repository.
@@ -1947,16 +1909,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // This prevents the included objects from being deleted (deletion of
             // ojects is detected by comparing objects that exist in the original data tree with those
             // in the result data tree)
-            Node newrepos = data.createElement("repos");
-            NodeList inside_objects = Utils.selectNodeList(dataobjectnode,
-                  "object|relation");
-            Utils.appendNodeList(inside_objects, newrepos);
+            Node newRepos = data.createElement("repos");
+            NodeList insideObjects = Utils.selectNodeList(dataObjectNode, "object|relation");
+            Utils.appendNodeList(insideObjects, newRepos);
 
             //place repos
-            datanode.getParentNode().appendChild(newrepos);
+            dataNode.getParentNode().appendChild(newRepos);
 
             //remove relation and inside objects
-            datanode.getParentNode().removeChild(datanode);
+            dataNode.getParentNode().removeChild(dataNode);
          }
 
          break;
@@ -1967,10 +1928,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          // retrieved from MMbase
          // The command parameters is a value indicating the number of the node(s) to update.
          String value = cmd.getValue();
-         NodeList nodesToUpdate = Utils.selectNodeList(data,
-               ".//*[@number='" + value + "']");
-         NodeList originalNodesToUpdate = Utils.selectNodeList(originalData,
-               ".//*[@number='" + value + "']");
+         NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
+         NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
 
          if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
             Node updatedNode = null;
@@ -1978,45 +1937,44 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             try {
                updatedNode = databaseConnector.getDataNode(null, value, null);
             } catch (Exception e) {
+                // hm?
                break;
             }
 
             NodeList updatedFields = Utils.selectNodeList(updatedNode, "./field");
 
-            Map fieldvalues = new HashMap();
+            Map fieldValues = new HashMap();
 
             for (int j = 0; j < updatedFields.getLength(); j++) {
-               Node fieldnode = updatedFields.item(j);
-               String fieldname = Utils.getAttribute(fieldnode, "name");
-               String fieldvalue = Utils.getText(fieldnode);
-               fieldvalues.put(fieldname, fieldvalue);
+               Node fieldNode = updatedFields.item(j);
+               String fieldName = Utils.getAttribute(fieldNode, "name");
+               String fieldValue = Utils.getText(fieldNode);
+               fieldValues.put(fieldName, fieldValue);
             }
 
-            NodeList inside_objects = Utils.selectNodeList(updatedNode, "*");
+            NodeList insideObjects = Utils.selectNodeList(updatedNode, "*");
 
             for (int i = 0; i < nodesToUpdate.getLength(); i++) {
-               Node datanode = nodesToUpdate.item(i);
-               NodeList fieldsToUpdate = Utils.selectNodeList(datanode,
-                     "./field");
+               Node dataNode = nodesToUpdate.item(i);
+               NodeList fieldsToUpdate = Utils.selectNodeList(dataNode, "./field");
 
                for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
-                  Node fieldnode = fieldsToUpdate.item(j);
-                  String fieldname = Utils.getAttribute(fieldnode, "name");
-                  String fieldvalue = (String) fieldvalues.get(fieldname);
-                  Utils.storeText(fieldnode, fieldvalue);
+                  Node fieldNode = fieldsToUpdate.item(j);
+                  String fieldName = Utils.getAttribute(fieldNode, "name");
+                  String fieldValue = (String) fieldValues.get(fieldName);
+                  Utils.storeText(fieldNode, fieldValue);
                }
             }
 
             for (int i = 0; i < originalNodesToUpdate.getLength(); i++) {
-               Node datanode = originalNodesToUpdate.item(i);
-               NodeList fieldsToUpdate = Utils.selectNodeList(datanode,
-                     "./field");
+               Node dataNode = originalNodesToUpdate.item(i);
+               NodeList fieldsToUpdate = Utils.selectNodeList(dataNode, "./field");
 
                for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
-                  Node fieldnode = fieldsToUpdate.item(j);
-                  String fieldname = Utils.getAttribute(fieldnode, "name");
-                  String fieldvalue = (String) fieldvalues.get(fieldname);
-                  Utils.storeText(fieldnode, fieldvalue);
+                  Node fieldNode = fieldsToUpdate.item(j);
+                  String fieldName = Utils.getAttribute(fieldNode, "name");
+                  String fieldValue = (String) fieldValues.get(fieldName);
+                  Utils.storeText(fieldNode, fieldValue);
                }
             }
          }
@@ -2025,8 +1983,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       }
 
       case WizardCommand.MOVE_UP:
-         ;
-
       case WizardCommand.MOVE_DOWN: {
          // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
          // The command parameters are the fid of the list in which the item falls (determines order),
@@ -2105,20 +2061,18 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          String value = cmd.getValue();
 
          if (log.isDebugEnabled()) {
-            log.debug("Adding item fid: " + fid + " did: " + did + " value: " +
-               value);
+            log.debug("Adding item fid: " + fid + " did: " + did + " value: " + value);
          }
 
          if ((value != null) && !value.equals("")) {
             log.debug("no value");
 
-            int createorder = 1;
+            int createOrder = 1;
             StringTokenizer ids = new StringTokenizer(value, "|");
 
             while (ids.hasMoreElements()) {
-               Node newObject = addListItem(fid, did, ids.nextToken(), false,
-                     createorder);
-               createorder++;
+               Node newObject = addListItem(fid, did, ids.nextToken(), false, createOrder);
+               createOrder++;
             }
          } else {
             String otherdid = cmd.getParameter(2);
@@ -2156,26 +2110,24 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          Element results = databaseConnector.put(originalData, data, binaries);
 
          // find the (new) objectNumber and store it.
-         String oldnumber = Utils.selectSingleNodeText(data,
-               ".//object/@number", null);
+         String oldNumber = Utils.selectSingleNodeText(data, ".//object/@number", null);
 
          // select the 'most outer' object.
          if (log.isDebugEnabled()) {
             log.trace("results : " + results);
-            log.debug("found old number " + oldnumber);
+            log.debug("found old number " + oldNumber);
          }
 
          // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this
          // xpath
-         String newnumber = Utils.selectSingleNodeText(results,
-               ".//object[@oldnumber='" + oldnumber + "']/@number", null);
+         String newNumber = Utils.selectSingleNodeText(results, ".//object[@oldnumber='" + oldNumber + "']/@number", null);
 
          if (log.isDebugEnabled()) {
-            log.debug("found new wizard number " + newnumber);
+            log.debug("found new wizard number " + newNumber);
          }
 
-         if (newnumber != null) {
-            objectNumber = newnumber;
+         if (newNumber != null) {
+            objectNumber = newNumber;
          }
 
          committed = true;
@@ -2183,16 +2135,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
          if (!mayBeClosed) {
             if (log.isDebugEnabled()) {
-               log.trace("Using data was " +
-                  Utils.getSerializedXML(originalData));
+               log.trace("Using data was " + Utils.getSerializedXML(originalData));
                log.trace("is " + Utils.getSerializedXML(data));
             }
 
             originalData = Utils.emptyDocument();
-            originalData.appendChild(originalData.importNode(
-                  data.getDocumentElement().cloneNode(true), true));
+            originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
 
-            if (newnumber != null) {
+            if (newNumber != null) {
                Utils.setAttribute(originalData.getDocumentElement()
                                               .getElementsByTagName("object")
                                               .item(0), "number", objectNumber);
