@@ -12,7 +12,8 @@ package org.mmbase.module.builders;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.ProcessWriter;
+import org.mmbase.util.externalprocess.CommandLauncher;
+import org.mmbase.util.externalprocess.ProcessException;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.50 2003-05-08 06:01:21 kees Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.51 2003-05-12 11:06:56 nico Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -94,65 +95,75 @@ public class ConvertImageMagick implements ImageConvertInterface {
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
         
-        Process process = null;
-        InputStream in = null;
-        ByteArrayOutputStream outputstream = null;
-        try {
-            log.debug("Starting convert");
-            process = Runtime.getRuntime().exec(converterPath);
-            in = process.getInputStream();
-            outputstream = new ByteArrayOutputStream();
-            
-            byte[] inputbuffer = new byte[1024];
-            int size = 0;
-            // well it should be mentioned on first line, that means no need to look much further...
-            while ((size = in.read(inputbuffer)) !=  -1) {
-                outputstream.write(inputbuffer, 0, size);
-            }
-            
-            // make stringtokenizer, with nextline as new token..
-            StringTokenizer tokenizer = new StringTokenizer(outputstream.toString(), "\n\r");
-            if (tokenizer.hasMoreTokens()) {
-                log.info("Will use: " + converterPath + ", " + tokenizer.nextToken());
-            } else {
-                log.error( "converter from location " + converterPath + ", gave strange result: " + outputstream.toString() + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
-            }
-        } catch (SecurityException e) {
-            log.error( "Was not permitted to execute (because of SecurityManager) " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
-        } catch (IOException e) {
-            log.error( "An I/O error occured while executing " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException e) {
-                log.error("An I/O error occured while closing resources ");
-            }
-            try {
-                if (outputstream != null) {
-                    outputstream.close();
-                }
-            } catch (IOException e) {
-                log.error("An I/O error occured while closing resources ");
-            }
-            if (process != null) {
-                int errorCode = 0;
-                try {
-                    process.waitFor(); // error code is only certainly available after the process finished
-                    errorCode = process.exitValue();
-                    if (errorCode != 0) {
-                        //could add here process.getErrorStream()
-                        log.error( "sub process failed and exited with error code " + errorCode);
-                    }
-                } catch (IllegalThreadStateException ie) {
-                    log.warn( "Process didn't exit yet, but should have exited already." + ie.getMessage()+ " "  + Logging.stackTrace(ie));
-                } catch (InterruptedException e){
-                    log.warn( "InterruptedException while waiting for proccess to die " + e.getMessage()+ " "  + Logging.stackTrace(e) );
-                }
-                process.destroy();
-            }
-        }
+		CommandLauncher launcher = new CommandLauncher("ConvertImage");
+		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			log.debug("Starting convert");
+			launcher.execute(converterPath);
+
+			launcher.waitAndRead(outputStream, errorStream);
+
+			// make stringtokenizer, with nextline as new token..
+			StringTokenizer tokenizer =
+				new StringTokenizer(outputStream.toString(), "\n\r");
+			if (tokenizer.hasMoreTokens()) {
+				log.info(
+					"Will use: " + converterPath + ", " + tokenizer.nextToken());
+			}
+			else {
+				log.error(
+					"converter from location "
+						+ converterPath
+						+ ", gave strange result: "
+						+ outputStream.toString()
+						+ "conv.root='"
+						+ converterRoot
+						+ "' conv.command='"
+						+ converterCommand
+						+ "'");
+				log.error(
+					"converter from location "
+						+ converterPath
+						+ ", gave strange result: "
+						+ errorStream.toString()
+						+ "conv.root='"
+						+ converterRoot
+						+ "' conv.command='"
+						+ converterCommand
+						+ "'");
+			}
+		}
+		catch (ProcessException e) {
+			log.error(
+				"Convert test failed. "
+					+ converterPath
+					+ " ("
+					+ e.toString()
+					+ ") conv.root='"
+					+ converterRoot
+					+ "' conv.command='"
+					+ converterCommand
+					+ "'");
+			log.error(Logging.stackTrace(e));
+		}
+		finally {
+			try {
+				if (outputStream != null) {
+					outputStream.close();
+				}
+			}
+			catch (IOException ioe) {
+			}
+			try {
+				if (errorStream != null) {
+					errorStream.close();
+				}
+			}
+			catch (IOException ioe) {
+			}
+		}
+
         // Cant do more checking then this, i think....
         tmp = (String) params.get("ImageConvert.ColorizeHexScale");
         if (tmp != null) {
@@ -265,8 +276,6 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return        Map with three keys: 'args', 'cwd', 'format'.
      */
     private ParseResult getConvertCommands(List params) {
-        StringBuffer cmdstr = new StringBuffer();
-        
         ParseResult result = new ParseResult();
         List cmds = new Vector();
         result.args = cmds;
@@ -486,173 +495,120 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return      The result of the conversion (a picture).
      *
      */
-    private byte[] convertImage(
-    byte[] pict,
-    List cmd,
-    String format,
-    File cwd) {
-        cmd.add(0, "-");
-        cmd.add(0, converterPath);
-        cmd.add(format + ":-");
-        
-        String command = cmd.toString(); // only for debugging.
-        
-        if (log.isDebugEnabled()) {
-            log.debug( "command:" + command + " in " + new File("").getAbsolutePath());
-        }
-        
-        Process process = null;
-        InputStream in = null;
-        ByteArrayOutputStream imagestream = null;
-        
-        try {
-            log.debug("starting program");
-            
-            if (cwd != null) {
-                // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
-                String[] env = new String[1];
-                env[0] = "MAGICK_HOME=" + cwd.toString();
-                if (log.isDebugEnabled()) {
-                    log.debug("MAGICK_HOME " + env[0]);
-                }
-                process =
-                Runtime.getRuntime().exec(
-                (String[]) cmd.toArray(new String[0]),
-                env);
-            } else {
-                process =
-                Runtime.getRuntime().exec(
-                (String[]) cmd.toArray(new String[0]));
-            }
-            
-            
-            if (pict.length >0){
-                ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict), process.getOutputStream());
-                log.debug("starting process writer");
-                pw.start();
-            } else {
-                log.warn("trying to convert empty byte[] (no picute data)");
-            }
-            
-            // in grabs the stuff coming from stdout from program...
-            in = new BufferedInputStream(process.getInputStream(), 1);
-            imagestream = new ByteArrayOutputStream();
-            
-            {
-                int size = 0;
-                byte[] inputbuffer = new byte[2048];
-                while ((size = in.read(inputbuffer)) != -1) {
-                    log.debug("read a chunk");
-                    imagestream.write(inputbuffer, 0, size);
-                }
-            }
-            in.close();
-            
-            log.debug("waiting");
-            process.waitFor(); // error code is only certainly available after the process finished
-            
-            
-            log.debug("retrieved all information");
-            byte[] image = imagestream.toByteArray();
-            
-            if (image.length < 1) {
-                // No bytes in the image -
-                // ImageMagick failed to create a proper image.
-                // return null so this image is not by accident stored in the database
-                
-                // What if the _original_ image was not a proper image?
-                // in that case it is perhaps better to store an invalid icache too, otherwise
-                // the failure will be repeated
-                
-                log.error("Imagemagick conversion did not succeed. Returning null.");
-                return null;
-            } else {
-                // print some info and return....
-                if (log.isServiceEnabled()) {
-                    log.service("converted image(#" + pict.length + " bytes)  to '" + format +
-                    "'-image(#" + image.length + " bytes)('" + command + "')");
-                }
-                return image;
-            }
-        } catch (InterruptedIOException e) {
-            log.error("converting image with command: '" + command +
-            "' failed  with reason: '" + e.getMessage() + "'");
-        } catch (IOException e) {
-            log.error("converting image with command: '" + command +
-            "' failed  with reason: '" + e.getMessage() + "'");
-            log.error(Logging.stackTrace(e));
-        } catch (Exception exception) {
-            log.error("converting image with command: '" + command + "' failed  with reason: '" + exception + "'");
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ioe) {
-            }
-            try {
-                if (imagestream != null) {
-                    imagestream.close();
-                }
-            } catch (IOException ioe) {
-            }
-            
-            if (process != null) {
-                int errorCode = 0;
-                try {
-                    errorCode = process.exitValue();
-                    if (errorCode != 0) {
-                        log.error("sub process failed and exited with error code " + errorCode);
-                        
-                        InputStream err = null;
-                        ByteArrayOutputStream errorStream = null;
-                        try {
-                            err = process.getErrorStream();
-                            
-                            errorStream = new ByteArrayOutputStream();
-                            int size = 0;
-                            byte[] inputbuffer = new byte[2048];
-                            while ((size = err.read(inputbuffer)) != -1) {
-                                log.debug( "copying " + size + " bytes from ERROR-stream ");
-                                errorStream.write(inputbuffer, 0, size);
-                            }
-                            
-                            byte[] errorMessage = errorStream.toByteArray();
-                            
-                            if (errorMessage.length > 0) {
-                                log.error( "From stderr with command '" + command + "' in '" + new File("").getAbsolutePath() + "'  --> '" + new String(errorMessage) + "'");
-                            } else {
-                                log.debug("No information on stderr found");
-                            }
-                        } catch (IOException e) {
-                            //don't know what to say here. Errors already in log, but not a detaild one.of the sub process
-                        } finally {
-                            try {
-                                if (err != null) {
-                                    err.close();
-                                }
-                            } catch (IOException e) {
-                                //don't know what to say here. Errors already in log
-                            }
-                            try {
-                                if (errorStream != null) {
-                                    errorStream.close();
-                                }
-                            } catch (IOException e) {
-                                //don't know what to say here. Errors already in log
-                            }
-                        }
-                    }
-                } catch (IllegalThreadStateException ie) {
-                    log.warn("Process didn't exit yet, but should have exited already." + ie);
-                    //             } catch (InterruptedException ine) {
-                    // log.warn("convert process was interrupted " + ine);
-                }
-                
-                process.destroy();
-            }
-        }
-        
-        return null;
-    }
+	private byte[] convertImage(
+		byte[] pict,
+		List cmd,
+		String format,
+		File cwd) {
+
+		if (pict != null && pict.length > 0) {
+			cmd.add(0, "-");
+			cmd.add(0, converterPath);
+			cmd.add(format + ":-");
+
+			String command = cmd.toString(); // only for debugging.
+			log.debug(
+				"Converting image(#"
+					+ pict.length
+					+ " bytes)  to '"
+					+ format
+					+ "' ('"
+					+ command
+					+ "')");
+
+			CommandLauncher launcher = new CommandLauncher("ConvertImage");
+			ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+			ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+			ByteArrayInputStream originalStream = new ByteArrayInputStream(pict);
+
+			try {
+				if (cwd != null) {
+					// using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
+					String[] env = new String[1];
+					env[0] = "MAGICK_HOME=" + cwd.toString();
+					if (log.isDebugEnabled()) {
+						log.debug("MAGICK_HOME " + env[0]);
+					}
+					launcher.execute((String[]) cmd.toArray(new String[0]), env);
+				}
+				else {
+					launcher.execute((String[]) cmd.toArray(new String[0]));
+				}
+				launcher.waitAndWrite(originalStream, imageStream, errorStream);
+
+				log.debug("retrieved all information");
+				byte[] image = imageStream.toByteArray();
+
+				if (image.length < 1) {
+					// No bytes in the image -
+					// ImageMagick failed to create a proper image.
+					// return null so this image is not by accident stored in the database
+					log.error(
+						"Imagemagick conversion did not succeed. Returning null.");
+					String errorMessage = errorStream.toString();
+
+					if (errorMessage.length() > 0) {
+						log.error(
+							"From stderr with command '"
+								+ command
+								+ "' in '"
+								+ new File("").getAbsolutePath()
+								+ "'  --> '"
+								+ errorMessage
+								+ "'");
+					}
+					else {
+						log.debug("No information on stderr found");
+					}
+					return null;
+				}
+				else {
+					// print some info and return....
+					if (log.isServiceEnabled()) {
+						log.service(
+							"converted image(#"
+								+ pict.length
+								+ " bytes)  to '"
+								+ format
+								+ "'-image(#"
+								+ image.length
+								+ " bytes)('"
+								+ command
+								+ "')");
+					}
+					return image;
+				}
+			}
+			catch (ProcessException e) {
+				log.error(
+					"converting image with command: '"
+						+ command
+						+ "' failed  with reason: '"
+						+ e.getMessage()
+						+ "'");
+				log.error(Logging.stackTrace(e));
+			}
+			finally {
+				try {
+					if (originalStream != null) {
+						originalStream.close();
+					}
+				}
+				catch (IOException ioe) {
+				}
+				try {
+					if (imageStream != null) {
+						imageStream.close();
+					}
+				}
+				catch (IOException ioe) {
+				}
+			}
+		}
+		else {
+			log.error("Converting an empty image does not make sense.");
+		}
+
+		return null;
+	}
 }
