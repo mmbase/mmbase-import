@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.140 2002-05-15 17:27:53 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.141 2002-06-13 12:41:20 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -622,14 +622,16 @@ public class MMObjectBuilder extends MMTable {
      * @return an <code>int</code> value which is the object type (otype) of the node.
      */
     public int getNodeType(int number) {
-      int otype=-1;
-      try {
-        // first try our mega cache for the convert
-        if (obj2type!=null) {
+        int otype=-1;
+        try {
+            // first try our mega cache for the convert
+            if (obj2type!=null) {
                 Integer tmpv=(Integer)obj2type.get(new Integer(number));
-                if (tmpv!=null) otype=tmpv.intValue();
-        }
-        if (otype==-1 || otype==0) {
+                if (tmpv!=null) {
+                    otype=tmpv.intValue();
+                }
+            }
+            if (otype==-1 || otype==0) {
                 // first get the otype to select the correct builder
                 MultiConnection con=mmb.getConnection();
                 Statement stmt2=con.createStatement();
@@ -645,13 +647,14 @@ public class MMObjectBuilder extends MMTable {
                 }
                 stmt2.close();
                 con.close();
-        }
-      } catch (SQLException e) {
+            }
+        } 
+        catch (SQLException e) {
             // something went wrong print it to the logs
             log.error(Logging.stackTrace(e));
             return -1;
-      };
-      return otype;
+        }
+        return otype;
    }
 
     /**
@@ -1300,7 +1303,7 @@ public class MMObjectBuilder extends MMTable {
         try {
             while(rs.next()) {
                 // create a new object and add it to the result vector
-                node=new MMObjectNode(this);
+                node = new MMObjectNode(this);
                 ResultSetMetaData rd=rs.getMetaData();
                 String fieldname;
                 String fieldtype;
@@ -1309,11 +1312,34 @@ public class MMObjectBuilder extends MMTable {
                     //fieldtype=rd.getColumnTypeName(i);
                     node=database.decodeDBnodeField(node,fieldname,rs,i);
                 }
+                
+                // maybe we retrieved the wrong type of node, if so,.. retrieve the correct one! 
+                // TODO: research for performance
+                boolean returnCorrectObjectBuilderTypes = false;                
+                if(returnCorrectObjectBuilderTypes && oType != node.getOType()) {
+                    if(oType != -1) {
+                        // this node had the wrong node type, and the builder was started...(TypeDef has to be started some day)
+                        log.debug("object #" + node.getNumber() + " was of type: " + node.getOType() + " while we searched for type: " + oType + " class was: " + getClass().getName());
+                        MMObjectBuilder builder = mmb.getBuilder(getNode(node.getOType()).getStringValue("name"));
+                        MMObjectNode found = builder.getNode(node.getNumber());
+                        log.info("[CONVERTED(bad for performance) ]We retrieved the new code from the builder: " + builder.getClass().getName() + ", buildertype of the node is now: " + node.getBuilder().getTableName());
+                        if(found != null) {
+                            node = found;
+                        }
+                        else {
+                            String msg = "could not resolve the nodetype, for the node found which was found.." + node;
+                            log.fatal(msg);
+                            throw new RuntimeException(msg);
+                        }
+                    }
+                    else log.info("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
+                }
+                
                 // clear the changed signal
                 node.clearChanged(); // huh ?
                 results.addElement(node);
 
-                if (oType==node.getOType()) {
+                if (oType == node.getOType()) {
                     // huge trick to fill the caches does it make sense ?
                     number=new Integer(node.getNumber());
                     if (!nodeCache.containsKey(number) || replaceCache) {
@@ -1323,7 +1349,8 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
             }
-        } catch(Exception e) {
+        } 
+        catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
         }
         return results;
