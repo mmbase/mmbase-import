@@ -83,25 +83,37 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
     public void run () {
 		// Wait till all builders are loaded.
-		try {
-			Thread.sleep(10000);
-		} catch (Exception wait) {
-		}
+		try { Thread.sleep(10000); } catch (Exception wait) { }
+
         try {
-			// Get the urls builder.
+			// Get the urls and Jumper builders.
 			if(urls==null) {
    				urls=(MMObjectBuilder)mmbase.getMMObject("urls");
     		}
+			if(jumpers==null) {
+   				jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
+    		}
+
 			// Get all urls.
          	Enumeration e = urls.search("");
     		while (e.hasMoreElements()) {
             	MMObjectNode url = (MMObjectNode)e.nextElement();
             	String number = ""+url.getValue("number");
             	String theUrl = ""+url.getValue("url");
-       			String description = ""+url.getValue("description");
 				// Check if an url is correct.
 				if(!checkUrl(theUrl)) {
-					System.out.println("LinkChecker -> Error in url "+theUrl +" (objectnumber="+number);
+					System.out.println("LinkChecker -> Error in url "+theUrl +" (objectnumber="+number+")");
+				}
+    		}
+			// Get all jumpers.
+         	e = jumpers.search("");
+    		while (e.hasMoreElements()) {
+            	MMObjectNode jumper = (MMObjectNode)e.nextElement();
+            	String number = ""+jumper.getValue("number");
+            	String theUrl = ""+jumper.getValue("url");
+				// Check if an jumper is correct.
+				if(!checkUrl(theUrl)) {
+					System.out.println("LinkChecker -> Error in jumper "+theUrl +" (objectnumber="+number+")");
 				}
     		}
         } catch (Exception e) {
