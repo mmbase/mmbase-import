@@ -107,14 +107,14 @@ public class MediaFragment extends MMObjectBuilder {
     }
     
     private String getUrl(int starttime, int stoptime) {
-        
+        return "";
     }
     
     /**
      * which is the mediasource we want to return.
      */
     private MMObjectNode findBestMediaSource(int userSpeed, int userChannels) {
-        
+        return null;
     }
     
     /**
@@ -123,16 +123,15 @@ public class MediaFragment extends MMObjectBuilder {
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
     private boolean isSubFragment(int nodenr) {
-        MMObjectNode node = getNode(nodenr);
-        
-        return (!node.getRelationCount("mediasources") && node.getRelationCount("mediafragments"))
+        MMObjectNode node = getNode(nodenr);       
+        return  (node.getRelationCount("mediasources") == 0) && (node.getRelationCount("mediafragments") > 0);
     }
     
     /**
      * get all mediasources belonging to this mediafragment
      */
-    private Enumeration getMediaSources() {
-        MMobjectNode node = getNode(nodenr);
+    private Enumeration getMediaSources(int nodenr) {
+        MMObjectNode node = getNode(nodenr);
         return node.getRelations("mediasources");
     }
     
