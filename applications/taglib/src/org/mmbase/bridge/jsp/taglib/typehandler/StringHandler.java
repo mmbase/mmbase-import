@@ -95,7 +95,7 @@ public class StringHandler extends AbstractTypeHandler {
         if ("".equals(search)) {
             return null;
         }
-        return "( UPPER(" + fieldName + ") LIKE '%" + search.toUpperCase() + "%')";
+        return "( UPPER( [" + fieldName + "] ) LIKE '%" + search.toUpperCase() + "%')";
     }
 
 }
