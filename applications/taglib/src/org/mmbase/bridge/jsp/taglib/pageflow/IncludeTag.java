@@ -11,14 +11,14 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.ServletOutputStream;
 
 
@@ -29,6 +29,7 @@ import org.mmbase.util.logging.Logging;
  * Like UrlTag, but does not spit out an URL, but the page itself.
  * 
  * @author Michiel Meeuwissen
+ * @author Johannes Verelst
  */
 public class IncludeTag extends UrlTag {
 
@@ -40,12 +41,14 @@ public class IncludeTag extends UrlTag {
     
     protected int debugtype = DEBUG_NONE;
     
-    private    boolean cite = false;
+    private boolean cite = false;
 
+    /**
+     * Test whether or not the 'cite' parameter is set
+     */
     public void setCite(String c) throws JspTagException {
         cite = ("true".equals(getAttributeValue(c)));
     }
-
 
     public int doStartTag() throws JspTagException {
         if (page == null) { // for include tags, page attribute is obligatory.
@@ -54,8 +57,6 @@ public class IncludeTag extends UrlTag {
         return super.doStartTag();
     }
 
-
-
     protected void doAfterBodySetValue() throws JspTagException {        
     	includePage();
     }
@@ -63,7 +64,6 @@ public class IncludeTag extends UrlTag {
     /**
      * Opens an Http Connection, retrieves the page, and returns the result.
      **/
-
     private void external(BodyContent bodyContent, String absoluteUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("External: found url: >" + absoluteUrl + "<");
         debugStart(absoluteUrl);     
@@ -87,15 +87,13 @@ public class IncludeTag extends UrlTag {
                     connection.setRequestProperty("Cookie", koekjes);
                 }
             }
-            
-
 
             BufferedReader in;
             String coding = connection.getContentEncoding();
+
             // I don't understand really why this explicit treatment of the encoding is necessary,
             // but anyhow it didn't work without this in sun jdk 1.3.1/orion 1.5.3
             // it almost seems a hack like this.
-
             if (log.isDebugEnabled()) log.debug("found content encoding " + coding);
             if (coding == null) {
                 // default, steal from current response.
@@ -130,7 +128,8 @@ public class IncludeTag extends UrlTag {
     }
 
     /**
-     *
+     * Include a local file by doing a new HTTP request
+     * Do not use this method, but use the 'internal()' method instead
      */
     private void externalRelative(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
         external(bodyContent,
@@ -139,39 +138,35 @@ public class IncludeTag extends UrlTag {
     }
 
     /**
-     * When staying on the same server (relative URL's) in principle we could do something smarter.
-     * For the moment we don't use it, because e.g. I can't get codings working.
-
+     * Use the RequestDispatcher to include a page without doing a request.
+     * Encoding apparently work, but why they do isn't very clear.
      */
-    private void internal(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse resp) throws JspTagException {
+    private void internal(BodyContent bodyContent, String relativeUrl, HttpServletRequest req, HttpServletResponse resp) throws JspTagException {
+        if (log.isDebugEnabled()); log.debug("Internal: found url: >" + relativeUrl + "<");
+        debugStart(relativeUrl);
+        String targetEncoding = resp.getCharacterEncoding();
+        ResponseWrapper response = new ResponseWrapper(resp);
+        RequestWrapper request = new RequestWrapper(req);
+
         try {
-            if (log.isDebugEnabled()) log.debug("Internal: found url: >" + relativeUrl + "<");
-            debugStart(relativeUrl);
-            bodyContent.getEnclosingWriter().flush();
-            ResponseWrapper response = new ResponseWrapper(resp);
-            try {
-                javax.servlet.ServletContext sc = pageContext.getServletContext();
-                if (sc == null) log.error("sc is null");                                
-                javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher(relativeUrl);
-                if (rd == null) log.error("rd is null");
-                rd.include(request, response);
-                helper.setValue(response.toString());
-            } catch (Exception e) {
-                log.debug(Logging.stackTrace(e));
-                throw new JspTagException(e.toString());
-            }
-            debugEnd(relativeUrl);
-        } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
-        } 
+            javax.servlet.ServletContext sc = pageContext.getServletContext();
+            if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");                                
+            javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher(relativeUrl);
+            if (rd == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
+            rd.include(request, response);    
+            bodyContent.write(response.toString());
+        } catch (Exception e) {
+            log.debug(Logging.stackTrace(e));
+            throw new JspTagException(e.toString());
+        }
+        debugEnd(relativeUrl);
     }
 
     /**
      * When staying in the same web-application, then the file also can be found on the file system,
      * and the possibility arises simply citing it (passing the web-server). It is in no way
      * interpreted then. This can be useful when creating example pages.
-     */
-    
+     */    
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
@@ -197,7 +192,6 @@ public class IncludeTag extends UrlTag {
     /**
      * Includes another page in the current page.
      */
-
     protected void includePage() throws JspTagException {
         try {
             String gotUrl = getUrl(false);// false: don't write &amp; tags but real &.
@@ -216,7 +210,7 @@ public class IncludeTag extends UrlTag {
                 nudeUrl = gotUrl;
                 params  = "";
             }
-	    if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
+	        if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
                
@@ -246,8 +240,8 @@ public class IncludeTag extends UrlTag {
                 if (cite) {
                     cite(bodyContent, urlString, request); 
                 } else {
-                    externalRelative(bodyContent, urlString, request, response);
-                    //internal(bodyContent, urlString, request, response);
+                    // externalRelative(bodyContent, urlString, request, response);
+                    internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
                 }
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
@@ -259,9 +253,9 @@ public class IncludeTag extends UrlTag {
     }
 
     /**
-     * With debug attribute you can write the urls in comments to the page.
+     * With debug attribute you can write the urls in comments to the page, just before and after
+     * the included page.
      */
-    
     public void setDebug(String p) throws JspTagException {
         String dtype = getAttributeValue(p); 
         if (dtype.toLowerCase().equals("none")) { 
@@ -279,13 +273,14 @@ public class IncludeTag extends UrlTag {
     /** 
      * Returns a name for this tag, that must appear in the debug message (in the comments)
      */
-
     protected String getThisName() {
         String clazz = this.getClass().getName();
         return clazz.substring(clazz.lastIndexOf(".") + 1);
     }
     
-  
+    /**
+     * Write the comment that is just above the include page.
+     */
     private void debugStart(String url) {
         try {
             switch(debugtype) {
@@ -300,6 +295,9 @@ public class IncludeTag extends UrlTag {
         }
     }
      
+    /**
+     * Write the comment that is just below the include page.
+     */
     private void debugEnd(String url) {
         try {
             switch(debugtype) {
@@ -313,118 +311,82 @@ public class IncludeTag extends UrlTag {
             log.error(e.toString());
         }
     }
-
 }
 
 /**
- * These classes are used by the 'internal' function. It is still
- * experiment, though it seems to work.
- *
- * Should perhaps be moved to an util dir. 
- *
+ * Wrapper around the response. It collects all data that is sent to it, and 
+ * makes it available through a toString() method.
  */
-
-class Bytes extends java.io.ByteArrayOutputStream {
-    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
-    Bytes() {
-        super();
-        log.debug("making bytes");
-    }
-    
-    public void write(byte[] i) throws java.io.IOException {
-        log.debug("writebyte[] ");
-        super.write(i);
-    }
-    public void write(int i)  {
-        log.debug("write ");
-        super.write(i);
-    }
-    public void write(byte[] i, int of, int len) {
-        log.debug("writebyte[] 2");
-        super.write(i, of, len);
-    }    
-    public void writeTo(java.io.OutputStream o) throws java.io.IOException {
-        log.debug("outputstream");
-        super.writeTo(o);
-    }    
-
-    
-}
-
-class StreamWrapper extends ServletOutputStream {
-    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
-    
-    private Bytes buffer;
-    private String coding;
-    StreamWrapper(HttpServletResponse resp) {
-        log.debug("making streamwrapper");
-        coding = resp.getCharacterEncoding();
-        this.buffer = new Bytes();
-    }
-    
-    public void write(int i) {
-        log.debug("x");
-        buffer.write(i);
-    }
-    public void write(byte[] i) throws java.io.IOException  {
-
-        log.debug("x");
-        buffer.write(i);
-        
-    }
-    public void write(byte[] i, int of, int len) {
-        log.debug("x");
-        buffer.write(i, of, len);
-    }    
-
-    public String toString() {
-        try {
-            return new String(buffer.toByteArray(), coding);
-        } catch (Exception e) {
-            return e.toString();
-        }
-    }
-    java.io.PrintWriter getWriter() {
-        return new java.io.PrintWriter(buffer);
-    }
-    
- }
-
-/**
- * Wrapper around the response. It collects the part which is written to it, so you can get it with 'toString'.
- */
-
 class ResponseWrapper extends HttpServletResponseWrapper {
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName());
 
-    private StreamWrapper stream;
+    private CharArrayWriter caw;
+    private PrintWriter writer;
+    private MyServletOutputStream msos;
+ 
+    /**
+     * Public constructor
+     */
     public ResponseWrapper(HttpServletResponse resp) {
         super(resp);
-        stream = new StreamWrapper(resp);
-        log.debug("getting " + resp.getCharacterEncoding());
+        caw = new CharArrayWriter();
+        writer = new PrintWriter(caw);
+        msos = new MyServletOutputStream(writer);
     }
     
-    public ServletOutputStream getOutputStream() {
-        log.debug("getting outputstream");
-        return stream;
+    /**
+     * Return the OutputStream. This is a 'MyServletOutputStream' that
+     * wraps around the PrintWriter
+     */
+    public ServletOutputStream getOutputStream() throws java.io.IOException {
+        return msos;
+    }
+ 
+    /**
+     * Return the PrintWriter
+     */
+    public PrintWriter getWriter() throws java.io.IOException {
+        return writer;
     }
 
-    public void setContentType(String s) {
-        log.debug("settting contenttype to" + s);
-    }
-    
-   
+    /**
+     * Return all data that has been written to the PrintWriter.
+     */
     public String toString() {
-        log.debug("getting string");
-        String test = stream.toString();
-        return test;
+        writer.flush();
+        return caw.toString();
     }
-    
-    public java.io.PrintWriter getWriter() {
-        log.debug("Getting the writer");
-        return stream.getWriter();
-    }
-
 }
 
+/**
+ * Wrapper around a HttpServletRequest.
+ */
+class RequestWrapper extends HttpServletRequestWrapper {
+    /**
+     * Public constructor
+     */
+    public RequestWrapper(HttpServletRequest req) {
+        super(req); 
+    }
+}
 
+/**
+ * Wrapper around a PrintWriter, that can cast to a ServletOutputStream
+ */
+class MyServletOutputStream extends ServletOutputStream {
+    private PrintWriter printer;
+
+    /**
+     * Public constructor
+     */
+    public MyServletOutputStream(PrintWriter w) {
+        printer = w;
+    }
+
+    /**
+     * Write a character to the PrintWriter
+     */
+    public void write(int i) {
+        printer.write(i);
+    }
+}
