@@ -10,8 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 
 /**
  * Class for the converion of a expression string to a SQL where clause.
@@ -42,9 +46,9 @@ public class QueryConvertor {
     public static MMJdbc2NodeInterface database;
 
     /**
-     * Creates the queryconverter
-     * @item the query to convert
-     * @item the db the database to use when converting fieldnames
+     * Converts query to a SQL "where"-clause.
+     * @param query the query to convert
+     * @param db the database to use when converting fieldnames
      */
     public static String altaVista2SQL(String query,MMJdbc2NodeInterface db) {
         database=db;
@@ -52,8 +56,8 @@ public class QueryConvertor {
     }
 
     /**
-     * Creates the queryconverter
-     * @item the query to convert
+     * Converts query to a SQL "where"-clause.
+     * @param query the query to convert
      */
     public static String altaVista2SQL(String query) {
         if (query.indexOf("where")!=-1 || query.indexOf("WHERE")!=-1) {
@@ -69,6 +73,37 @@ public class QueryConvertor {
         // log.debug("Converted to: "+buffer.toString());
 
         return buffer.toString();
+    }
+    
+    /**
+     * Converts query to a 
+     * {@link org.mmbase.storage.search.implementation.NodeSearchQuery
+     * NodeSearchQuery} object.
+     *
+     * @param where The constraint.
+     * @param builder The builder for the corresponding nodetype.
+     */
+    public static NodeSearchQuery altaVista2SearchQuery(
+        String where, MMObjectBuilder builder) {
+            
+        NodeSearchQuery query = new NodeSearchQuery(builder);
+        if (where == null || where.trim().length() == 0) {
+            // Empty constraint.
+            
+        } else if (where.substring(0, 6).equalsIgnoreCase("WHERE ")) {
+            // "where"-Clause.
+            // Strip leading "where ".
+            BasicLegacyConstraint constraint 
+                = new BasicLegacyConstraint(where.substring(6));
+            query.setConstraint(constraint);
+            
+        } else {
+            // AltaVista format.
+            DBQuery parsedQuery = new DBQuery(where);
+            Constraint constraint = parsedQuery.toConstraint(query);
+            query.setConstraint(constraint);
+        }
+        return query;
     }
 }
 
@@ -138,6 +173,154 @@ class DBQuery  extends ParseItem {
             ((ParseItem)enum.nextElement()).sqlConversion(result);
         }
     }
+    
+    /**
+     * Converts this query to a constraint for a search query.
+     *
+     * @param SearchQuery The search query.
+     * @return The constraint.
+     */
+    // package access!
+    Constraint toConstraint(SearchQuery query) {
+        BasicCompositeConstraint compositeConstraint = null;
+        BasicFieldValueConstraint fieldValueConstraint = null;
+        
+        Iterator iItems = items.iterator();
+        DBLogicalOperator logicalOperator = null;
+        while (iItems.hasNext()) {
+            
+            // Logical operator requires compositeConstraint.
+            if (logicalOperator != null) {
+                
+                // Create new composite constraint when not present already.
+                if (compositeConstraint == null) {
+                    if (logicalOperator.logOperator == DBLogicalOperator.OR) {
+                        compositeConstraint
+                            = new BasicCompositeConstraint(
+                                CompositeConstraint.LOGICAL_OR);
+                    } else {
+                        compositeConstraint
+                            = new BasicCompositeConstraint(
+                                CompositeConstraint.LOGICAL_AND);
+                    }
+                    compositeConstraint.addChild(fieldValueConstraint);
+                    
+                // If a composite constraint is already present, add a new 
+                // child composite constraint if the logical operator is 
+                // not compatible.
+                } else if (compositeConstraint.getLogicalOperator() 
+                        == CompositeConstraint.LOGICAL_AND) {
+                    if (logicalOperator.logOperator 
+                            == DBLogicalOperator.OR) {
+                        BasicCompositeConstraint compositeConstraint2
+                            = new BasicCompositeConstraint(
+                                CompositeConstraint.LOGICAL_OR);
+                        compositeConstraint2.addChild(compositeConstraint);
+                        compositeConstraint = compositeConstraint2;
+                    }
+                } else if (compositeConstraint.getLogicalOperator() 
+                        == CompositeConstraint.LOGICAL_OR) {
+                    if (logicalOperator.logOperator 
+                            != DBLogicalOperator.OR) {
+                        BasicCompositeConstraint compositeConstraint2
+                            = new BasicCompositeConstraint(
+                                CompositeConstraint.LOGICAL_AND);
+                        compositeConstraint2.addChild(compositeConstraint);
+                        compositeConstraint = compositeConstraint2;
+                    }
+                }
+            }
+     
+            DBConditionItem condition = (DBConditionItem) iItems.next();
+           
+            // Find corresponding field in query.
+            StepField field = null;
+            Iterator iFields = query.getFields().iterator();
+            while (iFields.hasNext()) {
+                StepField field2 = (StepField) iFields.next();
+                if ((condition.prefix == null 
+                        || field2.getStep().getAlias().equals(condition.prefix))
+                    && field2.getFieldName().equals(condition.fieldName)) {
+                    field = field2;
+                    break;
+                }
+            }
+
+            // Throw exception when step not found.
+            if (field == null) {
+                throw new IllegalStateException("Field with name '" 
+                    + condition.fieldName + "' and " 
+                    + (condition.prefix == null? "no prefix": "prefix '" + condition.prefix + "'") 
+                    + "' not found in this query: " + query);
+            }
+            
+            int fieldType = field.getType();
+            if (fieldType == FieldDefs.TYPE_STRING 
+                || fieldType == FieldDefs.TYPE_XML) {
+                // String field.
+                fieldValueConstraint = new BasicFieldValueConstraint(field, condition.value.getValue());
+                fieldValueConstraint.setCaseSensitive(false);
+            } else {
+                // Numerical field.
+                Object numericalValue = new Double(condition.value.getValue());
+                fieldValueConstraint = new BasicFieldValueConstraint(field, numericalValue);
+            }
+            
+            switch (condition.operator) {
+                case DBConditionItem.NOTEQUAL:
+                    fieldValueConstraint.setOperator(FieldValueConstraint.NOT_EQUAL);
+                    break;
+                    
+                case DBConditionItem.EQUAL:
+                    if (fieldType == FieldDefs.TYPE_STRING
+                        || fieldType == FieldDefs.TYPE_XML) {
+                        fieldValueConstraint.setOperator(FieldValueConstraint.LIKE);
+                    } else {
+                        fieldValueConstraint.setOperator(FieldValueConstraint.EQUAL);
+                    }
+                    break;
+
+                case DBConditionItem.GREATER:
+                    fieldValueConstraint.setOperator(FieldValueConstraint.GREATER);
+                    break;
+                
+                case DBConditionItem.SMALLER:
+                    fieldValueConstraint.setOperator(FieldValueConstraint.LESS);
+                    break;
+                
+                case DBConditionItem.GREATEREQUAL:
+                    fieldValueConstraint.setOperator(FieldValueConstraint.GREATER_EQUAL);
+                    break;
+                
+                case DBConditionItem.SMALLEREQUAL:
+                    fieldValueConstraint.setOperator(FieldValueConstraint.LESS_EQUAL);
+                    break;
+
+                default:
+                    // Unknown operator.
+                    throw new IllegalStateException(
+                        "Invalid operator value: " + condition.operator);
+                    
+            }
+            
+            // Add to compositeConstraint when present.
+            if (compositeConstraint != null) {
+                fieldValueConstraint.setInverse(logicalOperator.logOperator 
+                    == DBLogicalOperator.NOT);
+                compositeConstraint.addChild(fieldValueConstraint);
+            }
+            
+            if (iItems.hasNext()) {
+                logicalOperator = (DBLogicalOperator) iItems.next();
+            }
+        }
+        
+        if (compositeConstraint != null) {
+            return compositeConstraint;
+        } else {
+            return fieldValueConstraint;
+        }
+    }
 }
 
 /**
@@ -158,9 +341,28 @@ class DBConditionItem extends ParseItem {
     public static final int NOTEQUAL=0, EQUAL = 1, GREATER = 2, SMALLER = 3, GREATEREQUAL=4,SMALLEREQUAL=5;
     // logger
     //private static Logger log = Logging.getLoggerInstance(DBConditionItem.class.getName());
-    String identifier;
-    int operator;
-    DBValue value;
+    
+    /** The fieldname. */
+    String fieldName = null;
+    
+    /** The table alias prefix (if present). */
+    String prefix = null;
+    
+    /** 
+     * The field identifier as it appears in SQL expressions, with 
+     * table alias prefix (if present), and the fieldname converted to
+     * an allowed fieldname.
+     */
+    String identifier = null;
+
+    /** 
+     * The comparison operator, must be one of the constants defined 
+     * in this class. 
+     */
+    int operator = 0;
+
+    /** The value to compare to. */
+    DBValue value = null;
 
     /**
      * Creates the boolean expression
@@ -171,28 +373,27 @@ class DBConditionItem extends ParseItem {
         char operatorChar;
 
         conditionPos = item.indexOf('=');
-        if (conditionPos == -1) throw new IllegalArgumentException("No '=' found in query item '" + item + "'");
-        identifier = item.substring(0, conditionPos);
-        boolean hasPrefix = false;
-        String prefix = "";
-        int prefixPos = identifier.indexOf(".");
-        if (prefixPos!=-1) {
-            hasPrefix = true;
-            prefix = identifier.substring(0,prefixPos);
-            identifier = identifier.substring((prefixPos+1),identifier.length());
-            //log.debug("prefix="+prefix);
-            //log.debug("identifier="+identifier);
+        if (conditionPos == -1) {
+            throw new IllegalArgumentException(
+            "No '=' found in query item '" + item + "'");
+        }
+        
+        fieldName = item.substring(0, conditionPos);
+        int prefixPos = fieldName.indexOf(".");
+        if (prefixPos != -1) {
+            prefix = fieldName.substring(0, prefixPos);
+            fieldName = fieldName.substring(prefixPos + 1);
         }
         if (QueryConvertor.database!=null) {
-            identifier=QueryConvertor.database.getAllowedField(identifier);
+            identifier=QueryConvertor.database.getAllowedField(fieldName);
+        } else {
+            identifier = fieldName;
         }
-        if (hasPrefix) {
+        if (prefix != null) {
             identifier = prefix +"."+ identifier;
         }
 
         value = DBValue.abstractCreation(item.substring(conditionPos+2));
-        //log.debug("Id="+identifier);
-        //log.debug("val="+value);
 
         operatorChar = item.charAt(conditionPos + 1);
         // log.debug("char="+operatorChar);
@@ -265,6 +466,14 @@ class DBConditionItem extends ParseItem {
  * Basic Class for storing values.
  */
 class DBValue extends ParseItem {
+    
+    private String value = null;
+    
+    /**
+     * Constructor, only subclasses can be instantiated.
+     */
+    protected DBValue() {}
+    
     /**
      * Determines whether a value is a string, a string with wildcards, or
      * a number, and returns the appropriate class.
@@ -282,24 +491,41 @@ class DBValue extends ParseItem {
         else
             return new DBNumberValue(value);
     }
+    
+    /**
+     * Sets value property.
+     *
+     * @param value The string representation of the value.
+     */
+    protected void setValue(String value) {
+        this.value = value;
+    }
+    
+    /**
+     * Gets value property.
+     *
+     * @return The string representation of the value.
+     */
+    public String getValue() {
+        return value;
+    }
 }
 
 /**
  * Class for storing numeric values.
  */
 class DBNumberValue extends DBValue {
-    String value;
-
     /**
      * Creates the numeric value
      * @value the value to convert
      */
     public DBNumberValue(String value) {
         // Protection against empty numbers
-        if (value==null || value.length()==0) {
-            value=""+Integer.MIN_VALUE;
+        if (value == null || value.length() == 0) {
+            setValue(Integer.toString(Integer.MIN_VALUE));
+        } else {
+            setValue(value);
         }
-        this.value = value;
     }
 
     /**
@@ -307,7 +533,7 @@ class DBNumberValue extends DBValue {
      * @param result the stringbuffer to which to add the expression
      */
     public void sqlConversion(StringBuffer result) {
-        result.append(value);
+        result.append(getValue());
     }
 }
 
@@ -316,17 +542,12 @@ class DBNumberValue extends DBValue {
  * Wraps the result with quotes.
  */
 class DBStringValue extends DBValue {
-    // logger
-    //private static Logger log = Logging.getLoggerInstance(DBStringValue.class.getName());
-    String value;
-
     /**
      * Creates the string value
      * @value the value to convert
      */
     public DBStringValue(String value) {
-        this.value = value;
-        // log.debug("New stringvalue:"+ value);
+        setValue(value);
     }
 
     /**
@@ -334,7 +555,7 @@ class DBStringValue extends DBValue {
      * @param result the stringbuffer to which to add the expression
      */
     public void sqlConversion(StringBuffer result) {
-        result.append('\'').append(value).append('\'');
+        result.append("'").append(getValue()).append("'");
     }
 
 }
@@ -345,29 +566,15 @@ class DBStringValue extends DBValue {
  * SQL-wildcards.
  */
 class DBWildcardStringValue extends DBValue {
-    public static final char SINGLE = 0, MULTIPLE = 1;
-    Vector conditions;
-
     /**
      * Creates the wildcarded string value
      * @value the value to convert
      */
     public DBWildcardStringValue(String value) {
-        StringTokenizer parser = new StringTokenizer(value,"*?",true);
-        String token;
-
-        conditions = new Vector();
-
-        while (parser.hasMoreTokens()) {
-            token = parser.nextToken();
-            if (token.equals("*"))
-                conditions.addElement(new Integer(MULTIPLE));
-            else {
-                if (token.equals("?"))
-                    conditions.addElement(new Integer(SINGLE));
-                else conditions.addElement(token);
-            }
+        if (value == null) {
+            value = "";
         }
+        setValue(value.replace('*', '%').replace('?', '_'));
     }
 
     /**
@@ -375,26 +582,7 @@ class DBWildcardStringValue extends DBValue {
      * @param result the stringbuffer to which to add the expression
      */
     public void sqlConversion(StringBuffer result) {
-        result.append("'");
-        Enumeration enum = conditions.elements();
-        Object item;
-
-        while (enum.hasMoreElements()) {
-            item = enum.nextElement();
-            if (item instanceof String)
-                result.append(item);
-            else if (item instanceof Integer) {
-                switch (((Integer)item).intValue()) {
-                case SINGLE:
-                    result.append('_');
-                    break;
-                case MULTIPLE:
-                    result.append('%');
-                    break;
-                }
-            }
-        }
-        result.append("'");
+        result.append("'").append(getValue()).append("'");
     }
 }
 
