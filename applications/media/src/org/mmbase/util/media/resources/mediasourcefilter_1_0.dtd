@@ -1,17 +1,9 @@
 <!-- Author Rob Vermeulen (VPRO) -->
-<!ELEMENT mediasourcefilter (chain,preferredSource?,realaudio?)>
+<!ELEMENT mediasourcefilter (chain, filterConfigs?)>
 
 <!ELEMENT chain (filter+)>
 <!ELEMENT filter (#PCDATA)>
 
-<!ELEMENT preferredSource (source+)>
-<!ELEMENT source (#PCDATA)>
-<!ATTLIST source
-  format CDATA #REQUIRED
->
+<!ENTITY % configs ""><!-- default no configs, add them in the DOCTYPE of mediasourcefilter.xml -->
 
-<!ELEMENT realaudio (minspeed,maxspeed,minchannels,maxchannels)>
-<!ELEMENT minspeed (#PCDATA)>
-<!ELEMENT maxspeed (#PCDATA)>
-<!ELEMENT minchannels (#PCDATA)>
-<!ELEMENT maxchannels (#PCDATA)>
+<!ELEMENT filterConfigs (%configs;)>
