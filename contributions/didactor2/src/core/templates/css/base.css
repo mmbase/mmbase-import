@@ -234,7 +234,7 @@ input.search {
 	width: 1px;
 	display: inline;
 	white-space: nowrap;
-	margin: 0px;
+	margin: 0em 1em 0em 1em;
 	padding: 0em 0.8em 0.1em 1em }
 
 .spacer {

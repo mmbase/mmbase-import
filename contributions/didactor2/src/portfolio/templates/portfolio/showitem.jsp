@@ -6,7 +6,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="none" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="asis" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
@@ -31,6 +31,7 @@
 </mm:notpresent>
 
 <mm:import id="mayread">false</mm:import>
+<mm:isgreaterthan referid="user" value="0">
 <mm:node number="$currentitem">
     <mm:relatednodes type="portfoliopermissions" max="1">
         <mm:field name="readrights">
@@ -60,6 +61,7 @@
         </mm:list>
 
 </mm:node>
+</mm:isgreaterthan>
 
 <mm:compare referid="mayread" value="true">
 
@@ -75,7 +77,9 @@
 
 <%-- check if the use may edit this entry --%>
 <mm:import id="mayeditthis">false</mm:import>
+
 <%-- user may edit if he's a teacher of this portfolio's owner--%>
+<mm:isgreaterthan referid="user" value="0">
 <di:hasrole role="teacher">
     <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
          <mm:import id="mayeditthis" reset="true">true</mm:import>
@@ -110,6 +114,9 @@
 
 </mm:node>
 </mm:compare>
+
+</mm:isgreaterthan>
+
 
 <mm:import externid="add_message"/>
 <mm:present referid="add_message">
