@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.95 2004-05-10 17:29:44 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.96 2004-06-17 16:28:06 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -850,35 +850,39 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     /**
      * Denies access to this page and sends are redirect to the login-page (given by login page attribute).
-     * @param The reason for deny, can be LOGINPAGE_DENYREASON_NEED or LOGINPAGE_DENYREASON_FAIL.
+     * @param reason       The reason for deny, can be LOGINPAGE_DENYREASON_NEED or LOGINPAGE_DENYREASON_FAIL.
+     * @param excactReason A  further specification of the reason (any String)
      * @return SKIP_BODY
      */
     private int denyLoginPage(String reason, String exactReason) throws JspTagException {
         try {
 
-            String toFile = loginpage.getString(this);
-
             // find this page relative to login-page
-
             String referrerPage = null;
 
             String requestURI = request.getRequestURI();
             if (requestURI.endsWith("/")) {
-                referrerPage = "";
+                referrerPage = ".";
             } else {
                 referrerPage = new File(requestURI).getName();
             }
 
-            if (1 == 0) { // XXXXX hmm, should test this in freeze
+
+            /*
+            if (1 == 0) { 
+                // XXXXX hmm, should test this in freeze
+                // making relative urls'.
 
                 String toDir = new File(toFile).getParent();
-                if (toDir == null)
+                if (toDir == null) {
                     toDir = ".";
+                }
                 File servletPath = new File(request.getServletPath());
 
                 String thisDir = servletPath.getParent();
-                if (thisDir == null)
+                if (thisDir == null) {
                     thisDir = ".";
+                }
 
                 String thisFile = servletPath.getName();
 
@@ -888,15 +892,40 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     referrerPage = org.mmbase.util.UriParser.makeRelative(thisDir + "/" + toDir, toDir) + "/" + thisFile;
                 }
             }
+            */
 
-            StringBuffer referrer = new StringBuffer(referrerPage);
-            if (request.getQueryString() != null) {
-                referrer.append("?" + request.getQueryString());
+
+
+            String toFile = loginpage.getString(this);
+
+            String referrer = null;
+
+            // if a 'referrer' is explicitely mentioned in the 'loginpage' attribute (e.g. on a 'dologin' page), we try to honour it.
+            int existingQueryPosition = toFile.indexOf('?');
+            if (existingQueryPosition > 0) {
+                String existingQuery = toFile.substring(existingQueryPosition + 1);
+                log.info("Found existing query " + existingQuery);
+                String[] parameters = existingQuery.split("&");
+                for (int i = 0; i < parameters.length; i++) {
+                    if (parameters[i].startsWith("referrer=")) {
+                        referrer = org.mmbase.util.Encode.decode("escape_url", parameters[i].substring(9));
+                        if (referrer.startsWith("?")) referrer = "." + referrer; // tomcat 5, referrerPage can be "", which is inconvenient, because using it as action for login.jsp whill be empty string, will post to login.jsp again
+                        log.info("Found existing referrer " + referrer);
+                        break;
+                    }
+                }
+            }
+            if (referrer == null) {
+                if (request.getQueryString() != null) {
+                    referrer = referrerPage + "?" + request.getQueryString();
+                } else {
+                    referrer = referrerPage;
+                }
             }
             //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
             RequestDispatcher rd = request.getRequestDispatcher(toFile);
             request.setAttribute("referrerpage", referrerPage);
-            request.setAttribute("referrer", referrer.toString());
+            request.setAttribute("referrer", referrer);
             request.setAttribute("reason", reason);
             request.setAttribute("exactreason", exactReason);
             rd.forward(request, response);
