@@ -4,9 +4,6 @@
 	<status>inactive</status>
 	<classfile>org.mmbase.module.scancache</classfile>
 
-	<!-- <properties>
-     @javadoc
-  -->
 	<properties>
 		<property name="status">active</property>
 		<property name="cacheroot">/tmp/</property>
