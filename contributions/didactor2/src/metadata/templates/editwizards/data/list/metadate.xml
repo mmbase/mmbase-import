@@ -1,5 +1,5 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list fdatapath="relation[@role='posrel']/object[@type='metadate']/../../relation[@role='posrel']/object[@type='metadate']" fparentdatapath="../object[@type='metadata']" minoccurs="0" maxoccurs="*"> 
+<list fdatapath="relation[@role='posrel']/object[@type='metadate']/../../relation[@role='posrel']/object[@type='metadate']" fparentdatapath="../object[@type='metadata']" minoccurs="0" maxoccurs="*" hidecommand="delete-item"> 
   <title>Bijbehorende DatumTijd/Duur</title>
   <item>
     <field fdatapath="field[@name='value']" ftype="data">
