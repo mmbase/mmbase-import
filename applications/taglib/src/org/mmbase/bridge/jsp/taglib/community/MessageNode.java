@@ -204,6 +204,11 @@ public class MessageNode implements Node {
     public NodeList getRelatedNodes(String nodeManager) {
         return getMsg().getRelatedNodes(nodeManager);
     }
+    public NodeList getRelatedNodes(String nodeManager, String role, String direction) {
+        return getMsg().getRelatedNodes(nodeManager, role, direction);
+    }
+
+
 
     public int countRelatedNodes(String type) {
         return getMsg().countRelatedNodes(type);
@@ -248,5 +253,6 @@ public class MessageNode implements Node {
     public boolean mayChangeContext() {
         return true;
     }
+
 
 }
