@@ -37,7 +37,7 @@
 			<prompt>Body</prompt>
 		</field>
 
-		<list destination="people" minoccurs="0" maxoccurs="*">
+		<list role="related" destination="people" minoccurs="0" maxoccurs="*">
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
 				<prompt>People</prompt>
 				<search-filter>
@@ -51,17 +51,19 @@
 			</command>
 
 			<item>
-				<field name="firstname" >
-					<prompt>Field prompt</prompt>
-					<description>Field Description</description>
+				<field ftype="data" name="firstname" >
+					<prompt>first name</prompt>
+				</field>
+				<field ftype="data" name="lastname" >
+					<prompt>last name</prompt>
 				</field>
 			</item>
 			
 			<action type="create">
-				<relation destinationtype="people" role="related">
-				</relation>
+				<relation destinationtype="people" role="related" />
 			</action>
 		</list>
+
 		<list role="related" destination="images">
 			<command name="search" nodepath="images" fields="title" age="-1">
         <prompt>Images</prompt>
@@ -70,11 +72,9 @@
 				<field name="title" ftype="image" />
 			</item>
 			<action type="create">
-				<relation destinationtype="images">
-					
-				</relation>
+				<relation destinationtype="images" />					
 			</action>
-
 		</list>
+
 	</form-schema>
 </wizard-schema>
