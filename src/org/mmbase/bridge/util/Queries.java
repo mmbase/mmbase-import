@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.30 2004-02-23 19:01:02 pierre Exp $
+ * @version $Id: Queries.java,v 1.31 2004-02-26 22:09:28 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -34,6 +34,7 @@ public class Queries {
 
     /**
      * Translates a string to a search direction constant.
+     * @see ClusterBuilder#getSearchDir
      */
     public static int getRelationStepDirection(String search) {
         if (search == null) {
@@ -614,7 +615,7 @@ public class Queries {
 
     public static List addFields(Query query, String fields) {
         List result = new ArrayList();
-        if (fields == null) {
+        if (fields == null || fields.equals("")) {
             return result;
         }
         List list = StringSplitter.split(fields);
@@ -737,6 +738,67 @@ public class Queries {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the NodeQuery returning  the given Node. This query itself is not very usefull, because you already have its result (the node), but it is useful as 
+     * a base query for many other goals.
+     */
+    public static NodeQuery createNodeQuery(Node node) {
+        NodeManager nm = node.getNodeManager();
+        NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can acept more steops
+        Step step       = query.addStep(nm);
+        query.setNodeStep(step);
+        StepField number = query.getStepField(nm.getField("number"));
+        Constraint constraint = query.createConstraint(number, new Integer(node.getNumber()));
+        query.setConstraint(constraint);
+        return query;
+    }
+
+    /**
+     * Returns a query to find the nodes related to the given node.
+     */
+    public static NodeQuery createRelatedNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
+        NodeQuery query = createNodeQuery(node);
+        if (otherNodeManager == null) otherNodeManager = node.getCloud().getNodeManager("object");
+        RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
+        query.setNodeStep(step.getNext());
+        return query;
+    }
+
+    /**
+     * Returns a query to find the relations nodes of the given node.
+     */
+    public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
+        NodeQuery query = createNodeQuery(node);
+        if (otherNodeManager == null) otherNodeManager = node.getCloud().getNodeManager("object");
+        RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
+        query.setNodeStep(step);
+        return query;
+    }
+
+
+    /**
+     * Add a sortorder (DOWN) on al the 'number' fields of the query. This ensures that the query
+     * result is ordered uniquely.
+     */
+    public static Query sortUniquely(Query q) {
+        List steps = new ArrayList(q.getSteps());
+        Iterator i = q.getSortOrders().iterator();
+        while (i.hasNext()) {
+            SortOrder sortOrder = (SortOrder)i.next();
+            if (sortOrder.getField().getFieldName().equals("number")) {
+                Step step = sortOrder.getField().getStep();
+                steps.remove(step);
+            }
+        }
+        // add sort order on the remaining ones:
+        i = steps.iterator();
+        while (i.hasNext()) {
+            Step step = (Step)i.next();
+            q.addSortOrder(q.createStepField(step, "number"), SortOrder.ORDER_DESCENDING);
+        }
+        return q;
     }
 
 }
