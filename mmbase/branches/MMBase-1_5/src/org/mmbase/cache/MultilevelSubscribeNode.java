@@ -38,8 +38,8 @@ public class MultilevelSubscribeNode implements MMBaseObserver {
 	}
 
 	public synchronized void clearEntrys() {
-		Enumeration e=queue.elements();
-		while (e.hasMoreElements()) {
+        Vector myqueue=(Vector)queue.clone();
+        for (Enumeration e=myqueue.elements(); e.hasMoreElements(); ) {
 			MultilevelCacheEntry n=(MultilevelCacheEntry)e.nextElement();
 			// call the entry's clear that will remove all observers 
 			// too including myself !

@@ -40,13 +40,15 @@ public class MultilevelCacheEntry {
 	}
 
 	public synchronized void clear() {
+        // remove ourselfs from the cache first
+        han.callbackRemove(hash);
+
+        //call all the listeners to unsubscribe myself
 		Enumeration e=listeners.elements();
 		while (e.hasMoreElements()) {
 			MultilevelSubscribeNode l=(MultilevelSubscribeNode)e.nextElement();
 			l.removeCacheEntry(this);
 		}
-		// now remove ourselfs from the cache
-		han.callbackRemove(hash);
 	}	
 
 	public Object getObject() {
