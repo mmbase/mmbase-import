@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.39 2004-11-11 17:44:44 michiel Exp $
+ * @version $Id: Utils.java,v 1.40 2004-12-03 14:45:35 pierre Exp $
  */
 
 public class Utils {
@@ -304,12 +304,12 @@ public class Utils {
             XObject x = null;
             // select based on cloud locale setting
             if (cloud != null) {
-                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");                
+                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
             }
             String xs = (x == null ? "" : x.str());
             // mm: according to javadoc of xalan 2.5.2,  x cannot be null, so I don't know if it was possible in older xalans, so just to be on the safe side
 
-            // if not found or n.a., just grab the first you can find 
+            // if not found or n.a., just grab the first you can find
             if (xs.equals("")) {
                 x = XPathAPI.eval(node, xpath);
             }
@@ -612,10 +612,12 @@ public class Utils {
        of plain data). Else the template is assumed to be a valid attribute template.
     */
     public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map params) {
-        if (attributeTemplate==null) return null;
+        if (attributeTemplate == null) return null;
         StringBuffer result = new StringBuffer();
         String template = fillInParams(attributeTemplate, params);
-        if (plainTextIsXpath && template.indexOf("{") == -1){template = "{" + template + "}";}
+        if (plainTextIsXpath && template.indexOf("{") == -1) {
+            template = "{" + template + "}";
+        }
         java.util.StringTokenizer templateParts = new java.util.StringTokenizer(template,"{}",true);
         while (templateParts.hasMoreElements()){
             String part = templateParts.nextToken();
