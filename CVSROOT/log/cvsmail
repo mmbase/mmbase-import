@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.17 2004-11-23 10:27:58 michiel Exp $
+#  $Id: cvsmail,v 1.18 2004-11-26 20:10:01 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -13,7 +13,7 @@ my ($log_filename, $user, $files, $toaddress) = @ARGV;
 
 # configuration
 my $basedir     = "/var/cvs/CVSROOT/log";
-my $defaulttoaddress   = "cvs\@mmbase.org";
+my $defaulttoaddress   = "cvs\@lists.mmbase.org";
 my $cvs         = "/usr/bin/cvs";
 
 
@@ -33,6 +33,7 @@ my $dir = shift @files;
 
 my $child;
 if ($child = fork()) {
+	print $child;
 	# would need to disown here!
     exit 0; # be 'ready' immediatiely, don't let the commiter wait
 } else { 
@@ -58,7 +59,7 @@ if ($child = fork()) {
     # mail subject:
     my $subject = "".$dir." ";
     for my $file (@files) {
-	$subject .= (split(",", $file))[0] . " ";
+		$subject .= (split(",", $file))[0] . " ";
     }
 
     # mail message           
