@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.1.2.2 2002-03-11 11:05:47 pierre Exp $
+ * @version $Id: Dove.java,v 1.1.2.3 2002-03-18 16:53:15 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -232,7 +232,6 @@ public class Dove extends AbstractDove {
                         String role=(String)relation.getAttribute(ELM_ROLE);
                         if ("".equals(role)) role=null;
                         String destinationType=(String)relation.getAttribute(ELM_DESTINATIONTYPE);
-                        if (destinationType==null)
                         if (("".equals(destinationType)) || (destinationType==null)) {
                             destinationType=(String)relation.getAttribute(ELM_DESTINATION);
                         }
