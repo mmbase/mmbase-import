@@ -16,9 +16,9 @@ package org.mmbase.module.database;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: UnsupportedDatabaseOperationException.java,v 1.1 2002-03-21 10:06:02 pierre Exp $
+ * @version $Id: UnsupportedDatabaseOperationException.java,v 1.2 2002-04-08 11:59:27 pierre Exp $
  */
-public class UnsupportedDatabaseOperationException extends UnsupportedOperationException {
+public class UnsupportedDatabaseOperationException extends StorageException {
 
     public UnsupportedDatabaseOperationException(String s) {
         super(s);
