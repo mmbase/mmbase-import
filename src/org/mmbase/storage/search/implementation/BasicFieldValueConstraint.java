@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
@@ -71,8 +71,7 @@ implements FieldValueConstraint {
                 && getField().getStep().getAlias().equals(
                     constraint.getField().getStep().getAlias())
                 && getOperator() == constraint.getOperator()
-                // TODO: compare values based on numerical value, ignoring type.
-                && (value == null? constraint.value == null: value.equals(constraint.value));
+                && BasicStepField.equalFieldValues(value, constraint.value);
         } else {
             return false;
         }

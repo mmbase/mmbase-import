@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -88,6 +88,61 @@ public class BasicSqlHandler implements SqlHandler {
         return !constraint.isCaseSensitive()
         && (constraint.getField().getType() == FieldDefs.TYPE_STRING
         || constraint.getField().getType() == FieldDefs.TYPE_XML);
+    }
+    
+    /**
+     * Represents field value as a string, appending the result to a 
+     * stringbuffer.
+     * <p>
+     * Depending on the fieldType:
+     * <ul>
+     * <li> String values are converted to SQL-formatted string, 
+     *  surrounded by single quotes, 
+     * <li>Numerical values are represented as integer (integral values)
+     *  or floating point.
+     * </ul>
+     *
+     * @param sb The stringbuffer to append to.
+     * @param value The field value.
+     * @param toLoserCase True when <code>String</code> must be converted to
+     *        lower case.
+     * @param fieldType The field type.
+     */
+    // TODO: elaborate javadoc, add to SqlHandler interface?
+    public void appendFieldValue(StringBuffer sb, Object value,
+            boolean toLowerCase, int fieldType) {
+        if (fieldType == FieldDefs.TYPE_STRING
+        || fieldType == FieldDefs.TYPE_XML) {
+
+            // escape single quotes in string
+            String stringValue = toSqlString((String) value);
+
+            // to lowercase when case insensitive
+            if (toLowerCase) {
+                stringValue = stringValue.toLowerCase();
+            }
+            sb.append("'").
+            append(stringValue).
+            append("'");
+        } else {
+            // Numerical field: 
+            // represent integeral Number values as integer, other 
+            // Number values as floating point, and String values as-is.
+            if (value instanceof Number) {
+                Number numberValue = (Number) value;
+                if (numberValue.doubleValue() 
+                        == numberValue.intValue()) {
+                    // Integral Number value.
+                    sb.append(numberValue.intValue());
+                } else {
+                    // Non-integral Number value.
+                    sb.append(numberValue.doubleValue());
+                }
+            } else {
+                // String value.
+                sb.append((String) value);
+            }
+        }
     }
     
     /**
@@ -525,22 +580,8 @@ public class BasicSqlHandler implements SqlHandler {
                 Iterator iValues = values.iterator();
                 while (iValues.hasNext()) {
                     Object value = iValues.next();
-                    if (fieldType == FieldDefs.TYPE_STRING
-                    || fieldType == FieldDefs.TYPE_XML) {
-                        
-                        // escape single quotes in string
-                        String stringValue = toSqlString((String) value);
-                        
-                        // to lowercase when case insensitive
-                        if (!fieldConstraint.isCaseSensitive()) {
-                            stringValue = stringValue.toLowerCase();
-                        }
-                        sb.append("'").
-                        append(stringValue).
-                        append("'");
-                    } else {
-                        sb.append(value);
-                    }
+                    appendFieldValue(sb, value, 
+                        !fieldConstraint.isCaseSensitive(), fieldType);
                     if (iValues.hasNext()) {
                         sb.append(",");
                     }
@@ -613,22 +654,8 @@ public class BasicSqlHandler implements SqlHandler {
                     FieldValueConstraint fieldValueConstraint
                     = (FieldValueConstraint) fieldCompareConstraint;
                     Object value = fieldValueConstraint.getValue();
-                    if (fieldType == FieldDefs.TYPE_STRING
-                    || fieldType == FieldDefs.TYPE_XML) {
-                        
-                        // escape single quotes in string
-                        String stringValue = toSqlString((String) value);
-                        
-                        // to lowercase when case insensitive
-                        if (!fieldConstraint.isCaseSensitive()) {
-                            stringValue = stringValue.toLowerCase();
-                        }
-                        sb.append("'").
-                        append(stringValue).
-                        append("'");
-                    } else {
-                        sb.append(value);
-                    }
+                    appendFieldValue(sb, value, 
+                        !fieldConstraint.isCaseSensitive(), fieldType);
                 } else if (fieldCompareConstraint instanceof CompareFieldsConstraint) {
                     // CompareFieldsConstraint
                     CompareFieldsConstraint compareFieldsConstraint
