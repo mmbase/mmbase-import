@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.18 2002-08-14 14:25:27 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.19 2002-10-04 22:16:03 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -57,30 +57,34 @@ public class XMLBasicReader  {
     public XMLBasicReader(String path) {
         this(path, VALIDATE);
     }
+    public XMLBasicReader(InputSource source) {
+        this(source, VALIDATE);
+    }
 
     public XMLBasicReader(String path, boolean validating) {
+        this(new InputSource("file:///" + path), validating);
+    }
+
+    public XMLBasicReader(InputSource source, boolean validating) {
         try {
             DocumentBuilder dbuilder = getDocumentBuilder(validating);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
-            InputSource source = new InputSource("file:///" + path);
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
         }
         catch(org.xml.sax.SAXException se) {
-            throw new RuntimeException("failure reading document: " + path + "\n" + se);
+            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + se);
         }
         catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + path + "\n" + ioe);
+            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
 
-    private static DocumentBuilder createDocumentBuilder(boolean validating) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler) {
         DocumentBuilder db;
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
-
 
             // turn validating on, or not
             XMLEntityResolver resolver = new XMLEntityResolver(validating); // strange to ask the resolver is mmbase is initilized
@@ -91,8 +95,6 @@ public class XMLBasicReader  {
             dfactory.setValidating(validate);
             db = dfactory.newDocumentBuilder();
 
-            // set the error handler... which outputs the error's
-            ErrorHandler handler = new XMLErrorHandler();
             db.setErrorHandler(handler);
 
             // set the entity resolver... which tell us where to find the dtd's
@@ -106,6 +108,11 @@ public class XMLBasicReader  {
         return db;
     }
 
+    private static DocumentBuilder createDocumentBuilder(boolean validating) {
+        return createDocumentBuilder(validating, new XMLErrorHandler());
+
+    }
+
 
     public static DocumentBuilder getDocumentBuilder(boolean validating) {
         if (validating == VALIDATE) { 
@@ -116,6 +123,10 @@ public class XMLBasicReader  {
             }
             return altDocumentBuilder;
         }       
+    }
+
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler) {
+        return createDocumentBuilder(validating, handler);
     }
 
     public static DocumentBuilder getDocumentBuilder() {
