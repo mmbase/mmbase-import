@@ -28,16 +28,17 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.58 2004-03-16 12:30:24 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.59 2004-03-16 13:52:04 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
 
-    // sequenceLock is used to synchronize access to the createKey() and createSequence()
-    // methods, so that at least within a JVM no conflicts can occur when obtaining a new key;
-    // Since it is only used for synchronizing on class level, it does not itself contain data.
+    // conatisn a list of buffered keys
     protected static final List sequenceKeys = new LinkedList();
+
+    // maximum size of the key buffer
+    protected static Integer bufferSize = null;
 
     /**
      * Whether the warning about blob on legacy location was given.
@@ -226,27 +227,41 @@ public class DatabaseStorageManager implements StorageManager {
             if (sequenceKeys.size() > 0) {
                 return ((Integer)sequenceKeys.remove(0)).intValue();
             } else try {
+                if (bufferSize==null) {
+                    bufferSize = new Integer(1);
+                    Object bufferSizeAttribute = factory.getAttribute(Attributes.SEQUENCE_BUFFER_SIZE);
+                    if (bufferSizeAttribute != null) {
+                        try {
+                            bufferSize = Integer.valueOf(bufferSizeAttribute.toString());
+                        } catch (NumberFormatException nfe) {
+                            // remove the SEQUENCE_BUFFER_SIZE attribute (invalid value)
+                            factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE,null);
+                            log.error("The attribute 'SEQUENCE_BUFFER_SIZE' has an invalid value(" +
+                                bufferSizeAttribute + "), will be ignored.");
+                        }
+                    }
+                }
                 getActiveConnection();
                 Statement s;
                 String query;
                 Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
                 if (scheme != null) {
-                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
                     logQuery(query);
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
                     s.close();
                 }
                 scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
-                query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
+                query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
                 logQuery(query);
                 s = activeConnection.createStatement();
                 ResultSet result = s.executeQuery(query);
                 if (result.next()) {
                     int keynr = result.getInt(1);
                     // add remaining keys to sequenceKeys
-                    while (result.next()) {
-                        sequenceKeys.add(new Integer(result.getInt(1)));
+                    for (int i = 1; i < bufferSize.intValue(); i++) {
+                        sequenceKeys.add(new Integer(keynr+i));
                     }
                     result.close();
                     s.close();
@@ -258,6 +273,10 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             } catch (SQLException se) {
                 log.error(Logging.stackTrace(se));
+                // wait 2 seconds, so any locks that were clainmed are released.
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException re) {}
                 throw new StorageException(se);
             } finally {
                 releaseActiveConnection();
