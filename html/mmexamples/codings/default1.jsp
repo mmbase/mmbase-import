@@ -14,7 +14,7 @@
       This page is using ISO-8859-1.
     </p>
     <h1>In-page text</h1>
-    <p>CafÃ© tweeÃ«ntwintig</p>
+    <p>Café tweeëntwintig</p>
     <p>CP1252:  <%= org.mmbase.util.transformers.CP1252Surrogator.getTestString() %></p>
     <p>CP1252 escaped:  <mm:write value="<%= org.mmbase.util.transformers.CP1252Surrogator.getTestString() %>" escape="cp1252" /></p>
     <h1>MMBase data</h1>
@@ -112,7 +112,7 @@
   <mm:formatter format="escapexmlpretty">
     <?xml version="1.0" encoding="iso-8859-1"?>
     <mmxf version="1" >
-      <p>CafÃ© tweeÃ«ntwintig</p>
+      <p>Café tweeëntwintig</p>
     </mmxf>
 
   </mm:formatter>
