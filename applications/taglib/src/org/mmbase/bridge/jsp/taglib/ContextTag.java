@@ -370,20 +370,25 @@ public class ContextTag extends ContextReferrerTag {
                 if (resultvec.length > 1) {
                     result = java.util.Arrays.asList(resultvec);
                 } else {
-                    // The norms say that Strings in posts are encoding according to ISO-8859-1.
-                    // But of course, this does not need to be true, so we repair it if necessary
-                    try {
-                        String formEncoding = getHttpRequest().getCharacterEncoding();
-                        if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
-                        if (formEncoding == null) {
-                            // The form encoding was not known, so probably the local was used or ISO-8859-1
-                            // lets make sure it is right:
-                            result = new String(resultvec[0].getBytes(), getDefaultCharacterEncoding());
-                        } else { // the request encoding was knows, so, I think we can suppose that the Parameter value was interpreted correctly.
-                            result = resultvec[0];
+                    String formEncoding = getHttpRequest().getCharacterEncoding();
+                    if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
+                    if (formEncoding == null) {
+                        // Java Servlet Specification Version 2.3 SRV.4.9
+                        // says that a servlet engine should read a request
+                        // as ISO-8859-1 if request.getCharacterEncoding()
+                        // returns null. We override this behaviour because
+                        // the browser propably sends the request in the
+                        // same encoding as the html was send to te browser
+                        // And it is likely that the html was send to the
+                        // browser in the same encoding as the MMBase
+                        // encoding property.
+                        try {
+                            result = new String(resultvec[0].getBytes("ISO-8859-1"), getDefaultCharacterEncoding());
+                        } catch (java.io.UnsupportedEncodingException e) {
+                            throw new JspTagException("Unsupported Encoding: " + e.toString());
                         }
-                    } catch (java.io.UnsupportedEncodingException e) {
-                        throw new JspTagException("Unsupported Encoding: " + e.toString());
+                    } else {
+                        result = resultvec[0];
                     }
                 }
             }
