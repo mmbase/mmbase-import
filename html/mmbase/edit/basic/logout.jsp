@@ -1,7 +1,8 @@
 <%@ include file="page_base.jsp" 
 %><mm:content type="text/html" language="$config.lang" expires="0">
 <mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
-  <mm:import id="userlogon"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
+  <mm:import id="userlogon"><%= "" + cloud.getUser().getIdentifier() %> </mm:import>
+  <mm:log><%= "" + cloud.getUser().getIdentifier() %> </mm:log>
 </mm:cloud>
 <mm:notpresent referid="userlogon">
   <mm:import id="userlogon">--</mm:import>
@@ -11,7 +12,7 @@
   <mm:import id="userlogon" />
 </mm:compare>
 
-<mm:cloud method="logout" sessionname="$config.session" jspvar="cloud" />
+<mm:cloud method="logout" sessionname="$config.session" />
 <mm:write referid="style" escape="none" />
 <title>Logging out</title>
 </head>
