@@ -2274,6 +2274,13 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <example>&lt;!-- Create a JSP-variable `greet' from context variable `hoi', write
      `greet' uppercased to the page --&gt;
 &lt;mm:write referid="hoi" jspvar="greet"&gt;&lt;%= greet.toUpperCase() %&gt;&lt;/mm:write&gt;</example>
+
+    <example><![CDATA[
+<mm:write referid="a" session="abc" />
+<mm:import id="b" externid="abc" from="session" />
+
+<!-- would copy the value of 'a' to 'b'. -->
+]]></example>
   </tag>
   <tag>
     <name>import</name>
@@ -2464,7 +2471,7 @@ like the parameter list or the session (where ever it is available) --&gt;
         <li>
           Use the 'referids' attribute to specify a list of context
           variables to add to the URL. The disadvantage is that you
-          can use another name for the parameter then the name of the
+          can't use another name for the parameter then the name of the
           variable.
         </li>
         <li>
@@ -2644,10 +2651,10 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-         Whether to 'cite' the page. This only works for 'relative'
-         urls on the same server. Only also if you have sufficiently
-         rights to do that. Citing means that the page is acquired
-         directly, so with interpreting/compiling by the web-server.
+         Whether to 'cite' the page. This only works for 'relative' urls on the same server. Only
+         also if you have sufficiently rights to do that. Citing means that the page is acquired
+         directly, so without interpreting/compiling by the web-server. Mainly useful for
+         documenation of page-creating/taglib itself.
       </info>
     </attribute>
     <see tag="param" />
@@ -2662,8 +2669,8 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
     <info>
-    Compares the value of a context variable to a String value. Only if
-    they are equal the body is evaluated.
+      Compares the value of a context variable to a String value. Only if
+      they are equal the body is evaluated.
     </info>
     <see tag="isempty" />
     <see tag="isnotempty" />
@@ -2724,7 +2731,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <see tag="compare" attribute="referid" />
     </attribute>
-    <example>
+    <example>         
           &lt;mm:field name="title"&gt;
             &lt;mm:isempty&gt;
               No title!
