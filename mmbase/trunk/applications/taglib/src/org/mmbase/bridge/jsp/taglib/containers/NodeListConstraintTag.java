@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.1 2003-07-23 17:46:58 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.2 2003-07-25 18:16:33 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -32,13 +32,14 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     protected Attribute container  = Attribute.NULL;
 
+
+    protected Attribute operator   = Attribute.NULL;
+
     protected Attribute field      = Attribute.NULL;
     protected Attribute value      = Attribute.NULL;
 
 
     protected Attribute field2     = Attribute.NULL; // not implemented
-    protected Attribute operator   = Attribute.NULL; // not implemented
-
 
 
     public void setContainer(String c) throws JspTagException {
@@ -53,28 +54,45 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         value = getAttribute(v);
     }
 
+    public void setOperator(String o) throws JspTagException {
+        operator = getAttribute(o);
+    }
+
+    protected int getOperator() throws JspTagException {
+        String op = operator.getString(this).toUpperCase();
+        if (op.equals("<") || op.equals("LESS")) {
+            return FieldCompareConstraint.LESS;
+        } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
+            return FieldCompareConstraint.LESS_EQUAL;
+        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("")) {
+            return FieldCompareConstraint.EQUAL;
+        } else if (op.equals(">") || op.equals("GREATER")) {
+            return FieldCompareConstraint.GREATER;
+        } else if (op.equals(">=") || op.equals("GREATER_EQUAL")) {
+            return FieldCompareConstraint.GREATER_EQUAL;
+        } else if (op.equals("LIKE")) {
+            return FieldCompareConstraint.LIKE;
+        } else if (op.equals("~") || op.equals("REGEXP")) {
+            return FieldCompareConstraint.REGEXP;
+        } else {
+            throw new JspTagException("Unknown Field Compare Operator '" + op + "'");
+        }
+
+    }
 
     public int doStartTag() throws JspTagException {        
         NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
 
-        Step step = (Step) query.getSteps().get(0); // XXXX need a better idea !
+        Constraint newConstraint;
+        if (query instanceof NodeQuery) {
+            NodeQuery nodeQuery = (NodeQuery) query;
+            newConstraint = nodeQuery.createConstraint(nodeQuery.getStepField(field.getString(this)), getOperator(), value.getValue(this));
+        } else {
+            throw new UnsupportedOperationException("not yet implemented");
+        }
 
-        StepField stepField = null;
-        String fieldName = field.getString(this);
-        Iterator fields = query.getFields().iterator();
-        while (fields.hasNext()) {
-            StepField sf = (StepField) fields.next();
-            if (sf.getFieldName().equals(fieldName)) {
-                stepField = sf;
-            }
-        }
-        if (stepField == null) {
-            stepField = query.addField(step, getCloud().getNodeManager(step.getTableName()).getField(fieldName));
-        }
-        
-        Constraint newConstraint = query.createConstraint(stepField, value.getValue(this));
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
             newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
