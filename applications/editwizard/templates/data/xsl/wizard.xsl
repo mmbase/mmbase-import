@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.19 2002-05-27 21:34:50 michiel Exp $
+  @version $Id: wizard.xsl,v 1.20 2002-05-28 11:23:44 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -356,7 +356,7 @@
     </xsl:if>
     <xsl:if test="command[@name='delete-item']">
         <span class="imagebutton" title="{$tooltip_remove}" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
-          <xsl:value-of select="prompt_remove" />
+          <xsl:call-template name="prompt_remove" />
         </span>
     </xsl:if>
 
