@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="en">News articles</title>
+  <title xml:lang="nl">Nieuwsitems</title>
+
+  <action type="load">
+    <relation destination="news" role="templaterel" >
+      <object>
+        <relation destination="images" role="posrel" />
+      </object>
+    </relation>
+  </action>
+
+  <lists include="tasks/sitestatlists.xml" />
+
+  <form-schema id="basics">
+
+    <list include="tasks/news/list_template.xml" />
+
+  </form-schema>
+</wizard-schema>

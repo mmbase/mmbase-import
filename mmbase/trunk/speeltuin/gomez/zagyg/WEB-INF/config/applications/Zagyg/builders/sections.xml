@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="sections" version="0">
+	<status>active</status>
+	<names>
+		<singular xml:lang="nl">Sectie</singular>
+		<singular xml:lang="en">Section</singular>
+		<plural xml:lang="nl">Secties</plural>
+		<plural xml:lang="en">Sections</plural>
+	</names>
+	<descriptions>
+		<description xml:lang="nl">Object voor het opslaan van een sectie in een tekst</description>
+		<description xml:lang="en">Object for a section from a text</description>
+	</descriptions>
+	<properties/>
+	<fieldlist>
+		<field>
+			<gui>
+				<guiname xml:lang="nl">Titel</guiname>
+				<guiname xml:lang="en">Title</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<list>1</list>
+				</positions>
+			</editor>
+			<db>
+				<name xml:lang="en">title</name>
+				<type key="false" notnull="true" size="255" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<gui>
+				<guiname xml:lang="nl">Tekst</guiname>
+				<guiname xml:lang="en">Body</guiname>
+				<guitype>field</guitype>
+			</gui>
+			<db>
+				<name xml:lang="en">body</name>
+				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+			</db>
+		</field>
+	</fieldlist>
+</builder>
