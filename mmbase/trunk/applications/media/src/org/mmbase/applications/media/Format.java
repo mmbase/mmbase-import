@@ -17,14 +17,14 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.3 2003-02-16 18:47:55 michiel Exp $
+ * @version $Id: Format.java,v 1.4 2003-02-17 09:11:28 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
 public final class Format {   // final class!!
     private static Logger log = Logging.getLoggerInstance(Format.class.getName());
 
-    //public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
+    public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
     // in case you want i18ed format strings.
     
     private static List formats = new ArrayList(); // to make possible to get the Format object by int.
@@ -83,6 +83,13 @@ public final class Format {   // final class!!
         log.error("Cannot convert format (" + id + ") to number");
         return UNKNOWN;
     }
+    
+    public String getGUIIndicator(Locale locale) {
+        ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
+        return m.getString("" + number);
+    }
+
+
     public boolean isReal() {
         return this == RA || this == RM || this == RAM;
     }

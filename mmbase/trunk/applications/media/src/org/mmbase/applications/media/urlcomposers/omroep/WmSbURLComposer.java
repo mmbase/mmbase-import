@@ -21,7 +21,7 @@ import java.text.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.1 2003-02-16 18:53:37 michiel Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.2 2003-02-17 09:11:29 michiel Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
@@ -39,6 +39,10 @@ public class WmSbURLComposer extends URLComposer {
     protected String getBandPrefix() {
         return "sb.";
     }
+    public String getGUIIndicator(Locale locale) {
+        return super.getGUIIndicator(locale) + " (smalband)";
+    }
+
 
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = new StringBuffer("mms://media.omroep.nl");
