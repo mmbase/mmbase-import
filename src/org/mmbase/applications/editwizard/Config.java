@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.9 2002-05-17 11:04:18 michiel Exp $
+ * @version $Id: Config.java,v 1.10 2002-05-22 13:44:34 pierre Exp $
  */
 
 public class Config {
@@ -49,6 +49,8 @@ public class Config {
     static public class WizardConfig extends SubConfig {
         public Wizard wiz;
         public String objectNumber;
+        public String parentFid;
+        public String parentDid;
     }
     static public class ListConfig extends SubConfig {
         public String title;

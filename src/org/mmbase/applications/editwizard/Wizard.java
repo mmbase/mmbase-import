@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.21 2002-05-17 10:45:53 pierre Exp $
+ * @version $Id: Wizard.java,v 1.22 2002-05-22 13:44:34 pierre Exp $
  *
  */
 public class Wizard {
@@ -56,7 +56,7 @@ public class Wizard {
     /**
      * @javadoc
      */
-    private  String dataId;
+    private String dataId;
 
     // stores the current formid
     private String currentformid;
@@ -161,9 +161,14 @@ public class Wizard {
         sessionKey = s;
     }
 
+    public String getObjectNumber() {
+        return objectnumber;
+    }
+
     public String getDataId() {
         return dataId;
     }
+
     public Document getData() {
         return data;
     }
@@ -1163,6 +1168,57 @@ public class Wizard {
             }
             break;
         }
+        case WizardCommand.UPDATE_ITEM : {
+            // update an item - replaces all fields of the item with updated values
+            // retrieved from MMbase
+            // The command parameters is a value indicating the number of the node(s) to update.
+            String value = cmd.getValue();
+            NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
+            NodeList originalNodesToUpdate = Utils.selectNodeList(originaldata, ".//*[@number='" + value + "']");
+            if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
+                Node updatedNode=null;
+                try {
+                    updatedNode = dbconn.getDataRaw(value,null);
+                } catch (Exception e) {
+                    break;
+                }
+                log.info("updatednode= "+updatedNode);
+                NodeList updatedFields = Utils.selectNodeList(updatedNode, "./field");
+                log.info("updatednodefields= "+updatedFields);
+
+                Map fieldvalues=new HashMap();
+                for (int j=0; j<updatedFields.getLength(); j++) {
+                    Node fieldnode = updatedFields.item(j);
+                    String fieldname=Utils.getAttribute(fieldnode,"name");
+                    String fieldvalue=Utils.getText(fieldnode);
+                    fieldvalues.put(fieldname,fieldvalue);
+                }
+
+                NodeList inside_objects = Utils.selectNodeList(updatedNode, "*");
+                for (int i=0; i<nodesToUpdate.getLength(); i++) {
+                    Node datanode = nodesToUpdate.item(i);
+                    NodeList fieldsToUpdate = Utils.selectNodeList(datanode, "./field");
+                    for (int j=0; j<fieldsToUpdate.getLength(); j++) {
+                        Node fieldnode = fieldsToUpdate.item(j);
+                        String fieldname=Utils.getAttribute(fieldnode,"name");
+                        String fieldvalue=(String)fieldvalues.get(fieldname);
+                        Utils.storeText(fieldnode,fieldvalue);
+                    }
+                }
+
+                for (int i=0; i<originalNodesToUpdate.getLength(); i++) {
+                    Node datanode = originalNodesToUpdate.item(i);
+                    NodeList fieldsToUpdate = Utils.selectNodeList(datanode, "./field");
+                    for (int j=0; j<fieldsToUpdate.getLength(); j++) {
+                        Node fieldnode = fieldsToUpdate.item(j);
+                        String fieldname=Utils.getAttribute(fieldnode,"name");
+                        String fieldvalue=(String)fieldvalues.get(fieldname);
+                        Utils.storeText(fieldnode,fieldvalue);
+                    }
+                }
+            }
+            break;
+        }
         case WizardCommand.MOVE_UP: ;
         case WizardCommand.MOVE_DOWN: {
             // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
@@ -1214,7 +1270,7 @@ public class Wizard {
             // The command parameters are the fid of the list in which the item need be added,
             // the did of the object under which it should be added (the parent node),
             // and a second id, indicating the object id to add.
-            // The second id can be passed eitehr as a paremeter (the 'otherdid' parameter), in
+            // The second id can be passed either as a paremeter (the 'otherdid' parameter), in
             // which case it involves a newly created item, OR as a value, in which case it is an
             // enumerated list of did's, the result of a search.
             //
@@ -1243,6 +1299,7 @@ public class Wizard {
             // This command takes no parameters.
             try {
                 Element results = dbconn.put(originaldata, data, uploads);
+                log.info(""+results);
                 NodeList errors = Utils.selectNodeList(results,".//error");
                 if (errors.getLength() > 0){
                     String errorMessage = "Errors received from MMBase :";
