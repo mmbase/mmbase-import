@@ -18,11 +18,11 @@
  <body>
   <table width="90%" align="center">
    <tr>
-    <td width="30" />
-    <td align="center">
+    <th width="30" />
+    <th align="center">
       <h1><mm:field  name="title"/></h1>
       <h2><mm:field  name="subtitle"/></h2>
-    </td>
+    </th>
   </tr>
   <tr>
     <td width="30" />
