@@ -46,9 +46,6 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 		this.parent=parent;
 		if (parent.multicasthost!=null) multicastaddress=parent.multicasthost;
 		if (parent.multicastport!=-1) mport=parent.multicastport;
-		System.out.println("M="+multicastaddress);
-		System.out.println("P="+mport);
-
 		init();
 	}
 
