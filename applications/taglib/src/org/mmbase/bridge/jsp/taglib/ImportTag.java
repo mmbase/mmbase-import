@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.37 2003-11-10 20:46:58 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.38 2003-11-14 12:14:41 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -87,20 +87,18 @@ public class ImportTag extends ContextReferrerTag {
             useId = getId();
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
-/*
-        if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
-            if (log.isDebugEnabled()) {
-                log.trace("Resetting variable " + useId);
-            }
-            getContextProvider().getContextContainer().unRegister(useId);
-        }
-*/
+
+        
         if (externid != Attribute.NULL) {
-            if (log.isDebugEnabled()) log.trace("Externid was given " + externid.getString(this));
+
+            boolean res = reset.getBoolean(this, false);
+            if (log.isDebugEnabled()) { 
+                log.trace("Externid was given " + externid.getString(this));
+            }
             if (from == Attribute.NULL) {
-                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId) != null);
+                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId, ! res) != null);
             } else {
-                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId) != null);
+                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId, !res) != null);
             }
 
             if (! found && required.getBoolean(this, false)) {
@@ -140,11 +138,9 @@ public class ImportTag extends ContextReferrerTag {
     }
 
     public int doEndTag() throws JspTagException {
-        if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
-            if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
-            getContextProvider().getContextContainer().unRegister(useId);
+        if (log.isDebugEnabled()) {
+            log.debug("endtag of import with id:" + id + " externid: " + externid.getString(this));
         }
-        if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid.getString(this));
         if (externid != Attribute.NULL) {
             if (! found ) {
                 if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found");
@@ -168,7 +164,8 @@ public class ImportTag extends ContextReferrerTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                getContextProvider().getContextContainer().register(useId, getValue());
+                boolean res = reset.getBoolean(this, false); // should this be more general? Also in other contextwriters?
+                getContextProvider().getContextContainer().register(useId, getValue(), !res);
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time
