@@ -1,9 +1,13 @@
-<%-- Need to know the real servername sometimes --%><%!
-String  getHost() { return org.mmbase.applications.media.urlcomposers.Config.host; }
-String thisServer(javax.servlet.http.HttpServletRequest request, String url) { 
+<%!
+ // Need to know the real servername sometimes
+ String  getHost() { 
+     return org.mmbase.applications.media.urlcomposers.Config.host; 
+ }
+ String thisServer(javax.servlet.http.HttpServletRequest request, String url) { 
     return "http://" + getHost() + request.getContextPath() + url;
-} %><mm:context id="config">
- <mm:import id="configsubmitted" externid="config" from="parameters" />
+ } 
+%><mm:context id="config"
+><mm:import id="configsubmitted" externid="config" from="parameters" />
 
  <mm:present referid="configsubmitted">
     <%-- for config-page --%>
@@ -23,20 +27,16 @@ String thisServer(javax.servlet.http.HttpServletRequest request, String url) {
   <mm:write  referid="quality"    cookie="mediaeditors_quality" />
   <mm:write  referid="player"     cookie="mediaeditors_player" />
   
-</mm:context>
-<% 
+</mm:context><% 
    java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; 
    java.util.Map options = null;
-%>
-<mm:write referid="config.lang" jspvar="lang" vartype="string"><%
+%><mm:write referid="config.lang" jspvar="lang" vartype="string" write="false"
+><%
   locale  =  new java.util.Locale(lang, "");
   m = java.util.ResourceBundle.getBundle("org.mmbase.applications.media.resources.mediaedit", locale);
   options = new java.util.HashMap();
   options.put("locale", locale);
   options.put("host", getHost());
 
-%>
-</mm:write>
-
-
+%></mm:write>

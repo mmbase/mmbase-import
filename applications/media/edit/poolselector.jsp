@@ -25,9 +25,11 @@
     </ul>
     <hr />
     <p align="right">
+      <a target="content" href="<mm:url page="help_${config.lang}.jsp" />">Help</a>
+      |      
       <a href="<mm:url page="search.jsp" />">Search</a>
- |
-    <a href="<mm:url page="config/?referrer=../poolselector.jsp" />">Config</a>
+      |
+      <a href="<mm:url page="config/?referrer=../poolselector.jsp" />">Config</a>
     </p>
    </mm:node>
   </body>
