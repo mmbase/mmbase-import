@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.32 2004-01-08 15:20:26 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.33 2004-09-17 09:59:09 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -231,7 +231,7 @@ public class ObjectTypes extends TypeDef {
         // only delete when builder is completely empty...
         MMObjectBuilder builder = getBuilder(node);
         if (builder == null) {
-            throw new RuntimeException("I can only delete active builders(otherwise we table's could stay in database..)");
+            throw new RuntimeException("Cannot delete inactive builders (because it is unknown what the state of the table in the database is)");
         }
         if (builder != null && builder.size() > 0) {
             throw new RuntimeException("Cannot delete node which represents a builder, (otherwise information could get lost..)");
