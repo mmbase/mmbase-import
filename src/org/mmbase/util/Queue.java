@@ -18,8 +18,33 @@ import java.util.*;
  */
 public class Queue {
 
-    public int appendTimeoutTime;    // how long to wait for an append() or get()
-    public int getTimeoutTime;    // before checking to see if we should give up
+    /**
+     * Default size of 32 for the queue if none is specified.
+     */
+    public static int DEFAULT_QUEUE_SIZE = 32;
+
+    /**
+     * Default timeout of 0 for a blocking append call.
+     * Not used
+     */
+    public static int DEFAULT_APPEND_TIMEOUT = 0;
+
+    /**
+     * Default timeout of 0 for a blocking get call.
+     * Not used
+     */
+    public static int DEFAULT_GET_TIMEOUT = 0;
+
+    /**
+     * The time to wait until an attempt to append an item times out.
+     * Not used
+     */
+    public int appendTimeoutTime;
+    /**
+     * The time to wait until an attempt to get an item times out.
+     * Not used
+     */
+    public int getTimeoutTime;
 
     // the fields below should be private
 
@@ -58,21 +83,6 @@ public class Queue {
     private int first;            // pointer to last item in queue
     private int count;            // current # of items in queue
     private int maxcount;        // max # of items to be allowed in queue
-
-    /**
-     * Default size of 32 for the queue if none is specified.
-     */
-    public static int DEFAULT_QUEUE_SIZE = 32; // seems reasonable, I guess
-
-    /**
-     * Default timeout of 0 for a blocking append call
-     */
-    public static int DEFAULT_APPEND_TIMEOUT = 0; // by default we don't care about timeouts
-
-    /**
-     * Default timeout of 0 for a blocking get call
-     */
-    public static int DEFAULT_GET_TIMEOUT = 0; // by default we don't care about timeouts
 
     /**
      * Constructs the queue with the default queue size set to
