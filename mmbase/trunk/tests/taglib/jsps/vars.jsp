@@ -14,6 +14,8 @@
   <mm:import externid="a" from="parent" required="true"/>
 </mm:context>
 
+<mm:write referid="a" />, ${a}
+
 <mm:context>
   <mm:stringlist referid="list">    
     <mm:first>
