@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.15 2001-03-09 13:02:33 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.16 2001-03-13 11:40:16 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -28,6 +28,9 @@ public class DayMarkers extends MMObjectBuilder {
 	private int day = 0; // current day number/count
 	//private Hashtable daycache = new Hashtable(); 	// day -> mark
 	private TreeMap daycache = new TreeMap();           // day -> mark, but ordered
+
+	private int smallestMark = 0; // will be queried when this builder is started
+	private int smallestDay  = 0; // will be queried when this builder is started
 
 	/**
 	 * Put in cache. This function essentially does the casting to
@@ -39,8 +42,30 @@ public class DayMarkers extends MMObjectBuilder {
 		}
 	}
 
-	public DayMarkers() {
+	public DayMarkers() {		
 		day = currentDay();
+
+	}
+
+	public boolean init() {
+		log.debug("Init of DayMarkers");
+		boolean result;
+		result = super.init();
+		try {
+			MultiConnection con = mmb.getConnection();
+			Statement stmt=con.createStatement();		
+			ResultSet rs=stmt.executeQuery("select number, daycount from " + mmb.baseName + "_" + tableName + " order by number");
+			if (rs.next()) {
+				smallestMark   = rs.getInt(1);
+				smallestDay    = rs.getInt(2);
+			} 
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			log.error("SQL Exception " + e + ". Could not find smallestMarker, smallestDay");
+			result = false;
+		}
+		return result;
 	}
 
 	/**
@@ -147,7 +172,7 @@ public class DayMarkers extends MMObjectBuilder {
 		if (con==null) { log.error("Could not get connection to database"); return(-1);} 
 		try {
 			Statement stmt=con.createStatement();
-			String query = "select mark, daycount from " + mmb.baseName + "_daymarks where mark < "+ nodeNumber + " order by -daycount";
+			String query = "select mark, daycount from " + mmb.baseName + "_" + tableName + " where mark < "+ nodeNumber + " order by -daycount";
 			// mark < in stead of mark = will of course only be used in database with are not on line always, such 
 			// that some days do not have a mark.
 			log.debug(query);
@@ -207,6 +232,15 @@ public class DayMarkers extends MMObjectBuilder {
 			return(result.intValue());
 		}
 		log.debug("could not be found in cache");
+
+
+		if (wday < smallestDay) { // will not be possible to find in database
+			if (log.isDebugEnabled() ) {
+				log.debug("Day " + wday + " is smaller than smallest in database");
+			}
+			return 0;
+		}
+		
 		if (mmb==null) return(-1);
 		if (wday<=day) {
 			try {
@@ -215,11 +249,12 @@ public class DayMarkers extends MMObjectBuilder {
 				Statement stmt=con.createStatement();
 				ResultSet rs=stmt.executeQuery("select mark, daycount from "+mmb.baseName+"_daymarks where daycount >= " + wday + " order by daycount");
 				if (rs.next()) {
-					log.debug("found in db, will be inserted in cache");
 					int tmp=rs.getInt(1);
 					int founddaycount = rs.getInt(2);
 					if (founddaycount != wday) { 
-						log.error("Could not find day " + wday + ", surrogated with " + founddaycount);
+						log.error("Could not find day " + wday + ", surrogated with " + founddaycount);						
+					} else {
+						log.debug("Found in db, will be inserted in cache");
 					}
 					cachePut(wday, tmp);
 					stmt.close();
