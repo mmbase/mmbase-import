@@ -247,13 +247,13 @@
        <mm:node referid="pid$forumid"> 
          login: <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="pid$forumid" />"><mm:field name="account" /></a> 
 	 <mm:compare referid="logoutmodetype" value="open">
-         [<a href="logout.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="mlg_Logout" /></a>]
+         [<a href="logout.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="mlg.Logout" /></a>]
          </mm:compare>
 
        </mm:node> 
     </mm:compare>
     <mm:compare referid="pid$forumid" value="-1" >
-      <b><mm:write referid="mlg_Anonymous" /></b>
+      <b><mm:write referid="mlg.Anonymous" /></b>
     </mm:compare>
 </td>
 </tr>

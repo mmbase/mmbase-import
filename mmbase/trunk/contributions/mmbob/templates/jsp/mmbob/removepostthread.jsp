@@ -36,15 +36,15 @@
 <div class="bodypart" align="center">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
-  <tr><th colspan="3"><mm:write referid="mlg_Delete"/> <mm:write referid="mlg_topic"/>: <mm:node referid="postthreadid">'<mm:field name="subject" />'</mm:node> </th></tr>
-  <tr><td colspan="3"><mm:write referid="mlg_Are_you_sure"/></td></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Delete"/> <mm:write referid="mlg.topic"/>: <mm:node referid="postthreadid">'<mm:field name="subject" />'</mm:node> </th></tr>
+  <tr><td colspan="3"><mm:write referid="mlg.Are_you_sure"/></td></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
 	<input type="hidden" name="moderatorcheck" value="true">
 	<input type="hidden" name="action" value="removepostthread">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Yes_delete"/>">
+	<input type="submit" value="<mm:write referid="mlg.Yes_delete"/>">
   	</form>
 	</td>
 	<td>
@@ -55,7 +55,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

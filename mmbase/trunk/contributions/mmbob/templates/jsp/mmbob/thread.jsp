@@ -76,7 +76,7 @@
 			</tr>
 </table>
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" align="center" align="center">
-	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
+	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
 			(<mm:field name="pagecount" />) 
 			<mm:field name="navline" />
@@ -89,7 +89,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%" align="center">
   		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize,imagecontext">
 		  <mm:first>
-			<tr><th width="25%" align="left"><mm:write referid="mlg_Member"/></th><th align="left"><mm:write referid="mlg_Topic"/>: <mm:field name="subject" /></th></tr>
+			<tr><th width="25%" align="left"><mm:write referid="mlg.Member"/></th><th align="left"><mm:write referid="mlg.Topic"/>: <mm:field name="subject" /></th></tr>
 		  </mm:first>
 			<tr>
 			<td class="<mm:field name="tdvar" />" align="left">
@@ -176,19 +176,19 @@
                         <p />
 
 			<%-- TODO: not yet implemented
-                        <mm:write referid="mlg_Level"/> : <mm:field name="level" /><br />--%>
-			<mm:write referid="mlg_Posts"/> : <mm:field name="accountpostcount" /><br />
-			<mm:write referid="mlg_Gender"/> : <mm:field name="gender" /><br />
-			<mm:write referid="mlg_Location"/> : <mm:field name="location" /><br />
-			<mm:write referid="mlg_Member_since"/> : <mm:field name="firstlogin"><mm:time format="d MMMM  yyyy" /></mm:field><br />
-			<mm:write referid="mlg_Last_visit"/> : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
+                        <mm:write referid="mlg.Level"/> : <mm:field name="level" /><br />--%>
+			<mm:write referid="mlg.Posts"/> : <mm:field name="accountpostcount" /><br />
+			<mm:write referid="mlg.Gender"/> : <mm:field name="gender" /><br />
+			<mm:write referid="mlg.Location"/> : <mm:field name="location" /><br />
+			<mm:write referid="mlg.Member_since"/> : <mm:field name="firstlogin"><mm:time format="d MMMM  yyyy" /></mm:field><br />
+			<mm:write referid="mlg.Last_visit"/> : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
 			</mm:compare>
 			</mm:field>
 			<br /><br /><br /><br /><br />
                         </p>
 			</td>
 			<td class="<mm:field name="tdvar" />" valign="top" align="left">
-			<mm:field name="edittime"><mm:compare value="-1" inverse="true"><mm:write referid="mlg_last_time_edited"/> : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
+			<mm:field name="edittime"><mm:compare value="-1" inverse="true"><mm:write referid="mlg.last_time_edited"/> : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
            
             <mm:field name="body" />
 
@@ -200,7 +200,7 @@
 
 
 <table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%" align="center">
-	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
+	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
 			<mm:field name="navline" />
 		  </mm:nodefunction>
@@ -215,9 +215,9 @@
 <mm:compare referid="guestwritemodetype" value="open">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%" align="center">
    <a name="reply" />
-  <tr><th colspan="3"><mm:write referid="mlg_Fast_reply"/></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Fast_reply"/></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
-	<tr><th width="25%"><mm:write referid="mlg_Name"/></th><td>
+	<tr><th width="25%"><mm:write referid="mlg.Name"/></th><td>
 
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
@@ -226,14 +226,14 @@
 		</mm:node>
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
-		<input name="poster" type="hidden" style="width: 100%" value="<mm:write referid="mlg_guest"/>" >
-		<mm:write referid="mlg_guest"/>
+		<input name="poster" type="hidden" style="width: 100%" value="<mm:write referid="mlg.guest"/>" >
+		<mm:write referid="mlg.guest"/>
 		</mm:compare>
 
 		</td></tr>
-	<tr><th><mm:write referid="mlg_Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
+	<tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
 	<tr><td colspan="3"><input type="hidden" name="action" value="postreply">
-	<center><input type="submit" value="<mm:write referid="mlg_Post_reply"/>"/></center>
+	<center><input type="submit" value="<mm:write referid="mlg.Post_reply"/>"/></center>
 	</td></tr>
   </form>
 </table>

@@ -40,14 +40,14 @@
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
   <mm:node referid="postingid">
-  <tr><th colspan="3"><mm:write referid="mlg_Edit_message" /></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Edit_message" /></th></tr>
   <form action="<mm:url page="thread.jsp">
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	<mm:param name="postthreadid" value="$postthreadid" />
 	<mm:param name="postingid" value="$postingid" />
 	</mm:url>" method="post" name="posting">
-	<tr><th><mm:write referid="mlg_Name"/></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
 		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
@@ -58,8 +58,8 @@
 		<input name="poster" size="32" value="gast" >
 		</mm:compare>
 	</td></tr>
-	<tr><th width="150"><mm:write referid="mlg_Topic"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:field name="subject" />" ></td></th>
-	<tr><th valign="top"><mm:write referid="mlg_Message"/><center>
+	<tr><th width="150"><mm:write referid="mlg.Topic"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:field name="subject" />" ></td></th>
+	<tr><th valign="top"><mm:write referid="mlg.Message"/><center>
 
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
 <mm:field name="smileysenabled"><mm:compare value="true">
@@ -71,7 +71,7 @@
 </td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="editpost">
-	<center><input type="submit" value="<mm:write referid="mlg_Save"/>">
+	<center><input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
 	<td>
@@ -84,7 +84,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

@@ -166,14 +166,14 @@
  	</tr>
   <th>&nbsp;</th>
 <td align="middle" >
-	<input type="submit" value="<mm:write referid="mlg_Save"/>">
+	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
   <td>
   	<form action="<mm:url page="forums.jsp" />" method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   </form>
   </td>
   </tr>

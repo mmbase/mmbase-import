@@ -32,20 +32,20 @@
                                                                                               
 <div class="bodypart">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
-  <tr><th colspan="3"><mm:write referid="mlg_Change_existing_area" /></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Change_existing_area" /></th></tr>
 
   <mm:node number="$postareaid">
   <form action="<mm:url page="index.jsp" referids="forumid,postareaid" />" method="post">
-	<tr><th><mm:write referid="mlg_Name"/></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
 	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
 	</td></tr>
-	<tr><th><mm:write referid="mlg_Description"/></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Description"/></th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"><mm:field name="description" /></textarea>
 	</td></tr>
         <input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="changepostarea">
 	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="<mm:write referid="mlg_Save"/>">
+	<input type="submit" value="<mm:write referid="mlg.Save"/>">
   	</form>
 	</td>
 	</mm:node>
@@ -56,7 +56,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

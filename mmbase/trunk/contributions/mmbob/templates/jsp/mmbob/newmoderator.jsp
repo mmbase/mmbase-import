@@ -35,7 +35,7 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
-  <tr><th colspan="3" align="left" ><mm:write referid="mlg_Add_moderator_for" /> : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
+  <tr><th colspan="3" align="left" ><mm:write referid="mlg.Add_moderator_for" /> : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
   
   </th></tr>
 
@@ -44,13 +44,13 @@
 					<mm:param name="postareaid" value="$postareaid" />
 					<mm:param name="admincheck" value="true" />
 				</mm:url>" method="post">
-	<tr><th align="left"><mm:write referid="mlg_Current_moderators" /></th><td colspan="2" align="left">
+	<tr><th align="left"><mm:write referid="mlg.Current_moderators" /></th><td colspan="2" align="left">
   		  <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
 		  </mm:nodelistfunction>
 	<p />
 	</td></tr>
-	<tr><th align="left"><mm:write referid="mlg_Possible_moderators" /></th><td colspan="2">
+	<tr><th align="left"><mm:write referid="mlg.Possible_moderators" /></th><td colspan="2">
 		  <select name="newmoderator">
   		  <mm:nodelistfunction set="mmbob" name="getNonModerators" referids="forumid,postareaid">
 				<option value="<mm:field name="id" />"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
@@ -60,7 +60,7 @@
 	<input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="newmoderator">
 	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="<mm:write referid="mlg_Add" />">
+	<input type="submit" value="<mm:write referid="mlg.Add" />">
   	</form>
 	</td>
 	<td>
@@ -71,7 +71,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel" />">
+	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
   	</form>
 	</td>
 	</tr>

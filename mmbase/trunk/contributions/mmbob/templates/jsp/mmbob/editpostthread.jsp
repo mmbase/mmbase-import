@@ -44,8 +44,8 @@
 
 <mm:compare referid="ismoderator" value="false">
   <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
-    <tr><th><mm:write referid="mlg_Edit_postthread" /></th></tr>
-    <tr><td><font color="red"><b><mm:write referid="mlg_Access_denied" /></font></b></td></tr>
+    <tr><th><mm:write referid="mlg.Edit_postthread" /></th></tr>
+    <tr><td><font color="red"><b><mm:write referid="mlg.Access_denied" /></font></b></td></tr>
   </table>
 </mm:compare>
 
@@ -53,45 +53,45 @@
 
   <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
     <mm:node referid="postthreadid">
-    <tr><th colspan="3"><mm:write referid="mlg_Edit_postthread" /></th></tr>
+    <tr><th colspan="3"><mm:write referid="mlg.Edit_postthread" /></th></tr>
     <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
-	<tr><th width="200"><mm:write referid="mlg_Status" /></th><td colspan="2" align="middle">
+	<tr><th width="200"><mm:write referid="mlg.Status" /></th><td colspan="2" align="middle">
 		<select name="state">
 		<mm:field name="state">
-		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg_normal" />
-		<option value="closed" <mm:compare value="closed">selected</mm:compare>><mm:write referid="mlg_closed" />
-		<option value="pinned" <mm:compare value="pinned">selected</mm:compare>><mm:write referid="mlg_pinned" />
+		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
+		<option value="closed" <mm:compare value="closed">selected</mm:compare>><mm:write referid="mlg.closed" />
+		<option value="pinned" <mm:compare value="pinned">selected</mm:compare>><mm:write referid="mlg.pinned" />
 		</mm:field>
 		</select>
 	</td></th>
-	<tr><th><mm:write referid="mlg_Mood"/></th><td align="middle" colspan="2">
+	<tr><th><mm:write referid="mlg.Mood"/></th><td align="middle" colspan="2">
 		<select name="mood">
 		<mm:field name="mood">
-		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg_normal" />
-		<option value="mad" <mm:compare value="mad">selected</mm:compare>><mm:write referid="mlg_mad"/>
-		<option value="happy" <mm:compare value="happy">selected</mm:compare>><mm:write referid="mlg_happy"/>
-		<option value="sad" <mm:compare value="sad">selected</mm:compare>><mm:write referid="mlg_sad"/>
-		<option value="question" <mm:compare value="question">selected</mm:compare>><mm:write referid="mlg_question"/>
-		<option value="warning" <mm:compare value="warning">selected</mm:compare>><mm:write referid="mlg_warning"/>
-		<option value="joke" <mm:compare value="joke">selected</mm:compare>><mm:write referid="mlg_joke"/>
-		<option value="idea" <mm:compare value="idea">selected</mm:compare>><mm:write referid="mlg_idea"/>
-		<option value="suprised" <mm:compare value="suprised">selected</mm:compare>><mm:write referid="mlg_surprised"/>
+		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
+		<option value="mad" <mm:compare value="mad">selected</mm:compare>><mm:write referid="mlg.mad"/>
+		<option value="happy" <mm:compare value="happy">selected</mm:compare>><mm:write referid="mlg.happy"/>
+		<option value="sad" <mm:compare value="sad">selected</mm:compare>><mm:write referid="mlg.sad"/>
+		<option value="question" <mm:compare value="question">selected</mm:compare>><mm:write referid="mlg.question"/>
+		<option value="warning" <mm:compare value="warning">selected</mm:compare>><mm:write referid="mlg.warning"/>
+		<option value="joke" <mm:compare value="joke">selected</mm:compare>><mm:write referid="mlg.joke"/>
+		<option value="idea" <mm:compare value="idea">selected</mm:compare>><mm:write referid="mlg.idea"/>
+		<option value="suprised" <mm:compare value="suprised">selected</mm:compare>><mm:write referid="mlg.surprised"/>
 		</mm:field>
 		</select>
 	<tr><th>Type</th><td align="middle" colspan="2">
 		<select name="ttype">
 		<mm:field name="ttype">
-		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg_normal"/>
-		<option value="note" <mm:compare value="note">selected</mm:compare>><mm:write referid="mlg_note"/>
-		<option value="faq" <mm:compare value="faq">selected</mm:compare>><mm:write referid="mlg_faq"/>
-		<option value="announcement" <mm:compare value="announcement">selected</mm:compare>><mm:write referid="mlg_announcement"/>
+		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal"/>
+		<option value="note" <mm:compare value="note">selected</mm:compare>><mm:write referid="mlg.note"/>
+		<option value="faq" <mm:compare value="faq">selected</mm:compare>><mm:write referid="mlg.faq"/>
+		<option value="announcement" <mm:compare value="announcement">selected</mm:compare>><mm:write referid="mlg.announcement"/>
 		</select>
 		</mm:field>
 		</td></th>
 
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="editpostthread">
-	<center><input type="submit" value="<mm:write referid="mlg_Save"/>">
+	<center><input type="submit" value="<mm:write referid="mlg.Save"/>">
 	</td>
 	<td>
 	</mm:node>
@@ -103,7 +103,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

@@ -37,7 +37,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr>
     <th colspan="3" align="center" >
-      <mm:write referid="mlg_Disable" /> <mm:write referid="mlg_member"/> 
+      <mm:write referid="mlg.Disable" /> <mm:write referid="mlg.member"/> 
     </th>
   </tr>
 
@@ -48,12 +48,12 @@
 				</mm:url>" method="post">
   <tr>
     <td colspan="2" align="center">
-      <mm:write referid="mlg_Disable" /> <mm:write referid="mlg_member"/> : <mm:node number="$disableposterid"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)</mm:node>
+      <mm:write referid="mlg.Disable" /> <mm:write referid="mlg.member"/> : <mm:node number="$disableposterid"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)</mm:node>
     </td>
   </tr>
 
   <tr>
-    <td colspan="2" align="center"><mm:write referid="mlg_Are_you_sure" />?</td>
+    <td colspan="2" align="center"><mm:write referid="mlg.Are_you_sure" />?</td>
   </tr>
 
   <input type="hidden" name="admincheck" value="true">
@@ -61,7 +61,7 @@
   
   
   <tr>
-    <td align="center" ><input type="submit" value="<mm:write referid="mlg_Disable" />"> </td>
+    <td align="center" ><input type="submit" value="<mm:write referid="mlg.Disable" />"> </td>
     <td>
       </form> 
       <form action="<mm:url page="index.jsp">
@@ -70,7 +70,7 @@
  	method="post">
       <p />
       <center>
-      <input type="submit" value="<mm:write referid="mlg_Cancel" />">
+      <input type="submit" value="<mm:write referid="mlg.Cancel" />">
       </form>
     </td>
   </tr>

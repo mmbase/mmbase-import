@@ -44,7 +44,7 @@
 	<mm:import externid="postthreadid" />
         <mm:import externid="poster"/>
         <mm:compare referid="posterid" value="-1">
-	      <mm:import reset="true" id="poster"><mm:write referid="poster"/> (<mm:write referid="mlg_not_registered" />)</mm:import>
+	      <mm:import reset="true" id="poster"><mm:write referid="poster"/> (<mm:write referid="mlg.not_registered" />)</mm:import>
         </mm:compare>
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
