@@ -16,7 +16,7 @@ about the Ant build tool.
     <property name="version" value="${DSTAMP}"/>
    
     <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
-    <property name="build.compiler" value="jikes"/>
+    <property name="build.compiler" value="classic"/>
     <property name="optimize"       value="on"/>
     <property name="deprecation"    value="off"/>
 
