@@ -856,7 +856,7 @@ Distribution: ${distro}
   <!-- =================================================================== -->
   <target name="junit"
           description="Build the JUnit test environment"
-          depends="init,lib.release,lib.compile,jar">
+          depends="init,lib.release,lib.compile,jar,expand.hsql">
     <mkdir dir="${build.dir}/junit"/>
     <mkdir dir="${build.dir}/junit/config"/>
     <mkdir dir="${build.dir}/junit/lib"/>
@@ -1073,7 +1073,7 @@ Distribution: ${distro}
     <available property="log4j.expanded"
                file="${expand.dir}/${log4j.fullversion}"/>
     <!-- JUnit -->
-    <property name="junit.version" value="junit3.5"/>
+    <property name="junit.version" value="junit3.7"/>
     <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
     <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
     <available property="junit.present"
