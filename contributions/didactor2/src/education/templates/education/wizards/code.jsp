@@ -18,6 +18,12 @@
         <script type="text/javascript" src="<mm:treefile page="/education/wizards/mtmcode.jsp" objectlist="$includePath" referids="$referids" write="true"/>"></script>
 
 
+<mm:node number="component.pdf" notfound="skip">
+    <mm:relatednodes type="providers" constraints="providers.number=$provider">
+        <mm:import id="pdfurl"><mm:treefile write="true" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+    </mm:relatednodes>
+</mm:node>
+
 <script type="text/javascript">
 // Framebuster script to relocate browser when MSIE bookmarks this
 // page instead of the parent frameset.  Set variable relocateURL to
@@ -204,7 +210,7 @@ var edutree<%= treeCount %> = new MTMenu();
 </mm:first>
  <mm:node element="learnobjects">
     <mm:nodeinfo type="type" id="this_node_type">
-  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:compare referid="this_node_type" value="pages"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>PDF)</mm:compare>",
+  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present>",
                   "<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />",
                   null,
                   "<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />",
@@ -225,7 +231,7 @@ var edutree<%= treeCount %> = new MTMenu();
 <mm:compare referid="showcode" value="true" inverse="true">
 </script>
 </head>
-<body onLoad="MTMStartMenu(true)"></body>
+<body onLoad="MTMStartMenu(true); parent.frames['text'].document.location.href='<mm:treefile write="true" page="/education/wizards/loaded.jsp" objectlist="$includePath"/>'">
 </html>
 </mm:compare>
 

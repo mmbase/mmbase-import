@@ -13,7 +13,15 @@
 %>
 <%--// entering depth <%=depth%>--%>
 <%--// for node <%=startnode%>--%>
-<mm:cloud>
+<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+  <%@include file="/shared/setImports.jsp"%>
+
+<mm:node number="component.pdf" notfound="skip">
+    <mm:relatednodes type="providers" constraints="providers.number=$provider">
+        <mm:import id="pdfurl"><mm:treefile write="true" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+    </mm:relatednodes>
+</mm:node>
+
 <mm:node number="<%=startnode%>">
   <mm:import id="treeName" jspvar="treeName">lbTree<mm:field name="number"/>z</mm:import>
   <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
@@ -24,7 +32,7 @@
    <mm:node element="learnobjects"> 
     <mm:import id="objecttype"><mm:nodeinfo type="type" /></mm:import>
     <mm:write referid="treeName" />.addItem(
-        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:compare referid="objecttype" value="pages"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>)</mm:compare>",
+        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:present referid="pdfurl"><mm:compare referid="objecttype" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present>",
         "<mm:write referid="wizardjsp"/>?wizard=<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />",
         null,
         "bewerk object",
