@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.8 2002-05-17 17:27:43 michiel Exp $
+    @version  $Id: index.jsp,v 1.9 2002-05-23 08:18:59 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -86,7 +86,8 @@
            onClick="return openListImages(this);">    
            Images</a> (search:  <input type="text" name="imagedesc"	value="" style="width:200px;text-align:left;" />)
    </td><td>
-    A very simple image uploader. We show here how you could add search criteria.
+    A very simple image uploader. We show here how you could add
+   search criteria. We also see that the delete prompt is overridden.
     </td><tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
