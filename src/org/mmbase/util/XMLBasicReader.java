@@ -14,6 +14,7 @@ import java.util.Vector;
 import java.util.Enumeration;
 
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 import org.apache.xerces.parsers.DOMParser;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.19 2002-10-04 22:16:03 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.20 2002-10-07 16:39:07 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -57,6 +58,9 @@ public class XMLBasicReader  {
     public XMLBasicReader(String path) {
         this(path, VALIDATE);
     }
+    public XMLBasicReader(InputSource source, Class resolveBase) {
+        this(source, VALIDATE, resolveBase);
+    }
     public XMLBasicReader(InputSource source) {
         this(source, VALIDATE);
     }
@@ -66,33 +70,32 @@ public class XMLBasicReader  {
     }
 
     public XMLBasicReader(InputSource source, boolean validating) {
+        this(source, validating, null);
+    }
+
+
+    public XMLBasicReader(InputSource source, boolean validating, Class resolveBase) {
         try {
-            DocumentBuilder dbuilder = getDocumentBuilder(validating);
+            DocumentBuilder dbuilder = getDocumentBuilder(validating, new XMLEntityResolver(validating, resolveBase));
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
         }
         catch(org.xml.sax.SAXException se) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + se);
+            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
         }
         catch(java.io.IOException ioe) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
 
-    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         DocumentBuilder db;
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
-            // turn validating on, or not
-            XMLEntityResolver resolver = new XMLEntityResolver(validating); // strange to ask the resolver is mmbase is initilized
-            boolean validate = validating && resolver.canResolve();
-
-            // get docuemtn builder AFTER setting the validation
-            dfactory.setValidating(validate);
-            dfactory.setValidating(validate);
+            // get docuemtn builder AFTER setting the validation    
+            dfactory.setValidating(validating);
             db = dfactory.newDocumentBuilder();
 
             db.setErrorHandler(handler);
@@ -108,8 +111,14 @@ public class XMLBasicReader  {
         return db;
     }
 
+    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler) {
+        return createDocumentBuilder(validating, handler, new XMLEntityResolver(validating));
+    }
+    private static DocumentBuilder createDocumentBuilder(boolean validating, EntityResolver resolver) {
+        return createDocumentBuilder(validating, new XMLErrorHandler(), resolver);
+    }
     private static DocumentBuilder createDocumentBuilder(boolean validating) {
-        return createDocumentBuilder(validating, new XMLErrorHandler());
+        return createDocumentBuilder(validating, new XMLErrorHandler(), new XMLEntityResolver(validating));
 
     }
 
@@ -127,6 +136,14 @@ public class XMLBasicReader  {
 
     public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler) {
         return createDocumentBuilder(validating, handler);
+    }
+
+    public static DocumentBuilder getDocumentBuilder(boolean validating, EntityResolver resolver) {
+        return createDocumentBuilder(validating, resolver);
+    }
+
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
+        return createDocumentBuilder(validating, handler, resolver);
     }
 
     public static DocumentBuilder getDocumentBuilder() {
