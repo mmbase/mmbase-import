@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.37 2002-06-28 21:20:39 michiel Exp $
+ * @version $Id: Wizard.java,v 1.38 2002-07-02 21:14:57 michiel Exp $
  *
  */
 public class Wizard {
@@ -483,6 +483,9 @@ public class Wizard {
 
         // find the current step and, if appliccable, the next and previous ones.
         Utils.createAndAppendNode(wizardnode, "curform", formid);
+        
+
+
         Node step = Utils.selectSingleNode(wizardSchema, "./steps/step[@form-schema='" + formid + "']");
         if (step!=null) {
             // Yes. we have step information. Let's add info about that.
@@ -856,10 +859,11 @@ public class Wizard {
 
     /**
      * 	Creates a form item (each of which may consist of several single form fields)
-     *      for each given datanode.
+     *  for each given datanode.
      */
     private void createFormList(Node form, Node fieldlist, NodeList datalist, Node parentdatanode) throws WizardException {
         // copy all attributes from fielddefinition to new pre-html field definition
+        log.debug("creating form list");
         Node newlist = fieldlist.cloneNode(false);
         newlist = form.getOwnerDocument().importNode(newlist, false);
         Utils.copyAllAttributes(fieldlist, newlist);
@@ -876,9 +880,11 @@ public class Wizard {
         // calculate minoccurs and maxoccurs
         int minoccurs = Integer.parseInt(Utils.getAttribute(fieldlist, "minoccurs", "0"));
         int nrOfItems = datalist.getLength();
-        int maxoccurs = -1;
+       
+        int maxoccurs = -1;       
         String maxstr = Utils.getAttribute(fieldlist, "maxoccurs", "*");
         if (!maxstr.equals("*")) maxoccurs = Integer.parseInt(maxstr);
+
         String defaultdisplaymode = Utils.getAttribute(newlist,"defaultdisplaymode","edit");
 
         String orderby = Utils.getAttribute(fieldlist, "orderby", null);
@@ -947,10 +953,11 @@ public class Wizard {
             // and now, do the recursive tric! All our fields inside need to be processed.
             createPreHtmlForm(newitem, item, datacontext);
 
-            // finally, see if we need to place some commands here
-            if (nrOfItems > minoccurs && hiddenCommands.indexOf("|delete-item|") == -1){
+            // finally, see if we need to place some commands here        
+            if (/* nrOfItems > minoccurs && you should be able to replace!*/  hiddenCommands.indexOf("|delete-item|") == -1) { 
                 addSingleCommand(newitem,"delete-item", datacontext);
             }
+            
             if (orderby!=null) {
                 if (dataindex > 0 && hiddenCommands.indexOf("|move-up|") == -1){
                     addSingleCommand(newitem,"move-up", datacontext,
@@ -968,6 +975,24 @@ public class Wizard {
                 datacontext.setAttribute("lastitem","true");
             }
         }
+
+        // should the 'save' button be inactive because of this list?
+
+        // works likes this:
+        //  If the minoccurs or maxoccurs condiditions are not satisfied, in the 'wizard.xml'
+        //  to the form the 'invalidlist' attribute is filled with the name of the guilty list. By wizard.xsl then this value 
+        //  is copied to the html.
+        //
+        //  validator.js/doValidateForm returns invalid as long as this invalid list attribute of the html form is not an 
+        // emptry string.
+        if (log.isDebugEnabled()) log.debug("minoccurs:" + minoccurs + " maxoccurs: " + maxoccurs + " items: " + nrOfItems);
+        if ((nrOfItems > maxoccurs && maxoccurs != -1 )|| ( nrOfItems < minoccurs) ) { // form cannot be valid in that case
+            // which list?
+            String listTitle = Utils.selectSingleNodeText(fieldlist, "title", "some list");
+            ((Element) form).setAttribute("invalidlist", listTitle);
+        }
+
+
 
         // can we place an add-button?
         if (hiddenCommands.indexOf("|add-item|") == -1 && (maxoccurs == -1 || maxoccurs > nrOfItems) && (Utils.selectSingleNode(fieldlist, "action[@type='create']")!=null)) {
