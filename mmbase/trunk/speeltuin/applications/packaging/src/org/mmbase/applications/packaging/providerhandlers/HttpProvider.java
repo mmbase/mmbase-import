@@ -135,7 +135,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 	String url=path+"?user="+account+"&password="+password;
 	if (ShareManager.getCallbackUrl()!=null) url+="&callbackurl="+URLParamEscape.escapeurl(ShareManager.getCallbackUrl());
 	try {
-		log.info("LOGIN URL="+url);
         	URL includeURL = new URL(url);
         	HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 		BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
@@ -243,7 +242,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 		// will use the local copy instead of the remote copy keeping network
 		// traffic down.
 		try {
-			log.info("WOO="+path);
             		URL includeURL = new URL(path);
          	   	HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 			BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
@@ -252,10 +250,8 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 
 			// create a new name in the import dir
 			String localname=getImportPath()+id+"_"+version+".mmp";
-			log.info("WOO1="+id+" localname="+localname);
 			// not a very nice way should we have sepr. extentions ?
 			if (id.indexOf("_bundle_")!=-1) localname=getImportPath()+id+"_"+version+".mmb";
-			log.info("WOO2="+id+" localname="+localname);
 
 			BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(localname));
 			StringBuffer string = new StringBuffer();
