@@ -11,6 +11,7 @@ package org.mmbase.storage.implementation.database;
 
 import java.io.InputStream;
 import java.sql.*;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.naming.*;
@@ -18,6 +19,8 @@ import javax.sql.DataSource;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
+import org.mmbase.storage.search.implementation.database.*;
+import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.util.logging.*;
 import org.xml.sax.InputSource;
@@ -35,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.11 2004-02-06 21:37:01 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.12 2004-03-05 14:52:14 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -117,7 +120,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
 
         // default searchquery handler class
-        queryHandlerClass = DEFAULT_QUERY_HANDLER_CLASS;
+        queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);
 
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
@@ -257,7 +260,6 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     /**
      * Returns the base path for 'binary file'
      */
-    
     protected String getBinaryFileBasePath() {
         if (basePath == null) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
@@ -269,8 +271,46 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         }
         return basePath;
     }
-    
 
+    protected Object instantiateBasicHandler(Class handlerClass) {
+        // first handler
+        try {
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {Map.class});
+            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] { disallowedFields } );
+            log.service("Instantiated SqlHandler of type " + handlerClass.getName());
+            return sqlHandler;
+        } catch (NoSuchMethodException nsme) {
+            throw new StorageConfigurationException(nsme);
+        } catch (java.lang.reflect.InvocationTargetException ite) {
+            throw new StorageConfigurationException(ite);
+        } catch (IllegalAccessException iae) {
+            throw new StorageConfigurationException(iae);
+        } catch (InstantiationException ie) {
+            throw new StorageConfigurationException(ie);
+        }
+    }
+
+    protected Object instantiateChainedHandler(Class handlerClass, Object handler) {
+        // Chained handlers
+        try {
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
+            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(new Object[] {handler});
+            log.service("Instantiated chained SearchQueryHandler of type " + handlerClass.getName());
+            return sqlHandler;
+        } catch (NoSuchMethodException nsme) {
+            throw new StorageConfigurationException(nsme);
+        } catch (java.lang.reflect.InvocationTargetException ite) {
+            throw new StorageConfigurationException(ite);
+        } catch (IllegalAccessException iae) {
+            throw new StorageConfigurationException(iae);
+        } catch (InstantiationException ie) {
+            throw new StorageConfigurationException(ie);
+        }
+    }
+
+    protected SearchQueryHandler instantiateQueryHandler(Object data) {
+        return new BasicQueryHandler((SqlHandler)data);
+    }
 
 }
 
