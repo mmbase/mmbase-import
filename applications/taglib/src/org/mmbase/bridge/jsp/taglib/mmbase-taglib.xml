@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.212 2003-11-08 16:55:42 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.213 2003-11-10 09:40:35 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1209,6 +1209,39 @@ See mmexamples/taglib for more elaborated examples.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="list" attribute="role" />
+		</attribute>
+		<attribute>
+			<name>comparator</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+				Applies a java-comparator to sort the list.
+			</info>
+			<since>MMBase-1.7</since>
+			<possiblevalue>
+				<value>SHUFFLE</value>
+				<info>
+					For shuffling you don't need to implement a comparator (which is principally
+					possible). This will use Collections.shuffle in stead.
+				</info>
+			</possiblevalue>
+			<examplevalue>
+				<value>MyCollator</value>
+				<info>
+					If you use a value like this, then it will be supposed that this Comparator is implemented
+					in this jsp. E.g.:
+					<pre><![CDATA[
+<%! public class MyCollator extends java.text.RuleBasedCollator("a<c<b") {} %>
+]]>
+				</pre>
+				</info>
+			</examplevalue>
+			<examplevalue>
+				<value>nl.myorganisation.mmbase.util.OurComparator</value>
+				<info>
+					You can also use a fully qualified class name.
+				</info>
+			</examplevalue>
 		</attribute>
 		<example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
@@ -4677,7 +4710,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        Changes the given constraint's 'case sensitivity' (if applicable). Default it is false.
+				Changes the given constraint's 'case sensitivity' (if applicable). Default it is false.
 			</info>
 		</attribute>
 		<attribute>
