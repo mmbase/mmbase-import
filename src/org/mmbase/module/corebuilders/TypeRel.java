@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.40 2003-03-21 12:35:05 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.41 2003-04-03 17:06:43 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -40,10 +40,27 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName());
 
     /**
+     * Constant for {@link #contains}: return only typerels that
+     * exactly match.
+     */
+    public static int STRICT = 0;
+    /**
+     * Constant for {@link #contains}: return typerels where source/destination match
+     * with a builder or its descendants
+     */
+    public static int INCLUDE_DESCENDANTS = 1;
+    /**
+     * Constant for {@link #contains}: return typerels where source/destination match
+     * with a builder or its parents
+     */
+    public static int INCLUDE_PARENTS = 2;
+
+    /**
      * TypeRel should contain only a limited amount of nodes, so we
      * can simply cache them all, and avoid all further querying.
      */
     private TypeRelSet        typeRelNodes;           // for searching destinations
+    private TypeRelSet        parentTypeRelNodes;     // for caching typerels for 'parent' builders
     private InverseTypeRelSet inverseTypeRelNodes;    // for searching sources
 
     public boolean init() {
@@ -71,6 +88,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     private void readCache(boolean buildersInitialized) {
         log.debug("Reading in typerels");
         typeRelNodes = new TypeRelSet();
+        parentTypeRelNodes = new TypeRelSet();
         inverseTypeRelNodes = new InverseTypeRelSet();
 
         TypeDef typeDef = mmb.getTypeDef();
@@ -98,12 +116,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // Start to add the actual definition, this is then afterwards again, except if one of the builders could not be found
         added.add(typerel);
 
-        boolean bidirectional;
-        if (InsRel.usesdir) {
-            bidirectional = mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1;
-        } else {
-            bidirectional = true;
-        }
+        boolean bidirectional = (!InsRel.usesdir) ||
+                                (mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1);
 
         inheritance:
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
@@ -140,6 +154,19 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                 }
             }
 
+            // seek all parents and store typerels for them
+            // this cache is used by contains(INCLUDE_PARENTS);
+            MMObjectBuilder sourceParent=sourceBuilder;
+            while (sourceParent!=null) {
+                MMObjectBuilder destinationParent=destinationBuilder;
+                while (destinationParent!=null) {
+                  MMObjectNode vnode = new VirtualTypeRelNode(sourceParent.oType, destinationParent.oType, rnumber);
+                  parentTypeRelNodes.add(vnode);
+                  destinationParent=destinationParent.getParentBuilder();
+                }
+                sourceParent=sourceParent.getParentBuilder();
+            }
+
             added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         }
         typeRelNodes.addAll(added);
@@ -161,7 +188,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         int snumber=node.getIntValue("snumber");
         int dnumber=node.getIntValue("dnumber");
         int rnumber=node.getIntValue("rnumber");
-        if (contains(snumber,dnumber,rnumber,false)) {
+        if (contains(snumber,dnumber,rnumber,STRICT)) {
             log.error("The typerel with snumber="+snumber+", dnumber="+dnumber+
                           ", rnumber="+rnumber+" already exists");
             throw new RuntimeException("The typerel with snumber="+snumber+", dnumber="+dnumber+
@@ -345,7 +372,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @deprecated use {@link #contains} instead
      * @param n1 The source type number.
      * @param n2 The destination type number.
-     * @param r The relation definition (role) number.
+     * @param r The relation definition (role) number, or -1 if the role does not matter
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      */
@@ -364,13 +391,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @param n1 The source type number.
      * @param n2 The destination type number.
-     * @param r The relation definition (role) number.
+     * @param r The relation definition (role) number, or -1 if the role does not matter
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      * @since MMBase-1.6.2
      */
     public boolean contains(int n1,int n2, int r) {
-        return contains(n1, n2, r, true);
+        return contains(n1, n2, r, INCLUDE_DESCENDANTS);
     }
 
     /**
@@ -383,17 +410,23 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @param n1 The source type number.
      * @param n2 The destination type number.
-     * @param r The relation definition (role) number.
-     * @param virtual if true, the method also returns true if the typerel occurs as a virtual (derived) node.
-     *                if false, it only returns true if the typerel occurs as-is in the database
+     * @param r The relation definition (role) number, or -1 if the role does not matter
+     *          r can only be -1 if virtual is <code>true</code>
+     * @param restriction if {@link #STRICT}, contains only returns true if the typerel occurs as-is in the database.
+     *                    if {@link #INCLUDE_DESCENDANTS}, contains returns true if the typerel occurs as a virtual
+     *                    (derived) node, wgher source or destination are descendants of the specified type.
+     *                    if {@link #INCLUDE_PARENTS}, contains returns true if the typerel occurs as a virtual
+     *                    (derived) node, wgher source or destination are parents of the specified type.
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      * @since MMBase-1.6.2
      */
-    public boolean contains(int n1,int n2, int r, boolean virtual) {
-        if (virtual) {
+    public boolean contains(int n1,int n2, int r, int restriction) {
+        if (restriction==INCLUDE_DESCENDANTS) {
             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        } else {
+        } else if (restriction==INCLUDE_PARENTS) {
+            return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else { // STRICT
             SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
             return (existingNodes.size()>0 && !((MMObjectNode)existingNodes.first()).isVirtual());
         }
@@ -427,15 +460,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * Implements equals for MMObjectNode
+     * Implements equals for a typerel node.
+     * Two nodes are equal if the snumber and dnumber fields are the same, and
+     * the rnumber fields are the same, or one of these is '-1' (don't care).
      * @since MMBase-1.6.2
      */
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         if (o2.parent instanceof TypeRel) {
+            int r1=o1.getIntValue("rnumber");
+            int r2=o2.getIntValue("rnumber");
             return o1.getIntValue("snumber") == o2.getIntValue("snumber") &&
                    o1.getIntValue("dnumber") == o2.getIntValue("dnumber") &&
-                   o1.getIntValue("rnumber") == o2.getIntValue("rnumber") &&
-                   o1.getStringValue("owner").equals(o2.getStringValue("owner"));
+                   (r1==-1 || r2==-1 || r1==r2);
         }
         return false;
     }
@@ -454,7 +490,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             int snumber = n.getIntValue("snumber");
             int dnumber = n.getIntValue("dnumber");
             int rnumber = n.getIntValue("rnumber");
-            
+
             // unfilled should only happen during creation of the node.
             String source      = snumber > -1 ? mmb.getTypeDef().getValue(snumber) : "[unfilled]";
             String destination = dnumber > -1 ? mmb.getTypeDef().getValue(dnumber) : "[unfilled]";
@@ -517,7 +553,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
                         i1 = n1.getIntValue("rnumber");
                         i2 = n2.getIntValue("rnumber");
-                        if (i1 != i2) return i1 - i2;
+                        if (i1!=-1 && i2!=-1 && i1 != i2) return i1 - i2;
 
                         return 0;
                     }
