@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.73 2002-11-06 15:40:11 rob Exp $
+ * @version $Id: MMSQL92Node.java,v 1.74 2002-11-10 21:15:52 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -142,6 +142,16 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         }
     }
 
+
+    /**
+     * Some Database implementations want to fake encoding, and can override this function.
+     * @since MMBase-1.6
+     */
+
+    protected String decodeStringField(ResultSet rs, int i) throws SQLException {
+        return rs.getString(i);
+    }
+
     /**
      * @javadoc
      */
@@ -158,27 +168,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             switch (type) {
             case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING: {
-                // original:
-                // String tmp=rs.getString(i);
-		// TODO: move this to mysql layer?
-		// Hypersonic isnt able to handle this -trick-
-		// so i added this method to hypersonic
-		// should be removed from hypersonic and placed inside
-		// mysql
-                String tmp = null;
-                try {
-                    byte[] bytes = rs.getBytes(i);
-                    if (bytes != null) {
-                        tmp = new String(bytes, mmb.getEncoding());
-                    }
-                } catch (Exception e) {
-                    log.error("Getting encoded bytes: " + e.toString());
-                }
+                String tmp = decodeStringField(rs, i);
+
                 if (tmp == null) {
                     node.setValue(prefix + fieldname, "");
                 } else {
                     node.setValue(prefix + fieldname, tmp);
                 }
+
+                
                 break;
             }
             case FieldDefs.TYPE_NODE:
