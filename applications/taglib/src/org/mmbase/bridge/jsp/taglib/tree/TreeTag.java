@@ -27,27 +27,27 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Something like this
+ * Implements mm:tree. Which works about like this
 <pre>
- <mm:relatednodescontainer type="object" searchdirs="destination">
-  <mm:tree type="object" searchdir="destination" maxdepth="8">
-    <mm:grow>
-      <ul class="<mm:depth" />"><mm:onshrink></ul></mm:onshrink>
-    </mm:grow>
-    <li><mm:depth />: <mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
+ &lt;mm:relatednodescontainer type="object" searchdirs="destination"&gt;
+  &lt;mm:tree type="object" searchdir="destination" maxdepth="8"&gt;
+    &lt;mm:grow&gt;
+      &lt;ul class="&lt;mm:depth" /&gt;"&gt;&lt;mm:onshrink&gt;&lt;/ul&gt;&lt;/mm:onshrink&gt;
+    &lt;/mm:grow&gt;
+    &lt;li&gt;&lt;mm:depth /&gt;: &lt;mm:nodeinfo type="guitype" /&gt;: &lt;mm:field name="number" /&gt; &lt;mm:function name="gui" escape="none" /&gt;
 
-    <mm:onshrink></li></mm:onshrink>
+    &lt;mm:onshrink&gt;&lt;/li&gt;&lt;/mm:onshrink&gt;
 
-    <mm:shrink />
+    &lt;mm:shrink /&gt;
 
-    <mm:last>SIZE : <mm:size /></mm:last>
+    &lt;mm:last&gt;SIZE : &lt;mm:size /&gt;&lt;/mm:last&gt;
 
-  </mm:tree>
-</mm:relatednodescontainer>
+  &lt;/mm:tree&gt;
+&lt;/mm:relatednodescontainer&gt;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.4 2003-12-24 16:36:26 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.5 2004-01-14 22:01:33 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
