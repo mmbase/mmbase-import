@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-    <!ENTITY formats SYSTEM "formats.xml">
+    <!ENTITY formats SYSTEM "parts/formats.xml">
+    <!ENTITY itemize SYSTEM "parts/itemize.xml">
   ]
 >
 <wizard-schema id="media">
@@ -16,79 +17,38 @@
 	<action type="delete" />
 	
 	<action type="load">
-		<relation destination="mediasources" role="posrel" />
+		<relation destination="mediasources"   role="related" />
 		<relation destination="mediafragments" role="parent" />
 	</action>
 
   &formats;
 
 	<form-schema id="basics">
-		<title>MediaEditor</title>
-		<field name="title" >
-			<prompt>Title</prompt>
-		</field>
-
-		<field name="subtitle" >
-			<prompt>Subtitle</prompt>
-		</field>
-
-		<field name="intro" ftype="text" rows="4" >
-			<prompt>Intro</prompt>
-		</field>
+		<title>Media Editor</title>
+		<field name="title" />
+		<field name="subtitle" />
+		<field name="intro" />
 		
-		<field name="body" ftype="text" rows="8" >
-			<prompt>Body</prompt>
-		</field>
-
-		<list role="posrel" destination="mediasources" minoccurs="0" maxoccurs="*"  orderby="field[@name='pos']" >
+		<list role="related" destination="mediasources" minoccurs="1" >
       <title>Sources</title>       
+      <title xml:lang="nl">Bronnen</title>       
       <item>
         <field name="url">
           <prompt>Url (relative)</prompt>
+          <prompt xml:lang="nl">Url (relatief)</prompt>
         </field>
         <field ftype="enum" name="format">
-          <prompt>Format</prompt>
           <optionlist select="formats" />
         </field>
       </item>
 			<action type="create">
-				<relation  role="posrel">
-             <object type="mediasources" />
-          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+				<relation  role="related">
+          <object type="mediasources" />
         </relation>
 			</action>
 		</list>
   </form-schema>
 
-  <form-schema id="itemize">
-    <title>Itemize</title>
-		<list role="parent" destination="mediafragments" minoccurs="0" maxoccurs="*" orderby="field[@name='start']">
-      <title>Items</title>       
-      <item>          
-        <field name="title">
-           <prompt>
-             item
-           </prompt>
-        </field>
-        <field name="start"  ftype="realposition">
-          <prompt>
-            start
-          </prompt>
-        </field>
-        <field name="stop" ftype="realposition">
-          <prompt>
-            stop
-          </prompt>
-        </field>
-      </item>
-		
-			<action type="create">
-				<relation  role="parent"  destinationtype="mediafragments">
-          <object type="mediafragments" />
-        </relation>
-			</action>
-		</list>
-
-	</form-schema>
+  &itemize;
 
 </wizard-schema>

@@ -1,0 +1,18 @@
+<form-schema id="itemize">
+    <title>Itemize</title>
+		<list role="parent" destination="mediafragments" orderby="start" >
+      <title>Items</title>       
+      <item>          
+        <field name="title" />
+        <field name="start"  ftype="realposition" />
+        <field name="stop"   ftype="realposition" />
+      </item>
+		
+			<action type="create">
+				<relation  role="parent"  destinationtype="mediafragments">
+          <object type="mediafragments" />
+        </relation>
+			</action>
+		</list>
+
+	</form-schema>
