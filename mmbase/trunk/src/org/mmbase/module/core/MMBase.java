@@ -15,6 +15,7 @@ import java.sql.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.xml.BuilderWriter;
+import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.platform.setUser;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;  // Vwms, VwmTasks, DayMarkers, Versions
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.87 2003-04-07 18:12:23 michiel Exp $
+ * @version $Id: MMBase.java,v 1.88 2003-04-14 08:52:10 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1178,7 +1179,7 @@ public class MMBase extends ProcessorModule  {
         try {
             // register the loading of this builder
             loading.put(objectname,"TRUE");
-            XMLBuilderReader parser = new XMLBuilderReader(path+builder+".xml", this);
+            BuilderReader parser = new BuilderReader(path+builder+".xml", this);
             String status=parser.getStatus();
             if (status.equals("active")) {
                 log.info("Starting builder : "+objectname);
@@ -1382,7 +1383,7 @@ public class MMBase extends ProcessorModule  {
 
         MMObjectBuilder tmp = (MMObjectBuilder)mmobjs.get(buildername);
         String builderfile = builderpath + tmp.getXMLPath() + buildername + ".xml";
-        XMLBuilderReader bapp=new XMLBuilderReader(builderfile,this);
+        BuilderReader bapp=new BuilderReader(builderfile,this);
         if (bapp!=null) {
             int version=bapp.getBuilderVersion();
             String maintainer=bapp.getBuilderMaintainer();

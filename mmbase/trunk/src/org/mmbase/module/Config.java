@@ -18,6 +18,7 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.logging.*;
 import org.mmbase.config.*;
 import org.mmbase.module.core.*;
@@ -51,7 +52,7 @@ import org.mmbase.module.core.*;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.19 2003-03-07 11:49:12 pierre Exp $
+ * @version $Id: Config.java,v 1.20 2003-04-14 08:55:24 michiel Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -132,7 +133,7 @@ public class Config extends ProcessorModule {
     }
 
     public boolean builderIsActive(String path) {
-        XMLBuilderReader reader = new XMLBuilderReader(path);
+        BuilderReader reader = new BuilderReader(path);
         return reader.getStatus().equalsIgnoreCase("active");
     }
 
