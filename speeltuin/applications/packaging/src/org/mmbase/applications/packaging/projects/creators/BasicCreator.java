@@ -477,16 +477,48 @@ public class BasicCreator implements CreatorInterface {
 			foundfiles.add(basedir+files[i]+"/");
 			getFileNames_r(foundfiles,basedir+files[i]+File.separator,include,exclude);
 		} else {
+			
 			String fn=basedir+files[i];
 			if (include.equals("*") || fn.indexOf(include)!=-1) { 
-				if (exclude.equals("") || fn.indexOf(exclude)==-1) {
-					foundfiles.add(fn);
-				}
+			if (exclude.equals("") || !excludeFile(tfile,fn,exclude)) {
+				foundfiles.add(fn);
+			}
 			}
 		}
         }
 	}
 	return foundfiles;
+   }
+
+   private boolean excludeFile(File tfile,String fullname,String excludestring) {
+	String name=tfile.getName();
+	long length=tfile.length();
+	long lastmodified=tfile.lastModified();
+	long fileage=(System.currentTimeMillis()-lastmodified)/1000;
+	// log.info("EXCLUDE FILTER = "+name+" "+length+" "+lastmodified);
+	StringTokenizer tok =  new StringTokenizer(excludestring,",\n\r");
+	while (tok.hasMoreTokens()) {
+		String ex=tok.nextToken();
+		if (ex.startsWith("t(")) {
+		} else if (ex.startsWith("s(")) {
+			try {
+				String tmp=ex.substring(2);
+				int maxfsize=Integer.parseInt(tmp.substring(0,tmp.indexOf(")")));
+				if (length>maxfsize) return true;
+			} catch(Exception e) {
+			}
+		} else if (ex.startsWith("a(")) {
+			try {
+				String tmp=ex.substring(2);
+				int age=3600*Integer.parseInt(tmp.substring(0,tmp.indexOf(")")));
+				if (fileage>age) return true;
+			} catch(Exception e) {
+			}
+		} else if (fullname.indexOf(ex)!=-1) {
+			return true;
+		}
+	}
+	return false;
    }
 
    public String getXMLFile(Target target) {
