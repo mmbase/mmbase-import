@@ -155,6 +155,57 @@
 	</TD>
 </TR>
 
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Relation cache requests</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-RELATIONCACHEREQUESTS^</B></FONT>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache hits</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-RELATIONCACHEHITS^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache misses</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-RELATIONCACHEMISSES^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache performance</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-RELATIONCACHEPERFORMANCE^%</B></FONT>
+	</TD>
+</TR>
+
 </TABLE>
 </BODY>
 </HTML>
