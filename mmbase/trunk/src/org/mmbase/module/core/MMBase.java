@@ -527,6 +527,11 @@ public class MMBase extends ProcessorModule  {
 
 
 	boolean initBuilder(String builder,String path) {
+		if (mmobjs.containsKey(builder)) {
+			if (debug) debug("Builder '"+builder+"' is already loaded");
+			return true;
+		}
+
 		if (!(new File(path+builder+".xml")).exists()) return(false);
 		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
 		Hashtable descriptions=parser.getDescriptions();
