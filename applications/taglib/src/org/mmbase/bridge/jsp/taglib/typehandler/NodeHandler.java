@@ -18,6 +18,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.util.Encode;
+import org.mmbase.util.functions.Parameters;
 
 //import org.mmbase.util.logging.*;
 
@@ -31,7 +32,7 @@ import org.mmbase.util.Encode;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.26 2004-01-19 17:22:10 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.27 2004-06-28 21:39:08 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -87,9 +88,11 @@ public class NodeHandler extends AbstractTypeHandler {
 
 
             // args for gui function
-            List args = new ArrayList();
-            args.add("");
-            args.add(tag.getCloud().getLocale().getLanguage());
+            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
+            args.set("field",    "");
+            args.set("locale",   tag.getLocale());
+            args.set("response", tag.getPageContext().getResponse());
+            args.set("request",  tag.getPageContext().getRequest());
             // should actually be added
             //args.add(sessionName);
             //args.add(tag.pageContext.getResponse());
