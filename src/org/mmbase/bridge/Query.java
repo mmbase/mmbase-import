@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.11 2003-08-04 20:13:45 michiel Exp $
+ * @version $Id: Query.java,v 1.12 2003-08-05 09:07:43 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -172,9 +172,9 @@ public interface Query extends SearchQuery, Cloneable {
     FieldValueInConstraint      createConstraint(StepField f, SortedSet v);
 
     /**
-     * Makes the given constraing 'case insensitive' (if applicable).
+     * Changes the given constraint's 'case sensitivity' (if applicable). Default it is true.
      */
-    FieldConstraint             makeCaseInsensitive(FieldConstraint constraint);  
+    FieldConstraint             setCaseSensitive(FieldConstraint constraint, boolean sensitive);  
 
    /**
      * Combines two Constraints to one new one, using a boolean operator (AND or OR). Every new
