@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<wizard-schema id="empty">
+  <title>example</title>
+
+  <action type="create">
+    <object type="news">
+      <field name="title">Don't forget to add a title!</field>
+    </object>
+  </action>
+    
+  <action type="load">
+    <relation destination="people" role="related" />
+  </action>
+  
+  <form-schema id="basics">
+    <title>Basic News</title>
+    <subtitle>foobar</subtitle>
+    <field name="title" />
+    <field name="subtitle" />
+    <field name="intro" />    
+    <field name="body" />
+
+
+    <list role="related" destination="people" minoccurs="0"  maxoccurs="3">
+      <title>Authors</title>       
+
+      <command name="startwizard" inline="true"  wizardname="tasks/people" objectnumber="new" />	
+      <command name="startwizard" inline="false" wizardname="tasks/people" objectnumber="new" />
+      <item>
+        <fieldset>
+          <field ftype="data" name="firstname" />
+          <field ftype="data" name="lastname" />
+          <field ftype="startwizard" name="lastname" wizardname="tasks/people" />		
+          <prompt>Name</prompt>
+        </fieldset>
+      </item>
+      
+      <action type="create">
+        <relation destinationtype="people" role="related">
+        </relation>
+      </action>
+    </list>
+
+  </form-schema>
+</wizard-schema>
