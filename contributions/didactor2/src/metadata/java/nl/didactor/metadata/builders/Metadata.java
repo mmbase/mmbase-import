@@ -22,7 +22,7 @@ import nl.didactor.metadata.handlers.*;
  * <li>Value returned by handler</li>
  * </ul>
  * @author Gerard van Enk <gvenk@millionpieces.nl>
- * @version $Id: Metadata.java,v 1.1 2004-11-01 12:52:45 jdiepenmaat Exp $
+ * @version $Id: Metadata.java,v 1.2 2004-11-14 00:00:07 genk Exp $
  */
 public class Metadata extends MMObjectBuilder {
 
@@ -113,8 +113,10 @@ public class Metadata extends MMObjectBuilder {
         String metalangstring = "";
         int size = relatedMetalangstrings.size();
         if (size > 0) {
-            if (size > maxvalues) {
-                size = maxvalues;
+            if (maxvalues > 0) {
+                if (size > maxvalues) {
+                    size = maxvalues;
+                }
             }
             List result = new ArrayList(size);
             for (int i = 0; i < size; i++) {
@@ -143,8 +145,10 @@ public class Metadata extends MMObjectBuilder {
         String metadate;
         int size = relatedMetadates.size();
         if (size > 0) {
-            if (size > maxvalues) {
-                size = maxvalues;
+            if (maxvalues > 0) {
+                if (size > maxvalues) {
+                    size = maxvalues;
+                }
             }
             List result = new ArrayList(size);
             for (int i = 0; i < size; i++) {
@@ -173,8 +177,10 @@ public class Metadata extends MMObjectBuilder {
         String metavocabulary = "";
         int size = relatedMetavocabularies.size();
         if (size > 0) {
-            if (size > maxvalues) {
-                size = maxvalues;
+            if (maxvalues > 0) {
+                if (size > maxvalues) {
+                    size = maxvalues;
+                }
             }
             List result = new ArrayList(size);
             for (int i = 0; i < size; i++) {
