@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.52 2002-02-05 12:57:06 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.53 2002-02-20 10:27:44 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -349,8 +349,19 @@ public class BasicCloud implements Cloud, Cloneable {
     static synchronized int uniqueId() {
         try {
             Thread.sleep(1); // A bit paranoid, but just to be sure that not two threads steal the same millisecond.
+            // aaarrchch!
         } catch (Exception e) {}
         return (int)(java.lang.System.currentTimeMillis() % Integer.MAX_VALUE);
+    }
+
+
+    /**
+     * Test if a node id is a temporay id.
+     * @since MMBase-1.5
+     */
+    static boolean isTemporaryId(int id) {
+        // this is terrible!
+        return id > 500000000;
     }
 
     public Transaction createTransaction() {
@@ -617,6 +628,7 @@ public class BasicCloud implements Cloud, Cloneable {
         }
         // if unavailable, obtain from database
         if (resultlist==null) {
+            log.debug("result list is null, getting from database");
             resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
         }
         // store result in cache if needed
