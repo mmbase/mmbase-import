@@ -46,7 +46,7 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         }
         community=getCloudContext().getModule("communityprc");
         // create a temporary message node that holds the new data
-        Node node = new MessageNode(getCloud(),message);
+        Node node = getCloud().getNodeManager("message").createNode();
         setNodeVar(node);
         return EVAL_BODY_BUFFERED;
     }
@@ -59,7 +59,12 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
      **/
     public int doAfterBody() throws JspTagException {
         Node node=getNodeVar();
+        String subject=node.getStringValue("subject").trim();
         String body=node.getStringValue("body").trim();
+        String user=node.getStringValue("user");
+        String username=node.getStringValue("username");
+        node.cancel();
+
         if (body.length()==0) {
             throw new JspTagException("Field 'body' not specified");
         }
@@ -69,11 +74,8 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
         params.put("MESSAGE-BODY",body);
-        String user=node.getStringValue("user");
         if (user.length()!=0) params.put("MESSAGE-CHATTER",user);
-        String username=node.getStringValue("username");
         if (username.length()!=0) params.put("MESSAGE-CHATTERNAME",username);
-        String subject=node.getStringValue("subject").trim();
         if (subject.length()!=0) params.put("MESSAGE-SUBJECT",subject);
         community.process("MESSAGE-UPDATE",message,params,
                           pageContext.getRequest(),pageContext.getResponse());

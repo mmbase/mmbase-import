@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.34 2002-10-03 12:29:07 pierre Exp $
+ * @version $Id: Node.java,v 1.35 2002-10-14 15:41:40 pierre Exp $
  */
 public interface Node {
 
@@ -47,6 +47,45 @@ public interface Node {
     public int getNumber();
 
     /**
+     * Determine whether this Node is a Relation.
+     * @return <code>true</code> if this Node is a Relation.
+     */
+    public boolean isRelation();
+
+    /**
+     * Returns this as a Relation.
+     * @return a <code>Relation</code> object
+     * @throws ClasscastException if the Node is not a Relation
+     */
+    public Relation toRelation();
+
+    /**
+     * Determine whether this Node is a NodeManager.
+     * @return <code>true</code> if this Node is a NodeManager.
+     */
+    public boolean isNodeManager();
+
+    /**
+     * Returns this as a NodeManager.
+     * @return a <code>NodeManager</code> object
+     * @throws ClasscastException if the Node is not a NodeManager
+     */
+    public NodeManager toNodeManager();
+
+    /**
+     * Determine whether this Node is a RelationManager.
+     * @return <code>true</code> if this Node is a RelationManager.
+     */
+    public boolean isRelationManager();
+
+    /**
+     * Returns this as a RelationManager.
+     * @return a <code>NodeManager</code> object
+     * @throws ClasscastException if the Node is not a RelationManager
+     */
+    public RelationManager toRelationManager();
+
+    /**
      * Sets the value of the specified field using an object.
      * For example a field of type <code>int</code> can be set using an
      * <code>Integer</code>.
@@ -57,6 +96,26 @@ public interface Node {
      * @param value      the new value for the given field
      */
     public void setValue(String fieldName, Object value);
+
+    /**
+     * Sets the value of the specified field using an <code>boolean</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
+     */
+    public void setBooleanValue(String fieldName, boolean value);
+
+    /**
+     * Sets the value of the specified field using an <code>Node</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
+     */
+    public void setNodeValue(String fieldName, Node value);
 
     /**
      * Sets the value of the specified field using an <code>int</code>.
@@ -122,7 +181,7 @@ public interface Node {
      * Returns the value of the specified field as an object. For example a
      * field of type <code>int</code> is returned as an <code>Integer</code>.
      * The object type may vary and is dependent on how data was stored in a field.
-     * I.e. It may be possible for an Integer field to return it's value as a String 
+     * I.e. It may be possible for an Integer field to return it's value as a String
      * if it was stored that way in the first place.
      *
      * @param fieldName  the name of the field to be returned
@@ -180,7 +239,7 @@ public interface Node {
      * Long values return -1 of the value is too large.
      * Boolean fields return 0 if false, and 1 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1
      *
      * @param fieldName  the name of the field to be returned
@@ -191,10 +250,10 @@ public interface Node {
     /**
      * Returns the value of the specified field as a <code>float</code>.
      * This function attempts to convert the value to a float.
-     * Numeric fields are simply converted. 
+     * Numeric fields are simply converted.
      * Boolean fields return 0.0 if false, and 1.0 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1.0.
      *
      * @param fieldName  the name of the field to be returned
@@ -205,10 +264,10 @@ public interface Node {
     /**
      * Returns the value of the specified field as a <code>long</code>.
      * This function attempts to convert the value to a long.
-     * Numeric fields are simply converted. Double and float values may be truncated. 
+     * Numeric fields are simply converted. Double and float values may be truncated.
      * Boolean fields return 0 if false, and 1 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1
      *
      * @param fieldName  the name of the field to be returned
@@ -222,7 +281,7 @@ public interface Node {
      * Numeric fields are simply converted. Double may be truncated.
      * Boolean fields return 0.0 if false, and 1.0 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1.0.
      *
      * @param fieldName  the name of the field to be returned
@@ -232,7 +291,7 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>byte array</code>.
-     * This function returns either the value of a byte field, or the byte value of a string 
+     * This function returns either the value of a byte field, or the byte value of a string
      * (converted using the default encoding, i.e. UTF8)
      * Other types of values return an empty byte-array.
      *
@@ -244,7 +303,7 @@ public interface Node {
     /**
      * Returns the value of the specified field as a <code>String</code>.
      * Byte arrays are converted to string using the default encoding (UTF8).
-     * Node values return a string representation of their numeric key. 
+     * Node values return a string representation of their numeric key.
      * For other values the result is calling the toString() method on the actual object.
      *
      * @param fieldName  the name of the field to be returned
@@ -313,7 +372,7 @@ public interface Node {
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) throws IllegalArgumentException;
-    
+
     /**
      * Returns the value of the specified field as a <code>dom.Element</code>
      * If the node value is not itself a Document, the method attempts to
@@ -322,20 +381,20 @@ public interface Node {
      * If the value cannot be converted, this method returns <code>null</code>
      *
      * @param fieldName  the name of the field to be returned
-     * @param tree the DOM Document to which the Element is added 
+     * @param tree the DOM Document to which the Element is added
      *             (as the document root element)
      * @return           the value of the specified field as a DOM Element or <code>null</code>
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
 
-    public Element getXMLValue(String fieldName, Document tree) throws IllegalArgumentException;    
+    public Element getXMLValue(String fieldName, Document tree) throws IllegalArgumentException;
 
     /**
      * Set's the value of the specified field as a <code>dom.Element</code>
      *
      * @param fieldName  the name of the field to be returned
-     * @param value      the DOM Document to has to be set, if not correct doc-type, 
+     * @param value      the DOM Document to has to be set, if not correct doc-type,
      *                   system will try to convert it to the wanted type.
      * @since MMBase-1.6
      */
