@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.29 2000-07-13 09:40:28 install Exp $
+	$Id: Images.java,v 1.30 2000-07-13 15:57:31 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.29  2000/07/13 09:40:28  install
+	Rob
+	
 	Revision 1.28  2000/07/12 12:39:50  install
 	Rob: added getDevices method
 	
@@ -98,7 +101,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.29 2000-07-13 09:40:28 install Exp $
+ * @version $Id: Images.java,v 1.30 2000-07-13 15:57:31 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -332,6 +335,7 @@ public class Images extends MMObjectBuilder {
 				if(activeBuilders.contains("pccard")) {
 					getDevices("pccard",devices);
 				} 
+		        tagger.setValue("ITEMS","2");
 				return devices;	
 			}
         }

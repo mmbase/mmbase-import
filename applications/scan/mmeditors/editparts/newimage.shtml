@@ -10,26 +10,29 @@
 <!--
 function jumpPage(form) {
 	i = form.SelectMenu.options[form.SelectMenu.selectedIndex];
-	location.href = "/mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3+"+i.value;
+	location.href = "/mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3+"+i.value+"+"+i.text;
 }
 // -->
 </SCRIPT>
-<FORM>
-<BR>
-Selecteer apparaat
-<BR>
 
+<BR>
+<FORM>
+Selecteer apparaat:
 <select NAME="SelectMenu" onChange="jumpPage(this.form)">
-<IF $PARAM4=N>
-<option value="$PARAM4">$PARAM4
+
+<IF $PARAM5=Eupload>
+	<option value="upload" SELECTED>upload 
+<ELSE>
+	<option value="upload">upload 
 </IF>
-<IF $MOD-INFO-USER-NAME^==daniel>
+
+<LIST BUILDER-images-devices PROCESSOR="MMBASE">
+<LIF $PARAM5=E$ITEM2>
+    <option value="$ITEM1" SELECTED>$ITEM2
+<ELSE>
+    <option value="$ITEM1">$ITEM2 
 </IF>
-<option value="upload">upload
-<option value="scanner1">scanner1
-<option value="camera1">camera1
-<option value="pccard1">pccard1
-<option value="pccard2">pccard2
+</LIST>
 </select>
 </FORM>
 <HR>
