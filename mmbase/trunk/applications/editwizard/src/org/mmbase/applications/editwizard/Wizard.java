@@ -15,6 +15,8 @@ import org.mmbase.cache.Cache;
 
 import org.mmbase.module.core.ClusterBuilder; // just for the search-constants.
 
+import org.mmbase.applications.dove.*;
+
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
@@ -39,11 +41,11 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.110 2003-11-26 21:00:21 michiel Exp $
+ * @version $Id: Wizard.java,v 1.111 2003-12-02 21:18:13 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
-   private static Logger log = Logging.getLoggerInstance(Wizard.class);
+   private static final Logger log = Logging.getLoggerInstance(Wizard.class);
 
    // File -> Document (resolved includes/shortcuts)
    private static WizardSchemaCache wizardSchemaCache;
@@ -1144,7 +1146,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
    }
 
    /**
-    * resolves possible shortcut for this given single node. (@see #resolveShortcuts for more information)
+    * Resolves possible shortcut for this given single node. (@see #resolveShortcuts for more information)
     *
     * @param   node    The node to resolve
     */
@@ -1576,7 +1578,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          }
       }
 
-      String ftype = Utils.getAttribute(newField, "ftype");
+      String ftype  = Utils.getAttribute(newField, "ftype");
       String dttype = Utils.getAttribute(newField, "dttype");
 
       // place html form field name (so that we always know about which datanode and fieldnode we are talking)
@@ -1591,8 +1593,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
       // resolve special attributes
       if (ftype.equals("startwizard")) {
-         String wizardObjectNumber = Utils.getAttribute(newField,
-               "objectnumber", null);
+         String wizardObjectNumber = Utils.getAttribute(newField, "objectnumber", null);
 
          // if no objectnumber is found, assign the number of the current field.
          // exception is when the direct parent is a form.
@@ -2347,7 +2348,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       }
 
       String xmlSchemaType = null;
-      String guiType = Utils.selectSingleNodeText(con, "guitype", "string/line");
+      String guiType = Utils.selectSingleNodeText(con, Dove.GUITYPE, "string/line");
       int pos = guiType.indexOf("/");
 
       if (pos != -1) {
@@ -2355,10 +2356,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          guiType = guiType.substring(pos + 1);
       }
 
-      String required = Utils.selectSingleNodeText(con, "required", "false");
-      String guiName = Utils.selectSingleNodeText(con, "guiname", "");
-      String description = Utils.selectSingleNodeText(con, "description", "");
-      String maxLength = Utils.selectSingleNodeText(con, "maxlength", "-1");
+      String required = Utils.selectSingleNodeText(con,    Dove.REQUIRED, "false");
+      String guiName = Utils.selectSingleNodeText(con,     Dove.GUINAME, "");
+      String description = Utils.selectSingleNodeText(con, Dove.DESCRIPTION, "");
+      String maxLength = Utils.selectSingleNodeText(con,   Dove.MAXLENGTH, "-1");
 
       // dttype?
       String ftype = Utils.getAttribute(fieldDef, "ftype", null);
