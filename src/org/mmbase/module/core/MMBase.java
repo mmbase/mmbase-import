@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.106 2004-02-05 12:14:07 michiel Exp $
+ * @version $Id: MMBase.java,v 1.107 2004-02-05 14:25:17 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -988,7 +988,7 @@ public class MMBase extends ProcessorModule {
         // first load the core builders
         // remarks:
         //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.oType, so typerel must be started after insrel and reldef. (bug #6237)
-        
+
         TypeDef = (TypeDef)loadCoreBuilder("typedef");
         RelDef = (RelDef)loadCoreBuilder("reldef");
         InsRel = (InsRel)loadCoreBuilder("insrel");
@@ -1376,7 +1376,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Returns a StorageManager to access the storage.. Equal to getStorageManagerFactory().getStorageManager().
-     * Note: in MMBase 1.7, this wikll throw a {@link StorageException} if the system uses the old
+     * Note: in MMBase 1.7, this will throw a {@link StorageException} if the system uses the old
      * support classes to access the storage.
      * @since MMBase-1.7
      * @return a StorageManager class
@@ -1498,7 +1498,7 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Seperate thread to init MMBase. This is because init() of this module must end quickly and init of 
+     * Seperate thread to init MMBase. This is because init() of this module must end quickly and init of
      * MMBase may take indefinitely if e.g. the database is down.
      *
      * If init of module does not end quickly, init of MMBaseServlet does not end quickly and the
