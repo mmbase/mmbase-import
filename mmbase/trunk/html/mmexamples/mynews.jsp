@@ -53,7 +53,7 @@
       Click on the image to get a good view of the MyNews Cloud Design.<br />
       The MyNews application consists of 7 builders (objects of a certain type), namely:
       attachments, mags, images, news, mmevents, urls, and people.<br />
-      In this example we will not use the attachments, images and mmevent builders.<br />
+      In this example we will not use the attachments, images and mmevent builders.<p />
       A magazine is a collection of articles or 'news' items.
       The line between mags and news indicates that a magazine can have relations with news articles.
       Articles can be ordered using the 'postion' field of the 'posrel' relation.
@@ -73,7 +73,8 @@
   </tr>
   <tr valign="top">
     <td>
-      With the object cloud design described above you can create webpages like the one you see on the right (By clicking the MyNews url you can see the MyNews magazine in real action). The MyNews magazine consists of a couple of news items. The Title and the Introducation of the newsitems are visualized in this picture. After selecting a news item the complete article will be showed.
+      With the object cloud design described above you can create webpages like the one you see on the right (By clicking the MyNews url you can see the MyNews magazine in real action). The MyNews magazine consists of a couple of news items. 
+      The Title of the newsitems are visualized in this picture. If you click on one of the 'next' images, you will be taken to a new template that shows the complete article.
     </td>
     <td><a href="../share/images/mynews_manual.jpg" target="img"><img src="../share/images/mynews_manual.jpg" width="300" /></a></td>
   </tr>
