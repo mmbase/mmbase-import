@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.45 2004-03-08 15:46:18 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.46 2004-03-12 10:47:35 michiel Exp $
  */
 public class MultiPool {
 
@@ -173,6 +173,8 @@ public class MultiPool {
                 pool.clear();
             } catch (SQLException e) {
                 log.error(e);
+            } finally {
+                conMax = busyPool.size() + pool.size(); // should be 0 now
             }
         }
         semaphore = null;
