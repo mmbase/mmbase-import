@@ -150,5 +150,34 @@ public class MMEvents extends MMObjectBuilder {
 			try {Thread.sleep(300*1000);} catch (InterruptedException f){}
 		}
 	}
-}
 
+	public int insert(String owner,MMObjectNode node) {
+		int val=node.getIntValue("start");
+		int newval=(int)(DateSupport.currentTimeMillis()/1000);
+		if (val==-1) {
+			node.setValue("start",newval);
+			
+		}
+		val=node.getIntValue("stop");
+		if (val==-1) {
+			node.setValue("stop",newval);
+			
+		}
+		return(super.insert(owner,node));
+	}
+
+	public boolean commit(MMObjectNode node) {
+		int val=node.getIntValue("start");
+		int newval=(int)(DateSupport.currentTimeMillis()/1000);
+		if (val==-1) {
+			node.setValue("start",newval);
+			
+		}
+		val=node.getIntValue("stop");
+		if (val==-1) {
+			node.setValue("stop",newval);
+			
+		}
+		return(super.commit(node));
+	}
+}
