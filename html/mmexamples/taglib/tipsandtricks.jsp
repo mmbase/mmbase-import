@@ -135,7 +135,7 @@
     you need it.
     </p>
     <p>
-     Another possibility is to use the '<a href="../../../mmdocs/mmbase-taglib.html#include">mm:include</a>' tag. The such included page must be a stand alone
+     Another possibility is to use the '<a href="../../mmdocs/taglib/include.jsp">mm:include</a>' tag. The such included page must be a stand alone
      taglib page (with its own &lt;@taglib directive and so on), and the result is simply included
      in your page. You can feed the mm:include-d page with the mm;param tag.
     </p>
@@ -149,7 +149,7 @@
       The difference is that 'listnodes' and 'relatednodes' return real nodes, and the fields you
       can refer to simply by their name.  'list' and 'related' return 'cluster' nodes, which are
       nodes combined of several types. Fields must be prefixed by their element in the 'path'. See
-      documentation of <a href="../../../mmdocs/mmbase-taglib.html#list">mm:list</a>.
+      documentation of <a href="../../mmdocs/taglib/list.jsp">mm:list</a>.
     </p>
     <p>
       It is possible to get the 'real' nodes from the 'cluster' nodes of the 'list' and 'related'
