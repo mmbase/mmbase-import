@@ -20,12 +20,11 @@ import org.mmbase.util.logging.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.7 2002-09-25 14:57:47 pierre Exp $
+ * @version $Id: BasicFieldList.java,v 1.8 2002-10-03 12:28:10 pierre Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
     private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
 
-    private Cloud cloud = null;
     NodeManager nodemanager=null;
 
     /**
@@ -35,9 +34,8 @@ public class BasicFieldList extends BasicList implements FieldList {
         super();
     }
 
-    BasicFieldList(Collection c, Cloud cloud, NodeManager nodemanager) {
+    BasicFieldList(Collection c, NodeManager nodemanager) {
         super(c);
-        this.cloud=cloud;
         this.nodemanager=nodemanager;
     }
 

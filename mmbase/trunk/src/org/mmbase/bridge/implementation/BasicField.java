@@ -17,9 +17,9 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.9 2002-07-24 11:15:13 pierre Exp $
+ * @version $Id: BasicField.java,v 1.10 2002-10-03 12:28:10 pierre Exp $
  */
-public class BasicField implements Field {
+public class BasicField implements Field, Comparable {
 
     NodeManager nodeManager=null;
     FieldDefs field=null;
@@ -66,18 +66,37 @@ public class BasicField implements Field {
     }
 
     /**
-    * Compares two fields, and returns true if they are equal.
-    * @param o the object to compare it with
-    */
-    public boolean equals(Object o) {
-        return (o instanceof Field) && (o.hashCode()==hashCode());
+     * Compares this field to the passed object.
+     * Returns 0 if they are equal, -1 if the object passed is a Field and larger than this field,
+     * and +1 if the object passed is a Field and smaller than this field.
+     * A field is 'larger' than another field if its preferred GUIName is larger (alphabetically, case sensitive)
+     * than that of the other field. If GUINames are the same, the fields are compared on internal field name,
+     * and (if needed) on their NodeManagers.
+     *
+     * @param o the object to compare it with
+     */
+    public int compareTo(Object o) {
+        Field f= (Field)o;
+        int res=getGUIName().compareTo(f.getGUIName());
+        if (res!=0) {
+            return res;
+        } else {
+            res=getName().compareTo(f.getName());
+            if (res!=0) {
+                return res;
+            } else {
+                return ((Comparable)nodeManager).compareTo(f.getNodeManager());
+            }
+        }
     }
 
     /**
-    * Returns the object's hashCode.
-    * This effectively returns the objectnode's number
-    */
-    public int hashCode() {
-        return ((getNodeManager().hashCode()) * 100) + field.getDBPos();
+     * Compares this field to the passed object, and returns true if they are equal.
+     * @param o the object to compare it with
+     */
+    public boolean equals(Object o) {
+        return (o instanceof Field) && 
+               nodeManager.equals(((Field)o).getNodeManager()) &&
+               getName().equals(((Field)o).getName());
     }
 }
