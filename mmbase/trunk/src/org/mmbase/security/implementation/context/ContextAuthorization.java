@@ -212,13 +212,14 @@ public class ContextAuthorization extends Authorization {
         //  look which groups belong to this,...
         MMObjectNode node = getMMNode(nodeNumber);
         String context = node.getStringValue("owner");
-        
+
         return check(user, context, operation.toString());
     }
 
     private boolean check(UserContext user, int nodeNumber, String operation) throws SecurityException {
         return check(user, getContext(user, nodeNumber), operation);
     }
+
     private boolean check(UserContext user, String context, String operation) throws SecurityException {
         // look if we have this one already inside the positive cache...
         synchronized(cache) {
@@ -229,22 +230,19 @@ public class ContextAuthorization extends Authorization {
             }
         }
 
-
-        String xpath = "/contextconfig/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']/grant";
-        NodeList found;
+        String xpath = "/contextconfig/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']";
+        Node foundContextNode=null;
         try {
             log.debug("gonna execute the query:" + xpath );
-            found = XPathAPI.selectNodeList(document, xpath);
+            foundContextNode = XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
             log.error("error executing query: '"+xpath+"' ");
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
         }
 
-
-
         // say our context isnt found... do the same query but now on the default context...
-        if(found.getLength() == 0) {
+        if(foundContextNode == null) {
             // well our context wasnt found, give a warning...
             log.warn("context with name :'"+context+"' was not found in the configuration.");
 
@@ -267,10 +265,10 @@ public class ContextAuthorization extends Authorization {
                     log.debug("context with name: " + context + " uses the default context: " + defaultContext);
                 }
                 // now do the same query with the default context...
-                xpath = "/contextconfig/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/grant";
+                xpath = "/contextconfig/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']";
                 try {
                     log.debug("gonna execute the query:" + xpath );
-                    found = XPathAPI.selectNodeList(document, xpath);
+                    foundContextNode = XPathAPI.selectSingleNode(document, xpath);
                 }
                 catch(javax.xml.transform.TransformerException te) {
                     log.error("error executing query: '"+xpath+"' ");
@@ -284,18 +282,31 @@ public class ContextAuthorization extends Authorization {
             }
         }
 
-
         HashSet allowedGroups = new HashSet();
-        for(int currentNode = 0; currentNode < found.getLength(); currentNode++) {
-            Node contains = found.item(currentNode);
-            NamedNodeMap nnm = contains.getAttributes();
-            Node contextNameNode = nnm.getNamedItem("group");
-            allowedGroups.add(contextNameNode.getNodeValue());
-            if (log.isDebugEnabled()) {
-                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"/*+nodeNumber*/+" by user: " +user);
+        boolean allowed = false;
+        if (foundContextNode!=null) {
+            // obtain all grants within the founbd context
+            xpath = "grant";
+            NodeIterator found;
+            try {
+                found = XPathAPI.selectNodeIterator(foundContextNode, xpath);
+            } catch(javax.xml.transform.TransformerException te) {
+                log.error("error executing query: '"+xpath+"' ");
+                log.error( Logging.stackTrace(te));
+                throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
             }
+            Node contains;
+            for(contains = found.nextNode(); contains != null; contains = found.nextNode()) {
+                NamedNodeMap nnm = contains.getAttributes();
+                Node contextNameNode = nnm.getNamedItem("group");
+                allowedGroups.add(contextNameNode.getNodeValue());
+                if (log.isDebugEnabled()) {
+                    log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"/*+nodeNumber*/+" by user: " +user);
+                }
+            }
+            allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
         }
-        boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
+
         if (log.isDebugEnabled()) {
             if (allowed) {
                 log.debug("operation " + operation + " was permitted for user with id " + user);
@@ -308,7 +319,7 @@ public class ContextAuthorization extends Authorization {
             cache.rightAdd(operation, context, user.getIdentifier(), allowed);
         }
 
-    return allowed;
+        return allowed;
     }
 
 
@@ -388,7 +399,7 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    
+
     public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
         if (operation == Operation.CREATE) {
             // may link on both nodes
@@ -407,23 +418,23 @@ public class ContextAuthorization extends Authorization {
             if(!check(user, srcNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);                
-            }  
+                throw new SecurityException(msg);
+            }
             if (! check(user, dstNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);                                
+                throw new SecurityException(msg);
             }
         } else if (operation == Operation.CHANGE_RELATION) {
             if(!check(user, srcNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);                
-            }  
+                throw new SecurityException(msg);
+            }
             if (! check(user, dstNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);                                
+                throw new SecurityException(msg);
             }
             assert(user, nodeNumber, Operation.WRITE);
         } else {
@@ -441,7 +452,7 @@ public class ContextAuthorization extends Authorization {
                 String msg = "builder 'typedef' not found";
                 log.error(msg);
                 //throw new NotFoundException(msg);
-          	throw new SecurityException(msg);
+            throw new SecurityException(msg);
             }
         }
         MMObjectNode node = builder.getNode(n);
