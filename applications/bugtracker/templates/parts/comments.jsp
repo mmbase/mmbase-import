@@ -1,9 +1,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
 <tr>
-		<th>
-			  Statement from the maintainer 
-		</th>
-		<td>
+	       <th>Statement from the maintainer</th>
+	       <td>
 			<mm:field name="rationale">
 			<mm:compare value="" inverse="true">
 				<mm:field name="html(rationale)" />
@@ -41,7 +39,7 @@
 				<mm:present referid="commentsfound" inverse="true">
 					No user comments yet
 				</mm:present>
-				Add comment <a href="addComment.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />&commenttype=regular"><img src="images/arrow-right.gif"></a><br />
+				Add comment <a href="<mm:url referids="portal?,page?,bugreport,base" page="$base/addComment.jsp?commenttype=regular" />"><img src="<mm:url page="$base/images/arrow-right.gif" />"></a><br />
 		</td>
 </tr>
 </table>

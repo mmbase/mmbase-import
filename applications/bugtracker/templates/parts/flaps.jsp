@@ -1,7 +1,7 @@
 <table width="98%" cellspacing="0" cellpadding="0" class="subnav">
 	<tr>
 	<td width="25">
-	     <A HREF="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />"><IMG SRC="images/arrow-left.gif"></A>
+	     <a href="<mm:url referids="portal?,page?,base" page="$base/index.jsp" />"><img border="0" src="<mm:url page="$base/images/arrow-left.gif" />" /></a>
 	</td>
 	<!-- overview flap -->
 	<mm:compare referid="flap" value="overview" inverse="true">
@@ -50,6 +50,7 @@
 
 
 	<!-- mybug flap -->
+	<%--
 	<mm:compare referid="flap" value="mybug" inverse="true">
 		<td>
 		<a href="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mybug&bugreport=<mm:write referid="bugreport" />">
@@ -62,5 +63,6 @@
 		MyBug
 		</td>
 	</mm:compare>
+        --%>	
 	</tr>
 </table>
