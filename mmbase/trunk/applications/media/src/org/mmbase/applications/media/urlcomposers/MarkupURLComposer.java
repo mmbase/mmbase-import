@@ -1,17 +1,16 @@
 /*
-  
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
-*/
+ 
+ */
 
 package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.builders.MediaFragments;
 import java.util.*;
@@ -32,25 +31,17 @@ import java.net.*;
  * @author Rob Vermeulen (VPRO)
  * @since MMBase-1.7
  */
-public class MarkupURLComposer extends FragmentURLComposer { 
-    private static Logger log = Logging.getLoggerInstance(MarkupURLComposer.class.getName());
+public class MarkupURLComposer extends FragmentURLComposer {
     
-    public MarkupURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
-        super(provider, source, fragment, info, cacheExpireObjects);
-     
-    }
-
-
     /**
      * Typical for a 'MarkupURLComposer' is that it should have a
      * 'template'. It could have been called a 'TemplateURLComposer',
      * but that sounds to general..
      */
-
     protected MMObjectNode getTemplate() {
         return (MMObjectNode) getInfo().get("template");
     }
-
+    
     /**
      * This composer can only do something if it has a template. The
      * URLComposerFactory arranges this, but if somewhy it doesn't, it still works.
@@ -60,20 +51,20 @@ public class MarkupURLComposer extends FragmentURLComposer {
      * that the source-format must be Real, if the templates language
      * is SMIL (this is perhaps too limited).
      */
-
+    
     public boolean canCompose() {
         MMObjectNode template = getTemplate();
         if (template == null) return false;
-        Format sourceFormat = Format.get(source.getIntValue("format")); 
+        Format sourceFormat = Format.get(source.getIntValue("format"));
         if (getFormat() == Format.SMIL && !( sourceFormat == Format.RM || sourceFormat == Format.RA)) return false;
         return true;
     }
-
+    
     protected StringBuffer  getURLBuffer() {
         MMObjectNode template = getTemplate();
-        if (template != null) { 
+        if (template != null) {
             String url = template.getStringValue("url");
-            StringBuffer buf = new StringBuffer(url + "fragment=" + fragment.getNumber() + "&format=" +  Format.get(source.getIntValue("format")));            
+            StringBuffer buf = new StringBuffer(url + "fragment=" + fragment.getNumber() + "&format=" +  Format.get(source.getIntValue("format")));
             if (url.indexOf("://") < 0) {
                 if (! url.startsWith("/")) {
                     buf.insert(0, Config.templatesDir);
@@ -88,12 +79,12 @@ public class MarkupURLComposer extends FragmentURLComposer {
     }
     public String getGUIIndicator(Map options) {
         Locale locale = (Locale) options.get("locale");
-        Format sourceFormat = Format.get(source.getIntValue("format")); 
+        Format sourceFormat = Format.get(source.getIntValue("format"));
         return super.getGUIIndicator(options) + " (" + sourceFormat.getGUIIndicator(locale) + ")";
     }
-
-
-    public String getDescription(Map options) { 
+    
+    
+    public String getDescription(Map options) {
         Locale locale = (Locale) options.get("locale");
         ResourceBundle m = ResourceBundle.getBundle("org.mmbase.applications.media.urlcomposers.resources.markupurlcomposer", locale);
         String url = getURL() + "&amp;language=" + locale.getLanguage();
@@ -104,21 +95,20 @@ public class MarkupURLComposer extends FragmentURLComposer {
             return template.getStringValue("name") + "<br />" + template.getStringValue("description");
         }
     }
-
-
+    
+    
     /**
      * Depends on mimetype of the template to return the format of this urlcomposer.
      */
-
-    public Format  getFormat()   { 
+    
+    public Format  getFormat()   {
         MMObjectNode template = getTemplate();
         if (template == null) return Format.HTML;
         String mimetype = template.getStringValue("mimetype");
         if (mimetype.equals("application/smil")) {
             return Format.SMIL;
         } else {
-            return Format.HTML; 
+            return Format.HTML;
         }
-    } 
-
+    }
 }

@@ -23,9 +23,11 @@ import java.util.*;
 
 public class RealURLComposer extends FragmentURLComposer  {
 
+    /*
     public RealURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
         super(provider, source, fragment, info, cacheExpireObjects);
     }
+     */
 
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = super.getURLBuffer();

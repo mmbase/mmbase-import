@@ -12,7 +12,6 @@ package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 import java.util.*;
 import java.net.*;
 import java.text.*;
@@ -20,17 +19,11 @@ import java.text.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.4 2003-07-11 13:57:03 vpro Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.5 2003-07-15 12:26:37 vpro Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
-    
-    private static Logger log = Logging.getLoggerInstance(WmSbURLComposer.class.getName());
-
-    public WmSbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
-        super(provider, source, fragment, info, cacheExpireObjects);
-    }
-
+  
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl");
     }
