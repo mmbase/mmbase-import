@@ -32,12 +32,12 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     
-    /** Builder associated with the nodetype. */
+    /** Builder for the specified nodetype. */
     private MMObjectBuilder builder = null;
     
     /** Map, maps fields to stepfields. */
@@ -46,7 +46,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     /** 
      * Creator.
      *
-     * @param builder The builder associated with the nodetype.
+     * @param builder The builder for the nodetype.
      */
     public NodeSearchQuery(MMObjectBuilder builder) {
         this.builder = builder;
@@ -63,7 +63,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     }
     
     /**
-     * Returns the stepfield corresponding with the specified field.
+     * Returns the stepfield corresponding to the specified field.
      *
      * @param field The field.
      * @return The corresponding stepfield.
@@ -79,6 +79,15 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
                 + ": " + field);
         }
         return stepField;
+    }
+    
+    /**
+     * Returns the builder for the specified nodetype.
+     *
+     * @return The builder.
+     */
+    public MMObjectBuilder getBuilder() {
+        return builder;
     }
     
     // javadoc is inherited
