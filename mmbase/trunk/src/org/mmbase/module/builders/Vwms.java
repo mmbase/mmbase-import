@@ -10,8 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.sql.*;
-import org.mmbase.module.database.*;
+
+import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.vwms.*;
 import org.mmbase.util.*;
@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version 5-Apr-2001
+ * @version $Id: Vwms.java,v 1.17 2002-11-21 13:39:43 pierre Exp $
  */
 
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
@@ -166,7 +166,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 				log.error("Multiple mmserver nodes found named: "+getMachineName()+", only single node allowed!!!!");
 				log.error("Please delete all but one mmservers named: "+getMachineName());
 			}
-			
+
             for (Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms"); f.hasMoreElements();) {
                 MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
                 log.service("Vwms:startVwms -> VWM="+vwmnode);
@@ -231,6 +231,13 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      * @return <code>true</code> if the mail was send, <code>false</code> otherwise
      */
     public boolean sendMail(String who,String to,String subject, String msg) {
+
+        SendMailInterface sendmail=mmb.getSendMail();
+        if (sendmail==null) {
+            log.warn("sendmail module not active, cannot send email");
+            return false;
+        }
+
         // added a kinda weird check so it only checks settings when
         // needed, daniel.
 
@@ -268,11 +275,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         } else {
             mail.setText(subject);
         }
-        if (mmb.getSendMail().sendMail(mail)==false) {
-            log.error("vwms -> mail failed");
+        if (sendmail.sendMail(mail)==false) {
+            log.error("sending email failed");
             result = false;
         } else {
-            log.info("vwms -> mail send");
+            log.info("email send");
             result = true;
         }
         log.trace("who("+who+"), to("+to+"), subject("+subject+"), msg.length("+msg.length()+")");
@@ -302,7 +309,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         super.nodeRemoteChanged(machine,number,builder,ctype);
 
         // always return true
-        boolean result = true; 
+        boolean result = true;
         if (ctype.equals("c")) {
             MMObjectNode node=getNode(number);
             if (node!=null) {
@@ -312,11 +319,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
                     if (vwm!=null) {
                         log.debug("Signalling vwm("+name+") that builder("+builder+") has a node("+number+") with ctype("+ctype+") from machine("+machine+")");
                         vwm.nodeRemoteChanged(machine,number,builder,ctype);
-                    } else 
+                    } else
                         log.debug("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): This vwm("+name+") is not locally installed, skipping..");
                 } else
                     log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): Got a vwmtask with no vwmname("+name+")!");
-            } else 
+            } else
                 log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): This nodenumber("+number+") is not found!");
         }
         log.trace("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): result("+result+")");
@@ -345,11 +352,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
                     VwmInterface vwm=getVwm(name);
                     if (vwm!=null) {
                         vwm.nodeLocalChanged(machine,number,builder,ctype);
-                    } else 
+                    } else
                         log.debug("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): This vwm("+name+") is not locally installed, skipping..");
                 } else
                     log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): Got a vwmtask with no vwmname("+name+")!");
-            } else 
+            } else
                 log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): number("+number+") is not found!");
         }
         log.trace("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): result("+result+")");
