@@ -22,13 +22,17 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  */
-public class SetFieldTag extends FieldTag {
+public class SetFieldTag extends FieldTag { // but it is not a writer
     private static Logger log = Logging.getLoggerInstance(SetFieldTag.class.getName()); 
 
     protected String convert (String s) throws JspTagException { 
         return s;
     }
             
+    public int doStartTag() throws JspTagException {
+        setFieldVar(name); 
+        return EVAL_BODY_TAG;
+    }
     /**
      * Set the value of the field.
      */
@@ -40,9 +44,15 @@ public class SetFieldTag extends FieldTag {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
             getNodeVar().setByteValue(fieldName, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
 	} else {           
-            String newValue = bodyContent.getString();
-            getNodeVar().setValue(fieldName, convert(newValue));
+            String newValue = convert(bodyContent.getString());
+            getNodeVar().setValue(fieldName, newValue);
+            if (getId() != null) {           
+                getContextTag().register(getId(), newValue);
+            }
+
         }
+        
+
         findNodeProvider().setModified();
         
         return SKIP_BODY;
