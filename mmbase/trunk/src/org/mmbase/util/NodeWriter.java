@@ -117,11 +117,11 @@ public class NodeWriter{
                 write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
             }
         }
-        // write the values of the node
-        Hashtable values=node.getValues();
-        Enumeration nd=values.keys();
+	MMObjectBuilder bul=node.parent;
+	Enumeration nd=bul.getFields().elements();
         while (nd.hasMoreElements()) {
-            String key=(String)nd.nextElement();
+            FieldDefs def=(FieldDefs)nd.nextElement();
+            String key=def.getDBName();
             if (isRelationNode) {
                 // note that the routine below assumes
                 // fields in a relation node cannot contain binary blobs
