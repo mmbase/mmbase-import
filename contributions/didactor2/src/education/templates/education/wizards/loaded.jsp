@@ -1,6 +1,13 @@
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<mm:content postprocessor="reducespace">
+<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+	<%@include file="/shared/setImports.jsp"%>
 <html>
 <head></head>
     <body>
-        OK.
+        <img src="<mm:treefile page="/education/wizards/gfx/ok.gif" objectlist="$includePath" referids="$referids" />" alt="OK">
     </body>
 </html>
+</mm:cloud>
+</mm:content>
+

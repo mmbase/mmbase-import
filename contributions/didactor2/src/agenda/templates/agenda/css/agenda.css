@@ -43,12 +43,16 @@
 .calDayNotThisMonthHighlight {
   background-color: #bb0000;
   color: #444444;
+   cursor: pointer;
+
 }
 
 /* Days that are highlighed, and they fall inside the current month */
 .calDayThisMonthHighlight {
   background-color: #ff0000;
   color: #000000;
+   cursor: pointer;
+
 }
 
 /* Today */
