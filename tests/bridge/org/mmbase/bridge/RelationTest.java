@@ -13,7 +13,7 @@ import org.mmbase.tests.*;
 /**
  * Test cases to test the creation of relations and the retrieval 
  * @author Kees Jongenburger
- * @version $Id: RelationTest.java,v 1.1 2003-06-18 14:03:31 kees Exp $
+ * @version $Id: RelationTest.java,v 1.2 2003-11-11 11:11:37 michiel Exp $
  */
 public class RelationTest extends BridgeTest {
     
@@ -50,12 +50,12 @@ public class RelationTest extends BridgeTest {
         //check back if we can get the direction
         
         NodeList aaRelatedList = aaFirstNode.getRelatedNodes("bb","related" ,"source");
-        assertTrue(aaRelatedList.size() ==1);
+        assertTrue("related list has size " + aaRelatedList.size() + " but should be 1", aaRelatedList.size() == 1);
         NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa","related","source");
         assertTrue("relation count should be 1 but is "+ bbRelatedListSource.size() +" mmbase relations dont' work",bbRelatedListSource.size() == 1);
         
-		NodeList bbRelatedListDestination = bbNode.getRelatedNodes("aa","related","destination");
-		assertTrue("relation count should be 1 buts is "+bbRelatedListDestination.size() +" mmbase relations dont' work",bbRelatedListDestination.size() ==1);
+        NodeList bbRelatedListDestination = bbNode.getRelatedNodes("aa","related","destination");
+        assertTrue("relation count should be 1 buts is "+bbRelatedListDestination.size() +" mmbase relations dont' work",bbRelatedListDestination.size() ==1);
 		
     }
 }
