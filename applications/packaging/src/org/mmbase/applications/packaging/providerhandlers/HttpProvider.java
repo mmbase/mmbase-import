@@ -265,7 +265,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             JarFile jarFile = new JarFile(localname);
             JarEntry je = jarFile.getJarEntry(packageid + "_" + packageversion + ".mmp");
             try {
-                InputStream in = jarFile.getInputStream(je);
+                BufferedInputStream in = new BufferedInputStream(jarFile.getInputStream(je));
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(getImportPath() + ".temp_" + packageid + "_" + packageversion + ".mmp"));
                 int val;
                 while ((val = in.read()) != -1) {
