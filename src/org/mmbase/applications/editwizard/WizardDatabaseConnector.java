@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.17 2002-06-28 12:49:16 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.18 2002-07-05 20:42:32 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -353,7 +353,7 @@ public class WizardDatabaseConnector {
      *                     The first ordernr in a list is 1
      */
     private void fillObjectFields(Document data, Node targetParentNode, Node objectDef,
-                                  Node objectNode, Hashtable params, int createorder) {
+                                  Node objectNode, Map params, int createorder) {
         // fill-in (or place) defined fields and their values.
         NodeList fields = Utils.selectNodeList(objectDef, "field");
         for (int i=0; i<fields.getLength(); i++) {
@@ -392,7 +392,7 @@ public class WizardDatabaseConnector {
      * @param params The params to use when creating the objects and relations.
      * @return The resulting object(tree) node.
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params) throws WizardException {
         return createObject(data, targetParentNode, objectDef, params, 1);
     }
 
@@ -427,8 +427,11 @@ public class WizardDatabaseConnector {
      *                     The first ordernr in a list is 1
      * @return The resulting object(tree) node.
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params, int createorder) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
+ 
         String objecttype = Utils.getAttribute(objectDef, "type");
+
+        if (log.isDebugEnabled()) log.debug("Create object of type " + objecttype);
         String nodename = objectDef.getNodeName();
 
         // no relations to add here..
@@ -537,7 +540,7 @@ public class WizardDatabaseConnector {
      * @param cmd the command Element to execute
      * @param binaries a HashMap containing files (binaries) uploaded in the wizard
      */
-    private Element sendCommand(Element cmd, HashMap binaries) throws WizardException {
+    private Element sendCommand(Element cmd, Map binaries) throws WizardException {
         Element results=null;
         try {
             Document tmp = Utils.emptyDocument();
@@ -554,7 +557,7 @@ public class WizardDatabaseConnector {
      * This is an internal method which is used to fire a command to connect to mmbase via Dove.
      */
     private Document fireCommand(ConnectorCommand command) throws SecurityException,WizardException {
-        Vector tmp = new Vector();
+        List tmp = new Vector();
         tmp.add(command);
         return fireCommandList(tmp);
     }
@@ -562,15 +565,15 @@ public class WizardDatabaseConnector {
     /**
      * This is an internal method which is used to fire commands to connect to mmbase via Dove.
      */
-    private Document fireCommandList(Vector commands) throws SecurityException,WizardException {
+    private Document fireCommandList(List commands) throws SecurityException,WizardException {
         // send commands away from here... away!
         // first create request xml
         Document req = Utils.parseXML("<request/>");
         Element docel = req.getDocumentElement();
 
-        Enumeration enum = commands.elements();
-        while (enum.hasMoreElements()) {
-            ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
+        Iterator i  = commands.iterator();
+        while (i.hasNext()) {
+            ConnectorCommand cmd = (ConnectorCommand) i.next();
             docel.appendChild(req.importNode(cmd.getCommandXML().getDocumentElement().cloneNode(true), true));
         }
 
@@ -582,9 +585,9 @@ public class WizardDatabaseConnector {
         response.appendChild(response.importNode(results,true));
 
         // map response back to each command.
-        enum = commands.elements();
-        while (enum.hasMoreElements()) {
-            ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
+        i = commands.iterator();
+        while (i.hasNext()) {
+            ConnectorCommand cmd = (ConnectorCommand) i.next();
 
             // find response for this command
             Node resp = Utils.selectSingleNode(response, "/*/"+cmd.getName() +"[@id]");
@@ -607,7 +610,7 @@ public class WizardDatabaseConnector {
      * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
      */
-    public Element put(Document originalData, Document newData, HashMap binaries) throws WizardException {
+    public Element put(Document originalData, Document newData, Map binaries) throws WizardException {
         Node putcmd =getPutData(originalData, newData);
         return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), binaries);
     }
@@ -883,7 +886,7 @@ public class WizardDatabaseConnector {
         Node obj = rel.getOwnerDocument().createElement("object");
 
         // copy attributes, except...
-        Vector except = new Vector();
+        List except = new Vector();
         except.add("destination");
         except.add("source");
         except.add("role");
