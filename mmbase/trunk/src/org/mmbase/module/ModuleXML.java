@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.18 $ $Date: 2000-12-27 22:08:22 $
+ * @version $Revision: 1.19 $ $Date: 2001-01-04 13:24:18 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -91,6 +91,9 @@ public abstract class ModuleXML extends Module {
 						((Module)mod).setClassName(parser.getClassFile());
 
 					}
+				} catch (java.lang.ClassNotFoundException cnfe) {
+					System.err.println("[error]["+ModuleXML.class.getName()+"]Could not load class with name '"+cname+"', which was "+
+							"specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
