@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.util.Enumeration;
+import java.util.Iterator;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +28,8 @@ import org.mmbase.util.logging.Logging;
  * MMBase will run without this builder, but most applications use aliases.
  *
  * @author Rico Jansen
- * @version $Id: OAlias.java,v 1.14 2003-07-14 10:11:33 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: OAlias.java,v 1.15 2003-07-14 11:34:22 michiel Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -57,18 +61,29 @@ public class OAlias extends MMObjectBuilder {
      * @see #getAliasedNode
      */
     public int getNumber(String name) {
-        log.debug("Finding oalias node '" + name + "'");
+        if (log.isDebugEnabled()) {
+            log.debug("Finding oalias node '" + name + "'");
+        }
+
         Integer nodeNumber = (Integer) numberCache.get(name);
         if (nodeNumber == null) {
-            Enumeration e = search("name=='" + name + "'");
-            if (e.hasMoreElements()) {
-                MMObjectNode node = (MMObjectNode) e.nextElement();
-                int rtn = node.getIntValue("destination");
-                numberCache.put(name, new Integer(rtn));
-                return rtn;
-            } else {
-                numberCache.put(name, NOT_FOUND);
-                return -1;                
+            try {
+                NodeSearchQuery query = new NodeSearchQuery(this);
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);      
+                query.setConstraint(constraint);
+                Iterator i = getNodes(query).iterator();
+                if (i.hasNext()) {
+                    MMObjectNode node = (MMObjectNode) i.next();
+                    int rtn = node.getIntValue("destination");
+                    numberCache.put(name, new Integer(rtn));
+                    return rtn;
+                } else {
+                    numberCache.put(name, NOT_FOUND);
+                    return -1;                
+                }
+            } catch (SearchQueryException sqe) {
+                log.error(sqe.toString());
+                return -1;
             }
         } else {
             return nodeNumber.intValue();
@@ -81,14 +96,24 @@ public class OAlias extends MMObjectBuilder {
      * @param number the number of the node
      * @return the alias of the node, or null if it does not exist
      * @see #getNumber
+     * @todo No caching here?
      */
     public String getAlias(int number) {
-        Enumeration e = search("destination==" + number);
-        if (e.hasMoreElements()) {
-            MMObjectNode node = (MMObjectNode)e.nextElement();
-            return node.getStringValue("name");
-        } else {
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), new Integer(number));
+        query.setConstraint(constraint);
+        try {
+            Iterator i = getNodes(query).iterator();
+            if (i.hasNext()) {
+                MMObjectNode node = (MMObjectNode)i.next();
+                return node.getStringValue("name");
+            } else {
+                return null;
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe.toString());
             return null;
+
         }
     }
 
