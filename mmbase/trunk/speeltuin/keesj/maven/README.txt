@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.5 2005-02-03 14:24:44 keesj Exp $
+README for maven-mmbase $Id: README.txt,v 1.6 2005-02-08 14:32:13 keesj Exp $
 
 RUNNING:
 download maven from http://maven.apache.org/
@@ -11,11 +11,32 @@ download maven from http://maven.apache.org/
 run the ant task in this directory
 @>ant
 
-goto the mmbase-core directory
-@>cd mmbase-core
-@>maven site
 
-wait.....
+#
+# creating the mmbase-core-config jar
+#
 
-the result can be found in mmbase-core/target/docs
+goto the mmbase-core-config
+run maven jar:install
+
+#
+# creating the mmbase-core jar
+#
+
+goto the mmbase-core
+run maven jar:install
+
+#
+# creating the mmbase-taglib jar
+#
+
+goto the mmbase-taglib
+run maven jar:install
+
+#
+# creating the mmbase-webapp 
+#
+
+goto the mmbase-webapp
+run maven war
 
