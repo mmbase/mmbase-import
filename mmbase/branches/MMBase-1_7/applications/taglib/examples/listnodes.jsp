@@ -37,7 +37,7 @@
       <td><input type="text" size="5" name="max" value="<mm:write referid="max"/>"></td>
     </tr>
     <tr>
-      <td>constraints</td>
+      <td>constraints (deprecated, see <a href="query.jsp">query</a>)</td>
       <td><input type="text" size="60" name="constraints" value="<mm:write referid="constraints"/>"></td>
       <td>offset</td>
       <td><input type="text" size="5" name="offset" value="<mm:write referid="offset"/>"></td>
