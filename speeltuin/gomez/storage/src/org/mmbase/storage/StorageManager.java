@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.5 2003-07-24 12:29:04 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.6 2003-07-28 12:57:41 pierre Exp $
  */
 public interface StorageManager {
 
@@ -97,10 +97,9 @@ public interface StorageManager {
     /**
      * Commit this node to the specified builder.
      * @param node The node to commit
-     * @return <code>true</code> of succesful, false otherwise
      * @throws StorageException if an error occurred during commit
      */
-    public boolean commit(MMObjectNode node) throws StorageException;
+    public void commit(MMObjectNode node) throws StorageException;
 
     /**
      * Delete a node

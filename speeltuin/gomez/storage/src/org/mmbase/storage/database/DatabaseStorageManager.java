@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
+import java.io.*;
 import java.sql.*;
 import javax.sql.DataSource;
 
@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.4 2003-07-28 10:19:20 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.5 2003-07-28 12:57:42 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -220,6 +220,62 @@ public abstract class DatabaseStorageManager implements StorageManager {
     abstract public byte[] getBytes(MMObjectNode node,String fieldname);
 
     /**
+     * Defines how binary (blob) data files must look like.
+     * @param node the node the binary data belongs to
+     * @param fieldName the name of the binary field
+     * @return The File where to store or read the binary data
+     */
+    protected File getBinaryFile(MMObjectNode node, String fieldName) {
+        File dir = new File((String)factory.getAttribute("database.binaryFilePath"), node.getBuilder().getTableName());
+        dir.mkdirs();
+        return new File(dir, "" + node.getNumber() + "." + fieldName);
+    }
+
+    /**
+     * Store a binary (blob) data file
+     * @todo how to do this in a transaction???
+     * @param node the node the binary data belongs to
+     * @param field the binary field
+     */
+    protected void storeBinaryAsFile(MMObjectNode node, FieldDefs field) throws StorageException {
+        try {
+            String fieldName= field.getDBName();
+            File binaryFile = getBinaryFile(node, fieldName);
+            byte[] value = node.getByteValue(fieldName);
+            DataOutputStream byteStream = new DataOutputStream(new FileOutputStream(binaryFile));
+            byteStream.write(value);
+            byteStream.flush();
+            byteStream.close();
+        } catch(IOException ie) {
+            throw new StorageException(ie);
+        }
+    }
+
+    /**
+     * Read a binary (blob) data file
+     * @todo how to do this in a transaction???
+     * @param node the node the binary data belongs to
+     * @param field the binary field
+     * @return the byte array containing the binary data
+     */
+    protected byte[] readBinaryFromFile(MMObjectNode node, FieldDefs field) throws StorageException {
+        try {
+            String fieldName= field.getDBName();
+            File binaryFile = getBinaryFile(node, fieldName);
+            int fileSize = (int) binaryFile.length();
+            byte[] buffer = new byte[fileSize];
+            if (fileSize > 0) {
+                FileInputStream byteStream = new FileInputStream(binaryFile);
+                int len = byteStream.read(buffer, 0, fileSize);
+                byteStream.close();
+            }
+            return buffer;
+        } catch(IOException ie) {
+            throw new StorageException(ie);
+        }
+    }
+
+    /**
      * This method inserts a new object, and registers the change.
      * Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored.
      * @param node The node to insert
@@ -234,7 +290,118 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return <code>true</code> of succesful, false otherwise
      * @throws StorageException if an error occurred during commit
      */
-    abstract public boolean commit(MMObjectNode node) throws StorageException;
+    public void commit(MMObjectNode node) throws StorageException {
+        // get node builder
+        MMObjectBuilder builder = node.getBuilder();
+        //  precommit call, needed to convert or add things before a save
+        builder.preCommit(node);
+
+        // Create a String that represents the DB fields to be used in the insert.
+        StringBuffer setFields=null;
+        // obtain the node's changed fields
+        List fieldNames = node.getChanged();
+        List fields = new ArrayList();
+        for (Iterator f= fieldNames.iterator(); f.hasNext();) {
+            String key = (String) f.next();
+            // changing number is not allowed
+            if(key.equals("number") || key.equals("otype")) {
+                throw new StorageException("trying to change the '"+key+"' field");
+            }
+            FieldDefs field = builder.getField(key);
+            // use field.inStorage()
+            if ((field != null) &&
+                ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
+                 (field.getDBState() == FieldDefs.DBSTATE_SYSTEM))) {
+                // skip bytevalues that are written to file
+                if (factory.hasOption("database.storeBinaryAsFile") && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
+                    storeBinaryAsFile(node,field);
+                } else {
+                    // handle this field - store it in fields
+                    fields.add(field);
+                    // store the fieldname and the value parameter
+                    String fieldName = (String)factory.getStorageIdentifier(field);
+                    if (setFields == null) {
+                        setFields = new StringBuffer(fieldName + "=?");
+                    } else {
+                        setFields.append(',').append(fieldName).append("=?");
+                    }
+                }
+            }
+        }
+        if (fields.size() > 0) {
+            Scheme scheme = factory.getScheme(DatabaseSchemes.UPDATE_NODE_SCHEME, DatabaseSchemes.UPDATE_NODE_SCHEME_DFP);
+            try {
+                String query = scheme.format(new Object[] { builder, setFields.toString(), builder.getField("number"), node });
+                getActiveConnection();
+                PreparedStatement ps = activeConnection.prepareStatement(query);
+                for (int fieldNumber = 1; fieldNumber < fields.size(); fieldNumber++) {
+                    FieldDefs field = (FieldDefs) fields.get(fieldNumber);
+                    setValuePreparedStatement(ps, fieldNumber, node, field);
+                }
+                ps.executeUpdate();
+            } catch (SQLException se) {
+                throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
+            }
+        }
+        // TODO: implement
+        // registerChanged(node,"c");
+    }
+
+    /**
+     * Set the value of a field in a prepared statement
+     * @param stmt the prepared statement
+     * @param i the index of the field in the prepared statement
+     * @param node the node from which to retrieve the value
+     * @param field the MMBase field name
+     * @throws StorageException if the fieldtype is invalid
+     * @throws SQLException if an error occurred while filling in the fields
+     */
+    protected void setValuePreparedStatement(PreparedStatement stmt, int i, MMObjectNode node, FieldDefs field) throws StorageException, SQLException {
+        String fieldName= field.getDBName();
+        switch (field.getDBType()) {
+            // string-type fields, use mmbase encoding
+            case FieldDefs.TYPE_INTEGER:
+                stmt.setInt(i, node.getIntValue(fieldName));
+                break;
+            case FieldDefs.TYPE_NODE:
+                Object value = node.getValue(fieldName);
+                if (value == MMObjectNode.VALUE_NULL) {
+                    stmt.setNull(i, java.sql.Types.INTEGER);
+                } else {
+                    // retrieve node as a numeric value                    
+                    int nodeNumber = node.getIntValue(fieldName);
+                    stmt.setInt(i, nodeNumber);
+                }
+                break;
+            case FieldDefs.TYPE_FLOAT:
+                stmt.setFloat(i, node.getFloatValue(fieldName));
+                break;
+            case FieldDefs.TYPE_DOUBLE:
+                stmt.setDouble(i, node.getDoubleValue(fieldName));
+                break;
+            case FieldDefs.TYPE_LONG:
+                stmt.setLong(i, node.getLongValue(fieldName));
+                break;
+            case FieldDefs.TYPE_STRING:;
+            case FieldDefs.TYPE_XML:
+                String stringValue = node.getStringValue(fieldName);
+                if (stringValue == null) {
+                    stringValue = " "; // use NULL instead?
+                }
+                // TODO: implement
+                // setDBText(stmt, i, stringValue);
+                break;
+            case FieldDefs.TYPE_BYTE:
+                log.debug("Setting byte field");
+                // TODO: implement
+                // setDBByte(stmt, i, node.getByteValue(fieldName));
+                break;
+            default:
+                throw new StorageException("unknown fieldtype");
+        }
+    }
 
     /**
      * Delete a node
@@ -279,7 +446,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             if ((result != null) && result.next()) {
                 // create a new node
                 MMObjectNode node = builder.getNewNode("system");
-                // iterate through all a buidler's fields, and retrieve the value for that field
+                // iterate through all a builder's fields, and retrieve the value for that field
                 // Note that if we would do it the other way around (iterate through the recordset's fields)
                 // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
                 for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext(); ) {
