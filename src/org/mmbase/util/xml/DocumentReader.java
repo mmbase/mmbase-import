@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.4 2005-01-20 17:00:49 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.5 2005-01-20 17:26:54 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -175,11 +175,12 @@ public class DocumentReader  {
     /**
      * Creates a DocumentBuilder using SAX.
      * @param validating if true, the documentbuilder will validate documents read
+     * @param xsd     Whether to use XSD for validating
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use a default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use a default resolver
      * @return a DocumentBuilder instance, or null if none could be created
      */
-    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
         DocumentBuilder db;
         if (handler == null) handler = new XMLErrorHandler();
         if (resolver == null) resolver = new XMLEntityResolver(validating);
@@ -188,10 +189,9 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
-            if (validating) {
+            if (validating && xsd) {
                 try {
-                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", 
-                                          "http://www.w3.org/2001/XMLSchema");
+                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
                 } catch (IllegalArgumentException iae) {
                     if (! warnedJAXP12) {
                         log.warn("The XML parser does not support JAXP 1.2, XSD validation will not work.", iae);
@@ -226,24 +226,34 @@ public class DocumentReader  {
     }
 
     /**
+     * @see {#getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
+     */
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
+        return getDocumentBuilder(validating, false, handler, resolver);
+    }
+
+    /**
      * Creates a DocumentBuilder.
      * DocumentBuilders that use the default error handler or entity resolver are cached (one for validating, 
      * one for non-validating document buidlers).
-     * @param validating if true, the documentbuilder will validate documents read
+     * @param validating if true, the documentbuilder will validate documents read 
+     * @param xsd        if true, validating will be done by an XML schema definiton.
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use the default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use the default resolver
      * @return a DocumentBuilder instance, or null if none could be created
+     * @since MMBase-1.8.
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
+    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
         if (handler == null && resolver == null) {
-            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(new Boolean(validating));
+            String key = "" + validating + xsd;
+            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
             if (db == null) {
-                db = createDocumentBuilder(validating, null, null);
-                documentBuilders.put(new Boolean(validating), db);
+                db = createDocumentBuilder(validating, xsd, null, null);
+                documentBuilders.put(key, db);
             }
             return db;
         } else {
-            return createDocumentBuilder(validating, handler, resolver);
+            return createDocumentBuilder(validating, xsd, handler, resolver);
         }
     }
 
