@@ -37,6 +37,7 @@ public class SizeOf {
     public static int sizeof(float f)   { return 4; }        
     public static int sizeof(double d)  { return 8; }
 
+    // To avoid infinite loops (cyclic references):
     private Set countedObjects = new HashSet();
     
     public static int getByteSize(Object obj) {
@@ -47,7 +48,6 @@ public class SizeOf {
         if (obj == null) {
             return 0;
         }
-        log.trace("sizeof object " + obj.getClass());
 
         if (countedObjects.contains(obj)) {
             log.trace("already counted");
@@ -60,20 +60,27 @@ public class SizeOf {
         Class c = obj.getClass();
             
         if (c.isArray()) {
-            log.trace("an array");
+            log.debug("an array");
             return size_arr(obj, c);
         } else {
-            log.trace("an object " + obj);
-            if (Sizeable.class.isAssignableFrom(c)) return sizeof((Sizeable) obj);
-            if (Map.class.isAssignableFrom(c))      return sizeof((Map) obj);
-            if (String.class.isAssignableFrom(c))   return sizeof((String) obj);
-            // more insteresting stuff can be added here.
+            log.debug("an object " + obj);
+            try {
+                if (Sizeable.class.isAssignableFrom(c)) return sizeof((Sizeable) obj);
+                if (javax.servlet.http.HttpSession.class.isAssignableFrom(c))   return sizeof((javax.servlet.http.HttpSession) obj);
+                if (org.w3c.dom.Node.class.isAssignableFrom(c))   return sizeof((org.w3c.dom.Node) obj);
+                if (Map.class.isAssignableFrom(c))      return sizeof((Map) obj);
+                if (List.class.isAssignableFrom(c))      return sizeof((List) obj);
+                if (String.class.isAssignableFrom(c))   return sizeof((String) obj);
+                // more insteresting stuff can be added here.
+            } catch (Throwable e) {
+                log.debug("Error during determination of size of " + obj + " :" + e);
+            }
             return size_inst(obj, c);
         }
     }
         
     private int sizeof(Map m) {
-        log.trace("sizeof Map");
+        log.debug("sizeof Map");
         int len = size_inst(m, m.getClass());
         Iterator i = m.entrySet().iterator();
         while (i.hasNext()) {
@@ -86,14 +93,42 @@ public class SizeOf {
         return len;
     }
 
+    private int sizeof(List m) {
+        log.debug("sizeof List");
+        int len = size_inst(m, m.getClass());
+        Iterator i = m.iterator();
+        while (i.hasNext()) {
+            len += sizeof(i.next());
+        }
+        return len;
+    }
+
+    private int sizeof(javax.servlet.http.HttpSession session) {
+        log.debug("sizeof HttpSerssion");
+        int len = size_inst(session, session.getClass());
+        Enumeration e = session.getAttributeNames();
+        while (e.hasMoreElements()) {
+            String attribute = (String) e.nextElement();
+            len += sizeof(attribute);
+            len += sizeof(session.getAttribute(attribute));
+        }
+        return len;
+    }
+
+    private int sizeof(org.w3c.dom.Node node) {
+        log.debug("sizeof Node");
+        // a little hackish...
+        return sizeof(org.mmbase.applications.editwizard.Utils.getSerializedXML(node));
+    }
+
     private int sizeof(String m) {
-        log.trace("sizeof String " + m);
+        log.debug("sizeof String " + m);
         int len = size_inst(m, m.getClass());            
         return len + m.getBytes().length;
     }
 
     private int sizeof(Sizeable m) {
-        log.trace("sizeof Sizeable " + m);
+        log.debug("sizeof Sizeable " + m);
         int len = size_inst(m, m.getClass());            
         return len + m.getByteSize(this);
     }
@@ -110,10 +145,8 @@ public class SizeOf {
             }
             sz += size_prim(f.getType());
             try {
-                log.trace("found a field " + f);
-        
-                    sz += sizeof(f.get(obj)); // recursion
-        
+                sz += sizeof(f.get(obj)); // recursion        
+                if (log.isDebugEnabled()) log.debug("found an (accessible) field " + f);
             } catch (java.lang.IllegalAccessException e) {
                 // well...
                 log.trace(e);
