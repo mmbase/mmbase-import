@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.io.IOException;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 
 import org.mmbase.bridge.jsp.taglib.Writer;
@@ -31,7 +31,7 @@ import javax.servlet.jsp.JspTagException;
  * 
  * @author Michiel Meeuwissen
  */
-public class UrlTag extends ContextReferrerTag  implements Writer {
+public class UrlTag extends CloudReferrerTag  implements Writer {
 
     protected WriterHelper helper = new WriterHelper(); 
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
@@ -113,6 +113,7 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
     }
 
     public int doAfterBody() throws JspTagException {
+        bodyContent.clearBody(); // don't show the body.
         helper.setBodyContent(bodyContent);
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true); // because Url tag can have subtags (param), default writing even with body seems sensible
