@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.246 2004-03-08 12:31:40 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4376,12 +4376,13 @@ Of course, the default behavior of getSmartPath can still be overridden.
 			<since>MMBase-1.7</since>
 		</attribute>
 		<attribute>
-			<name>timezone</name>
+      <name>timezone</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
         The time-zone for which the time must be shown. Defaults to the server's time-zone. 
 			</info>
+      <since>MMBase-1.7</since>
 			<examplevalue>
 				<value>CET</value>
         <info>Central European Time</info>
