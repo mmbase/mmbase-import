@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.115 2005-03-16 16:49:52 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.116 2005-03-16 22:14:17 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -209,8 +209,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     protected int getMethod() throws JspTagException {
-        String m = method.getString(this).toLowerCase();
-        return cloudContext.getAuthentication().getMethod(m);
+        return cloudContext.getAuthentication().getMethod(method.getString(this));
     }
 
     /**
@@ -511,7 +510,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private final boolean checkReuse() throws JspTagException {
         if (getReferid() != null) {
-            if (method != Attribute.NULL || logonatt != Attribute.NULL) { // probably add some more
+            if (getMethod() != AuthenticationData.METHOD_UNSET || logonatt != Attribute.NULL) { // probably add some more
                 throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
             }
             log.debug("found cloud with referid");
@@ -529,7 +528,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private final boolean checkAnonymous() throws JspTagException {
         try {
             setAnonymousCloud();
-            if ((method == Attribute.NULL && logon == null && rankAnonymous() && loginpage == Attribute.NULL) || getMethod() == AuthenticationData.METHOD_ANONYMOUS) { // anonymous cloud:
+            int m = getMethod();
+            if ((m == AuthenticationData.METHOD_UNSET && logon == null && rankAnonymous() && loginpage == Attribute.NULL) || m == AuthenticationData.METHOD_ANONYMOUS) { // anonymous cloud:
                 log.debug("Implicitely requested anonymous cloud. Not using session");
                 
                 return true;
@@ -904,6 +904,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * @return SKIP_BODY
      */
     private int denyLoginPage(String reason, String exactReason) throws JspTagException {
+        log.debug("Denying to login-page");
         try {
 
             // find this page relative to login-page
@@ -971,6 +972,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     referrer = referrerPage;
                 }
             }
+            log.debug("Using " + referrer);
             if (! response.isCommitted()) {
                 //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
                 RequestDispatcher rd = request.getRequestDispatcher(toFile);
