@@ -74,6 +74,12 @@ public class MMObjectNode {
     // Vector  with the related nodes to this node
     Vector relations=null; // possibly filled with insRels
 
+    /**
+     * Deternmines whether this node is virtual.
+     * A virtual node is not persistent (that is, not stored in a table).
+     */
+    protected boolean virtual=false;
+
     private static int relation_cache_hits=0;
     private static int relation_cache_miss=0;
 
@@ -226,6 +232,14 @@ public class MMObjectNode {
      */
     protected Object retrieveValue(String fieldname) {
         return values.get(fieldname);
+    }
+
+    /**
+     * Determines whether the node is virtual.
+     * A virtual node is not persistent (that is, stored in a database table).
+     */
+    public boolean isVirtual() {
+        return virtual;
     }
 
     /**
@@ -534,9 +548,35 @@ public class MMObjectNode {
 
     /**
      * Get a value of a certain field.
+     * The value is returned as an MMObjectNode.
+     * If the field contains an Numeric value, the method
+     * tries to obtrain the object with that number.
+     * If it is a String, the method tries to obtain the object with
+     * that alias. The only other possible values are those created by
+     * certain virtual fields.
+     * All remaining situations return <code>null</code>.
+     * @param fieldname the name of the field who's data to return
+     * @return the field's value as an <code>int</code>
+     */
+    public MMObjectNode getNodeValue(String fieldname) {
+        MMObjectNode res=null;
+        Object i=getValue(fieldname);
+        if (i instanceof MMObjectNode) {
+            res=(MMObjectNode)i;
+        } else if (i instanceof Number) {
+            res=parent.getNode(((Number)i).intValue());
+        } else if (i!=null) {
+            res=parent.getNode(""+i);
+        }
+        return res;
+    }
+
+    /**
+     * Get a value of a certain field.
      * The value is returned as an int value. Values of non-int, numeric fields are converted if possible.
      * Booelan fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
+     * If a value is an MMObjectNode, it's numberfield is returned.
      * All remaining field values return -1.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as an <code>int</code>
@@ -544,7 +584,9 @@ public class MMObjectNode {
     public int getIntValue(String fieldname) {
         Object i=getValue(fieldname);
         int res=-1;
-        if (i instanceof Boolean) {
+        if (i instanceof MMObjectNode) {
+            res=((MMObjectNode)i).getNumber();
+        } else if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
             res=((Number)i).intValue();
@@ -1135,12 +1177,12 @@ public class MMObjectNode {
         }
         return result;
     }
-   
-    public static int getRelationCacheHits() { 
+
+    public static int getRelationCacheHits() {
 	return(relation_cache_hits);
     }
 
-    public static int getRelationCacheMiss() { 
+    public static int getRelationCacheMiss() {
 	return(relation_cache_miss);
     }
 }
