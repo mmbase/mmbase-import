@@ -12,10 +12,10 @@ package org.mmbase.bridge.remote.generator;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.*;
+import org.xml.sax.*;
 import org.apache.xml.serialize.*;
 import java.io.*;
 import java.util.*;
-import org.mmbase.util.XMLBasicReader;
 
 /**
  * @author Kees Jongenburger <keesj@framfab.nl>
@@ -37,21 +37,30 @@ public class MMCI{
     
     public static MMCI getDefaultMMCI(String fileName) throws Exception{
         if (MMCI.STATIC_MMCI == null){
-            XMLBasicReader reader=new XMLBasicReader(fileName);
-            MMCI.STATIC_MMCI =  MMCI.fromXML(reader);
+            // get a new documentbuilder...
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            // turn validating on..
+            //  && MMBaseContext.isInitialized());
+            DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+            EntityResolver resolver = new DummyEntityResolver();
+            documentBuilder.setEntityResolver(resolver);
+            dfactory.setValidating(false);
+            MMCI.STATIC_MMCI =  MMCI.fromXML(documentBuilder.parse(fileName));
         }
         return MMCI.STATIC_MMCI;
     }
     
-    public static MMCI fromXML(XMLBasicReader reader) throws Exception{
+    public static MMCI fromXML(Document document) throws Exception{
         MMCI mmci =  new MMCI();
-        Element xmle=reader.getElementByPath("mmci");
-        for(Enumeration enum = reader.getChildElements(xmle,"class");
-        enum.hasMoreElements();) {
-            Element element = (Element)enum.nextElement();
-            XMLClass myClass = XMLClass.fromXML(element);
-            mmci.classes.put(myClass.getName(),myClass);
-            mmci.classesVector.addElement(myClass);
+        Element xmle=document.getDocumentElement();
+        NodeList nls=xmle.getChildNodes();
+        for(int i=0; i<nls.getLength(); i++) {
+            Node element=nls.item(i);
+            if (element instanceof Element) {
+                XMLClass myClass = XMLClass.fromXML((Element)element);
+                mmci.classes.put(myClass.getName(),myClass);
+                mmci.classesVector.addElement(myClass);
+            }
         }
         return mmci;
     }
@@ -103,33 +112,12 @@ public class MMCI{
         if (argv.length >1){
             System.err.println("Usage: java org.mmbase.bridge.remote.generator.MMCI <outputfile>");
         } else {    	    
-	    DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
-	    /*  
-	    	below the build.xml fails with an :
-    	    	
-		    java.lang.LinkageError: loader constraints violated when linking org/xml/sax/ErrorHandler class
-	    	    at org.apache.xerces.jaxp.DocumentBuilderFactoryImpl.newDocumentBuilder(DocumentBuilderFactoryImpl.java:82)
-	    	    at org.mmbase.bridge.remote.generator.MMCI.main(MMCI.java:107)
-		
-		even if i place something like the followin in the build.xml :
-		    
-    	    	    <java classname="org.mmbase.bridge.remote.generator.MMCI">
-    	    		<arg value="${source-src.dir}/MMCI.xml" />
-    	    		<classpath>
-		    	    <pathelement location="${xerces.jar}" />
-		    	    <pathelement location="${build.dir}/classes" />
-	    	    	</classpath>
-    	    	    </java>
-    	    	
-		NB: put it here, since i modified this file, to highlight the position on which it fails.....
-		Could it be a classloader problem? ant it's parser conflicts with the xerces parser?		    		   		
-	    */
+  	        DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
     	    DocumentBuilder docBuilder = docBuilderFac.newDocumentBuilder();
-            Document doc = docBuilder.newDocument();
-	    
-            Element xmle =doc.createElement("mmci");
-            doc.appendChild(xmle);
-            MMCI.addDefaultBridgeClasses(xmle, doc);
+            DOMImplementation dom= docBuilder.getDOMImplementation();
+            DocumentType doctype = dom.createDocumentType("mmci","//MMBase - mmci//","http://www.mmbase.org/dtd/mmci.dtd");
+            Document doc = dom.createDocument(null,"mmci",doctype);
+            MMCI.addDefaultBridgeClasses(doc.getDocumentElement(), doc);
             if (argv.length==1) {
                 os = new FileOutputStream(argv[0]);
             }
