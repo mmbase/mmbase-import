@@ -32,7 +32,7 @@ public class ChatEngine implements Runnable {
     private UserRepository userRepository;
     private ChannelRepository channelRepository;
     public static Logger log; // Should only be used by code executed by the chat engine thread.
-    private final static String version = "1.3.1"; // Change this version also in build.xml
+    private final static String version = "1.3.2.dev"; // Change this version also in build.xml
     private String servername;
     private String serverinfo;
     private String motd;
