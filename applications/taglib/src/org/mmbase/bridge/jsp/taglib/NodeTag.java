@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.48 2003-09-10 11:16:08 michiel Exp $ 
+ * @version $Id: NodeTag.java,v 1.49 2003-10-24 13:32:16 pierre Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -117,8 +117,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             if (log.isDebugEnabled()) {
                 log.debug("Looking up Node with " + referString + " in context");
             }
-            switch(getNotfound()) {               
-            case NOT_FOUND_SKIP:         { 
+            switch(getNotfound()) {
+            case NOT_FOUND_SKIP:         {
                 node = getNodeOrNull(referString);
                 if (node == null) return SKIP_BODY;
                 break;
@@ -126,17 +126,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             case NOT_FOUND_PROVIDENULL:  {
                 node = getNodeOrNull(referString);
                 break;
-            }                
+            }
             default: node = getNode(referString);
             }
 
             if(referString.equals(getId())) {
                 getContextProvider().getContextContainer().unRegister(referString);
                 // register it again, but as node
-                // (often referid would have been a string).                
+                // (often referid would have been a string).
             }
         }
-        
+
         if (node == null) {
             String n = number.getString(this);
             if (log.isDebugEnabled()) {
@@ -146,17 +146,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 // explicity indicated which node (by number or alias)
                 if (! getCloud().hasNode(n)) {
                     switch(getNotfound()) {
-                    case NOT_FOUND_SKIP:                            
+                    case NOT_FOUND_SKIP:
                         return SKIP_BODY;
-                    case NOT_FOUND_PROVIDENULL:  
-                        node = null; 
+                    case NOT_FOUND_PROVIDENULL:
+                        node = null;
                         break;
-                    default:  
+                    default:
                         node = getCloud().getNode(n); // throws Exception
                     }
                 } else {
                     node = getCloud().getNode(n); // does not throw Exception
-                }                
+                }
             } else {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class, null, false);
@@ -166,15 +166,23 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                     if (node == null) {
-                        log.info(nodeProvider.getNodeVar());
+                        switch(getNotfound()) {
+                        case NOT_FOUND_SKIP:
+                            return SKIP_BODY;
+                        case NOT_FOUND_PROVIDENULL:
+                            node = null;
+                            break;
+                        default:
+                            throw new JspTagException("Could not find 'element' node.");
+                        }
                     }
                 } else {
                     node = nodeProvider.getNodeVar();
                 }
-                
+
             }
         }
-        
+
         setNodeVar(node);
 
         // if direct parent is a Formatter Tag, then communicate
@@ -182,7 +190,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
         }
-        
+
         fillVars();
         //log.debug("found node " + node.getValue("gui()"));
         return EVAL_BODY_BUFFERED;
@@ -195,9 +203,9 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * this method writes the content of the body back to the jsp page
      **/
     public int doAfterBody() throws JspTagException { // write the body if there was one
-        if (bodyContent != null) { 
+        if (bodyContent != null) {
             try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());        
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch (IOException ioe){
                 throw new TaglibException(ioe);
             }

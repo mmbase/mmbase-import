@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.208 2003-10-16 07:25:09 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.209 2003-10-24 13:32:16 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1697,7 +1697,8 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				The name of the node manager, identifying the node in a list or related list tag (clusternode providers).
+				The name of a node field of the current node. This can for instance be the 'rnumber' field of a relation, the 'destination' field of an oalias, etc.
+				A common use is to specify the name of the node manager to identify a node in a list or related list tag (clusternode providers). In this case, the nodemanager name behaves like a special virtual node field of the surrounding cluster node, indicating the individual nodes that make up the cluster node.
 			</info>
 			<see tag="clusternodeprovider" />
 		</attribute>
