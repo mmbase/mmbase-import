@@ -121,7 +121,7 @@
             <!-- name of the field in the database -->
             <name>body</name>
             <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true">STRING</type>
+            <type state="persistent" size-"2048" notnull="true">STRING</type>
         </db>
     </field>
 
