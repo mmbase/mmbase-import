@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.48 2004-03-23 22:50:54 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.49 2004-05-25 16:32:12 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -376,8 +376,8 @@ public class IncludeTag extends UrlTag {
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
-                request.setAttribute("includeTagLevel",new Integer(includeLevel));
-                request.setAttribute("includeTagURI",previncludeURI);
+                request.setAttribute("includeTagLevel", new Integer(includeLevel));
+                request.setAttribute("includeTagURI", previncludeURI);
             } else { // really absolute
                 if (getCite()) {
                     cite(bodyContent, gotUrl, request);
