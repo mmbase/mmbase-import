@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.25 2002-07-17 14:13:42 michiel Exp $
+ * @version $Id: Cloud.java,v 1.26 2002-09-20 08:58:24 pierre Exp $
  */
 public interface Cloud {
 
@@ -34,12 +34,13 @@ public interface Cloud {
     public Node getNode(int number);
 
     /**
-     * Returns the node with the specified number from this cloud. The returned
-     * node is a new instance of <code>Node</code> with a reference to this
+     * Returns the node with the specified number from this cloud. 
+     * If the string passed is not a number, the string is assumed to be an alias. 
+     * The returned node is a new instance of <code>Node</code> with a reference to this
      * instance of <code>Cloud</code>.
      *
-     * @param number                  the number of the requested node
-     * @return                        the requested node
+     * @param number    a string containing the number or alias of the requested node
+     * @return          the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
     public Node getNode(String number);
@@ -55,6 +56,27 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      */
     public Node getNodeByAlias(String alias);
+
+    /**
+     * Determines whether a node with the specified number is available from this cloud.
+     * The node returns true if yej Node exists and if the user has sufficent right to access
+     * the node.
+     *
+     * @param number    the number of the node
+     * @return          true if the node is available
+     */
+    public boolean hasNode(int number);
+
+    /**
+     * Determines whether a node with the specified number is available from this cloud.
+     * If the string passed is not a number, the string is assumed to be an alias. 
+     * The node returns true if yej Node exists and if the user has sufficent right to access
+     * the node.
+     *
+     * @param number a string containing the number or alias of the requested node
+     * @return          true if the node is available
+     */
+    public boolean hasNode(String number);
 
     /**
      * Returns all node managers available in this cloud.
