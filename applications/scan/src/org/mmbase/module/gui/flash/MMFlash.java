@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implements the parsing and generating of dynamic flash files
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.12 2001-10-25 11:46:16 vpro Exp $
+ * @version $Id: MMFlash.java,v 1.13 2001-10-29 14:10:49 vpro Exp $
  */
 public class MMFlash extends Module {
 
@@ -143,12 +143,12 @@ public class MMFlash extends Module {
 			} else if (caching!=null && caching.equals("disk")) {
 				byte[] bytes=(byte[])lru.get(url+query);
 				if (bytes!=null) {
-					log.error("WOW from disk+lru");
+					log.info("WOW from disk+lru");
 					return(bytes);
 				} else {
 					bytes=loadDiskCache(htmlroot+src,query);
 					if (bytes!=null) {
-						log.error("WOW from disk");
+						log.info("WOW from disk");
 						lru.put(url+query,bytes);
 						return(bytes);
 					}
