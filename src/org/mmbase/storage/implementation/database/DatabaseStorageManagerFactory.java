@@ -23,6 +23,7 @@ import org.mmbase.storage.search.implementation.database.*;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.ResourceLoader;
 import org.xml.sax.InputSource;
 
 /**
@@ -38,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.15 2004-07-29 19:43:55 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.16 2004-11-26 19:58:28 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -228,13 +229,13 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         if (reader == null) {
             String databaseResourcePath;
             // First, determine the database name from the parameter set in mmbaseroot
-            String databaseName =mmbase.getInitParameter("database");
+            String databaseName = mmbase.getInitParameter("database");
             if (databaseName != null) {
                 // if databasename is specified, attempt to use the database resource of that name
-                if (databaseName.startsWith("/")) {
+                if (databaseName.endsWith(".xml")) {
                     databaseResourcePath = databaseName;
                 } else {
-                    databaseResourcePath = "/org/mmbase/storage/implementation/database/resources/"+databaseName+".xml";
+                    databaseResourcePath = "databases/" + databaseName + ".xml";
                 }
             } else {
                 // otherwise, search for supported drivers using the lookup xml
@@ -253,10 +254,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 }
             }
             // get configuration
-            log.service("Use for storage configuration :"+databaseResourcePath);
-            InputStream stream = DatabaseStorageManagerFactory.class.getResourceAsStream(databaseResourcePath);
-            InputSource in = new InputSource(stream);
-            reader = new StorageReader(this, in);
+            log.service("Use for storage configuration :" + databaseResourcePath);
+            try {
+                InputSource in = ResourceLoader.getConfigurationRoot().getInputSource(databaseResourcePath);
+                reader = new StorageReader(this, in);
+            } catch (java.io.IOException ioe) {
+                throw new StorageConfigurationException(ioe);
+            }
+
         }
         return reader;
     }
