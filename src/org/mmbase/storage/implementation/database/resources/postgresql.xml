@@ -29,6 +29,7 @@
 		<scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement INCREMENT 1 START {2}</scheme>
 		<scheme name="update-sequence-scheme" />
 		<scheme name="read-sequence-scheme">SELECT NEXTVAL (''{0}_autoincrement'')</scheme>
+		<scheme name="create-index-scheme">CREATE INDEX  {1}_{2}_idx ON {1}({2})</scheme>
 	</attributes>
 
 	<!-- Postgresql type mappings -->
