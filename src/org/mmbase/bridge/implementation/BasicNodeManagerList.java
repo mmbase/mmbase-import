@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.11 2003-03-04 13:44:36 nico Exp $
+ * @version $Id: BasicNodeManagerList.java,v 1.12 2003-03-21 17:45:06 michiel Exp $
  */
 public class BasicNodeManagerList extends BasicNodeList implements NodeManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
@@ -63,7 +63,7 @@ public class BasicNodeManagerList extends BasicNodeList implements NodeManagerLi
      *
      */
     public NodeManagerIterator nodeManagerIterator() {
-        return new BasicNodeManagerIterator(this);
+        return new BasicNodeManagerIterator();
     };
 
     /**
@@ -73,11 +73,7 @@ public class BasicNodeManagerList extends BasicNodeList implements NodeManagerLi
         return new BasicNodeManagerList(subList(fromIndex, toIndex),cloud);
     }
 
-    public class BasicNodeManagerIterator extends BasicNodeIterator implements NodeManagerIterator {
-
-        BasicNodeManagerIterator(BasicList list) {
-            super(list);
-        }
+    protected class BasicNodeManagerIterator extends BasicNodeIterator implements NodeManagerIterator {
 
         public NodeManager nextNodeManager() {
             return (NodeManager)next();
