@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.76.2.8 2003-03-14 13:26:06 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.76.2.9 2003-06-16 08:44:17 vpro Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -619,7 +619,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if(directions != null) directions  = encoder.encode(directions);
         if(searchDir != null) searchDir  = encoder.encode(searchDir);
         if(constraints != null && !validConstraints(constraints)) {
-            throw new BridgeException("invalid contrain:" + constraints);
+            throw new BridgeException("invalid constraint:" + constraints);
         }
         // end of check invalid search command
 
@@ -632,8 +632,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
         if (nodePath != null && (!nodePath.trim().equals(""))) {
             pars+=" TYPES='"+nodePath+"'";
-        } else {
-            throw new BridgeException("No nodePath specified.");
         }
 
         if (fields == null) fields = "";
@@ -692,7 +690,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         // if unavailable, obtain from database
         if (resultlist==null) {
             log.debug("result list is null, getting from database");
-            resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+            try {
+                resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+            } catch (IllegalArgumentException iae) {
+                throw new BridgeException(iae);
+            }
             // store result in cache if needed
             if (hash != null && resultlist != null) {
                 multilevelCache.put(hash, resultlist, tables, tagger);
