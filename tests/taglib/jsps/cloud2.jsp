@@ -10,8 +10,8 @@
     </p>
     <p>
       Testing loginpage:
-      <mm:cloud loginpage="login.jsp" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>      
+      <mm:cloud loginpage="login.jsp">
+        You are logged in as: <mm:cloudinfo type="user" />
       </mm:cloud>
     </p>
     <p>

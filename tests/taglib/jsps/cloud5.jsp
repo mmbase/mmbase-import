@@ -7,15 +7,15 @@
     <h1>Cloud method='asis' attribute then loginpage.</h1>
     <p>
       Logged out in previous-page, so 'asis' must be anonymous:
-      <mm:cloud method="asis" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud method="asis">
+        You are logged in as: <mm:cloudinfo type="user" />
         (must be anonymous)
       </mm:cloud>
     </p>
     <mm:log>xxx</mm:log>
     <p>
-      <mm:cloud  loginpage="login.jsp?referrer=cloud5.jsp"  jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud  loginpage="login.jsp?referrer=cloud5.jsp">
+        You are logged in as: <mm:cloudinfo type="user" />
         (must not be anonymous)
       </mm:cloud>
     </p>

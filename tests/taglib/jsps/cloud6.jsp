@@ -6,8 +6,8 @@
  
     <h1>Cloud method='asis' but session disabled (does this make sense?)</h1>
     <p>
-      <mm:cloud method="asis" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud method="asis">
+        You are logged in as: <mm:cloudinfo type="user" />
         (must be anonymous?)
       </mm:cloud>
     </p>
