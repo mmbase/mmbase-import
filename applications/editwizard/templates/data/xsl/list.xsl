@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
   version="1.0"
@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.25 2002-11-14 12:39:31 michiel Exp $
+  @version $Id: list.xsl,v 1.26 2003-05-01 17:32:48 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -21,6 +21,21 @@
 
   <xsl:param name="title"><xsl:value-of select="list/object/@guitype" /></xsl:param>
 
+	<xsl:param name="age"></xsl:param>
+	<xsl:param name="searchvalue"></xsl:param>
+	<xsl:param name="searchtype">like</xsl:param>
+	<xsl:param name="start"></xsl:param>
+	<xsl:param name="fields"></xsl:param>
+	<xsl:param name="searchfields" ></xsl:param>
+	<xsl:param name="nodepath"></xsl:param>
+	<xsl:param name="startnodes"></xsl:param>
+	<xsl:param name="orderby"></xsl:param>
+	<xsl:param name="directions"></xsl:param>
+	<xsl:param name="searchdir"></xsl:param>
+	<xsl:param name="constraints"></xsl:param>
+	<xsl:param name="distinct"></xsl:param>
+
+	
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of list
        ================================================================================ -->
@@ -47,10 +62,74 @@
     </tr>
   </xsl:template>
 
+	<xsl:template name="searchbox">
+		<xsl:if test="$searchfields!=''">
+			<tr>
+				<td class="left"></td>
+				<td class="searchcanvas">
+					<table>
+						<tr>
+							<xsl:if test="$creatable='true'">
+								<td width="250" valign="top">
+									<span class="header">
+										<xsl:value-of select="$title"/> :</span>
+									<br/>
+									<a href="/editwizard/jsp/wizard.jsp?referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new">
+										<img src="/editwizard/media/new.gif" width="20" height="20" hspace="2" align="absmiddle" alt="" border="0"/>
+									</a>
+								</td>
+							</xsl:if>
+							<td valign="top">
+								<form action="list.jsp">
+									<span class="header">ZOEK <xsl:value-of select="$title"/>:</span>
+									<br/>
+									<select name="age" class="input" style="width:80px;">
+										<option value="1">
+											<xsl:if test="$age='1'">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>1 dag</option>
+										<option value="7">
+											<xsl:if test="$age='7'">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>1 week</option>
+										<option value="31">
+											<xsl:if test="$age='31'">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>1 maand</option>
+										<option value="365">
+											<xsl:if test="$age='365'">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>1 jaar</option>
+										<option value="-1">
+											<xsl:if test="$age='-1'">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>alles</option>
+									</select>
+									<input type="hidden" name="proceed" value="true" />
+									<input type="hidden" name="sessionkey" value="{$sessionkey}" />
+									<input type="hidden" name="language" value="${language}" />
+									<input type="text" name="searchvalue" value="{$searchvalue}" class="input" style="width:200px;"/>
+									<input type="image" src="/editwizard/media/search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
+									<br/>
+									<span class="onderschrift"> (leeftijd)<img src="/editwizard/media/nix.gif" width="45" height="1" alt="" border="0"/>(titel)</span>
+									<br/>
+								</form>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"><hr /></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</xsl:if>
+	</xsl:template>
+	
   <xsl:template name="bodycontent">
     <!-- I think all elements must have a class here, then you can customize then the appearance by putting another css -->
     <table class="body">
       <xsl:call-template name="title" />
+      <xsl:call-template name="searchbox" />
       <tr>
         <td class="left"></td>
         <td class="listcanvas">
@@ -59,7 +138,7 @@
           </div>
           <br />
           <xsl:call-template name="dolist" />
-          <xsl:if test="$creatable='true'">
+					<xsl:if test="$searchfields='' and $creatable='true'">
             <br />
             <div width="100%" align="right">
               <a href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}" title="{$tooltip_new}"><xsl:call-template name="prompt_new" /></a>
@@ -67,18 +146,19 @@
           </xsl:if>
         </td>
       </tr>
+			<xsl:if test="count(/*/pages/page)>1">
       <tr>
         <td class="left" />
         <td>
           <div>
-            <xsl:if test="count(/*/pages/page)>1"><xsl:apply-templates select="/*/pages" /><br /><br /></xsl:if>
+            <xsl:apply-templates select="/*/pages" /><br /><br />
           </div>
         </td>
       </tr>
-
-      <tr class="itemrow" >
+			</xsl:if>
+      <tr >
         <td class="left" />
-        <td >
+        <td class="itemrow" >
         <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}"><xsl:call-template name="prompt_index"/></a>
         -
         <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}"><xsl:call-template name="prompt_logout"/></a>
