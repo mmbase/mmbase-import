@@ -29,7 +29,7 @@ public class XMLApplicationReader extends XMLBasicReader {
     private Element root;
 
     public XMLApplicationReader(String filename) {
-        super(filename);
+        super(filename, XMLApplicationReader.class);
         root=getElementByPath("application");
     }
 

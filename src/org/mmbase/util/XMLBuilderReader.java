@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.26 2002-10-24 12:56:09 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.27 2002-10-25 20:56:24 michiel Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -59,7 +59,7 @@ public class XMLBuilderReader extends XMLBasicReader {
      * @param mmb The MMBase instance. Used to resolve inheritance of builders
      */
     public XMLBuilderReader(String filename, MMBase mmb) {
-        super(filename);
+        super(filename, XMLBuilderReader.class);
         mmbase=mmb;
         resolveInheritance();
     }
