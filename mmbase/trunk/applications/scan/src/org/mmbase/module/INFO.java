@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.37 2001-07-08 13:18:35 daniel Exp $
+$Id: INFO.java,v 1.38 2001-07-08 13:21:22 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.37  2001/07/08 13:18:35  daniel
+added version test tag
+
 Revision 1.36  2001/06/23 16:27:19  daniel
 changed inits to MMBaseContext
 
@@ -65,9 +68,9 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $version$
+ * @version $Version$
  *
- * @$Revision: 1.37 $ $Date: 2001-07-08 13:18:35 $
+ * @$Revision: 1.38 $ $Date: 2001-07-08 13:21:22 $
  */
 public class INFO extends ProcessorModule {
 
