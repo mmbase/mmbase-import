@@ -19,35 +19,36 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * @deprecated-now does not add functionality
  * @rename G2encoders
-  * @author Daniel Ockeloen
- * @$Revision: 1.11 $ $Date: 2001-12-14 09:33:19 $
+ * @author Daniel Ockeloen
+ * @$Revision: 1.12 $ $Date: 2002-01-07 15:58:45 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 
     private static Logger log = Logging.getLoggerInstance(g2encoders.class.getName());
 
-	/**
-	 * Calls super and nodeChanged to react to change.
-	 * @param machine Name of the machine that changed the node.
-	 * @param number object number of node who's state has been changed.
-	 * @param builder a String with the buildername of the node that was changed.
-	 * @param ctype a String with the node change type.
-	 * @return returnvalue of nodeChanged which is either true or false.
-	 */
-	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-		return super.nodeRemoteChanged(machine,number,builder,ctype);
-	}
+    /**
+     * Calls super and nodeChanged to react to change.
+     * @param machine Name of the machine that changed the node.
+     * @param number object number of node who's state has been changed.
+     * @param builder a String with the buildername of the node that was changed.
+     * @param ctype a String with the node change type.
+     * @return returnvalue of nodeChanged which is either true or false.
+     */
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        return super.nodeRemoteChanged(machine,number,builder,ctype);
+    }
 
-	/**
-	 * Calls super and nodeChanged to react to change.
-	 * @param machine Name of the machine that changed the node.
-	 * @param number object number of node who's state has been changed.
-	 * @param builder a String with the buildername of the node that was changed.
-	 * @param ctype a String with the node change type.
-	 * @return true, always.
-	 */
-	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-		return super.nodeLocalChanged(machine,number,builder,ctype);
-	}
+    /**
+     * Calls super and nodeChanged to react to change.
+     * @param machine Name of the machine that changed the node.
+     * @param number object number of node who's state has been changed.
+     * @param builder a String with the buildername of the node that was changed.
+     * @param ctype a String with the node change type.
+     * @return true, always.
+     */
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        return super.nodeLocalChanged(machine,number,builder,ctype);
+    }
 }
