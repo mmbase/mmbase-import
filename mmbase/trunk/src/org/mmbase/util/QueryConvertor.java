@@ -96,8 +96,21 @@ class DBConditionItem extends ParseItem {
 
 		conditionPos = item.indexOf('=');
 		identifier = item.substring(0,conditionPos);
+		boolean hasPrefix = false;
+		String prefix = "";
+		int prefixPos = identifier.indexOf(".");
+		if (prefixPos!=-1) {
+			hasPrefix = true;
+			prefix = identifier.substring(0,prefixPos);
+			identifier = identifier.substring((prefixPos+1),identifier.length());
+			//System.out.println("prefix="+prefix);
+			//System.out.println("identifier="+identifier);
+		}
 		if (QueryConvertor.database!=null) {
 			identifier=QueryConvertor.database.getAllowedField(identifier);
+		}
+		if (hasPrefix) {
+			identifier = prefix +"."+ identifier;
 		}
 
 		value = DBValue.abstractCreation(item.substring(conditionPos+2));
