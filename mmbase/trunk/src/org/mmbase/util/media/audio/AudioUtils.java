@@ -8,46 +8,42 @@ See http://www.MMBase.org/license
 
 */
 
-/*
-	(c) 2000 VPRO
-
-	- rawaudio related file. 
-*/
-
 package org.mmbase.util.media.audio;
 
-import java.util.*;
-import java.net.URLEncoder;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import org.mmbase.util.*;
 import org.mmbase.util.media.MediaUtils;
-import org.mmbase.util.media.audio.audioparts.*;
+import org.mmbase.util.media.audio.audioparts.AudioPartDef;
 
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
-
-import java.util.Vector;
+import org.mmbase.module.core.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Rawaudio related file.
+ * @javadoc
+ * @deprecation contains commented-out code
+ *
+ * @author Daniel Ockeloen
+ * @author David van Zeventer
+ * @author Rico Jansen
+ * @version $Id: AudioUtils.java,v 1.9 2002-01-25 14:03:56 pierre Exp $
+ */
 public class AudioUtils extends MediaUtils {
 
     private static Logger log = Logging.getLoggerInstance(AudioUtils.class.getName());
 
-
-    // ---    
-
     /**
-    * Vector with MMObjectNodes (rawaudios), number can be cdtrack or audiopart
-    */
-    public static Vector getRawAudios( MMBase mm, int number )
-    {
+     * Vector with MMObjectNodes (rawaudios), number can be cdtrack or audiopart
+     */
+    public static Vector getRawAudios( MMBase mm, int number ) {
         Vector            result     = null;
         MMObjectBuilder builder    = mm.getMMObject("rawaudios");
         String            where    = "id==" + number;
-        result = builder.searchVector( where );    
+        result = builder.searchVector( where );
         return result;
     }
 
@@ -56,177 +52,132 @@ public class AudioUtils extends MediaUtils {
     *   - if a g2 file is found which is encoded (status=done), set this as preffered
     *   - else find r5 file with best match with respect to wanted speed/channels
     */
-    public static RawAudioDef getBestRawAudio( Vector rawaudios, int wantedspeed, int wantedchannels )
-    {
+    public static RawAudioDef getBestRawAudio( Vector rawaudios, int wantedspeed, int wantedchannels ) {
         RawAudioDef result = null;
 
         Enumeration e  = null;
         RawAudioDef ra = null;
         RawAudioDef rawaudio = null;
 
-        if( wantedspeed < RawAudioDef.MINSPEED )
-        {
+        if( wantedspeed < RawAudioDef.MINSPEED ) {
             log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedspeed("+wantedspeed+") less than minspeed("+RawAudioDef.MINSPEED+")");
             wantedspeed = RawAudioDef.MINSPEED;
         }
-        if( wantedspeed > RawAudioDef.MAXSPEED )
-        {
+        if( wantedspeed > RawAudioDef.MAXSPEED ) {
             log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedspeed("+wantedspeed+") greater than maxspeed("+RawAudioDef.MAXSPEED+")");
             wantedspeed = RawAudioDef.MAXSPEED;
         }
-        if( wantedchannels < 1 )
-        {
+        if( wantedchannels < 1 ) {
             log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedchannels("+wantedchannels+") less than 1!");
             wantedchannels = 1;
         }
-        if( wantedchannels > 2 )
-        {
+        if( wantedchannels > 2 ) {
             log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedchannels("+wantedchannels+") greater than 2!");
             wantedchannels = 2;
         }
 
         // if a g2 with status=done is found, set this as default
         // ------------------------------------------------------
-        if( rawaudios != null )
-        {
+        if( rawaudios != null ) {
             e = rawaudios.elements();
-            if( e.hasMoreElements() )
-            {
-                while( e.hasMoreElements() && result==null )
-                {
+            if( e.hasMoreElements() ) {
+                while( e.hasMoreElements() && result==null ) {
                     ra = (RawAudioDef) e.nextElement();
-                    if( ra.status == RawAudioDef.STATUS_GEDAAN )
-                    {
-                        if( ra.format == RawAudioDef.FORMAT_WAV )
-                        {
+                    if( ra.status == RawAudioDef.STATUS_GEDAAN ) {
+                        if( ra.format == RawAudioDef.FORMAT_WAV ) {
                             // do nothing with this original file
-                        }
-                        else
-                        if( ra.format == RawAudioDef.FORMAT_G2 )
-                        {
+                        } else if( ra.format == RawAudioDef.FORMAT_G2 ) {
                             result = ra;
-                        }
-                        else
-                        if( ra.format == RawAudioDef.FORMAT_R5 )
-                        {
-                            if( rawaudio != null )
-                            {
-                                // cuurent one equal or less than i want?
-                                // --------------------------------------
+                        } else if( ra.format == RawAudioDef.FORMAT_R5 ) {
+                            if( rawaudio != null ) {
+                                // current one equal or less than i want?
                                 if( ra.speed <= wantedspeed )
                                     if( ra.channels == wantedchannels )
-
                                         // and better than the one i already have?
-                                        // ---------------------------------------
-                                        if( rawaudio.speed < wantedspeed )
-                                        {
+                                        if( rawaudio.speed < wantedspeed ) {
                                             if( ra.speed >= rawaudio.speed )
                                                 rawaudio = ra;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             // one i have is more than needed, use the new one,
                                             // which is equal or less than wanted
-                                            // ------------------------------------------------
                                             rawaudio = ra;
                                         }
-
-                            }
-                            else
+                            } else {
                                 // case of having only one available audiotrack covered
-                                // ----------------------------------------------------
                                 rawaudio = ra;
-                        }
-                        else
+                            }
+                        } else {
                             log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): format("+ra.format+") of unknown type!");
+                        }
                     }
                 }
-
                 // found one? signal success!
-                // --------------------------
-                if( rawaudio != null )
-                {
+                if( rawaudio != null ) {
                     result = rawaudio;
                 }
-            }
-            else
+            } else {
                 log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): no audioelements to search in vector (empty)!");
-        }
-        else
+            }
+        } else {
             log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): no rawaudio-elements("+rawaudios+") to search (null)!");
-
+        }
         return result;
     }
 
-    public static Vector getRawAudios( MMBase mmbase, int tracknumber, boolean sort )
-    {
+    public static Vector getRawAudios( MMBase mmbase, int tracknumber, boolean sort ) {
         Vector result = null;
 
-        if( tracknumber > 0 )
-        {
+        if( tracknumber > 0 ) {
             String where = "id==" + tracknumber;
             MMObjectBuilder builder = mmbase.getMMObject("rawaudios");
-            if( builder != null )
-            {
+            if( builder != null ) {
                 Vector v = (Vector) builder.searchVector(where);
-                if( v != null )
-                {
+                if( v != null ) {
                     Enumeration     e   = v.elements();
-                    if( e.hasMoreElements() )
-                    {
+                    if( e.hasMoreElements() ) {
                         result = new Vector();
 
-                        while( e.hasMoreElements() )
+                        while( e.hasMoreElements() ) {
                             result.addElement( new RawAudioDef( (MMObjectNode) e.nextElement() ));
-
-                        if( sort )
-                            result = sort( result );
-                    }
-                    else
-                        if (log.isDebugEnabled()) {
-                            log.debug("getRawAudios("+mmbase+","+tracknumber+"): no rawaudios found for this number!");
                         }
-                }
-                else
-                    if (log.isDebugEnabled()) {
-                        log.debug("getRawAudios("+mmbase+","+tracknumber+"): no vector(rawaudios) found for this number!");
+                        if( sort ) {
+                            result = sort( result );
+                        }
+                    } else if (log.isDebugEnabled()) {
+                        log.debug("getRawAudios("+mmbase+","+tracknumber+"): no rawaudios found for this number!");
                     }
-            }
-            else
+                } else if (log.isDebugEnabled()) {
+                    log.debug("getRawAudios("+mmbase+","+tracknumber+"): no vector(rawaudios) found for this number!");
+                }
+            } else {
                 log.error("getRawAudios("+mmbase+","+tracknumber+"): mmbase did not return valid MMObject(rawaudios)!");
-        }
-        else
+            }
+        } else {
             log.error("getRawAudios("+mmbase+","+tracknumber+"): number("+tracknumber+") is is less than 1!");
-
+        }
         return result;
     }
 
-    private static Vector sort( Vector unsorted )
-    {
+    private static Vector sort( Vector unsorted ) {
         return SortedVector.SortVector(unsorted);
-    }    
+    }
 
 
-    public static String getAudioUrl( MMBase mmbase, scanpage sp, int number, int speed, int channels )
-    {
+    public static String getAudioUrl( MMBase mmbase, scanpage sp, int number, int speed, int channels ) {
         String url = null;
-        if( number > 0 && speed > 0 && channels > 0 )
-        {
-
-// -----------------------
-// we only have audioparts
-// -----------------------
+        if( number > 0 && speed > 0 && channels > 0 ) {
+            // -----------------------
+            // we only have audioparts
+            // -----------------------
             url = getAudiopartUrl( mmbase, number, sp, speed, channels );
-        }
-        else
+        } else {
             log.error("getAudioUrl("+number+","+speed+","+channels+"): parameters not correct!");
-
+        }
         return url;
     }
 
 
-    public static String getAudiopartUrl(MMBase mmbase, int number, scanpage sp, int speed, int channels)
-    {
+    public static String getAudiopartUrl(MMBase mmbase, int number, scanpage sp, int speed, int channels) {
         String url = null;
         AudioPartDef ap = new AudioPartDef();
         if( ap.setparameters( mmbase, number )) {
@@ -257,8 +208,9 @@ public class AudioUtils extends MediaUtils {
                 author=makeRealCompatible(author);
                 url += "&author="+author;
             }
-        } else
-            log.error("getAudioUrl("+number+","+speed+","+channels+"): Could not find a best match speed("+speed+")/channels("+channels+") for this audiopart!"); 
+        } else {
+            log.error("getAudioUrl("+number+","+speed+","+channels+"): Could not find a best match speed("+speed+")/channels("+channels+") for this audiopart!");
+        }
         return url;
     }
 
