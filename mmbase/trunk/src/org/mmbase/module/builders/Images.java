@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.55 2002-06-28 20:55:04 michiel Exp $
+ * @version $Id: Images.java,v 1.56 2002-06-29 14:28:06 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -105,10 +105,6 @@ public class Images extends AbstractImages {
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if ("cache".equals(function)) {
             return new Integer(cacheImage(node, field));
-        }  else if ("path".equals(function)) {
-            return getServletPath() + node.getNumber();
-        } else if ("cachepath".equals(function)) {
-            return getServletPath() + cacheImage(node, field);
         } else {
             return super.executeFunction(node, function, field);
         }
