@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.36 2003-11-07 10:40:31 michiel Exp $
+ * @version $Id: ListTag.java,v 1.37 2003-12-02 10:43:27 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -147,7 +147,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                                           "DESTINATION, EITHER, or ALL (value found was " + searchString + ")");
             }
 
-            String distinctString = distinct.getString(this);
+            String distinctString = distinct.getString(this).toLowerCase();
             boolean searchDistinct = false;
             if ("true".equals(distinctString) || "yes".equals(distinctString)) {
                 searchDistinct = true;
@@ -177,15 +177,12 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             }
 
             Query query = (Query) c.getQuery();
-/*
             if (constraints != Attribute.NULL) {
                 Queries.addConstraints(query, (String) constraints.getValue(this));
             }
-            // doesn't work yet (needs NodeQuery)
             if (orderby != Attribute.NULL) {
                 Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
             }
-*/
             NodeList nodes = getCloud().getList(query);
             return setReturnValues(nodes, true);
         }
