@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.29 2004-02-11 20:40:15 keesj Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.30 2004-03-23 21:42:46 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -54,8 +54,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     protected void setNodeVar(Node node) {        
         nodeHelper.setNodeVar(node);
     }
-    
-    abstract public void doInitBody() throws JspTagException;
     
     /**
      * Fill the jsp and context vars

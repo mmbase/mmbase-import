@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.2 2004-01-19 17:22:08 michiel Exp $ 
+ * @version $Id: NodeListHelper.java,v 1.3 2004-03-23 21:42:46 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -195,9 +195,8 @@ public class NodeListHelper implements ListProvider {
 
 
         if (nodeIterator.hasNext()) {
-            //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
-            //return EVAL_BODY_INCLUDE;
-            return BodyTagSupport.EVAL_BODY_BUFFERED;
+            setNext(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
+            return ContextReferrerTag.EVAL_BODY;
         } else {
             return BodyTagSupport.SKIP_BODY;
         }
@@ -238,7 +237,7 @@ public class NodeListHelper implements ListProvider {
             collector.doAfterBody();
         }
         if (nodeIterator.hasNext()){
-            doInitBody();
+            setNext();
             return BodyTagSupport.EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
@@ -267,34 +266,31 @@ public class NodeListHelper implements ListProvider {
         
     }
 
-    public void doInitBody() throws JspTagException {
-        if (nodeIterator.hasNext()){
-            currentItemIndex ++;
-            try {
-                Node next = nodeIterator.nextNode();
-                // use order as stored in the nodelist (the property of the tag may not be set
-                // if you use referid to get the result of a prevuious listtag)
-                String listOrder=(String) returnList.getProperty("orderby");
-                if (listOrder != null && ! "".equals(listOrder)) {
-                    // then you can also ask if 'changed' the node
-                    // look only at first field of sorted for the /moment.
-                    String f = (String) StringSplitter.split(listOrder).get(0);
-                    String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
-                    if (previousValue != null) {
-                        if (value.equals(previousValue)) {
-                            changed = false;
-                        } else {
-                            changed = true;
-                        }
+    public void setNext() throws JspTagException {
+        currentItemIndex ++;
+        try {
+            Node next = nodeIterator.nextNode();
+            // use order as stored in the nodelist (the property of the tag may not be set
+            // if you use referid to get the result of a prevuious listtag)
+            String listOrder=(String) returnList.getProperty("orderby");
+            if (listOrder != null && ! "".equals(listOrder)) {
+                // then you can also ask if 'changed' the node
+                // look only at first field of sorted for the /moment.
+                String f = (String) StringSplitter.split(listOrder).get(0);
+                String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
+                if (previousValue != null) {
+                    if (value.equals(previousValue)) {
+                        changed = false;
+                    } else {
+                        changed = true;
                     }
-                previousValue = value;
                 }
-                nodeHelper.setNodeVar(next);
-                nodeHelper.fillVars();
-            } catch (BridgeException be) { // e.g. NodeManager does not exist
-                log.warn(be.getMessage());
-                doInitBody();
+                previousValue = value;
             }
+            nodeHelper.setNodeVar(next);
+            nodeHelper.fillVars();
+        } catch (BridgeException be) { // e.g. NodeManager does not exist
+            log.warn(be.getMessage());
         }
     }
 
