@@ -114,7 +114,7 @@ several MMBase-checkouts.
     </condition>
     <tstamp/>
     <mkdir dir="${build.dir}"/>
-    <property name="name" value="mmbase"/>
+    <property name="name"      value="mmbase"/>
     <property name="builddate" value="${DSTAMP}"/>
   </target>
 
@@ -244,8 +244,7 @@ builddate=${builddate}
   <!-- =================================================================== -->
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
-  <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,web,applications">
+  <target name="bindist"  description="Create the binary distribution" depends="lib.release,web,applications">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -793,6 +792,7 @@ Build-compiler: ${build.compiler}
              noindex="true"
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
+             source="1.4"
              maxmemory="100M"
              bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
@@ -1088,6 +1088,10 @@ Build-compiler: ${build.compiler}
   <target name="documentation" 
           depends="jar,documentation.builders,mmcidocs">
 
+
+    <ant dir="${applications.home}" target="install">
+      <property name="build.documentation" value="true" />
+    </ant>
     <ant dir="${documentation.home}" target="documentation">
       <property name="mmbase.default.dir" value=".." />
       <property name="download.dir" value="${download.dir}" />
