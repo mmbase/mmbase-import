@@ -1265,7 +1265,7 @@ public class Controller {
 					virtual.setValue("posterid",po.getId());
 				} else {
 					virtual.setValue("state","failed");
-                    if (po.isBlocked()) {
+                    if (po.isBlocked() && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd))) {
                         virtual.setValue("reason","account blocked");
                     } else {
                         virtual.setValue("reason","password not valid");
