@@ -275,14 +275,33 @@ See mmexamples/taglib for more elaborated examples.
     <info>
       A tag that can live in the body of a fieldprovider tag. 
     </info>
+    <see>fieldprovider</see>
     <attribute>
       <name>field</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	If the tag is living in more than one fieldprovider, and you don't need the direct parent.
+        If the tag is living in more than one fieldprovider, and you don't need the direct parent.
       </info>
     </attribute>
+  </taginterface>
+  <taginterface>
+    <name>fieldprovider</name>
+    <info>
+      Fieldprovider tags provide a field to their body. The 'value' of
+      the field is not necessary filled, but a fieldprovider still has
+      some use then, e.g. to get the 'guiname' of a field (which
+      considers language).
+    </info>
+    <see>fieldreferrer</see>
+  </taginterface>
+  <taginterface>
+    <name>cloudprovider</name>
+    <info>
+      Cloudprovider tags provide a cloud to their body. Als a
+      `transaction' is a kind of cloud.
+    </info>
+    <see>cloudreferrer</see>
   </taginterface>
   <taginterface>
     <name>nodereferrer</name>
@@ -960,6 +979,7 @@ See mmexamples/taglib for more elaborated examples.
   <tag>
     <name>cloud</name>
     <extends>contextreader</extends>
+    <extends>cloudprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.CloudTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -1226,6 +1246,7 @@ access the value of title:
     <name>field</name>
     <extends>writer</extends>
     <extends>fieldreferrer</extends>
+    <extends>fieldprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
@@ -1233,6 +1254,8 @@ access the value of title:
     <info>
       Gets the field `name' from node `node' (can also be list).
     </info>
+    <see>fieldinfo</see>
+    <see>fieldlist</see>
     <see>node</see>
     <attribute>
       <name>name</name>
@@ -1554,6 +1577,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <name>transaction</name>
     <extends>contextwriter</extends>
     <extends>cloudreferrer</extends>
+    <extends>cloudprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -1706,17 +1730,19 @@ transaction was commited, following should result anything:
   </tag>
   <tag>
     <name>fieldlist</name>
+    <extends>fieldprovider</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
-    <bodycontent>JSP</bodycontent>
+    <bodycontent>JSP</bodycontent>    
     <info>
-	  A list of fields. A fieldlist can be inside a NodeProvider in
-	  which case the NodeManager is found by means of the parent
-	  node. It can also be stand alone, then you have to supply the type
-	  of the node (the name of the `nodemanager').
+      A list of fields. A fieldlist can be inside a NodeProvider in
+      which case the NodeManager is found by means of the parent
+      node. It can also be stand alone, then you have to supply the type
+      of the node (the name of the `nodemanager').
     </info>
+    <see>fieldinfo</see>
     <attribute>
       <name>nodetype</name>
       <required>false</required>
@@ -3113,7 +3139,6 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       to the MMBase log with this.  It logs its body on 'service'
       within the category 'org.mmbase.PAGE', followed by the file name
       of the jsp which is executed.
-
     </info>
     <attribute>
       <name>jspvar</name>
@@ -3121,15 +3146,16 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       <rtexprvalue>false</rtexprvalue>
       <info>
         If this attribute is present, the body will not be logged, but
-        in the body this jspvar is available.
+        in the body this jspvar is available, which is of the type
+        'Logger'. This can be handy if your page contains a lot of
+        Java code.
       </info>
     </attribute>
     <example>
-	&lt;mm:log&gt;
-		Log this to the log file
-	&lt;/mm:log&gt;
-	Generates in the mmbase log file:
-	19:16:04,030 SERVICE - 0: Log this to the log file
+&lt;mm:log&gt;Log this to the log file&lt;/mm:log&gt;
+Generates something like this in the mmbase log file:
+19:16:04,030 SERVICE - 0: Log this to the log file
+The 0 is just counter, which starts at 0 on every page.
 	</example>
   </tag>
   <tag>
