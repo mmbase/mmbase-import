@@ -118,9 +118,11 @@ public class floppydrvsProbe implements Runnable {
 					rnode.setValue("status",3); 
 					rnode.commit();
                                 	AudioParts bul=(AudioParts)parent.mmb.getMMObject("audioparts");
+					/* removed temp to allow compile, Daniel (marcel this is not ported ?)
                                 	if (bul!=null){ 
 						bul.wavAvailable(""+inumber);  //Add more audiofiles using diff. settings.
                                 	}
+					*/
 					node.setValue("state","waiting"); 
 					node.commit();
 				}catch (CopyFailedException cfe){
