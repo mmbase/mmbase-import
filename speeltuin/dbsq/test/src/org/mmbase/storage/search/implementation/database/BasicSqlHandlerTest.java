@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -937,10 +937,34 @@ public class BasicSqlHandlerTest extends TestCase {
         "m_images.m_title<'qWeRtY'"));
 
         sb.setLength(0);
+        constraint6.setOperator(FieldCompareConstraint.LESS_EQUAL);
+        instance.appendConstraintToSql(sb, constraint6, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_title<='qWeRtY'"));
+
+        sb.setLength(0);
+        constraint6.setOperator(FieldCompareConstraint.EQUAL);
+        instance.appendConstraintToSql(sb, constraint6, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_title='qWeRtY'"));
+
+        sb.setLength(0);
+        constraint6.setOperator(FieldCompareConstraint.NOT_EQUAL);
+        instance.appendConstraintToSql(sb, constraint6, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_title<>'qWeRtY'"));
+
+        sb.setLength(0);
         constraint6.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title>'qWeRtY'"));
+
+        sb.setLength(0);
+        constraint6.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+        instance.appendConstraintToSql(sb, constraint6, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_title>='qWeRtY'"));
 
         sb.setLength(0);
         constraint6.setOperator(FieldCompareConstraint.LIKE);
@@ -981,27 +1005,51 @@ public class BasicSqlHandlerTest extends TestCase {
         "m_images.m_number<9876"));
 
         sb.setLength(0);
+        constraint7.setOperator(FieldCompareConstraint.LESS_EQUAL);
+        instance.appendConstraintToSql(sb, constraint7, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number<=9876"));
+
+        sb.setLength(0);
+        constraint7.setOperator(FieldCompareConstraint.EQUAL);
+        instance.appendConstraintToSql(sb, constraint7, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number=9876"));
+
+        sb.setLength(0);
+        constraint7.setOperator(FieldCompareConstraint.NOT_EQUAL);
+        instance.appendConstraintToSql(sb, constraint7, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number<>9876"));
+
+        sb.setLength(0);
         constraint7.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>9876"));
 
         sb.setLength(0);
+        constraint7.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+        instance.appendConstraintToSql(sb, constraint7, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number>=9876"));
+
+        sb.setLength(0);
         constraint7.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT m_images.m_number>9876"));
+        "NOT m_images.m_number>=9876"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint7, query, true, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_number>9876"));
+        "m_images.m_number>=9876"));
         
         sb.setLength(0);
         constraint7.setCaseSensitive(false); // case insensitive, ignored
         instance.appendConstraintToSql(sb, constraint7, query, true, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_number>9876"));
+        "m_images.m_number>=9876"));
         
         // Test for BasicCompareFieldsConstraint (integer)
         BasicCompareFieldsConstraint constraint8
@@ -1019,27 +1067,51 @@ public class BasicSqlHandlerTest extends TestCase {
         "m_images.m_number<pools.m_number"));
 
         sb.setLength(0);
+        constraint8.setOperator(FieldCompareConstraint.LESS_EQUAL);
+        instance.appendConstraintToSql(sb, constraint8, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number<=pools.m_number"));
+
+        sb.setLength(0);
+        constraint8.setOperator(FieldCompareConstraint.EQUAL);
+        instance.appendConstraintToSql(sb, constraint8, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number=pools.m_number"));
+
+        sb.setLength(0);
+        constraint8.setOperator(FieldCompareConstraint.NOT_EQUAL);
+        instance.appendConstraintToSql(sb, constraint8, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number<>pools.m_number"));
+
+        sb.setLength(0);
         constraint8.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number"));
 
         sb.setLength(0);
+        constraint8.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+        instance.appendConstraintToSql(sb, constraint8, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+        "m_images.m_number>=pools.m_number"));
+
+        sb.setLength(0);
         constraint8.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT m_images.m_number>pools.m_number"));
+        "NOT m_images.m_number>=pools.m_number"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint8, query, true, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_number>pools.m_number"));
+        "m_images.m_number>=pools.m_number"));
         
         sb.setLength(0);
         constraint8.setCaseSensitive(false); // case insensitive, ignored
         instance.appendConstraintToSql(sb, constraint8, query, true, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_number>pools.m_number"));
+        "m_images.m_number>=pools.m_number"));
 
         // Test for BasicCompareFieldsConstraint (string)
         BasicCompareFieldsConstraint constraint9 =
