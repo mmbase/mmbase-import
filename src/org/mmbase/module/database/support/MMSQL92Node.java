@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version $Id: MMSQL92Node.java,v 1.53 2002-01-23 15:52:51 pierre Exp $
+* @version $Id: MMSQL92Node.java,v 1.53.2.1 2002-02-25 13:55:23 kees Exp $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -784,6 +784,20 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         MultiConnection con=mmb.getConnection();
                         Statement stmt=con.createStatement();
                         stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where "+getNumberString()+"="+number);
+                        stmt.close();
+                        con.close();
+                    } catch (SQLException e) {
+                        log.error(Logging.stackTrace(e));
+                    }
+                }
+                String otypeString = mmb.getTypeDef().getValue(node.getOType());
+                if (node.parent!=null && (node.parent instanceof InsRel) && bul.tableName.equals("insrel") && !otypeString.equals("insrel")
+                    ) {
+                    log.debug("deleting row in subtable of insrel the subtable is of type("+ otypeString +") and the object number is="+ number);
+                    try {
+                        MultiConnection con=mmb.getConnection();
+                        Statement stmt=con.createStatement();
+                        stmt.executeUpdate("delete from "+mmb.baseName+"_"+otypeString+" where "+getNumberString()+"="+number);
                         stmt.close();
                         con.close();
                     } catch (SQLException e) {
