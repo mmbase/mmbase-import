@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.5 2000-03-30 13:11:35 wwwtech Exp $
+$Id: g2encoders.java,v 1.6 2000-11-09 12:03:57 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/30 13:11:35  wwwtech
+Rico: added license
+
 Revision 1.4  2000/03/29 10:59:26  wwwtech
 Rob: Licenses changed
 
@@ -35,7 +38,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @$Revision: 1.5 $ $Date: 2000-03-30 13:11:35 $
+ * @$Revision: 1.6 $ $Date: 2000-11-09 12:03:57 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 
@@ -44,19 +47,6 @@ public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 	//  private void debug(String msg){System.out.println(classname+":"+msg);}
 
 	public g2encoders() {
-		if(debug) debug("setTableName("+tableName+")");
-	}
-
-	public void setTableName(String tableName) {
-		if(debug) debug("setTableName("+tableName+")");
-
-		super.setTableName(tableName);
-		MMServers bul=(MMServers)mmb.getMMObject("mmservers");
-		if (bul!=null) {
-			bul.setCheckService(tableName);
-		} else {
-			if(debug) debug("setTableName("+tableName+"): ERROR: mmbase could not be found!");
-		}
 	}
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
