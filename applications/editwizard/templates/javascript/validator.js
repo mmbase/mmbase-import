@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.25 2003-12-19 11:09:08 nico Exp $
+ * @version  $Id: validator.js,v 1.26 2003-12-22 22:33:59 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -48,26 +48,35 @@ Validator.prototype.attach = function (element) {
     var self=this;
     switch(ftype) {
         case "enum":
-            element.onblur = function() { self.validateEvent() };
-            element.onchange = function() { self.validateEvent() };
+            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+            addEvent(element, "change", function(ev) { self.validateEvent(ev) });
             break;
         case "datetime":
         case "date":
         case "time":
             if (element.type == "text") {
-               element.onblur = function() { self.validateEvent() };
-               element.onkeyup = function() { self.validateEvent() };
-               element.onchange = function() { self.validateEvent() };
+               addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+               addEvent(element, "keyup", function(ev) { self.validateEvent(ev) });
+               addEvent(element, "change", function(ev) { self.validateEvent(ev) });
             }
             else {
-               element.onchange = function() { self.validateEvent() };
+               addEvent(element, "change", function(ev) { self.validateEvent(ev) });
             }
             break;
         default:
-            element.onblur = function() { self.validateEvent() };
-            element.onkeyup = function() { self.validateEvent() };
+            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+            addEvent(element, "keyup", function(ev) { self.validateEvent(ev) });
     }
 }
+
+addEvent = function(el, evname, func) {
+	if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
+		el.attachEvent("on" + evname, func);
+	} else {
+		el.addEventListener(evname, func, true);
+	}
+}
+
 
 Validator.prototype.validateEvent = function (evt) {
     evt = (evt) ? evt : ((window.event) ? window.event : "")
