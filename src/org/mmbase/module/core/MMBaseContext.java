@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.27 2002-06-27 21:07:48 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.28 2002-07-24 10:19:19 vpro Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.27 $ $Date: 2002-06-27 21:07:48 $
+ * @$Revision: 1.28 $ $Date: 2002-07-24 10:19:19 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -252,6 +252,16 @@ public class MMBaseContext {
     }
 
     private static void initLogging() {
+
+        // There is a problem when dtd's for the various modules are on a remote
+        // machine and this machine is down. Log4j will hang without an error and if
+        // SimpleImpl is used in log.xml it too will constantly try to connect to the
+        // machine for the dtd's without giving an error! This line might give a hint 
+        // where to search for these kinds of problems..
+        
+        System.out.println("INFO org.mmbase.module.core.MMBaseContext.init(): starting the logger..");
+        System.out.println("INFO If this is one of the last lines you see in this logfile, dtd validation might be a problem on your server..");
+        // Starting the logger 
         Logging.configure(configPath + "/log/log.xml");
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(MMBaseContext.class.getName());
