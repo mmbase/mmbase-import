@@ -45,6 +45,12 @@ import org.mmbase.module.core.*;
  */
 
 public class RelDef extends MMObjectBuilder {
+    
+    /** Value of "dir" field indicating unidirectional relations. */
+    public final static int DIR_UNIDIRECTIONAL = 1;
+    
+    /** Value of "dir" field indicating bidirectional relatios. */
+    public final static int DIR_BIDIRECTIONAL = 2;
 
     /**
      * Indicates whether the relationdefinitions use the 'builder' field (that is, whether the
@@ -121,7 +127,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getGUIIndicator(MMObjectNode node) {
         int dir=node.getIntValue("dir");
-        if (dir==1) {
+        if (dir==DIR_UNIDIRECTIONAL) {
             return node.getStringValue("sguiname");
         } else {
             String st1=node.getStringValue("sguiname");
@@ -203,7 +209,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public void testValidData(MMObjectNode node) throws InvalidDataException{
         int dir=node.getIntValue("dir");
-        if ((dir!=1) && (dir!=2)) {
+        if ((dir!=DIR_UNIDIRECTIONAL) && (dir!=DIR_BIDIRECTIONAL)) {
             throw new InvalidDataException("Invalid directionality ("+dir+") specified","dir");
         }
         if (usesbuilder) {
@@ -275,7 +281,7 @@ public class RelDef extends MMObjectBuilder {
      *    @param node Node to be initialized
      */
     public void setDefaults(MMObjectNode node) {
-        node.setValue("dir",2);
+        node.setValue("dir", DIR_BIDIRECTIONAL);
         if (usesbuilder) {
             node.setValue("builder",mmb.getInsRel().oType);
         }
@@ -293,13 +299,15 @@ public class RelDef extends MMObjectBuilder {
     public String getGUIIndicator(String field,MMObjectNode node) {
         try {
             if (field.equals("dir")) {
-                int dir=node.getIntValue("dir");
-                if (dir==2) {
-                    return "bidirectional";
-                } else if (dir==1) {
-                    return "unidirectional";
-                } else {
-                    return "unknown";
+                switch (node.getIntValue("dir")) {
+                    case DIR_BIDIRECTIONAL:
+                        return "bidirectional";
+                        
+                    case DIR_UNIDIRECTIONAL:
+                        return "unidirectional";
+                        
+                    default:
+                        return "unknown";
                 }
             } else if (field.equals("builder")) {
                 int builder=node.getIntValue("builder");
