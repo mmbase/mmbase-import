@@ -24,11 +24,11 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.51 2003-05-12 11:06:56 nico Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.52 2003-06-11 13:50:04 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
-    Logging.getLoggerInstance(ConvertImageMagick.class.getName());
+    Logging.getLoggerInstance(ConvertImageMagick.class);
     
     // Currently only ImageMagick works, this are the default value's
     private static String converterPath = "convert"; // in the path.
@@ -276,8 +276,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return        Map with three keys: 'args', 'cwd', 'format'.
      */
     private ParseResult getConvertCommands(List params) {
+        if (log.isDebugEnabled()) {
+            log.debug("getting convert commands from " + params);
+        }
         ParseResult result = new ParseResult();
-        List cmds = new Vector();
+        List cmds = new ArrayList();
         result.args = cmds;
         result.cwd = null;
         result.format = defaultImageFormat;
@@ -291,6 +294,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
         }
         while (t.hasNext()) {
             key = (String) t.next();
+            if (log.isDebugEnabled()) log.debug("parsing '" + key + "'");
             pos = key.indexOf('(');
             pos2 = key.lastIndexOf(')');
             if (pos != -1 && pos2 != -1) {
@@ -427,7 +431,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     log.debug("adding " + type + " " + cmd);
                 }
                 // all other things are recognized as well..
-                if (! isCommandPrefix(type.charAt(0))) { // if no prefix given, suppose '-'
+                if (! isCommandPrefixed(type)) { // if no prefix given, suppose '-'
                     cmds.add("-" + type);
                 } else {
                     cmds.add(type);
@@ -441,7 +445,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 } else if (key.equals("neg")) {
                     cmds.add("+negate");
                 } else {
-                    if (! isCommandPrefix(key.charAt(0))) { // if no prefix given, suppose '-'
+                    if (! isCommandPrefixed(key)) { // if no prefix given, suppose '-'
                         cmds.add("-" + key);
                     } else {
                         cmds.add(key);
@@ -455,7 +459,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
     /**
      * @since MMBase-1.7
      */
-    private boolean isCommandPrefix(char c) {
+    private boolean isCommandPrefixed(String s) {
+        if (s == null || s.length() == 0) return false;
+        char c = s.charAt(0);
         return c == '-' || c == '+';
     }
     
