@@ -13,12 +13,9 @@
   <body>
  <h1><mm:field name="gui()" /></h1>
 
- <div id="you">
-   <p>you: <%=cloud.getUser().getIdentifier()%></p>
-   <p>your rank: <%=cloud.getUser().getRank()%></p>
- </div>
- 
- <div class="body">
+  <%@include file="you.div.jsp" %>
+
+
    <table>
     <mm:fieldlist type="edit">
     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="useinput" /></td></tr>
@@ -63,12 +60,11 @@
  
      </mm:isnotempty>
 
-
    </table>
-   </form>
-  </body>
+
 
    </mm:node>
   </mm:cloud>
   <% response.sendRedirect("index.jsp"); %>
+  </body>
 </html>
