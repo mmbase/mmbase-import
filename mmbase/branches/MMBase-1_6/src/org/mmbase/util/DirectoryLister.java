@@ -52,6 +52,11 @@ public class DirectoryLister {
         String [] files = d.list ();    //List files and store in files array.
         String path = null;
 
+        if(files==null) {
+            log.error("Cannot read in directory - "+dir);
+            return v;
+        }
+
         for (int i = 0; i < files.length; i++) {
             path = dir + File.separator + files[i];    //Build full pathname for this entry.
             d = new File (path);    //Assign new fileobject for this newly build path.
