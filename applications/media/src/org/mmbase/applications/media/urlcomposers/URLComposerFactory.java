@@ -31,7 +31,7 @@ import java.lang.reflect.*;
  * format/protocol combination to a URLComposer class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.13 2003-04-03 13:13:31 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.14 2003-06-05 09:38:41 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -160,7 +160,7 @@ public class URLComposerFactory  {
             while(i.hasNext()) {
                 Format format = (Format) i.next();
                 try {
-                    log.service("Adding for format " + format + " urlcomposer " + clazz);
+                    log.debug("Adding for format " + format + " urlcomposer " + clazz);
                     urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
                 } catch (ClassNotFoundException ex) {
                     log.error("Cannot load urlcomposer " + clazz);
