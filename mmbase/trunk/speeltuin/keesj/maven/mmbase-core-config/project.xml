@@ -77,7 +77,7 @@
     <resources>
       <resource>
         <directory>${basedir}/config</directory>
-        <targetPath>config</targetPath>
+        <targetPath>org/mmbase/config</targetPath>
         <includes>
           <include>**/*.xml</include>
           <include>**/INDEX</include>
