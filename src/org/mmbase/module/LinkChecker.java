@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.12 2003-12-03 06:57:41 keesj Exp $
+ * @version $Id: LinkChecker.java,v 1.13 2003-12-11 15:24:31 pierre Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -79,6 +79,8 @@ public class LinkChecker extends ProcessorModule implements Runnable {
         // init variables for mail.
         String from = getInitParameter("from");
         String to = getInitParameter("to");
+        String subject = getInitParameter("subject");
+        if (subject == null || subject.equals("")) subject = "List of incorrect urls and jumpers";
         String data = "";
 
         try {
@@ -131,12 +133,12 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             // Send Email if needed.
             if (!data.equals("")) {
                 Mail mail = new Mail(to, from);
-                mail.setSubject("List of incorrect urls and jumpers");
+                mail.setSubject(subject);
                 mail.setText(data);
                 if (sendmail != null) {
                     sendmail.sendMail(mail);
                 } else {
-                    log.warn("LinckChecker requires the sentmail modules to be active");
+                    log.warn("LinkChecker requires the sentmail modules to be active");
                 }
             }
         } catch (Exception e) {
