@@ -614,7 +614,7 @@ Build-compiler: ${build.compiler}
 
 
     <property name="config.build.dir" value="${build.dir}/config"/>
-    <property name="minconfig.build.dir" value="${build.dir}/minconfig"/>
+    <property name="minconfig.build.dir" value="${build.dir}/min/config"/>
     <property name="webroot.build.dir" value="${build.dir}/webroot"/>
     
     <!-- =================================================================== -->
@@ -624,12 +624,13 @@ Build-compiler: ${build.compiler}
         <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${minconfig.build.dir}">
             <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
-                <!-- the dirs we definitly need -->
+                <!-- the dirs/files we definitly need -->
                 <include name="databases/**"/>
                 <include name="dtd/**"/>
                 <include name="xslt/**"/>
-                <include name="log/**"/>
-                <include name="security/**"/>
+                <include name="log/log.xml"/>
+                <include name="log/log4j.xml"/>
+                <include name="security/security.xml"/>
                 <include name="caches.xml"/>
                 <include name="magic.xml" /><!-- used if you switch on 'attachments' -->
                 
@@ -692,52 +693,48 @@ Build-compiler: ${build.compiler}
       <fileset dir="${source-html.dir}/mmexamples"/>
     </copy>         
     
-    <!-- javadocs -->
-    <copy todir="${webroot.build.dir}/mmbase/docs">
+    <copy todir="${webroot.build.dir}/mmbase/documentation">
       <fileset dir="${build.dir}/mmbase-src/docs"/>
     </copy>
         
   </target>
 
   <target name="clean.war">
-      <delete dir="${webroot.build.dir}" />
-      <delete dir="${config.build.dir}" />
-      <delete dir="${minconfig.build.dir}" />
-      <delete file="${build.dir}/mmbase/mmbase.war" />
-    </target>
+    <delete dir="${webroot.build.dir}" />
+    <delete dir="${config.build.dir}" />
+    <delete dir="${minconfig.build.dir}" />
+    <delete file="${build.dir}/mmbase/mmbase.war" />
+    <delete file="${build.dir}/mmbase/minimalistic-mmbase.war" />
+  </target>
 
     <!-- =================================================================== -->
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
   <target name="wars" description="Create full-fledged and minimalistic mmbase.war" depends="war,minimalistic.war" />
-
-    <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,war.config,war.webroot">
-
-        <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
-            <lib dir="${release.lib.dir}" />
-            <!-- here our config has to be.. -->
-            <webinf dir="${build.dir}">
-                <include name="config/**"/>
-            </webinf>
-
-            <!-- our file's on the server -->
-            <fileset dir="${build.dir}/webroot"/>
-        </war>
-    </target>
-
-    <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,minimalistic.war.config">
-
-        <war warfile="${build.dir}/mmbase/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
-            <lib dir="${release.lib.dir}" />
-            <!-- here our config has to be.. -->
-            <webinf dir="${build.dir}">
-                <include name="minconfig/**"/>
-            </webinf>
-
-            <!-- our file's on the server -->
-            <fileset dir="${build.dir}/webroot"/>
-        </war>
-    </target>
+  
+  <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,war.config,war.webroot">
+    
+    <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+      <lib dir="${release.lib.dir}" />
+      <!-- here our config has to be.. -->
+      <webinf dir="${build.dir}">
+        <include name="config/**"/>
+      </webinf>
+      
+      <!-- our file's on the server -->
+      <fileset dir="${build.dir}/webroot"/>
+    </war>
+  </target>
+  
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,minimalistic.war.config">
+    <war warfile="${build.dir}/mmbase/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+      <lib dir="${release.lib.dir}" />
+      <!-- here our config has to be.. -->
+      <webinf dir="${build.dir}/min">
+        <include name="config/**"/>
+      </webinf>     
+    </war>
+  </target>
 
 
   <!-- =================================================================== -->
@@ -1408,13 +1405,7 @@ Version: MMBase build ${version}
   <!-- Clean the remote-classes                                            -->
   <!-- =================================================================== -->
   <target name="clean.remote" depends="init">
-    <delete failonerror="false">
-      <fileset dir="${generated-source-src.dir}">
-        <include name="org/mmbase/bridge/remote/*.java"/>
-      </fileset>
-    </delete>
-    <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote/rmi"/>
-    <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote/implementation"/>
+    <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote"/>
     <delete failonerror="false" file="${generated-source-src.dir}/MMCI.xml"/>
     <!-- Transition period. Until everybody removed the remote
     code from their source-dir, we clean it also there.
