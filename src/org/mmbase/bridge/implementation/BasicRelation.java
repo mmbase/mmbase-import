@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.25.2.2 2003-03-14 13:26:46 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.25.2.3 2003-03-14 14:08:42 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -124,7 +124,7 @@ public class BasicRelation extends BasicNode implements Relation {
             int stypenum=mmb.getTypeRel().getNodeType(snum);
             int dtypenum=mmb.getTypeRel().getNodeType(dnum);
 
-            log.info(stypenum+" ,"+dtypenum+","+getNode().getIntValue("rnumber"));
+            log.info(stypenum + ", " + dtypenum + ", " + getNode().getIntValue("rnumber"));
 
             relationManager=cloud.getRelationManager(stypenum,dtypenum, getNode().getIntValue("rnumber"));
         }
