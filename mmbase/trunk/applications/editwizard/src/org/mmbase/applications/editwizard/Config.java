@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.File;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.applications.editwizard.SecurityException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mmbase.bridge.Cloud;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.33 2003-05-27 11:17:09 pierre Exp $
+ * @version $Id: Config.java,v 1.34 2003-05-27 12:47:12 pierre Exp $
  */
 
 public class Config {
@@ -73,7 +74,7 @@ public class Config {
         public void configure(Config.Configurator configurator) throws WizardException  {
             wizard = configurator.getParam("wizard", wizard);
             if (wizard != null && wizard.startsWith("/")) {
-                wizard = "file://" + configurator.getRequest().getRealPath(wizard);
+                wizard = "file://" + configurator.getRealPath(wizard);
             }
             setAttribute("origin",configurator.getParam("origin"));
             // debug parameter
@@ -390,24 +391,18 @@ public class Config {
     public static class Configurator {
         private static Logger log = Logging.getLoggerInstance(Config.class.getName());
 
+        protected PageContext page;
         protected HttpServletRequest request;
         protected HttpServletResponse response;
         private Config config;
 
-        public HttpServletRequest getRequest() {
-            return request;
-        }
-
-        public File resolveToFile(String templatePath) {
-            return config.uriResolver.resolveToFile(templatePath);
-        }
-        
-        public Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
-            request = req;
-            response = res;
+        public Configurator(PageContext pageContext, Config c) throws WizardException {
+            page = pageContext;
+            request = (HttpServletRequest)page.getRequest();
+            response = (HttpServletResponse)page.getResponse();
             config  = c;
 
-            config.sessionId = res.encodeURL("test.jsp").substring(8);
+            config.sessionId = response.encodeURL("test.jsp").substring(8);
             log.debug("Sessionid : " + config.sessionId);
 
             
@@ -451,12 +446,12 @@ public class Config {
                     String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
                     // Using URL.getPath() would be nicer, but is not available in java 1.2
                     // suppose it is from the same server, web can find back the directory then:
-                    refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
+                    refFile = new File(getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
 
                     // TODO: What if it happened to be not from the same server?
                 } else {
                     // Was given relatively, that's easy:
-                    refFile = new File(request.getRealPath(config.backPage)).getParentFile();
+                    refFile = new File(getRealPath(config.backPage)).getParentFile();
                 }
                 if (refFile.exists()) {
                     extraDirs.add("ref:", refFile);
@@ -468,7 +463,7 @@ public class Config {
                 config.templates = request.getParameter("templates");
 
                 if (config.templates != null) {
-                    File templatesDir = new File(request.getRealPath(config.templates));
+                    File templatesDir = new File(getRealPath(config.templates));
                     try {
                         templatesDir = templatesDir.getCanonicalFile();
                     } catch (java.io.IOException e) {
@@ -485,7 +480,7 @@ public class Config {
                  * and also for 'library' editors.
                  */
 
-                File jspFileDir = new File(request.getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
+                File jspFileDir = new File(getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
                 File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data"); // ew default data/xsls is in ../data then
 
                 if (! config.language.equals("")) {
@@ -505,40 +500,52 @@ public class Config {
             }
         }
         
+        public String getRealPath(String path) {
+            return page.getServletContext().getRealPath(path);
+        }
+        
+        public File resolveToFile(String templatePath) {
+            return config.uriResolver.resolveToFile(templatePath);
+        }
+        
+        public PageContext getPage() {
+            return page;
+        }
+        
         protected String getParam(String paramName) {
-            if (request.getParameter(paramName) == null) return null;
             return request.getParameter(paramName);
         }
 
-        protected String getParam(String paramName, String def) {
-            if (request.getParameter(paramName) == null) {
-                if (def == null) return null;
-                return def.toString();
-            }
-            return getParam(paramName);
+        protected String getParam(String paramName, String defaultValue) {
+            String value=getParam(paramName);
+            if (value==null) value=defaultValue;
+            return value;
         }
         
         protected int  getParam(String paramName, int def) {
-            String i = request.getParameter(paramName);
+            String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
             return new Integer(i).intValue();
         }
 
         protected Integer getParam(String paramName, Integer def) {
-            String i = request.getParameter(paramName);
+            String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
             return new Integer(i);
         }
 
         protected boolean getParam(String paramName, boolean def) {
-            if (request.getParameter(paramName) == null) return def;
-            return new Boolean(request.getParameter(paramName)).booleanValue();
+            String b = getParam(paramName);
+            if (b == null) return def;
+            return new Boolean(b).booleanValue();
         }
 
         protected Boolean getParam(String paramName, Boolean def) {
-            if (request.getParameter(paramName) == null) return def;
-            return new Boolean(request.getParameter(paramName));
+            String b = getParam(paramName);
+            if (b == null) return def;
+            return new Boolean(b);
         }
+
         public String getBackPage(){
             if(config.subObjects.size() == 0) {
                 return config.backPage;

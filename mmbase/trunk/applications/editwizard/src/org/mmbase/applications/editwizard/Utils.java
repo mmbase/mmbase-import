@@ -39,7 +39,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.29 2003-05-13 11:57:17 michiel Exp $
+ * @version $Id: Utils.java,v 1.30 2003-05-27 12:47:13 pierre Exp $
  */
 public class Utils {
 
@@ -667,6 +667,8 @@ public class Utils {
         c.setDoOutput(true);
         PrintWriter out = new PrintWriter(c.getOutputStream());
         // Here's whether the parameter is set.
+        // TODO: replace in 1.4 with:
+        //        out.println("xml=" + URLEncoder.encode(inputString,"UTF-8"));
         out.println("xml=" + URLEncoder.encode(inputString));
         out.close();
 
