@@ -8,7 +8,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //	     http://students.infoiasi.ro/~mishoo
 //
-// $Id: htmlarea.js,v 1.4 2004-04-22 11:17:47 pierre Exp $
+// $Id: htmlarea.js,v 1.5 2004-05-26 12:02:05 andre Exp $
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -42,7 +42,7 @@ HTMLArea.Config = function () {
         this.sizeIncludesToolbar = true;
 
         // style included in the iframe document
-        this.pageStyle = "body { background-color: #fff; font-family: verdana,sans-serif; }";
+        this.pageStyle = "body { background-color: #fff; font-size: 12px; font-family: \"Lucida Grande\",Verdana,Arial,Helvetica,sans-serif; }";
         if (typeof _editor_url != "undefined") {
                 this.editorURL = _editor_url;
         } else {
