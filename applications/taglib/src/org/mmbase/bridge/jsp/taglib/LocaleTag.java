@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import java.io.IOException;
 import javax.servlet.jsp.JspTagException;
 import java.util.*;
@@ -25,8 +26,8 @@ import org.mmbase.util.logging.Logging;
 public class LocaleTag extends ContextReferrerTag  {
     private static Logger log = Logging.getLoggerInstance(LocaleTag.class.getName());
 
-    private String language = null;
-    private String country = "";
+    private Attribute language = Attribute.NULL;
+    private Attribute country =  Attribute.NULL;
 
     private Locale locale;
     private String jspvar = null;
@@ -35,11 +36,11 @@ public class LocaleTag extends ContextReferrerTag  {
     // Attributes (documenation can be found in tld).
 
     public void setLanguage(String lang) throws JspTagException {
-        language = getAttributeValue(lang);       
+        language = getAttribute(lang);       
     }
 
     public void setCountry(String c) throws JspTagException {
-        country = getAttributeValue(country);
+        country = getAttribute(c);
     }
 
     /**
@@ -56,8 +57,9 @@ public class LocaleTag extends ContextReferrerTag  {
     
     
     public int doStartTag() throws JspTagException {
-        if (language != null && (! language.equals(""))) {
-            locale = new Locale(language, country);
+        String l = language.getString(this);
+        if (! l.equals("")) {
+            locale = new Locale(l, country.getString(this));
         } else {
             locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -65,10 +66,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         helper.haveBody();
     }
 
-    protected String   xslt    = null;
-    protected int      format  = FORMAT_UNSET;
-    protected String   options = null;
-    protected int      wants   = WANTS_DEFAULT;
+    protected Attribute xslt    = Attribute.NULL;
+    protected Attribute format  = Attribute.NULL; 
+    protected Attribute options = Attribute.NULL;
+    protected Attribute wants   = Attribute.NULL; 
 
     protected Source   xsltSource = null;
 
@@ -146,32 +147,37 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * You can give the path the the XSLT-file by this attribute.
      */
     public void setXslt(String x) throws JspTagException {
-        xslt = getAttributeValue(x);
+        xslt = getAttribute(x);
     }
 
     /**
      * Predefined formattings.
      */
     public void setFormat(String f) throws JspTagException {
-        String fs = getAttributeValue(f);
-        if ("xhtml".equalsIgnoreCase(fs)) {
-            format = FORMAT_XHTML;
-        } else if ("presentxml".equalsIgnoreCase(fs)) {
-            format = FORMAT_PRESENTXML;
-        } else if ("code".equalsIgnoreCase(fs)) {
-            format = FORMAT_CODE;
-        } else if ("escapexml".equalsIgnoreCase(fs)) {
-            format = FORMAT_ESCAPEXML;
-        } else if ("escapexmlpretty".equalsIgnoreCase(fs)) {
-            format = FORMAT_ESCAPEXMLPRETTY;
-        } else if ("date".equalsIgnoreCase(fs)) {
-            format = FORMAT_DATE;
-        } else if ("textonly".equalsIgnoreCase(fs)) {
-            format = FORMAT_TEXTONLY;
-        } else if ("rich".equalsIgnoreCase(fs)) {
-            format = FORMAT_RICH;
+        format = getAttribute(f);
+    }
+
+    protected int getFormat() throws JspTagException {
+        if (format == Attribute.NULL) return FORMAT_UNSET;
+        String fs = format.getString(this).toLowerCase();
+        if ("xhtml".equals(fs)) {
+            return FORMAT_XHTML;
+        } else if ("presentxml".equals(fs)) {
+            return  FORMAT_PRESENTXML;
+        } else if ("code".equals(fs)) {
+            return FORMAT_CODE;
+        } else if ("escapexml".equals(fs)) {
+            return FORMAT_ESCAPEXML;
+        } else if ("escapexmlpretty".equals(fs)) {
+            return FORMAT_ESCAPEXMLPRETTY;
+        } else if ("date".equals(fs)) {
+            return FORMAT_DATE;
+        } else if ("textonly".equals(fs)) {
+            return FORMAT_TEXTONLY;
+        } else if ("rich".equals(fs)) {
+            return FORMAT_RICH;
         } else {
-            throw new JspTagException("Unknown format " + fs + "(" + f + ")");
+            throw new JspTagException("Unknown format " + fs);
         }
     }
 
@@ -179,17 +185,21 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * The 'options' attribute can be used to provide option to the transformation to be done
      */
     public void setOptions(String o) throws JspTagException {
-        options = getAttributeValue(o);
+        options = getAttribute(o);
     }
 
     public void setWants(String w) throws JspTagException {
-        String ww = getAttributeValue(w);
-        if ("default".equalsIgnoreCase(ww)) {
-            wants = WANTS_DEFAULT;            
-        } else if ("DOM".equalsIgnoreCase(ww)) {
-            wants = WANTS_DOM;            
-        } else if ( "string".equalsIgnoreCase(ww)) {
-            wants = WANTS_STRING;
+        wants = getAttribute(w);
+    }
+    protected int getWants() throws JspTagException {
+        if (wants == Attribute.NULL) return WANTS_DEFAULT;
+        String ww = wants.getString(this).toLowerCase();
+        if ("default".equals(ww)) {
+            return WANTS_DEFAULT;            
+        } else if ("DOM".equals(ww)) {
+            return  WANTS_DOM;            
+        } else if ( "string".equals(ww)) {
+            return WANTS_STRING;
         } else {
             throw new JspTagException("Unknown value '" + ww + "' for wants attribute.");
         }         
@@ -248,11 +258,12 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         xsltSource = null;
 
-        if (format > FORMAT_UNSET  && xslt != null) {
+        if (format != Attribute.NULL  && xslt != Attribute.NULL) {
             throw new JspTagException ("One of the attributes xslt and format must be specified, or none (then you have to use an mm:xslt subtag.");
         }
 
-        if ((wants == WANTS_DEFAULT && format < FORMAT_LIMIT_WANTXML) || wants == WANTS_DOM) { // also if format is unset, that means: use xslt
+        int w = getWants();
+        if ((w == WANTS_DEFAULT && getFormat() < FORMAT_LIMIT_WANTXML) || w == WANTS_DOM) { // also if format is unset, that means: use xslt
             xmlGenerator = new Generator(documentBuilder);
         } else {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
@@ -277,7 +288,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if(format < FORMAT_LIMIT_WANTXML) { // determin the Document 
+        if(getFormat() < FORMAT_LIMIT_WANTXML) { // determin the Document 
             if (xmlGenerator != null && xmlGenerator.getDocument().getDocumentElement().getFirstChild() != null) {
                 if (body.length() > 0) {
                     throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body. Perhaps you want to use the attribute wants='string'?");
@@ -317,14 +328,14 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         // if it cannot be found there, then the default in mmbase.config/xslt will be used.
         File useXslt;
 
-        if (format > FORMAT_UNSET) {
-            if (xslt != null) {
+        if (format != Attribute.NULL) {
+            if (xslt != Attribute.NULL) {
                 throw new JspTagException("Cannot specify both the 'xslt' attribute and the 'format' attribute");
             }
             if (xsltSource != null) {
                 throw new JspTagException("Cannot use  'xslt' subtag and the 'format' attribute");
             }
-            switch(format) {
+            switch(getFormat()) {
             case FORMAT_XHTML:
                 helper.setValue(xslTransform(doc, "xslt/2xhtml.xslt"));
                 break;
@@ -349,24 +360,27 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 break;
             case FORMAT_DATE:
                 java.text.SimpleDateFormat dateFormat = (java.text.SimpleDateFormat) java.text.SimpleDateFormat.getDateInstance();
-                if (options == null) {
-                    options = "yyyy-MM-dd HH:mm:ss";
+                String pattern;
+                if (options == Attribute.NULL) {
+                    pattern = "yyyy-MM-dd HH:mm:ss";
+                } else {
+                    pattern = options.getString(this);
                 }
                 // iso 8601 for date/time
-                dateFormat.applyPattern(options);
+                dateFormat.applyPattern(pattern);
                 Date datum = new Date((new Long(body)).longValue() * 1000);
                 helper.setValue(dateFormat.format(datum));
                 break;
             }
         } else {
 
-            if (xslt != null) {                
+            if (xslt != Attribute.NULL) {                
                 if (xsltSource != null) {
                     throw new JspTagException("Cannot use  'xslt' subtag and the 'xslt' attribute");
                 }
-                if (log.isDebugEnabled()) log.debug("Transforming with " + xslt);
+                if (log.isDebugEnabled()) log.debug("Transforming with " + xslt.getString(this));
 
-                helper.setValue(xslTransform(doc, xslt));
+                helper.setValue(xslTransform(doc, xslt.getString(this)));
             } else {
                 if (xsltSource == null) {
                     throw new JspTagException("No 'format' attribute, no 'xslt' attribute and no 'xslt' subtag. Don't know what to do.");
@@ -448,8 +462,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         //other options
         // a=b,c=d,e=f
-        if (options != null) {
-            Iterator i = StringSplitter.split(options).iterator();
+        if (options != Attribute.NULL) {
+            Iterator i = options.getList(this).iterator();
             while (i.hasNext()) {
                 String option = (String) i.next();
                 List   o = StringSplitter.split(option, "=");

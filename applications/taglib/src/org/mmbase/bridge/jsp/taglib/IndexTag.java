@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.jsp.taglib;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -43,14 +44,17 @@ public class IndexTag extends ListReferrerTag implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
 
-    private int offset = 1; // start counting at 1 on default.
+    private Attribute offset = Attribute.NULL; 
 
     public void setOffset(String o) throws JspTagException {
-        offset = getAttributeInteger(o).intValue();
+        offset = getAttribute(o);
+    }
+    protected int getOffset() throws JspTagException {
+        return offset.getInt(this, 1); // start counting at 1 on default.
     }
 
     public int doStartTag() throws JspTagException{
-        helper.setValue(new Integer(getList().getIndex() + offset));
+        helper.setValue(new Integer(getList().getIndex() + getOffset()));
         helper.setJspvar(pageContext);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());

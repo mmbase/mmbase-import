@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -26,13 +26,13 @@ public class ImportTag extends WriteTag {
 
     private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName());
 
-    protected boolean required     = false;
-    protected int     from         = ContextTag.LOCATION_NOTSET;
+    protected Attribute required = Attribute.NULL;
+    protected Attribute from     = Attribute.NULL; 
 
-    protected String  externid      = null;
+    protected Attribute externid = Attribute.NULL;
+    private   Attribute reset    = Attribute.NULL;
 
     private   boolean found = false;
-    private   boolean reset = false;
     private   String  useId = null;
 
 
@@ -42,7 +42,7 @@ public class ImportTag extends WriteTag {
     public void release() {
         log.debug("releasing" );
         super.release();
-        externid = null;
+        externid = Attribute.NULL;
         id = null;
     }
 
@@ -51,7 +51,7 @@ public class ImportTag extends WriteTag {
      */
 
     public void setExternid(String e) throws JspTagException {
-        externid = getAttributeValue(e);
+        externid = getAttribute(e);
     }
 
     /**
@@ -59,8 +59,8 @@ public class ImportTag extends WriteTag {
      * external source, otherwise exception.
      *
      */
-    public void setRequired(boolean b) {
-        required = b;
+    public void setRequired(String b) throws JspTagException {
+        required = getAttribute(b);
     }
 
 
@@ -69,8 +69,8 @@ public class ImportTag extends WriteTag {
      * external source, otherwise exception.
      *
      */
-    public void setReset(boolean b) {
-        reset = b;
+    public void setReset(String b) throws JspTagException {
+        reset = getAttribute(b);
     }
 
     /**
@@ -78,7 +78,12 @@ public class ImportTag extends WriteTag {
      */
 
     public void setFrom(String s) throws JspTagException {
-        from = ContextTag.stringToLocation(getAttributeValue(s));
+        from = getAttribute(s);
+    }
+
+    protected int getFrom() throws JspTagException {
+        if (from == Attribute.NULL) return ContextTag.LOCATION_NOTSET;
+        return ContextTag.stringToLocation(from.getString(this));
     }
 
     public int doStartTag() throws JspTagException {
@@ -86,26 +91,26 @@ public class ImportTag extends WriteTag {
         log.trace("dostarttag of import");
         if (getId() == null) {
             log.trace("No id was given, using externid ");
-            useId = externid;
+            useId = externid.getString(this);
         } else {
             useId = id;
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
-        if (reset) { // should this be more general? Also in other contextwriters?
+        if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
             if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
             getContextTag().unRegister(useId);
         }
 
-        if (externid != null) {            
-            if (log.isDebugEnabled()) log.trace("Externid was given " + externid);
-            if (from == ContextTag.LOCATION_NOTSET) {
-                found = (getContextTag().findAndRegister(externid, useId) != null);
+        if (externid != Attribute.NULL) {            
+            if (log.isDebugEnabled()) log.trace("Externid was given " + externid.getString(this));
+            if (from == Attribute.NULL) {
+                found = (getContextTag().findAndRegister(externid.getString(this), useId) != null);
             } else {
-                found = (getContextTag().findAndRegister(from, externid, useId) != null);
+                found = (getContextTag().findAndRegister(getFrom(), externid.getString(this), useId) != null);
             }
 
-            if (! found && required) {
-                throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
+            if (! found && required.getBoolean(this, false)) {
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + ContextTag.locationToString(getFrom()));
             }
             if (found) {
                 value = getObject(useId);
@@ -128,10 +133,10 @@ public class ImportTag extends WriteTag {
     }
 
     public int doEndTag() throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid);
-        if (externid != null) {
+        if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid.getString(this));
+        if (externid != Attribute.NULL) {
             if (! found ) {
-                if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
+                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found");
                 // try to find a default value in the body.
                 Object body = bodyContent != null ? bodyContent.getString() : "";
                 if (! "".equals(body)) { // hey, there is a body content!
