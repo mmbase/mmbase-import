@@ -6,7 +6,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.1 2002-04-19 19:59:25 michiel Exp $
+  @version $Id: base.xsl,v 1.2 2002-05-07 13:30:20 michiel Exp $
   --> 
   <xsl:output 
     method="xml"
@@ -20,8 +20,13 @@
 
   <xsl:param name="ew_path"></xsl:param>
   <xsl:param name="ew_context"></xsl:param>
-  <xsl:param name="ew_imgdb"><xsl:value-of select="ew_context" />/img.db?</xsl:param>
+  <xsl:param name="ew_imgdb"><xsl:value-of select="$ew_context" />/img.db?</xsl:param>
   <xsl:param name="sessionid"></xsl:param>
+
+  <xsl:variable name="listpage">list.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
+  <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
+  <xsl:variable name="popuppage">popupwizard.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
+  <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
 
   <xsl:param name="debug">false</xsl:param>
 
