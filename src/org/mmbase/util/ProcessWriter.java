@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Useful for building execution pipes.
  *
  * @author Kees Jongenburger
- * @version $Id: ProcessWriter.java,v 1.3 2001-04-13 09:25:31 pierre Exp $
+ * @version $Id: ProcessWriter.java,v 1.4 2002-01-23 20:31:00 eduard Exp $
  */
 public class ProcessWriter implements Runnable{
 
@@ -67,10 +67,11 @@ public class ProcessWriter implements Runnable{
      * Starts the piping process by creating the thread and running it.
      */
     public void start() {
-        if (runner==null) {
-            runner=new Thread(this);
-            runner.start();
-        }
+//        if (runner==null) {
+//            runner=new Thread(this);
+//            runner.start();
+//        }
+        run();
     }
 
     /**
@@ -85,15 +86,17 @@ public class ProcessWriter implements Runnable{
                 int total = 0;
                 while((size = in.read(data)) >0 ) {
                     total += size;
-                    log.debug("Total write"+ total);
+                    log.debug("wrote "+ size + " bytes (total:"+total+")");
                     printStream.write(data,0,size);
                     printStream.flush();
                 }
                 printStream.close();
-            } catch (Exception e) {
-                log.error("Write exception "+e.getMessage());
+            } catch (IOException e) {
+                log.error("failed retieving information with reason: '" + e.getMessage() + "'");
+                log.error(Logging.stackTrace(e));
             }
-        } else {
+        } 
+        else {
             if (in == null ) {
                 log.warn("Inputstream is null");
             }
