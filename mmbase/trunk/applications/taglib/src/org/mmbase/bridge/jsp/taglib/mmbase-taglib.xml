@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.213 2003-11-10 09:40:35 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.214 2003-11-14 13:11:41 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2852,6 +2852,14 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 					'multipart' is probably a clearer description.
 				</info>
 			</possiblevalue>
+			<examplevalue>
+				<value>parameters,session</value>
+				<info>
+          You can also specify a list of locations. This one means: If an attribute cannot be found
+          in the parameters, try it in the session.
+				</info>
+        <since>MMBase-1.7</since>
+			</examplevalue>
 		</attribute>
 		<attribute>
 			<name>jspvar</name>
@@ -4403,13 +4411,19 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				If this attribute is set the complete body-result is piped through this.
+				If this attribute is set the complete body-result is piped through this. If you specified
+        'type', then a default postprocessor might be defined.
 			</info>
 			<possiblevalue>
 				<value>reducespace</value>
 				<info>
-					Replaces groups of one and more newlines by one new line, and one or more space by one
-					space. This spares bandwidth and makes the result better readable.
+          <p>
+            Replaces groups of one and more newlines by one new line, and one or more space by one
+            space. This spares bandwidth and makes the result better readable.
+          </p>
+          <p>
+            This is default for most XML-like content types.
+          </p>
 				</info>
 			</possiblevalue>
 			<possiblevalue>
@@ -4428,8 +4442,10 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				The default value of the escape attribute of all writer tags in the body. The values are
-				defined in taglibcontent.xml.
+        <p>
+          The default value of the escape attribute of all writer tags in the body. The values are
+          defined in taglibcontent.xml. Reasonable defaults apply if you explicitely speficy a type.
+        </p>
 			</info>
 			<possiblevalue>
 				<value>text/html</value>

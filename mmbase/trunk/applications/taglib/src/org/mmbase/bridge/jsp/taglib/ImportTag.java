@@ -15,13 +15,15 @@ import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import java.util.Iterator;
+
 /**
  * The importtag puts things in the context. It can find them from the
  * environment or from its body.
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.38 2003-11-14 12:14:41 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.39 2003-11-14 13:11:42 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -71,10 +73,6 @@ public class ImportTag extends ContextReferrerTag {
         from = getAttribute(s);
     }
 
-    protected int getFrom() throws JspTagException {
-        if (from == Attribute.NULL) return ContextContainer.LOCATION_NOTSET;
-        return ContextContainer.stringToLocation(from.getString(this));
-    }
 
     public int doStartTag() throws JspTagException {
         Object value = null;
@@ -95,14 +93,22 @@ public class ImportTag extends ContextReferrerTag {
             if (log.isDebugEnabled()) { 
                 log.trace("Externid was given " + externid.getString(this));
             }
-            if (from == Attribute.NULL) {
+            if (from.getString(this).equals("")) {
                 found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId, ! res) != null);
             } else {
-                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId, !res) != null);
+                Iterator froms = from.getList(this).iterator();
+                ContextContainer cc = getContextProvider().getContextContainer();
+                while (froms.hasNext() && ! found) {
+                    int from = ContextContainer.stringToLocation((String) froms.next());
+                    found = (cc.findAndRegister(pageContext, from, externid.getString(this), useId, !res) != null);
+                    if (!found && froms.hasNext()) {
+                        cc.unRegister(useId);                        
+                    }
+                }
             }
 
             if (! found && required.getBoolean(this, false)) {
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + ContextContainer.locationToString(getFrom()));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + from.getString(this));
             }
             if (found) {
                 value = getObject(useId);
