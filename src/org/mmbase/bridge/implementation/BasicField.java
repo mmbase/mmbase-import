@@ -17,7 +17,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.8 2002-07-24 10:59:47 pierre Exp $
+ * @version $Id: BasicField.java,v 1.9 2002-07-24 11:15:13 pierre Exp $
  */
 public class BasicField implements Field {
 
@@ -61,7 +61,11 @@ public class BasicField implements Field {
         return field.getDBNotNull();
     }
     
-   /**
+    public boolean isUnique() {
+        return field.isKey();
+    }
+
+    /**
     * Compares two fields, and returns true if they are equal.
     * @param o the object to compare it with
     */
