@@ -400,7 +400,8 @@ public class MMObjectBuilder extends MMTable {
 		if (where.indexOf("MMNODE")!=-1) {
 			where=convertMMNode2SQL(where);
 		} else {
-			where=QueryConvertor.altaVista2SQL(where);
+			//where=QueryConvertor.altaVista2SQL(where);
+			where=QueryConvertor.altaVista2SQL(where,database);
 		}
 		String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where;
 		return(basicSearch(query));
@@ -454,7 +455,8 @@ public class MMObjectBuilder extends MMTable {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where));
+		//	ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where));
+			ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database));
 			Vector results=new Vector();
 			Integer number;
 			String tmp;
@@ -521,7 +523,8 @@ public class MMObjectBuilder extends MMTable {
 		} else if (where.indexOf("MMNODE")!=-1) {
 			where=convertMMNode2SQL(where);
 		} else {
-			where=QueryConvertor.altaVista2SQL(where);
+			//where=QueryConvertor.altaVista2SQL(where);
+			where=QueryConvertor.altaVista2SQL(where,database);
 		}
 		String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted;
 		return(basicSearch(query));
@@ -534,7 +537,8 @@ public class MMObjectBuilder extends MMTable {
 	public Vector searchVectorIn(String where,String sorted,String in) {
 		// do the query on the database
 		if (in!=null && in.equals("")) return(new Vector());
-		String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted;
+		//String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted;
+		String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+") ORDER BY "+sorted;
 		return(basicSearch(query));
 	}
 
@@ -544,7 +548,8 @@ public class MMObjectBuilder extends MMTable {
 	public Vector searchVectorIn(String where,String in) {
 		// do the query on the database
 		if (in==null || in.equals("")) return(new Vector());
-		String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+")";
+		//String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+")";
+		String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+")";
 		return(basicSearch(query));
 	}
 
@@ -559,7 +564,8 @@ public class MMObjectBuilder extends MMTable {
 		} else if (where.indexOf("MMNODE")!=-1) {
 			where=convertMMNode2SQL(where);
 		} else {
-			where=QueryConvertor.altaVista2SQL(where);
+			//where=QueryConvertor.altaVista2SQL(where);
+			where=QueryConvertor.altaVista2SQL(where,database);
 		}
 		if (direction) {	
 			String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted+" ASC";
@@ -577,10 +583,12 @@ public class MMObjectBuilder extends MMTable {
 		// do the query on the database
 		if (in==null || in.equals("")) return(new Vector());
 		if (direction) {	
-			String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted+" ASC";
+			//String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted+" ASC";
+			String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+") ORDER BY "+sorted+" ASC";
 			return(basicSearch(query));
 		} else {
-			String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted+" DESC";
+			//String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted+" DESC";
+			String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+") ORDER BY "+sorted+" DESC";
 			return(basicSearch(query));
 		}
 	}
