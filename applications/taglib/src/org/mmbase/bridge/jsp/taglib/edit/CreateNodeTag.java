@@ -20,7 +20,7 @@ import javax.servlet.jsp.tagext.BodyContent;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 
-import org.mmbase.bridge.jsp.taglib.AbstractNodeProviderTag;
+import org.mmbase.bridge.jsp.taglib.NodeTag;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Michiel Meeuwissen
 */
-public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
+public class CreateNodeTag extends NodeTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class.getName());
 
@@ -53,25 +53,9 @@ public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
             throw new JspTagException("Could not create node of type " + nodemanager);
         }
         setNodeVar(node);
+        setModified(); 
         log.debug("created node " + node.getValue("gui()"));
         return EVAL_BODY_TAG;
     }
 
-    public void doInitBody() throws JspTagException {
-        fillVars();
-    }
-
-
-    /**
-    * this method writes the content of the body back to the jsp page
-    **/
-    public int doAfterBody() throws JspTagException {
-        getNodeVar().commit();
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
-        }
-        return SKIP_BODY;
-    }
 }
