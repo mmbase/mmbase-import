@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.40 2003-10-09 14:32:27 pierre Exp $
+ * @version $Id: Dove.java,v 1.41 2003-11-19 13:05:35 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -784,6 +784,9 @@ public class Dove extends AbstractDove {
                         if (! isOriginal) {
                             values.put("_status",(String)node.getAttribute(ELM_STATUS));
                         }
+
+                        values.put("_context",(String)node.getAttribute(ELM_CONTEXT));
+
                         if (isRelation) {
                             String role=node.getAttribute(ELM_ROLE);
                             if (role!=null) values.put("_role",role);
@@ -968,11 +971,14 @@ public class Dove extends AbstractDove {
         try {
             NodeManager nm = cloud.getNodeManager(type);
             org.mmbase.bridge.Node newnode = nm.createNode();
-
             Element objectelement = doc.createElement(OBJECT);
             objectelement.setAttribute(ELM_TYPE, type);
             fillFields(alias,newnode,objectelement, values);
             try {
+                String context = (String) values.get("_context");
+                if (context!=null && !context.equals("")) {
+                  newnode.setContext(context);
+                }
                 newnode.commit();
                 int number = newnode.getNumber();
                 if (log.isServiceEnabled()) log.service("Created new node " + number);
@@ -1026,6 +1032,10 @@ public class Dove extends AbstractDove {
             relationelement.setAttribute(ELM_ROLE,role);
             fillFields(alias,newnode,relationelement,values);
             try {
+                String context = (String) values.get("_context");
+                if (context!=null && !context.equals("")) {
+                  newnode.setContext(context);
+                }
                 newnode.commit();
                 int number = newnode.getNumber();
                 if (log.isServiceEnabled()) log.service("Created new relation " + number);
@@ -1043,7 +1053,7 @@ public class Dove extends AbstractDove {
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Error. Does the cloud does support role :" + role + "?:" + e.getMessage(), out);
+            Element err=addContentElement(ERROR,"Error. Does the cloud support role :" + role + "?:" + e.getMessage(), out);
             err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;

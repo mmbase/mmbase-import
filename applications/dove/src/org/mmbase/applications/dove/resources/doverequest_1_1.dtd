@@ -53,6 +53,7 @@
 <!ELEMENT object ((field|relation)*)>
 <!ATTLIST object number NMTOKEN #IMPLIED >
 <!ATTLIST object status %putstatus #IMPLIED>
+<!ATTLIST object context #IMPLIED>
 
 <!ELEMENT relation ((field|object)*)>
 <!ATTLIST relation role NMTOKEN #IMPLIED >
@@ -60,6 +61,7 @@
 <!ATTLIST relation createdir %createdir #IMPLIED >
 <!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
 <!ATTLIST relation status %putstatus #IMPLIED>
+<!ATTLIST relation context #IMPLIED>
 
 <!ELEMENT field (#PCDATA)>
 <!ATTLIST field name NMTOKEN #REQUIRED >
