@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.14 $ $Date: 2000-06-20 09:40:18 $
+ * @version $Revision: 1.15 $ $Date: 2000-06-22 15:29:19 $
  */
 public abstract class Module {
 
@@ -360,7 +360,7 @@ public abstract class Module {
 				System.out.println("xerces.jar installed moving to XML mode");	
 				modules=ModuleXML.loadModulesFromDisk();
 			} catch(Exception e) {
-				System.out.println("xerces.jar ERROR not found turning to properties mode");
+				System.out.println("***** xerces.jar ERROR not found, put xerces.jar in your classpath (see install guide how to install xerces) ******");
 				modules=loadModulesFromDisk();
 			}
 
