@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.28 2003-03-17 08:47:03 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.29 2003-04-08 14:35:42 pierre Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -184,16 +184,5 @@ public class BasicRelation extends BasicNode implements Relation {
             dnum = getNode().getIntValue("dnumber");
         }
     }
-
-    /**
-     * Compares two relations, and returns true if they are equal.
-     * This effectively means that both objects are relations, and they both refer to the same objectnode
-     * @param o the object to compare it with
-     */
-    public boolean equals(Object o) {
-        return (o instanceof Relation) &&
-              getNumber()==((Node)o).getNumber() &&
-              cloud.equals(((Node)o).getCloud());
-     }
 
 }

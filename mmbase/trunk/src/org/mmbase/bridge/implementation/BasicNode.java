@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.90 2003-04-02 19:07:29 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.91 2003-04-08 14:35:41 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -95,7 +95,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     BasicNode(MMObjectNode node, NodeManager nodeManager) {
         this.nodeManager=nodeManager;
-        noderef=node;
+        setNode(node);
         init();
     }
 
@@ -107,7 +107,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     BasicNode(MMObjectNode node, Cloud cloud) {
         this.cloud=(BasicCloud)cloud;
-        noderef=node;
+        setNode(node);
         init();
     }
 
@@ -119,7 +119,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     BasicNode(MMObjectNode node, Cloud cloud, int id) {
         this.cloud=(BasicCloud)cloud;
-        noderef = node;
+        setNode(node);
         temporaryNodeId = id;
         isnew = true;
         init();
@@ -138,8 +138,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager == null) {
             // determine nodemanager, unless the node is the 'typedef' node
             // (needs to point towards itself)
-            if (noderef.getBuilder().oType != noderef.getNumber()) {
-                nodeManager = cloud.getNodeManager(noderef.getBuilder().getTableName());
+            if (getNode().getBuilder().oType != getNode().getNumber()) {
+                nodeManager = cloud.getNodeManager(getNode().getBuilder().getTableName());
             } else {
                 nodeManager = (NodeManager) this;
             }
@@ -148,9 +148,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
-        if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(noderef))) {
+        if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(getNode()))) {
             if (temporaryNodeId == -1) {
-                temporaryNodeId = noderef.getNumber();
+                temporaryNodeId = getNode().getNumber();
             }
         }
     }
@@ -184,19 +184,44 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public int getByteSize(SizeOf sizeof) {
-        return sizeof.sizeof(noderef);
+        return sizeof.sizeof(getNode());
     }
 
     /**
-     * @javadoc
+     * Obtains a reference to the underlying MMObjectNode.
+     * If the underlying node was deleted, this returns a virtual node with
+     * no info except the (original) node number.
+     * @return the underlying MMObjectNode
+     * @throws NotFoundException if no node was specified. This generally means the
      */
-    protected MMObjectNode getNode() {
-        if (noderef==null) {
-            String message = "Node is invalidated or removed.";
-            log.error(message);
-            throw new BridgeException(message);
-        }
+    protected MMObjectNode getNode() throws NotFoundException {
         return noderef;
+    }
+
+    /**
+     * Invalidates the reference to the underlying MMObjectNode,
+     * replacing it with a virtual node that only inherits the number field.
+     * @since MMBase-1.6.4
+     */
+    protected void invalidateNode() {
+       VirtualNode n = new VirtualNode(noderef.getBuilder());
+       n.setValue("number",noderef.getNumber());
+       noderef=n;
+    }
+
+    /**
+     * Sets the reference to the underlying MMObjectNode.
+     * @param n the node to set a reference to.
+     * @throws IllegalArgumentException is n is null
+     * @since MMBase-1.6.4
+     */
+    protected void setNode(MMObjectNode n) {
+        if (n==null) {
+            String message = "Passed Node is null";
+            log.error(message);
+            throw new IllegalArgumentException(message);
+        }
+        noderef=n;
     }
 
     public Cloud getCloud() {
@@ -245,7 +270,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             throw new BridgeException("Cannot make edits to a virtual node.");
         }
 
-        int realnumber=noderef.getNumber();
+        int realnumber=getNode().getNumber();
         if (realnumber!=-1) {
             if (action==ACTION_DELETE) {
                 cloud.verify(Operation.DELETE,realnumber);
@@ -284,7 +309,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     // store new temporary node in transaction
                     ((BasicTransaction)cloud).add(currentObjectContext);
                 }
-                noderef = BasicCloudContext.tmpObjectManager.getNode(account, ""+id);
+                setNode(BasicCloudContext.tmpObjectManager.getNode(account, ""+id));
                 //  check nodetype afterwards?
                 temporaryNodeId=id;
             }
@@ -359,16 +384,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public Object getValue(String attribute) {
-        return noderef.getValue(attribute);
+        return getNode().getValue(attribute);
     }
 
     public boolean getBooleanValue(String attribute) {
-        return noderef.getBooleanValue(attribute);
+        return getNode().getBooleanValue(attribute);
     }
 
     public Node getNodeValue(String attribute) {
         if (attribute==null || attribute.equals("number")) return this;
-        MMObjectNode noderes=noderef.getNodeValue(attribute);
+        MMObjectNode noderes=getNode().getNodeValue(attribute);
         if (noderes!=null) {
             if (noderes.getBuilder() instanceof InsRel) {
                 return new BasicRelation(noderes,cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
@@ -381,27 +406,27 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public int getIntValue(String attribute) {
-        return noderef.getIntValue(attribute);
+        return getNode().getIntValue(attribute);
     }
 
     public float getFloatValue(String attribute) {
-        return noderef.getFloatValue(attribute);
+        return getNode().getFloatValue(attribute);
     }
 
     public long getLongValue(String attribute) {
-        return noderef.getLongValue(attribute);
+        return getNode().getLongValue(attribute);
     }
 
     public double getDoubleValue(String attribute) {
-        return noderef.getDoubleValue(attribute);
+        return getNode().getDoubleValue(attribute);
     }
 
     public byte[] getByteValue(String attribute) {
-        return noderef.getByteValue(attribute);
+        return getNode().getByteValue(attribute);
     }
 
     public String getStringValue(String attribute) {
-        return noderef.getStringValue(attribute);
+        return getNode().getStringValue(attribute);
     }
 
     public FieldValue getFieldValue(String fieldName) throws NotFoundException {
@@ -413,11 +438,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public FieldValue getFunctionValue(String functionName, List arguments) {
-        return new BasicFunctionValue(this, noderef, noderef.getFunctionValue(functionName, arguments));
+        return new BasicFunctionValue(this, getNode(), getNode().getFunctionValue(functionName, arguments));
     }
 
     public Document getXMLValue(String fieldName) {
-        return noderef.getXMLValue(fieldName);
+        return getNode().getXMLValue(fieldName);
     }
 
 
@@ -429,7 +454,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setXMLValue(String fieldName, Document value) {
         // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(noderef.getBuilder().getField(fieldName).getDBDocType());
+        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
         setValue(fieldName, dc.convert(value, cloud));
     }
 
@@ -453,8 +478,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             temporaryNodeId = -1;
-            // invalid nodereference: fix!
-            noderef=mmb.getTypeDef().getNode(noderef.getNumber());
+            // invalid nodereference, so retrieve node anew
+            setNode(mmb.getTypeDef().getNode(getNode().getNumber()));
         }
         changed = false;
     }
@@ -469,10 +494,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             if (isnew) {
                 isnew=false;
-                noderef=null;
+                invalidateNode();
             } else {
                 // update the node, reset fields etc...
-                noderef=mmb.getTypeDef().getNode(noderef.getNumber());
+                setNode(mmb.getTypeDef().getNode(noderef.getNumber()));
             }
             temporaryNodeId=-1;
         }
@@ -528,16 +553,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         // the node does not exist anymore, so invalidate all references.
         temporaryNodeId=-1;
-        noderef=null;
+        invalidateNode();
     }
 
     public String toString() {
-        if (noderef == null) {
-            return "*deleted node*";
-        }
-        // return noderef.toString();
-
-        Object value = noderef.getFunctionValue("gui", null);
+        // return getNode().toString();
+        Object value = getNode().getFunctionValue("gui", null);
         if (value==null) {
             return "*unknown*";
         } else {
@@ -850,11 +871,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public boolean mayWrite() {
-        return cloud.check(Operation.WRITE, noderef.getNumber());
+        return cloud.check(Operation.WRITE, getNode().getNumber());
     }
 
     public boolean mayDelete() {
-        return cloud.check(Operation.DELETE, noderef.getNumber());
+        return cloud.check(Operation.DELETE, getNode().getNumber());
     }
 
     public boolean mayLink() {
@@ -864,7 +885,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public boolean mayChangeContext() {
-        return cloud.check(Operation.CHANGECONTEXT, noderef.getNumber());
+        return cloud.check(Operation.CHANGECONTEXT, getNode().getNumber());
     }
 
     /**
@@ -929,7 +950,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.6.2
      */
     public int hashCode() {
-        return noderef.hashCode();
+        return getNode().hashCode();
     }
 
     /**
