@@ -209,6 +209,16 @@ Editwizard bug fixes:
 ---------------------
 
 [1.6.4]
+- #6132 javascript validation makes editors a bit sluggish in browsers   	
+- #6129 multiple 'startwizard' commands fail  	
+- #6123 If title is emplty, then IE shows empty page.  	
+- #6122 command search attribute 'fields' does not work.  	
+- #6100 cannot properly override prompts.xsl  	
+- #6097 debug page does not show popupwizards  	
+- #6096 Editwizards do not recognize CDATA sections  	
+- #6093 It would be nice if the 'fields' parameter to list was not required.  	
+- #6089 In [action type=delete] the language setting doesn't work  	
+- #6081 No authority check on startwizard to related object 
 - #6080 Debug page doesn't work when sessionkey used 
 - #6072 Cannot list number in wizard list 
 - #6041 Cannot search for number in editwizard relation search
@@ -290,6 +300,7 @@ Taglib Bug Fixes:
 ----------------
 
 [1.6.4]
+- #6131 Enumhandler does not order optionlists 
 - #6028 Cannot specify 'either' as searchdir value in mm:list tag
 - #6004 mm:related does no behave as expected 
 - #6002 country attribute does not work for mm:locale 
