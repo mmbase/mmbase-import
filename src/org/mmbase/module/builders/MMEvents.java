@@ -146,11 +146,13 @@ public class MMEvents extends MMObjectBuilder {
 			} catch (InterruptedException f) {
 				log.error("interrupted while sleeping");
 			}
-			wnode.commit();	
+			super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
 			Enumeration g=also.elements();
 			while (g.hasMoreElements()) {
 				wnode=(MMObjectNode)g.nextElement();
-				if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) wnode.commit();
+				if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) {
+					super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
+				}
 			}
 		} else {	
 			try {
