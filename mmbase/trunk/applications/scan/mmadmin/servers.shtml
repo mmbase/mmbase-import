@@ -40,6 +40,10 @@
 	</TD>
 	<TD BGCOLOR="44BDAD">
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>uptime</B>
+	</TD>
+	<TD BGCOLOR="44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
 	<B>Host</B>
 	</TD>
 	<TD BGCOLOR="44BDAD">
@@ -47,16 +51,12 @@
 	<B>OS</B>
 	</TD>
 	<TD BGCOLOR="44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>JDK</B>
-	</TD>
-	<TD BGCOLOR="44BDAD">
 	&nbsp;
 	&nbsp;
 	&nbsp;
 	</TD>
 </TR>
-<LIST OBJECTS TYPE="mmservers" FIELDS="name,showstate,showatime,host,os,jdk" WHERE="">
+<LIST OBJECTS TYPE="mmservers" FIELDS="name,showstate,showatime,host,os,jdk,uptime" WHERE="">
 <TR>
 	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 	<TD BGCOLOR="#00425A">
@@ -69,13 +69,13 @@
 	$ITEM3
 	</TD>
 	<TD BGCOLOR="#00425A">
+	$ITEM7
+	</TD>
+	<TD BGCOLOR="#00425A">
 	$ITEM4
 	</TD>
 	<TD BGCOLOR="#00425A">
 	$ITEM5
-	</TD>
-	<TD BGCOLOR="#00425A">
-	$ITEM6
 	</TD>
 	<TD BGCOLOR="#44BDAD" WIDTH="14">
 		<A HREF="servers_actions.shtml?$ITEM1"><IMG SRC="beeld/pijl.gif" BORDER="0" ALIGN="right"></A>
