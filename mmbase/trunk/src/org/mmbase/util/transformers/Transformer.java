@@ -20,5 +20,5 @@ package org.mmbase.util.transformers;
 
 public interface Transformer {
 
-
+    String toString();
 }
