@@ -27,13 +27,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.38 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: DayMarkers.java,v 1.39 2005-03-07 08:43:25 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
     public static final String FIELD_DAYCOUNT = "daycount";
     public static final String FIELD_MARK     = "mark";
-    public static final long SECONDS_IN_A_DAY     = 24*3600*1000;
+    public static final long SECONDS_IN_A_DAY     = 24*3600;
     public static final long MILLISECONDS_IN_A_DAY     = SECONDS_IN_A_DAY*1000;
 
     private static final Logger log = Logging.getLoggerInstance(DayMarkers.class);
@@ -82,9 +82,8 @@ public class DayMarkers extends MMObjectBuilder {
                 MMObjectNode mark = (MMObjectNode) resultList.get(0);
                 smallestDay  = mark.getIntValue(FIELD_DAYCOUNT);
             }
-
-            if (smallestDay == 0) {
-                smallestDay = currentDay();
+            if (smallestDay < day) {
+                smallestDay = day; // currentDay();
                 createMarker();
             }
         } catch (SearchQueryException e) {
@@ -116,12 +115,13 @@ public class DayMarkers extends MMObjectBuilder {
         try {
             List resultList = getNodes(query);
             if (resultList.size() == 0) {
-                // if not, retrieve the mark (highest node numebr) for today
-                query = new NodeSearchQuery(this);
+                // if not, retrieve the mark (highest node number) for today
+                MMObjectBuilder root = mmb.getRootBuilder();
+                query = new NodeSearchQuery(root);
                 ModifiableQuery modifiedQuery = new ModifiableQuery(query);
                 Step step = (Step) query.getSteps().get(0);
                 AggregatedField field = new BasicAggregatedField(
-                    step, getField(FIELD_NUMBER), AggregatedField.AGGREGATION_TYPE_MAX);
+                    step, root.getField(FIELD_NUMBER), AggregatedField.AGGREGATION_TYPE_MAX);
                 List newFields = new ArrayList(1);
                 newFields.add(field);
                 modifiedQuery.setFields(newFields);
@@ -147,6 +147,7 @@ public class DayMarkers extends MMObjectBuilder {
         int newday;
         newday=currentDay();
         //debug("Days "+newday+" current "+day);
+        log.info("PROBE "+newday+ "/"+day);
         if (newday>day) {
             day = newday;
             createMarker();
