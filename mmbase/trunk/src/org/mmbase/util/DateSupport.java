@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util;
 
+import java.text.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -34,13 +36,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.14 2003-07-01 09:56:29 keesj Exp $
- * @deprecated java.util is powerful enough. Most used functions from Date are deprecated.
+ * @version $Id: DateSupport.java,v 1.15 2003-10-30 20:14:08 keesj Exp $
  */
 public class DateSupport {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(DateSupport.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DateSupport.class);
 
     /**
      * The offset for date conversions for the current zone, in seconds
@@ -50,19 +51,15 @@ public class DateSupport {
      * Whether to sue the offset.
      * Set to <code>true</code> when initialization of this class succeeds.
      */
-    static boolean dooffset =true;
+    static boolean dooffset = true;
 
-     /**
-     * Return the number of days in the month in a specified year.
-     * Leap years have to be taken into account
-     *
-     * @param year The year
-     * @param month The month
-     * @return The numbers of days in the month of that year
-     * @see DateSupport#secondInYear
-     * @see DateSupport#dayInYear
-     * @see DateSupport#weekInYear
-     */
+    /**
+    * Return the number of days in the month in a specified year.
+    * Leap years have to be taken into account
+    *
+    * @param year The year valid values 0..100 where 0 is y2k 2000  untill 89 => 2089 and 90 being the year 1990   
+    * @param month The month where 0 is januari
+    */
     static public int daysInMonth(int year, int month) {
         int months[] = { 31, 28, 31, 30, 31, 30, 30, 31, 30, 31, 30, 31 };
         int days = months[month];
@@ -87,10 +84,8 @@ public class DateSupport {
      */
     static public int secondInYear(Date d) {
         Calendar c = Calendar.getInstance();
-        c.set(d.getYear(), 0, 0);
-
-        Date b = c.getTime();
-        return (int) ((d.getTime() - b.getTime()) / 1000);
+        c.setTime(d);
+        return c.get(Calendar.DAY_OF_YEAR) * (60 * 60 * 24) + c.get(Calendar.HOUR_OF_DAY) * (24 * 60) + c.get(Calendar.SECOND);
     }
 
     /**
@@ -103,7 +98,9 @@ public class DateSupport {
      * @see DateSupport#weekInYear
      */
     static public int dayInYear(Date d) {
-        return (int) (secondInYear(d) / (3600 * 24));
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        return c.get(Calendar.DAY_OF_YEAR);
     }
 
     /**
@@ -116,7 +113,9 @@ public class DateSupport {
      * @see DateSupport#dayInYear
      */
     static public int weekInYear(Date d) {
-        return (dayInYear(d) / 7) + 1;
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        return c.get(Calendar.WEEK_OF_YEAR);
     }
 
     /**
@@ -129,8 +128,9 @@ public class DateSupport {
     static public long milliDate(int year, int week) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, 0, 0);
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
         Date d = calendar.getTime();
-        return d.getTime() + (((long) (week - 1)) * 7 * 24 * 3600 * 1000);
+        return d.getTime();
     }
 
     /**
@@ -158,11 +158,8 @@ public class DateSupport {
      * @see DateSupport#parsedbmdate
      */
     public static String makedbmdate(Date da) {
-        int m, d, y;
-        m = da.getMonth() + 1;
-        d = da.getDate();
-        y = da.getYear() + 1900;
-        return "" + y + "-" + (m < 10 ? "0" + m : "" + m) + "-" + (d < 10 ? "0" + d : "" + d);
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        return f.format(da);
     }
 
     /**
@@ -173,19 +170,18 @@ public class DateSupport {
      * @see DateSupport#makedbmdate
      */
     public static Date parsedbmdate(String wh) {
-        Date thedate;
-        int y = 0, m = 0, d = 0;
-        StringTokenizer tok = new StringTokenizer(wh, "- /");
-        // The date is in the form yyyy-mm-dd
-        try {
-            y = Integer.parseInt(tok.nextToken()) - 1900;
-            m = Integer.parseInt(tok.nextToken()) - 1;
-            d = Integer.parseInt(tok.nextToken());
-            thedate = new Date(y, m, d);
-        } catch (Exception e) {
-            thedate = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+        //for bw comp
+        if (wh.indexOf('/') != -1) {
+            f = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         }
-        return thedate;
+        try {
+            return f.parse(wh);
+        } catch (ParseException e) {
+            //idem for bw comp
+            return new Date();
+        }
     }
 
     /**
@@ -210,7 +206,7 @@ public class DateSupport {
      * @see DateSupport#parsedatetime
      */
     public static int parsedate(String sDate) {
-        SimpleDateFormat df = (SimpleDateFormat)DateFormat.getDateTimeInstance();
+        SimpleDateFormat df = (SimpleDateFormat) DateFormat.getDateTimeInstance();
         TimeZone tz;
         df.applyLocalizedPattern("yyyyMMdd");
 
@@ -280,21 +276,9 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date((long)val * 1000);
-        String result;
-        int h = v.getHours();
-        if (h < 10) {
-            result = "0" + h;
-        } else {
-            result = "" + h;
-        }
-        int m = v.getMinutes();
-        if (m < 10) {
-            result += ":0" + m;
-        } else {
-            result += ":" + m;
-        }
-        return result;
+        Date v = new Date((long) val * 1000);
+        SimpleDateFormat f = new SimpleDateFormat("hh:mm");
+        return f.format(v);
     }
 
     /**
@@ -320,29 +304,10 @@ public class DateSupport {
             if (dooffset) {
                 val += offset;
             }
-            v = new Date((long)val * 1000);
+            v = new Date((long) val * 1000);
         }
-
-        String result;
-        int h = v.getHours();
-        if (h < 10) {
-            result = "0" + h;
-        } else {
-            result = "" + h;
-        }
-        int m = v.getMinutes();
-        if (m < 10) {
-            result += ":0" + m;
-        } else {
-            result += ":" + m;
-        }
-        int s = v.getSeconds();
-        if (s < 10) {
-            result += ":0" + s;
-        } else {
-            result += ":" + s;
-        }
-        return result;
+        SimpleDateFormat f = new SimpleDateFormat("hh:mm:ss");
+        return f.format(v);
     }
 
     /**
@@ -360,30 +325,7 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static String getTimeSecLen(int val) {
-        String result;
-        int h = (val / 3600);
-        if (h < 10) {
-            result = "0" + h;
-        } else {
-            result = "" + h;
-        }
-        val -= (h * 3600);
-
-        int m = (val / 60);
-        if (m < 10) {
-            result += ":0" + m;
-        } else {
-            result += ":" + m;
-        }
-        val -= (m * 60);
-
-        int s = val;
-        if (s < 10) {
-            result += ":0" + s;
-        } else {
-            result += ":" + s;
-        }
-        return result;
+        return getTimeSec(val);
     }
 
     /**
@@ -404,16 +346,10 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date((long)val * 1000);
-        String result;
-        int d = v.getDate();
-        if (d < 10) {
-            result = "0" + d;
-        } else {
-            result = "" + d;
+        Date v = new Date((long) val * 1000);
+        SimpleDateFormat f = new SimpleDateFormat("dd");
+        return f.format(v)
         }
-        return result;
-    }
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the number of the month
@@ -433,17 +369,10 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date((long)val * 1000);
-        String result;
-        int m = v.getMonth();
-        m++;
-        if (m < 10) {
-            result = "0" + m;
-        } else {
-            result = "" + m;
+        Date v = new Date((long) val * 1000);
+        SimpleDateFormat f = new SimpleDateFormat("MM");
+        return f.format(v)
         }
-        return result;
-    }
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the year
@@ -464,7 +393,7 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date(((long)val) * 1000);
+        Date v = new Date(((long) val) * 1000);
         int m = v.getYear();
         return "" + (m + 1900);
     }
@@ -487,7 +416,7 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date((long)val * 1000);
+        Date v = new Date((long) val * 1000);
         int m = v.getMonth();
         return m;
     }
@@ -511,7 +440,7 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date((long)val * 1000);
+        Date v = new Date((long) val * 1000);
         int m = v.getDay();
         return m;
     }
@@ -535,7 +464,7 @@ public class DateSupport {
         if (dooffset) {
             val += offset;
         }
-        Date v = new Date((long)val * 1000);
+        Date v = new Date((long) val * 1000);
         int m = v.getDate();
         return m;
     }
@@ -561,14 +490,14 @@ public class DateSupport {
             if (tz1.inDaylightTime(d)) {
                 off1 += (3600 * 1000); // Activate before sunday morning
             }
-            
+
             if (tz2.inDaylightTime(d)) {
                 off2 += (3600 * 1000);
             }
             off = off1 - off2;
             return off;
         } else {
-            return (long)offset * 1000;
+            return (long) offset * 1000;
         }
     }
 
@@ -772,7 +701,7 @@ public class DateSupport {
      * @return String with a date
      */
     private static String dumpdate(int d) {
-        Date dd = new Date((long)d * 1000);
+        Date dd = new Date((long) d * 1000);
         StringBuffer b = new StringBuffer();
 
         b.append(" Year " + dd.getYear());
