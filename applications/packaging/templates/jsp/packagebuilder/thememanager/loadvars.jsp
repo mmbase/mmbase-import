@@ -46,6 +46,7 @@
   <mm:import id="image_arrowleft">images/arrow-left.gif</mm:import>
   <mm:import id="image_warning">images/warning.png</mm:import>
   <mm:import id="image_error">images/error.png</mm:import>
+  <mm:import id="image_help">images/help.gif</mm:import>
 </mm:compare>
 
 </mm:present>
@@ -57,4 +58,5 @@
   <mm:import id="image_arrowleft">images/arrow-left.gif</mm:import>
   <mm:import id="image_warning">images/warning.png</mm:import>
   <mm:import id="image_error">images/error.png</mm:import>
+  <mm:import id="image_help">images/help.gif</mm:import>
 </mm:present>
