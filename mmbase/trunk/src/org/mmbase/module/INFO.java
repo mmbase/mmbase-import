@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.17 $ $Date: 2000-05-29 15:45:53 $
+ * @$Revision: 1.18 $ $Date: 2000-05-30 12:05:07 $
  */
 public class INFO extends ProcessorModule {
 
@@ -162,6 +162,8 @@ public class INFO extends ProcessorModule {
 				return("WIN95");
 			} else if (tmp.indexOf("win98")!=-1) {
 				return("Windows 98");
+			} else if (tmp.indexOf("windows nt 5.0")!=-1) {
+				return("Windows 2000");
 			} else if (tmp.indexOf("winnt")!=-1 || tmp.indexOf("windows nt")!=-1) {
 				return("Windows NT");
 			} else if (tmp.indexOf("win")!=-1) { 
