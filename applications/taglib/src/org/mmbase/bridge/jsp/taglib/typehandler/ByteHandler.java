@@ -12,10 +12,11 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
 
+import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
@@ -28,7 +29,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.13 2004-07-12 13:37:50 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.14 2004-09-30 08:36:23 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -62,15 +63,58 @@ public class ByteHandler extends AbstractTypeHandler {
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {        
         String fieldName = field.getName();
-        byte [] bytes  = tag.getContextTag().getBytes(prefix(fieldName));
+        ContextTag ct = tag.getContextTag();        
+        ContextContainer cc = tag.getContextProvider().getContextContainer();        
+        byte [] bytes  = ct.getBytes(prefix(fieldName));
+        String fileName = null;        
+
+        String fileType = null;
+
         if (bytes == null){
             throw new BridgeException("getBytes(" + prefix(fieldName) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
-        if ( bytes.length > 0) {
+        if (bytes.length > 0) {
+            Object fileNameO = cc.find(tag.getPageContext(), prefix(fieldName + "_name"));
+            if (fileNameO != null) {                
+                if (fileNameO instanceof List) {
+                    List l = (List) fileNameO;
+                    if (l.size() == 1) {
+                        fileName = "" + l.get(0);
+                    } else {
+                        fileName = "" + l;
+                    }
+                } else {
+                    fileName = "" + fileNameO;
+                }
+            }
+            Object fileTypeO = cc.find(tag.getPageContext(), prefix(fieldName + "_type"));
+            if (fileTypeO != null) {
+                if (fileTypeO instanceof List) {               
+                    List l = (List) fileTypeO;
+                    if (l.size() == 1) {
+                        fileType = "" + l.get(0);
+                    } else {
+                        fileType = "" + l;
+                    }
+                } else {
+                    fileType = "" + fileTypeO;
+                }
+                
+            }
             node.setByteValue(fieldName, bytes);
-            return true;
+            NodeManager nm = node.getNodeManager();
+            if (nm.hasField("mimetype") && (fileType != null) && (! fileType.equals(""))) {
+                node.setStringValue("mimetype", fileType);
+            }
+            if (nm.hasField("filename") && (fileName != null) && (! fileName.equals(""))) {
+                node.setStringValue("filename", fileName);
+            }
+            if (nm.hasField("size")) {
+                node.setIntValue("size", bytes.length);
+            }
         }
-        return false;
+
+        return true;
     }
     
     /**
