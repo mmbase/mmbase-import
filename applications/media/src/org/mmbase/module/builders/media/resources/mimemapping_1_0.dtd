@@ -1,0 +1,7 @@
+<!-- Author Rob Vermeulen (VPRO) -->
+<!ELEMENT mimemapping (map+)>
+<!ELEMENT map (#PCDATA)>
+<!ATTLIST map
+  format         CDATA   #REQUIRED
+  codec		 CDATA   #REQUIRED
+>
