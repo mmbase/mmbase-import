@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.21 2002-07-18 16:22:44 michiel Exp $
+  @version $Id: list.xsl,v 1.22 2002-07-19 13:17:47 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -35,22 +35,18 @@
     </body>
   </xsl:template>
 
-  <xsl:template name="superhead"><!-- The first row of the the body's table -->
+  <xsl:template name="title"><!-- The first row of the the body's table -->
     <tr>
-      <td valign="bottom" colspan="2" align="center">
-        <table width="100%" cellspacing="0" cellpadding="0" border="0">
-          <tr>
-            <td class="superhead" align="right"><nobr><xsl:value-of select="$title" /></nobr></td>
-          </tr>
-        </table>
-      </td>
+      <th colspan="2">
+        <span class="title"><nobr><xsl:value-of select="$title" /></nobr></span>
+      </th>
     </tr>
   </xsl:template>
 
   <xsl:template name="bodycontent">
     <!-- I think all elements must have a class here, then you can customize then the appearance by putting another css -->
-    <table class="list">
-      <xsl:call-template name="superhead" />
+    <table class="body">
+      <xsl:call-template name="title" />
       <tr>
         <td class="left"></td>
         <td class="listcanvas">
