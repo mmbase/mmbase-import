@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.38 2004-06-15 16:27:22 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.39 2004-06-21 16:24:03 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -282,6 +282,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");                               
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
+                    if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
                     doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)));
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + body, e);
