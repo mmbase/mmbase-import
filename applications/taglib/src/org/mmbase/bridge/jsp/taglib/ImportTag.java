@@ -166,6 +166,8 @@ public class ImportTag extends WriteTag {
         helper.setJspvar(pageContext);
         found = false; // for use next time
         useId = null;
+        bodyContent = null;
+        helper.release();
         log.debug("end of importag");
         return EVAL_PAGE;
     }
