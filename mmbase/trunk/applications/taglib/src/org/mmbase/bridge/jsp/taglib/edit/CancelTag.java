@@ -18,10 +18,6 @@ import org.mmbase.bridge.Transaction;
 **/
 
 public class CancelTag extends CommitTag {
- 
-    protected String actionName() {
-        return "cancel";
-    }
 
     protected void doAction(Transaction t) {
         t.cancel();
