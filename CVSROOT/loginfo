@@ -25,7 +25,10 @@
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
 #speeltuin /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+
 speeltuin /home/michiel/cvsmail  /home/michiel/speeltuin.log $USER %{sVv}
+
+tests /home/michiel/cvsmail  /home/michiel/tests.log $USER %{sVv}
 
 mmbase /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
