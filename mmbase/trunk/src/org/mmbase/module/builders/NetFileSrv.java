@@ -136,7 +136,7 @@ public class NetFileSrv extends MMObjectBuilder {
      * Retrieve a vwm (a 'bot') for the service/subservice combination.
      * This is achieved by following the relations of NetFileServ entries to entries in the VWMs builder.
      * Note that while, theoretically, more vwms could be related, only one (the first) is returned.
-     * @param service the service to search fro
+     * @param service the service to search for
      * @param subservice the subservice to search for
      * @return an object that implements VWMInterface if successful, a dummy object otherwise.
      *         This system is a bit odd as getAttachedBot would ideally have VwmServiceInterface as
@@ -163,5 +163,4 @@ public class NetFileSrv extends MMObjectBuilder {
         }
         return new Object(); // needed to fill a Dummy in the cache.
     }
-
 }
