@@ -3668,7 +3668,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <attribute>
       <name>time</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The time attribute specifies the time to be used, this can be
         done in multiple ways. 1) When the time attribute is not
@@ -3684,7 +3684,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <attribute>
       <name>inputformat</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The inputformat attribute should only be used when the time
         attribute contains a human readable time. The comprehensive
@@ -3707,7 +3707,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <attribute>
       <name>format</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The format attribute specifies how to display the time. If the
         format attribute is not used the time will be displayed in
@@ -3717,18 +3717,6 @@ Of course, the default behavior of getSmartPath can still be overridden.
         formatter taglib.
       </info>
     </attribute>
-    <!--  This should still be discussed.
-    <attribute>
-      <name>language</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        The language attribute enables you to display the days and
-        months in another language. If this attribute is not used the
-        default system language will be used.
-      </info>
-    </attribute>
-    -->
     <example>
       &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
     </example>
