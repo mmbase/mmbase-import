@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.3 2002-05-15 12:50:32 michiel Exp $
+    @version  $Id: index.jsp,v 1.4 2002-05-16 15:26:28 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -103,6 +103,18 @@
       Demonstrated is how to use editwizards 'libs'. These are pieces
       of XML stored in the editwizard data directory which you can
       include in you own wizards.
+     </td></tr>
+    <tr><td>
+    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
+		       <mm:param name="title">Magazines</mm:param>
+        	 <mm:param name="wizard">samples/mags</mm:param>
+           <mm:param name="nodepath">mags</mm:param>
+           <mm:param name="fields">number,title</mm:param>
+           <mm:param name="orderby">number</mm:param>
+           <mm:param name="directions">down</mm:param>
+           </mm:url>">Magazines</a>
+     </td><td>       
+       Demonstrated is how to use 'posrel'.
      </td></tr>
      </table>
      
