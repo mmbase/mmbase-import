@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.12 2003-11-11 22:02:33 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.13 2003-11-12 13:23:30 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -149,7 +149,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 c = getCloud(req, res, query);
             }
             if (c == null)  { // cannot find any cloud what-so-ever, 
-                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot find or create cloud '" + getCloudName() + "'");
+                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied to anonymous for node '" + nodeNumber + "'");
                 return null; 
             }        
             
