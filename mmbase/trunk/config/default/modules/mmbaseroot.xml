@@ -46,7 +46,9 @@
 	** remark : more database are supported or are easy to support, check
 	www.mmbase.org's howto's on this we will complete this list
 	as soon as possble **
-
+        
+            MyQSL:          mysql
+            PostgrSQL:      postgresql71
 	-->        
 	<property name="database">mysql</property>
 
@@ -55,6 +57,10 @@
 	eachother this defines what 'channel' we are talking to its now set
 	to the default local network so unless you know what you are doing
 	leave it to ALL-SYSTEMS.MCAST.NET.
+        
+        When you want to disable the communication between different MMBase-instances,
+        (log message builder xxx not found, can be annoying), leave the value empty:
+            <property name="multicasthost"></property>
 	-->
 	<property name="multicasthost">224.0.0.1</property><!-- ALL-SYSTEMS.MCAST.NET -->
 
