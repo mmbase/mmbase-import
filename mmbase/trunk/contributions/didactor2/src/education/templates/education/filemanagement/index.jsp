@@ -19,7 +19,7 @@
 
         if (FileUpload.isMultipartContent(request)) {
             DiskFileUpload upload = new DiskFileUpload();
-            upload.setSizeMax(50*1024*1024);
+            upload.setSizeMax(100*1024*1024);
             upload.setSizeThreshold(4096);
             upload.setRepositoryPath(System.getProperties().getProperty("java.io.tmpdir"));
             List items = upload.parseRequest(request);
@@ -29,8 +29,8 @@
                 if(!item.isFormField()) {
                     String fieldName = item.getFieldName();
                     if(fieldName.equals("filename")) {
-                        File fullFile  = new File(item.getName());
-                        File savedFile = new File(directory,fullFile.getName());
+                        String fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
+                        File savedFile = new File(directory,fileName);
                         item.write(savedFile);
                         uploadOK=true;
                     }
