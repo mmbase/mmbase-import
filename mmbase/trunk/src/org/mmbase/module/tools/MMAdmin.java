@@ -24,13 +24,16 @@ import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+
 
 /**
  * @javadoc
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.79 2003-10-24 10:03:12 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.80 2004-01-08 16:59:19 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -827,6 +830,8 @@ public class MMAdmin extends ProcessorModule {
         if (bul != null) {
             String checkQ = "";
             Vector vec = bul.getFields();
+            Constraint constraint = null;
+            NodeSearchQuery query = null;
             for (Enumeration h = vec.elements(); h.hasMoreElements();) {
                 FieldDefs def = (FieldDefs)h.nextElement();
                 // check for notnull fields with type NODE.
@@ -857,19 +862,33 @@ public class MMAdmin extends ProcessorModule {
                     String name = def.getDBName();
                     if (type == FieldDefs.TYPE_STRING) {
                         String value = newnode.getStringValue(name);
-                        if (checkQ.equals("")) {
-                            checkQ += name + "=='" + value + "'";
+                        if (query==null) {
+                            query = new NodeSearchQuery(bul);
+                        }
+                        StepField field = query.getField(def);
+                        Constraint newConstraint = new BasicFieldValueConstraint(field, value);
+                        if (constraint==null) {
+                            constraint= newConstraint;
                         } else {
-                            checkQ += "+" + name + "=='" + value + "'";
+                            BasicCompositeConstraint compConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+                            compConstraint.addChild(constraint);
+                            compConstraint.addChild(newConstraint);
+                            constraint = compConstraint;
                         }
                     }
                 }
             }
-            if (!checkQ.equals("")) {
-                Enumeration r = bul.search(checkQ);
-                if (r.hasMoreElements()) {
-                    MMObjectNode oldnode = (MMObjectNode)r.nextElement();
-                    return oldnode.getIntValue("number");
+            if (query!=null && constraint !=null) {
+                query.setConstraint(constraint);
+                try {
+                    List nodes = bul.getNodes(query);
+                    if (nodes.size()>0) {
+                        MMObjectNode oldnode = (MMObjectNode)nodes.get(0);
+                        return oldnode.getIntValue("number");
+                    }
+                } catch (SearchQueryException sqe) {
+                    result.error("Application installer can't search builder storage (" + sqe.getMessage()+")");
+                    return -1;
                 }
             }
 
