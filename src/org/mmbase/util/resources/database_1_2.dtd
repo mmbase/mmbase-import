@@ -2,11 +2,12 @@
       database.dtd
         - DTD for MMBase database mapping definition
 -->
-<!ELEMENT database (name,mmbasedriver,sqlhandler,chainedsqlhandler*,scheme?,maxdropsize?,mapping?,disallowed?)>
+<!ELEMENT database (name,mmbasedriver,sqlhandler,chainedsqlhandler*,blobdatadir?,scheme?,maxdropsize?,mapping?,disallowed?)>
 <!ELEMENT name (#PCDATA)>
 <!ELEMENT mmbasedriver (#PCDATA)>
 <!ELEMENT sqlhandler (#PCDATA)>
 <!ELEMENT chainedsqlhandler (#PCDATA)>
+<!ELEMENT blobdatadir (#PCDATA)>
 <!ELEMENT maxdropsize (#PCDATA)>
 <!ELEMENT scheme (create?,create-extended?,not-null?,null?,primary-key?,foreign-key?,key?)>
 <!ELEMENT create (#PCDATA)>
