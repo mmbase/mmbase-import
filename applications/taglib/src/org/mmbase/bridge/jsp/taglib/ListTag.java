@@ -67,6 +67,10 @@ public class ListTag extends NodeLikeTag implements BodyTag {
     private int listSize = 0;
     private int currentItemIndex= -1;
 
+    public int getIndex() {
+        return currentItemIndex;
+    }
+
 
     /**
      * @deprecated
@@ -311,7 +315,8 @@ public class ListTag extends NodeLikeTag implements BodyTag {
         if (returnValues.hasNext()){
 	    currentItemIndex ++;            
 	    setNode(returnValues.nextNode());
-            fillVars();
+            fillVars
+();
 	}
     } 
 
