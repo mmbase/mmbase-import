@@ -3,6 +3,15 @@
 
 <mediaproviderfilter>
 
+<!-- 
+  mm: I think this stuff can just as well be configured in
+  mediasourcefilter.xml?
+
+   'give me the source with the best provider'.
+
+  -->
+
+
 	<!-- define the chain of filters, the filter that has to filter first
 		has to mentioned as first. A filter is specified or by the classname
 		(class needs mediaproviderfilterinterface) or by some standard ones.
@@ -20,7 +29,7 @@
 	-->
 	<filterOnHost>
 		<hostfilter user="*"         provider="streams"      />
-		<hostfilter user="*.es"      provider="es-streams"   />
+ 		<hostfilter user="*.es"      provider="es-streams"   />
 		<hostfilter user="*.vpro.nl" provider="vpro-streams" />
 	</filterOnHost>
 
@@ -28,6 +37,7 @@
 	till least wanted to use. The first one mentioned in the list is the most wanted. When the 
 	mediaproviderfilter finished the chain of filters, the most wanted will be taken if there are
 	still multiple providers left.
+
 	-->
 	<sortProviders>
 		<provider host="streams" />
