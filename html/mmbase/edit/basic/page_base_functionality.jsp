@@ -64,6 +64,7 @@ if (urlStack == null) {
 
 <mm:context id="config" referid="config">
   <mm:import externid="page_size" from="parameters,this">20</mm:import>
+  <mm:import externid="indexoffset" from="parameters,this">1</mm:import>
   <mm:import id="style_sheet" externid="mmjspeditors_style"     from="parameters,cookie,this">mmbase.css</mm:import>
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>  
   <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
