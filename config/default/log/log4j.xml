@@ -3,14 +3,18 @@
    Location of the log4j.dtd. 
    In Tomcat a simple "log4j.dtd" will do, but this does not work in Orion. 
    You can give the full path to the dtd in the jar, like:
-   jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd
+   SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
    or somewhere on the web:
-   http://web.omroep.nl/mmbase/logging/log4j.dtd
+   SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
+   
+   What always works is simply not specifying the the location of the
+   dtd, since log4j does not seem to do any validating. So, that is
+   done here.   
 -->
 <!DOCTYPE configuration [
          <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
          <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
-		 <!ENTITY logdir   "/tmp/" >
+         <!ENTITY logdir   "/tmp/" >
 ]>
 
 <!-- 
@@ -52,7 +56,7 @@
 
 <root>
     <priority class="&priority;" value ="service" />
-   	<appender-ref ref="logfile" />
+    <appender-ref ref="logfile" />
 </root>
 
 <!-- base category for all MMBase classes -->
@@ -60,9 +64,17 @@
 <!-- nothing special -->
 </category>
 
+<category name="org.mmbase.bridge" class ="&logger;">
+  <priority class="&priority;" value ="debug" />
+</category>
+
+<category name="nl.omroep" class ="&logger;">
+  <priority class="&priority;" value ="trace" />
+</category>
+
 <!-- example: different priority for the classes in org.mmbase.module -->
 <category name="org.mmbase.module" class ="&logger;">
-  <priority class="&priority;" value ="debug" />
+  <priority class="&priority;" value ="info" />
 </category>
 
 
