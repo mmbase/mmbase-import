@@ -43,8 +43,15 @@ public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     public int doStartTag() throws JspTagException{            
         Node node;
-        
-        node = getCloudProviderVar().getNodeManager(nodemanager).createNode();
+        NodeManager nm;
+        nm = getCloudProviderVar().getNodeManager(nodemanager);
+        if (nm == null) {
+            throw new JspTagException("Could not find nodemanager " + nodemanager);
+        }       
+        node = nm.createNode();
+        if (node == null) {
+            throw new JspTagException("Could not create node of type " + nodemanager);
+        }       
         setNodeVar(node);        
         log.debug("created node " + node.getValue("gui()"));
         return EVAL_BODY_TAG; 
