@@ -1,15 +1,20 @@
 <%@ page isErrorPage="true"
 %><%@ page import="java.io.*,java.util.*,org.mmbase.bridge.*,org.mmbase.util.*"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:content language="en">
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:import externid="language">nl</mm:import>
+<%@include file="settings.jsp"
+%><mm:content language="$language" type="text/html">
 <mm:cloud>
-<html>
-  <head>
-	<title>Error page</title>
-   </head>
+  <html>
+    <head>
+    <title>Cloud Context Users Administration - Error page</title>
+    <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+  </head>
     <body>
-<mm:cloud jspvar="cloud">
-<mm:log jspvar="log">
+      <mm:cloud jspvar="cloud">
+        <mm:log jspvar="log">
 <%
     String domain = request.getServerName();
     if (domain.startsWith("www.")) {
