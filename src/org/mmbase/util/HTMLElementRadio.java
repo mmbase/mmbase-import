@@ -37,7 +37,7 @@ public class HTMLElementRadio  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementCheckbox
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(HTMLElementSelect.class.getName());
+    private static Logger log = Logging.getLoggerInstance(HTMLElementRadio.class.getName());
 
     /**
      * Creates a HTMLElementRadio.

@@ -41,7 +41,7 @@ import org.mmbase.util.*;
 public class NetFileSrv extends MMObjectBuilder {
 
     // Logger class
-    private static Logger log = Logging.getLoggerInstance(Netfiles.class.getName());
+    private static Logger log = Logging.getLoggerInstance(NetFileSrv.class.getName());
 
     /**
     * Cache of VWMS as they are related to a service.

@@ -30,7 +30,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 */
 public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(UpdateTag.class.getName());
 
     private Module community=null;
     private String message;

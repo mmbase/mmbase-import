@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Jaco de Groot
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
     protected String type = null;
 
     /**

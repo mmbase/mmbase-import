@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
 public class NodeBreaker implements Runnable {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(RelationBreaker.class.getName());
+    private static Logger log = Logging.getLoggerInstance(NodeBreaker.class.getName());
     // Lists of ids and expirationtimes temporary node manager
     // These are co-related: ids[x] and expirationtimes[x] belong to the same
     // objkect: ids[x] is the object number or key, expirationtimes[x] determines

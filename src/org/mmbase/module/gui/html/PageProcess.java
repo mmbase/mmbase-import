@@ -17,11 +17,11 @@ import org.mmbase.util.logging.*;
 /**
  * Support class for scanparser to calculate pages in the background.
  * @author Rico Jansen
- * @verison $Id: PageProcess.java,v 1.1 2001-11-26 12:55:30 vpro Exp $
+ * @verison $Id: PageProcess.java,v 1.2 2002-03-28 09:33:51 johannes Exp $
  */
 public class PageProcess implements Runnable {
 
-    private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName());
+    private static Logger log =  Logging.getLoggerInstance(PageProcess.class.getName());
 
 	String uri;
 	scanpage sp;
