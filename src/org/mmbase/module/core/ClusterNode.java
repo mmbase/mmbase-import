@@ -300,5 +300,14 @@ public class ClusterNode extends VirtualNode {
       }
       return res;
     }
+    
+    /**
+     * Return the relations of this node.
+     * This is not allowed on a cluster node
+     * @throws <code>RuntimeException</code>
+     */
+    public Enumeration getRelations() {    
+        throw new RuntimeException("Cannot follow relations on a cluster node. ");
+    }
 
 }
