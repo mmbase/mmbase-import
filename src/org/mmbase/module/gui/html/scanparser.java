@@ -20,6 +20,8 @@ import org.mmbase.module.*;
 import org.mmbase.servlet.*;
 import org.mmbase.util.*;
 
+import org.mmbase.module.CounterInterface;
+
 /**
  * scanpage is a container class it holds all objects needed per scan page
  * it was introduced to make servscan threadsafe but will probably in the future
@@ -29,6 +31,10 @@ import org.mmbase.util.*;
  * @author Daniel Ockeloen
  */
 public class scanparser extends ProcessorModule {
+
+	private	String 	classname 	= getClass().getName();
+	//private boolean	debug		= false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
 
@@ -41,12 +47,12 @@ public class scanparser extends ProcessorModule {
     private static Hashtable processors = new Hashtable();
     private static boolean debug=false;
 
+	private CounterInterface counter = null;
 
 	// needs fix !
     private static String loadmode="no-cache";
     private static String htmlroot;
     Hashtable Roots;
-
 
 
 	public scanparser() {
@@ -66,7 +72,8 @@ public class scanparser extends ProcessorModule {
         // areas=(areasInterface)getModule("AREA");
         // id=(idInterface)getModule("ID");
         sessions=(sessionsInterface)getModule("SESSION");
-	scancache=(scancacheInterface)getModule("SCANCACHE");
+		scancache=(scancacheInterface)getModule("SCANCACHE");
+		counter=(CounterInterface)getModule("COUNTER");
         // org.mmbase stats=(StatisticsInterface)getModule("STATS");
     }
 
@@ -244,7 +251,7 @@ public class scanparser extends ProcessorModule {
 	 */
 	public final String handle_line(String body,sessionInfo session,scanpage sp) {
 
-		if (debug) System.out.println("scanparser-> debug 1");
+		if (debug) debug("handle_line(): scanparser-> debug 1");
 		String part=null;
 		int qw_pos,qw_pos2,end_pos,end_pos2;
 		int precmd=0,postcmd=-1,prepostcmd=0;
@@ -255,7 +262,7 @@ public class scanparser extends ProcessorModule {
 			body=do_conditions(body,session,sp);
 		}
 
-		if (debug) System.out.println("scanparser-> debug 2");
+		if (debug) debug("handle_line(): scanparser-> debug 2");
 
 		// First find the processor (for the MACRO commands) 
 		part=finddocmd(body,"<PROCESSOR ",'>',8,session,sp);
@@ -267,7 +274,7 @@ public class scanparser extends ProcessorModule {
 		body=part;
 
 
-		if (debug) System.out.println("scanparser-> debug 3");
+		if (debug) debug("handle_line(): scanparser-> debug 3");
 
 		while ((precmd=body.indexOf("<LIST ",postcmd))!=-1) {
 			newbody.append(body.substring(postcmd+1,precmd));
@@ -278,7 +285,7 @@ public class scanparser extends ProcessorModule {
 					try {
 						newbody.append(do_list(body.substring(prepostcmd,postcmd),body.substring(postcmd+1,end_pos2),session,sp));
 					} catch(Exception e) {
-						System.out.println("servscan do_list error "+prepostcmd+","+postcmd+","+end_pos2+" : "+e);
+						debug("handle_line(): ERROR: do_list(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+printURI(sp)+") : "+e);
 						e.printStackTrace();
 					}
 					postcmd=end_pos2+7;
@@ -321,7 +328,11 @@ public class scanparser extends ProcessorModule {
 
 		// Macro's (special commands)
 		part=finddocmd(body,"<MACRO ",'>',1,session,sp);
-		body=part; 
+		body=part;
+
+		// Counter tag
+		part=finddocmd(body,"<COUNTER",'>',20,session,sp);
+		body=part;
 
 		// Do the dollar commands
 		body=dodollar(body,session,sp);
@@ -334,7 +345,7 @@ public class scanparser extends ProcessorModule {
 
 		// TESTING 1 2 3  of the ifs after the _ONLY_ after the list Daniel
 		if (body.indexOf("<LIF")!=-1) {
-		//	System.out.println("LIF detected on servscan");
+		//	debug("handle_line(): LIF detected on servscan");
 			body=do_conditions_lif(body,session,sp);
 		}
 
@@ -425,7 +436,7 @@ public class scanparser extends ProcessorModule {
 			if (pos!=-1) {
 				postcmd=pos;
 
-				//System.out.println("newpart "+newpart);
+				//debug("newpart "+newpart);
 
 				switch(docmd) {
 					case 1: // '<MACRO '
@@ -490,6 +501,9 @@ public class scanparser extends ProcessorModule {
 					case 19: // '<PART '
 						newbody.append(do_part(body.substring(prepostcmd,postcmd),session,sp));
 						break;
+					case 20: // '<COUNTER'
+						newbody.append(do_counter(body.substring(prepostcmd,postcmd),session,sp));
+						break;
 					default: 
 						break;
 				}
@@ -503,6 +517,18 @@ public class scanparser extends ProcessorModule {
 			newbody.append(body.substring(postcmd));
 		}
 		return(newbody.toString());
+	}
+
+	private String do_counter( String part, sessionInfo session, scanpage sp )
+	{
+		String result = null;
+
+		if( debug ) debug("do_counter("+part+"): inserting tag in page.");
+		long time = System.currentTimeMillis();
+		result = counter.getTag( part, session, sp );
+		debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
+
+		return result;
 	}
 
 
@@ -519,32 +545,39 @@ public class scanparser extends ProcessorModule {
 			filename=part2.substring(0,pos);
 			paramline=part2.substring(pos+1);
 			sp.setParamsLine(paramline);
+			if (sp.req_line==null) sp.req_line=filename;
 		} else {
 			filename=part2;
 		}
-		// System.out.println("PART-> filename="+filename);
-		// System.out.println("PART-> paramline="+paramline);
+		// debug("do_part(): filename="+filename);
+		// debug("do_part(): paramline="+paramline);
 		part=getfile(filename);
 		if (part!=null) {
 		
-		// start cache
-		String wantCache=null;
-		if (part.indexOf("<CACHE HANK>")!=-1) {
-			wantCache="HENK";
-			String rst=scancache.get(wantCache,part2);
-			String pragma = sp.getHeader("Pragma:");
-			if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
-//				System.out.println("scancache=PARTHIT");
-				return(rst);
-			}	
-		}
-
-		// end cache
-			// unlike include we need to map this ourselfs before including it
-			// in this page !!
-			part=handle_line(part,session,sp);
+			// start cache
+			String wantCache=null;
+			if (part.indexOf("<CACHE HANK>")!=-1) {
+				wantCache="HENK";
+				String rst=scancache.get(wantCache,part2);
+				String pragma = sp.getHeader("Pragma:");
+				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
+	//				debug("do_part(): scancache=PARTHIT");
+					return(rst);
+				}	
+			}
+	
+			// end cache
+				// unlike include we need to map this ourselfs before including it
+				// in this page !!
+			try {
+				part=handle_line(part,session,sp);
+			} catch (Exception e) {
+				debug("do_part(): handle_line exception ("+printURI(sp)+") file : "+filename);
+				e.printStackTrace();
+			}
+	
 			if (wantCache!=null) {
-//				System.out.println("PUT CACHE OF FILE="+part2);
+	//			debug("do_part(): PUT CACHE OF FILE="+part2);
 				scancache.put(wantCache,part2,part);
 			}
 			sp.setParamsVector(oldparams);
@@ -569,7 +602,7 @@ public class scanparser extends ProcessorModule {
 		// org.mmbase if (fileroot==null) fileroot=(String)Roots.get("www");
 
 		if (htmlroot==null) {
-			System.out.println("Servscan ->mmbase.htmlroot="+System.getProperty("mmbase.htmlroot"));
+			debug("getfile("+where+"): mmbase.htmlroot="+System.getProperty("mmbase.htmlroot"));
 			htmlroot=System.getProperty("mmbase.htmlroot");
 		}
 
@@ -588,7 +621,7 @@ public class scanparser extends ProcessorModule {
 			scan.close();
 		} catch(FileNotFoundException e) {
 			//give_404_error("getfile");
-			//System.out.println("error getfile servscan : "+scanfile.getName());
+			//debug("getfile("+where+"): error getfile servscan : "+scanfile.getName());
 	 	} catch(IOException e) {}
 		if (len!=-1) {
 			rtn=new String(cline.buffer,0);
@@ -632,7 +665,7 @@ public class scanparser extends ProcessorModule {
 			newbody=part;
 		}
 
-		//System.out.println("dodollar -  2 " + (System.currentTimeMillis() - oldtime) + " ms." + cookie);
+		//debug("dodollar(): 2 " + (System.currentTimeMillis() - oldtime) + " ms." + cookie);
 
 		// Personal obj's
 		part=finddocmd(newbody,"$ID-","^\n\r\"=<> ,",3,session,sp);
@@ -680,7 +713,7 @@ public class scanparser extends ProcessorModule {
 		newbody=part; 
 
 
-		//System.out.println("dodollar -  3 " + (System.currentTimeMillis() - oldtime) + " ms." + cookie);
+		//debug("dodollar(): 3 " + (System.currentTimeMillis() - oldtime) + " ms." + cookie);
 
 		return(newbody);
 	}
@@ -758,6 +791,7 @@ public class scanparser extends ProcessorModule {
     */
     private final String do_newpage(scanpage sp,String part)
     {
+		debug( "do_newpage("+printURI(sp)+")");
         sp.rstatus=2;
         return(part);
     }
@@ -777,7 +811,7 @@ public class scanparser extends ProcessorModule {
     private final String do_mod(scanpage sp,String part) {
         int index = part.indexOf('-');
         if (index == -1) {
-            System.out.println("servscan.do_mod error part (no '-'): " + part);
+            debug("do_mod(): ERROR: part (no '-'): '" + part+"' ("+printURI(sp)+")");
             return "";
         } else {
             String moduleName = part.substring(0,index);
@@ -785,7 +819,7 @@ public class scanparser extends ProcessorModule {
 
             ProcessorInterface proc = getProcessor(moduleName);
             if (proc == null) {
-                System.out.println("servscan.do_mod: no Processor: " + moduleName);
+                debug("do_mod(): ERROR: no Processor(" + moduleName +") found for page("+printURI(sp)+")");
                 return "";
             } else {
                 return proc.replace(sp, moduleCommand);
@@ -808,22 +842,22 @@ public class scanparser extends ProcessorModule {
 				Object obj = getModule (procName);
 				if (obj == null)
 				{
-					System.out.println("Not authorized or not a valid class name: " + procName);
+					debug("getProcessor(): Not authorized or not a valid class name: " + procName);
 					return null; 
 				} else {
-					// System.out.println(obj);
+					// debug(obj);
 				}
 					
 				if (obj instanceof ProcessorInterface)
 				{
-					//System.out.println("servscan.getProcessor: whe have a new Processor");
+					//debug("servscan.getProcessor: we have a new Processor("+procName+")");
 					ProcessorInterface pr = (ProcessorInterface) obj;		
 					processors.put(procName,pr);
 					return pr;
 				}
 				else
 				{	
-					System.out.println("servscan.getProcessor: not a Processor: "+ procName);
+					debug("getProcessor(): ERROR: not a valid Processor("+ procName+")");
 					return null;	
 				}
 			}
@@ -926,6 +960,14 @@ public class scanparser extends ProcessorModule {
 			if (str!=null) {
 				 if (str.charAt(0)=='"') str=str.substring(1,str.length()-1);
 				tmpprocessor=getProcessor(str);
+
+				if( tmpprocessor==null )
+				{
+					if (sp.processor!=null)
+						debug("do_macro(): WARNING: No processor("+str+") found for page("+printURI(sp)+"), but scanpage has one.");
+					else
+						debug("do_macro(): ERROR: No processor("+str+") found for page("+printURI(sp)+")");
+				}
 			}
 		}
 
@@ -936,6 +978,7 @@ public class scanparser extends ProcessorModule {
 		} else if (sp.processor!=null) {
 			tokje=htmlgen.getHTMLElement(sp, sp.processor,cmds);
 		} else {
+			debug("do_macro(): ERROR: No processor() specified in page("+printURI(sp)+")");
 			tokje="<B> No Processor specified in page </B><BR>";
 		}
 		return(tokje);
@@ -1084,7 +1127,7 @@ public class scanparser extends ProcessorModule {
 				}
 			}
 		} else {
-			System.out.println("Servscan : no end on if command");
+			debug("do_if(): ERROR: no end on if command");
 		}
 		return(body);
 	}
@@ -1293,7 +1336,7 @@ public class scanparser extends ProcessorModule {
 							int i=Integer.parseInt(sortedpos);
 							result=doMAlphaSort(result,i,numitems);	
 						} catch(Exception e) {
-							System.out.println("scanpage-> Error in SORTPOS");
+							debug("do_list(): Error in SORTPOS");
 						}	
 					} else {
 						result=doMAlphaSort(result,1,numitems);	
@@ -1335,14 +1378,14 @@ public class scanparser extends ProcessorModule {
 				// org.mmbase lastlistitem=curitem;
 			} else {
 				rtn.append(" Processor failed to process command <br>");
-				System.out.println("Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
+				debug("do_list(): Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
 			}
 		} else {
 			rtn.append(" No Processor specified in page <br>");
 		}
 		} else if (version.equals("2.0")) {
 		// is there a proccesor defined ?
-		//System.out.println("servscan -> LIST 2.0 -> Start");
+		//debug("do_list(): LIST 2.0 -> Start");
 		long ltime1=System.currentTimeMillis();
 		if (sp.processor!=null || tmpprocessor!=null) {
 			// Call the processor to get the real info this might override
@@ -1353,7 +1396,7 @@ public class scanparser extends ProcessorModule {
 				result=tmpprocessor.getList(sp,tagger,command);
 			}
 			long ltime2=System.currentTimeMillis();
-			//System.out.println("servscan -> LIST 2.0 -> GETLIST="+(ltime2-ltime1));
+			//debug("do_list(): LIST 2.0 -> GETLIST="+(ltime2-ltime1));
 			ltime1=ltime2;
 
 			// do we have a result ifso do the layout stuff
@@ -1375,7 +1418,7 @@ public class scanparser extends ProcessorModule {
 
 				if (sorted!=null && sorted.equals("REVERSE")) result=reverse(result,numitems);	
 
-				//System.out.println("PART="+template);
+				//debug("PART="+template);
 					
 				String listprepart=null;
 				String listendpart=null;
@@ -1389,9 +1432,9 @@ public class scanparser extends ProcessorModule {
 					template=template.substring(listprepos+10,listendpos);
 				}
 
-				//System.out.println("PRE="+listprepart+"*");
-				//System.out.println("PART="+template+"*");
-				//System.out.println("END="+listendpart+"*");
+				//debug("do_list(): PRE="+listprepart+"*");
+				//debug("do_list(): PART="+template+"*");
+				//debug("do_list(): END="+listendpart+"*");
 
 				// new part handles the 'prepart' of LISTLOOP
 				// ends new part handles the 'prepart' of LISTLOOP
@@ -1440,16 +1483,16 @@ public class scanparser extends ProcessorModule {
 				}
 
 				ltime2=System.currentTimeMillis();
-				//System.out.println("servscan -> LIST 2.0 -> PROCESSTEMPLATE="+(ltime2-ltime1));
+				//debug("do_list(): LIST 2.0 -> PROCESSTEMPLATE="+(ltime2-ltime1));
 				ltime1=ltime2;
 			} else {
 				rtn.append(" Processor failed to process command <br>");
-				System.out.println("Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
+				debug("do_list(): ERROR: Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
 			}
 		} else {
 			rtn.append(" No Processor specified in page <br>");
 		}
-		//System.out.println("servscan -> LIST 2.0 -> End");
+		//debug("do_list(): LIST 2.0 -> End");
 		}
 
 		// -----------------------------------
@@ -1459,7 +1502,7 @@ public class scanparser extends ProcessorModule {
 		}
 		ll2=System.currentTimeMillis();
 		if (debug && (ll2-ll1)>300) {
-			System.out.println("servscan -> do_list time "+(ll2-ll1)+"ms");
+			debug("do_list(): time("+(ll2-ll1)+" ms)");
 		}
 		return(rtn.toString());
 	}
@@ -1551,12 +1594,12 @@ public class scanparser extends ProcessorModule {
 			if (sp.processor!=null) {
 				sp.processor.process(sp,proc_cmd,proc_var);
 			} else {
-				System.out.println("servscan.do_proc_input: Processor is not loaded in server");
+				debug("do_proc_input(): ERROR: Processor("+part+") is not loaded in server for page("+printURI(sp)+")");
 			}
 		} else {
-			System.out.println("No Processor specified : "+rq_line);
-			System.out.println("proc_var="+proc_var);
-			System.out.println("proc_cmd="+proc_cmd);
+			debug("do_proc_input(): No Processor specified : "+rq_line);
+			debug("do_proc_input(): proc_var="+proc_var);
+			debug("do_proc_input(): proc_cmd="+proc_cmd);
 			return;
 		}
 		return;	
@@ -1588,12 +1631,17 @@ public class scanparser extends ProcessorModule {
 
 	//public synchronized String calcPage(String part2,HttpServletRequest req,int cachetype) {
 	public synchronized String calcPage(String part2,scanpage sp,int cachetype) {
+
+		debug("calcPage("+part2+","+printURI(sp)+","+cachetype+")");
+
 		try {
 		/*
 		this.req=req;	
 		part2=dodollar(part2,req);
 		*/
-		String filename,paramline=null;;
+
+		String filename,paramline=null;
+
 		// we now may have a a param setup like part.shtml?1212+1212+1212
 		// split it so we can load the file and get the params
 		int pos=part2.indexOf('?');
@@ -1602,48 +1650,49 @@ public class scanparser extends ProcessorModule {
 			paramline=part2.substring(pos+1);
 			//((worker)req).setParamLine(paramline);
 			sp.setParamsLine(paramline);
-			System.out.println("CALCPAGE-> setting paramline="+paramline);
+			if (sp.req_line==null) sp.req_line=filename;
+			debug("calcPage(): setting paramline="+paramline);
 		} else {
 			filename=part2;
 		}
-		System.out.println("CALCPAGE-> filename="+filename);
-		System.out.println("CALCPAGE-> paramline="+paramline);
+
+		debug("calcPage(): filename="+filename);
+		debug("calcPage(): paramline="+paramline);
 		sp.body=getfile(filename);
 
 		if (sp.body!=null) {
-		
 
-		String wantCache=null;
+			String wantCache=null;
 
-		// start cache
-		/*
-		String wantCache=null;
-		if (sp.body.indexOf("<CACHE HENK>")!=-1) {
-			//System.out.println(scancache);
-			wantCache="HENK";
-			String rst=scancache.get(wantCache,part2);
-		}
-		*/
-
-		if (sp.body.indexOf("<CACHE PAGE")!=-1) {
-			wantCache="PAGE";
-		}
-		// end cache
+			// start cache
+			/*
+			String wantCache=null;
+			if (sp.body.indexOf("<CACHE HENK>")!=-1) {
+				//debug("calcPage(): scancache("+scancache+")");
+				wantCache="HENK";
+				String rst=scancache.get(wantCache,part2);
+			}
+			*/
+	
+			if (sp.body.indexOf("<CACHE PAGE")!=-1) {
+				wantCache="PAGE";
+			}
+			// end cache
 			// unlike include we need to map this ourselfs before including it
 			// in this page !!
 			//part=handle_line(part,req);
 			sp.body=handle_line(sp.body,null,sp);
 			if (wantCache!=null) {
-				//System.out.println("PUT CACHE OF FILE="+part2+" file="+part);
+				//debug("calcPage(): PUT CACHE OF FILE="+part2+" file="+part);
 				scancache.newput2(wantCache,part2,sp.body,cachetype);
 			}
-
+	
 			return(sp.body);
 		} else {
 			return("");
 		}
 		} catch (Exception r) {
-			System.out.println("Scanparser calcpage Exception");
+			debug("calcPage("+part2+","+printURI(sp)+","+cachetype+"): ERROR: ");
 			r.printStackTrace();
 			return("");
 		}
@@ -1676,5 +1725,19 @@ public class scanparser extends ProcessorModule {
 			}
 		}
 		return(result);
+	}
+
+	private String printURI(scanpage sp) {
+		String rtn="";
+		if (sp!=null) {
+			if (sp.req_line!=null) {
+				rtn=sp.req_line;
+			} else {
+				rtn="req_line==NULL";
+			}
+		} else {
+			rtn="scanpage==NULL";
+		}
+		return(rtn);
 	}
 }
