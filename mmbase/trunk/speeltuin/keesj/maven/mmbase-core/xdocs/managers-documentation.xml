@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+	  <title>MMBase managers documentation</title>
+  </properties>
+  <body>
+
+	  <section name="MMBase managers documentation">
+      <p>
+      </p>
+
+	 <subsection name="Overview">
+        <table>
+		<tr><th>Section</th><th>Description</th></tr> 
+		<tr> <td><a href="docbook/glossary.html">MMBase Glossary</a></td> <td>DESC</td> </tr>
+		<tr> <td><a href="docbook/mmbase4managers.html">Running MMBase in your organization</a></td> <td>DESC</td> </tr>
+		<tr> <td><a href="docbook/mmcmissionstatement.html">MMC Mission Statement Document</a></td> <td>DESC</td> </tr>
+             </table>
+      </subsection>
+    </section>
+ </body>
+</document>

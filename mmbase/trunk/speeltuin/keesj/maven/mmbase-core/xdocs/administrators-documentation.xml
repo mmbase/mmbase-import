@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+	  <title>MMBase administrators documentation</title>
+  </properties>
+  <body>
+
+	  <section name="MMBase administrators documentation">
+      <p>
+      </p>
+
+	 <subsection name="Overview">
+        <table>
+		<tr><th>Section</th><th>Description</th></tr> 
+		<tr> <td><a href="docbook/configuration.html">MMBase Configuration documentation</a></td> <td>DESC</td> </tr>
+		<tr> <td><a href="docbook/install-tomcat.html">MMBase installation on Apache Tomcat</a></td> <td>DESC</td> </tr>
+             </table>
+      </subsection>
+    </section>
+ </body>
+</document>
+
