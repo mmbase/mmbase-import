@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.27 2003-06-27 09:00:28 rob Exp $</edition>
+    <edition>$Id: index.xml,v 1.28 2003-06-27 14:43:34 pierre Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -186,10 +186,10 @@
       </listitem>
       <listitem>
         <para>
-          <ulink url="frontenddevelopers/dovexmlapi.html" id="dovexmlapi">
+          <ulink url="backenddevelopers/storage.html" id="storage">
             Dove XML API
           </ulink>
-          <ulink url="frontendevelopers/dovexmlapi.pdf" id="dovexmlapi.pdf">
+          <ulink url="backendevelopers/storage.pdf" id="storage.pdf">
            (pdf)
           </ulink>
         </para>
@@ -243,6 +243,16 @@
            (pdf)
           </ulink>
           -->
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <ulink url="frontenddevelopers/dovexmlapi.html" id="dovexmlapi">
+            Dove XML API
+          </ulink>
+          <ulink url="frontendevelopers/dovexmlapi.pdf" id="dovexmlapi.pdf">
+           (pdf)
+          </ulink>
         </para>
       </listitem>
       <listitem>
