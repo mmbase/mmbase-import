@@ -60,5 +60,4 @@
 <!ELEMENT field (#PCDATA)>
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field href CDATA #IMPLIED >
-<!ATTLIST field encoding CDATA #IMPLIED >
 
