@@ -1,1 +1,6 @@
-<IF $PARAM1=N> ($PARAM2) </IF>
+<PROCESSOR MMBASE>
+<IF $PARAM1=N> 
+<LIST OBJECTS TYPE="reldef" FIELDS="sguiname" WHERE="number==$MOD-MMBASE-FIELD-$PARAM2-rnumber">
+($ITEM1)
+</LIST>
+</IF>
