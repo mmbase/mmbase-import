@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.28 2003-06-02 12:30:09 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.29 2003-06-02 12:57:37 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -356,9 +356,9 @@ public class WizardDatabaseConnector {
      */
     public Node getNewRelation(Node targetNode, String role,
                               String sourceObjectNumber, String sourceType,
-                              String destinationObjectNumber, String destinationType) throws WizardException {
+                              String destinationObjectNumber, String destinationType, String createDir) throws WizardException {
         // fires getNewRelation command and places result in targetNode
-        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceObjectNumber, sourceType, destinationObjectNumber, destinationType);
+        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceObjectNumber, sourceType, destinationObjectNumber, destinationType, createDir);
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
@@ -510,6 +510,8 @@ public class WizardDatabaseConnector {
             String dnumber = Utils.getAttribute(relation, "destination", null);
             dnumber=Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
             String dtype = "";
+
+            String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
             Node inside_object = null;
             Node inside_objectdef = Utils.selectSingleNode(relation, "object");
             if (dnumber!=null) {
@@ -536,7 +538,7 @@ public class WizardDatabaseConnector {
                 }
             }
 
-            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype);
+            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype,createDir);
             fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
 
             tagDataNode(relationNode);
