@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.35 2004-06-11 11:35:20 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.36 2004-07-21 11:39:15 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -666,7 +666,7 @@ public class BasicSqlHandler implements SqlHandler {
                 // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
                 if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
-                    sb.append(overallInverse? "NOT (": "");
+                    sb.append(overallInverse? "NOT ( ": "");
                 }
 
                 if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
@@ -744,18 +744,18 @@ public class BasicSqlHandler implements SqlHandler {
                     "Unknown constraint type: "
                     + constraint.getClass().getName());
                 }
-                // Negate by leading NOT, unless it's a LIKE constraint, 
+                // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
                 if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
                     sb.append(overallInverse? ")": "");
                 }
- 
+
             } else {
                 throw new UnsupportedOperationException(
                 "Unknown constraint type: "
                 + constraint.getClass().getName());
             }
-            
+
         } else if (constraint instanceof CompositeConstraint) {
             throw new IllegalArgumentException(
             "Illegal constraint type for this method: "
@@ -819,7 +819,7 @@ public class BasicSqlHandler implements SqlHandler {
             throw new IllegalArgumentException(
             "Invalid value: " + value);
         }
-        String allowedValue = (String) disallowed2Allowed.get(value);
+        String allowedValue = (String) disallowed2Allowed.get(value.toLowerCase());
         if (allowedValue == null) {
             allowedValue = value;
         }
