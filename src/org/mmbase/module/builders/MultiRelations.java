@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: MultiRelations.java,v 1.3 2000-03-08 14:16:46 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.4 2000-03-08 14:20:26 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/03/08 14:16:46  wwwtech
+	Rico: fixed the scope of several methods, plus added fix against similar table names going wrong in where clause
+	
 	Revision 1.2  2000/02/24 14:33:49  wwwtech
 	Rico: changed out.println by debug
 	
@@ -29,7 +32,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.3 2000-03-08 14:16:46 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.4 2000-03-08 14:20:26 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -92,116 +95,6 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 		return(null);
 	}
-
-
-	/**
-	 * Old LIST MULTI stuff 
-	 */
-
-
-	String getSelectString(Vector fields,String a,String b,String c,String d,String e) {
-		String result="";
-		for (Enumeration r=fields.elements();r.hasMoreElements();) {
-			String val=(String)r.nextElement();
-    		val= Strip.DoubleQuote(val,Strip.BOTH);
-			int pos=val.indexOf('.');
-			if (pos!=-1) {
-				String val2=val.substring(0,pos);
-				String val3=val.substring(pos+1);
-				if (!result.equals("")) result+=", ";
-				if (val2.equals(a)) {
-					result+="a."+val3;	
-				} else if (val2.equals(b)) {
-					result+="b."+val3;	
-				} else if (val2.equals(c)) {
-					result+="c."+val3;	
-				} else if (val2.equals(d)) {
-					result+="d."+val3;	
-				} else if (val2.equals(e)) {
-					result+="e."+val3;	
-				}
-			}	
-		}
-		return(result);
-	}
-
-
-	String getOrderString(Vector orders,String a,String b,String c,String d,String e) {
-		String result="";
-		if (orders==null) return(result);
-		for (Enumeration r=orders.elements();r.hasMoreElements();) {
-			String val=(String)r.nextElement();
-    		val= Strip.DoubleQuote(val,Strip.BOTH);
-			int pos=val.indexOf('.');
-			if (pos!=-1) {
-				String val2=val.substring(0,pos);
-				String val3=val.substring(pos+1);
-				if (!result.equals("")) {
-					result+=", ";
-				} else {
-					result=" ORDER BY ";
-				}
-				if (val2.equals(a)) {
-					result+="a."+val3;	
-				} else if (val2.equals(b)) {
-					result+="b."+val3;	
-				} else if (val2.equals(c)) {
-					result+="c."+val3;	
-				} else if (val2.equals(d)) {
-					result+="d."+val3;	
-				} else if (val2.equals(e)) {
-					result+="e."+val3;	
-				}
-			}	
-		}
-		return(result);
-	}
-
-
-	String getWhereConvert(String where,String a,String b,String c,String d,String e) {
-		StringObject result=new StringObject(where);
-		result.replace(a+".","a.");
-		result.replace(b+".","b.");
-		result.replace(c+".","c.");
-		result.replace(d+".","d.");
-		result.replace(e+".","e.");
-		return(result.toString());
-	}
-
-	Vector getFields(String a,String b,String c,String d,String e) {
-		Vector result=new Vector();
-		// map out a
-		MMObjectBuilder bul=mmb.getMMObject(a);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(a+"."+(String)r.nextElement());
-		}
-		// map out b
-		bul=mmb.getMMObject(b);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(b+"."+(String)r.nextElement());
-		}
-		// map out c
-		bul=mmb.getMMObject(c);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(c+"."+(String)r.nextElement());
-		}
-		// map out d
-		bul=mmb.getMMObject(d);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(d+"."+(String)r.nextElement());
-		}
-		// map out e
-		bul=mmb.getMMObject(e);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(e+"."+(String)r.nextElement());
-		}
-		return(result);
-	}
-
-	/**
-	 * End of old stuff
-	 */
-
 
 	private Vector getSelectTypes(Vector rfields) {
 		Vector result=new Vector();
