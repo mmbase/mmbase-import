@@ -751,8 +751,6 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
       <param name="destfile"   value="${download.dir}/package-list" />
     </antcall>
-    <mkdir dir="${build.dir}/mmbase-src/docs"/>
-    <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
              destdir="${mmdocs.dir}/javadoc"
              author="true"
