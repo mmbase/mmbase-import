@@ -81,11 +81,13 @@ public class MMCI{
         //should we use BridgeException interface?
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
 
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldValue",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Module",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleList",doc));
@@ -105,7 +107,6 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldValue",doc));
     }
 
     public static void main(String [] argv) throws Exception{
