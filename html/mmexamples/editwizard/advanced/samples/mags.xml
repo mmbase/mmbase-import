@@ -56,16 +56,13 @@
 					<search-fields>title</search-fields>
 				</search-filter>
 			</command>
-
       
       <action type="create">
         <relation role="posrel" destinationtype="news" >
-          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+1}</field>
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
         </relation>
       </action>
     </list>
-	
-	
 
   </form-schema>
 
