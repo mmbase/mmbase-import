@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.18 2002-09-18 14:52:33 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.19 2002-09-20 12:25:42 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -37,7 +37,9 @@ public class ObjectTypes extends TypeDef {
     public boolean init() {
         boolean result = super.init();        
         if(defaultDeploy != null) {
-            log.warn("This method should only be called once! FIXME B4 1.6");
+            // XXX: This method should only be called once.
+            // Maybe arrange it through parent's init, 
+            // which also checks on a second run?
             return result;
         }        
         // look if we have a property set, where to deploy default our builders...

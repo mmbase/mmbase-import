@@ -77,11 +77,6 @@ public class XMLContextDepthWriter  {
         Enumeration nods=nodes.elements();
         while (nods.hasMoreElements()) {
             MMObjectNode node=bul.getNode(((Integer)nods.nextElement()).intValue());
-            /* was wrong check daniel
-            String exists=node.getStringValue("_exists");
-            if (exists==null || exists.equals("no")) {
-            }
-            */
                 if (type==node.getIntValue("otype")) {
                     int number=node.getIntValue("number");
                     String owner=node.getStringValue("owner");
@@ -146,11 +141,6 @@ public class XMLContextDepthWriter  {
         Enumeration nods=nodes.elements();
         while (nods.hasMoreElements()) {
             MMObjectNode node=bul.getNode(((Integer)nods.nextElement()).intValue());
-            /* was wrong checke
-            String exists=node.getStringValue("_exists");
-            if (exists==null || exists.equals("no")) {
-            }
-            */
                 if (type==node.getIntValue("otype")) {
                     int number=node.getIntValue("number");
                     String owner=node.getStringValue("owner");
