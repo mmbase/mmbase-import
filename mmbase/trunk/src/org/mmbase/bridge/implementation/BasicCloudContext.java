@@ -102,7 +102,7 @@ public class BasicCloudContext implements CloudContext {
 	public CloudList getClouds() {
         Vector v=new Vector();
         for (Iterator i=localClouds.values().iterator(); i.hasNext();) {
-            v.add(((Cloud)i.next()).getName());
+            v.add((Cloud)i.next());
         }
 	    return new BasicCloudList(v,this);
 	}
