@@ -88,7 +88,7 @@
 <tr>
   <td class="data">Show first 500 entry's of the cache</td>
   <td class="navigate">
-    <a href="cache/multilevelcache.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="cache/showcache.jsp"><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>" ><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 
