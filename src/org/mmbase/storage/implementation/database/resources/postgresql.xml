@@ -41,6 +41,17 @@
     <type-mapping name="NODE" type="INTEGER" />
     <type-mapping name="STRING" type="TEXT" />
     <type-mapping name="XML" type="TEXT" />
+    <type-mapping name="DATETIME" type="TIMESTAMP" />
+    <type-mapping name="BOOLEAN" type="BOOLEAN" />
+    <type-mapping name="LIST[FLOAT]"   type="FLOAT[]" />
+    <type-mapping name="LIST[DOUBLE]"  type="DOUBLE PRECISION[]" />
+    <type-mapping name="LIST[LONG]"    type="BIGINT[]" />
+    <type-mapping name="LIST[INTEGER]" type="INTEGER[]" />
+    <type-mapping name="LIST[NODE]"    type="INTEGER[]" />
+    <type-mapping name="LIST[STRING]"  type="TEXT[]" />
+    <type-mapping name="LIST[XML]"     type="TEXT[]" />
+    <type-mapping name="LIST[DATETIME]"  type="TIMESTAMP[]" />
+    <type-mapping name="LIST[BOOLEAN]"   type="BOOLEAN[]" />
   </type-mappings>
 
   <!-- Postgresql disallowed -->

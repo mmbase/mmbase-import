@@ -39,7 +39,7 @@
 		<type-mapping name="LONG" type="bigint" />
 		<type-mapping name="FLOAT" type="float" />
 		<type-mapping name="INTEGER" type="integer" />
-		<type-mapping name="NODE" type="integer" />
+		<type-mapping name="NODE"   type="integer" />
 		<type-mapping name="STRING" min-size="1" max-size="255" type="varchar({0})" />
 		<type-mapping name="STRING" min-size="256" max-size="65535" type="blob" />
 		<type-mapping name="STRING" min-size="65536" max-size="16777216" type="mediumblob" />
@@ -48,6 +48,8 @@
 		<type-mapping name="XML" min-size="65536" max-size="16777216" type="mediumblob" />
 		<type-mapping name="BYTE" min-size="1" max-size="65535" type="blob" />
 		<type-mapping name="BYTE" min-size="65536" max-size="16777216" type="mediumblob" />
+		<type-mapping name="DATETIME" type="DATETIME" />
+		<type-mapping name="BOOLEAN"  type="BIT" />
 	</type-mappings>
 
 	<!-- MySQL disallowed fields (copied from the old configurations) 	-->
