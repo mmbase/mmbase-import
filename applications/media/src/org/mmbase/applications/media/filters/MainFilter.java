@@ -47,6 +47,11 @@ public class MainFilter implements Filter {
     public static final String MAIN_TAG          = "mainFilter";
     public static final String FILTERCONFIGS_TAG = "filterConfigs";
     public static final String FILTERCONFIG_TAG  = "config";
+    public static final String CHAIN_TAG         = "chain";
+    public static final String FILTER_TAG        = "filter";
+    public static final String FILTER_ATT        = "filter";
+    public static final String ID_ATT            = "id";
+    public static final String CONFIG_FILE       = "media" + File.separator + "filters.xml";
         
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -60,8 +65,7 @@ public class MainFilter implements Filter {
      * Construct the MainFilter
      */
     private MainFilter() {
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), 
-                                   "media" + File.separator + "filters.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), CONFIG_FILE);
         if (! configFile.exists()) {
             log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
             return;
@@ -96,10 +100,11 @@ public class MainFilter implements Filter {
         Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
         ChainComparator chainComp = new ChainComparator();
-        for(Enumeration e = reader.getChildElements(MAIN_TAG + ".chain","filter"); e.hasMoreElements();) {
+        for(Enumeration e = reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG); 
+            e.hasMoreElements();) {
             Element chainElement =(Element)e.nextElement();
             String  clazz        = reader.getElementValue(chainElement);
-            String  elementId    = chainElement.getAttribute("id");
+            String  elementId    = chainElement.getAttribute(ID_ATT);
             try {
                 Class newclass = Class.forName(clazz);
                 Filter filter = (Filter) newclass.newInstance();
@@ -112,22 +117,22 @@ public class MainFilter implements Filter {
                     }
                     filters.add(filter);
                 }
-                log.service("Added mediasourcefilter " + clazz);
-                if (elementId != null) {                    
+                log.service("Added filter " + clazz + "(id=" + elementId + ")");
+                if (elementId != null && ! "".equals(elementId)) {                    
                     // find right configuration
                     boolean found = false;
                     Enumeration f = reader.getChildElements(filterConfigs, FILTERCONFIG_TAG);
                     while (f.hasMoreElements()) {
                         Element config = (Element) f.nextElement();
-                        String filterAtt = reader.getElementAttributeValue(config, "filter");
+                        String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
                         if (filterAtt.equals(elementId)) {
-                            log.service("Configuring " + elementId +"/" + clazz);
+                            log.service("Configuring " + elementId);
                             filter.configure(reader, config);
                             found = true;
                             break;
                         }
                     }
-                    if (! found) log.service("No configuration found for filter " + elementId);
+                    if (! found) log.debug("No configuration found for filter " + elementId);
                 }
             } catch (ClassNotFoundException ex) {
                 log.error("Cannot load filter " + clazz + "\n" + ex);

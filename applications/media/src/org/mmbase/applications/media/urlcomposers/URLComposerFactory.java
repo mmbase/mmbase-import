@@ -29,7 +29,7 @@ import java.lang.reflect.*;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.4 2003-02-04 12:40:41 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.5 2003-02-04 17:43:33 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -139,8 +139,9 @@ public class URLComposerFactory  {
 
     public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
         if (urls == null) urls = new ArrayList();
-
         Format format = Format.get(source.getIntValue("format"));
+        if (log.isDebugEnabled()) log.debug("Creating url-composers for provider " + provider.getNumber() + "(" + format + ")");
+
         Iterator i = urlComposerClasses.iterator();
         boolean found = false;
         while (i.hasNext()) {
@@ -148,14 +149,16 @@ public class URLComposerFactory  {
             if (format.equals(cc.getFormat())) {
                 URLComposer uc = cc.getInstance(provider, source, fragment, info);
                 if (uc != null && ! urls.contains(uc)) { // avoid duplicates
+                    log.debug("Adding a " + uc.getClass().getName());
                     urls.add(uc);
-                }
+                } 
                 found = true;
             }
         }
         if (! found) { // use default
             URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info);
             if (uc != null && ! urls.contains(uc)) { // avoid duplicates
+                log.debug("No urlcomposer found, adding the default");
                 urls.add(uc);
             }
         }

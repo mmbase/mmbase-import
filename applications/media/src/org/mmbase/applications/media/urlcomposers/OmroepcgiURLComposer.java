@@ -21,14 +21,14 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: OmroepcgiRAMURLComposer.java,v 1.1 2003-02-03 22:50:54 michiel Exp $
+ * @version $Id: OmroepcgiURLComposer.java,v 1.1 2003-02-04 17:43:33 michiel Exp $
  * @since MMBase-1.7
  */
-public class OmroepcgiRAMURLComposer extends RamURLComposer {
+public class OmroepcgiURLComposer extends RamURLComposer {
     
     private static Logger log = Logging.getLoggerInstance(OmroepcgiRAMURLComposer.class.getName());
 
-    public OmroepcgiRAMURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+    public OmroepcgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
     }
     public Format getFormat() {

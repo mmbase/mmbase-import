@@ -20,7 +20,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealURLComposer.java,v 1.1 2003-02-03 22:50:55 michiel Exp $
+ * @version $Id: RealURLComposer.java,v 1.2 2003-02-04 17:43:33 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -60,18 +60,6 @@ public class RealURLComposer extends FragmentURLComposer  {
         return args;
     }
     
-    public boolean      isAvailable() { 
-        Boolean fragmentAvailable;
-        if (fragment != null) {
-            fragmentAvailable = (Boolean) fragment.getFunctionValue(MediaFragments.FUNCTION_AVAILABLE, null);
-        } else {
-            fragmentAvailable = Boolean.TRUE;
-        }
-        boolean sourceAvailable    = (source != null && source.getIntValue("state") == 3); // todo: use symbolic constant
-        return fragmentAvailable.booleanValue() && sourceAvailable;
-    }
-
-
 
     /**
      * Script accept times that look like dd:hh:mm:ss.th, where t is tenths of seconds.
