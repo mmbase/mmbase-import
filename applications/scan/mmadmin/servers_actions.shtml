@@ -19,9 +19,8 @@
 		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" COLSPAN=2>
 			<BR>
-			Some info needed of this node in the MMBase cluster
-			<BR>
-			<BR>
+			JVM memory size : $MOD-INFO-MEMORY-GETJVM-KB^kb - $MOD-INFO-MEMORY-GETJVM-MB^Mb<BR><BR>
+			JVM free memory : $MOD-INFO-MEMORY-GETSYS-KB^kb - $MOD-INFO-MEMORY-GETSYS-MB^Mb<BR><BR>
 		</TD>
 </TR>
 <TR>
