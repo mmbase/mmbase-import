@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.3.2.1 2003-01-09 17:44:51 robmaris Exp $
+ * @version $Id: TmpObject.java,v 1.3.2.2 2003-01-09 17:50:17 robmaris Exp $
  */
 public class TmpObject {
 
@@ -146,7 +146,7 @@ public class TmpObject {
        if (node.getDBType(name) == FieldDefs.TYPE_BYTE 
        && value instanceof String) {
           String strValue = (String) value;
-          value = Base64.decode(strValue);
+          value = Base64.decodeToBytes(strValue);
        }
        node.setValue(name, value);
     }
