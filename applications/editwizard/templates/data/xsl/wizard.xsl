@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.84 2003-03-28 18:22:57 michiel Exp $
+  @version $Id: wizard.xsl,v 1.85 2003-04-02 14:25:27 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -173,10 +173,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-        <a href="{$ew_context}/rastreams.db?{@destination}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+      <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-        <a href="{$ew_context}/rmstreams.db?{@destination}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+      <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 
@@ -579,7 +579,7 @@
           <tr>
             <td>          
               <!-- the image -->
-              <img src="{node:function($cloud, string(@destination), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
+              <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
             </td>
             <td colspan="2">
               <xsl:if test="field|fieldset">
