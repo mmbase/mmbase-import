@@ -277,5 +277,9 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     }
 
+    public void debug   (Object m){
+		Runtime rt = Runtime.getRuntime();
+		super.debug("{mem used " + (rt.totalMemory() - rt.freeMemory()) / (1024 ) + " KB}" + m);
+    };
 }
 
