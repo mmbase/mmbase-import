@@ -32,14 +32,10 @@
 
     <!-- these relations are the core of the Media project -->
 
-    <!-- should be 
     <relation from="videofragments"  to="videosources"    type="related" />
     <relation from="audiofragments"  to="audiosources"    type="related" />
-      -->
-    
-    <relation from="mediafragments"  to="mediasources"    type="related" /> <!-- to make getRelatedNodes('mediasources') possible .. -->
-    <relation from="mediasources"    to="mediaproviders"  type="related" />
 
+    <relation from="mediasources"    to="mediaproviders"  type="related" />
 
     <!-- subfragments -->
     <relation from="videofragments"  to="videofragments"  type="posrel" />
