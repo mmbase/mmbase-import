@@ -544,7 +544,7 @@ NetComponents can be found at:
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
   <target name="jar" description="Create the MMBase jar file"
-          depends="compile,taglib.tld">
+          depends="compile,taglib.tld,community.tld">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
 
@@ -1311,9 +1311,17 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <!-- Clean                                                               -->
   <!-- =================================================================== -->
+  <target
+    name="clean.build" 
+    depends="clean.compile,clean.remote,clean.junit,clean.apptool,clean.lib"
+    description="Clean all classes and generated java, safe for every recompilation"
+    >
+    <!-- junit,apptool? -->
+  </target>
+
   <target 
     name="clean"
-    depends="clean.documentation,clean.compile,clean.remote,clean.expand,clean.srcdist,clean.bindist,clean.lib,clean.junit,clean.apptool,clean.war" 
+    depends="clean.build,clean.documentation,clean.expand,clean.srcdist,clean.bindist,clean.war" 
     description="Clean everything (except for downloading)" />
 
 </project>
