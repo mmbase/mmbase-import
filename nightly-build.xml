@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.13 2003-04-28 08:24:35 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.14 2003-04-28 08:42:29 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -35,7 +35,6 @@
   <property name="sourcepackage.path" value="${destination.dir}/mmbase-src.zip"/>
   <property name="libpackage.path"    value="${destination.dir}/mmbase-lib.zip"/>
   <property name="jarpackage.path"    value="${destination.dir}/mmbase.jar"/>
-  <property name="rmmcipackage.path"  value="${destination.dir}/rmmci.jar"/>
   <property name="warpackage.file"    value="${destination.dir}/mmbase.war"/>
   <property name="minwarpackage.file" value="${destination.dir}/minimalistic-mmbase.war"/>
 
@@ -166,7 +165,6 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <target name="storebuild" depends="build.jar">
 
     <copy file="${mmbase.release.lib.dir}/mmbase.jar" tofile="${jarpackage.path}"/>
-    <copy file="${build.dir}/mmbase/rmmci.jar"  tofile="${rmmcipackage.path}"/>
     <copy todir="${destination.dir}">
       <fileset dir="${applications.build.dir}"/>
     </copy>
