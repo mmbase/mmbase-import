@@ -109,7 +109,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="25" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
