@@ -21,7 +21,7 @@ import java.io.File;
  * A cache for XSL Transformer Factories (there is one needed for every directory). 
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.1 2002-03-29 20:09:20 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.2 2002-03-30 16:32:43 michiel Exp $
  */
 public class FactoryCache extends Cache {
 
@@ -42,7 +42,7 @@ public class FactoryCache extends Cache {
         return "XSLFactories";
     }
     public String getDescription() {
-        return "A cache for XSL Transformer Factories";
+        return "XSL Transformer Factories";
     }
 
     /**

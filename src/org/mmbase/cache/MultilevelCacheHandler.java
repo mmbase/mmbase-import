@@ -24,7 +24,7 @@ import org.mmbase.util.StringTagger;
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.6 2002-03-29 21:26:55 michiel Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.7 2002-03-30 16:32:43 michiel Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 
@@ -50,7 +50,7 @@ public class MultilevelCacheHandler extends Cache {
         return "MultilevelCache";
     }
     public String getDescription() {
-        return "A cache for the results of multilevel lists";
+        return "Multi-level List Results";
     }
 
     /**
