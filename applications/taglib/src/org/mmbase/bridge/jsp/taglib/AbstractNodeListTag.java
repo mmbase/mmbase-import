@@ -119,7 +119,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setMax(String m) throws JspTagException {
-        max = getAttributeInteger(m).intValue();
+        max = getAttributeInteger(m, -1).intValue();
     }
 
     /**
