@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.0 - Building
+                     MMBase 1.7.0 - Building
 ===================================================================  
   
 This is the source distribution of the MMBase project. It includes the
@@ -54,9 +54,6 @@ In order build MMBase into your own webapplication, you must do the following:
    complete binary distribution, and start ant with this target ('ant
    bindist'). See 'ant -projecthelp' for more information about the
    different targets.
-   Please take notice the mmbase-src-1.6 dir has to
-   have a few dirs above it, because if it is in eg /tmp, you'll get
-   an error.
 
 4. Ant will now download all needed packages, unpacks them and will
    start building mmbase. All the output from the build proces

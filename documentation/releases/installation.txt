@@ -1,5 +1,5 @@
 b===================================================================
-                     MMBase 1.6.0 - Installation
+                     MMBase 1.7.0 - Installation
 ===================================================================  
   
 MMBase is distributed as a webapplication, it's not packaged as a .war
