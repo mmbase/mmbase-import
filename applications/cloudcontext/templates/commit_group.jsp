@@ -18,7 +18,7 @@
 
 <mm:node id="group" referid="group">
   <mm:context>
-    <mm:fieldlist type="edit">
+    <mm:fieldlist type="edit" fields="owner">
       <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
     <mm:import externid="_parentgroups" vartype="list" jspvar="parentgroups" /> 
