@@ -7,7 +7,7 @@
 <!-- <mm:time time="now" format=":LONG.LONG" /> user(<%= userFullName %>) -->
 <html>
   <head>
-     <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase.css" />" />
+     <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmmbase.css" />" />
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/navi.css" />" />
 <mm:node number="$portal"><mm:related path="posrel,templates">
      <mm:field id="url" name="templates.url" write="false"/> 
