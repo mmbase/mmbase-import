@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.73 2002-10-18 10:52:59 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.74 2002-10-18 11:28:15 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -309,7 +309,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @param roleID number of the role
      * @return the requested RelationManager
      */
-    RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId){
+    RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
         Enumeration e =cloudContext.mmb.getTypeRel().search(
                   "WHERE snumber="+sourceManagerId+" AND dnumber="+destinationManagerId+" AND rnumber="+roleId);
         if (!e.hasMoreElements()) {
@@ -324,7 +324,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
     }
 
-    public RelationManager getRelationManager(int number) {
+    public RelationManager getRelationManager(int number) throws NotFoundException {
         MMObjectNode n =cloudContext.mmb.getTypeDef().getNode(number);
         if (n==null) {
             throw new NotFoundException("Relation manager with number "+number+" does not exist.");
@@ -337,10 +337,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public RelationManagerList getRelationManagers() {
-        Vector v= new Vector();
-        for(Enumeration e =cloudContext.mmb.getTypeRel().search("");e.hasMoreElements();) {
-            v.add((MMObjectNode)e.nextElement());
-        }
+        Vector v= cloudContext.mmb.getTypeRel().searchVector("");
         return new BasicRelationManagerList(v,this);
     }
 
@@ -380,10 +377,36 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     public RelationManager getRelationManager(String roleName) throws NotFoundException {
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
-            String message;
             throw new NotFoundException("Role '" + roleName + "' does not exist.");
         }
         return getRelationManager(r);
+    }
+
+    public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,
+                String roleName) throws NotFoundException {
+        NodeManager n1=null;
+        if (sourceManagerName!=null) n1=getNodeManager(sourceManagerName);
+        NodeManager n2=null;
+        if (destinationManagerName!=null) n2=getNodeManager(destinationManagerName);
+        return getRelationManagers(n1,n2,roleName);
+    }
+
+    public RelationManagerList getRelationManagers(NodeManager sourceManager, NodeManager destinationManager,
+                String roleName) throws NotFoundException {
+        if (sourceManager!=null) {
+            return sourceManager.getAllowedRelations(destinationManager,roleName,null);
+        } else if (destinationManager!=null) {
+            return destinationManager.getAllowedRelations(sourceManager,roleName,null);
+        } else if (roleName!=null) {
+            int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
+            if (r==-1) {
+                throw new NotFoundException("Role '" + roleName + "' does not exist.");
+            }
+            Vector v= cloudContext.mmb.getTypeRel().searchVector("rnumber=="+r);
+            return new BasicRelationManagerList(v,this);
+        } else {
+            return getRelationManagers();
+        }
     }
 
     public boolean hasRelationManager(String roleName) {
