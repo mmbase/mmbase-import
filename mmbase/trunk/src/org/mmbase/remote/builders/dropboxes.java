@@ -1,11 +1,14 @@
 /*
 
+$Id: dropboxes.java,v 1.2 2000-02-28 16:39:27 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.remote.builders;
 
@@ -20,10 +23,14 @@ import org.mmbase.service.implementations.*;
 
 
 /**
- * @version  3 Okt 1999
+ * @version $Revision: 1.2 $ $Date: 2000-02-28 16:39:27 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder {
+
+	private String _classname = getClass().getName();
+	private boolean debug = RemoteBuilder.debug;
+	private void debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	private dropboxInterface impl;
 	private String classname;
@@ -31,6 +38,8 @@ public class dropboxes extends RemoteBuilder {
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
+		if( debug ) debug("init("+con+","+servicefile+")");
+
 		// the node was loaded allready so check what the state was
 		// and put us in ready/waiting state
 		String state=getStringValue("state");
@@ -43,20 +52,23 @@ public class dropboxes extends RemoteBuilder {
 		}
 	}
 
-	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {		
+	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {
+		if(debug) debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
-	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {		
+	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {
+		if(debug) debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
-	public void nodeChanged(String nodenr,String buildername,String ctype) {		
+	public void nodeChanged(String nodenr,String buildername,String ctype) {
+		if(debug) debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
 		// get the node
 		getNode();
 				
 		String state=getStringValue("state");
-		System.out.println("STATE="+state);
+		if(debug) debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
 		if (state.equals("version")) {
 			doVersion();
 		} else if (state.equals("restart")) {
@@ -107,7 +119,7 @@ public class dropboxes extends RemoteBuilder {
 
 	void getConfig() {
 		classname=(String)props.get("implementation");
-		System.out.println("impl="+classname);
+		if( debug ) debug("getConfig(): impl("+classname+")");p
 		try {
 			Class newclass=Class.forName(classname);
 			impl = (dropboxInterface)newclass.newInstance();
@@ -118,7 +130,7 @@ public class dropboxes extends RemoteBuilder {
 			tmp=(String)props.get("wwwpath");
 			impl.setWWWPath(tmp);
 		} catch (Exception f) {
-			System.out.println("dropbox -> Can't load class : "+classname);
+			debug("getConfig(): ERROR: Can't load class("+classname+")");
 		}
 	}
 
