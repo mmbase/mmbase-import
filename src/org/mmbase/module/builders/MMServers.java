@@ -17,8 +17,16 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
+ * mmservers stands for MMBase servers. It is possible to run multiple mmbase servers on one database instance. 
+ * Every mmserver node represent a real MMBase server(think of it as a machine where one instance of MMBase is running). 
+ * On startup MMBase looks in the mmservers table and looks if he is listed in the list of mmservers, 
+ * if not MMBase create a new node containing imfornation about itselve(name/host/os/jdk). the mmservers builder has extra behaviour, 
+ * it can communicate with other servers(using multicast). The basic funtionality it provides however is sending information 
+ * about changes of node to other mmservers (Listen !! I just have changed node 123). This mechanisme makes it possible to keep 
+ * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
+ *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos. 
  * @author  $Author: keesj $
- * @version $Id: MMServers.java,v 1.28 2004-05-06 12:34:45 keesj Exp $
+ * @version $Id: MMServers.java,v 1.29 2004-05-07 13:22:37 keesj Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -157,7 +165,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             try {
                 Thread.sleep(thisTime);
             } catch (InterruptedException e) {
-                log.debug(e.toString());
+                log.warn(Thread.currentThread().getName() +" was interruped " + e.toString());
                 break;
             }
         }
@@ -186,7 +194,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 createMySelf(machineName);
             }
         } catch (Exception e) {
-            log.error("Something went wrong in MMServers Checkup Thread" + Logging.stackTrace(e));
+            log.error("Something went wrong in MMServers Checkup Thread " + Logging.stackTrace(e));
         }
     }
 
