@@ -353,7 +353,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             JarFile jarFile = new JarFile(localname);
             return jarFile;
         } catch (Exception e) {
-            log.error("can't load : " + path);
+            log.error("can't load : " + path + " because " + e);
         }
         return null;
     }
