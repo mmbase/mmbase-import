@@ -21,6 +21,10 @@ import org.mmbase.util.logging.*;
 
 /**
  * ModuleHandler
+ * Creates a framework for calling modules.
+ * Supports calls to the methods supported by the MMBase ProcessorModules.
+ *
+ * @author Pierre van Rooden
  * @author Rob Vermeulen
  */
 public class ModuleHandler implements Module {
@@ -82,102 +86,72 @@ public class ModuleHandler implements Module {
         return mmbase_module.getName();
     }
 
-	public String getDescription() {
+    public String getDescription() {
         return mmbase_module.getModuleInfo();
     }
 
-	public String getInfo(String command) {
-	    return getInfo(command, null,null);
-	}
+    public String getInfo(String command) {
+        return getInfo(command, null,null);
+    }
 
-	public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-	    if (mmbase_module instanceof ProcessorInterface) {
-	        return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
-	    } else {
-	        String message;
+    public String getInfo(String command, ServletRequest req,  ServletResponse resp){
+        if (mmbase_module instanceof ProcessorInterface) {
+            return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
+        } else {
+            String message;
                 message = "getInfo() is not supported by this module.";
                 log.error(message);
-	        throw new BridgeException(message);
-	    }
-	}
+            throw new BridgeException(message);
+        }
+    }
 
-	public void process(String command, Object parameter) {
-	    process(command, parameter, null, null,null);
-	}
+    public void process(String command, Object parameter) {
+        process(command, parameter, null, null,null);
+    }
 
-	public void process(String command, Object parameter, Hashtable auxparameters) {
-	    process(command, parameter, auxparameters, null,null);
-	}
+    public void process(String command, Object parameter, Hashtable auxparameters) {
+        process(command, parameter, auxparameters, null,null);
+    }
 
-	public void process(String command, Object parameter, Hashtable auxparameters, ServletRequest req,  ServletResponse resp){
-	    if (mmbase_module instanceof ProcessorInterface) {
+    public void process(String command, Object parameter, Hashtable auxparameters, ServletRequest req,  ServletResponse resp){
+        if (mmbase_module instanceof ProcessorInterface) {
                 Hashtable cmds=new Hashtable();
                 if (parameter==null) { parameter="-1"; }
                 cmds.put(command,parameter);
-	        ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
+            ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
                         cmds,auxparameters);
-	    } else {
-	        String message;
+        } else {
+            String message;
                 message = "process() is not supported by this module.";
                 log.error(message);
-	        throw new BridgeException(message);
-	    }
-	}
+            throw new BridgeException(message);
+        }
+    }
 
-	public NodeList getList(String command, Hashtable parameters){
-	    return getList(command,parameters,null,null);
-	}
+    public NodeList getList(String command, Hashtable parameters){
+        return getList(command,parameters,null,null);
+    }
 
     public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
         if (mmbase_module instanceof ProcessorInterface) {
             Cloud cloud=null;
-            StringTagger params= new StringTagger("");
             if (parameters!=null) {
                 cloud=(Cloud)parameters.get("CLOUD");
-                for (Enumeration keys=parameters.keys(); keys.hasMoreElements(); ) {
-                    String key=(String)keys.nextElement();
-                    Object o = parameters.get(key);
-                    if (o instanceof Vector) {
-                        params.setValues(key,(Vector)o);
-                    } else {
-                        params.setValue(key,""+o);
-                    }
-                }
+            }
+            if (cloud==null) {
+                // anonymous access on the cloud....
+                cloud=cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
             }
             try {
-                Vector v=((ProcessorInterface)mmbase_module).getList(BasicCloudContext.getScanPage(req, resp),params,command);
-                if (v == null) {
-                    v = new Vector();
-                }
-                int items=1;
-    	        try {
-                    items=Integer.parseInt(params.Value("ITEMS"));
-                } catch (Exception e) {
-                }
-                Vector fieldlist=params.Values("FIELDS");
-                Vector res=new Vector(v.size() / items);
-                MMObjectBuilder bul;
-                bul = ((BasicCloudContext)cloudContext).mmb.getMMObject("multirelations");
-                for(int i= 0; i<v.size(); i+=items) {
-                    MMObjectNode node = new MMObjectNode(bul);
-                    for(int j= 0; (j<items) && (j<v.size()); j++) {
-                        if ((fieldlist!=null) && (j<fieldlist.size())) {
-                            node.setValue((String)fieldlist.get(j),v.get(i+j));
-                        } else {
-                            node.setValue("item"+(j+1),v.get(i+j));
-                        }
-                    }
-                    res.add(node);
-                }
+                Vector v=((ProcessorInterface)mmbase_module).getNodeList(BasicCloudContext.getScanPage(req, resp),command,parameters);
+                MMObjectBuilder bul=((ProcessorInterface)mmbase_module).getListBuilder(command,parameters);
                 NodeManager tempNodeManager = null;
-                if (cloud==null) {
-                    // anonymous access on the cloud....
-                    cloud=cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
+                if (bul.isVirtual()) {
+                   tempNodeManager = new VirtualNodeManager(bul,cloud);
+                } else {
+                   tempNodeManager = cloud.getNodeManager(bul.getTableName());
                 }
-                if (res.size()>0) {
-                    tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
-                }
-                return new BasicNodeList(res,cloud,tempNodeManager);
+                return new BasicNodeList(v,cloud,tempNodeManager);
             } catch (Exception e) {
                 String message;
                 message = e.getMessage();
