@@ -4,7 +4,7 @@
 	<td>
 	<input name="sbugid" size="4" />
 	</td>
-	<td> width="50">
+	<td width="50">
 	<select name="sstatus">
 		<option value="" />
 		<option value="1">open</option>
@@ -35,7 +35,7 @@
 	<td>
 	<input name="sversion" size="3">
 	</td>
-	<td<>
+	<td>
 	<select name="sarea">
 		<option value="" />
 		<mm:listnodes type="areas">
@@ -44,7 +44,7 @@
 	</select>
 	</td>
 	<td>
-	<input name="sissue" size="20">
+	<input name="sissue" size="20" />
 	</td>
 	<td>
 	<input type="submit" value="search" />
