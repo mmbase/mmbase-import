@@ -17,7 +17,12 @@ public class UserContext {
     }
     
     public Rank getRank() throws org.mmbase.security.SecurityException {
-    	// we need the highest rank.. to fool the security checks that we are allowed...
+        // we need the highest rank.. to fool the security checks that we are allowed...
     	return Rank.ADMIN;
-    }               
+    }
+               
+    public String toString() {
+     	return getIdentifier() + " (" + getRank() + ")";
+    }
+
 }
