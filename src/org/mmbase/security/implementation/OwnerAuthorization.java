@@ -1,5 +1,9 @@
 package org.mmbase.security.implementation;
 
+import java.util.HashMap;
+import java.io.File;
+
+import org.mmbase.util.ExtendedProperties;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.*;
@@ -23,7 +27,20 @@ public class OwnerAuthorization extends Authorization {
         return node;
     }
 
-    protected void load() {
+    public void load() {
+        if ( ! configFile.exists() ) {
+            log.error("file: '"+configFile+"' did not exist.");
+            throw new org.mmbase.security.SecurityException("file: '"+configFile+"' did not exist.");
+        }
+        if ( ! configFile.isFile() ) {
+            log.error("file: '"+configFile+"' is not a file.");
+            throw new org.mmbase.security.SecurityException("file: '"+configFile+"' is not a file.");
+        }
+        if ( ! configFile.canRead() ) {
+            log.error("file: '"+configFile+"' is not readable.");
+            throw new org.mmbase.security.SecurityException("file: '"+configFile+"' is not readable.");
+        }
+        log.debug("file for accounts loaded");
     }
 
     public void create(UserContext user, int nodeNumber) {
@@ -115,25 +132,53 @@ public class OwnerAuthorization extends Authorization {
         }
     }
     
-    // used to get some very basic functionality inside the security..
-    private static String EVERYBODY = "everybody";
-    public String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
-    	return EVERYBODY;
+    public String getContext(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {    	
+	assert(user, nodeNumber, Operation.READ);
+
+    	// and get the value...		
+	MMObjectNode node = getMMNode(nodeNumber);	
+	return node.getStringValue("owner");
     }
 
     /** 
      * This method does nothing, except from checking if the setContext was valid..
      */        
-    public void setContext(UserContext user, int nodeid, String context) throws org.mmbase.security.SecurityException {
-    	if(!EVERYBODY.equals(context)) throw new org.mmbase.security.SecurityException("unknown context");
+    public void setContext(UserContext user, int nodeNumber, String context) throws org.mmbase.security.SecurityException {
+	// check if is a valid context for us..
+	java.util.HashSet possible = getPossibleContexts(user, nodeNumber);
+	if(!possible.contains(context)) {
+	    String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user+"not a valid context";
+	    log.error(msg);
+	    throw new org.mmbase.security.SecurityException(msg);
+    	}
+	
+	// check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
+	assert(user, nodeNumber, Operation.CHANGECONTEXT);
+	
+	// well now really set it...
+	MMObjectNode node = getMMNode(nodeNumber);
+    	node.setValue("owner", user.getIdentifier());
+        node.commit();	
+	log.info("changed context settings of node #"+nodeNumber+" to context: "+context+ " by user: " +user);		
     }
     
     /** 
      * This method does nothing, except from returning a dummy value
      */        
-    public java.util.HashSet getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
-    	java.util.HashSet contexts = new java.util.HashSet();
-	contexts.add(EVERYBODY);
-	return contexts;
+    public java.util.HashSet getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+        ExtendedProperties reader = new ExtendedProperties();
+
+        log.debug("reading accounts from " + configFile);
+        java.util.Hashtable accounts = reader.readProperties(configFile.getAbsolutePath());
+
+        if (accounts == null) {
+            log.error("Could not find accounts!");
+        }
+
+        // return a list of the users possible..
+	java.util.HashSet set = new java.util.HashSet(accounts.keySet());
+	log.debug("returning possible contexts, amount of entries is:" + set.size() + " the following entries where found:" );
+	// for(java.util.Iterator i= set.iterator(); i.hasNext(); log.debug("\t"+i.next()) );    	    
+	return set;
     }    
 }
