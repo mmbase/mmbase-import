@@ -38,10 +38,8 @@ public class ContextAuthorization extends Authorization {
     protected void load() {
     	log.debug("using: '" + configFile + "' as config file for authentication");
     	try {	    
-      	    // Set up a DOM tree to query.
       	    InputSource in = new InputSource(new FileInputStream(configFile));
-      	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-      	    document = dfactory.newDocumentBuilder().parse(in);
+      	    document = org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(in);
       	}
 	catch(org.xml.sax.SAXException se) {
 	    log.error("error parsing file :"+configFile);	    
@@ -50,11 +48,6 @@ public class ContextAuthorization extends Authorization {
 	    log.error(Logging.stackTrace(se));
 	    throw new org.mmbase.security.SecurityException(message);
 	}	
-	catch(javax.xml.parsers.ParserConfigurationException pce) {
-	    log.error("error parsing file :"+configFile);
-	    log.error(Logging.stackTrace(pce));
-	    throw new org.mmbase.security.SecurityException("error loading configfile :'"+configFile+"'("+pce+")" );	
-	}		
 	catch(java.io.IOException ioe) {
 	    log.error("error parsing file :"+configFile);
 	    log.error(Logging.stackTrace(ioe));
