@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+//import org.mmbase.cache.CacheImplementation;
 import java.util.*;
 /**
  * A hashtable which has a maximum of entries.  Old entries are
@@ -17,12 +18,12 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.17 2003-05-02 20:57:18 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.18 2004-09-07 13:56:10 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
 
-    private static final String ROOT = "root";
+    private static final String ROOT     = "root";
     private static final String DANGLING = "dangling";
     /**
      * First (virtual) element of the table.
@@ -52,6 +53,8 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * The number of times an element cpould not be retrieved from the table.
      */
+
+
     private int miss;
     /**
      * The number of times an element was committed to the table.
@@ -179,22 +182,25 @@ public class LRUHashtable extends Hashtable implements Cloneable {
 
 
     /**
-     * You should only remove entries from LRUHashtable using the 'remove' function.
-     * otherwise the linked list gets messed up.
-     * The keySet of LRUHashtable therefore returns an unmodifiable set.
+     * You should only remove entries from LRUHashtable using the 'remove' function, or using the
+     * iterator of entrySet() otherwise the linked list gets messed up.  The keySet of LRUHashtable
+     * therefore returns an unmodifiable set.
      * @since MMBase-1.6.3
      */
     public Set keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
+
     /**
-     * @see   #keySet
+     * Returns the entries of this Map. Modification are reflected.
+     * 
      * @since MMBase-1.6.3
      */
     public Set entrySet() {
-        return Collections.unmodifiableSet(super.entrySet());
+        return new LRUEntrySet();
     }
-    /**
+
+    /**     
      * @see   #keySet
      * @since MMBase-1.6.3
      */
@@ -498,6 +504,49 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             return  value == LRUHashtable.this ? "[this lru]" : String.valueOf(value);
         }
 
+    }
+    /**
+     * Used by 'entrySet' implementation, to make the Map modifiable.
+     * @since MMBase-1.7.2
+     */
+    protected class LRUEntrySet extends AbstractSet {
+        Set set;
+        LRUEntrySet() {
+            set = LRUHashtable.super.entrySet();
+        }
+        public int size() {
+            return set.size();
+        }
+        public Iterator iterator() {
+            return new LRUEntrySetIterator(set.iterator());
+        }
+    }
+
+    /**
+     * Used by 'entrySet' implementation, to make the Map modifiable.
+     * @since MMBase-1.7.2
+     */
+    protected class LRUEntrySetIterator implements Iterator {
+        Iterator it;
+        LRUEntry work;
+        LRUEntrySetIterator(Iterator i ) {
+            it = i;
+        }
+        public boolean 	hasNext() {
+            return it.hasNext();
+        }
+        public Object next() {
+            Map.Entry entry = (Map.Entry) it.next();
+            work = (LRUEntry) entry.getValue();
+            return work;
+        }
+        public void remove() {
+            it.remove();
+            if (work != null) {
+                LRUHashtable.this.removeEntry(work);
+                LRUHashtable.this.currentSize--;
+            } 
+        }
     }
 
 
