@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.9 2004-01-06 13:18:10 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.10 2004-01-12 14:59:52 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -163,31 +163,16 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     }
 
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
-        try {
-            return factory.getStorageManager().create(node);
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        return factory.getStorageManager().create(node);
     }
 
     public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
-        try {
-            factory.getStorageManager().change(node);
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().change(node);
+        return true;
     }
 
     public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
-        try {
-            factory.getStorageManager().delete(node);
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().delete(node);
     }
 
     /**
@@ -197,12 +182,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * @return unique number
      */
     public int getDBKey() {
-        try {
-            return factory.getStorageManager().createKey();
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        return factory.getStorageManager().createKey();
     }
 
     public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
@@ -220,41 +200,26 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     }
 
     public boolean created(String tableName) {
-        try {
-            DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
-            // getValue is protected, so can call it from the same package..
-            // also call getStorageIdentifier to take into account any case-sensitivity
-            return sm.exists((String)factory.getStorageIdentifier(tableName));
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
+        // getValue is protected, so can call it from the same package..
+        // also call getStorageIdentifier to take into account any case-sensitivity
+        return sm.exists((String)factory.getStorageIdentifier(tableName));
     }
 
     public boolean create(MMObjectBuilder bul) {
-        try {
-            StorageManager mn = factory.getStorageManager();
-            if (bul.getTableName().equals("object")) {
-                mn.create();
-            } else {
-                mn.create(bul);
-            }
-            return true;
-        } catch (StorageException se) {
-            log.error(Logging.stackTrace(se));
-            throw new StorageError(se);
+        StorageManager mn = factory.getStorageManager();
+        if (bul.getTableName().equals("object")) {
+            mn.create();
+        } else {
+            mn.create(bul);
         }
+        return true;
     }
 
     public boolean createObjectTable(String baseName) {
-        try {
-            StorageManager mn = factory.getStorageManager();
-            if (!mn.exists()) mn.create();
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        StorageManager mn = factory.getStorageManager();
+        if (!mn.exists()) mn.create();
+        return true;
     }
 
     public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
@@ -300,78 +265,41 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     }
 
     public boolean drop(MMObjectBuilder bul) {
-        try {
-            factory.getStorageManager().delete(bul);
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().delete(bul);
+        return true;
     }
 
 
     public boolean updateTable(MMObjectBuilder bul) {
-        try {
-            factory.getStorageManager().change(bul);
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().change(bul);
+        return true;
     }
 
     public boolean addField(MMObjectBuilder bul,String dbname) {
-        try {
-            factory.getStorageManager().create(bul.getField(dbname));
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().create(bul.getField(dbname));
+        return true;
     }
 
     public boolean removeField(MMObjectBuilder bul,String dbname) {
-        try {
-            factory.getStorageManager().delete(bul.getField(dbname));
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().delete(bul.getField(dbname));
+        return true;
     }
 
     public boolean changeField(MMObjectBuilder bul,String dbname) {
-        try {
-            factory.getStorageManager().change(bul.getField(dbname));
-            return true;
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
+        factory.getStorageManager().change(bul.getField(dbname));
+        return true;
     }
 
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
-        try {
-            return factory.getSearchQueryHandler().getSupportLevel(feature, query);
-        } catch (StorageException se) {
-            throw new SearchQueryException(se);
-        }
+        return factory.getSearchQueryHandler().getSupportLevel(feature, query);
     }
 
     public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException {
-        try {
-            return factory.getSearchQueryHandler().getSupportLevel(constraint, query);
-        } catch (StorageException se) {
-            throw new SearchQueryException(se);
-        }
+        return factory.getSearchQueryHandler().getSupportLevel(constraint, query);
     }
 
     public List getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
-        try {
-            return factory.getSearchQueryHandler().getNodes(query, builder);
-        } catch (StorageException se) {
-            throw new SearchQueryException(se);
-        }
+        return factory.getSearchQueryHandler().getNodes(query, builder);
     }
 }
 
