@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.22 2003-12-11 13:05:26 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.23 2004-01-29 16:00:00 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -85,7 +85,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     /**
-     * Wether the 'LOWER' function needs to be used to implement case insensitivity. This is 
+     * Wether the 'LOWER' function needs to be used to implement case insensitivity. This is
      * not always the case, because some database only match case insensitively, in which case it
      * does not make sense to lowercase.
      */
@@ -232,7 +232,7 @@ public class BasicSqlHandler implements SqlHandler {
         List lFields = new ArrayList();
         lFields.addAll(query.getFields());
 
-        // When 'distinct', make sure all fields used for sorting are 
+        // When 'distinct', make sure all fields used for sorting are
         // included in the query.
         // Some databases require this (including PostgreSQL).
         // By fixing this here, the result of the query remains consistent
@@ -283,19 +283,19 @@ public class BasicSqlHandler implements SqlHandler {
                     case AggregatedField.AGGREGATION_TYPE_COUNT:
                         sb.append("COUNT(");
                         break;
-                        
+
                     case AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT:
                         sb.append("COUNT(DISTINCT ");
                         break;
-                        
+
                     case AggregatedField.AGGREGATION_TYPE_MIN:
                         sb.append("MIN(");
                         break;
-                        
+
                     case AggregatedField.AGGREGATION_TYPE_MAX:
                         sb.append("MAX(");
                         break;
-                        
+
                     default:
                         throw new IllegalStateException("Invalid aggregationType value: " + aggregationType);
                     }
@@ -542,14 +542,14 @@ public class BasicSqlHandler implements SqlHandler {
      * Appends the 'LIKE' operator for the given case sensitiviy. Some databases support a case
      * insensitive LIKE ('ILIKE'). Implementations for those database can override this method.
      *
-     * @return The string buffer. 
+     * @return The string buffer.
      */
     protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         sb.append(" LIKE ");
         return sb;
     }
 
-    
+
     /*
     protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
         sb.append(" ~ ");
@@ -640,9 +640,13 @@ public class BasicSqlHandler implements SqlHandler {
             } else if (fieldConstraint instanceof FieldCompareConstraint) {
 
                 // Field compare constraint
-                FieldCompareConstraint fieldCompareConstraint
-                = (FieldCompareConstraint) fieldConstraint;
-                sb.append(overallInverse? "NOT ": "");
+                FieldCompareConstraint fieldCompareConstraint = (FieldCompareConstraint) fieldConstraint;
+
+                // append NOT operator
+                // note that this may not be the most effecient way to add an inversde,
+                // i.e. 'NOT LIKE' may be faster than negating a 'LIKE'
+                if (overallInverse) sb.append("NOT (");
+
                 if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
                     sb.append("LOWER(");
@@ -657,27 +661,27 @@ public class BasicSqlHandler implements SqlHandler {
                 case FieldValueConstraint.LESS:
                     sb.append("<");
                     break;
-                    
+
                 case FieldValueConstraint.LESS_EQUAL:
                     sb.append("<=");
                     break;
-                    
+
                 case FieldValueConstraint.EQUAL:
                     sb.append("=");
                     break;
-                    
+
                 case FieldValueConstraint.NOT_EQUAL:
                     sb.append("<>");
                     break;
-                    
+
                 case FieldValueConstraint.GREATER:
                     sb.append(">");
                     break;
-                    
+
                 case FieldValueConstraint.GREATER_EQUAL:
                     sb.append(">=");
                     break;
-                    
+
                 case FieldValueConstraint.LIKE:
                     appendLikeOperator(sb, fieldConstraint.isCaseSensitive());
                     break;
@@ -687,7 +691,7 @@ public class BasicSqlHandler implements SqlHandler {
                     break;
                     */
                 default:
-                    throw new IllegalStateException("Unknown operator value in constraint: " 
+                    throw new IllegalStateException("Unknown operator value in constraint: "
                                                     + fieldCompareConstraint.getOperator());
                 }
                 if (fieldCompareConstraint instanceof FieldValueConstraint) {
@@ -718,6 +722,8 @@ public class BasicSqlHandler implements SqlHandler {
                     "Unknown constraint type: "
                     + constraint.getClass().getName());
                 }
+                if (overallInverse) sb.append(")");
+
             } else {
                 throw new UnsupportedOperationException(
                 "Unknown constraint type: "
