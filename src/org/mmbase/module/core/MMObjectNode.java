@@ -852,6 +852,9 @@ public class MMObjectNode {
 			        }
 			    }
 		    }
+		} else {
+			// Logging type = warning
+			debug ("getRelationCount is requested with an invalid Builder name (otype "+wantedtype+" does not exist)");
 		}
 		return count;
 	}
