@@ -20,26 +20,26 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.15 2003-03-10 11:50:59 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.16 2003-03-13 17:07:40 pierre Exp $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
 
 public class BasicSqlHandler implements SqlHandler {
-    
+
     /** Empty StepField array. */
     private static final StepField[] STEP_FIELD_ARRAY = new StepField[0];
-    
+
     /** Logger instance. */
     private static Logger log
     = Logging.getLoggerInstance(SearchQueryHandler.class.getName());
-    
+
     /** MMBase instance. */
     private MMBase mmbase = null;
-    
+
     /** Disallowed table/fieldnames mapped to allowed alternatives. */
     private Map disallowed2Allowed = null;
-    
+
     /**
      * Utility method, modifies strings for use in SQL statements.
      * This amounts to replacing all single quotes by two single quotes.
@@ -70,7 +70,7 @@ public class BasicSqlHandler implements SqlHandler {
         }
         return result;
     }
-    
+
     /**
      * Tests if a case sensitivity for a field constraint is false
      * and relevant, i.e. the constraint is set to case insensitive and
@@ -86,15 +86,15 @@ public class BasicSqlHandler implements SqlHandler {
         && (constraint.getField().getType() == FieldDefs.TYPE_STRING
         || constraint.getField().getType() == FieldDefs.TYPE_XML);
     }
-    
+
     /**
-     * Represents field value as a string, appending the result to a 
+     * Represents field value as a string, appending the result to a
      * stringbuffer.
      * <p>
      * Depending on the fieldType:
      * <ul>
-     * <li> String values are converted to SQL-formatted string, 
-     *  surrounded by single quotes, 
+     * <li> String values are converted to SQL-formatted string,
+     *  surrounded by single quotes,
      * <li>Numerical values are represented as integer (integral values)
      *  or floating point.
      * </ul>
@@ -122,12 +122,12 @@ public class BasicSqlHandler implements SqlHandler {
             append(stringValue).
             append("'");
         } else {
-            // Numerical field: 
-            // represent integeral Number values as integer, other 
+            // Numerical field:
+            // represent integeral Number values as integer, other
             // Number values as floating point, and String values as-is.
             if (value instanceof Number) {
                 Number numberValue = (Number) value;
-                if (numberValue.doubleValue() 
+                if (numberValue.doubleValue()
                         == numberValue.intValue()) {
                     // Integral Number value.
                     sb.append(numberValue.intValue());
@@ -141,7 +141,7 @@ public class BasicSqlHandler implements SqlHandler {
             }
         }
     }
-    
+
     /**
      * Constructor.
      *
@@ -153,14 +153,14 @@ public class BasicSqlHandler implements SqlHandler {
         mmbase = MMBase.getMMBase();
         disallowed2Allowed = new HashMap(disallowedValues);
     }
-    
+
     // javadoc is inherited
     // TODO: (later) what exception to throw when an unsupported feature is
     // encountered (currently throws UnsupportedOperationException).
     public String toSql(SearchQuery query, SqlHandler firstInChain)
     throws SearchQueryException {
         // TODO: (later) test table and field aliases for uniqueness.
-        
+
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
             throw new IllegalStateException(
@@ -170,75 +170,75 @@ public class BasicSqlHandler implements SqlHandler {
             throw new IllegalStateException(
             "Searchquery has no field (at least 1 field is required).");
         }
-        
+
         // Test maxNumber set to default.
         if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
             throw new UnsupportedOperationException(
             "Value of maxNumber other than "
             + SearchQuery.DEFAULT_MAX_NUMBER + " not supported.");
         }
-        
+
         // Test offset set to default (= 0).
         if (query.getOffset() != SearchQuery.DEFAULT_OFFSET) {
             throw new UnsupportedOperationException(
             "Value of offset other than "
             + SearchQuery.DEFAULT_OFFSET + " not supported.");
         }
-        
+
         // SELECT
         StringBuffer sbQuery = new StringBuffer("SELECT ");
-        
+
         // DISTINCT
         if (query.isDistinct()) {
             sbQuery.append("DISTINCT ");
         }
-        
+
         firstInChain.appendQueryBodyToSql(sbQuery, query, firstInChain);
-        
+
         String strSQL = sbQuery.toString();
         if (log.isDebugEnabled()) {
             log.debug("generated SQL: " + strSQL);
         }
         return strSQL;
     }
-    
+
     // javadoc is inherited
     public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query,
     SqlHandler firstInChain)
     throws SearchQueryException {
-        
+
         // Buffer expressions for included nodes, like
         // "x.number in (...)".
         StringBuffer sbNodes = new StringBuffer();
-        
+
         // Buffer expressions for relations, like
         // "x.number = r.snumber AND y.number = r.dnumber".
         StringBuffer sbRelations = new StringBuffer();
-        
+
         // Buffer fields to group by, like
         // "alias1, alias2, ..."
         StringBuffer sbGroups = new StringBuffer();
-        
+
         boolean multipleSteps = query.getSteps().size() > 1;
-        
+
         // Fields expression
         Iterator iFields = query.getFields().iterator();
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            
+
             // Fieldname prefixed by table alias.
             Step step = field.getStep();
             String fieldName = field.getFieldName();
             String fieldAlias = field.getAlias();
-            
+
             if (field instanceof AggregatedField) {
                 int aggregationType
                 = ((AggregatedField) field).getAggregationType();
                 if (aggregationType == AggregatedField.AGGREGATION_TYPE_GROUP_BY) {
-                    
+
                     // Group by.
                     appendField(sb, step, fieldName, multipleSteps);
-                    
+
                     // Append to "GROUP BY"-buffer.
                     if (sbGroups.length() > 0) {
                         sbGroups.append(",");
@@ -246,29 +246,29 @@ public class BasicSqlHandler implements SqlHandler {
                     if (fieldAlias != null) {
                         sbGroups.append(getAllowedValue(fieldAlias));
                     } else {
-                        appendField(sbGroups, step, 
+                        appendField(sbGroups, step,
                             fieldName, multipleSteps);
                     }
                 } else {
-                    
+
                     // Aggregate function.
                     switch (aggregationType) {
                         case AggregatedField.AGGREGATION_TYPE_COUNT:
                             sb.append("COUNT(");
                             break;
-                            
+
                         case AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT:
                             sb.append("COUNT(DISTINCT ");
                             break;
-                            
+
                         case AggregatedField.AGGREGATION_TYPE_MIN:
                             sb.append("MIN(");
                             break;
-                            
+
                         case AggregatedField.AGGREGATION_TYPE_MAX:
                             sb.append("MAX(");
                             break;
-                            
+
                         default:
                             throw new IllegalStateException(
                             "Invalid aggregationType value: " + aggregationType);
@@ -276,24 +276,24 @@ public class BasicSqlHandler implements SqlHandler {
                     appendField(sb, step, fieldName, multipleSteps);
                     sb.append(")");
                 }
-                
+
             } else {
-                
+
                 // Non-aggregate field.
                 appendField(sb, step, fieldName, multipleSteps);
             }
-            
+
             // Field alias.
             if (fieldAlias != null) {
                 sb.append(" AS ")
                 .append(getAllowedValue(fieldAlias));
             }
-            
+
             if (iFields.hasNext()) {
                 sb.append(",");
             }
         }
-        
+
         // Tables
         sb.append(" FROM ");
         Iterator iSteps = query.getSteps().iterator();
@@ -301,17 +301,17 @@ public class BasicSqlHandler implements SqlHandler {
             Step step = (Step) iSteps.next();
             String tableName = step.getTableName();
             String tableAlias = step.getAlias();
-            
+
             // Tablename, prefixed with basename and underscore
             sb.append(mmbase.getBaseName()).
             append("_").
             //Currently no replacement strategy is implemented for
             //invalid tablenames.
-            //This would be useful, but requires modification to 
+            //This would be useful, but requires modification to
             //the insert/update/delete code as well.
             //append(getAllowedValue(tableName));
             append(tableName);
-            
+
             // Table alias (tablename when table alias not set).
             if (tableAlias != null) {
                 sb.append(" ").
@@ -320,11 +320,11 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append(" ").
                 append(getAllowedValue(tableName));
             }
-            
+
             if (iSteps.hasNext()) {
                 sb.append(",");
             }
-            
+
             // Included nodes.
             SortedSet nodes = step.getNodes();
             if (nodes.size() > 0) {
@@ -343,7 +343,7 @@ public class BasicSqlHandler implements SqlHandler {
                 }
                 sbNodes.append(")");
             }
-            
+
             // Relation steps.
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
@@ -368,7 +368,7 @@ public class BasicSqlHandler implements SqlHandler {
                             sbRelations.append("<>1");
                         }
                         break;
-                        
+
                     case RelationStep.DIRECTIONS_DESTINATION:
                         sbRelations.append("(");
                         appendField(sbRelations, previousStep, "number", multipleSteps);
@@ -379,9 +379,9 @@ public class BasicSqlHandler implements SqlHandler {
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
                         break;
-                        
+
                     case RelationStep.DIRECTIONS_BOTH:
-                        sbRelations.append("((");
+                        sbRelations.append("(((");
                         appendField(sbRelations, previousStep, "number", multipleSteps);
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
@@ -402,9 +402,9 @@ public class BasicSqlHandler implements SqlHandler {
                         appendField(sbRelations, nextStep, "number", multipleSteps);
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        sbRelations.append(")");
+                        sbRelations.append("))");
                         break;
-                        
+
                     default: // Invalid directionality value.
                         throw new IllegalStateException(
                         "Invalid directionality value: " + relationStep.getDirectionality());
@@ -418,7 +418,7 @@ public class BasicSqlHandler implements SqlHandler {
                 sbRelations.append(")");
             }
         }
-        
+
         // Constraints
         StringBuffer sbConstraints = new StringBuffer();
         sbConstraints.append(sbNodes); // Constraints by included nodes.
@@ -457,13 +457,13 @@ public class BasicSqlHandler implements SqlHandler {
             sb.append(" WHERE ").
             append(sbConstraints.toString());
         }
-        
+
         // GROUP BY
         if (sbGroups.length() > 0) {
             sb.append(" GROUP BY ").
             append(sbGroups.toString());
         }
-        
+
         // ORDER BY
         List sortOrders = query.getSortOrders();
         if (sortOrders.size() > 0) {
@@ -471,7 +471,7 @@ public class BasicSqlHandler implements SqlHandler {
             Iterator iSortOrders = sortOrders.iterator();
             while (iSortOrders.hasNext()) {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
-                
+
                 // Field alias.
                 String fieldAlias = sortOrder.getField().getAlias();
                 Step step = sortOrder.getField().getStep();
@@ -480,51 +480,51 @@ public class BasicSqlHandler implements SqlHandler {
                 } else {
                     appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
                 }
-                
+
                 // Sort direction.
                 switch (sortOrder.getDirection()) {
                     case SortOrder.ORDER_ASCENDING:
                         sb.append(" ASC");
                         break;
-                        
+
                     case SortOrder.ORDER_DESCENDING:
                         sb.append(" DESC");
                         break;
-                        
+
                     default: // Invalid direction value.
                         throw new IllegalStateException(
                         "Invalid direction value: " + sortOrder.getDirection());
                 }
-                
+
                 if (iSortOrders.hasNext()) {
                     sb.append(",");
                 }
             }
         }
     }
-    
+
     // javadoc is inherited
     // TODO: (later) what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException).
     public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite) {
-        
+
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ constraint.isInverse();
-        
+
         boolean multipleSteps = query.getSteps().size() > 1;
-        
+
         if (constraint instanceof FieldConstraint) {
-            
+
             // Field constraint
             FieldConstraint fieldConstraint = (FieldConstraint) constraint;
             StepField field = fieldConstraint.getField();
             int fieldType = field.getType();
             String fieldName = field.getFieldName();
             Step step = field.getStep();
-            
+
             if (fieldConstraint instanceof FieldValueInConstraint) {
-                
+
                 // Field value-in constraint
                 FieldValueInConstraint valueInConstraint
                 = (FieldValueInConstraint) fieldConstraint;
@@ -547,16 +547,16 @@ public class BasicSqlHandler implements SqlHandler {
                 Iterator iValues = values.iterator();
                 while (iValues.hasNext()) {
                     Object value = iValues.next();
-                    appendFieldValue(sb, value, 
+                    appendFieldValue(sb, value,
                         !fieldConstraint.isCaseSensitive(), fieldType);
                     if (iValues.hasNext()) {
                         sb.append(",");
                     }
                 }
                 sb.append(")");
-                
+
             } else if (fieldConstraint instanceof FieldValueBetweenConstraint) {
-                
+
                 // Field value-between constraint
                 FieldValueBetweenConstraint valueBetweenConstraint
                 = (FieldValueBetweenConstraint) fieldConstraint;
@@ -575,15 +575,15 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append(" AND ");
                 appendFieldValue(sb, valueBetweenConstraint.getUpperLimit(),
                     !fieldConstraint.isCaseSensitive(), fieldType);
-                
+
             } else if (fieldConstraint instanceof FieldNullConstraint) {
-                
+
                 // Field null constraint
                 appendField(sb, step, fieldName, multipleSteps);
                 sb.append(overallInverse? " IS NOT NULL": " IS NULL");
-                
+
             } else if (fieldConstraint instanceof FieldCompareConstraint) {
-                
+
                 // Field compare constraint
                 FieldCompareConstraint fieldCompareConstraint
                 = (FieldCompareConstraint) fieldConstraint;
@@ -601,31 +601,31 @@ public class BasicSqlHandler implements SqlHandler {
                     case FieldValueConstraint.LESS:
                         sb.append("<");
                         break;
-                        
+
                     case FieldValueConstraint.LESS_EQUAL:
                         sb.append("<=");
                         break;
-                        
+
                     case FieldValueConstraint.EQUAL:
                         sb.append("=");
                         break;
-                        
+
                     case FieldValueConstraint.NOT_EQUAL:
                         sb.append("<>");
                         break;
-                        
+
                     case FieldValueConstraint.GREATER:
                         sb.append(">");
                         break;
-                        
+
                     case FieldValueConstraint.GREATER_EQUAL:
                         sb.append(">=");
                         break;
-                        
+
                     case FieldValueConstraint.LIKE:
                         sb.append(" LIKE ");
                         break;
-                        
+
                     default:
                         throw new IllegalStateException(
                         "Unknown operator value in constraint: "
@@ -636,7 +636,7 @@ public class BasicSqlHandler implements SqlHandler {
                     FieldValueConstraint fieldValueConstraint
                     = (FieldValueConstraint) fieldCompareConstraint;
                     Object value = fieldValueConstraint.getValue();
-                    appendFieldValue(sb, value, 
+                    appendFieldValue(sb, value,
                         !fieldConstraint.isCaseSensitive(), fieldType);
                 } else if (fieldCompareConstraint instanceof CompareFieldsConstraint) {
                     // CompareFieldsConstraint
@@ -689,7 +689,7 @@ public class BasicSqlHandler implements SqlHandler {
             + constraint.getClass().getName());
         }
     }
-    
+
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query)
     throws SearchQueryException {
@@ -702,7 +702,7 @@ public class BasicSqlHandler implements SqlHandler {
                     result = SearchQueryHandler.SUPPORT_NONE;
                 }
                 break;
-                
+
             case SearchQueryHandler.FEATURE_OFFSET:
                 if (query.getOffset() == SearchQuery.DEFAULT_OFFSET) {
                     result = SearchQueryHandler.SUPPORT_OPTIMAL;
@@ -710,19 +710,19 @@ public class BasicSqlHandler implements SqlHandler {
                     result = SearchQueryHandler.SUPPORT_NONE;
                 }
                 break;
-                
+
             default:
                 result = SearchQueryHandler.SUPPORT_NONE;
         }
         return result;
     }
-    
+
     // javadoc is inherited
     public int getSupportLevel(Constraint constraint, SearchQuery query)
     throws SearchQueryException {
         return constraint.getBasicSupportLevel();
     }
-    
+
     // javadoc is inherited
     public String getAllowedValue(String value) {
         if (value == null) {
@@ -735,7 +735,7 @@ public class BasicSqlHandler implements SqlHandler {
         }
         return allowedValue;
     }
-    
+
     /**
      * Represents a CompositeConstraint object as a constraint in SQL format,
      * appending the result to a stringbuffer.
@@ -758,10 +758,10 @@ public class BasicSqlHandler implements SqlHandler {
     StringBuffer sb, CompositeConstraint compositeConstraint, SearchQuery query,
     boolean inverse, boolean inComposite, SqlHandler firstInChain)
     throws SearchQueryException {
-        
+
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ compositeConstraint.isInverse();
-        
+
         String strOperator = null;
         if (compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_AND) {
             if (overallInverse) {
@@ -785,22 +785,22 @@ public class BasicSqlHandler implements SqlHandler {
             + CompositeConstraint.LOGICAL_OR);
         }
         List childs = compositeConstraint.getChilds();
-        
+
         // Test for at least 1 child.
         if (childs.isEmpty()) {
             throw new IllegalStateException(
             "Composite constraint has no child "
             + "(at least 1 child is required).");
         }
-        
+
         boolean hasMultipleChilds = childs.size() > 1;
-        
+
         // Opening parenthesis, when part of composite expression
         // and with multiple childs.
         if (inComposite && hasMultipleChilds) {
             sb.append("(");
         }
-        
+
         // Recursively append all childs.
         Iterator iChilds = childs.iterator();
         while (iChilds.hasNext()) {
@@ -808,7 +808,7 @@ public class BasicSqlHandler implements SqlHandler {
             if (child instanceof CompositeConstraint) {
                 // Child is composite constraint.
                 appendCompositeConstraintToSql(
-                    sb, (CompositeConstraint) child, query, 
+                    sb, (CompositeConstraint) child, query,
                     overallInverse, hasMultipleChilds, firstInChain);
             } else {
                 // Child is non-composite constraint.
@@ -819,14 +819,14 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append(strOperator);
             }
         }
-        
+
         // Closing parenthesis, when part of composite expression
         // and with multiple childs.
         if (inComposite && hasMultipleChilds) {
             sb.append(")");
         }
     }
-    
+
     /**
      *
      * @param includeTablePrefix <code>true</code> when the fieldname must be
@@ -834,9 +834,9 @@ public class BasicSqlHandler implements SqlHandler {
      *        <code>false</code> otherwise.
      */
     // TODO RvM: add to interface, add javadoc
-    protected void appendField(StringBuffer sb, Step step, 
+    protected void appendField(StringBuffer sb, Step step,
             String fieldName, boolean includeTablePrefix) {
-        
+
         String tableAlias = step.getAlias();
         if (includeTablePrefix) {
             if (tableAlias != null) {
@@ -848,5 +848,5 @@ public class BasicSqlHandler implements SqlHandler {
         }
         sb.append(getAllowedValue(fieldName));
     }
-    
+
 }
