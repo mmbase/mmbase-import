@@ -22,11 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * ImageCaches (aka as 'icaches') is a system-like builder used by
- * builders with the 'Images' class. It contains the converted images. 
+ * builders with the 'Images' class. It contains the converted images.
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.34 2003-12-17 20:59:37 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.35 2004-02-06 14:26:03 pierre Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -36,7 +36,7 @@ public class ImageCaches extends AbstractImages {
 
     private CKeyCache handleCache = new CKeyCache(128) {  // a few images are in memory cache.
             public String getName()        { return "ImageHandles"; }
-            public String getDescription() { return "Handles of Images (ckey -> handle)"; }           
+            public String getDescription() { return "Handles of Images (ckey -> handle)"; }
         };
 
     public ImageCaches() {
@@ -61,7 +61,7 @@ public class ImageCaches extends AbstractImages {
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters a) {
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) a.get("request");
-        if (req != null) {            
+        if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
             servlet.append(getServletPath());
@@ -102,7 +102,7 @@ public class ImageCaches extends AbstractImages {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(2); // to make sure this is a cheap query.
             StepField ckeyField = query.getField(getField("ckey"));
-            query.setConstraint(new BasicFieldValueConstraint(ckeyField, ckey));            
+            query.setConstraint(new BasicFieldValueConstraint(ckeyField, ckey));
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
             log.error(e.toString());
@@ -165,38 +165,38 @@ public class ImageCaches extends AbstractImages {
      */
     public byte[] getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
-	if(handleCache.contains(ckey)) {
-	    // found the node in the cache..
-	    return (byte []) handleCache.get(ckey);
-	}
-	log.debug("not found in handle cache, getting it from database.");
-	int number = getCachedNodeNumber(ckey);
+        if(handleCache.contains(ckey)) {
+            // found the node in the cache..
+            return (byte []) handleCache.get(ckey);
+        }
+        log.debug("not found in handle cache, getting it from database.");
+        int number = getCachedNodeNumber(ckey);
 
-	if (number == -1) {
-	    // we dont have a cachednode yet, return null	    
-	    log.debug("cached node not found for key (" + ckey + "), returning null");
-	    return null;
-	}
+        if (number == -1) {
+            // we dont have a cachednode yet, return null
+            log.debug("cached node not found for key (" + ckey + "), returning null");
+            return null;
+        }
 
-	// cached node can be found with the number nunmber
-	byte data[] = getImageBytes(number);
-        
-	if (data == null) {
-	    // if it didn't work, also cache this result, to avoid concluding that again..
-	    // should this trow an exception every time? I think so, otherwise we would generate an
-	    // image every time it is requested, which also net very handy...
-	    // handleCache.put(ckey, new byte[0]);
-	    // this should be done differenty.
-	    String msg = "The node(#"+number+") which should contain the cached result for ckey:" + ckey + " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
-	    log.error(msg);
-	    throw new RuntimeException(msg);	  
-	}
+        // cached node can be found with the number nunmber
+        byte data[] = getImageBytes(number);
 
-	// is this not configurable?
-	// only cache small images.
-	if (data.length< (100*1024))  {
-	    handleCache.put(ckey, data);
-	}
+        if (data == null) {
+            // if it didn't work, also cache this result, to avoid concluding that again..
+            // should this trow an exception every time? I think so, otherwise we would generate an
+            // image every time it is requested, which also net very handy...
+            // handleCache.put(ckey, new byte[0]);
+            // this should be done differenty.
+            String msg = "The node(#"+number+") which should contain the cached result for ckey:" + ckey + " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
+            log.error(msg);
+            throw new RuntimeException(msg);
+        }
+
+        // is this not configurable?
+        // only cache small images.
+        if (data.length< (100*1024))  {
+            handleCache.put(ckey, data);
+        }
         return data;
     }
 
@@ -289,4 +289,4 @@ public class ImageCaches extends AbstractImages {
 
 
 }
- 
+
