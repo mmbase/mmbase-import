@@ -4,7 +4,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.7 2002-11-08 19:50:00 michiel Exp $
+#  $Id: cvsmail,v 1.8 2002-11-08 19:52:55 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -18,6 +18,7 @@ my $dir = shift @files;
 
 my $basedir = "/home/michiel/";
 my $toaddress     = "cvs\@mmbase.org";
+my $cvs     = "/usr/local/bin/cvs";
 
 # mail too
 my $child;
@@ -35,7 +36,7 @@ if ($child = fork()) {
     my $cvsuser = $user;
     {
 	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
-	my $logline =  `cvs log -r $fil | grep author:`;
+	my $logline =  `$cvs log -r $fil | grep author:`;
 	if ($logline =~ /author: (.*)/) {
 	    $cvsuser = $1;
 	}
@@ -69,7 +70,7 @@ if ($child = fork()) {
 		if ($oldversion =~ /NONE/) {
 		    print $mail "$fil is new\n\n";
 		} else {
-		    print $mail `cvs diff -c2 -b -r$oldversion -r$newversion $fil`;
+		    print $mail `$cvs diff -c2 -b -r$oldversion -r$newversion $fil`;
 		}
 	    }
 	    
