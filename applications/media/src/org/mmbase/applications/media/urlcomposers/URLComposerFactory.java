@@ -26,16 +26,19 @@ import java.lang.reflect.*;
  * which can be extended for your situation (The class can be configured in
  * the mediaproviders builder xml)
  *
- * This particular implementation provides the possiblility to relate
- * formats to URLComposer classes.
+ * This particular implementation provides the possibility to relate
+ * formats to URLComposer classes. It can also relate a
+ * format/protocol combination to a URLComposer class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.9 2003-02-18 14:07:46 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.10 2003-02-18 17:08:58 michiel Exp $
  */
 
 public class URLComposerFactory  {
 
     private static Logger log = Logging.getLoggerInstance(URLComposerFactory.class.getName());
+
+    // XML tags:
     private static final String MAIN_TAG     = "urlcomposers";
     private static final String DEFAULT_TAG  = "default";
     private static final String COMPOSER_TAG = "urlcomposer";
@@ -44,8 +47,14 @@ public class URLComposerFactory  {
 
     private static final Class defaultComposerClass = URLComposer.class;
 
-  
+ 
     private static URLComposerFactory instance = new URLComposerFactory();
+
+    /**
+     * Container class te represent one configuration item, which is a
+     * format/protocol/URLComposer-class combination. The factory
+     * maintains a List of these.
+     */
 
     private static class ComposerConfig {
         private static Class[] constructorArgs = new Class[] {
@@ -85,9 +94,11 @@ public class URLComposerFactory  {
         
         
     }
-
+    // this is the beforementioned list.
     private List urlComposerClasses = new ArrayList();
+
     private ComposerConfig defaultUrlComposer;
+
 
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -97,7 +108,7 @@ public class URLComposerFactory  {
     
 
     /**
-     * Construct the MainFilter
+     * Construct the factory, which is a Singleton.
      */
     private URLComposerFactory() {
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), 
@@ -115,7 +126,7 @@ public class URLComposerFactory  {
 
 
     /**
-     * read the MainFilter configuration
+     * read the factory's  configuration, which is the file 'urlcomposers.xml' in config/media/
      */
     private synchronized void readConfiguration(File configFile) {
         if (log.isServiceEnabled()) {
@@ -148,6 +159,9 @@ public class URLComposerFactory  {
     }
 
 
+    /**
+     * Returns the one instance.
+     */
 
     public  static URLComposerFactory getInstance() {
         return instance;
@@ -201,6 +215,20 @@ public class URLComposerFactory  {
         return false;
     }
 
+    /**
+     * When the provider/source/fragment combo is determined they can
+     * be fed into this function of the urlcomposerfactory, which will
+     * then produce zero or more urlcomposers. They are added to the
+     * provided list, or a new list will be made if the argument List
+     * is 'null'.
+     *     
+     * @param provider MMObjectNode
+     * @param source   MMObjectNode
+     * @param info     A Map with additional options 
+     * @param urls     A List with URLComposer to which the new ones must be added, or null.
+     *
+     * @return The (new) list with urlcomposers.
+     */
 
     public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
         if (urls == null) urls = new ArrayList();

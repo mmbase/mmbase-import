@@ -19,10 +19,15 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * Sorts on format of the source, preferred formats can be can be configured with the filters.xml.
+ * Sorts on format of the source, preferred formats can be can be
+ * configured with the filters.xml. This is called 'server'
+ * formatsorter, because this preference is configured on the server,
+ * rather then on the client, which is another logical option (which
+ * can be combined with this one).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.4 2003-02-10 13:26:55 michiel Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.5 2003-02-18 17:08:57 michiel Exp $
+ * @see     ClientFormatSorter
  */
 public class ServerFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class.getName());
