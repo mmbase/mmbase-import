@@ -12,6 +12,8 @@ package org.mmbase.module.builders;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -28,11 +30,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.83 2003-11-10 21:10:51 michiel Exp $
+ * @version $Id: Images.java,v 1.84 2003-12-17 20:59:37 michiel Exp $
  */
 public class Images extends AbstractImages {
 
-    private static Logger log = Logging.getLoggerInstance(Images.class);
+    private static final Logger log = Logging.getLoggerInstance(Images.class);
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
@@ -41,8 +43,15 @@ public class Images extends AbstractImages {
         public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
 
-    public final static Argument[] CACHE_ARGUMENTS = {
-        new Argument("template",  String.class)};
+    public final static Parameter[] CACHE_PARAMETERS = {
+        new Parameter("template",  String.class)
+    };
+
+    public final static Parameter[] GUI_PARAMETERS = { 
+        new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS),
+        new Parameter("template", String.class)
+    };
+
 
 
 
@@ -121,12 +130,12 @@ public class Images extends AbstractImages {
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
-            log.debug("executeFunction " + function + "(" + args + ") of images builder ");
+            log.debug("executeFunction " + function + "(" + args + ") of images builder on node " + node.getNumber());
         }
         if ("info".equals(function)) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("cache", "" + CACHE_ARGUMENTS + " The node number of the cached converted image (icaches node)");
+            info.put("cache", "" + CACHE_PARAMETERS + " The node number of the cached converted image (icaches node)");
             if (args == null || args.size() == 0) {
                 return info;
             } else {
@@ -151,7 +160,7 @@ public class Images extends AbstractImages {
      * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
      */
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments args) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters args) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
             return "...";
@@ -168,7 +177,9 @@ public class Images extends AbstractImages {
             servlet.append(getServletPath());
         }
         servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
-        List cacheArgs =  new Arguments(CACHE_ARGUMENTS).set("template", ImageCaches.GUI_IMAGETEMPLATE);
+        String template = (String) args.get("template");
+        if (template == null) template = ImageCaches.GUI_IMAGETEMPLATE;
+        List cacheArgs =  new Parameters(CACHE_PARAMETERS).set("template", template);
         String imageThumb = servlet.toString() + executeFunction(node, "cache", cacheArgs);
         servlet.append(node.getNumber());
         String image;
@@ -183,7 +194,7 @@ public class Images extends AbstractImages {
     }
 
     // javadoc copied from parent
-    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments args) {
+    protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters args) {
         return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
     }
 
@@ -522,7 +533,7 @@ public class Images extends AbstractImages {
         if (log.isServiceEnabled()) {
             log.service("getting image bytes of " + params + " (" + params.size() + ")");
         }
-        if (params==null || params.size() == 0) {
+        if (params == null || params.size() == 0) {
             log.debug("getOriginalImage: no parameters");
             return null;
         }

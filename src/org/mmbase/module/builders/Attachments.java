@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,10 +26,10 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.26 2003-11-10 21:10:51 michiel Exp $
+ * @version $Id: Attachments.java,v 1.27 2003-12-17 20:59:37 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
-    private static Logger log = Logging.getLoggerInstance(Attachments.class);
+    private static final Logger log = Logging.getLoggerInstance(Attachments.class);
 
 
     protected String getAssociation() {
@@ -59,7 +60,7 @@ public class Attachments extends AbstractServletBuilder {
         return false;
     }
 
-    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
             int num  = node.getIntValue("number");
@@ -88,9 +89,10 @@ public class Attachments extends AbstractServletBuilder {
                 } else {
                     servlet.append(getServletPath());
                 }
+                boolean addFileName =   ! (servlet.charAt(servlet.length() - 1) == '?' ||  "".equals(fileName));
                 servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "").append(num);
 
-                if ( ! (servlet.charAt(servlet.length() - 1) == '?' ||  "".equals(fileName))) {
+                if (addFileName) {
                     servlet.append('/').append(fileName);
                 }
 
