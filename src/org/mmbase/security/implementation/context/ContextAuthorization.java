@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.context;
 
+import org.mmbase.bridge.Query;
+
 import java.util.*;
 import java.io.FileInputStream;
 
@@ -25,21 +27,23 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Authorization based on a config
- * @javadoc
+ * Authorization based on a XML-configuration file. The XML file contains users, groups and
+ * contexts. Contextes provide rights to users and/or groups and are identified by a string (which
+ * is stored in the owner field).
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.28 2003-03-04 15:29:36 nico Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: ContextAuthorization.java,v 1.29 2003-08-05 19:05:22 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
-    private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
+    private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class);
     private Document 	    document;
     private ContextCache    cache = new ContextCache();
     /** contains elements of type = Operation */
     private Set             globalAllowedOperations = new HashSet();
 
-    private Map 	    replaceNotFound = new HashMap();
+    private Map 	    replaceNotFound     = new HashMap();
     private Map 	    userDefaultContexts = new HashMap();
 
     protected void load() {
@@ -494,5 +498,15 @@ public class ContextAuthorization extends Authorization {
             throw new SecurityException(msg);
         }
         return node;
+    }
+
+    public QueryCheck check(UserContext user, Query query, Operation operation) {
+        if(globalAllowedOperations.contains(operation)) {
+            return COMPLETE_CHECK;
+        } else {
+            // can do smart things here
+            // TODO: do that
+            return NO_CHECK;
+        }
     }
 }
