@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServers.java,v 1.10 2000-04-15 21:35:40 wwwtech Exp $
+$Id: MMServers.java,v 1.11 2000-09-16 14:50:29 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/04/15 21:35:40  wwwtech
+daniel: turned debug off
+
 Revision 1.9  2000/03/30 13:11:32  wwwtech
 Rico: added license
 
@@ -51,8 +54,8 @@ import org.mmbase.util.*;
 import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
- * @author  $Author: wwwtech $
- * @version $Revision: 1.10 $ $Date: 2000-04-15 21:35:40 $
+ * @author  $Author: daniel $
+ * @version $Revision: 1.11 $ $Date: 2000-09-16 14:50:29 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -267,5 +270,19 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	public ProtocolDriver getDriverByName(String name) {
 		return((ProtocolDriver)name2driver.get(name));
+	}
+
+	public String getMMServerProperty(String mmserver,String key) {
+		String value=getInitParameter(mmserver+":"+key);
+		return(value);
+	}
+
+	public MMObjectNode getMMServerNode(String name) {
+		Enumeration e=search("name=='"+name+"'");
+		if (e.hasMoreElements()) {
+			return((MMObjectNode)e.nextElement());
+		} else {
+			return(null);
+		}
 	}
 }
