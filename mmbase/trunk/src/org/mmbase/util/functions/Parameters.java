@@ -24,14 +24,17 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.6 2004-02-09 18:08:44 michiel Exp $
+ * @version $Id: Parameters.java,v 1.7 2004-03-05 12:34:46 michiel Exp $
  * @see Parameter
+ * @see #Parameters(Parameter[])
  */
 
 public class Parameters extends AbstractList implements List  {
     private static final Logger log = Logging.getLoggerInstance(Parameters.class);
 
-
+    /**
+     * No need to bother for the functions with no parameters. This is a constant you could supply.
+     */
     public static final Parameters VOID = new Parameters(new Parameter[0]);
 
 
@@ -67,9 +70,24 @@ public class Parameters extends AbstractList implements List  {
     }
 
     /**
+     * <p>
      * Constructor, taking an Parameter[] array argument. The Parameter may also be Parameter.Wrapper
-     * (to impelmente overriding of functions).  The idea is that these array arguments are defined
+     * (to implement overriding of functions).  The idea is that these array arguments are defined
      * as constants in the classes which define a function with variable arguments.
+     * </p>
+     * <p>
+     * The Parameter[] array could e.g. be somewhere defined as a constant, like this:
+     <pre>
+     <code>
+       public final static Parameter[] MYFUNCTION_PARAMETERS = { 
+           new Parameter("type", Integer.class), 
+           new Parameter("text", String.class), 
+           Parameter.CLOUD,                                 // a predefined parameter
+           new Parameter.Wrapper(OTHERFUNCTION_PARAMETERS)  // a way to include another definition in this one
+       };
+     </code>
+     </pre>
+     * </p>
      */
 
     public Parameters(Parameter [] def) {
@@ -85,6 +103,7 @@ public class Parameters extends AbstractList implements List  {
     /**
      * If you happen to have a List of parameters, then you can wrap it into an Parameters with this constructor
      * @throws NullPointerException if definition is null
+     * @see #Parameters(Parameter[])
      */
     public Parameters(Parameter [] def, List values) {
         this(def);
