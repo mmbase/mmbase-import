@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.164 2002-10-09 09:29:29 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.165 2002-10-09 15:11:20 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -561,6 +561,14 @@ public class MMObjectBuilder extends MMTable {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
+	if (oType != node.getOType()) {
+	    // fixed comment's below..??
+	    // prevent from making database inconsistent(say remove nodes from inactive builder)
+	    // the builder we are in is not the actual builder!!
+	    // ? why not an node.remove()
+	    throw new RuntimeException("Builder with name:" + getTableName() + "("+oType+") is not the actual builder.");
+	}
+
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
         // which may - possibly - be very different from the current builder
