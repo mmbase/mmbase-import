@@ -25,7 +25,7 @@ public class GuideArticles extends MMObjectBuilder {
 
 	
 	public String getDefaultUrl(int src) {
-		return("/data/gidsartikelen/gidsartikel.shtml?"+src);
+		return("/data/gids/artikel-index.shtml?"+src);
 	}
 
 
