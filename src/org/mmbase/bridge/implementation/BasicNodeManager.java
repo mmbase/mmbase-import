@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.76 2004-03-02 12:25:22 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.77 2004-03-03 14:34:30 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -117,7 +117,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 // log warning, then exit.
                 // This will mean the nodemanager can be used as a node, but will be treated as a
                 // non-committed builder.
-                log.warn ("could not find nodemanager for node #" + noderef.getNumber() + "("+noderef.getStringValue("gui()")+")");
+                log.warn ("could not find nodemanager for node #" + noderef.getNumber() + " (" + noderef.getGUIIndicator() + ")");
                 return;
             }
         }
