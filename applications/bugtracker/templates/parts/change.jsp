@@ -1,17 +1,17 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
 <tr>
-		<td COLSPAN="6">
-			  The changed you can make to this bugreport depend on your user level<br><br>
-			<mm:present referid="user" inverse="true">
-				You need to be logged in, goto MyBug or Mainpage
-			</mm:present>
+  <td colspan="6">
+   The changes you can make to this bugreport depend on your user level<br><br>
+   <mm:present referid="user" inverse="true">
+    You need to be logged in, goto MyBug or Mainpage
+   </mm:present>
 
 
-			<!-- user and a commitor -->
-			<mm:present referid="user">
-				<mm:node referid="user">
-				<mm:present referid="commitor">
-					You (<mm:field name="firstname" /> <mm:field name="lastname" />) have the status of commitor this allows you the following actions<br><br>
+   <!-- user and a commitor -->
+   <mm:present referid="user">
+   <mm:node referid="user">
+    <mm:present referid="commitor">
+       You (<mm:field name="firstname" /> <mm:field name="lastname" />) have the status of commitor this allows you the following actions<br><br>
 					Update report <A HREF="updateBugreport.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />&user=<mm:write referid="user" />"><IMG SRC="images/arrow-right.gif" BORDER="0"></A><p />
 
 					<mm:present referid="hasmaintainers" inverse="true">

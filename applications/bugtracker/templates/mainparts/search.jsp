@@ -19,7 +19,6 @@
    <select name="ssubmitter">
      <option value="-1">any</option>
        <mm:listnodescontainer path="users,groups">
-         <mm:constraint field="groups.name" value="BugTrackerCommitors" />
          <mm:sortorder  field="lastname" />
          <mm:listnodes>
            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="ssubmitter">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
