@@ -25,7 +25,7 @@ import org.mmbase.module.builders.*;
  * @version 5-Apr-2001
  */
 
-public interface VwmInterface {
+public interface VwmInterface extends MMBaseObserver {
     /**
     * Initialize the Vwm.
     * @param vwmnode
@@ -47,22 +47,4 @@ public interface VwmInterface {
     * @return <code>true</code> if the client was released, <code>false</code> if it did not exist in the queue.
     */
     public boolean releaseClient(VwmCallBackInterface client);
-
-    /**
-     * Called when a local node is changed.
-     * @param number Number of the changed node as a <code>String</code>
-     * @param builder type of the changed node
-     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-     * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
-     */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype);
-
-    /**
-     * Called when a remote node is changed.
-     * @param number Number of the changed node as a <code>String</code>
-     * @param builder type of the changed node
-     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-     * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
-     */
-    public boolean nodeLocalChanged(String number,String builder,String ctype);
 }
