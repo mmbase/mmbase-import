@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.67 2002-09-16 15:07:29 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.68 2002-09-30 15:53:55 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -449,7 +449,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         String fieldAmounts="?";
 
         // Append the DB elements to the fieldAmounts String.
-        for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
+        for (Enumeration e=bul.getFields().elements();e.hasMoreElements();) {
             String key = (String)e.nextElement();
             int DBState = node.getDBState(key);
             if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
@@ -490,7 +490,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.setInt(1,number);
 
             int j=2;
-            for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
+            for (Enumeration e=bul.getFields().elements();e.hasMoreElements();) {
                 String key = (String)e.nextElement();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
@@ -1089,7 +1089,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         // valid create SQL string
         String result=null;
 
-        Vector sfields=bul.sortedDBLayout;
+        Vector sfields=bul.getFields();
 
         if (sfields!=null) {
             for (Enumeration e=sfields.elements();e.hasMoreElements();) {
