@@ -5,5 +5,10 @@
 		<id>null</id>
 		<name>mynews</name>
 	</node>
+	<node number="1085112" owner="admin">
+		<url>/mmexamples/jsp/mynews/index.jsp</url>
+		<id>null</id>
+		<name>jspmynews</name>
+	</node>
 
 </jumpers>
