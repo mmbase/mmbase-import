@@ -36,11 +36,49 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.112 2003-09-16 16:54:42 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.113 2003-11-10 21:23:24 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
+
+    /**
+     * You cannot store real 'null's in a hashtable, so this constant can be used for this.
+     * @since MMBase-1.7
+     */
+    public final static Object VALUE_NULL = new Object() {
+            public String toString() { return "[FIELD VALUE NULL]"; }
+        };
+
+    /**
+     * @deprecated use RelationsCache.getCache().getHits()
+     */
+    public static int getRelationCacheHits() {
+        return relationsCache.getHits();
+    }
+
+    /**
+     * @deprecated use RelationsCache.getCache().getMisses()
+     */
+    public static int getRelationCacheMiss() {
+        return relationsCache.getMisses();
+    }
+
+    /**
+     * Results of getRelatedNodes
+     * @since 1.7
+     */
+    protected static RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
+
+
+    /**
+     * objectNumber -> List of all relation nodes
+     * @since MMBase-1.7
+     */
+    protected static RelationsCache relationsCache = RelationsCache.getCache();
+    // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
+    // private Vector relations=null; // possibly filled with insRels
+
 
     /**
      * Holds the name - value pairs of this node (the node's fields).
@@ -55,13 +93,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Hashtable values = new Hashtable();
     // private Map values = Collections.synchronizedMap(new HashMap());
 
-    /**
-     * You cannot store real 'null's in a hashtable, so this constant can be used for this.
-     * @since MMBase-1.7
-     */
-    public final static Object VALUE_NULL = new Object() {
-            public String toString() { return "[FIELD VALUE NULL]"; }
-        };
 
     /**
      * Determines whether the node is being initialized (typically when it is loaded from the database).
@@ -71,12 +102,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     protected boolean initializing = false;
 
     /**
-     * Results of getRelatedNodes
-     * @since 1.7
-     */
-    protected static RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
-
-    /**
      * Holds the 'extra' name-value pairs (the node's properties)
      * which are retrieved from the 'properties' table.
      * @scope private
@@ -84,7 +109,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Hashtable properties;
 
     /**
-     * Vector which stores the key's of the fields that were changed
+     * Vector which stores the keys of the fields that were changed
      * since the last commit.
      * @scope private
      */
@@ -121,15 +146,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
     /**
-     * objectNumber -> List of all relation nodes
-     * @since MMBase-1.7
-     */
-    protected static RelationsCache relationsCache = RelationsCache.getCache();
-    // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
-    // private Vector relations=null; // possibly filled with insRels
-
-
-    /**
      * Determines whether this node is virtual.
      * A virtual node is not persistent (that is, not stored in a table).
      * @scope private
@@ -152,7 +168,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public MMObjectNode(MMObjectBuilder parent) {
         if (parent != null) {
-            this.parent=parent;
+            this.parent = parent;
         } else {
             log.error("MMObjectNode-> contructor called with parent=null");
             throw new NullPointerException("contructor called with parent=null");
@@ -1346,7 +1362,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *
      * @see getRelatedNodes(String type)
      * @since MMBase-1.6.2
-     * @deprected see ClusterBuilder#getRealNodes
      */
     private List getRealNodes(List virtuals, String type) {
 
@@ -1416,14 +1431,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.error("This otype("+otype+") gives no name("+name+") from typedef!");
         }
         return result;
-    }
-
-    public static int getRelationCacheHits() {
-        return relationsCache.getHits();
-    }
-
-    public static int getRelationCacheMiss() {
-        return relationsCache.getMisses();
     }
 
     public int getByteSize() {
