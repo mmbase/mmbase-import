@@ -54,8 +54,8 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             return superresult;
         }
         // obtain a reference to the node through a parent tag
-        Node node = getNode();
-        if (node == null) {
+        Node parentNode = getNode();
+        if (parentNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
         
@@ -72,9 +72,9 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             NodeList initialnodes;
 
             if (role == null) {
-                initialnodes = node.getRelatedNodes(type);
+                initialnodes = parentNode.getRelatedNodes(type);
             } else {
-                initialnodes = node.getRelatedNodes(type, role, directions);
+                initialnodes = parentNode.getRelatedNodes(type, role, directions);
             }
             
             StringBuffer where = null;
@@ -98,12 +98,12 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 if (role != null) {
                     throw new JspTagException("Must specify type attribute when using 'role'");
                 }
-                nodes = node.getRelatedNodes();
+                nodes = parentNode.getRelatedNodes();
             } else {
                 if (role == null) {
-                    nodes = node.getRelatedNodes(type);
+                    nodes = parentNode.getRelatedNodes(type);
                 } else {
-                    nodes = node.getRelatedNodes(type, role, directions);
+                    nodes = parentNode.getRelatedNodes(type, role, directions);
                 }
             }
         }
