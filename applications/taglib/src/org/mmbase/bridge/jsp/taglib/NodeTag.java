@@ -138,16 +138,24 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (node == null) {
             log.debug("node is null");
             if (number != Attribute.NULL) {
+                String n = number.getString(this);
                 // explicity indicated which node (by number or alias)
-                switch(getNotfound()) {
-                case NOT_FOUND_SKIP:         if (! getCloud().hasNode(number.getString(this))) return SKIP_BODY;
-                case NOT_FOUND_PROVIDENULL:  if (! getCloud().hasNode(number.getString(this))) { node = null; break; }
-                default:                     node = getCloud().getNode(number.getString(this));
-                }
-                
+                if (! getCloud().hasNode(n)) {
+                    switch(getNotfound()) {
+                    case NOT_FOUND_SKIP:                            
+                        return SKIP_BODY;
+                    case NOT_FOUND_PROVIDENULL:  
+                        node = null; 
+                        break;
+                    default:  
+                        node = getCloud().getNode(n); // throws Exception
+                    }
+                } else {
+                    node = getCloud().getNode(n); // does not throw Exception
+                }                
             } else {
                 // get the node from a parent element.
-                NodeProvider nodeProvider = (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", null);
+                NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class.getName(), null);
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                 } else {
@@ -160,7 +168,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         setNodeVar(node);
 
         // if direct parent is a Formatter Tag, then communicate
-        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
         }
