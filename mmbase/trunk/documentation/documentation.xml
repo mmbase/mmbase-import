@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.9 2003-06-11 14:02:31 michiel Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.10 2003-06-11 20:53:21 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -140,7 +140,8 @@
 			<listitem>
 				<para>XXE</para>
 				<para>A Java tool that allows you to edit xml files (only), specifically docbook xmls. It provides ways to associate a stylesheet with a xml so it can render a pleasing presentation of the docbook while you edit it.</para>
-				<para>While being visually pleasing, XXE does not seem to handle or allow edit of CDATA sections well. It does not easily provide nice formatted xml, which makes the results hard to read in other editors. It also adds links to stylesheets and dtds using file:// paths, which you need to remove or correct later on.</para>
+				<para>With version 2.2 XXE solved the problems with handling or allowing edit of CDATA sections. XXE 2.2 generates nice formatted xml, which makes the results easy to read in other editors. XXE is able to convert XML files to html, RTF, Postcript and PDF.
+				For non/semi-technical users XXE is found to be a very good choice to edit docbook documents!</para>
 				<para>see: <ulink url="http://www.xmlmind.com/xmleditor/">http://www.xmlmind.com/xmleditor/</ulink></para>
 			</listitem>
 		</itemizedlist>
