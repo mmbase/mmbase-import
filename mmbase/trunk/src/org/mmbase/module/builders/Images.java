@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.47 2002-01-18 12:27:28 eduard Exp $
+ * @version $Id: Images.java,v 1.48 2002-02-26 10:42:30 michiel Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -196,8 +196,8 @@ public class Images extends MMObjectBuilder {
      * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
-    // should scanpage be removed ???? when yes, must be marked as depricated
-    public byte[] getImageBytes(scanpage sp,Vector params) {
+    // should scanpage be removed ???? when yes, must be marked as deprecated
+    public byte[] getImageBytes(scanpage sp, Vector params) {
         byte[] picture = getCachedImage(params);
 
         if(picture != null && picture.length > 0) {
@@ -218,13 +218,15 @@ public class Images extends MMObjectBuilder {
             return null;                
         }
         // flatten parameters as a 'hashed' key;
-        String ckey="";
+        StringBuffer sckey = new StringBuffer("");
         Enumeration enum=params.elements();
         while(enum.hasMoreElements()) {
-            ckey += (String) enum.nextElement();
+            sckey.append((String) enum.nextElement());
         }
         // skip spaces at beginning and ending..
-        ckey = ckey.trim();
+        String ckey = org.mmbase.util.transformers.Sql.singlequote(sckey.toString().trim());
+
+        log.debug("using ckey" + ckey);
         if(ckey.length() > 0) {
             return ckey;
         }            
@@ -249,6 +251,7 @@ public class Images extends MMObjectBuilder {
         
         // get our hashcode
         String ckey = flattenParameters(params);
+        log.debug("getting cached image" + ckey);
         if(ckey == null) {
             log.debug("getCachedImage: no parameters");                
             return null;
