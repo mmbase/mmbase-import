@@ -12,6 +12,7 @@ package org.mmbase.module.gui.jsp;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.module.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
 
 /**
@@ -43,11 +44,11 @@ public class MMJsp {
 
 		MMObjectNode node=dbul.getNode(number);
 		
-		String dbt=node.getDBType(fieldname);
-		if (dbt.equals("int")) {
+		int dbt=node.getDBType(fieldname);
+		if (dbt==FieldDefs.TYPE_INTEGER) {
 			String str=""+node.getIntValue(fieldname);
 			return(str);
-		} else if (dbt.equals("varchar")) {
+		} else if (dbt==FieldDefs.TYPE_STRING) {
 			String str=node.getStringValue(fieldname);
 			return(str);
 		}
