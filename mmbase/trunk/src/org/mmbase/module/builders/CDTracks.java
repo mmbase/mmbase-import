@@ -31,6 +31,11 @@ import nl.vpro.mmbase.util.media.audio.*;
  */
 public class CDTracks extends MMObjectBuilder {
 
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
+
 	String diskid;
 	int playtime;
 
@@ -89,6 +94,193 @@ public class CDTracks extends MMObjectBuilder {
 		return(number);	
 	}
 	*/
+
+    public int preEdit(EditState ed, MMObjectNode node) {
+        //debug("preEdit(): start");
+        if ( node != null ) {
+            String starttime = ed.getHtmlValue("starttime");
+            String stoptime  = ed.getHtmlValue("stoptime");
+
+            debug("preEdit("+node.getName()+"):starttime("+starttime+")");
+            debug("preEdit("+node.getName()+"): stoptime("+stoptime+")");
+
+            // check if (stop - start) == lengthOfPart, if lengthOfPart != -1
+
+            // startstop
+            if( starttime != null ) {
+                // is it valid ?
+                // -------------
+
+                if (checktime(starttime)) {
+                    putProperty( node, "starttime", starttime);
+                } else {
+                    // no, maybe we have to remove it (when its empty or '-1')
+                    // -------------------------------------------------------
+
+                    if (starttime.equals("") || starttime.equals("-1")) {
+                        removeProperty( node, "starttime" );
+                    } else {
+                        debug("preEdit("+node+","+starttime+"): ERROR: Dont know what to do with this starttime for this node!");
+                    }
+                }
+            }
+            else {
+                // error ? daniel   putProperty( node, "starttime", "-1");
+            }
+
+            if ( stoptime != null ) {
+                // check if its a valid time
+                // -------------------------
+
+                if(checktime(stoptime)) {
+                    putProperty( node, "stoptime" , stoptime);
+                } else {
+                    // not a valid time, maybe we have tot remove this property
+                    // --------------------------------------------------------
+
+                    if(stoptime.equals("") || stoptime.equals("-1"))
+                        removeProperty(node, "stoptime");
+                    else
+                        debug("preEdit("+node+","+stoptime+"): ERROR: Dont know what to do this this stoptime for this node!");
+                }
+            } else {
+                // error ? daniel   putProperty( node, "stoptime" , "-1");
+            }
+        } else {
+            debug("preEdit(): ERROR: node is null!");
+        }
+        return(-1);
+    }
+
+    /**
+     * checktime( time )
+     *
+     * time = dd:hh:mm:ss.ss
+     *
+     * Checks whether part is valid, each part (dd/hh/mm/ss/ss) are numbers, higher than 0, lower than 100
+     * If true, time can be inserted in DB.
+     *
+     */
+    private boolean checktime( String time ) {
+        boolean result = true;
+
+        if (time!=null && !time.equals("")) {
+
+            StringTokenizer tok = new StringTokenizer( time, ":." );
+            while( tok.hasMoreTokens() ) {
+                if (!checktimeint(tok.nextToken())) {
+                    result = false;
+                    break;
+                }
+            }
+        } else {
+            debug("checktime("+time+"): ERROR: Time is not valid!");
+        }
+
+        //debug("checktime("+time+"): simpleTimeCheck(" + result+")");
+        return result;
+    }
+
+    private boolean checktimeint( String time ) {
+        boolean result = false;
+
+        try {
+            int t = Integer.parseInt( time );
+            if (t >= 0) {
+                if( t < 100 ) {
+                    result = true;
+                } else {
+                    debug("checktimeint("+time+"): ERROR: this part is higher than 100!");
+                    result = false;
+                }
+            } else {
+                debug("checktimeint("+time+"): ERROR: Time is negative!");
+                result = false;
+            }
+
+        } catch( NumberFormatException e ) {
+            debug("checktimeint("+time+"): ERROR: Time is not a number!");
+            result = false;
+        }
+
+        //debug("checktimeint("+time+"): " + result);
+        return result;
+    }
+
+    private String getProperty( MMObjectNode node, String key ) {
+        String result = null;
+
+        //debug("getProperty("+key+"): start");
+
+        int id = -1;
+        if( node != null ) {
+            id = node.getIntValue("number");
+
+            MMObjectNode pnode = node.getProperty( key );
+            if( pnode != null ) {
+                result = pnode.getStringValue( "value" );
+            } else {
+                debug("getProperty("+node.getName()+","+key+"): ERROR: No prop found for this item("+id+")!");
+            }
+        } else {
+            debug("getProperty("+"null"+","+key+"): ERROR: Node is null!");
+        }
+
+        //debug("getProperty("+key+"): end("+result+")");
+        return result;
+    }
+
+    private void putProperty( MMObjectNode node, String key, String value )
+    {
+        //debug("putProperty("+key+","+value+"): start");
+        int id = -1;
+        if ( node != null ) {
+            id = node.getIntValue("number");
+
+            MMObjectNode pnode=node.getProperty(key);
+            if (pnode!=null) {
+                if (value.equals("") || value.equals("null") || value.equals("-1")) {
+                    // remove
+                    pnode.parent.removeNode( pnode );
+                } else {
+                    // insert
+                    pnode.setValue("value",value);
+                    pnode.commit();
+                }
+            } else {
+                if ( value.equals("") || value.equals("null") || value.equals("-1") ) {
+                    // do nothing
+                } else {
+                    // insert
+                    MMObjectBuilder properties = mmb.getMMObject("properties");
+                    MMObjectNode snode = properties.getNewNode ("cdtracks");
+                     //snode.setValue ("otype", 9712);
+                     snode.setValue ("ptype","string");
+                     snode.setValue ("parent",id);
+                     snode.setValue ("key",key);
+                     snode.setValue ("value",value);
+                     int id2=properties.insert("cdtracks", snode); // insert db
+                     snode.setValue("number",id2);
+                     node.putProperty(snode); // insert hash
+                }
+            }
+        } else {
+            debug("putProperty("+"null"+","+key+","+value+"): ERROR: Node is null!");
+        }
+
+        //debug("putProperty("+key+","+value+"): end");
+    }
+
+    private void removeProperty( MMObjectNode node, String key ) {
+        //debug("removeProperty("+key+","+value+"): start");
+        if ( node != null ) {
+            MMObjectNode pnode=node.getProperty(key);
+            if (pnode!=null)
+                pnode.parent.removeNode( pnode );
+            else
+                debug("removeNode("+node+","+key+"): ERROR: Property not found( and cannot remove )");
+        }
+    }
 
 
 	/*
