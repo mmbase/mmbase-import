@@ -25,25 +25,27 @@ import org.mmbase.util.logging.Logging;
  * MMBase will run without this builder, but most applications use aliases.
  *
  * @author Rico Jansen
- * @version $Id: OAlias.java,v 1.13 2003-03-06 17:46:21 pierre Exp $
+ * @version $Id: OAlias.java,v 1.14 2003-07-14 10:11:33 michiel Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
 
-    // logging
-    private static Logger log = Logging.getLoggerInstance(OAlias.class.getName());
-    // cache
+    private static Logger log = Logging.getLoggerInstance(OAlias.class);
+
+    // alias -> node-number (Integer) 
     private Cache numberCache = new Cache(128) {
         public String getName()        { return "AliasCache"; }
         public String getDescription() { return "Cache for node aliases"; }
         };
+
+    private static final Integer NOT_FOUND = new Integer(-1);
 
     public OAlias() {
         numberCache.putCache();
     }
 
     public boolean init() {
-        boolean res=super.init();
+        boolean res = super.init();
         if (res) checkAddTmpField("_destination");
         return res;
     }
@@ -55,19 +57,22 @@ public class OAlias extends MMObjectBuilder {
      * @see #getAliasedNode
      */
     public int getNumber(String name) {
-        int rtn=-1;
-        MMObjectNode node = (MMObjectNode)numberCache.get(name);
-        if (node==null) {
-            Enumeration e=search("name=='"+name+"'");
+        log.debug("Finding oalias node '" + name + "'");
+        Integer nodeNumber = (Integer) numberCache.get(name);
+        if (nodeNumber == null) {
+            Enumeration e = search("name=='" + name + "'");
             if (e.hasMoreElements()) {
-                node=(MMObjectNode)e.nextElement();
-                rtn=node.getIntValue("destination");
-                numberCache.put(name,node);
+                MMObjectNode node = (MMObjectNode) e.nextElement();
+                int rtn = node.getIntValue("destination");
+                numberCache.put(name, new Integer(rtn));
+                return rtn;
+            } else {
+                numberCache.put(name, NOT_FOUND);
+                return -1;                
             }
         } else {
-            rtn=node.getIntValue("destination");
+            return nodeNumber.intValue();
         }
-        return rtn;
     }
 
     /**
@@ -78,7 +83,7 @@ public class OAlias extends MMObjectBuilder {
      * @see #getNumber
      */
     public String getAlias(int number) {
-        Enumeration e=search("destination=="+number);
+        Enumeration e = search("destination==" + number);
         if (e.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode)e.nextElement();
             return node.getStringValue("name");
@@ -96,25 +101,39 @@ public class OAlias extends MMObjectBuilder {
      * @see #getNumber
      */
     public MMObjectNode getAliasedNode(String alias) {
-        MMObjectNode node=null;
-        int nr=getNumber(alias);
-        if (nr>0) {
+        MMObjectNode node = null;
+        int nr = getNumber(alias);
+        if (nr > 0) {
             try {
-                node=getNode(nr);
+                node = getNode(nr);
             } catch (RuntimeException e) {
-                log.error("Alias '"+alias+"' points to non-existing node with number "+nr);
+                log.error("Alias '" + alias + "' points to non-existing node with number " + nr);
                 throw e;
             }
         }
         return node;
     }
+    /**
+     * Creates an alias for the node with the given number, and updates the alias cache.
+     *
+     * @since MMBase-1.7
+     */
+    
+    public void createAlias(String alias, int number) {
+        MMObjectNode node = getNewNode("system");
+        node.setValue("name", alias);
+        node.setValue("destination", number);
+        node.insert("system");
+        numberCache.remove(alias);
+
+    }
 
     /**
-     * Remove a node from the cloud and uopdate the cache
+     * Remove a node from the cloud and update the cache
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-        String name=node.getStringValue("name");
+        String name = node.getStringValue("name");
         super.removeNode(node);
         numberCache.remove(name);
     }
