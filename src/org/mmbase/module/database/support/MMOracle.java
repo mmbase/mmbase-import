@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.7 $ $Date: 2002-04-18 14:42:59 $
+* @$Revision: 1.8 $ $Date: 2002-05-08 13:44:55 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -1005,7 +1005,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
     }
 
 
-    String matchType(int type, int size, boolean notnull) {
+    protected String matchType(int type, int size, boolean notnull) {
         String result=null;
         if (typeMapping!=null) {
             dTypeInfos  typs=(dTypeInfos)typeMapping.get(new Integer(type));
