@@ -2,12 +2,15 @@
 %><mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
   <mm:import id="username"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
 </mm:cloud>
+<mm:notpresent referid="username">
+  <mm:import id="username">--</mm:import>
+</mm:notpresent>
 <mm:compare referid="username" value="anonymous">
   <mm:remove referid="username" />
   <mm:import id="username" />
 </mm:compare>
 
-<mm:cloud method="logout" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="logout" sessionname="$config.session" jspvar="cloud" />
 <mm:write referid="style" />
 <title>Logging out</title>
 </head>
@@ -21,5 +24,5 @@ request.getSession().invalidate(); // start all over again %>
   As: <input type="text" name="username" value="<mm:write referid="username" />" />
 </form>
 <mm:log />
-<%@ include file="foot.jsp"  %>
-</mm:cloud>
+<%@ include file="footfoot.jsp"  %>
+
