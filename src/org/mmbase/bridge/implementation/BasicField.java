@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 import org.mmbase.bridge.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
@@ -18,7 +19,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.15 2004-10-09 09:37:33 nico Exp $
+ * @version $Id: BasicField.java,v 1.16 2005-03-16 16:01:23 michiel Exp $
  */
 public class BasicField implements Field, Comparable {
 
@@ -111,6 +112,46 @@ public class BasicField implements Field, Comparable {
         }
     }
 
+    public void checkType(Object value) {
+    }
+
+    public Object autoCast(Object value){
+        return value;
+    }
+    public Class getTypeAsClass() {
+        switch(getType()) {
+        case TYPE_STRING: return String.class;
+        case TYPE_INTEGER : return Integer.class;
+        case TYPE_BYTE: return byte[].class;
+        case TYPE_FLOAT: return Float.class;
+        case TYPE_DOUBLE: return Double.class;
+        case TYPE_LONG: return Long.class;
+        case TYPE_XML: return org.w3c.dom.Document.class;
+        case TYPE_NODE: return Node.class;
+        case TYPE_DATETIME: return java.util.Date.class;
+        case TYPE_BOOLEAN: return Boolean.class;
+        default: return null;
+        }
+    }
+
+    /**
+     * Sets the default value of this data type.
+     * @param def the default value
+     */
+    public Object getDefaultValue() {
+        return null;
+    }
+
+    public void setDefaultValue(Object def) {
+        throw new UnsupportedOperationException("Cannot change default value of a field type");
+    }
+    public void setBundle(String bundle) {
+        throw new UnsupportedOperationException("Cannot change description of a field type");
+    }
+    public void setDescription(String description,  Locale locale) {
+        throw new UnsupportedOperationException("Cannot change description of a field type");
+    }
+    
     /**
      * Compares this field to the passed object, and returns true if they are equal.
      * @param o the object to compare it with
