@@ -51,4 +51,6 @@ public interface MMJdbc2NodeInterface {
 	public String getNumberString();
 	public String getOwnerString();
 	public String getOTypeString();
+	public boolean drop(MMObjectBuilder bul);
+	public boolean updateTable(MMObjectBuilder bul);
 }
