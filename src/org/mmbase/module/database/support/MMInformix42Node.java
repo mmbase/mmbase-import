@@ -24,12 +24,11 @@ import org.mmbase.util.logging.Logging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.List;
+import java.util.Iterator;
 
 /**
  * <p>MMInformix42Node extends MMSQL92Node and implements the MMJdbc2NodeInterface.
@@ -47,7 +46,7 @@ import java.util.Vector;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.42 2002-11-28 13:04:54 robmaris Exp $
+ * @version $Id: MMInformix42Node.java,v 1.43 2003-01-21 15:23:30 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -69,7 +68,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         super();
 
         name = "informix";
-        if (log.isDebugEnabled()) log.trace(" ");
     }
 
     /*
@@ -111,24 +109,13 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     public boolean create(MMObjectBuilder bul) {
         if (log.isDebugEnabled()) log.trace(" ");
 
-        Vector sfields = bul.sortedDBLayout;
-        if (sfields == null) {
-            return false;
-        }
-        // make copy, so changes on the var will not affect the builder
-        sfields = new Vector(sfields);
-
-        // Add the numberstring to the beginning of the vector
-        if (!sfields.contains(getNumberString())) {
-            sfields.add(0, getNumberString());
-        }
-
+        List fieldDefsList = bul.getFields(FieldDefs.ORDER_CREATE);
         String fieldList = null;
 
-        // process all the fields..
-        for (Enumeration e = sfields.elements(); e.hasMoreElements();) {
-            String name = (String) e.nextElement();
-            FieldDefs def = bul.getField(name);
+        for (Iterator fieldDefsIterator = fieldDefsList.iterator(); fieldDefsIterator.hasNext();) {
+            FieldDefs def = (FieldDefs) fieldDefsIterator.next();
+            String name = def.getDBName();
+
             if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                 if (!isInheritedField(bul, name)) {
                     log.debug("trying to retrieve the part for field : " + name);
@@ -150,7 +137,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
          */
         String sqlCreateRowType;
 
-        if (fieldList!=null) {
+        if (fieldList != null) {
             sqlCreateRowType = "create row type " + mmb.baseName + "_" + bul.getTableName() + "_t (" + fieldList + ")";
         } else {
             sqlCreateRowType = "create row type " + mmb.baseName + "_" + bul.getTableName() + "_t";
@@ -304,7 +291,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         if (fieldUnique) {
             //TODO : parser.getKeyScheme()+ "("+name+") so make a
-            //result += " UNIQUE ";
+            // result += " UNIQUE ";
         }
 
         // add in comment the gui stuff... nicer when reviewing database..
@@ -319,12 +306,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      * in a "create table" or "create row type"  statement.</p>
      *
      * @param fieldDef  FieldDef
-     * @param int fieldSize Size
-     * @param boolean True if this is a required field
+     * @param fieldSize Size of the field
+     * @param fieldRequired True if this is a required field
      * @return String Informix type
      * @since MMBase-1.6
      *
-     */
+     **/
     private String getDbFieldType(FieldDefs fieldDef, int fieldSize, boolean fieldRequired) {
         if (log.isDebugEnabled()) log.trace(" ");
         if (typeMapping == null) {
@@ -359,14 +346,17 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 return typ.dbType;
             }
         }
+
         if (closedMatch == null) {
-            String msg = "not field def found !!";
             throw new RuntimeException("not field def found !!");
         }
+
         int pos = closedMatch.indexOf("size");
+
         if (pos != -1) {
             return closedMatch.substring(0, pos) + fieldSize + closedMatch.substring(pos + 4);
         }
+
         return closedMatch;
     }
 
@@ -420,29 +410,47 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     public int insert(MMObjectBuilder bul, String owner, MMObjectNode node) {
         if (log.isDebugEnabled()) log.trace("Inserting node : " + node.toString());
 
+        // Figure out what number we need to commit
         int number = node.getIntValue("number");
         // did the user supply a number allready, ifnot try to obtain one
         if (number == -1) number = getDBKey();
-        // did it fail ? ifso exit
-        if (number == -1) return (-1);
+        // did it fail ? ifso exit, ifnot setvalue to the node.
+        if (number == -1) {
+            return (-1);
+        } else {
+            node.setValue("number", number);
+        }
 
         // Create a String that represents the amount of DB fields to be used in the insert.
         // First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
-        String fieldAmounts = "?";
+        String fieldAmounts = "";
+
+        List fieldDefsList = bul.getFields(FieldDefs.ORDER_CREATE);
 
         // Append the DB elements to the fieldAmounts String.
-        for (Enumeration e = bul.sortedDBLayout.elements(); e.hasMoreElements();) {
-            String key = (String) e.nextElement();
+        for (Iterator fieldDefsIterator = fieldDefsList.iterator(); fieldDefsIterator.hasNext();) {
+            FieldDefs def = (FieldDefs) fieldDefsIterator.next();
+            String key = def.getDBName();
             int DBState = node.getDBState(key);
             if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
                     || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM)) {
                 if (log.isDebugEnabled()) log.trace("Insert: DBState = " + DBState + ", adding key: " + key);
-                fieldAmounts += ",?";
+                if (fieldAmounts == "") {
+                    fieldAmounts = "?";
+                } else {
+                    fieldAmounts += ",?";
+                }
+
             } else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                 if (log.isDebugEnabled()) log.trace("Insert: DBState = " + DBState + ", skipping key: " + key);
             } else {
                 if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
-                    fieldAmounts += ",?";
+                    if (fieldAmounts == "") {
+                        fieldAmounts = "?";
+                    } else {
+                        fieldAmounts += ",?";
+                    }
+
                 } else {
                     log.error("Insert: DBState = " + DBState + " unknown!, skipping key: " + key + " of builder:" + node.getName());
                 }
@@ -451,27 +459,32 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
         MultiConnection con = null;
         PreparedStatement stmt = null;
+
         try {
             // Create the DB statement with DBState values in mind.
             con = bul.mmb.getConnection();
-            stmt = (PreparedStatement) con.prepareStatement("insert into " + mmb.baseName + "_" + bul.tableName + " values(" + fieldAmounts + ")");
+            stmt = con.prepareStatement("insert into " + mmb.baseName + "_" + bul.tableName + " values(" + fieldAmounts + ")");
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
+
         if (log.isDebugEnabled()) log.trace("insert(): Preparing statement using fieldamount String: " + fieldAmounts);
         if (log.isDebugEnabled()) log.trace("insert into " + mmb.baseName + "_" + bul.tableName + " values(" + fieldAmounts + ")");
+
         try {
             stmt.setEscapeProcessing(false);
-
-            // First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
-            stmt.setInt(1, number);
 
             // Prepare the statement for the DB elements to the fieldAmounts String.
             if (log.isDebugEnabled()) log.trace("Insert: Preparing statement using fieldamount String: " + fieldAmounts);
 
-            int j = 2;
-            for (Enumeration e = bul.sortedDBLayout.elements(); e.hasMoreElements();) {
-                String key = (String) e.nextElement();
+            int j = 1;
+
+            fieldDefsList = bul.getFields(FieldDefs.ORDER_CREATE);
+
+            for (Iterator fieldDefsIterator = fieldDefsList.iterator(); fieldDefsIterator.hasNext();) {
+                FieldDefs def = (FieldDefs) fieldDefsIterator.next();
+                String key = def.getDBName();
+
                 int DBState = node.getDBState(key);
                 if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
                         || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM)) {
@@ -501,6 +514,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 stmt.close();
                 con.close();
             } catch (Exception t2) {
+                log.error(Logging.stackTrace(t2));
             }
             log.error(Logging.stackTrace(e));
             return (-1);
@@ -523,7 +537,9 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 mmb.mmc.changedNode(node.getIntValue("number"), bul.tableName, "n");
             }
         }
+
         node.clearChanged();
+
         if (log.isDebugEnabled()) log.trace("INSERTED=" + node);
         return (number);
     }
@@ -609,48 +625,82 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             //int type=((Integer)typesmap.get(fieldtype)).intValue();
             int type = node.getDBType(prefix + fieldname);
 
+            String dbType = "";
 
             switch (type) {
                 case FieldDefs.TYPE_XML:
                 case FieldDefs.TYPE_STRING:
+                    log.trace("FieldType is String");
 
-                    // Normal java-string
-                    String unicodeString = null;
-                    String encodedString = null;
-                    byte[] unicodeBytes = null;
-                    byte[] encodedBytes = null;
-
-                    try {
-                        encodedString = rs.getString(i).trim();
-                        encodedBytes = encodedString.getBytes();
-                        unicodeString = new String(encodedBytes, mmb.getEncoding());
-                        unicodeBytes = unicodeString.getBytes();
-                    } catch (Exception e) {
-                        log.error(e.toString());
+                    // First, figure out what kind of String we're dealing with
+                    FieldDefs def = node.parent.getField(fieldname);
+                    if (def == null) {
+                        // Hmmm. No fielddefs found. Lets try to add the prefix
+                        def = node.getBuilder().getField(prefix + fieldname);
+                        if (def == null) {
+                            // No Fielddefs found for the parentbuilder of this node.
+                            dbType = "String";
+                        } else {
+                            // Fielddefs found at second try.
+                            dbType = getDbFieldType(def, def.getDBSize(), false);
+                        }
+                    } else {
+                        // Fielddefs found.
+                        dbType = getDbFieldType(def, def.getDBSize(), false);
                     }
 
-                    if (unicodeString == null) {
-                        node.setValue(prefix + fieldname, "");
+                    // dbType = getDbFieldType(def, def.getDBSize(), false);
+                    String contentString = null;
+                    String encodedString = null;
+                    byte[] contentBytes = null;
+
+                    try {
+                        contentString = rs.getString(i);
+                        contentBytes = contentString.getBytes();
+                        encodedString = new String(contentBytes, mmb.getEncoding());
+                    } catch (Exception e) {
+                        log.error("Can't get String from resultset");
+                        log.error(e.getMessage());
+                        log.error(Logging.stackTrace(e));
+                    }
+
+                    if (dbType.equals("clob")) {
+                        // If the data was retrieved from a clob we need to use the encoded string
+                        if (encodedString == null) {
+                            node.setValue(prefix + fieldname, "");
+                        } else {
+                            node.setValue(prefix + fieldname, encodedString.trim());
+                        }
                     } else {
-                        node.setValue(prefix + fieldname, unicodeString.trim());
+                        // Otherwise we can use the contentString
+                        if (contentString == null) {
+                            node.setValue(prefix + fieldname, "");
+                        } else {
+                            node.setValue(prefix + fieldname, contentString.trim());
+                        }
                     }
                     break;
                 case FieldDefs.TYPE_NODE:
                 case FieldDefs.TYPE_INTEGER:
+                    log.trace("Fieldtype is Integer / Node");
                     node.setValue(prefix + fieldname, rs.getInt(i));
                     break;
                 case FieldDefs.TYPE_LONG:
-                    node.setValue(prefix + fieldname, (Long) rs.getObject(i));
+                    log.trace("FieldType is long");
+                    node.setValue(prefix + fieldname, rs.getObject(i));
                     break;
                 case FieldDefs.TYPE_FLOAT:
+                    log.trace("FieldType is float");
                     // who does this now work ????
                     //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
                     node.setValue(prefix + fieldname, new Float(rs.getFloat(i)));
                     break;
                 case FieldDefs.TYPE_DOUBLE:
-                    node.setValue(prefix + fieldname, (Double) rs.getObject(i));
+                    log.trace("FieldType is double");
+                    node.setValue(prefix + fieldname, rs.getObject(i));
                     break;
                 case FieldDefs.TYPE_BYTE:
+                    log.trace("FieldType is byte");
                     node.setValue(prefix + fieldname, "$SHORTED");
                     break;
                 default:
@@ -661,6 +711,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             log.error("mmObject->" + fieldname + " node=" + node.getIntValue("number"));
             log.error(Logging.stackTrace(e));
         }
+
         return (node);
     }
 
@@ -686,12 +737,9 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     public String getDBText(ResultSet rs, int idx) {
         if (log.isDebugEnabled()) log.trace(" ");
         String str = null;
-        InputStream inp;
-        DataInputStream input;
         byte[] isochars = null;
         int siz;
 
-        if (0 == 1) return ("");
         try {
             //inp=rs.getAsciiStream(idx);
             //if (inp==null) {
@@ -724,14 +772,13 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         return (str);
     }
 
-
     /*
     * Method: getDBByte
     *
     */
     public byte[] getDBByte(ResultSet rs, int idx) {
         if (log.isDebugEnabled()) log.trace(" ");
-        String str = null;
+
         InputStream inp;
         DataInputStream input;
         byte[] bytes = null;
@@ -751,14 +798,10 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     }
 
 
-    /**
-     * Not to be confused with {@link #parseFieldPart(String,int,String)
-     * parseFieldPart(String,int,String)}.
-     *
-     * @deprecated This code no longer serves a purpose, and is called from 
-     *             nowhere.
-     * @deprecated-now RvM: Can be removed safely.
-     */
+    /*
+    * Method: parseFieldPart
+    *
+    */
     public String parseFieldPart(String fieldname, String dbtype, String part) {
         if (log.isDebugEnabled()) log.trace(" ");
 
@@ -856,6 +899,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      * Method: getShortedText
      *         get text from blob
      */
+
     public String getShortedText(String tableName, String fieldname, int number) {
         if (log.isDebugEnabled()) log.trace(" ");
         try {
@@ -886,24 +930,20 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      * @param body String that needs to be added to the statement
      *
      */
+
     public void setDBText(int i, PreparedStatement stmt, String body) {
-        if (log.isDebugEnabled()) log.trace(" ");
         if (body == null) body = "";
+
         try {
-            // copy string into bytearray using the mmbase char-encoding
-            byte[] encodedBytes = body.getBytes(mmb.getEncoding());
-
-            // copy the bytearray to a new string
-            String encodedByteString = new String(encodedBytes);
-
             // set the string
-            stmt.setString(i, encodedByteString);
-
+            stmt.setString(i, body);
         } catch (Exception e) {
             log.error("Can't commmit string to database");
+            log.error(e.getMessage());
             log.error(Logging.stackTrace(e));
         }
     }
+
 
     /**
      * Creates a smart large object  in the database using
@@ -923,7 +963,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             byte[] encodedBytes = body.getBytes(mmb.getEncoding());
 
             // copy the bytearray to a new string
-            String encodedByteString = new String(encodedBytes);
+            //String encodedByteString = new String(encodedBytes);
 
             // create a lob descriptor
             IfxLobDescriptor ifxLobDescr = new IfxLobDescriptor(stmt.getConnection());
@@ -954,11 +994,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             stmt.setClob(i, ifxClob);
 
         } catch (Exception e) {
-            log.error("Can't commmit Clob to database");
+            log.error("Can't commit Clob to database");
+            log.error(e.getMessage());
             log.error(Logging.stackTrace(e));
+
         }
     }
-
 
     /**
      * Add a byte-array to the PreparedStatement
@@ -1030,7 +1071,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             values = "update " + mmb.baseName + "_" + bul.tableName + " set" + values + " WHERE " + getNumberString() + "=" + node.getValue("number");
             try {
                 MultiConnection con = mmb.getConnection();
-                PreparedStatement stmt = (PreparedStatement) con.prepareStatement(values);
+                PreparedStatement stmt = con.prepareStatement(values);
                 int type;
                 int i = 1;
                 for (Enumeration e = node.getChanged().elements(); e.hasMoreElements();) {
@@ -1096,7 +1137,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      */
     public void removeNode(MMObjectBuilder bul, MMObjectNode node) {
         if (log.isDebugEnabled()) log.trace(" ");
-        java.util.Date d = new java.util.Date();
+
         int number = node.getIntValue("number");
         // temp removed (daniel) despr. if (log.isDebugEnabled()) log.trace("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
         if (log.isDebugEnabled()) log.trace("removeNode(): SAVECOPY " + node.toString());
