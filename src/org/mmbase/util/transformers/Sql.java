@@ -20,6 +20,7 @@ import java.util.Map;
  * needed in SQL statements.
  *
  * @author Michiel Meeuwissen 
+ * @author Jaco de Groot
  */
 
 public class Sql extends ConfigurableReaderTransformer implements CharTransformer {
@@ -41,14 +42,45 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
      * in a SQL query.
      * @param str the string to escape
      * @return the escaped string
+     * @since MMBase-1.7
      */
-    static public Writer singleQuote(Reader r, Writer w) {
+    public static Writer singleQuote(Reader r, Writer w) {
         try {
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
                 if(c == '\'') w.write(c);
                 w.write(c);
+            }
+        } catch (java.io.IOException e) {
+        }
+        return w;
+    }
+
+    /**
+     * Unescapes single quotes in a string.
+     * Unescaping is done by replacing two quotes with one quote.
+     * @param str the string to unescape
+     * @return the unescaped string
+     * @since MMBase-1.7.2
+     */
+    public static Writer singleQuoteBack(Reader r, Writer w) {
+        try {
+            boolean skipNext = false;
+            while (true) {
+                int c = r.read();
+                if (c == -1) break;
+                if(c == '\'') {
+                    if (skipNext) {
+                        skipNext = false;
+                    } else {
+                        w.write(c);
+                        skipNext = true;
+                    }
+                } else {
+                      w.write(c);
+                      skipNext = false;
+                }
             }
         } catch (java.io.IOException e) {
         }
@@ -71,9 +103,10 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
         default: throw new UnsupportedOperationException("Cannot transform");
         }    
     }
+
     public Writer transformBack(Reader r, Writer w) {
         switch(to){
-        case ESCAPE_QUOTES:           throw new UnsupportedOperationException("Not needed to revert this at anytime it tinks");
+        case ESCAPE_QUOTES:           return singleQuoteBack(r, w);
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
