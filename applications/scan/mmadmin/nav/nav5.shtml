@@ -1,0 +1,20 @@
+
+	&nbsp;&nbsp;
+	<A HREF="/mmadmin/index.shtml?$PARAM1+1+tutorial_scan" TARGET="_top">
+	<IF $PARAM2==1>
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>SCAN</B></FONT>
+	<ELSE>
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>SCAN</B></FONT>
+	</IF>
+	</A>
+
+	&nbsp;&nbsp;
+	<A HREF="/mmadmin/index.shtml?$PARAM1+2+tutorial_taglibs" TARGET="_top">
+	<IF $PARAM2==2>
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>JSP/TAGLIBS</B></FONT>
+	<ELSE>
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>JSP/TAGLIBS</B></FONT>
+	</IF>
+	</A>
+
+	&nbsp;&nbsp;
