@@ -21,7 +21,7 @@
   </head>
   <frameset rows="23,*" border="0" frameborder="0" framespacing="0">
     <frame src="<mm:url page="editnav.jsp" />" name="navigatorarea" scrolling="no" marginheight="0" marginwidth="0" />
-    <frameset cols="220,*" framespacing="0">
+    <frameset cols="220,*" framespacing="0" frameborder="0">
       <frame src="<mm:url page="editlist.jsp" />" name="selectarea" marginheight="0" marginwidth="0" />
       <frame src="<mm:url page="help.html" />" name="workarea" scrolling="auto" marginheight="0" marginwidth="0" />
     </frameset>
