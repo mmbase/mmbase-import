@@ -43,9 +43,6 @@ one or more examplevalue tags is you want to give some example values.
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
-  <tagtypes>
-  <type name="all">
-  <description>All MMBase tags</description>
   <info>
     <p>MMBase consists of a cloud of nodes (also known as objects) wich can be related to each
       other. Relations can be seen as nodes with two arms which they use to connect two other
@@ -67,8 +64,17 @@ one or more examplevalue tags is you want to give some example values.
         <li>tags, which do not directly relate to the MMBase data cloud, but are simply handy sometimes</li>
       </ul>
     </p>
-    <p>Tags can use a 'context' to exchange variables with other tags.
-    Please read the <a href="#context">documentation for mm:context</a> if you want to know how this works.
+  </info>
+  <tagtypes>
+  <type name="all">
+  <description>All MMBase tags</description>
+  <info>
+    <p>
+      There are quite a lot of MMBase tags. This documents gives an overview of all tags.
+    </p>
+    <p>
+     Tags can use a 'context' to exchange variables with other tags.
+     Please read the <a href="#context">documentation for mm:context</a> if you want to know how this works.
     </p>
     <p>Note that the different types of tags are non-exclusive.
         For instance the tag 'maycreate' is a tag which has to do with the context,
@@ -157,9 +163,21 @@ See mmexamples/taglib for more elaborated examples.
   </type>
   <type name="mmbase.basic">
   <description>All basic MMBase tags</description>
+  <info>
+    <p>
+      These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
+      in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
+    </p>
+  </info>
   </type>
   <type name="mmbase.security">
   <description>All MMBase security tags</description>
+  <info>
+    <p>
+      These are the MMBase tags which relate to the MMBase security system.  An overview of all
+      MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
+    </p>
+  </info>
   </type>
   </tagtypes>
   <taginterface>
@@ -233,7 +251,7 @@ See mmexamples/taglib for more elaborated examples.
       then in the body of the list a list item is in the context, and afterwards a 'List', which can
       normally be reused with the 'referid' of some list.
     </info>
-    <see>listreferrer</see>
+    <see tag="listreferrer" />
   </taginterface>
   <taginterface>
     <name>condition</name>
@@ -280,14 +298,14 @@ See mmexamples/taglib for more elaborated examples.
       get a real node with a sub node tag with the 'element'
       attribute.
     </info>
-    <see>node.element</see>
+    <see tag="node" attribute="element" />
   </taginterface>
   <taginterface>
     <name>fieldreferrer</name>
     <info>
       A tag that can live in the body of a fieldprovider tag.
     </info>
-    <see>fieldprovider</see>
+    <see tag="fieldprovider" />
     <attribute>
       <name>field</name>
       <required>false</required>
@@ -305,7 +323,7 @@ See mmexamples/taglib for more elaborated examples.
       some use then, e.g. to get the 'guiname' of a field (which
       considers language).
     </info>
-    <see>fieldreferrer</see>
+    <see tag="fieldreferrer" />
   </taginterface>
   <taginterface>
     <name>cloudprovider</name>
@@ -313,7 +331,7 @@ See mmexamples/taglib for more elaborated examples.
       Cloudprovider tags provide a cloud to their body. Als a
       `transaction' is a kind of cloud.
     </info>
-    <see>cloudreferrer</see>
+    <see tag="cloudreferrer" />
   </taginterface>
   <taginterface>
     <name>nodereferrer</name>
@@ -353,7 +371,7 @@ See mmexamples/taglib for more elaborated examples.
     <info>
       A writerreferrer tag can live in the body of a writer tag, and use the supplied information.
     </info>
-    <see>writer</see>
+    <see tag="writer" />
     <attribute>
       <name>writer</name>
       <required>false</required>
@@ -370,7 +388,7 @@ See mmexamples/taglib for more elaborated examples.
       A writer is a tag that can produce output. Normally the default will be to
       write to the page, unless the tag has a body.
     </info>
-    <see>write</see>
+    <see tag="write" />
     <attribute>
       <name>jspvar</name>
       <required>false</required>
@@ -472,8 +490,8 @@ See mmexamples/taglib for more elaborated examples.
       nodemanager name and a dot if you want to refer to them. When using a jsp variable a
       underscore has to be used to separate a nodemanager name from a field name.
     </info>
-    <see>listnodes</see>
-    <see>node.element</see>
+    <see tag="listnodes" />
+    <see tag="node" attribute="element"/>
     <attribute>
       <name>nodes</name>
       <required>false</required>
@@ -714,9 +732,9 @@ See mmexamples/taglib for more elaborated examples.
       and prefixed to the path specified bij the path attribute.
       By default, the node used is that of the parent node tag.
     </info>
-    <see>list</see>
-    <see>relatednodes</see>
-    <see>node.element</see>
+    <see tag="list" />
+    <see tag="relatednodes" />
+    <see tag="node" attribute="element"/>
     <attribute>
       <name>node</name>
       <required>false</required>
@@ -815,8 +833,8 @@ See mmexamples/taglib for more elaborated examples.
       the attributes of the list tag except that it is not needed to prefix
       the fieldnames with nodemanager names.
     </info>
-    <see>list</see>
-    <see>relatednodes</see>
+    <see tag="list" />
+    <see tag="relatednodes" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -882,9 +900,9 @@ See mmexamples/taglib for more elaborated examples.
       not needed to prefix the fieldnames with a nodemanager name.
       By default, the node used is that of the parent node tag.
     </info>
-    <see>list</see>
-    <see>listnodes</see>
-    <see>related</see>
+    <see tag="list" />
+    <see tag="listnodes" />
+    <see tag="related" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -1277,9 +1295,9 @@ access the value of title:
     <info>
       Gets the field `name' from node `node' (can also be list).
     </info>
-    <see>fieldinfo</see>
-    <see>fieldlist</see>
-    <see>node</see>
+    <see tag="fieldinfo" />
+    <see tag="fieldlist" />
+    <see tag="node" />
     <attribute>
       <name>name</name>
       <required>false</required>
@@ -1369,11 +1387,11 @@ Why should deletealias live in a NodeProvider ???
       Must be used in the body of a list tag. And the body of itself will only be evaluated if some
       condition is true.
     </info>
-    <see>first</see>
-    <see>last</see>
-    <see>changed</see>
-    <see>even</see>
-    <see>odd</see>
+    <see tag="first" />
+    <see tag="last" />
+    <see tag="changed" />
+    <see tag="even" />
+    <see tag="odd" />
     <attribute>
       <name>value</name>
       <required>true</required>
@@ -1604,8 +1622,8 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTEI</teiclass>
     <bodycontent>JSP</bodycontent>
-    <see>commit</see>
-    <see>cancel</see>
+    <see tag="commit" />
+    <see tag="cancel" />
     <info>
      The transaction tag creates a transaction. A transaction is a
      group of actions that should be performed as a whole. If one of
@@ -1698,7 +1716,7 @@ transaction was commited, following should result anything:
     <info>
       The cancel tag can be used to cancel a transaction.
     </info>
-    <see>transaction</see>
+    <see tag="transaction" />
     <attribute>
       <name>transaction</name>
       <required>false</required>
@@ -1711,7 +1729,7 @@ transaction was commited, following should result anything:
     <name>commit</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CommitTag</tagclass>
     <bodycontent>empty</bodycontent>
-    <see>transaction</see>
+    <see tag="transaction" />
     <info>
       The commit tag can be use to commit a transaction.
     </info>
@@ -1765,7 +1783,7 @@ transaction was commited, following should result anything:
       node. It can also be stand alone, then you have to supply the type
       of the node (the name of the `nodemanager').
     </info>
-    <see>fieldinfo</see>
+    <see tag="fieldinfo" />
     <attribute>
       <name>nodetype</name>
       <required>false</required>
@@ -1832,8 +1850,8 @@ transaction was commited, following should result anything:
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
-    <see>field</see>
-    <see>fieldlist</see>
+    <see tag="field" />
+    <see tag="fieldlist" />
     <info>
       <p>
         The fieldinfo tag can be used inside a FieldProvider. It's basic
@@ -1923,19 +1941,20 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Sprecify addtional parameters for the presentation/manipulation of the field. [***EXPERIEMENTAL***]
+        Specify addtional parameters for the presentation/manipulation of the field. [***EXPERIMENTAL***]
       </info>
       <examplevalue>
         <value>daytime</value>
-        <info>a date time combination thingie[***EXPERIEMENTAL***]</info>
+        <info>If the value is a datetime, treat it as a date time combination [***EXPERIMENTAL***]</info>
       </examplevalue>
       <examplevalue>
         <value>time</value>
-        <info>a time thingie[***EXPERIEMENTAL***]</info>
+        <info>If the value is a datetime, treat it as time only [***EXPERIMENTAL***]</info>
+        <info>a time thingie[***EXPERIMENTAL***]</info>
       </examplevalue>
       <examplevalue>
         <value>date</value>
-        <info>a date thingie[***EXPERIEMENTAL***]</info>
+        <info>If the value is a datetime, treat it as date only [***EXPERIMENTAL***]</info>
       </examplevalue>
     </attribute>
     <example>See the example for tags 'cloud' and 'nodeinfo'.</example>
@@ -1986,7 +2005,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <info>
       Checks if a certain variable is present in the parent Context tag.
     </info>
-    <see>notpresent</see>
+    <see tag="notpresent" />
     <attribute>
       <name>referid</name>
       <required>true</required>
@@ -2014,7 +2033,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <info>
       Checks if a certain variable is missing in the parent Context tag.
     </info>
-    <see>present</see>
+    <see tag="present" />
     <example>See the example for tag 'present'</example>
   </tag>
   <tag>
@@ -2045,7 +2064,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         locations, like the session and in cookies.
       </p>
     </info>
-    <see>import</see>
+    <see tag="import" />
     <attribute>
       <name>referid</name>
       <required>false</required>
@@ -2095,9 +2114,9 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     (postparameters) or the session). You can also create a new variable
     with this.
     </info>
-    <see>context</see>
-    <see>write</see>
-    <see>contextreferrer</see>
+    <see tag="context" />
+    <see tag="write" />
+    <see tag="contextreferrer" />
     <attribute>
       <name>id</name>
       <required>false</required>
@@ -2255,8 +2274,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Returns an URL with parameters from the context.
     </info>
-    <see>param</see>
-    <see>image</see>
+    <see tag="param" />
+    <see tag="image" />
     <attribute>
       <name>referids</name>
       <required>false</required>
@@ -2403,8 +2422,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
          directly, so with interpreting/compiling by the web-server.
       </info>
     </attribute>
-    <see>param</see>
-    <see>url</see>
+    <see tag="param" />
+    <see tag="url" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
     </example>
   </tag>
@@ -2417,8 +2436,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     Compares the value of a context variable to a String value. Only if
     they are equal the body is evaluated.
     </info>
-    <see>isempty</see>
-    <see>isnotempty</see>
+    <see tag="isempty" />
+    <see tag="isnotempty" />
     <attribute>
       <name>referid</name>
       <required>false</required>
@@ -2532,7 +2551,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       The body evaluated if the compared value is smaller. This is more
       or less the inverse of isgreatehan, of course.
     </info>
-    <see>isgreaterthan</see>
+    <see tag="isgreaterthan" />
     <example>See the example for tag 'isgreaterthan'.</example>
   </tag>
   <tag>
@@ -2627,7 +2646,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <name>destination</name>
       <required>true</required>
     </attribute>
-    <see>createrelation</see>
+    <see tag="createrelation" />
     <example>
 &lt;mm:maycreate type="list"&gt;
     &lt;mm:createnode type="list" id="this_list"&gt;
@@ -2731,7 +2750,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
        List the relations belonging to this nodes. Relations are nodes too.
     </info>
-    <see>relatednode</see>
+    <see tag="relatednode" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -2765,7 +2784,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       For use under listrelations tag. With this you can easily find
       the other node (it uses the 'snumber' and 'dnumber' fields for you.
     </info>
-    <see>listrelations</see>
+    <see tag="listrelations" />
     <attribute>
       <name>listrelations</name>
       <required>false</required>
@@ -2873,8 +2892,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
                  The list of objects
         </info>
     </attribute>
-    <see>param</see>
-    <see>url</see>
+    <see tag="param" />
+    <see tag="url" />
     <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
@@ -2896,8 +2915,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
                  The list of objects
         </info>
     </attribute>
-    <see>param</see>
-    <see>url</see>
+    <see tag="param" />
+    <see tag="url" />
     <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
@@ -2950,10 +2969,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         </ul>
       </p>
     </info>
-    <see>include</see>
-    <see>treefile</see>
-    <see>param</see>
-    <see>url</see>
+    <see tag="include" />
+    <see tag="treefile" />
+    <see tag="param" />
+    <see tag="url" />
     <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
@@ -2967,10 +2986,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       The only difference is when Treeinclude cannot find a file to include. In that case,
       Leafinclude will use the type of the nodes from the objectlist to find a file to include.
     </info>
-    <see>include</see>
-    <see>leaffile</see>
-    <see>param</see>
-    <see>url</see>
+    <see tag="include" />
+    <see tag="leaffile" />
+    <see tag="param" />
+    <see tag="url" />
     <example>
 Object with id '100' is an object from builder 'portals'
 Object with id '101' is an object from builder 'subsites'.
@@ -2991,8 +3010,8 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <info>
     Adds a parameter to the parent URL Tag.
     </info>
-    <see>url</see>
-    <see>include</see>
+    <see tag="url" />
+    <see tag="include" />
     <attribute>
       <name>name</name>
       <required>true</required>
@@ -3106,7 +3125,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     </attribute>
     <extends>contextreferrer</extends>
     <extends>writer</extends>
-    <see>xslt</see>
+    <see tag="xslt" />
   </tag>
   <tag>
     <name>xslt</name>
@@ -3115,7 +3134,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       This tag must live as a subtag of Formatter. You can add 'inline' XSL with this. (EXPERIMENTAL)
     </info>
     <extends>contextreader</extends>
-    <see>formatter</see>
+    <see tag="formatter" />
   </tag>
   <tag>
     <name>time</name>
@@ -3223,8 +3242,8 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>locale</name>
-    <see>cloud</see>
-    <see>time</see>
+    <see tag="cloud" />
+    <see tag="time" />
     <tagclass>org.mmbase.bridge.jsp.taglib.LocaleTag</tagclass>
     <info>
       <p>
