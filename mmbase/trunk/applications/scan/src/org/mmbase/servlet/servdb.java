@@ -41,7 +41,7 @@ public class servdb extends JamesServlet {
 
 //  ---------------------------------------------------
 	//private String 	classname 	= getClass().getName();
-	private	boolean	debug		= true;
+	private	boolean	debug		= false;
 	//private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 //  ---------------------------------------------------
 
