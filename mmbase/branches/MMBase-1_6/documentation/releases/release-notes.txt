@@ -44,7 +44,7 @@ General New Features:
 - Scan has been turned off by default
 - Centralized caches configuration (caches.xml)
 - Automatic builder installation for applications
-- auto detection of some databases (TODO: add more info)
+- auto detection of some databases (see <mmbase-webapp/WEB-INF/modules/mmbaseroot.xml> for more info)
 - Use of webapplication server resources (JNDI)
 - DTD's are available in the jar (and removed from the config dir)
 - Richtext 0.5
@@ -124,10 +124,25 @@ Taglib Bug Fixes:
   it's working) 
 
 
+========
+Upgrade:
+========
+When you're upgrading from a previous MMBase-version it's important to
+know there have been made a few changes in the xml configuration of
+the builders:
+- name parameter added to the builder tag
+- extends parameter added to the builder tag
+- descriptions/description tags added to the field tag
+
+
 ========================
 Know Issues and Problems:
 ========================
 
+- Jsp-editors aren't working completly when using Tomcat 4.0.x, you'll
+  get an "Illegal target of jump or branch"-error when trying to add
+  relations. You could try the my_editors as an alternative or upgrade
+  to Tomcat 4.1.x.
 - Builder inheritance has been added in MMInformix42Node, this is an
   experimental feature.
 - When using Tomcat 4.1.12 mmbase-logs are written into cataline.out
@@ -223,6 +238,7 @@ Know Issues and Problems:
   (like gui-functions of images), so it adviced to explicitely inform
   MMBase with the mmbase.htmlrooturlpath context parameter from web.xml.
 
+
 ============
 Requirements:
 ============
@@ -249,18 +265,18 @@ Java versions
 Servlet engines /
 Applicationservers
 ------------------
-- Tomcat 4.0.4
+- Tomcat 4.0.4 (although Tomcat 4.1.x is recommended because it's a lot faster than 4.0.x)
+- Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
+logfiles in this version, catalina.out and localhost_log), 4.1.17
 - Orion 1.5.2, 1.5.4, 1.6.0 (experimental)
 - Jetty 4.0.0
 - Resin 2.1.0, Resin 2.1.4 (Taglib attribute problems, filed as bug #3823 in
 www.mmbase.org/bug)
-- Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
-logfiles in this version, catalina.out and localhost_log), 4.1.17
 
 ---------
 Databases
 ---------
-- Hsqldb 1.7.0RC2
+- Hsqldb 1.7.1
 - Mysql Ver 11.12 Distrib 3.23.32,
         Ver 11.16 Distrib 3.23.49,
         Ver 11.15 Distrib 3.23.41
