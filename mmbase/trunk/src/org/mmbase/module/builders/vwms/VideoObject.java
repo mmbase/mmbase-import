@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -14,14 +14,20 @@ import java.text.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class VideoObject {
-Execute exec=new Execute();
-private String filename;
-private int samples;
-private int channels;
-private int frequency;
-private int time; // Ending time
-private float length;
+
+    private static Logger log = Logging.getLoggerInstance(VideoObject.class.getName()); 
+
+    Execute exec=new Execute();
+    private String filename;
+    private int samples;
+    private int channels;
+    private int frequency;
+    private int time; // Ending time
+    private float length;
 
 	public VideoObject() {
 
@@ -56,14 +62,14 @@ Host byte order: little-endian
 		float len;
 
 
-		System.out.println("VideoObject file "+filename);
+		log.info("file " + filename);
 		ao.setFilename(filename);
 		inf=sexec.execute("/usr/local/bin/InfoVideo "+filename);
 
 		tok=new StringTokenizer(inf," \n\r\t",true);
 		while(tok.hasMoreTokens()) {
 			t=tok.nextToken();
-			System.out.print(t);
+			log.debug(t);
 			if (t.equals(" ") || t.equals("\t") || t.equals("\r")) {
 				// skip
 			} else if (t.equals("\n")) {
@@ -127,25 +133,31 @@ Host byte order: little-endian
 		String ex;
 
 		astart=getTime()-(getSamples()/getFrequency());
-		System.out.println("VideoObject start "+astart+","+DateSupport.date2string(astart));
-		System.out.println("VideoObject cutting from "+DateSupport.date2string(start)+" to "+DateSupport.date2string(stop));
+        if (log.isDebugEnabled()) {
+            log.debug("VideoObject start "+astart+","+DateSupport.date2string(astart));
+            log.debug("VideoObject cutting from "+DateSupport.date2string(start)+" to "+DateSupport.date2string(stop));
+        }
 		if (astart>start) {
-			System.out.println("VideoObject : start smaller than start of wav");
+			log.warn("VideoObject : start smaller than start of wav");
 			sampstart=0;
 		} else {
 			sampstart=(start-astart)*getFrequency();
 		}
 		if (stop>time) {
-			System.out.println("VideoObject stop larger than end of wav");
+			log.warn("VideoObject stop larger than end of wav");
 			sampstop=getSamples();
 		} else {
 			sampstop=(stop-astart)*getFrequency();
 		}
-		System.out.println("VideoObject about to cut "+sampstart+","+sampstop);
+        if (log.isDebugEnabled()) {
+            log.debug("VideoObject about to cut "+sampstart+","+sampstop);
+        }
 		ex="/usr/local/bin/CopyVideo -l "+sampstart+":"+sampstop+" "+getFilename()+" -F WAVE "+name;
-		System.out.println("VideoObject cut exec "+ex);
+        if (log.isDebugEnabled()) {
+            log.debug("VideoObject cut exec "+ex);
+        }
 		String s=exec.execute(ex);
-		System.out.println("VideoObject Exec result "+s);
+		log.info("VideoObject Exec result "+s);
 		return(getInfo(name));
 	}
 
@@ -195,6 +207,6 @@ Host byte order: little-endian
 		VideoObject ao;
 
 		ao=VideoObject.getInfo(args[0]);
-		System.out.println(ao);
+		log.info(ao);
 	}
 }

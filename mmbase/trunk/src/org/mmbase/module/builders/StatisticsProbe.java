@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -14,12 +14,16 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {
+
+    private static Logger log = Logging.getLoggerInstance(StatisticsProbe.class.getName()); 
 
 	Thread kicker = null;
 	Statistics parent=null;
@@ -63,8 +67,8 @@ public class StatisticsProbe implements Runnable {
 		try {
 			doWork();
 		} catch (Exception e) {
-			System.out.println("Problem in Statistics thread");
-			e.printStackTrace();
+			log.error("Problem in Statistics thread");
+			log.error(Logging.stackTrace(e));
 		}
 	}
 

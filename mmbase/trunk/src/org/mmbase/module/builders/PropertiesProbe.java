@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -19,6 +19,9 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * admin module, keeps track of all the worker pools
  * and adds/kills workers if needed (depending on
@@ -28,6 +31,8 @@ import org.mmbase.util.*;
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
+
+    private static Logger log = Logging.getLoggerInstance(PropertiesProbe.class.getName()); 
 
 	Thread kicker = null;
 	Properties parent=null;
@@ -93,7 +98,7 @@ public class PropertiesProbe implements Runnable {
 			int max=0;
 			while (rs.next() && max<1000) {
 				int number=rs.getInt(1);
-				System.out.println("Properties -> Want delete on : "+number);
+				log.info("Want delete on : " + number);
 				deleteProperties(number);
 				deleteUser(number);
 				max++;

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -17,12 +17,15 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Arjan Houtman
  */
 public class Question extends MMObjectBuilder {
-
-	
+    
+    private static Logger log = Logging.getLoggerInstance(Question.class.getName()); 
 	/**
 	* insert a new object, normally not used (only subtables are used)
 	*/
@@ -38,12 +41,12 @@ public class Question extends MMObjectBuilder {
 				+", intro char(2048)"
 				+", body text"
 				+") under "+mmb.baseName+"_object_t");
-			System.out.println("Created "+tableName);
+			log.debug("Created "+tableName);
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create type "+tableName);
-			e.printStackTrace();
+			log.debug("can't create type "+tableName);
+			log.error(Logging.stackTrace(e));
 		}
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -53,8 +56,8 @@ public class Question extends MMObjectBuilder {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			e.printStackTrace();
+			log.debug("can't create table "+tableName);
+			log.error(Logging.stackTrace(e));
 		}
 		return(false);
 	}
@@ -93,8 +96,8 @@ public class Question extends MMObjectBuilder {
 				stmt.close();
 				con.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error(Logging.stackTrace(e));
+			log.debug("Error on : "+number+" "+owner+" fake");
 			return(-1);
 		}
 		return(number);	
