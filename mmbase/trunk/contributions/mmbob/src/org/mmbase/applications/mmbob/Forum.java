@@ -1010,7 +1010,7 @@ public class Forum {
             log.debug ("avatars are completly disabled");
             return "false";
         }
-log.debug ("avatars are completly");
+        log.debug ("avatars are not disabled");
         return "true";
     }
 
@@ -1025,6 +1025,39 @@ log.debug ("avatars are completly");
             }
         }
         return ForumManager.getAvatarsUploadEnabled();
+    }
+
+    public String getHeaderPath() {
+        if (config != null) {
+            String tmp = config.getHeaderPath();
+            if (tmp != null) {
+                log.debug("config.getHeaderPath() on "+getId()+ ": " + tmp);
+                return tmp;
+            }
+        }
+        return ForumManager.getHeaderPath();
+    }
+
+    public String getFooterPath() {
+        if (config != null) {
+            String tmp = config.getFooterPath();
+            if (tmp != null) {
+                log.debug("config.getFooterPath() on "+getId()+ ": " + tmp);
+                return tmp;
+            }
+        }
+        return ForumManager.getFooterPath();
+    }
+
+    public String getFromEmailAddress() {
+        if (config != null) {
+            String tmp = config.getFromEmailAddress();
+            if (tmp != null) {
+                log.debug("config.getFromEmailAddress() on "+getId()+ ": " + tmp);
+                return tmp;
+            }
+        }
+        return ForumManager.getFromEmailAddress();
     }
 
 

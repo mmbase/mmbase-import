@@ -525,7 +525,9 @@ public class Controller {
                 virtual.setValue("smileysenabled", f.getSmileysEnabled());
                 virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
                 virtual.setValue("postingsperpage", f.getPostingsPerPage());
-
+                virtual.setValue("fromaddress",f.getFromEmailAddress());
+                virtual.setValue("headerpath",f.getHeaderPath());
+                virtual.setValue("footerpath",f.getFooterPath());
 
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
