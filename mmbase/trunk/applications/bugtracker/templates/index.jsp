@@ -2,7 +2,6 @@
 %><%@page language="java" contentType="text/html; charset=utf-8"
 %><mm:content expires="0" type="text/html">
 <mm:cloud>
-  <mm:import externid="parameters"></mm:import>
   <%@include file="actions.jsp" %>
   <%@include file="showMessage.jsp" %>
 <html>
