@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.31 2000-11-20 13:37:50 install Exp $
+$Id: scanparser.java,v 1.32 2000-11-21 16:40:05 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.31  2000/11/20 13:37:50  install
+Rob changed TRANSCATION tag to lower case
+
 Revision 1.30  2000/11/19 00:17:51  daniel
 re fixed the constructor to work with mmdemo
 
@@ -116,7 +119,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.31 $ $Date: 2000-11-20 13:37:50 $
+ * @$Revision: 1.32 $ $Date: 2000-11-21 16:40:05 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -710,6 +713,13 @@ public class scanparser extends ProcessorModule {
 			if (sp.req_line==null) sp.req_line=filename;
 		} else {
 			filename=part2;
+		}
+
+		if (filename.indexOf("..")>=0) {
+			sp.setParamsVector(oldparams);
+			sp.partlevel--;
+			debug("do_part: Usage of '..' in filepath not allowed!");
+			return("Usage of '..' in filepath not allowed!");
 		}
 
  		if ((filename.length()>0) && (filename.charAt(0)!='/')) {
