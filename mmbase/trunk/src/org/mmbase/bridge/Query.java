@@ -16,11 +16,15 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.17 2003-09-01 13:29:42 pierre Exp $
+ * @version $Id: Query.java,v 1.18 2003-09-02 19:43:46 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
 
+    /**
+     * Returns the Cloud for which this Query was defined.
+     */
+    Cloud getCloud();
 
     /**
      * Wheter this query is 'aggregating'. You can only use 'addAggregatedField' on aggregating querys.
