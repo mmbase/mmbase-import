@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.4 2002-06-30 19:30:13 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.5 2002-06-30 20:12:23 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -34,7 +34,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * In this string the path to the servlet is stored.
      */
     private String servletPath = null;
- 
+
+    /**
+     * If this builder is association with a bridge servlet. If not, it should not put the
+     * 'session=' in the url to the servlet (because the serlvet probably is servdb, which does not
+     * understand that).
+     */
+    protected boolean usesBridgeServlet = false;
 
     /**
      * This functions should return a string identifying where it is
@@ -73,6 +79,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (pos == 0) {
                 result = result.substring(pos+1);
             }
+            usesBridgeServlet = true;
         } else {
             result = getDefaultPath();
         }
