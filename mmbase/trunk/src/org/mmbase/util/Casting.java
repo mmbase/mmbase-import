@@ -25,17 +25,19 @@ import org.mmbase.util.logging.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Cloud;
 import java.util.*;
 import java.io.Writer;
 
+
 public class Casting {
-    private static final Logger log = Logging.getLoggerInstance(Casting.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Casting.class);
 
     /**
      * Get a value of a certain field.  The value is returned as a
      * String. Non-string values are automatically converted to
      * String. 'null' is converted to an empty string.
-     * @param fieldName the name of the field who's data to return
+     * @param o the object which must be presented as a string
      * @return the field's value as a <code>String</code>
      */
     public static String toString(Object o) {
@@ -99,7 +101,7 @@ public class Casting {
      * attempts to convert the String value into an XML.
      * If the value cannot be converted, this method returns <code>null</code>
      *
-     * @param fieldName  the name of the field to be returned
+     * @param o the object to be converted to an XML document
      * @return  the value of the specified field as a DOM Element or <code>null</code>
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
@@ -110,7 +112,7 @@ public class Casting {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on service.
             // It will happen often if the nodes are not cached and so on.
-            String xmltext=toString(o);
+            String xmltext = toString(o);
             if (log.isServiceEnabled()) {
                 String msg = xmltext;
                 if (msg.length()>20) msg = msg.substring(0,20);
@@ -123,8 +125,8 @@ public class Casting {
 
 
     /**
-     * Get a binary value of a certain field.
-     * @param fieldName the name of the field who's data to return
+     * Get a binary value of a object.
+     * @param obj The object to be converted to a byte[]
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
     static public byte[] toByte(Object obj) {
@@ -159,6 +161,24 @@ public class Casting {
             }
         } else if (i!=null && !i.equals("")) {
             res = parent.getNode(i.toString());
+        }
+        return res;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public static Node toNode(Object i, Cloud cloud) {
+        Node res = null;
+        if (i instanceof MMObjectNode) {
+            res = cloud.getNode(((MMObjectNode)i).getNumber());
+        } else if (i instanceof Number) {
+            int nodenumber = ((Number)i).intValue();
+            if (nodenumber != -1) {
+                res = cloud.getNode(nodenumber);
+            }
+        } else if (i!=null && !i.equals("")) {
+            res = cloud.getNode(i.toString());
         }
         return res;
     }
@@ -387,7 +407,6 @@ public class Casting {
 
     /**
      * Convert a String value of a field to a Document
-     * @param fieldName The field to be used.
      * @param value     The current value of the field, (can be null)
      * @return A DOM <code>Document</code> or <code>null</code> if there was no value and builder allowed  to be null
      * @throws RuntimeException When value was null and not allowed by builer, and xml failures.
