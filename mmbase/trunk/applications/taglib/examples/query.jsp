@@ -35,7 +35,7 @@
   <td width="50%"><%@include file="codesamples/query.relatednodes.jsp" %></td>
 </tr>
 <tr><td colspan="2">
-  The relatednodescontainer can also be given a 'path'. Thats useful especially for ordering.
+  The relatednodescontainer can also be given a 'path'. That's useful especially for ordering.
 </td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/query.relatednodes2.jsp" /></mm:formatter></pre></td>
