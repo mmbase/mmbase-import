@@ -8,6 +8,10 @@
 
   <body>
     <h1></h1>
+    <mm:import externid="sessionvar" from="parameters,session">abc</mm:import>
+    <mm:write referid="sessionvar" session="sessionvar" />
+    <mm:import externid="cookievar" from="parameters,cookie">abc</mm:import>
+    <mm:write referid="cookievar" cookie="cookievar" />
     <mm:import externid="remove" from="parameters" />
     <mm:import externid="view"   from="parameters" />
 
@@ -40,6 +44,9 @@
       <% } %>
     </table>
     </mm:present>
+    <hr />
+    sessionvar : <mm:write referid="sessionvar" /><br />
+    cookievar : <mm:write referid="cookievar" />
     <hr />
     
     See also the <a href="caches.jsp">Caches</a>

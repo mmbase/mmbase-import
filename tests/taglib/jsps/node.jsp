@@ -158,15 +158,13 @@ using list tag: <br />
    news.title:    <mm:field name="news.title" />   <br />
    news.subtitle: <mm:field name="news.subtitle" /><br />
    urls.url:      <mm:field name="urls.url" />     <br />
-    <mm:log>1</mm:log>
    <mm:node element="news">
      <em>node element="news"</em>:<br />
-    <mm:log>2</mm:log>
      title: <mm:field name="title" /><br />
      <em>should follow 9 times (numbered from 1 to 9) the related URL:</em><br />
-    <mm:log>3</mm:log>
      <mm:relatednodes type="urls">
-       1  related url (used relatednodes): <mm:field id="url" name="url" /><br />
+       1  related url (used relatednodes): <mm:field id="url" name="url" /> (<mm:index />/<mm:size />)<br />
+       <mm:last>(should be two ('sorted' and 'posrel'))<br /></mm:last>
      </mm:relatednodes>
      <mm:relatednodes type="urls" orderby="description">
        2  related url (used relatednodes): <mm:field name="url" /><br />
@@ -326,6 +324,7 @@ cd
    news.title:    <mm:field name="title" />   <br />
    news.subtitle: <mm:field name="subtitle" /><br />
 </mm:list>
+
 
 </mm:cloud>
 </mm:present>

@@ -157,9 +157,17 @@ Ok, did not throw exception with 'reset'.<br />
 <% } %>
 <% try { %>
  <mm:import externid="a_param" id="some_id" reset="true">bla bla </mm:import>
+Ok, did not throw exception with 'reset'.<br />
 <% } catch (Exception e) { %>
  WRONG, should not have thrown exception with reset="true".
  <%= e.getMessage() %>
+ <br />
+<% } %>
+<% try { %>
+ <mm:import externid="a_param" id="some_id" >bla bla </mm:import>
+ WRONG, should not have thrown exception without reset="true".
+<% } catch (Exception e) { %>
+  Ok, threw exception without 'reset'.<br />
  <br />
 <% } %>
 </p>
