@@ -324,6 +324,7 @@
 			<field name="lastposttime" type="int" description="Time of the last posting in this postarea, -1 if no posting was done sofar" />
 			<field name="lastsubject" type="String" description="Subject of the last postthread that changed in this postarea" />
 			<field name="isadministrator" type="String" description="Is the posterid given a administrator of this forum ?  true/false." />
+                        <field name="ismoderator" type="String" description="Is the posterid given a moderator of this postarea ?  true/false." />
 			<field name="active_id" type="int" description="MMBase node number of active Poster (on the page)" />
 			<field name="active_account" type="String" description="Account name of active poster" />
 			<field name="active_firstname" type="String" description="Firstname of the active poster" />
