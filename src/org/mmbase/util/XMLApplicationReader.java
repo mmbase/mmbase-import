@@ -20,9 +20,17 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+    
+
+
 /**
 */
 public class XMLApplicationReader  {
+
+    private static Logger log = Logging.getLoggerInstance(XMLApplicationReader.class.getName());
 
     Document document;
     DOMParser parser;
@@ -34,8 +42,8 @@ public class XMLApplicationReader  {
 
 	File file = new File(filename);
        	if(!file.exists()) {
-  		System.out.println("ERROR -> Application file "+filename+" does not exist");
-         }
+            log.error("Application file "+filename+" does not exist");
+        }
         try {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
@@ -48,19 +56,19 @@ public class XMLApplicationReader  {
 
 
 	   /*
-	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
-	    System.out.println("Application name="+getApplicationName());	
-	    System.out.println("Application version="+getApplicationVersion());	
-	    System.out.println("Application auto-deploy="+getApplicationAutoDeploy());	
-	    System.out.println("Needed builders="+getNeededBuilders());	
-	    System.out.println("Needed reldefs="+getNeededRelDefs());	
-	    System.out.println("Allowed relations="+getAllowedRelations());	
-	    System.out.println("DataSources="+getDataSources());	
-	    System.out.println("RelationSources="+getRelationSources());	
-	    System.out.println("*** END XML APPLICATION READER FOR : "+filename);	
+	    log.debug("*** START XML APPLICATION READER FOR : "+filename);	
+	    log.debug("Application name="+getApplicationName());	
+	    log.debug("Application version="+getApplicationVersion());	
+	    log.debug("Application auto-deploy="+getApplicationAutoDeploy());	
+	    log.debug("Needed builders="+getNeededBuilders());	
+	    log.debug("Needed reldefs="+getNeededRelDefs());	
+	    log.debug("Allowed relations="+getAllowedRelations());	
+	    log.debug("DataSources="+getDataSources());	
+	    log.debug("RelationSources="+getRelationSources());	
+	    log.debug("*** END XML APPLICATION READER FOR : "+filename);	
 	    */
 	} catch(Exception e) {
-	    e.printStackTrace();
+	    log.error(Logging.stackTrace(e));
 	}
     }
 
