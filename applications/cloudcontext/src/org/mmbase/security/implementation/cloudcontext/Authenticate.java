@@ -29,7 +29,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.10 2005-03-16 15:46:13 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.11 2005-03-16 23:46:17 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -161,9 +161,9 @@ public class Authenticate extends Authentication {
         if (flag) {
             log.debug(user.toString() + " was valid");
         } else if (user.isValidNode()) {
-            log.debug(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
+            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
         } else {
-            log.debug(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (node was different)");
+            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (node was different)");
         }
         return flag;
     }
