@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.52 2004-05-17 22:10:22 michiel Exp $
+ * @version $Id: Config.java,v 1.53 2004-06-17 10:27:09 michiel Exp $
  */
 
 public class Config {
@@ -306,6 +306,7 @@ public class Config {
             if (searchFields == null) {
                 constraints = baseConstraints;
             } else {
+                StringBuffer constraintsBuffer;                
                 // search type: default
                 String sType = searchType;
                 // get the actual field to search on.
@@ -319,12 +320,16 @@ public class Config {
                     sType = "equals";
                 }
                 String where = searchValue;
-                constraints = null;
+                constraintsBuffer = null;
                 if (sType.equals("like")) {
-                    // actually we should unquote search...
-                    where = " LIKE '%" + where.toLowerCase() + "%'";
+                    if (! "".equals(where)) {
+                        // actually we should unquote search...
+                        where = " LIKE '%" + where.toLowerCase() + "%'";
+                    }
                 } else if (sType.equals("string")) {
-                    where = " = '" + where + "'";
+                    if (! "".equals(where)) {
+                        where = " = '" + where + "'";
+                    }
                 } else {
                     if (where.equals("")) {
                         where = "0";
@@ -343,22 +348,34 @@ public class Config {
                         where = " = " + where;
                     }
                 }
-                StringTokenizer searchTokens= new StringTokenizer(sFields, ",");
-                while (searchTokens.hasMoreTokens()) {
-                    String tok = searchTokens.nextToken();
-                    if (constraints != null) {
-                        constraints += " OR ";
-                    } else {
-                        constraints = "";
-                    }
-                    if (sType.equals("like")) {
-                        constraints += "lower([" + tok + "])" + where;
-                    } else {
-                        constraints += "[" + tok + "]" + where;
+                if (! "".equals(where)) {
+                    StringTokenizer searchTokens= new StringTokenizer(sFields, ",");
+                    while (searchTokens.hasMoreTokens()) {
+                        String tok = searchTokens.nextToken();
+                        if (constraintsBuffer != null) {
+                            constraintsBuffer.append(" OR ");
+                        } else {
+                            constraintsBuffer = new StringBuffer();
+                        }
+                        if (sType.equals("like")) {
+                            constraintsBuffer.append("lower([").append(tok).append("])").append(where);
+                        } else {
+                            constraintsBuffer.append('[').append(tok).append(']').append(where);
+                        }
                     }
                 }
-                if (baseConstraints!=null) {
-                    constraints = "(" + baseConstraints + ") and (" + constraints + ")";
+                if (baseConstraints != null) {
+                    if (constraintsBuffer != null) {
+                        constraints = "(" + baseConstraints + ") and (" + constraintsBuffer.toString() + ")";
+                    } else {
+                        constraints = baseConstraints;
+                    }
+                } else {
+                    if (constraintsBuffer != null) {
+                        constraints = constraintsBuffer.toString() ;
+                    } else {
+                        constraints = null;
+                    }
                 }
             }
             searchDir   = configurator.getParam("searchdir",  searchDir);
