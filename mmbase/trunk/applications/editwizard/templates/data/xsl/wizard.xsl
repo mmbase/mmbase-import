@@ -6,7 +6,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.100 2003-11-12 13:57:52 michiel Exp $
+  @version $Id: wizard.xsl,v 1.101 2003-11-14 14:45:06 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -134,11 +134,11 @@
         <hr color="#005A4A" size="1" noshade="true"/>
         <p>
           <!-- cancel -->
-          <xsl:call-template name="cancelbutton"/>            
-          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          <xsl:call-template name="cancelbutton"/>
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;-&amp;nbsp;</xsl:text>
           <!-- commit  -->
           <xsl:call-template name="savebutton"/>
-          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;-&amp;nbsp;</xsl:text>
           <!-- Saveonly  -->
           <xsl:call-template name="saveonlybutton"/>
         </p>
