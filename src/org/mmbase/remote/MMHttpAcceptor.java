@@ -168,6 +168,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			try {
 				out=new PrintStream(connect.getOutputStream());
 			} catch (Exception e) {
+				debug("PrintStream failure");
 				e.printStackTrace();
 			}
 
@@ -252,8 +253,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 				}
 			}	
 			connect.close();
-		} catch(Exception e) {
-		}
+		} catch(Exception e) { debug("getNode() general failure"); e.printStackTrace(); }
 		return(true);
 	}
 
