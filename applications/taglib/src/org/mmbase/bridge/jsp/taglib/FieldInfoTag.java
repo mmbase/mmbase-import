@@ -357,7 +357,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     break;
                 }
                 search = search.toUpperCase();
-                show = "( UPPER(" + fieldName + ") LIKE '%" + search + "%')";
+                show = "( UPPER([" + fieldName + "]) LIKE '%" + search + "%')";
             }
             break;
         case Field.TYPE_INTEGER:  
