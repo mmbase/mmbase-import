@@ -6,7 +6,8 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.2 2004-01-05 14:54:12 pierre Exp $
+  @author Martijn Houtman
+  @version $Id: wizard.xsl,v 1.3 2004-01-14 14:12:47 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -153,10 +154,9 @@
     <tr>
       <td colspan="2" align="center">
         <xsl:call-template name="previousbutton"/>
- <!-- previous -->
-          - -
+        <!-- previous -->
         <xsl:call-template name="nextbutton"/>
-     <!-- next -->
+        <!-- next -->
       </td>
     </tr>
   </xsl:template>
@@ -403,12 +403,39 @@
     </input>
   </xsl:template>
 
+  <!-- used to convert &amp; occurrences in textareas, so it is possible to edit xml  -->
+  <xsl:template name="replace-string">
+      <xsl:param name="text"/>
+      <xsl:param name="replace"/>
+      <xsl:param name="with"/>
 
+      <xsl:choose>
+          <xsl:when test="string-length($replace) = 0">
+              <xsl:value-of disable-output-escaping="yes" select="$text"/>
+          </xsl:when>
+          <xsl:when test="contains($text, $replace)">
 
-   <!-- ================================================================================
-        fieldintern is called from fields and fieldsets
+              <xsl:variable name="before" select="substring-before($text, $replace)"/>
+              <xsl:variable name="after" select="substring-after($text, $replace)"/>
 
-        -->
+              <xsl:value-of disable-output-escaping="yes" select="$before"/>
+              <xsl:value-of disable-output-escaping="yes" select="$with"/>
+              <xsl:call-template name="replace-string">
+                  <xsl:with-param name="text" select="$after"/>
+                  <xsl:with-param name="replace" select="$replace"/>
+                  <xsl:with-param name="with" select="$with"/>
+              </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+              <xsl:value-of disable-output-escaping="yes" select="$text"/>
+          </xsl:otherwise>
+      </xsl:choose>
+  </xsl:template>
+
+  <!-- ================================================================================
+      fieldintern is called from fields and fieldsets
+
+      -->
   <xsl:template name="fieldintern">
     <xsl:apply-templates select="prefix"/>
     <xsl:choose>
@@ -481,7 +508,20 @@
             </xsl:choose>
             <xsl:apply-templates select="@*"/>
             <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-            <xsl:value-of disable-output-escaping="yes" select="value"/>
+            <xsl:choose>
+              <xsl:when test="@ftype='text'">
+                <xsl:call-template name="replace-string">
+                  <xsl:with-param name="text">
+                    <xsl:value-of disable-output-escaping="yes" select="value"/>
+                  </xsl:with-param>
+                  <xsl:with-param name="replace" select="'&amp;'"/>
+                  <xsl:with-param name="with" select="'&amp;amp;'"/>
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of disable-output-escaping="yes" select="value"/>
+              </xsl:otherwise>
+            </xsl:choose>
             <xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
             <xsl:apply-templates select="postfix"/>
           </span>
@@ -802,14 +842,14 @@
   </xsl:template>
 
   <!--
-       ================================================================================
-       item, produces 3 column-tr's ( prompt (or image) -   item itself  -  (buttons)
-       -->
+    ================================================================================
+    item, produces 3 column-tr's ( prompt (or image) -   item itself  -  (buttons)
+  -->
   <xsl:template match="item">
       <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
     <xsl:choose>
       <xsl:when test="@displaytype='link'">
-<!-- simply make the link, there must be a field name and number -->
+        <!-- simply make the link, there must be a field name and number -->
         <tr>
           <td colspan="3">
             <a href="{$wizardpage}&amp;wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value"/>
@@ -818,7 +858,7 @@
         </tr>
       </xsl:when>
       <xsl:when test="@displaytype='image'">
- <!-- first column is the image, show the fields in the second column -->
+        <!-- first column is the image, show the fields in the second column -->
         <tr>
           <td colspan="3">
             <xsl:call-template name="itembuttons"/>
@@ -839,11 +879,11 @@
         </tr>
       </xsl:when>
       <xsl:when test="count(field|fieldset) &lt; 2">
-<!-- only one field ?, itembutton right from the item. -->
+        <!-- only one field ?, itembutton right from the item. -->
         <tr>
           <xsl:for-each select="field|fieldset">
             <xsl:apply-templates select="."/>
- <!-- two td's -->
+            <!-- two td's -->
           </xsl:for-each>
           <xsl:if test="not(field|fieldset)">
             <td colspan="2">[]</td>
@@ -856,7 +896,7 @@
         </tr>
       </xsl:when>
       <xsl:otherwise>
-<!-- more fields -->
+      <!-- more fields -->
         <tr>
           <td colspan="3">
             <xsl:call-template name="itembuttons"/>
@@ -889,10 +929,7 @@
       </tr>
     </xsl:for-each>
   </xsl:template>
-<!-- item -->
-
-
-
+  <!-- item -->
 
   <!-- produces a bunch of links -->
   <xsl:template name="itembuttons">
@@ -989,19 +1026,18 @@
       <xsl:call-template name="listitems"/>
     </td>
   </xsl:template>
-<!-- list -->
+  <!-- list -->
 
   <xsl:template name="listitems">
       <!-- show the item's of the list like that -->
     <xsl:if test="item">
       <table class="itemlist">
-<!-- three columns -->
+        <!-- three columns -->
         <xsl:apply-templates select="item"/>
       </table>
     </xsl:if>
 
-
-      <!-- if 'add-item' command and a search, then make a search util-box -->
+    <!-- if 'add-item' command and a search, then make a search util-box -->
     <xsl:if test="command[@name='add-item']">
       <xsl:for-each select="command[@name='search']">
         <table class="itemadd">
@@ -1012,8 +1048,8 @@
               </xsl:call-template>
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
               <nobr>
-<!-- the search-tools must not be seperated -->
-                  <!-- alway make searching on age possible -->
+                <!-- the search-tools must not be seperated -->
+                <!-- alway make searching on age possible -->
                 <xsl:choose>
                   <xsl:when test="$searchagetype='edit'">
                     <xsl:call-template name="prompt_age"/>
@@ -1069,7 +1105,7 @@
         </table>
       </xsl:for-each>
     </xsl:if>
-<!-- if add-item -->
+    <!-- if add-item -->
 
 
       <!--
@@ -1102,11 +1138,11 @@
       </xsl:if>
     </xsl:for-each>
 
-      <!--
-           Create the add-buttons for the startwizard commands.
-           -->
+    <!--
+         Create the add-buttons for the startwizard commands.
+         -->
 
-      <!-- only if less then maxoccurs -->
+    <!-- only if less then maxoccurs -->
     <xsl:if test="not(@maxoccurs) or (@maxoccurs = '*') or count(item) &lt; @maxoccurs">
       <xsl:if test="command[@name='startwizard']">
 
@@ -1138,7 +1174,7 @@
       </xsl:if>
     </xsl:if>
   </xsl:template>
-<!-- listitems -->
+  <!-- listitems -->
 
 
   <xsl:template name="savebutton">
