@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.26 2002-05-29 09:45:46 pierre Exp $
+ * @version $Id: Wizard.java,v 1.27 2002-06-03 12:20:38 pierre Exp $
  *
  */
 public class Wizard {
@@ -1203,9 +1203,7 @@ public class Wizard {
                 } catch (Exception e) {
                     break;
                 }
-                log.info("updatednode= "+updatedNode);
                 NodeList updatedFields = Utils.selectNodeList(updatedNode, "./field");
-                log.info("updatednodefields= "+updatedFields);
 
                 Map fieldvalues=new HashMap();
                 for (int j=0; j<updatedFields.getLength(); j++) {

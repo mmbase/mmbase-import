@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.15 2002-05-29 09:45:46 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.16 2002-06-03 12:20:38 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -86,38 +86,58 @@ public class WizardDatabaseConnector {
      */
     private void loadRelations(Node object, String objectnumber, Node loadaction) throws Exception {
         // loads relations using the loadaction rules
-        Document flatloadaction = Utils.parseXML("<tmp />");
-        NodeList tmprels = Utils.selectNodeList(loadaction, "relation");
-        for (int i=0; i<tmprels.getLength(); i++) {
-            flatloadaction.getDocumentElement().appendChild(flatloadaction.importNode(tmprels.item(i).cloneNode(false), true));
+        if ((org.mmbase.Version.getMajor()==1) && (org.mmbase.Version.getMinor()==5)) {
+            // backward compatibilty: The Dove included with MMBase 1.5 does not
+            // auto-load objects in relations.
+            // This code is included only for the separate wizard release and is deprecated
+            loadRelations15(object,objectnumber,loadaction);
+            return;
         }
+        // MMBase 1.6 code and beyond
+        NodeList reldefs = Utils.selectNodeList(loadaction, "relation");
+        // complete reldefs: add empty <object> tag where there is none.
+        for (int i=0; i<reldefs.getLength(); i++) {
+            Node rel = reldefs.item(i);
+            // if there is not yet an object attached, load it now
+            NodeList objs = Utils.selectNodeList(rel, "object");
+            if (objs.getLength()==0) {
+                Element obj = rel.getOwnerDocument().createElement("object");
+                rel.appendChild(obj);
+            }
+        }
+        // load relations (automatically loads related objects and 'deep' relations)
+        if (reldefs.getLength()>0) getRelations(object, objectnumber, reldefs);
+    }
 
-        NodeList flatrels = Utils.selectNodeList(flatloadaction, "/*/relation");
-        try {
-            // only get relations if a loadrestriction is placed.
-            if (flatrels.getLength()>0) getRelations(object, objectnumber, flatrels);
-        } catch (Exception e) {
-            log.debug("Could not getRelations (loadRelations) object ["+objectnumber+"]. MMBase returned some errors. Sorry for that, though.\n"+e.getMessage());
-            throw e;
-        }
+    /**
+     * This method loads relations from MMBase and stores the result in the given object node.
+     * @deprecated This code is for backward compatibilty: The Dove included with MMBase 1.5 does not
+     *              auto-load objects in relations. This code is included only for the separate wizard release.
+     *
+     * @param       object          The objectNode where the results should be appended to.
+     * @param       objectnumber    The objectnumber of the parentobject from where the relations should originate.
+     * @param       loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
+     */
+    private void loadRelations15(Node object, String objectnumber, Node loadaction) throws Exception {
+        NodeList reldefs = Utils.selectNodeList(loadaction, "relation");
+        if (reldefs.getLength()>0) getRelations(object, objectnumber, reldefs);
 
         // load objects to which relations are pointing
+        // uses a bit odd syntax (relation directly under relation).
         NodeList loadactionrestrictionfields = Utils.selectNodeList(loadaction, "field");
         NodeList rels = Utils.selectNodeList(object, "relation");
         for (int i=0; i<rels.getLength(); i++) {
             Node rel = rels.item(i);
-            String parentobjnumber = Utils.getAttribute(rel.getParentNode(), "number");
             String relatedobject = Utils.getAttribute(rel, "destination", "");
             Node loadedobj = getData(rel, relatedobject, loadactionrestrictionfields);
 
             // object loaded. Check to see if we need to follow more relations...
             // find corresponding loadaction settings...
             String reldestination=Utils.getAttribute(loadedobj, "type");
-            Node deeprels = Utils.selectSingleNode(loadaction, "relation[@destination='"+reldestination+"'][relation/@destination]");
-
+            Node deeprels = Utils.selectSingleNode(loadaction, "relation[@destination='"+reldestination+"']/object[relation/@destination]");
             if (deeprels!=null) {
                 // yep. we should carry on loading! (Recurse!)
-                loadRelations(loadedobj, relatedobject, deeprels);
+                loadRelations(loadedobj, Utils.getAttribute(loadedobj,"number"), deeprels);
             }
         }
     }
@@ -125,9 +145,9 @@ public class WizardDatabaseConnector {
     /**
      * This method loads an object and the necessary relations and fields, according to the given schema.
      *
-     * @param     schema          The schema carrying all the information needed for loading the proper object and related fields and objects.
-     * @param     objectnumber    The objectnumber of the object to start with.
-     * @return   The resulting data document.
+     * @param schema The schema carrying all the information needed for loading the proper object and related fields and objects.
+     * @param objectnumber The objectnumber of the object to start with.
+     * @return The resulting data document.
      */
     public Document load(Node schema, String objectnumber) throws Exception {
         // intialize data xml
@@ -136,16 +156,21 @@ public class WizardDatabaseConnector {
         try {
             // load initial object using object number
             log.debug("Loading: " + objectnumber);
-            Node object = getData(data.getDocumentElement(), objectnumber);
 
-            // load relations
-            Node loadactionrestrictions = Utils.selectSingleNode(schema, "action[@type='load']");
-            if (loadactionrestrictions==null) {
-                // no action type="load". Give an emptyone.
-                Document tmp = Utils.parseXML("<action type=\"load\" />");
-                loadactionrestrictions = tmp.getDocumentElement();
+            // restrict fields to load
+            NodeList fieldstoload = Utils.selectNodeList(schema, "action[@type='load']/field");
+            Node object=null;
+            if (fieldstoload==null || fieldstoload.getLength()==0) {
+                object = getData(data.getDocumentElement(), objectnumber);
+            } else {
+                object = getData(data.getDocumentElement(), objectnumber, fieldstoload);
             }
-            loadRelations(object, objectnumber, loadactionrestrictions);
+
+            // load relations, if present
+            Node loadaction = Utils.selectSingleNode(schema, "action[@type='load']");
+            if (loadaction!=null) {
+                loadRelations(object, objectnumber, loadaction);
+            }
         } catch (Exception e) {
             log.error("Could not load object ["+objectnumber+"]. MMBase returned some errors.\n"+e.getMessage());
             throw e;
@@ -255,9 +280,9 @@ public class WizardDatabaseConnector {
      * @param       loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
      *
      */
-    public void getRelations(Node targetNode, String objectnumber, NodeList loadaction) throws Exception {
+    public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws Exception {
         // fires getRelations command and places results targetNode
-        ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, loadaction);
+        ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, queryrelations);
         fireCommand(cmd);
         if (!cmd.hasError()) {
             NodeList relations = Utils.selectNodeList(cmd.getResponseXML(), "/*/object/relation");
@@ -345,8 +370,6 @@ public class WizardDatabaseConnector {
                     value=value.substring(0,pos)+createorder+value.substring(pos+6);
                 }
                 Node parent=data.getDocumentElement();
-                log.debug(parent.toString());
-                log.debug(value.substring(1,value.length()-1));
                 value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"");
             }
             if (datafield!=null) {
