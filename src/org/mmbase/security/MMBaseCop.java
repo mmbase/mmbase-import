@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.15 2003-08-27 19:30:38 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.16 2004-03-10 14:08:14 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static Logger log = Logging.getLoggerInstance(MMBaseCop.class);
@@ -125,12 +125,12 @@ public class MMBaseCop extends SecurityManager  {
 
     /**
      * checks if the received shared secret is equals to your own shared secret
-     * @param receive shared secret
+     * @param received  shared secret
      * @return true if received shared secret equals your own shared secret
      * @return false if received shared secret not equals your own shared secret
      */
-    public boolean checkSharedSecret(String key) {
-        return getConfig().checkSharedSecret(key);
+    public boolean checkSharedSecret(String received) {
+        return getConfig().checkSharedSecret(received);
     }
 
     /**
