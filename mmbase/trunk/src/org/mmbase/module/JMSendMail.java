@@ -9,276 +9,119 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.io.*;
 import java.net.*;
 import java.util.*;
+import javax.naming.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
+
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import javax.mail.*;
-import javax.mail.internet.*;
 
 
 /**
- * Module providing mail functionality based on JavaMail.
- * Based on org.mmbase.module.SendMail by Rob Vermeulen, where
- * actually sending mail has been replaced by JavaMail functionality
- * while other methods have remained unchanged.
+ * Module providing mail functionality based on JavaMail, mail-resources.
  *
  * @author Case Roole
+ * @author Michiel Meeuwissen
+ * @since  MMBase-1.6
  */
-public class JMSendMail extends Module implements SendMailInterface {
+public class JMSendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(JMSendMail.class.getName());
-    protected String from;
-    protected String to;
-    protected String replyto;
-    protected String cc;
-    protected String bcc;
-    protected String subject;
-    protected String message;
-
-    private DataInputStream in = null;
-    private DataOutputStream out = null;
-    private Socket connect = null;
-
-    private String smtphost = "";
+    private Session session;
 
     public void reload() {
-        smtphost=getInitParameter("mailhost");
+        init();
     }
 
-    public void unload() { }
-
-
-    public void onload() { }
-
-
-    public void shutdown() { }
-
-
-    public void init() {
-        from = null;
-        to = null;
-        replyto = null;
-        cc = null;
-        bcc = null;
-        message = "<no message specified>";
-        subject = "<no subject specified>";
-        smtphost=getInitParameter("mailhost");
-        log.info("Module SendMail started (smtphost="+smtphost+")");
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
-    }
-
-    public void setReplyTo(String replyto) {
-        this.replyto = replyto;
-    }
-
-    public void setCc(String cc) {
-        this.cc = cc;
-    }
-
-    public void setBcc(String bcc) {
-        this.bcc = bcc;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * Connect to the smtphost
-     * ..unchanged..
-     */
-    private boolean connect(String host, int port) {
-        log.service("SendMail connected to host="+host+", port="+port+")");
-        String result="";
-
+    public void init() {                     
         try {
-            connect=new Socket(host,port);
-        } catch (Exception e) {
-            log.error("SendMail cannot connect to host="+host+", port="+port+")."+e);
-            return false;
+            String smtphost   = getInitParameter("mailhost");
+            String context    = getInitParameter("context");
+            String datasource = getInitParameter("datasource");
+            session = null;           
+            if (smtphost == null) {
+                if (context == null) {                    
+                    context = "java:comp/env";
+                    log.warn("The property 'context' is missing, taking default " + context);
+                }
+                if (datasource == null) {
+                    datasource = "mail/Session";
+                    log.warn("The property 'datasource' is missing, taking default " + datasource);
+                }
+                
+                Context initCtx = new InitialContext();
+                Context envCtx = (Context) initCtx.lookup(context);
+                session = (Session) envCtx.lookup(datasource);       
+                log.info("Module JMSendMail started (datasource = " + datasource +  ")");
+            } else {
+                if (context != null) {
+                    log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
+                }
+                if (datasource != null) {
+                    log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
+                }
+                log.info("EMail module is configured using 'mailhost' proprerty.\n" + 
+                         "Consider using J2EE compliant 'context' and 'datasource'\n" +
+                         "Which means to put something like this in your web.xml:\n" + 
+                         "  <resource-ref>\n" +
+                         "     <description>Email module mail resource</description>\n" + 
+                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" + 
+                         "     <res-type>javax.mail.Session</res-type>\n" + 
+                         "     <res-auth>Container</res-auth>\n" + 
+                         "  </resource-ref>\n" +
+                         " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)"
+                         );
+
+                Properties prop = System.getProperties();
+                prop.put("mail.smtp.host", smtphost);
+                session = Session.getInstance(prop, null);
+                log.info("Module JMSendMail started (smtphost = " + smtphost +  ")");
+            }                
+
+        } catch (javax.naming.NamingException e) {
+            log.fatal("JMSendMail failure: " + e.getMessage());
+            log.debug(Logging.stackTrace(e));
         }
-        try {
-            out=new DataOutputStream(connect.getOutputStream());
-        } catch (IOException e) {
-            log.error("Sendmail cannot get outputstream." +e);
-            return false;
-        }
-        try {
-            in=new DataInputStream(connect.getInputStream());
-        } catch (IOException e) {
-            log.error("SendMail cannot get inputstream."+e);
-            return false;
-        }
-        try {
-            result = in.readLine();
-        } catch (Exception e) {
-            log.error("SendMail cannot read response."+e);
-            return false;
-        }
-        /** Is anwser 220 **/
-        if(result.indexOf("220")!=0)  return false;
-        return true;
     }
-
-
-    /**
-     	 * Send mail
-     * ..unchanged..
-     */
-    public synchronized boolean sendMail(String from, String to, String data) {
-        return sendMail(from,to,data,new Hashtable());
-    }
-
 
     /**
      * Send mail with headers 
      */
-    public boolean sendMail(String from, String to, String data, Hashtable headers) {
-        setFrom(from);
-        setTo(to);
-        setMessage(data);
-
-        // Fields supported by org.mmbase.module.SendMail that are ignored: Date, Comment, Reply-to
-        String s = null;
-        s = (String)headers.get("Subject");
-        if (s!=null) {
-            setSubject(s);
-        }
-
-        s = (String)headers.get("CC");
-        if (s!=null) {
-            setCc(s);
-        }
-
-        s = (String)headers.get("BCC");
-        if (s!=null) {
-            setBcc(s);
-        }
-
+    public boolean sendMail(String from, String to, String data, Map headers) {
         try {
-            log.service("JMSendMail sending mail to "+to);
-            send();
-            log.service("JMSendMail done.");
-            return true;
-        } catch (Exception e) {
-            log.error("JMSendMail failure: "+e.getMessage());
-            return false;
-        }
-    }
 
-    /**
-    * Actually send the email.
-    */
-    protected void send() throws Exception {
-        if (to == null) {
-            throw new Exception("No 'to' address specified");
-        } else if (from == null) {
-            throw new Exception("No 'from' address specified");
-        } else {
-            // start a session
-            try {
-                Properties prop = System.getProperties();
-                prop.put("mail.smtp.host",smtphost);
-                Session session1 = Session.getInstance(prop,null);
-                // construct a message
-                MimeMessage msg = new MimeMessage(session1);
+            if (log.isServiceEnabled()) log.service("JMSendMail sending mail to " + to);
+            // construct a message
+            MimeMessage msg = new MimeMessage(session);
+            if (from != null && ! from.equals("")) {
                 msg.setFrom(new InternetAddress(from));
-                msg.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
-                if (cc != null) {
-                    msg.addRecipient(Message.RecipientType.CC,new InternetAddress(cc));
-                }
-                if (bcc != null) {
-                    msg.addRecipient(Message.RecipientType.CC,new InternetAddress(bcc));
-                }
-                msg.setSubject(subject);
-                msg.setText(message);
-                // connect to the transport
-                Transport trans = session1.getTransport("smtp");
-                trans.connect(smtphost,null,null);
-                // send the message
-                trans.sendMessage(msg,msg.getAllRecipients());
-                //smtphost
-                trans.close();
-            } catch (Exception e) {
-                throw e;
             }
-        }
-    }
 
-    /**
-     * Send mail
-     * ..unchanged..
-     */
-    public boolean sendMail(Mail mail) {
-        return sendMail(mail.from, mail.to, mail.text, mail.headers);
-    }
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
-    /**
-     * checks the e-mail address
-     * ..unchanged..
-     */
-    public String verify(String name) {
-        String anwser="";
-
-        /** Connect to mail-host **/
-        if (!connect(smtphost,25)) return "Error";
-
-        try {
-            out.writeBytes("VRFY "+name+"\r\n");
-            out.flush();
-            anwser = in.readLine();
-            if(anwser.indexOf("250")!=0)  return "Error";
-
-        } catch (Exception e) {
-            log.error("Sendmail verify error on: "+name+". "+e);
-            return "Error";
-        }
-        anwser=anwser.substring(4);
-        return anwser;
-    }
-
-    /**
-     * gives all the members of a mailinglist 
-     * ..unchanged..
-     */
-    public Vector expand(String name) {
-        String anwser="";
-        Vector ret = new Vector();
-
-        /** Connect to mail-host **/
-        if (!connect(smtphost,25)) return ret;
-
-        try {
-            out.writeBytes("EXPN "+name+"\r\n");
-            out.flush();
-            while (true) {
-                anwser = in.readLine();
-                if(anwser.indexOf("250")==0) {
-                    ret.addElement(anwser.substring(4));
-                }
-                if(anwser.indexOf("-")!=3) break;
+            if (headers.get("CC") != null) {                
+                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("CC")));
             }
-        } catch (Exception e) {
-            log.error("Sendmail expand error on:"+name+". "+e);
-            return new Vector();
+            if (headers.get("BCC") != null) {
+                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("BCC")));
+            }
+            msg.setSubject((String) headers.get("Subject"));
+            msg.setText(data);
+            Transport.send(msg);
+            log.debug("JMSendMail done.");
+            return true;
+        } catch (javax.mail.MessagingException e) {
+            log.error("JMSendMail failure: " + e.getMessage());
+            log.debug(Logging.stackTrace(e));
         }
-        return ret;
+        return false;
     }
+
 
     public String getModuleInfo() {
-        return("Sends mail through JavaMail using a smtphost, Case Roole");
+        return("Sends mail through J2EE/JavaMail");
     }
 }
