@@ -9,16 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.xml;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.apache.xpath.XPathAPI;
-import org.mmbase.bridge.BridgeException;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.LocalContext;
-import org.mmbase.bridge.Node;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import org.mmbase.bridge.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -37,7 +33,8 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @author Martijn Houtman
- * @version $Id: DateFormat.java,v 1.6 2004-05-09 09:59:44 nico Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: DateFormat.java,v 1.7 2004-06-02 16:20:02 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -45,7 +42,7 @@ public class DateFormat {
     private static final Logger log = Logging.getLoggerInstance(DateFormat.class);
 
     /**
-     * imeZone null or blank means server timezone. If timeZone is not
+     * TimeZone null or blank means server timezone. If timeZone is not
      * recognized it will fall back to GMT.
      */
     private static TimeZone getTimeZone(String timeZone) {
@@ -62,41 +59,16 @@ public class DateFormat {
 
     /**
      * Formats a node's field value with the date pattern
-     * @param node the number or alias of the node containing the field
-     * @param fieldName the name of the field to format
-     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
-     * @return the formatted string
-     */
-    public static String format(String node, String fieldName, String pattern) {
-        return formatTimeZone(node, fieldName, pattern, "");
-    }
-
-    /**
-     * Formats a node's field value with the date pattern
-     * @param node the number or alias of the node containing the field
+     * @param number the number or alias of the node containing the field
      * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String formatTimeZone(String node, String fieldName, String pattern, String timeZone) {
-        if (log.isDebugEnabled()) {
-            log.debug("calling with string '" + node + "' fieldname: " + fieldName + "' pattern: " + pattern);
-        }
-        return formatTimeZone("mmbase", node, fieldName, pattern, timeZone);
-    }
+    public static String format(String number, String fieldName, String pattern, String timeZone, String language) {
+        return format("mmbase", number, fieldName, pattern, timeZone, language);
+    }   
 
-    /**
-     * Formats a node's field value with the date pattern
-     * @param cloudName the name of the cloud in which to find the node
-     * @param number the number or alias of the node containing the field
-     * @param fieldName the name of the field to format
-     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
-     * @return the formatted string
-     */
-    public static String format(String cloudName, String number, String fieldName, String pattern) {
-        return formatTimeZone(cloudName, number, fieldName, pattern, "");
-    }
 
     /**
      * Formats a node's field value with the date pattern
@@ -107,27 +79,16 @@ public class DateFormat {
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String formatTimeZone(String cloudName, String number, String fieldName, String pattern, String timeZone) {
-        log.debug("calling base");
+    public static String format(String cloudName, String number, String fieldName, String pattern, String timeZone, String language) {
         try {
             Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);
-            return formatTimeZone(cloud, number, fieldName, pattern, timeZone);
+            cloud.setLocale(new Locale(language));
+            return format(cloud, number, fieldName, pattern, timeZone);
         } catch (BridgeException e) {
             return "could not find '" + fieldName + "' on node '" + number + "' (" + e.toString() + ")";
         }
     }
 
-    /**
-     * Formats a node's field value with the date pattern
-     * @param cloudName the cloud in which to find the node
-     * @param number the number or alias of the node containing the field
-     * @param fieldName the name of the field to format
-     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
-     * @return the formatted string
-     */
-    public static String format(Cloud cloud, String number, String fieldName, String pattern) {
-        return formatTimeZone(cloud, number, fieldName, pattern, "");
-    }
 
     /**
      * Formats a node's field value with the date pattern
@@ -138,12 +99,11 @@ public class DateFormat {
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String formatTimeZone(Cloud cloud, String number, String fieldName, String pattern, String timeZone) {
-        log.debug("calling base");
+    public static String format(Cloud cloud, String number, String fieldName, String pattern, String timeZone) {
         try {
             Node node = cloud.getNode(number);
             String fieldValue = node.getStringValue(fieldName);
-            return formatTimeZone(fieldValue, pattern, timeZone);
+            return format(fieldValue, pattern, 1000, timeZone,  cloud.getLocale());
         } catch (BridgeException e) {
             if (log.isDebugEnabled()) {
                 log.debug("could not find '" + fieldName + "' on node '" + number + "'");
@@ -153,36 +113,16 @@ public class DateFormat {
         }
     }
 
-    /** Formats the fieldvalue to a date pattern
-     *
-     * @param fieldvalue  time-stamp in seconds
-     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
-     * @return the formatted string
-     */
-    public static String format(String fieldValue, String pattern) {
-        return formatTimeZone(fieldValue, pattern, "");
-    }
-
-    /** Formats the fieldvalue to a date pattern
+    /**
+     * Formats the fieldvalue to a date pattern
      * 
      * @param fieldvalue  time-stamp in seconds
      * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String formatTimeZone(String fieldValue, String pattern, String timeZone) {
-        return formatTimeZone(fieldValue, pattern, 1000, timeZone);
-    }
-
-    /** Formats the fieldvalue to a date pattern
-     *
-     * @param fieldvalue  time-stamp
-     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
-     * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
-     * @return the formatted string
-     */
-    public static String format(String fieldValue, String pattern, int factor) {
-        return formatTimeZone(fieldValue, pattern, factor, "");
+    public static String format(String fieldValue, String pattern, String timeZone, String language) {
+        return format(fieldValue, pattern, 1000, timeZone, language);
     }
 
     /** Formats the fieldvalue to a date pattern
@@ -191,16 +131,20 @@ public class DateFormat {
      * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
+     * @param language  The language for which the date must be formatted.
      * @return the formatted string
      */
-    public static String formatTimeZone(String fieldValue, String pattern, int factor, String timeZone) {
+    public static String format(String fieldValue, String pattern, int factor, String timeZone, String language) {
+        return format(fieldValue, pattern, factor, timeZone, new Locale(language));
+    }
+
+    protected static String format(String fieldValue, String pattern, int factor, String timeZone, Locale locale) {
         if (fieldValue == null || "".equals(fieldValue)) {
            return "";
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        sdf.setTimeZone(getTimeZone(timeZone));
+        java.text.DateFormat df = org.mmbase.util.DateFormats.getInstance(pattern, timeZone, locale);
         long seconds = Long.valueOf(fieldValue).longValue();
-        return sdf.format(new Date(seconds * factor));
+        return df.format(new Date(seconds * factor));
     }
 
     /**
@@ -215,11 +159,11 @@ public class DateFormat {
      * @return the formatted string
      * @throws javax.xml.transform.TransformerException if something went wrong while searching the DOM Node
      */
-    public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldName, String pattern) throws javax.xml.transform.TransformerException {
+    public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldName, String pattern, String timeZone) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
         // bit of a waste to use an xpath here?
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
-        return format(cloud, number, fieldName, pattern);
+        return format(cloud, number, fieldName, pattern, timeZone);
     }
 
     /** Returns the year part of the date
