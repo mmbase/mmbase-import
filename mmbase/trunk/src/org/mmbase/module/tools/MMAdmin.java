@@ -37,7 +37,7 @@ import javax.servlet.http.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.85 2004-05-06 12:34:29 keesj Exp $
+ * @version $Id: MMAdmin.java,v 1.86 2004-06-01 15:33:52 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -705,8 +705,7 @@ public class MMAdmin extends ProcessorModule {
                 if (installedVersion == -1) {
                     log.info("Installing application : " + name);
                 } else {
-                    log.info("installing application : " + name
-                            + " new version from " + installedVersion + " to " + version);
+                    log.info("installing application : " + name + " new version from " + installedVersion + " to " + version);
                 }
                 if (installBuilders(app.getNeededBuilders(), path + applicationName, result)
                     && installRelDefs(app.getNeededRelDefs(), result)
@@ -853,33 +852,31 @@ public class MMAdmin extends ProcessorModule {
     }
 
     /**
-     * @javadoc
+     * @javadoc !!!
      */
     private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newnode, String exportsource, ApplicationResult result) {
         MMObjectBuilder bul = newnode.parent;
         if (bul != null) {
             String checkQ = "";
-            Vector vec = bul.getFields();
+            List vec = bul.getFields();
             Constraint constraint = null;
             NodeSearchQuery query = null;
-            for (Enumeration h = vec.elements(); h.hasMoreElements();) {
-                FieldDefs def = (FieldDefs)h.nextElement();
+            for (Iterator h = vec.iterator(); h.hasNext();) {
+                FieldDefs def = (FieldDefs)h.next();
                 // check for notnull fields with type NODE.
                 if (def.getDBType() == FieldDefs.TYPE_NODE
                     && ! def.getDBName().equals("number")
+                    && ! def.getDBName().equals("otype")
                     && def.getDBNotNull()) {
 
                     // Dangerous territory here.
                     // The node contains a reference to another node.
                     // The referenced node has to exist when this node is inserted.
                     // trying to update the node.
-                    updateFieldWithTypeNode(syncbul,
-                                            newnode,
-                                            exportsource,
-                                            def.getDBName());
+                    updateFieldWithTypeNode(syncbul, newnode, exportsource, def.getDBName());
                     if (newnode.getIntValue(def.getDBName()) == -1) {
                        // guess that failed
-                       result.error("Insert of node " + newnode + " failed. A field with type NODE is not allowed to have a null value. " +
+                       result.error("Insert of node " + newnode + " failed. Field '" + def.getDBName() + "' with type NODE is not allowed to have a null value. " +
                                     "The referenced node is not found. Try to reorder the nodes so the referenced node is imported before this one.");
                        return -1;
                     }
@@ -1149,15 +1146,8 @@ public class MMAdmin extends ProcessorModule {
                 // if 'inactive' in the config/builder path, fail
                 String path = mmb.getBuilderPath(name, "");
                 if (path != null) {
-                    result.error(
-                        "The builder '"
-                            + name
-                            + "' was already on our system, but inactive."
-                            + "To install this application, make the builder '"
-                            + path
-                            + name
-                            + ".xml"
-                            + "' active");
+                    result.error("The builder '" + name + "' was already on our system, but inactive." + 
+                                 "To install this application, make the builder '" + path + name + ".xml ' active");
                     continue;
                 }
                 // attempt to open the application root
@@ -1190,8 +1180,7 @@ public class MMAdmin extends ProcessorModule {
                 // fill the config...
                 org.w3c.dom.Document config = null;
                 try {
-                    config =
-                        XMLBasicReader.getDocumentBuilder(BuilderReader.class).parse(appFile);
+                    config = XMLBasicReader.getDocumentBuilder(BuilderReader.class).parse(appFile);
                 } catch (org.xml.sax.SAXException se) {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
@@ -2366,47 +2355,48 @@ public class MMAdmin extends ProcessorModule {
 
     class ApplicationResult {
 
-        protected String resultMessage;
+        protected StringBuffer resultMessage; 
         protected boolean success;
         protected MMAdmin adminModule;
 
         ApplicationResult(MMAdmin adminModule) {
             this.adminModule = adminModule;
-            resultMessage = "";
+            resultMessage = new StringBuffer();
             success = true;
         }
 
         String getMessage() {
-            return resultMessage;
+            return resultMessage.toString();
         }
 
         boolean isSuccess() {
             return success;
         }
 
+        private void addMessage(String message) {
+            if (resultMessage.length() > 0) {
+                resultMessage.append('\n');
+            }
+            resultMessage.append(message);
+        }
+
         boolean error(String message) {
             success = false;
             log.error(message);
-            if (!resultMessage.equals(""))
-                resultMessage += "\n";
-            resultMessage += message;
+            addMessage(message);
             return false;
         }
 
         boolean warn(String message) {
             success = false;
             log.warn(message);
-            if (!resultMessage.equals(""))
-                resultMessage += "\n";
-            resultMessage += message;
+            addMessage(message);
             return false;
         }
 
         boolean success(String message) {
             success = true;
-            if (!resultMessage.equals(""))
-                resultMessage += "\n";
-            resultMessage += message;
+            addMessage(message);
             return true;
         }
 
