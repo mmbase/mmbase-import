@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.1 2003-04-08 11:03:21 michiel Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.2 2003-11-27 17:58:42 robmaris Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -57,8 +57,7 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
-
-        // TODO: (later) test table and field aliases for uniqueness.
+        // XXX should table and field aliases be tested for uniqueness?
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
