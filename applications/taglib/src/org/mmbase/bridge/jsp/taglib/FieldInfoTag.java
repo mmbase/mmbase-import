@@ -156,7 +156,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                 }
                 show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
     	    	if (node != null) {
-    	    	    show += Encode.encode("ESCAPE_XML_ATTRIBUTE", decode(node.getStringValue(field.getName()), node));		    		    
+    	    	    show += Encode.encode("ESCAPE_HTML_ATTRIBUTE", decode(node.getStringValue(field.getName()), node));	
 		}
 		show += "\" />";
     	    	break;
