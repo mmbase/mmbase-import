@@ -11,12 +11,12 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicRelationStepTest extends TestCase {
     
     private final static String TEST_BUILDER1 = "images";
-    private final static String TEST_BUILDER2 = "icaches";
+    private final static String TEST_BUILDER2 = "pools";
     private final static String INSREL = "insrel";
     private final static String TEST_ALIAS = "test";
     

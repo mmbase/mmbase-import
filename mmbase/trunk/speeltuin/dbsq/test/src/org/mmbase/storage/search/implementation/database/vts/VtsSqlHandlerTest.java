@@ -21,7 +21,7 @@ import org.xml.sax.*;
  * on images.title and pools.name.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class VtsSqlHandlerTest extends TestCase {
     
@@ -57,6 +57,7 @@ public class VtsSqlHandlerTest extends TestCase {
      * Sets up before each test.
      */
     public void setUp() throws Exception {
+        try {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         images = mmbase.getBuilder("images");
@@ -83,7 +84,11 @@ public class VtsSqlHandlerTest extends TestCase {
         query.setConstraint(constraint1);
         composite 
         = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        instance = new VtsSqlHandler(new BasicSqlHandler(new HashMap()));
+        SqlHandler sqlHandler = new BasicSqlHandler(new HashMap());
+        instance = new VtsSqlHandler(sqlHandler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     /**
