@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.20.2.4 2003-03-17 13:42:14 vpro Exp $
+ * @version $Id: MultiPool.java,v 1.20.2.5 2003-03-17 15:25:48 vpro Exp $
  */
 public class MultiPool {
    
@@ -393,7 +393,7 @@ public class MultiPool {
        }
        
        /**
-        * admin probe, try's to make a call to all the maintainance calls.
+        * Close the database connection.
         */
        public void run () {
            log.warn("Closing "+connection);
