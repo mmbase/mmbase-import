@@ -34,7 +34,7 @@ public class XMLCheckErrorHandler implements ErrorHandler {
     private List warninglist,errorlist,fatallist,resultlist;
 
     public XMLCheckErrorHandler() {
-        log.service("New xmlcheckerrorhandler");
+        log.debug("New xmlcheckerrorhandler");
         warninglist = new Vector();
         errorlist   = new Vector();
         fatallist   = new Vector();
