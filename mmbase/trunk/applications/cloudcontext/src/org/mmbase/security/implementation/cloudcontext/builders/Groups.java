@@ -26,7 +26,7 @@ import org.mmbase.storage.search.implementation.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.11 2003-09-23 13:15:27 pierre Exp $
+ * @version $Id: Groups.java,v 1.12 2003-09-23 13:33:02 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
@@ -121,6 +121,9 @@ public class Groups extends MMObjectBuilder {
         return result.booleanValue();
     }
 
+    /**
+     * Returns all groups, which are (directly or indirectly) containing the given object (user/group)
+     */
 
     public SortedSet getGroups(int containedObject) {
         SortedSet result = new TreeSet();
