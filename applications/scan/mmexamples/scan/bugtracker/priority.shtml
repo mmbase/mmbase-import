@@ -1,9 +1,0 @@
-<IF $PARAM1==1>
-high
-</IF>
-<IF $PARAM1==2>
-medium
-</IF>
-<IF $PARAM1==3>
-low
-</IF>
