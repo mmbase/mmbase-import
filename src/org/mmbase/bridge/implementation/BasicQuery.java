@@ -21,8 +21,10 @@ import org.mmbase.util.logging.*;
 
 
 /**
+ * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.9 2003-07-28 09:39:04 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.10 2003-07-29 17:04:03 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -32,23 +34,34 @@ public class BasicQuery implements Query  {
     private static Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
     protected boolean used = false;
-    private   int     aliasSequence = 0;
+    protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).
+
+    private   HashMap  aliasSequences = new HashMap(); 
+    // to make unique table aliases. This is similar impl. as  in core. Why should it be at all....
+
+
 
     protected BasicSearchQuery query;
 
+    protected Cloud cloud; // reference to the cloud.
 
 
 
-    BasicQuery() {
+
+    BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
+        cloud = c;
     }
 
-    BasicQuery(boolean aggregated) {
-        query = new BasicSearchQuery(aggregated);
+    BasicQuery(Cloud c, boolean aggregating) {
+        query = new BasicSearchQuery(aggregating);
+        this.aggregating = aggregating;
+        cloud = c;
     }
 
-    BasicQuery(BasicSearchQuery q) {
+    BasicQuery(Cloud c, BasicSearchQuery q) {
         query = q;
+        cloud = c;
     }
 
 
@@ -86,10 +99,17 @@ public class BasicQuery implements Query  {
     }
 
 
-    public Object clone() {
+    // bridge.Query impl.:
+
+    public boolean isAggregating() {
+        return aggregating;
+    }
+
+    public Object clone() { // also works for descendants (NodeQuery)
         try {
             BasicQuery clone = (BasicQuery) super.clone();
             clone.query = (BasicSearchQuery) query.clone();
+            clone.aliasSequences = (HashMap) aliasSequences.clone();
             clone.used = false;
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -98,41 +118,45 @@ public class BasicQuery implements Query  {
         }
     }
     public Query aggregatingClone() {
-        try {
-            BasicQuery clone = (BasicQuery) super.clone();
-            clone.query = new BasicSearchQuery(query, true); 
-            clone.used = false;
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            // cannot happen
-            throw new InternalError(e.toString());
-        }
-        
+        BasicSearchQuery bsq = new BasicSearchQuery(query, true); 
+        BasicQuery clone = new BasicQuery(cloud, bsq);
+        clone.used = false;
+        clone.aggregating = true;
+        return clone;
     }
 
-    // bridge.Query impl.:
+
+    protected String createAlias(Step step) {
+        String tableName = step.getTableName();
+        Integer seq = (Integer) aliasSequences.get(tableName);
+        if (seq == null) {
+            aliasSequences.put(tableName, new Integer(1));
+            return tableName;
+        } else {
+            aliasSequences.put(tableName, new Integer(seq.intValue() + 1));
+            return tableName + seq;
+        }
+    }
+
 
     public Step addStep(NodeManager nm) {
         if (used) throw new BridgeException("Query was used already");
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
-        step.setAlias(step.getTableName() + aliasSequence++); 
+        
+        step.setAlias(createAlias(step));
+        addField(step, nm.getField("number")); // how works distinct in mmbase?
         return step;
     }
 
 
-    public RelationStep addRelationStep(RelationManager rm) {
-        return addRelationStep(rm, RelationStep.DIRECTIONS_BOTH); // would 'DESTINATION' not be better?
-    }
-    public RelationStep addRelationStep(RelationManager rm, int dir) {
-        if (used) throw new BridgeException("Query was used already");
-        InsRel insrel =  (InsRel) ((BasicRelationManager)rm).builder;
-        MMObjectBuilder otherBuilder = ((BasicNodeManager) rm.getDestinationManager()).builder;        
+    protected RelationStep addRelationStep(InsRel insrel, NodeManager otherNodeManager, int searchDir) {
+        MMObjectBuilder otherBuilder = ((BasicNodeManager) otherNodeManager).builder;        
         BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
-        relationStep.setDirectionality(dir); 
-        relationStep.setAlias(relationStep.getTableName() + aliasSequence++); 
+        relationStep.setDirectionality(searchDir); 
+        relationStep.setAlias(createAlias(relationStep));
         BasicStep next = (BasicStep) relationStep.getNext();
-        next.setAlias(next.getTableName() + aliasSequence++); 
-
+        next.setAlias(createAlias(next));
+        addField(next, otherNodeManager.getField("number")); // distinct?
         /*
           optimize query 
         relationStep.setCheckedDirectionality(true);
@@ -146,6 +170,24 @@ public class BasicQuery implements Query  {
         */
         return relationStep;
     }
+    public RelationStep addRelationStep(NodeManager otherNodeManager) {
+        return addRelationStep(otherNodeManager, RelationStep.DIRECTIONS_BOTH); // would 'DESTINATION' not be better?
+    }
+
+    public RelationStep addRelationStep(NodeManager otherNodeManager, int searchDir) {
+        return addRelationStep(BasicCloudContext.mmb.getInsRel(), otherNodeManager, searchDir); 
+    }
+
+
+    public RelationStep addRelationStep(RelationManager rm) {
+        return addRelationStep(rm, RelationStep.DIRECTIONS_BOTH); // would 'DESTINATION' not be better?
+    }
+    public RelationStep addRelationStep(RelationManager rm, int searchDir) {
+        if (used) throw new BridgeException("Query was used already");
+        // could check here if the relationmanager 'fits' the last existing step.
+        InsRel insrel =  (InsRel) ((BasicRelationManager)rm).builder;
+        return addRelationStep(insrel, rm.getDestinationManager(), searchDir);
+    }
 
     
     public StepField addField(Step step, Field field) {
@@ -153,8 +195,33 @@ public class BasicQuery implements Query  {
         return query.addField(step, ((BasicField) field).field);
     }
 
-    public StepField getStepField(Step step, Field field) {
+    public StepField createStepField(Step step, Field field) {
         return new BasicStepField(step, ((BasicField) field).field);
+    }
+
+    
+    /**
+     * Returns the step with given alias, or null if it is not present
+     */
+    protected Step getStep(String stepAlias) {
+        Iterator i = getSteps().iterator();
+        while (i.hasNext()) {
+            Step step = (Step) i.next();
+            if (stepAlias.equals(step.getAlias())) {
+                return step;
+            }
+        }
+        return null;
+    }
+
+    public StepField createStepField(String fieldIdentifier) {
+        int point = fieldIdentifier.indexOf('.');
+        String stepAlias = fieldIdentifier.substring(0, point);
+        String fieldName = fieldIdentifier.substring(point + 1);
+        Step step = getStep(stepAlias);
+        NodeManager nm = cloud.getNodeManager(step.getTableName());
+        Field field = nm.getField(fieldName);
+        return createStepField(step, field);
     }
 
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
@@ -223,10 +290,17 @@ public class BasicQuery implements Query  {
     }
     
     public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
-        BasicCompositeConstraint c = new BasicCompositeConstraint(operator);        
-        c.addChild(c1);
-        c.addChild(c2);
-        return c;
+        if (c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
+            if (used) throw new BridgeException("Query was used already (so cannot modify composite constraints)");
+            ((BasicCompositeConstraint) c1).addChild(c2);
+            return (CompositeConstraint) c1;
+        } else {        
+            BasicCompositeConstraint c = new BasicCompositeConstraint(operator);        
+            c.addChild(c1);
+            c.addChild(c2);
+            return c;
+        }
+
     }
 
     public void setConstraint(Constraint c) {
