@@ -12,6 +12,7 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -27,7 +28,7 @@ public class MD5 extends AbstractTransformer implements CharTransformer {
     /**
      * Used when registering this class as a possible Transformer
      */
-    public HashMap transformers() {
+    public Map transformers() {
         HashMap h = new HashMap();
         h.put(ENCODING, new Config(MD5.class, 42, "Encode using MD5"));
         return h;

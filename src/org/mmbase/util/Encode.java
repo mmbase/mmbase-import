@@ -12,6 +12,7 @@ package org.mmbase.util;
 import org.mmbase.util.transformers.*;
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -121,7 +122,7 @@ public class Encode {
                     // In this way we find out what this class can do.
                     Object transformer = atrans.newInstance();
                     java.lang.reflect.Method transformers = atrans.getMethod("transformers", new Class [] {});
-                    HashMap newencodings = (HashMap) transformers.invoke(transformer, new Object[] {});
+                    Map newencodings = (Map) transformers.invoke(transformer, new Object[] {});
                     encodings.putAll(newencodings); // add them all to our encodings.
 
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
