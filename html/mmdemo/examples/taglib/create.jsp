@@ -27,9 +27,9 @@
 <table>
   <tr>
     <td valign="top">
-      <mm:list type="typedef" fields="name,description">
+      <mm:listnodes type="typedef" fields="name,description">
         <a href="create.jsp?nodemanager=<%=name%>"><%=name%></a><br>
-      </mm:list>
+      </mm:listnodes>
     </td>
     <td valign="top">
       <req:existsparameter name="nodemanager">
