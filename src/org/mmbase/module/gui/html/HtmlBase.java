@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.37 2000-12-10 16:00:55 daniel Exp $
+	$Id: HtmlBase.java,v 1.37.2.1 2001-02-19 13:47:32 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.37  2000/12/10 16:00:55  daniel
+	moved a error msg
+	
 	Revision 1.36  2000/11/29 12:05:22  vpro
 	Rico: Probably fixed getReload problem
 	
@@ -140,7 +143,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.37 2000-12-10 16:00:55 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.37.2.1 2001-02-19 13:47:32 install Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -155,7 +158,6 @@ public class HtmlBase extends ProcessorModule {
 
 	private SendMailInterface sendmail;
 	public MMBaseMultiCast mmc;
-	int delay;
 	boolean	nodecachesdone=false;
 	MMBaseProbe probe;
 
