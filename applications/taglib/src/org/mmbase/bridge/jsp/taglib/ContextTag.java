@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
@@ -305,11 +306,15 @@ public class ContextTag extends ContextReferrerTag {
                     result = cookies[i].getValue();
                     // touch cookie
                     cookies[i].setMaxAge(WriteTag.MAX_COOKIE_AGE);
+                    ((HttpServletResponse) (pageContext.getResponse())).addCookie(cookies[i]);
                     break;
                 }
             }
             break;
         case LOCATION_SESSION:
+            if (getSession() == null) {
+                throw new JspTagException("Cannot use session if session is disabled");
+            }
             result = getSession().getAttribute(referid);
             break;
         case LOCATION_MULTIPART: 
