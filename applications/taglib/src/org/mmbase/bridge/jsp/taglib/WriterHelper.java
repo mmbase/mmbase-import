@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.32 2003-07-14 09:01:57 pierre Exp $
+ * @version $Id: WriterHelper.java,v 1.33 2003-08-01 15:45:21 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -271,7 +271,7 @@ public class WriterHelper extends BodyTagSupport {
         switch (vartype) {
         case TYPE_INTEGER:
             if (! (v instanceof Integer)) {
-                value = new Integer(v.toString());
+                value = Casting.toInteger((v.toString()));
                 setJspvar();
                 return;
             }
