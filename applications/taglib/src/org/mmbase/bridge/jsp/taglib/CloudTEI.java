@@ -24,8 +24,8 @@ public class CloudTEI extends TagExtraInfo {
         super(); 
     }
 
-    protected String defaultCloudName() {
-        return "cloud";
+    protected String defaultCloudVar() {
+        return CloudTag.DEFAULT_CLOUD_JSPVAR;
     }
     protected String cloudType() {
         return "org.mmbase.bridge.Cloud";
@@ -38,8 +38,8 @@ public class CloudTEI extends TagExtraInfo {
     public VariableInfo[] getVariableInfo(TagData data){      
         VariableInfo[] variableInfo = null;
         variableInfo    =  new VariableInfo[1];
-        Object idObject = data.getAttribute("id");
-        String cloudVarName = defaultCloudName();
+        Object idObject = data.getAttribute("jspvar");
+        String cloudVarName = defaultCloudVar();
         if (idObject != null){
             if (idObject == TagData.REQUEST_TIME_VALUE) { // then of course we cannot set a variable with that name 
             } else {

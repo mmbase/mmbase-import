@@ -19,8 +19,8 @@ public class TransactionTEI extends CloudTEI {
     public TransactionTEI() { 
         super(); 
     }
-    protected String defaultCloudName() {
-        return "trans";
+    protected String defaultCloudVar() {
+        return TransactionTag.DEFAULT_TRANS_JSPVAR;
     }
     protected String cloudType() {
         return "org.mmbase.bridge.Transaction";

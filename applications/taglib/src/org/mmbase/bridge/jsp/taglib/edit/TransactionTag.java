@@ -35,8 +35,12 @@ public class TransactionTag extends ContextTag  {
     private static boolean commit = true;
     
     private String name = null;
+
+    static final String DEFAULT_TRANS_JSPVAR = "trans";
+    private String jspvar = DEFAULT_TRANS_JSPVAR;
     
     public void setCommitonclose(boolean c) {
+        log.debug("Set commitonclose to " + c);
         commit = c;
     }
     
@@ -47,22 +51,31 @@ public class TransactionTag extends ContextTag  {
     public void setName(String s) {
         name = s;
     }
-
-    /* if you don't extend from Context:
-    public void  registerNode(String id, Node n) {
-    }
     
-    public Node getNode(String id) throws JspTagException {
-        throw new JspTagException("Cannot get Nodes directly from Transaction (use a group tag)");
+    public void setJspvar(String jv) {
+        jspvar = jv;
     }
-    */
 
     /**
     *  Creates the transaction.
     */
     public int doStartTag() throws JspTagException{
-        transaction = findCloudProvider().getCloudVar().getTransaction(name);
-        pageContext.setAttribute(getId(), transaction);
+        if (getId() != null) { // look it up from session            
+            log.debug("looking up transaction in session");
+            transaction = (Transaction) getObject(getId());
+            log.debug("found " + transaction);
+        }
+        if (transaction == null) { // not found in context
+            if (name == null) {
+                throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
+            }
+            transaction = findCloudProvider().getCloudVar().getTransaction(name);
+            if (getId() != null) { // put it in context
+                log.debug("putting transaction in context");
+                register(getId(), transaction);
+            }
+        }
+        pageContext.setAttribute(jspvar, transaction);
         return EVAL_BODY_TAG;
     }
   
@@ -70,6 +83,9 @@ public class TransactionTag extends ContextTag  {
     public int doAfterBody() throws JspTagException {
         if (commit) {
             ((Transaction) getCloudVar()).commit();
+            if (getId() != null) {
+                unRegister(getId());
+            }
         }
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());            
