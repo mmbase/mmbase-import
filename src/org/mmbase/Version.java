@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.13 2002-05-03 08:19:00 michiel Exp $
+ * @version $Id: Version.java,v 1.14 2002-05-06 11:54:17 michiel Exp $
  */
 public class Version {
    
@@ -82,7 +82,7 @@ public class Version {
      * Returns the version of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  get()       { return getName() + " " + getNumber() + (isRelease() ? "" : "-dev"); }
+    public static String  get()       { return getName() + " " + (isRelease() ? "" : getNumber()); }
 
     /**
      * @javadoc
