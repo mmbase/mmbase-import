@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.ServletOutputStream;
 
 
+import java.util.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -40,6 +42,12 @@ public class IncludeTag extends UrlTag {
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;
     private static final int DEBUG_CSS  = 2;
+
+    private static  Set invalidIncludingAppServerRequestClasses = new HashSet();
+
+    {
+        invalidIncludingAppServerRequestClasses.add("com.evermind.server.http.EvermindHttpServletRequest");  // Orion
+    }
     
     protected int debugtype = DEBUG_NONE;
     
@@ -151,7 +159,19 @@ public class IncludeTag extends UrlTag {
         }
         debugStart(relativeUrl);
         ResponseWrapper response = new ResponseWrapper(resp);
-        RequestWrapper request   = new RequestWrapper(req);
+  
+        if (log.isDebugEnabled()) {
+            log.debug("req Parameters");
+            Map params = req.getParameterMap();
+            Iterator i = params.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
+                log.debug("key '" + e.getKey() + "' value '" + e.getKey() + "'");
+            }
+        }
+
+        HttpServletRequestWrapper request   = new HttpServletRequestWrapper(req);
+        
 
         try {
             javax.servlet.ServletContext sc = pageContext.getServletContext();
@@ -165,6 +185,17 @@ public class IncludeTag extends UrlTag {
             log.debug(Logging.stackTrace(e));
             throw new JspTagException(e.toString());
         }
+
+        if (log.isDebugEnabled()) {
+            log.debug("req Parameters");
+            Map params = req.getParameterMap();
+            Iterator i = params.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
+                log.debug("key '" + e.getKey() + "' value '" + e.getKey() + "'");
+            }
+        }
+
         debugEnd(relativeUrl);
     }
 
@@ -264,8 +295,11 @@ public class IncludeTag extends UrlTag {
                 if (cite) {
                     cite(bodyContent, urlString, request); 
                 } else {
-                    //externalRelative(bodyContent, urlString, request, response);
-                    internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
+                    if (invalidIncludingAppServerRequestClasses.contains(request.getClass().getName())) {
+                        externalRelative(bodyContent, urlString, request, response);
+                    } else {
+                        internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
+                    }
                 }
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
