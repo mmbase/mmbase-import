@@ -8,9 +8,10 @@ See http://www.MMBase.org/license
 
 */
 
-/*
-	(c) 2000 VPRO
-*/
+/**
+ * (c) 2000 VPRO
+ * @version $Id: RawAudioDef.java,v 1.6 2001-04-25 11:54:57 vpro Exp $
+ */
 package org.mmbase.util.media.audio;
 
 import java.util.Vector;
@@ -28,46 +29,42 @@ public class RawAudioDef
     implements     Sortable, CompareInterface // for fast comparing between items
 {
     private static Logger log = Logging.getLoggerInstance(RawAudioDef.class.getName());
-//  -------------------------    
-    public static final int     STATUS_VERZOEK        = 1;
-    public static final int        STATUS_ONDERWEG        = 2;
-    public static final int        STATUS_GEDAAN        = 3;
-//  -------------------------    
-    public static final int        FORMAT_R5            = 2;
-    public static final int        FORMAT_WAV            = 3;
-    public static final int        FORMAT_PCM            = 5;
-    public static final int        FORMAT_G2            = 6;
-//  -------------------------    
-    public static final int        STORAGE_STEREO            = 1;
-    public static final int        STORAGE_STEREO_NOBACKUP    = 2;
-    public static final int        STORAGE_MONO            = 3;
-    public static final int        STORAGE_MONO_NOBACKUP    = 4;
-//  -------------------------    
-    public static final int        MINSPEED            = 16000;
-    public static final int        MAXSPEED            = 96000;
-    public static final int        MINCHANNELS            = 1;
 
-    public static final int        WAV_MAXSPEED        = 441000;
-    public static final int        G2_MINSPEED            = 16000;
-    public static final int        G2_MAXSPEED            = 96000;
+    public static final int STATUS_VERZOEK  = 1;
+    public static final int STATUS_ONDERWEG = 2;
+    public static final int STATUS_GEDAAN   = 3;
 
-//  -------------------------    
+    public static final int FORMAT_R5       = 2;
+    public static final int FORMAT_WAV      = 3;
+    public static final int FORMAT_PCM      = 5;
+    public static final int FORMAT_G2       = 6;
 
-    public static final String    AUDIO_DIR            = "/data/audio/";
+    public static final int STORAGE_STEREO          = 1;
+    public static final int STORAGE_STEREO_NOBACKUP = 2;
+    public static final int STORAGE_MONO            = 3;
+    public static final int STORAGE_MONO_NOBACKUP   = 4;
 
-//  -------------------------    
-    public int        number;
-    public int        otype;        // not nes, but anyway
-    public String    owner;
-//  -------------------------    
-    public int        id;
-    public int        status;
-    public int        format;
-    public int        speed;
-    public int         channels;
-    public String    url;
-    public String    cpu;
-//  -------------------------    
+    public static final int MINSPEED        = 16000;
+    public static final int MAXSPEED        = 96000;
+    public static final int MINCHANNELS     = 1;
+
+    public static final int WAV_MAXSPEED    = 44100;
+    public static final int G2_MINSPEED     = 16000;
+    public static final int G2_MAXSPEED     = 96000;
+
+    public static final String AUDIO_DIR       = "/data/audio/";
+
+    public int    number;
+    public int    otype;        // not nes, but anyway
+    public String owner;
+
+    public int    id;
+    public int    status;
+    public int    format;
+    public int    speed;
+    public int    channels;
+    public String url;
+    public String cpu;
 
     public RawAudioDef( MMObjectNode node )
     {
