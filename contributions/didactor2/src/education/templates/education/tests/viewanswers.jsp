@@ -13,47 +13,8 @@
 
 <di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
 
-<mm:node referid="testNo">
-  <h1><mm:field name="name"/></h1>
-  <mm:field id="requiredscore" name="requiredscore" write="false"/> 
-  <mm:import id="questionamount"><mm:field name="questionamount"/></mm:import>
-   <%-- Questiontype -1 means undefined. Show all questions in the given order. --%>
-   <mm:compare referid="questionamount" value="-1">
-     <mm:relatednodes type="questions" role="posrel">
-       <mm:remove referid="questionamount"/>
-       <mm:import id="questionamount"><mm:size/></mm:import>
-     </mm:relatednodes>
-   </mm:compare>
-</mm:node>
-
 <mm:node referid="madetestNo">
-  <mm:field id="madetestscore" name="score" write="false"/>
  
-  <mm:isgreaterthan referid="madetestscore" value="-1">
- 
-    Het behaalde aantal punten is: <mm:write referid="madetestscore"/><br/>
-    Het aantal vragen is: <mm:write referid="questionamount"/><br/>
-    <%-- if madestestscore larger or equal than requiredscore --%>
-    <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
-      U bent geslaagd voor deze toets.<p/>
-    </mm:islessthan>
-
-    <mm:islessthan referid="madetestscore" referid2="requiredscore" >
-      U bent niet geslaagd voor deze toets.<p>
-     </mm:islessthan>
-
-    <%-- Feedback (from test) --%>
-    <mm:relatednodescontainer type="feedback">
-      <mm:constraint field="maximalscore" referid="madetestscore" operator="GREATER_EQUAL"/>
-      <mm:constraint field="minimalscore" referid="madetestscore" operator="LESS_EQUAL"/>
- 
-      <mm:relatednodes>
-        <p>De toets feedback is: <br/>
-      <mm:field name="text" escape="none"/></p>
-      </mm:relatednodes>
-    </mm:relatednodescontainer>
-  </mm:isgreaterthan>
-
   <mm:relatednodes type="givenanswers">
     <mm:relatednodes type="questions">
       <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>

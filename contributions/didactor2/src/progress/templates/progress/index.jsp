@@ -82,11 +82,8 @@ Werkgroep : <mm:write referid="workgroupname"/>
 		<p />
 		<di:translate>Duur inloggen</di:translate>: <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
 			<%
-				java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("H");
-				Integer onlineValue = new Integer(onlinetime.intValue() / 1000);
-				String hour = format.format(onlineValue);
-				format = new java.text.SimpleDateFormat("m");
-				String min = format.format(onlineValue);
+				int hour = onlinetime.intValue() / 3600;
+				int min = (onlinetime.intValue() % 3600) / 60;
 			%>
 <%--			<mm:import id="time" ><%=onlinetime%></mm:import>
 			<mm:write referid="time">
