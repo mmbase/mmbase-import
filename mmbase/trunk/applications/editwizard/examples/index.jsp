@@ -18,7 +18,7 @@
   </ul>
   <hr />
   <p>
-    Lots of these examples edit data of the <a href="<mm:url page="/mmexamples/jsp/mynews" />">My News example</a>. 
+    Lots of these examples edit data of the <a href="<mm:url page="/mmexamples/mynews" />">My News example</a>. 
   </p>
   </body>
 </html>
