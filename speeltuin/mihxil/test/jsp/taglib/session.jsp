@@ -25,6 +25,6 @@
       <% } %>
     </table>
     <hr />
-    See also the <a href="caches.jsp?bytesize=true">Caches</a>
+    See also the <a href="caches.jsp">Caches</a>
   </body>
 </html>

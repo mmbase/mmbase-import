@@ -52,13 +52,19 @@
 <hr />
 </mm:write>
 <a href="<mm:url referids="bytesize" />">Back</a><br />
-<a href="<mm:url referids="cache"><mm:param name="bytesize"><%= "true".equals(bytesize) ? "false": "true"%></mm:param></mm:url>">Toggle byte calculation</a>
+<a href="<mm:url referids="cache"><mm:param name="bytesize"><%= "true".equals(bytesize) ? "false": "true"%></mm:param></mm:url>">Toggle byte calculation</a><br />
 </mm:present>
-<mm:compare referid="bytesize" value="true">
   <br />
+<mm:compare referid="bytesize" value="true">
   Total size: <%= Cache.getTotalByteSize() %><br />
-  Size of <a href="session.jsp">session:</a> <%= SizeOf.getByteSize(session) %>
 </mm:compare>
+ Size of <a href="session.jsp">session:</a> <%= SizeOf.getByteSize(session) %> byte<br />
+ <%
+      Runtime rt = Runtime.getRuntime();
+      out.println("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte<br />");
+      rt.gc();
+      out.println("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte<br />");
+%>
 <hr />
 <a href="<mm:url page="/" />">Home </a>
 
