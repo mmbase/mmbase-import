@@ -19,7 +19,7 @@
 
 <mm:import id="thiswhere">snumber=<mm:write referid="thisnumber" /> or dnumber=<mm:write referid="thisnumber" /></mm:import>
 <table class="edit" summary="relation overview" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr><th colspan="3">Relations to this node</th></tr>
+<tr><th colspan="3"><%=m.getString("relations.to")%></th></tr>
 <mm:listnodes type="typerel" constraints="${thiswhere}" jspvar="l_node">
  <mm:context>
    <tr><!-- row for every type relations -->

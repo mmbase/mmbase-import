@@ -1,6 +1,8 @@
 <hr />
-Logged on as: <%= cloud.getUser().getIdentifier() %>
+<%=m.getString("foot.loggedas")%>: <%= cloud.getUser().getIdentifier() %>
 (<%= cloud.getUser().getRank() %>).<br />
-coding:   <%= cloud.getCloudContext().getDefaultCharacterEncoding() %>  <br />
-language: <%= java.util.Locale.getDefault().getLanguage() /*cloud.getLocale().getDisplayLanguage(cloud.getLocale())*/ %> <br />
+<%=m.getString("foot.coding")%>:   <%= cloud.getCloudContext().getDefaultCharacterEncoding() %>  <br />
+<mm:write referid="config.lang" jspvar="lang" vartype="string">
+<%=m.getString("foot.language")%>: <%= locale.getDisplayLanguage(locale) /*cloud.getLocale().getDisplayLanguage(cloud.getLocale())*/ %> <br />
+</mm:write>
 <%@include file="footfoot.jsp" %>

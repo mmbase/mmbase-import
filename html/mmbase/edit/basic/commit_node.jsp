@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp" 
 %><mm:cloud method="http" sessionname="$SESSION" jspvar="cloud">
-<title>Committing node</title>
+<title><%=m.getString("commit_node.commit")%></title>
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />
 <mm:import externid="page">0</mm:import>
@@ -85,9 +85,9 @@
 <mm:write referid="style" />
 </head>
 <body>
-<h1>Redirecting</h1>
+<h1><%=m.getString("redirect")%></h1>
 <a href="<mm:url page="$redirectTo" />">
-Redirecting to main editor page</a>
+<%= m.getString("commit_node.redirect")%></a>
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>

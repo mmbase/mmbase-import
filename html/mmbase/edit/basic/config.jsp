@@ -7,6 +7,8 @@
     <mm:import externid="page_size" />
     <mm:import externid="hide_search" />
     <mm:import externid="style_sheet" />
+    <mm:import externid="lang" />
+    <mm:write  referid="lang" cookie="mmjspeditors_language" />
  </mm:context>
  <mm:write referid="config" session="mmeditors_config" />
 </mm:present>
@@ -28,9 +30,14 @@
      <tr><td>style sheet</td>
          <td><input type="text" size="30" name="style_sheet" value="<mm:write referid="config.style_sheet" />" /></td>
      </tr>
+     <tr><td>Language (two letter code)</td>  
+         <td><input type="text" size="30" name="lang" value="<mm:write referid="config.lang" />" /></td>
+     </tr>
      <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
    </table>
    </form>
+<mm:locale language="$config.lang">
 <mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
 <%@ include file="foot.jsp"  %>
 </mm:cloud>
+</mm:locale>
