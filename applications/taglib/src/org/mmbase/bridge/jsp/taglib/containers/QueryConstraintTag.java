@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.2 2004-06-16 10:44:34 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
   
@@ -114,7 +114,11 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         } else if (field2 != Attribute.NULL) {
             compareValue = query.createStepField(field2.getString(this));
         } else {
-            throw new JspTagException("Should specify one of value, referid and field2 attributes on constraint tag");
+            if (op != Queries.OPERATOR_NULL) {
+                throw new JspTagException("Should specify one of value, referid and field2 attributes on constraint tag (unless operator is NULL)");
+            } else {                
+                compareValue = null;
+            }
         }
 
         Object compareValue2 = null;

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.256 2004-06-03 17:08:51 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.257 2004-06-16 10:44:33 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5202,6 +5202,10 @@ The 0 is just counter, which starts at 0 on every page.
 			<possiblevalue>
 				<value>IN</value>
 				<info>referid can refer to a Node List</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>NULL</value>
+				<info>Tests wether the value of the field is NULL (or NOT NULL if inverse="true"). The 'value' attributes are ignored.</info>
 			</possiblevalue>
 		</attribute>
 	</tag>

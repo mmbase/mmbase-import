@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.35 2004-05-25 16:24:06 michiel Exp $
+ * @version $Id: Queries.java,v 1.36 2004-06-16 10:43:23 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -324,6 +324,7 @@ abstract public  class Queries {
 
     public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
     public static final int OPERATOR_IN = 10000; // not a FieldCompareConstraint (non numeric)
+    public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
 
     /**
      * Creates a operator constant for use by createConstraint
@@ -348,6 +349,8 @@ abstract public  class Queries {
             return OPERATOR_BETWEEN;
         } else if (op.equals("IN")) {
             return OPERATOR_IN;
+        } else if (op.equals("NULL")) {
+            return OPERATOR_NULL;
             //} else if (op.equals("~") || op.equals("REGEXP")) {
             //  return FieldCompareConstraint.REGEXP;
         } else {
@@ -436,14 +439,17 @@ abstract public  class Queries {
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive) {
 
         StepField stepField = query.createStepField(fieldName);
-        if (stepField == null)
+        if (stepField == null) {
             throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
+        }
 
         Cloud cloud = query.getCloud();
         FieldConstraint newConstraint;
 
         if (value instanceof StepField) {
             newConstraint = query.createConstraint(stepField, operator, (StepField)value);
+        } else if (operator == OPERATOR_NULL || value == null) {
+            newConstraint = query.createConstraint(stepField);
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
 
