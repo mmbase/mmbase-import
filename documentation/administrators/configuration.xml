@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: configuration.xml,v 1.10 2002-10-15 09:31:53 michiel Exp $</date>
+    <date>$Id: configuration.xml,v 1.11 2002-10-16 18:40:05 michiel Exp $</date>
     <title>MMBase configuration documentation</title>
   </articleinfo>
   <section>
@@ -127,7 +127,22 @@
         taglib, the MMBase community taglib, the oscache taglib and the jakarta taglibs. In some newer
         application servers it might be enough to have the mmbase.jar (or other jars) in your WEB-INF/lib
         directory to have the MMBase taglib (or other taglibs) to your disposal.
-        <!--  TODO links!, also to web.xml example -->
+        TODO links
+      </para>
+    </section>
+    <section id="resources">
+      <title>Resources</title>
+      <para>
+        Since MMBase 1.6 certain things can (optionally) also be
+        configured by the use of references to resources provided by
+        the application server. A resource a an instance of a certain
+        type which is created and configured and can be referred to by
+        a `resource name'.
+      </para>
+      <para>
+        These resources must also be described in web.xml. The actual
+        configuration of these resources happens somewhere else and we
+        refer to the documentation of your application server.
       </para>
     </section>
     <section id="webxmlexample">
