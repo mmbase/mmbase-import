@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.37 2004-04-26 12:23:35 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.38 2004-05-07 13:19:38 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -310,9 +310,6 @@ public class BasicQuery implements Query  {
     public StepField createStepField(String fieldIdentifier) {
         // code copied from addField, should be centralized
         int dot = fieldIdentifier.indexOf('.');
-        if (dot == -1) {
-            throw new BridgeException("No '.' found in '" + fieldIdentifier + "'");
-        }
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
@@ -325,7 +322,7 @@ public class BasicQuery implements Query  {
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
         BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField) field).field, aggregationType);
-        aggregatedField.setAlias(field.getName());
+        // aggregatedField.setAlias(field.getName());
 
         if (this instanceof NodeQuery) {
             NodeQuery nodeQuery = (NodeQuery) this;
@@ -381,16 +378,6 @@ public class BasicQuery implements Query  {
     }
 
     public FieldValueConstraint        createConstraint(StepField f, int op, Object v) {
-        /* 
-        if (f.getType() == Field.TYPE_NODE) {
-            if (v instanceof Node) {
-                v = new Integer(((Node) v).getNumber());
-            } else if (v instanceof String) {
-                v = new Integer(cloud.getNode((String)v).getNumber());
-            }
-        } 
-        */       
-
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
