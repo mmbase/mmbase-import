@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.136 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.137 2004-12-14 08:52:47 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -345,6 +345,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
                 case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
                 case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+                case Field.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
+                case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
+                case Field.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
                 default:                 setValueWithoutProcess(fieldName, value);
             }
         }
@@ -450,8 +453,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setStringValue(String fieldName, String value) {
-//        log.info("setString on node " + getNumber());
+log.info("setString on node " + getNumber() +" for "+fieldName+" : "+value);
         value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
+log.info("setString :" + value);
         setValueWithoutProcess(fieldName, value);
     }
 
