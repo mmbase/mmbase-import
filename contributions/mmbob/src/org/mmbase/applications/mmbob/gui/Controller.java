@@ -791,7 +791,7 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     // nobody may post in closed thread, unless you're a moderator
-                    if (!t.getState().equals("closed") || a.isModerator(poster)) {
+                    if ((!t.getState().equals("closed") || a.isModerator(poster)) && !f.getPoster(poster).isBlocked()) {
                         t.postReply(subject, poster, body);
                     } else {
                         return false;
@@ -820,7 +820,7 @@ public class Controller {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
-            if (a != null) {
+            if (a != null && !f.getPoster(poster).isBlocked()) {
                 int postthreadid = a.newPost(subject, poster, body);
                 virtual.setValue("postthreadid", postthreadid);
             }
@@ -843,7 +843,7 @@ public class Controller {
 
         MMObjectNode virtual = builder.getNewNode("admin");
         Forum f = ForumManager.getForum(forumid);
-        if (f != null) {
+        if (f != null && !f.getPoster(poster).isBlocked()) {
             int privatemessageid = f.newPrivateMessage(poster, to, subject, body);
             virtual.setValue("privatemessageid", privatemessageid);
         }
@@ -1119,7 +1119,7 @@ public class Controller {
         MMObjectNode virtual = builder.getNewNode("admin");
 
         Forum f = ForumManager.getForum(forumid);
-        if (f != null) {
+        if (f != null ) {
             int postareaid = f.newPostArea(name, description);
             virtual.setValue("postareaid", postareaid);
         }
