@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.34 2003-05-12 14:27:23 pierre Exp $
+     * @version  $Id: list.jsp,v 1.35 2003-05-26 11:33:43 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -65,25 +65,9 @@ if (listConfig==null) {
 }
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
-if (listConfig.fields==null) {
-  throw new WizardException("The parameter 'fields' is required but not given."); 
-}
 
-{
-    String t = request.getParameter("template");
-    if (t == null || t.equals("")) t = "xsl/list.xsl";
-    listConfig.template = ewconfig.uriResolver.resolveToFile(t);
-}
-
-
-
-
-if (listConfig.nodePath == null) {
-   throw new JspTagException("No nodePath given");
-}
 // decide what kind of query: multilevel or single?
 boolean multilevel = listConfig.nodePath.indexOf(",") > -1;
-
 
 List fieldList     = new Vector();
 String numberField = null;
@@ -108,9 +92,7 @@ while (stok.hasMoreTokens()) {
 
 int nodecount=0;
 
-
 stok = new StringTokenizer(listConfig.nodePath, ",");
-
 
 nodecount = stok.countTokens();
 String lastObjectName=null;
@@ -119,7 +101,6 @@ String lastObjectName=null;
 while (stok.hasMoreTokens()) {
     lastObjectName = stok.nextToken();
 }
-
 
 if (lastObjectName == null) {
     throw new JspException("No nodepath (" + listConfig.nodePath + ") was specified on URL, nor could it be found in the session");
@@ -154,7 +135,7 @@ if (nodecount==0 || fieldcount==0) {
 
 // expand query depending on wether or not an age param is given.
 if (listConfig.age==99999) listConfig.age=-1;
-if (listConfig.age >- 1) {
+if (listConfig.age > -1) {
     // maxlistConfig.age is set. pre-query to find objectnumber
     long daymarker = (new java.util.Date().getTime() / (60*60*24*1000)) - listConfig.age;
 
@@ -201,7 +182,10 @@ if (listConfig.wizard != null) {
 // fire query
 NodeList results;
 
-if (multilevel) {
+// do not list anything if search is forced and no searchvalue given
+if (listConfig.forceSearch && listConfig.searchFields!=null &&"".equals(listConfig.searchValue)) {
+    results = cloud.getCloudContext().createNodeList();    
+} else if (multilevel) {
     log.trace("this is a multilevel");
     results = cloud.getList(listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
                             listConfig.orderBy,
