@@ -134,6 +134,23 @@ public class BasicNodeManager implements NodeManager {
 	public FieldList getFields() {
 	    return new BasicFieldList(fieldTypes.values(),cloud,this);
 	}
+	
+	/**
+	 * Retrieve a subset of field types of this NodeManager, depending on a given order.
+	 * @param order the order in which to list the fields
+	 * @return a <code>List</code> of <code>FieldType</code> objects
+	 */
+	public FieldList getFields(int order) {
+	    if (order == ORDER_EDIT) {
+	        return new BasicFieldList(builder.getSortedFields(),cloud,this);
+	    } else if (order == ORDER_LIST) {
+	        return new BasicFieldList(builder.getSortedListFields(),cloud,this);
+	    } else if (order == ORDER_SEARCH) {
+	        return new BasicFieldList(builder.getEditFields(),cloud,this);
+	    } else {
+	        return getFields() ;
+	    }
+	}
 
 	/**
 	 * Retrieve the field type for a given fieldname.
