@@ -1,0 +1,20 @@
+<TR>
+	<TD><IMG SRC="../../images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>Part that goes into your shtml page</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+				<LIST OBJECTS TYPE="people" FIELDS="number" WHERE="lastname=='Vermeulen'" MAX="1">
+				$&nbsp;MOD-MMBASE-FIELD-$ITEM1-firstname
+				$&nbsp;MOD-MMBASE-FIELD-$ITEM1-lastname
+				$&nbsp;MOD-MMBASE-FIELD-$ITEM1-email
+				</LIST>
+			<BR><BR>
+		</TD>
+</TR>
