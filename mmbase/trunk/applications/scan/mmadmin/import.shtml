@@ -5,11 +5,9 @@
    <TITLE>MMADMIN tools</TITLE>
 </HEAD>
 
-<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
-<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
-<PART /mmadmin/nav.shtml?6>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#FFFFFF" LINK="#000000" ALINK="#555555" VLINK="#555555"><CENTER>
 <BR>
-<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TABLE width=80% cellspacing=0 cellpadding=3 border=1>
 <TR>
 	<TD BGCOLOR="FFFFFF">
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
@@ -22,18 +20,18 @@
 </TR>
 <FORM ACTION="import.shtml" METHOD="POST">
 <TR>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			Import file (eg '/tmp/test' .xml will be loaded)
 		</TD>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			<INPUT NAME="PRC-VAR-importdir" SIZE="30" VALUE="/tmp/test">
 		</TD>
 </TR>
 <TR>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			Import type	
 		</TD>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			<SELECT INPUT NAME="PRC-VAR-importtype">
 			<OPTION VALUE="XML">XML (mmbase-dtd's)
 			<OPTION VALUE="VPRO">VPRO-Import
@@ -42,20 +40,20 @@
 		</TD>
 </TR>
 <TR>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			Options		
 		</TD>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			<INPUT TYPE="checkbox" NAME="ids"> include id's<BR>
 			<INPUT TYPE="checkbox" NAME="merge"> merge<BR>
 			<BR>
 		</TD>
 </TR>
 <TR>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			All options filled in then submit
 		</TD>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			<INPUT TYPE="SUBMIT" VALUE="IMPORT">
 		</TD>
 </TR>

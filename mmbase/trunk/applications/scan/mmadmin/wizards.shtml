@@ -5,11 +5,9 @@
    <TITLE>MMADMIN tools</TITLE>
 </HEAD>
 
-<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
-<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
-<PART /mmadmin/nav.shtml?3>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#FFFFFF" LINK="#000000" ALINK="#555555" VLINK="#555555"><CENTER>
 <BR>
-<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TABLE width=80% cellspacing=0 cellpadding=3 border=1>
 <TR>
 	<TD BGCOLOR="FFFFFF">
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
@@ -18,7 +16,7 @@
 </TR>
 <TR>
 	<FORM ACTION="wizards/index.shtml?2" METHOD="POST">
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			1. Select the wanted wizard and select next 2 : 
 			<SELECT INPUT NAME="SESSION-WIZ">
 
@@ -29,7 +27,7 @@
 		</TD>
 </TR>
 <TR>
-		<TD BGCOLOR="#444477">
+		<TD BGCOLOR="#00425A">
 			<CENTER><INPUT TYPE="SUBMIT" VALUE="Goto Step 2">
 		</TD>
 	</FORM>
