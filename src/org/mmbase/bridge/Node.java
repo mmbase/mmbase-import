@@ -157,11 +157,6 @@ public interface Node {
 	public void remove(); 
 
 	/**
-	 * Removes the Node. Also removes relations if any exist.
-	 */
-	public void removeAll();
-	
-	/**
 	 * Converts the node to a string
 	 */
 	 public String toString();
@@ -169,7 +164,7 @@ public interface Node {
 	/**
 	 * Removes all relations of the node
 	 */
-	public void removeAllRelations();
+	public void removeRelations();
 
 	/**
  	 * Removes all relations of certain type of this node
@@ -181,20 +176,20 @@ public interface Node {
 	 * Retrieve all relations of this node
 	 * @return a <code>List</code> of all relations of Node
 	 */
-	public List getAllRelations();
+	public RelationList getRelations();
 
 	/**
 	 * Gets all relations of a certain type
 	 * @param type of relation
 	 * @return a <code>List</code> of all relations of the Node of a certain type
 	 */
-	public List getRelations(String type);
+	public RelationList getRelations(String type);
 	
 	/**
 	 * Count the relations attached to the Node
 	 * @return number of relations
 	 */
-	public int countAllRelations();
+	public int countRelations();
 
 	/**
 	 * Count the relations of a specific type attached to the Node 
@@ -206,14 +201,14 @@ public interface Node {
 	 * Retrieve all related Nodes
 	 * @return a <code>List</code> of all related Nodes
 	 */
-	public List getAllRelatedNodes();
+	public NodeList getRelatedNodes();
 
 	/**
 	 * Retrieve all related nodes maintained by a given NodeManager
 	 * @param type name of the NodeManager of the related nodes
 	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
-	public List getRelatedNodes(String type);
+	public NodeList getRelatedNodes(String type);
 
 	/**
 	 * Count all related nodes maintained by a given NodeManager
@@ -246,5 +241,5 @@ public interface Node {
 	 * @param relationManager The relation manager you want to use
 	 * @return the added relation
      */
-    public Relation addRelation(Node destinationNode, RelationManager relationManager);
+    public Relation createRelation(Node destinationNode, RelationManager relationManager);
 }

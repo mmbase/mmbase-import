@@ -72,5 +72,5 @@ public interface RelationManager extends NodeManager {
      * @param destinationNode the node to which you want to relate
 	 * @return the added relation
      */
-    public Relation addRelation(Node sourceNode, Node destinationNode);
+    public Relation createRelation(Node sourceNode, Node destinationNode);
 }

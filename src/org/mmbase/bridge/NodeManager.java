@@ -56,7 +56,7 @@ public interface NodeManager {
 	 * Retrieve all field types of this NodeManager.
 	 * @return a <code>List</code> of <code>FieldType</code> objects
 	 */
-	public List getFieldTypes();
+	public FieldTypeList getFieldTypes();
 
 	/**
 	 * Retrieve the field type for a given fieldname.
@@ -74,6 +74,6 @@ public interface NodeManager {
      * @param direction indicates whether the sort is ascending (true) or descending (false).
      * @return a <code>List</code> of found nodes
      */
-    public List search(String where, String sorted, boolean direction);
+    public NodeList getList(String where, String sorted, boolean direction);
 
 }
