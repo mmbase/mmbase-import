@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.fields.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
@@ -29,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.121 2004-02-23 19:01:01 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.122 2004-02-26 22:06:02 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -350,11 +351,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     protected void setValueWithoutProcess(String fieldName, Object value) {
         edit(ACTION_EDIT);
         if ("number".equals(fieldName) || "otype".equals(fieldName) || "owner".equals(fieldName)) {
-            throw new BridgeException("Not allowed to change field " + fieldName + ".");
+            throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
         }
         if (this instanceof Relation) {
             if ("rnumber".equals(fieldName)) {
-                throw new BridgeException("Not allowed to change field " + fieldName + ".");
+                throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
             } else if ("snumber".equals(fieldName) || "dnumber".equals(fieldName)) {
                 BasicRelation relation = (BasicRelation) this;
                 relation.relationChanged = true;
@@ -699,8 +700,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 if ((type == -1) || (node.getIntValue("rnumber") == type)) {
                     if (cloud instanceof Transaction) {
                         String oMmbaseId = "" + node.getValue("number");
-                        String currentObjectContext =
-                            BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
+                        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
@@ -802,6 +802,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
+
+    /**
+     * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
+     */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
         // temporay implementation to get it working for now. Really we would want to make separate queries, I think.
 
@@ -875,6 +879,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
+     * @see Queries#createRelatedNodesQuery Should perhaps be implemented with that.
      * @since MMBase-1.6
      */
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
