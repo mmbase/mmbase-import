@@ -34,7 +34,7 @@ public class XMLDatabaseReader extends XMLBasicReader  {
      * @param path the filename
      */
     public XMLDatabaseReader(String path) {
-        super(path);
+        super(path, XMLDatabaseReader.class);
     }
 
     /**

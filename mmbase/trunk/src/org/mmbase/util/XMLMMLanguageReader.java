@@ -25,9 +25,12 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.5 2001-04-19 12:00:25 michiel Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.6 2002-10-25 21:25:14 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2001/04/19 12:00:25  michiel
+ * michiel: logging, indentation
+ *
  * Revision 1.4  2000/08/20 10:53:44  case
  * cjr: minor changes, this class is now actually used
  *
@@ -55,7 +58,7 @@ public class XMLMMLanguageReader extends XMLBasicReader {
 
 
     public XMLMMLanguageReader(String filename) {
-        super(filename);
+        super(filename, XMLMMLanguageReader.class);
 
         dictionary = null;
 
