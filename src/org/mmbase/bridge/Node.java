@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.48 2004-09-17 09:23:00 michiel Exp $
+ * @version $Id: Node.java,v 1.49 2004-09-20 16:38:14 pierre Exp $
  */
 public interface Node {
 
@@ -93,7 +93,7 @@ public interface Node {
     public RelationManager toRelationManager();
 
     /**
-     * Sets the value of the specified field using an object, but delegated to the right 
+     * Sets the value of the specified field using an object, but delegated to the right
      * set--Value depending on the type of the field.
      * For example a field of type <code>int</code> can be set using an
      * <code>Integer</code>.
@@ -356,7 +356,7 @@ public interface Node {
      * not yet working
      * @since MMBase-1.8
      */
-    //public List getListValue(String fieldName);
+    public List getListValue(String fieldName);
 
 
     /**
@@ -533,7 +533,7 @@ public interface Node {
      */
     public RelationList getRelations(String role, NodeManager nodeManager);
 
-    
+
     /**
      * @since MMBase-1.7
      */
@@ -622,7 +622,7 @@ public interface Node {
 
     /**
      * Returns a query to reretrieve this node. It is not very usefull 'as is' because you already
-     * have the node. The result can however be changed (with addRelationsStep), to find 'related nodes'. 
+     * have the node. The result can however be changed (with addRelationsStep), to find 'related nodes'.
      *
      * @since MMBase-1.7.
      * @see   NodeManager#getList
@@ -703,10 +703,10 @@ public interface Node {
     public String getContext();
 
     /**
-     * Contacts the security implementation to find out to which other possible contextes the
+     * Contacts the security implementation to find out to which other possible contexts the
      * context of this node may be set.
      *
-     * @return A StringList containing the contextes which can be used in setContext on this node.
+     * @return A StringList containing the contexts which can be used in setContext on this node.
      * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
     public StringList getPossibleContexts();
@@ -727,7 +727,7 @@ public interface Node {
 
     public boolean mayDelete();
 
- 
+
     /**
      * Check context-change rights on this node.
      *
