@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.3 2004-11-11 16:56:12 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.4 2005-01-20 17:00:49 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -170,6 +170,8 @@ public class DocumentReader  {
         }
     }
 
+
+    private static boolean warnedJAXP12 = false;
     /**
      * Creates a DocumentBuilder using SAX.
      * @param validating if true, the documentbuilder will validate documents read
@@ -186,6 +188,17 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
+            if (validating) {
+                try {
+                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", 
+                                          "http://www.w3.org/2001/XMLSchema");
+                } catch (IllegalArgumentException iae) {
+                    if (! warnedJAXP12) {
+                        log.warn("The XML parser does not support JAXP 1.2, XSD validation will not work.", iae);
+                        warnedJAXP12 = true;
+                    }
+                } 
+            }
             dfactory.setNamespaceAware(true);
 
             db = dfactory.newDocumentBuilder();
