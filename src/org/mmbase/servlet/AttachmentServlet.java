@@ -28,7 +28,7 @@ import java.util.Date;
 
 /**
  *
- * @version $Id: AttachmentServlet.java,v 1.2 2002-06-27 14:03:11 michiel Exp $
+ * @version $Id: AttachmentServlet.java,v 1.3 2002-06-27 15:59:11 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -88,7 +88,6 @@ public class AttachmentServlet extends BridgeServlet {
             res.sendError(res.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
             return;
         }
-        log.info("Node " + node);
 
         byte[] bytes = node.getByteValue("handle"); 
         if (bytes == null) {
