@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.11 2003-08-05 09:05:45 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.12 2003-08-27 21:41:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -360,6 +360,34 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         BasicStepField field = new BasicStepField(step, fieldDefs);
         fields.add(field);
         return field;
+    }
+
+
+    // MM //only sensible for NodeSearchQuery
+    protected void mapField(FieldDefs field, StepField stepField) {
+        
+    }
+    // MM
+    public void  addFields(Step step) {
+        MMBase mmb = MMBase.getMMBase();
+        MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
+        Iterator iFields = builder.getFields().iterator();
+        while (iFields.hasNext()) {
+            FieldDefs field = (FieldDefs) iFields.next();
+	    if ( field.getDBType() != FieldDefs.TYPE_BYTE 
+		 && ( field.getDBState() == FieldDefs.DBSTATE_PERSISTENT 
+	      || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
+		    )
+		) {
+		BasicStepField stepField = addField(step, field);
+                mapField(field, stepField);
+	    }
+        }
+
+    }
+    // MM
+    public void removeFields() {
+        fields.clear();
     }
     
     /**
