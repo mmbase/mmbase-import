@@ -12,7 +12,6 @@ package org.mmbase.servlet;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -39,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.6 2002-04-12 09:00:34 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.7 2002-06-26 11:40:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -80,12 +79,12 @@ public class MMBaseServlet extends  HttpServlet {
     private static Hashtable associatedServlets = new Hashtable();
 
 
+
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+    public void init() throws ServletException {
         if (! MMBaseContext.isInitialized()) {
             ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
@@ -96,7 +95,7 @@ public class MMBaseServlet extends  HttpServlet {
             log = Logging.getLoggerInstance(MMBaseServlet.class.getName());
         }
 
-        log.info("Init of servlet " + config.getServletName() + ".");
+        log.info("Init of servlet " + getServletName() + ".");
         boolean initialize=false;
         // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
@@ -104,12 +103,12 @@ public class MMBaseServlet extends  HttpServlet {
             servletInstanceCount+=1;
         }
         if (initialize) {
-            // read the servletmappings
+            log.service("Reading servlet mappings");
             // used to determine the accurate way to access a servlet
             try {
                 // get config and do stuff.
-                String path=MMBaseContext.getHtmlRoot()+"/WEB-INF/web.xml";
-                XMLBasicReader webDotXml= new XMLBasicReader(path);
+                String path=MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
+                XMLBasicReader webDotXml= new XMLBasicReader(path, false);
                 Enumeration mappings=webDotXml.getChildElements("web-app","servlet-mapping");
                 while (mappings.hasMoreElements()) {
                     Element mapping=(Element)mappings.nextElement();
@@ -130,7 +129,7 @@ public class MMBaseServlet extends  HttpServlet {
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
             }
-            log.service("Loaded servlet mappings");
+            log.debug("Loaded servlet mappings");
         }
 
 
