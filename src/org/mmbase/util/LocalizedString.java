@@ -18,7 +18,7 @@ import java.util.*;
  * this object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.1 2005-03-16 15:57:58 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.2 2005-03-21 12:11:23 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  {
@@ -40,7 +40,7 @@ public class LocalizedString  {
      */
     public String get(Locale locale) {
         if (locale == null) {
-            locale = new Locale(org.mmbase.module.core.MMBase.getMMBase().getLanguage(), "");
+            locale = org.mmbase.module.core.MMBase.getMMBase().getLocale();
         }
         if (values != null) {
             String result = (String) values.get(locale);
@@ -83,7 +83,7 @@ public class LocalizedString  {
         }
 
         if (locale == null) {
-            locale = new Locale(org.mmbase.module.core.MMBase.getMMBase().getLanguage(), "");
+            locale = org.mmbase.module.core.MMBase.getMMBase().getLocale();
         }
 
         values.put(locale, value);
