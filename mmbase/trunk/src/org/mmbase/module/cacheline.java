@@ -14,8 +14,6 @@ import java.util.Date;
 
 public class cacheline {
 
-	public String classname = getClass().getName();
-
 	public Date lastmod;
 	public byte buffer[]=null;
 	public int filesize;
@@ -29,14 +27,7 @@ public class cacheline {
 	public cacheline() {
 	}
 
-	public void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
-	}
-
-	public String toString()
-	{
-		// String result = "";
+	public String toString() {
 		String s = new String(buffer);
 		return mimetype+","+lastmod+","+filesize+","+buffer.length+", "+s;
 	}
