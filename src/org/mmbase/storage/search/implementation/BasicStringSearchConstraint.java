@@ -18,7 +18,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -283,8 +283,8 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
                     constraint.getField().getStep().getAlias())
                 && searchType == constraint.getSearchType()
                 && matchType == constraint.getMatchType()
-                && parameters == constraint.parameters
-                && searchTerms == constraint.searchTerms;
+                && parameters.equals(constraint.parameters)
+                && searchTerms.equals(constraint.searchTerms);
         } else {
             return false;
         }
