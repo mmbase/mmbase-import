@@ -28,6 +28,8 @@
 
 speeltuin $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/speeltuin.log $USER %{sVv}
 
+mmweb $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/mmweb.log $USER %{sVv}
+
 tests $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/tests.log $USER %{sVv}
 
 applications $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/applications.log $USER %{sVv}
