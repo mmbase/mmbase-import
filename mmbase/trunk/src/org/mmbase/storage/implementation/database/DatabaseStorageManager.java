@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.76 2004-09-22 15:18:34 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.77 2004-09-29 11:09:19 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1092,7 +1092,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setListValue(PreparedStatement statement, int index, Object value, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
-        if (!setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) {
+        if (!setNullValue(statement, index, value, field, java.sql.Types.ARRAY)) {
             List list = Casting.toList(value);
             statement.setObject(index, list);
             node.storeValue(field.getDBName(), list);
