@@ -1,9 +1,10 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page language="java" contentType="text/html; charset=utf-8"
-%><mm:cloud
-><%@include file="/includes/getids.jsp"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%-- @ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+--%><%@page language="java" contentType="text/html; charset=utf-8"
+%><mm:cloud><%@include file="/includes/getids.jsp"
 %><%@include file="/includes/header.jsp"%>
 
+<!-- os:cache key="repository" cron="30 4 * * *"-->
  <mm:node number="$page">
  <td colspan="2">
   <ul>
@@ -42,8 +43,9 @@
   <mm:include cite="true" page="lastchanges-stable.html" />
  </td>
   </mm:node>
- <%@include file="/includes/footer.jsp"%
+<!-- /os:cache -->
 
-></mm:cloud>
+ <%@include file="/includes/footer.jsp"%>
+</mm:cloud>
 
 
