@@ -626,7 +626,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-Q"/>
       <arg value="-XML"/>
       <arg value="-IN"/>
-      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
@@ -639,7 +639,7 @@ Change directory to ${build.dir}/orion and run:
           failonerror="yes">
       <arg value="-Q"/>
       <arg value="-IN"/>
-      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.html"/>
       <arg value="-XSL"/>
@@ -706,6 +706,9 @@ Change directory to ${build.dir}/orion and run:
              value="!ENTITY logdir   &quot;../logs/&quot;"/>
     <!-- Prevent multiple replaces by multiple builds by allways copying the
          file. -->
+    <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.bat"
+          todir="${build.dir}/tomcat/bin"
+          overwrite="yes"/>
     <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
           todir="${build.dir}/tomcat/bin"
           overwrite="yes"/>
