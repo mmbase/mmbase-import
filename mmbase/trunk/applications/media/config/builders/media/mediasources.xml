@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object">
+<builder name="mediasources" extends="object">
   <status>active</status>
   
   <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
@@ -155,7 +155,7 @@
       </db>
     </field>
 
-	<!-- <field> 'state'  -->
+  <!-- <field> 'state'  -->
     <field>
       <descriptions>
         <description xml:lang="en">
