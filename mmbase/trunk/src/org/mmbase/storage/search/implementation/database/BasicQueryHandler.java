@@ -28,7 +28,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.14 2003-09-10 11:11:21 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.15 2003-09-16 20:13:05 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -57,6 +57,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         mmbase = MMBase.getMMBase();
     }
 
+
     // javadoc is inherited
     public List getNodes(SearchQuery query, MMObjectBuilder builder)     throws SearchQueryException {
 
@@ -66,6 +67,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         String sqlString = null;
         MultiConnection con = null;
         Statement stmt = null;
+
 
         boolean multipleSteps = steps.size() > 1;
 
@@ -155,8 +157,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     if (builder instanceof ClusterBuilder) {
                         // Cluster nodes.
                         if (query instanceof NodeQuery) { // hmm
-                            // makes no sense that this is a ClusterNode...
-                            node = new MMObjectNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()));
+                            node = new MMObjectNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()));                            
                         } else {
                             node = new ClusterNode(builder, steps.size());
                         }
@@ -204,7 +205,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
                     }
                     // Finished initializing clusternode.
-                    node.finish();
+                    node.finish();    
                     results.add(node);
                 }
             } finally {
@@ -218,6 +219,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         } finally {
             mmbase.closeConnection(con, stmt);
         }
+        
         return results;
     }
 
