@@ -54,7 +54,16 @@ public class NodeHandler extends IntegerHandler {
                     buffer.append("selected=\"selected\"");
                 }
                 buffer.append("value=\""+tmp.getNumber()+"\">");
-                buffer.append(Encode.encode("ESCAPE_XML", tmp.getStringValue("gui()")));
+                
+                java.util.List args = new java.util.Vector();
+                args.add("");
+                args.add(context.getCloud().getLocale().getLanguage());
+
+                // should actually be added
+                //args.add(sessionName);
+                //args.add(context.pageContext.getResponse());
+
+                buffer.append(Encode.encode("ESCAPE_XML", tmp.getFunctionValue("gui", args).toString()));
                 buffer.append("</option>\n");
             }
             buffer.append("</select>");
