@@ -48,10 +48,10 @@ You can return to this installation script any time.<br />
            NodeManager versions=cloud.getNodeManager("versions");
            Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
-           for (int step=0; step<steps.length; step++) {
-             String app=steps[step];
-             NodeList nl=versions.getList("name='"+app+"'",null,null);
-             installed=nl.size()>0;
+           for (int step=0; step<steps.length; step++) {             
+             String app = steps[step];
+             NodeList nl = versions.getList("name='" + app + "'", null, null);
+             installed = nl.size()>0;
 
              String msg="";
              if (installstep.intValue()==step) {
@@ -70,7 +70,9 @@ You can return to this installation script any time.<br />
 <tr valign="top">
     <td><a name="step<%=step%>"></a><%=step+1%>:<%=app%></td>
         <td>
+          <% try { %>
         <p><%=mmAdmin.getInfo("DESCRIPTION-"+app,request,response)%></p>
+        <% } catch (Exception e) { msg = e.getMessage(); } %>
         <%=msg%>
     </td>
     <td class="link" >
