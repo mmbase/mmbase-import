@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.18 2003-12-02 21:12:16 keesj Exp $
+   @version  $Id: nightly-build.xml,v 1.19 2004-02-20 14:27:11 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -32,7 +32,6 @@
   <property name="applications.build.dir" value="${nbuild.dir}/cvs/mmbase/applications/build" />
   
   <!-- files that are to be created -->
-  <property name="sourcepackage.path" value="${destination.dir}/mmbase-src.zip"/>
   <property name="libpackage.path"    value="${destination.dir}/mmbase-lib.zip"/>
   <property name="jarpackage.path"    value="${destination.dir}/mmbase.jar"/>
   <property name="warpackage.file"    value="${destination.dir}/mmbase.war"/>
@@ -82,7 +81,7 @@
   
 
   <!-- store / zip the current sources--> 
-  <target name="storesource" depends="cvs">
+  <target name="build.srcdistro" depends="cvs">
     <mkdir dir="${destination.dir}"/>
     <echo file="${destination.dir}/README.txt">
 This is the nightly build ${version}, CVS date: ${date}
@@ -99,10 +98,7 @@ mmdocs         Other documentation (also in distro)
 nightly-build.xml  Used to generate all this with ant. You can download only this and redo everything locally (you need jdk 1.3, ant 1.4, cvs, internet-connection, more?)
 </echo>
 
-    <zip zipfile="${sourcepackage.path}"
-      basedir="${source.dir}"
-     >
-    </zip>
+    <ant antfile="${buildscript}" dir="${buildscript.dir}" target="srcdist" />
 		
     <copy todir="${destination.dir}/dtd" flatten="true">
       <fileset dir="${source.dir}">
@@ -176,7 +172,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     </zip>         		
   </target>
 
-  <target name="storedistro" depends="build.distro">
+  <target name="storedistros" depends="build.distro,build.srcdistro">
     <!-- the war... -->
     <!--
     <copy file="${build.dir}/mmbase/mmbase.war"              tofile="${warpackage.file}"/>
@@ -192,6 +188,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     <copy todir="${destination.dir}/mmdocs">
       <fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs" />
     </copy>
+
   </target>       
   
   
@@ -200,6 +197,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="clean" />
     <ant antfile="${applicationsscript}" dir="${applicationsscript.dir}" target="clean" />
     <ant antfile="${testsscript}" dir="${testsscript.dir}" target="clean" />
+    <mkdir dir="${build.dir}" /><!-- i hate ant -->
     <delete>
     	<fileset dir="${build.dir}">
         <include name="**/*.zip"/>	  
@@ -214,6 +212,6 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <!-- ================================================================================
   The default target is 'full': do a nightly build.
   -->  
-  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storedistro,run.tests">
+  <target name="full" depends="clean,storebuild,storejavadocs,storedistros,run.tests">
   </target>
 </project>
