@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.25 2003-09-19 09:59:42 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.26 2003-09-19 11:31:20 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1549,13 +1549,15 @@ public class DatabaseStorageManager implements StorageManager {
                     logQuery(query);
                     s.executeUpdate(query);
                     // add constraints
-                    scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
-                    if (scheme!=null) {
-                        String constraintDef = getConstraintDefinition(field);
-                        query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
-                        s = activeConnection.createStatement();
-                        logQuery(query);
-                        s.executeUpdate(query);
+                    String constraintDef = getConstraintDefinition(field);
+                    if (constraintDef!=null) {
+                        scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+                        if (scheme != null) {
+                            query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
+                            s = activeConnection.createStatement();
+                            logQuery(query);
+                            s.executeUpdate(query);
+                        }
                     }
                     // if the field is a key, redefine the composite key
                     if (field.isKey()) {
@@ -1600,13 +1602,15 @@ public class DatabaseStorageManager implements StorageManager {
                     logQuery(query);
                     s.executeUpdate(query);
                     // add constraints
-                    scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
-                    if (scheme!=null) {
-                        String constraintDef = getConstraintDefinition(field);
-                        query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
-                        s = activeConnection.createStatement();
-                        logQuery(query);
-                        s.executeUpdate(query);
+                    String constraintDef = getConstraintDefinition(field);
+                    if (constraintDef!=null) {
+                        scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+                        if (scheme != null) {
+                            query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
+                            s = activeConnection.createStatement();
+                            logQuery(query);
+                            s.executeUpdate(query);
+                        }
                     }
                     // if the field is a key, add the composite key
                     if (field.isKey()) {
