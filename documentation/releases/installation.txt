@@ -58,19 +58,31 @@ If you'd like to develop jsp's and taglib's at a usable speed it is
 recommended to install jikes for compiling jsp. See your
 Servlet-engine's documentation about how to do this.
 
-Security:
-If your going to use the jsp-editors you need to check out the
-<mmbase-webapp/WEB-INF/config/security> dir, to customize the security
-settings. 
+SECURITY ISSUES:
+--------------------------------------------------------------------------------------------------
+Check out the <mmbase-webapp/WEB-INF/config/security> dir, to customize the security settings. You
+_SHOULD CHANGE THE ADMIN PASSWORD_, and also the other passwords, if your setup is more then just a
+try-out.
 
-If you're going to use the scan editors you need to deploy the
-BasicAuth-application (you can do this from the admin-pages). This
-will create some relations. You have to change the property authtype
-from mmbaseroot.xml into basic and after this restart MMBase. You can
-now create people and related editors to them. Every people you create
-needs to have an account and password in the
-<mmbase-webapp/WEB-INF/config/accounts.properties> file. These people
-can now use the editors.
+If you are not going to use MMBase security, you should not leave jsp-editors and admin pages
+unprotected (by e.g. tomcat or apache security). Remove them altogether if unsure (the /mmeditors
+and /mmadmin directories).
+
+The same goes for editwizards if you are going to install those.
+
+The shipped mmexamples directory is DANGEROUS and you should NOT leave it in a production site. It
+contains for the sake of _examples_ various editors and e.g. a generic jsp to show the source code
+of other jsp's. Generally, for a production site, it is best to remove all jsp's which are shipped
+with this distro, besides the ones you are planning to actually use.
+
+If you're going to use the scan editors (which you are not) you need, besides turning on scan, to
+deploy the BasicAuth-application (you can do this from the admin-pages). This will create some
+relations. You have to change the property authtype from mmbaseroot.xml into basic and after this
+restart MMBase. You can now create people and related editors to them. Every people you create needs
+to have an account and password in the <mmbase-webapp/WEB-INF/config/accounts.properties>
+file. These people can now use the editors.
+---------------------------------------------------------------------------------------------------
+
 
 ImageMagick:
 Imagemagick does work with Windows 98/ME, but MMBase is not able to
