@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMRemoteProbe.java,v 1.9 2001-03-15 14:40:39 vpro Exp $
+$Id: MMRemoteProbe.java,v 1.10 2001-04-13 13:47:05 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2001/03/15 14:40:39  vpro
+Davzev: Changed xml version of mmservers.number to adding a mmservers.name since remote mmservers objects are referenced by name instead of number
+
 Revision 1.8  2001/01/24 14:10:26  vpro
 Davzev: Small debug change in doWork() and printStackTrace() added in toXML() catch.
 
@@ -28,122 +31,135 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * 
- * @version $Revision: 1.9 $ $Date: 2001-03-15 14:40:39 $
+ * @version $Revision: 1.10 $ $Date: 2001-04-13 13:47:05 $
  * @author Daniel Ockeloen
  */
 public class MMRemoteProbe implements Runnable {
-	private String classname = getClass().getName();
-	private boolean debug = true;
-	private void debug(String msg) {System.out.println(classname+":"+msg);}
 
-	private final static int SLEEPTIME = 60 * 1000;
-	Thread kicker = null;
-	MMProtocolDriver con=null;
-	String servicenr;
-	Vector runningServices;
+    private static Logger log = Logging.getLoggerInstance(MMRemoteProbe.class.getName());
+    
+    private final static int SLEEPTIME = 60 * 1000;
+    Thread kicker = null;
+    MMProtocolDriver con=null;
+    String servicenr;
+    Vector runningServices;
 
-	public MMRemoteProbe(Vector runningServices,MMProtocolDriver con,String servicenr) {
-		if (debug) debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+") Initializing"); 
-		this.con=con;
-		this.servicenr=servicenr;
-		this.runningServices=runningServices;
-		init();
-	}
+    public MMRemoteProbe(Vector runningServices,MMProtocolDriver con,String servicenr) {
+        if (log.isDebugEnabled()) {
+            log.debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+") Initializing"); 
+        }
+        this.con=con;
+        this.servicenr=servicenr;
+        this.runningServices=runningServices;
+        init();
+    }
 
-	/**
-	 * Calls start()
-	 */
-	public void init() {
-		this.start();	
-	}
+    /**
+     * Calls start()
+     */
+    public void init() {
+        this.start();    
+    }
 
-	/**
-	 * Starts the admin Thread.
-	 */
-	public void start() {
-		/* Start up the main thread */
-		if (kicker == null) {
-			if (debug) debug("start(): Creating & starting new MMRemoteProbe thread.");
-			kicker = new Thread(this,"MMRemoteProbe");
-			kicker.start();
-		}
-	}
-	
-	/**
-	 * Stops the admin Thread.
-	 */
-	public void stop() {
-		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
-		kicker = null;
-	}
+    /**
+     * Starts the admin Thread.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("start(): Creating & starting new MMRemoteProbe thread.");
+            }
+            kicker = new Thread(this,"MMRemoteProbe");
+            kicker.start();
+        }
+    }
+    
+    /**
+     * Stops the admin Thread.
+     */
+    public void stop() {
+        /* Stop thread */
+        kicker.setPriority(Thread.MIN_PRIORITY);  
+        kicker.suspend();
+        kicker.stop();
+        kicker = null;
+    }
 
-	public void run() {
-		while (kicker!=null) {
-			try {
-				kicker.setPriority(Thread.NORM_PRIORITY+1);  
-				doWork();
-			} catch(Exception e) {
-				debug("run(): ERROR: while doWork(): ");
-				e.printStackTrace();
-			}
-		}
-	}
+    public void run() {
+        while (kicker!=null) {
+            try {
+                kicker.setPriority(Thread.NORM_PRIORITY+1);  
+                doWork();
+            } catch(Exception e) {
+                log.error("run(): while doWork(): ");
+                log.error(Logging.stackTrace(e));
+            }
+        }
+    }
 
- 	/**
-	 * Calls routine to commit the mmserver node of this remote builder to mmbase
-	 * space and goes to sleep, after sleep it calls a routine which triggers the
-	 * maintainance routines of all running services.
-	 */
-	public void doWork() {
-		try {
-			if (debug) debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep.");
-			con.commitNode(servicenr,"mmservers",toXML());
-			Thread.sleep(SLEEPTIME);
-		} catch(Exception e) {
-			debug("doWork(): ERROR: while commitNode("+servicenr+",mmservers,toXML()) : ");
-			e.printStackTrace();
-		}
-		if (debug) debug("doWork(): Just awoken...yawn... calling callMaintainances():");
-		callMaintainances();
-	}
+     /**
+     * Calls routine to commit the mmserver node of this remote builder to mmbase
+     * space and goes to sleep, after sleep it calls a routine which triggers the
+     * maintainance routines of all running services.
+     */
+    public void doWork() {
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep.");
+            }
+            con.commitNode(servicenr,"mmservers",toXML());
+            Thread.sleep(SLEEPTIME);
+        } catch(Exception e) {
+            log.error("doWork(): while commitNode("+servicenr+",mmservers,toXML()) : ");
+            log.error(Logging.stackTrace(e));
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("doWork(): Just awoken...yawn... calling callMaintainances():");
+        }
+        callMaintainances();
+    }
 
-	/**
-	 * Writes mmserver node in xml.
-	 * @return the mmserver node as xml.
-	 */
-	public String toXML() {
-		String host="";
-		try {
-			host=InetAddress.getLocalHost().getHostName();
-		} catch(Exception e) { 
-			debug("toXML(): ERROR: Could not get localhost address!"); 
-			e.printStackTrace();
-		}
-		String body="<?xml version=\"1.0\"?>\n";
-		body+="<!DOCTYPE mmnode.mmservers SYSTEM \"http://openbox.vpro.nl/mmnode/mmservers.dtd\">\n";
-		body+="<mmservers>\n";
-		body+="<name>"+servicenr+"</name>\n";
-		body+="<state>1</state>\n";
-		body+="<atime>"+(int)(System.currentTimeMillis()/1000)+"</atime>\n";
-		body+="<host>"+con.getProtocol()+"://"+con.getLocalHost()+":"+con.getLocalPort()+"</host>\n";
-		body+="</mmservers>\n";
-		return(body);
-	}
-	
-	/**
-	 * Goes through the list of running services and triggers their maintainance routine.
-	 */
-	void callMaintainances() {
-		if (debug) debug("callMaintainances(): Go through list of running services and trigger their maintainance routine");
-		Enumeration f=runningServices.elements();
-		for (;f.hasMoreElements();) {
-			RemoteBuilder serv=(RemoteBuilder)f.nextElement();
-			serv.maintainance();
-		}
-	}
+    /**
+     * Writes mmserver node in xml.
+     * @return the mmserver node as xml.
+     */
+    public String toXML() {
+        String host="";
+        try {
+            host=InetAddress.getLocalHost().getHostName();
+        } catch(Exception e) { 
+            log.error("toXML(): Could not get localhost address!"); 
+            log.error(Logging.stackTrace(e));
+        }
+        String body="<?xml version=\"1.0\"?>\n";
+        body+="<!DOCTYPE mmnode.mmservers SYSTEM \"http://openbox.vpro.nl/mmnode/mmservers.dtd\">\n";
+        body+="<mmservers>\n";
+        body+="<name>"+servicenr+"</name>\n";
+        body+="<state>1</state>\n";
+        body+="<atime>"+(int)(System.currentTimeMillis()/1000)+"</atime>\n";
+        body+="<host>"+con.getProtocol()+"://"+con.getLocalHost()+":"+con.getLocalPort()+"</host>\n";
+        body+="</mmservers>\n";
+        return(body);
+    }
+    
+    /**
+     * Goes through the list of running services and triggers their maintainance routine.
+     */
+    void callMaintainances() {
+        if (log.isDebugEnabled()) {
+            log.debug("callMaintainances(): Go through list of running services and trigger their maintainance routine");
+        }
+        Enumeration f=runningServices.elements();
+        for (;f.hasMoreElements();) {
+            RemoteBuilder serv=(RemoteBuilder)f.nextElement();
+            serv.maintainance();
+        }
+    }
 }
