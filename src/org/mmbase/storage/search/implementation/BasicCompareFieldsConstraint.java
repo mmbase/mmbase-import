@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint 
@@ -65,12 +65,12 @@ implements CompareFieldsConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getTableName().equals(
-                    constraint.getField().getStep().getTableName())
+                && BasicStepField.compareSteps(getField().getStep(),
+                    constraint.getField().getStep())
                 && getOperator() == constraint.getOperator()
                 && field2.getFieldName().equals(constraint.getField2().getFieldName())
-                && field2.getStep().getAlias().equals(
-                    constraint.getField2().getStep().getAlias());
+                && BasicStepField.compareSteps(field2.getStep(),
+                    constraint.getField2().getStep());
         } else {
             return false;
         }
@@ -80,7 +80,9 @@ implements CompareFieldsConstraint {
     public int hashCode() {
         return super.hashCode()
         + 93 * field2.getFieldName().hashCode()
-        + 97 * field2.getStep().getAlias().hashCode();
+        + (field2.getStep().getAlias() == null?
+            101 * field2.getStep().getTableName().hashCode():
+            97 * field2.getStep().getAlias().hashCode());
     }
 
     // javadoc is inherited
@@ -88,13 +90,13 @@ implements CompareFieldsConstraint {
         StringBuffer sb = new StringBuffer("CompareFieldsConstraint(inverse:").
         append(isInverse()).
         append(", field:").
-        append(getField().getAlias()).
+        append(getField().getAlias()).  // TODO RvM: handle null alias.
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", operator:").
         append(getOperator()).
         append(", field2:").
-        append(getField2().getAlias()).
+        append(getField2().getAlias()). // TODO RvM: handle null alias.
         append(")");
         return sb.toString();
     }

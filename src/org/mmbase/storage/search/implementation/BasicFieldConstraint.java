@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
@@ -75,8 +75,8 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
             return isInverse() == constraint.isInverse()
                 && caseSensitive == constraint.isCaseSensitive()
                 && field.getFieldName().equals(constraint.getField().getFieldName())
-                && field.getStep().getAlias().equals(
-                    constraint.getField().getStep().getAlias());
+                && BasicStepField.compareSteps(getField().getStep(),
+                    constraint.getField().getStep());
         } else {
             return false;
         }
@@ -87,6 +87,8 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
         return super.hashCode()
         + (isCaseSensitive()? 0: 73)
         + 79 * field.getFieldName().hashCode()
-        + 83 * field.getStep().getAlias().hashCode();
+        + (field.getStep().getAlias() == null?
+            87 * field.getStep().getTableName().hashCode():
+            83 * field.getStep().getAlias().hashCode());
     }
 }

@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
@@ -74,8 +74,8 @@ public class BasicSortOrder implements SortOrder {
         if (obj instanceof SortOrder) {
             SortOrder order = (SortOrder) obj;
             return field.getFieldName().equals(order.getField().getFieldName())
-                && field.getStep().getAlias().equals(
-                    order.getField().getStep().getAlias())
+                && BasicStepField.compareSteps(
+                    field.getStep(), order.getField().getStep())
                 && direction == order.getDirection();
         } else {
             return false;
