@@ -2,6 +2,7 @@
   This template moves a folder item from one folder to another.
 --%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
@@ -216,15 +217,17 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:relatednodes>
-            <mm:relatednodes type="portfolios" constraints="m_type = 1">
-              <mm:relatednodescontainer type="folders">
-                <mm:relatednodes>
-                  <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
-                  <option value="<mm:field name="number"/>"><fmt:message key="ASSESSMENTPORTFOLIO" /> &gt; <mm:field name="name"/></option>
+            <di:hasrole role="teacher">
+                <mm:relatednodes type="portfolios" constraints="m_type = 1">
+                  <mm:relatednodescontainer type="folders">
+                    <mm:relatednodes>
+                      <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
+                      <option value="<mm:field name="number"/>"><fmt:message key="ASSESSMENTPORTFOLIO" /> &gt; <mm:field name="name"/></option>
+                    </mm:relatednodes>
+                  </mm:relatednodescontainer>
                 </mm:relatednodes>
-              </mm:relatednodescontainer>
-            </mm:relatednodes>
-            <mm:relatednodes type="portfolios" constraints="m_type = 2">
+            </di:hasrole>
+             <mm:relatednodes type="portfolios" constraints="m_type = 2">
               <mm:relatednodescontainer type="folders">
                 <mm:relatednodes>
                   <mm:import id="foldernumber" reset="true"><mm:field name="number"/></mm:import>
