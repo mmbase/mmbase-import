@@ -1,29 +1,37 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <html>
-<title>
-	MMBase time taglib
-</title> 
+<head>
+<title>	MMBase time tag</title> 
+<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+</head>
 <body>
 <mm:cloud>
 <%@ include file="menu.jsp"%>
 
-<h1>Time Taglib</h1>
+<h1>Time Tag</h1>
 <p>
-This page contains time taglib examples. For information about the
-time taglib attributes see the 
+This page contains time tag examples. For information about the
+time tag attributes see the 
 <a href="<mm:url page="/mmdocs/mmbase-taglib.html#time" />">Taglib documentation</a>.
 </p>
+<table>
+<tr><td colspan="2">Show the time in seconds from the start of the epoc</td></tr>
+<tr valign="top">
+  <td width="50%"><pre>&lt;mm:time /&gt;</pre></td>
+  <td width="50%"><mm:time /></td>
+</tr>
+<tr><td colspan="2">Show the time in seconds from EPOC and format it in a nice way</td></tr>
+<tr valign="top">
+  <td width="50%"><pre>&lt;mm:time format="EEEE d MMMM" /&gt;</pre></td>
+  <td width="50%"><mm:time format="EEEE d MMMM" /></td>
+</tr>
+<tr><td colspan="2">You can use keywords such as: yesterday, tomorrow, today, now (not the beginning of the day), the days of the week, and the months of the year, to show the time. The tag will always show the beginning of the day (resp. month).</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/timetime.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/timetime.jsp" %></td>
+</tr>
+</table>
 <ol>
-<li>
-Show the time in seconds from EPOC.<br />
-&lt;mm:time />
-<mm:time />
-</li>
-<li>
-Show the time in seconds from EPOC and format it in a nice way.<br />
-&lt;mm:time format="EEEE d MMMM" />
-<mm:time format="EEEE d MMMM" />
-</li>
 <%--
 <li>
 Show the time in different languages.<br />
@@ -38,8 +46,7 @@ Show the time in different languages.<br />
 </li>
 --%>
 <li>
-You can use keywords such as: yesterday, tomorrow, today, now (not the beginning of the day), the days of the week, and the months of the year, to show the time. The taglib will always show the beginning of the day (resp. month).<br />
-&lt;mm:time time="tomorrow" format="yyyy/MM/dd HH:mm:ss" />" 
+
 <mm:time time="tomorrow" format="yyyy/MM/dd HH:mm:ss" /><br />
 &lt;mm:time time="saturday" format="yyyy/MM/dd HH:mm:ss" />" 
 <mm:time time="saturday" format="yyyy/MM/dd HH:mm:ss" /><br />
@@ -69,14 +76,16 @@ Use the offset attribute if you want to change the time. This example adds 3 day
 <li>
 <p>a.<br />
 Display yesterday and save it as a jspvar:<br />
-&lt;mm:time time="yesterday" format="EEEE d MMMM" jspvar="yesterday" />
-<mm:time time="yesterday" format="EEEE d MMMM" jspvar="yesterday" />
-<mm:time time="tomorrow" format="EEEE d MMMM" jspvar="tomorrow" write="false" />
+&lt;mm:time time="yesterday" format="EEEE d MMMM" jspvar="yesterday" write="true" &gt; ... body ... &lt/mm:time&gt;
+<mm:time time="yesterday" format="EEEE d MMMM" jspvar="yesterday" write="true" >
+<mm:time time="tomorrow" format="EEEE d MMMM" jspvar="tomorrow">
 </p>
 <p>b. <br />
 Use the jspvars in your page:<br />
 I want to see all movies between &lt;%=yesterday%> and &lt;%=tomorrow%>.<br />
 I want to see all movies between <%=yesterday%> and <%=tomorrow%>.
+</mm:time>
+</mm:time>
 </p>
 </li>
 <li>
