@@ -10,6 +10,9 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
 <mm:import id="adminmode">false</mm:import>
 <mm:import externid="admincheck" />
 <mm:present referid="admincheck">
@@ -34,7 +37,10 @@
 <mm:compare value="postreply" referid="action">
 	<mm:import externid="postareaid" />
 	<mm:import externid="postthreadid" />
-	<mm:import externid="poster" />
+        <mm:import externid="poster"/>
+        <mm:compare referid="posterid" value="-1">
+	      <mm:import reset="true" id="poster"><mm:write referid="poster"/> (<mm:write referid="mlg_not_registered" />)</mm:import>
+        </mm:compare>
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
 	<mm:booleanfunction set="mmbob" name="postReply" referids="forumid,postareaid,postthreadid,poster,subject,body">
@@ -210,5 +216,5 @@
 	</mm:booleanfunction>
 </mm:compare>
 
-
+</mm:locale>
 </mm:cloud>
