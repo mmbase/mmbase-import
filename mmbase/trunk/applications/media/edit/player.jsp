@@ -54,7 +54,7 @@
     <td valign="top" bgcolor="#717171">
           <mm:write referid="player">
           <mm:compare value="real">
-              <mm:field id="source" name="url(ram)" jspvar="url" />
+              <mm:field id="source" name="url(ram)"      write="false" />
               <embed src="<mm:write referid="source" />"
                 width="260" 
                 height="300"   
