@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.21.2.3 2004-07-05 17:19:57 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.21.2.4 2004-08-02 15:25:29 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -49,11 +49,12 @@ public class ContentTag extends LocaleTag  {
             public String  getEncoding(){ return "ISO-8859-1"; } 
         };
 
-    private static Map defaultEscapers       = new HashMap(); // contenttype -> chartransformer id
-    private static Map defaultPostProcessors = new HashMap(); // contenttype -> chartransformer id
-    private static Map defaultEncodings      = new HashMap(); // contenttype -> charset to be used in content-type header (defaults to UTF-8)
-    private static Map charTransformers      = new HashMap(); // chartransformer id ->
-                                                              // chartransformer instance.
+    private static Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
+    private static Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
+    private static Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
+    private static Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
+
+    private static Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
 
     static {
         try {
@@ -121,10 +122,15 @@ public class ContentTag extends LocaleTag  {
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String type           = element.getAttribute("type");
+            String id             = element.getAttribute("id");
+            if (id.equals("")) {
+                id = type;
+            }
+            contentTypes.put(id, type);
             String defaultEscaper = element.getAttribute("defaultescaper");
             if (! defaultEscaper.equals("")) {
                 if (charTransformers.containsKey(defaultEscaper)) {
-                    defaultEscapers.put(type, defaultEscaper);
+                    defaultEscapers.put(id, defaultEscaper);
                 } else {
                     log.warn("Default escaper '" + defaultEscaper + "' for type + '"+ type + "' is not known");
                 }
@@ -132,14 +138,14 @@ public class ContentTag extends LocaleTag  {
             String defaultPostprocessor = element.getAttribute("defaultpostprocessor");
             if (! defaultPostprocessor.equals("")) {
                 if (charTransformers.containsKey(defaultPostprocessor)) {
-                    defaultPostProcessors.put(type, defaultPostprocessor);
+                    defaultPostProcessors.put(id, defaultPostprocessor);
                 } else {
                     log.warn("Default postprocessor '" + defaultPostprocessor + "' for type + '"+ type + "' is not known");
                 }
             }
             String defaultEncoding = element.getAttribute("defaultencoding");
             if (! defaultEncoding.equals("NOTSPECIFIED")) {
-                defaultEncodings.put(type, defaultEncoding);
+                defaultEncodings.put(id, defaultEncoding);
             }
         }
 
@@ -153,7 +159,6 @@ public class ContentTag extends LocaleTag  {
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
 
-    private User     user = null;
 
     public void setType(String ct) throws JspTagException {
         type = getAttribute(ct);
@@ -180,7 +185,10 @@ public class ContentTag extends LocaleTag  {
         if (type == Attribute.NULL) {
             return "text/html"; // implicit
         } else {
-            return type.getString(this);
+            String ct = type.getString(this);
+            String c = (String) contentTypes.get(ct);
+            if (c != null) return c;
+            return ct;
         }
     }
 
@@ -261,19 +269,47 @@ public class ContentTag extends LocaleTag  {
 
 
     public int doStartTag() throws JspTagException {
-        user = null;
         super.doStartTag();
         String type = getType();
 
         if (! type.equals("")) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             response.setLocale(locale);
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
             if (enc.equals("")) {
-                response.setContentType(getType());
+                response.setContentType(getType()); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
             } else {
                 response.setContentType(getType() + ";charset=" + enc);
+            }
+
+            if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
+                long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME * 1000;
+                response.setDateHeader("Expires", later);
+                response.setHeader("Cache-Control", "public");
+            } else {
+                // there is a session, or 'expires' was set explicitely
+                
+                // perhaps default cache behaviour should be no-cache if there is a session?
+                long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
+                if (exp <= 0) { // means : cannot be cached!                    
+                    response.setHeader("Pragma", "no-cache"); // not really defined what should do this on response. Cache-Control should actually do the work.                    
+                    response.setHeader("Cache-Control", "no-store");
+                    // according to rfc2616 sec 14 also 'no-cache' should have worked, but apache 2 seems to ignore it.
+                    
+                    // long now = System.currentTimeMillis();                        
+                    // according to  rfc2616 sec14 'already expires' means that date-header is expires header
+                    // sadly, this does not work:
+                    // perhaps because tomcat overrides the date header later, so a difference of a second can occur
+                    // response.setDateHeader("Date",     now);                         
+                    // response.setDateHeader("Expires",  now); 
+                    
+                } else {
+                    long later = System.currentTimeMillis() + exp * 1000;
+                    response.setDateHeader("Expires", later);
+                    response.setHeader("Cache-Control", "public");
+                }                    
             }
         }
         if (getPostProcessor() == null) {
@@ -290,52 +326,20 @@ public class ContentTag extends LocaleTag  {
      * the moment it is only checked for 'null'.
      */
 
-    void setUser(User newUser) {
-        user = newUser;
+    void setUser(User newUser) throws JspTagException {
+        //user = newUser;
+        if (newUser != null) {
+            long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
+            if (exp > 0) { 
+                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                // This page is using the non-anonymous cloud. Cache control must be private.
+                response.setHeader("Cache-Control", "private");
+            }
+        }
     }
 
-    public int doAfterBody() throws JspTagException {       
+    public int doAfterBody() throws JspTagException { 
         if (bodyContent != null) {
-            if (! getType().equals("")) {
-                HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-                if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
-                    long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME * 1000;
-                    response.setDateHeader("Expires", later);
-                    response.setHeader("Cache-Control", "public");
-                } else {
-                    // there is a session, or 'expires' was set explicitely
-
-                    // perhaps default cache behaviour should be no-cache if there is a session?
-                    long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
-                    if (exp == 0) { // means : cannot be cached!
-
-
-                        response.setHeader("Pragma", "no-cache"); // not really defined what should do this on response. Cache-Control should actually do the work.
-
-                        response.setHeader("Cache-Control", "no-store");
-                        // according to rfc2616 sec 14 also 'no-cache' should have worked, but apache 2 seems to ignore it.
-
-                        // long now = System.currentTimeMillis();                        
-                        // according to  rfc2616 sec14 'already expires' means that date-header is expires header
-                        // sadly, this does not work:
-                        // perhaps because tomcat overrides the date header later, so a difference of a second can occur
-                        // response.setDateHeader("Date",     now);                         
-                        // response.setDateHeader("Expires",  now); 
-                       
-                    } else {
-                        String cacheControl = "public";
-                        if (user != null) {
-                            // This page is using the non-anonymous cloud. Cache control must be private.
-                            cacheControl = "private";
-                            user = null;
-                        }
-                        long later = System.currentTimeMillis() + exp * 1000;
-                        response.setDateHeader("Expires", later);
-                        response.setHeader("Cache-Control", cacheControl);
-                    }                    
-                }
-            }
             CharTransformer post = getPostProcessor();
             if (post != null) {
                 if (log.isDebugEnabled()) {
