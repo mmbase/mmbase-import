@@ -87,7 +87,7 @@ public class ImportTag extends WriteTag {
 
     private Object getFromBodyContent() throws JspTagException {
         Object res;
-        switch(helper.getType()) {
+        switch(helper.getVartype()) {
         case WriterHelper.TYPE_NODE:
             throw new JspTagException("Type Node not (yet) supported for this Tag");
         case WriterHelper.TYPE_INTEGER:
@@ -137,7 +137,7 @@ public class ImportTag extends WriteTag {
                 }                
             }
             if (! found && required) {
-                throw new JspTagException("Required parameter '" + externid + "' not found");
+                throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
             } 
             if (found) {
                 value = getObject(id);
@@ -157,7 +157,7 @@ public class ImportTag extends WriteTag {
     }
 
     public int doEndTag() throws JspTagException {
-        helper.setJspVar(pageContext);
+        helper.setJspvar(pageContext);
         id = null;
         return EVAL_PAGE;
     }

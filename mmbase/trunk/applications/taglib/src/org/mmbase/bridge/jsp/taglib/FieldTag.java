@@ -30,14 +30,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
     // Writer implementation:
     protected WriterHelper helper = new WriterHelper();
-    public void setType(String t) throws JspTagException { 
-        helper.setType(t);
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
     }
     public void setJspvar(String j) {
         helper.setJspvar(j);
-    }
-    public void setSession(String s) throws JspTagException {
-        helper.setSession(getAttributeValue(s));
     }
     public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttributeBoolean(w));
@@ -130,7 +127,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         helper.setValue(value);
-        helper.setJspVar(pageContext);        
+        helper.setJspvar(pageContext);        
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
