@@ -9,18 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.util.*;
 import java.sql.*;
+import java.util.*;
+
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.database.*;
+import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.legacy.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.storage.search.legacy.ConstraintParser;
+import org.mmbase.util.QueryConvertor;
+import org.mmbase.util.logging.*;
 
 /**
  * ClusterBuilder is a builder which creates 'virtual' nodes.
@@ -38,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.39 2003-06-16 09:12:41 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.40 2003-06-18 15:23:21 kees Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -257,7 +255,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      The syntax is either sql (if preceded by "WHERE') or
      *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param orderVec the fieldnames on which you want to sort.
@@ -291,7 +289,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      The syntax is either sql (if preceded by "WHERE') or
      *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param orderVec the fieldnames on which you want to sort.
@@ -323,7 +321,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      The syntax is either sql (if preceded by "WHERE') or
      *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param orderVec the fieldnames on which you want to sort.
@@ -1161,7 +1159,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        It is possible to explicitly supply a relation builder by
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
-     * @param where The contraint.
+     * @param where The constraint.
      *        This is in essence a SQL where clause, using the NodeManager
      *        names from the nodes as tablenames.
      *        The syntax is either sql (if preceded by "WHERE') or

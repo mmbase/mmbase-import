@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.21 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: RelatedNodesTag.java,v 1.22 2003-06-18 15:19:03 kees Exp $ 
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -79,7 +79,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             log.debug("given orderby or constraints"); // start hacking:
             
             if (type == Attribute.NULL) {
-                throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
+                throw new JspTagException("Constraints attribute can only be given in combination with type attribute");
             }
             NodeManager manager = getCloud().getNodeManager(type.getString(this));
             NodeList initialnodes;
