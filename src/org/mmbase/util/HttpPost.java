@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.12 2002-01-09 10:03:46 michiel Exp $
+ * @version $Id: HttpPost.java,v 1.13 2002-07-31 08:40:54 eduard Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -119,19 +119,17 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #getPostParameter
     */
-    public boolean checkPostMultiParameter(String name) {
-        Object obj;
-
+    public boolean checkPostMultiParameter(String name) {        
         if (!postDecoded) decodePost(req);
-        if ((obj=postValues.get(name))!=null) {
-            if (obj instanceof Vector) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        
+        Object obj = postValues.get(name);
+        if (obj == null) {
             return false;
         }
+        if (obj instanceof Vector) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -146,7 +144,7 @@ public class HttpPost {
         if (!postDecoded) decodePost(req);
         return postValues;
     }
-
+1
     /**
     * This method returns the value of the postparameter as a String.
     * If it is a parameter with multiple values it returns the first one.
@@ -156,22 +154,28 @@ public class HttpPost {
     * is saved on disk instead of memory.
     */
     public byte[] getPostParameterBytes(String name) throws PostValueToLargeException {
-        Object obj=null;
-        Vector v;
-
+        // decode when not done yet..
         if (!postDecoded) decodePost(req);
-        if ((obj=postValues.get(name))!=null) {
-            if (obj instanceof String)
-                throw new PostValueToLargeException("Use getPostParameterFile");
-            if (obj instanceof Vector) {
-                v=(Vector)obj;
-                return (byte[])v.elementAt(0);
-            } else {
-                return (byte[])obj;
-            }
-        } else {
-            return null;
+        
+        // when the parameter was not found, return null
+        Object obj = postValues.get(name);        
+        if (obj==null) {
+            return null;            
         }
+
+        // when it is an instance of String throw the exeption
+        if (obj instanceof String)  {            
+            String msg = "Use getPostParameterFile";
+            log.warn(msg);
+            throw new PostValueToLargeException("Use getPostParameterFile");
+        }
+        if (obj instanceof Vector) {
+            Vector v = (Vector) obj;
+            byte[] data = (byte[])v.elementAt(0);
+            return data;
+        }
+        byte[] data = (byte[]) obj;
+        return data;
     }
 
     /**
@@ -182,24 +186,54 @@ public class HttpPost {
     * @see #checkPostMultiParameter
     */
     public Vector getPostMultiParameter(String name) {
-        Object obj=null;
-        Vector v;
-
+        return getPostMultiParameter(name, null);
+    }
+    
+    /**
+    * This method returns the value of the postparameter as a Vector.
+    * In case of a parameter with one value, it returns it as a Vector
+    * with one element.
+    * it laso converts the byte[] into strings
+    * @see #checkPostMultiParameter
+    */
+    public Vector getPostMultiParameter(String name, String encoding) {
+        // decode when not done yet..
         if (!postDecoded) decodePost(req);
-        if ((obj=postValues.get(name))!=null) {
-            if (obj instanceof Vector) {
-                Vector results= new Vector();
-                for (Enumeration t=((Vector)obj).elements();t.hasMoreElements();) {
-                    results.addElement(new String((byte[])t.nextElement(),0));
-                }
-                return results;
-            } else {
-                v=new Vector();
-                v.addElement(new String((byte[])obj,0));
-                return v;
+        
+        // when the parameter was not found, return null
+        Object obj = postValues.get(name);        
+        if (obj==null) {
+            return null;            
+        }
+        
+        Vector results= new Vector();
+        if (obj instanceof Vector) {
+            Vector v = (Vector)obj;
+            Enumeration e= v.elements();
+            while(e.hasMoreElements()) {
+                byte[] data = (byte[])e.nextElement();
+                results.addElement(getString(data, encoding));
             }
-        } else {
-            return null;
+        } 
+        else {
+            // we assume that obj will be byte[]
+            byte[] data = (byte[]) obj;
+            results.addElement(getString(data, encoding));
+        }
+        return results;
+    }
+    
+    private static String getString(byte[] data, String encoding) {
+        if(encoding == null) {
+            // depricated.. dont know how to replace..
+            return new String(data,0);
+        }
+        try {
+            return new String(data, encoding);
+        }
+        catch(java.io.UnsupportedEncodingException uee) {
+            log.warn("encoding was:" + encoding + "\n" + Logging.stackTrace(uee));
+            return new String(data);
         }
     }
 
