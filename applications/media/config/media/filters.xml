@@ -48,6 +48,24 @@
      </realAudio>
     </config>
 
+
+	<!-- 
+    The filterOnHost filter can be used when you want to redirect certain domains
+	  to certain mediaproviders. user="*" is a default, when no filter matches the provider
+	  specified by this dfault filter will be used.
+	-->
+<!--
+  jikes, we find mmbase-object instances in xml-file..
+  Should the filter not be based on the 'host' field of the provider?
+  tried to mirror that here.
+	<filterOnHost>
+		<hostfilter user="*"         providerHost="*"      />
+ 		<hostfilter user="*.es"      providerHost="*.es"   />
+		<hostfilter user="*.vpro.nl" providerHost="*.vpro.nl" />
+	</filterOnHost>
+-->
+
+
   </filterConfigs>
 
 </mainFilter>
