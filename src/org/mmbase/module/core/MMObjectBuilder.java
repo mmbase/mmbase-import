@@ -1249,6 +1249,7 @@ public class MMObjectBuilder extends MMTable {
         } finally {
             mmb.closeConnection(con,stmt);
         }
+        processSearchResults(results);
         // return the results
         return results;
     }
@@ -1595,7 +1596,6 @@ public class MMObjectBuilder extends MMTable {
             log.error(Logging.stackTrace(e));
         }
 
-        processSearchResults(results);
         return results;
     }
 
