@@ -169,7 +169,23 @@
    <mm:import externid="xml"><mm:write referid="wasxml" /></mm:import>
 
 
-   <%  URL url = resourceLoader.getResource(resource); 
+   <%  
+      {
+       List urls = resourceLoader.findResourceList(resource);
+       for(int i = 0; i < urls.size(); i++) {
+  %>
+      <mm:context>
+          <mm:import  id="del" externid="<%="delete" + i%>" />
+          <mm:present referid="del">
+            <% 
+              URL u = (URL) urls.get(i);
+              u.openConnection().getOutputStream().write(null);
+            %>
+          </mm:present>
+      </mm:context>
+    <% }
+      }
+       URL url = resourceLoader.getResource(resource); 
        URLConnection con = url.openConnection();
    %>
   <tr>
@@ -212,7 +228,7 @@
             out.println("<br />");
             for (int i = 0 ; i < list.getLength(); i++) {
                Node node = list.item(i);
-               out.println("" + node.getNodeName() + "<textarea name='bla'>" + node.getNodeValue() + "</textarea><br />"); 
+               out.println("" + node.getNodeName() + " "  + node.getNodeType() + "<textarea name='bla'>" + node.getNodeValue() + "</textarea><br />"); 
             } 
             }
           }
@@ -251,11 +267,12 @@
         </mm:compare>
     </td>
   </tr>
-   <tr>
+
+  <tr>
      <td colspan="3">
        Resolve-scheme.
        <table>
-         <tr><th>URL</th><th>read</th><th>write</th></tr>
+         <tr><th>URL</th><th>read</th><th>write</th><th></th></tr>
          <% 
             List urls = resourceLoader.findResourceList(resource);
             ListIterator i = urls.listIterator();
@@ -287,6 +304,11 @@
              <td title="<%=uc.getClass().getName()%>"><%=u.toString()%></td>
              <td <%= read == counter ? "class = 'active'" : "" %> ><%=uc.getDoInput()%></td>
              <td <%= write == counter ? "class = 'active'" : "" %> ><%=uc.getDoOutput()%></td>
+             <td>
+               <% if(uc.getDoOutput() && uc.getDoInput()) { %>
+                <input type="submit" name="delete<%=counter%>" value="delete" />
+               <% } %>
+             </td>
           </tr>
           <% 
           counter++;
@@ -295,7 +317,7 @@
             %>
             
             <tr>
-              <th colspan="3">
+              <th colspan="4">
                 Warning, current resource is not writable. Will be upgraded on save.
               </th>
             </tr>
