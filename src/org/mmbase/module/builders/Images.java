@@ -7,6 +7,12 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+
+/*
+	$Id: Images.java,v 1.2 2000-02-24 14:03:27 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -23,11 +29,14 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version 20 Sept 1997
+ * @version $Id: Images.java,v 1.2 2000-02-24 14:03:27 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
-	
+	private String classname = getClass().getName();
+	private boolean debug = true;
+	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
+
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("number");
 		if (num!=-1) {
@@ -50,8 +59,12 @@ public class Images extends MMObjectBuilder {
 		return(null);
 	}
 
-
+	// glue method until org.mmbase.servlet.servdb is updated
 	public byte[] getImageBytes5(Vector params) {
+		return getImageBytes5(null,params);
+	}
+
+	public byte[] getImageBytes5(scanpage sp,Vector params) {
 		int pos,pos2;
 		String key;
 		String type;
@@ -93,7 +106,7 @@ public class Images extends MMObjectBuilder {
 			if (pos!=-1 && pos2!=-1) {
 				type=key.substring(0,pos);
 				cmd=key.substring(pos+1,pos2);
-				// System.out.println("type="+type+" cmd="+cmd);
+				debug("getImageBytes5(): type="+type+" cmd="+cmd);
 				if (type.equals("f")) {
 					format=cmd;
 					ckey+=key;
@@ -236,59 +249,61 @@ public class Images extends MMObjectBuilder {
 
 
 		ImageCaches bul2=(ImageCaches)mmb.getMMObject("icaches");
-		byte[] ibytes=bul2.getCkeyNode(ckey);
-
-		if (ibytes!=null) {
-			return(ibytes);
-		} else {
-			// aaa
-			byte[] pict=null;
-			if (num.indexOf('(')==-1 && !num.equals("-1")) {
-				MMObjectNode node=bul.getNode(num);
-				 pict=node.getByteValue("handle");
-			}
-			if (pict!=null) {
-				byte[] pict2=null;
-				if (cmds.size()==0) {
-					// pict2=getConverted(pict,format);
-					pict2=getAllCalc(pict,"",format);
-				} else {
-					cmd="";
-					for (Enumeration t=cmds.elements();t.hasMoreElements();) {
-						key=(String)t.nextElement();
-						cmd+=key+" ";
-					}
-					pict2=getAllCalc(pict,cmd,format);
-				}
-				if (pict2!=null) {
-					bul=mmb.getMMObject("icaches");
-					try {
-					MMObjectNode newnode=bul.getNewNode("system");
-					newnode.setValue("ckey",ckey);
-					newnode.setValue("id",Integer.parseInt(num));
-					newnode.setValue("handle",pict2);
-					newnode.setValue("filesize",pict2.length);
-					newnode.insert("imagesmodule");
-					} catch (Exception e) {}
-					return(pict2);
-				} else {
-					System.out.println("Images -> Convert problem params : "+params);
-					return(null);
-				}
+		synchronized(ckey) {
+			byte[] ibytes=bul2.getCkeyNode(ckey);
+	
+			if (ibytes!=null) {
+				return(ibytes);
 			} else {
-				bul=mmb.getMMObject("images");
-				MMObjectNode node=bul.getNode(7452);
-				return(node.getByteValue("handle"));
+				// aaa
+				byte[] pict=null;
+				if (num.indexOf('(')==-1 && !num.equals("-1")) {
+					MMObjectNode node=bul.getNode(num);
+					 pict=node.getByteValue("handle");
+				}
+				if (pict!=null) {
+					byte[] pict2=null;
+					if (cmds.size()==0) {
+						// pict2=getConverted(pict,format);
+						pict2=getAllCalc(sp,pict,"",format);
+					} else {
+						cmd="";
+						for (Enumeration t=cmds.elements();t.hasMoreElements();) {
+							key=(String)t.nextElement();
+							cmd+=key+" ";
+						}
+						pict2=getAllCalc(sp,pict,cmd,format);
+					}
+					if (pict2!=null) {
+						bul=mmb.getMMObject("icaches");
+						try {
+							MMObjectNode newnode=bul.getNewNode("system");
+							newnode.setValue("ckey",ckey);
+							newnode.setValue("id",Integer.parseInt(num));
+							newnode.setValue("handle",pict2);
+							newnode.setValue("filesize",pict2.length);
+							newnode.insert("imagesmodule");
+						} catch (Exception e) {}
+						return(pict2);
+					} else {
+						debug("getImageBytes5(): Convert problem params : "+params);
+						return(null);
+					}
+				} else {
+					bul=mmb.getMMObject("images");
+					MMObjectNode node=bul.getNode(7452);
+					return(node.getByteValue("handle"));
+				}
 			}
 		}
+
 		} catch(Exception h) {
-			System.out.println("IMAGE PROBLEM ON : "+params);
+			debug("getImageBytes5(): IMAGE PROBLEM ON : "+params);
 			return(null);
 		}
 	}
 
-
-	byte[] getAllCalc(byte[] pict,String cmd, String format) {	
+	byte[] getAllCalc(scanpage sp,byte[] pict,String cmd, String format) {	
 		Process p=null;
         String s="",tmp="";
 		DataInputStream dip= null;
@@ -297,65 +312,29 @@ public class Images extends MMObjectBuilder {
 		PrintStream out=null;	
 		RandomAccessFile  dos=null;	
 
-		System.out.println("Images -> doing img "+cmd);
+ 		if (sp!=null)
+			debug("getAllCalc(): converting img("+cmd+") for page("+sp.req.getRequestURI()+") and user("+sp.getSessionName()+")");
+		else
+			debug("getAllCalc(): converting img("+cmd+") for UNKNOWN");
+
 		byte[] result=new byte[1024*1024];
 		try {
 			command="/usr/local/bin/convert - "+cmd+" "+format+":-";
-			//command="/usr/local/bin/convert - "+cmd+" "+format+":/tmp/o10";
-			System.out.println("Images -> "+command);
+			debug("getAllCalc(): "+command);
 			p = (Runtime.getRuntime()).exec(command);
         	PrintStream printStream = new PrintStream(p.getOutputStream()); // set the input stream for cgi
 			printStream.write(pict,0,pict.length);
 			printStream.flush();	
 			printStream.close();	
-			System.out.println("Images -> close out done "+cmd);
+			debug("getAllCalc(): close out done "+cmd);
 			String line;
-			/*
-			diperror  = new DataInputStream((p.getErrorStream()));
-			while ((line=diperror.readLine())!=null) {
-				System.out.println("Images -> convert error : "+line);
-			}
-			diperror.close();
-			*/
-			System.out.println("Images -> close error read done "+cmd);
+			debug("getAllCalc(): close error read done "+cmd);
 			//p.waitFor();
 		} catch (Exception e) {
 			s+=e.toString();
 			out.print(s);
 			return(null);
 		}
-		System.out.println("Images -> preread "+cmd);
-
-		/*
-		dipe  = new DataInputStream(new BufferedInputStream(p.getInputStream()));
-
-        try {
-			int len3=0;
-			int len2=0;
-
-           	len2=dip.read(result,0,result.length);
-			System.out.println("Images->"+len2);
-			while (len2!=-1) { 
-           		len3=dip.read(result,len2,result.length-len2);
-				if (len3==-1) {
-					break;
-				} else {
-					len2+=len3;
-				}
-			}
-			dipe.close();
-			byte[] res=new byte[len2];
-	    	System.arraycopy(result, 0, res, 0, len2);
-			System.out.println("Images -> Len="+len2);
-			return(res);
-        } catch (Exception e) {
-        	try {
-				dipe.close();
-        	} catch (Exception f) {}
-			return(null);
-			//e.printStackTrace();
-		}
-		*/
 
 		dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
 
@@ -376,8 +355,7 @@ public class Images extends MMObjectBuilder {
 			dip.close();
 			byte[] res=new byte[len2];
 	    	System.arraycopy(result, 0, res, 0, len2);
-			//System.out.println("Len="+len2);
-			System.out.println("Images -> read oke "+cmd);
+			debug("getAllCalc(): read oke "+cmd+" len "+len2);
 			return(res);
         } catch (Exception e) {
 			e.printStackTrace();
@@ -412,6 +390,7 @@ public class Images extends MMObjectBuilder {
 		}
 		if (format==null) format="jpg";
 		mimetype=mmb.getMimeType(format);
+		// debug("Images:: getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
 		
 		return(mimetype);
 	}
