@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.229 2004-01-13 15:42:25 keesj Exp $
+version: $Id: mmbase-taglib.xml,v 1.230 2004-01-14 15:54:32 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4085,6 +4085,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <type>util</type>
     <extends>writer</extends>
     <extends>contextreader</extends>
+    <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.TimeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
