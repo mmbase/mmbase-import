@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.28 2004-01-02 15:21:17 nico Exp $
+ * @version  $Id: validator.js,v 1.29 2004-01-12 22:09:08 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -39,33 +39,24 @@ function start_validator() {
 Validator.prototype.attach = function (element) {
     if (!element) return;
 
-    var ftype = element.getAttribute("ftype");
-    var superId = element.getAttribute("super");
-    if (superId != null) {
-        var form = document.forms[0];
-        ftype = form[superId].getAttribute("ftype");
-    }
     var self=this;
-    switch(ftype) {
-        case "enum":
-            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
-            addEvent(element, "change", function(ev) { self.validateEvent(ev) });
-            break;
-        case "datetime":
-        case "date":
-        case "time":
-            if (element.type == "text") {
-               addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
-               addEvent(element, "keyup", function(ev) { self.validateEvent(ev) });
-               addEvent(element, "change", function(ev) { self.validateEvent(ev) });
-            }
-            else {
-               addEvent(element, "change", function(ev) { self.validateEvent(ev) });
-            }
-            break;
-        default:
-            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+    switch(element.type) {
+        case "text":
+        case "textarea":
             addEvent(element, "keyup", function(ev) { self.validateEvent(ev) });
+            addEvent(element, "change", function(ev) { self.validateEvent(ev) });
+            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+            break;
+        case "radio":
+        case "checkbox":
+            addEvent(element, "click", function(ev) { self.validateEvent(ev) });
+            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
+            break;
+        case "select-one":
+        case "select-multiple":
+        default:
+            addEvent(element, "change", function(ev) { self.validateEvent(ev) });
+            addEvent(element, "blur", function(ev) { self.validateEvent(ev) });
     }
 }
 
@@ -129,9 +120,10 @@ Validator.prototype.validate = function (el) {
 }
 
 Validator.prototype.isValidWizard = function() {
-    var editform = document.getElementById("editform");
+    var editform = document.forms[0];
     var otherforms = editform.getAttribute("otherforms")  == 'valid';
-    return this.isValidForm() && otherforms;
+    var invalidlist = editform.getAttribute("invalidlist").length == 0;
+    return this.isValidForm() && otherforms && invalidlist;
 }
 
 Validator.prototype.isValidForm = function() {
@@ -211,6 +203,7 @@ Validator.prototype.validateElement = function (el, silent) {
             err += validateDatetime(el, form, v);
             break;
     }
+    err += validateUnknown(el, form, v);
 
     updatePrompt(el, err, silent);
     return err.length == 0; // true == valid, false == invalid
@@ -256,9 +249,16 @@ function requiresValidation(element) {
             break;
         case "enum":
             break;
+        default:
+            required = requiresUnknown(element, form);
+            break;        
     }
     
 	return required;
+}
+
+function requiresUnknown(el, form) {
+	return false;
 }
 
 //********************************
@@ -406,6 +406,10 @@ function validateDatetime(el, form, v) {
         //alert(form.elements[id].value + " = " + day + " " + month + " " + year + " " + hours + ":" + minutes);
     }
     return errormsg;
+}
+
+function validateUnknown(el, form, v) {
+    return "";
 }
 
 //********************************

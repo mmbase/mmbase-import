@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.1 $
+   Version: $Revision: 1.2 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -16,7 +16,7 @@
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/wizard.xsl"/>
 
-  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); preLoadButtons();</xsl:variable>
+  <xsl:variable name="BodyOnLoad">preLoadButtons(); doOnLoad_ew(); start_validator();  startHtmlArea();</xsl:variable>
 
   <xsl:template name="colorstyle">
     <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/color/wizard.css" />
@@ -31,20 +31,18 @@
   </xsl:template>
 
   <xsl:template name="buttons">
-    <div id="commandbuttonbar" class="buttonscontent">
-      <table class="buttonscontent">
-        <tr>
-          <td>
-              <nobr>
-                <!-- cancel -->
-                <xsl:call-template name="cancelbutton" />
-                <!-- commit  -->
-                <xsl:call-template name="savebutton" />
-              </nobr>
-          </td>
-        </tr>
-      </table>
-    </div>
+		<table class="buttonscontent">
+			<tr>
+				<td>
+						<nobr>
+							<!-- cancel -->
+							<xsl:call-template name="cancelbutton" />
+							<!-- commit  -->
+							<xsl:call-template name="savebutton" />
+						</nobr>
+				</td>
+			</tr>
+		</table>
   </xsl:template>
 
   <xsl:template name="savebutton">
@@ -64,14 +62,6 @@
         <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_save" /></xsl:attribute>
         <xsl:attribute name="disabled" />
       </xsl:if>
-      <xsl:choose>
-        <xsl:when test="step[@valid=&apos;false&apos;][not(@form-schema=/wizard/curform)]">
-          <xsl:attribute name="otherforms">invalid</xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="otherforms">valid</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
     </img>
   </xsl:template>
 
