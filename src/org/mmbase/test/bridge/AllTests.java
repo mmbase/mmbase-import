@@ -44,6 +44,7 @@ public class AllTests {
         suite.addTestSuite(CloudContextTest.class);
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(FilledNodeTest.class);
+        suite.addTestSuite(FilledNodeTestTransaction.class);
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
         return suite;
