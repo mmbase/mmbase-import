@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import java.util.*;
+import java.util.Map;
+import java.util.List;
 
 /**
  * Parameters for functions, a way to make variable arguments in Java.
@@ -20,14 +21,14 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: Parameters.java,v 1.12 2004-12-16 10:24:12 pierre Exp $
+ * @version $Id: Parameters.java,v 1.13 2004-12-16 18:19:19 michiel Exp $
  */
 
 public interface Parameters extends List {
     /**
      * No need to bother for the functions with no parameters. This is a constant you could supply.
      */
-    public static final Parameters VOID = new org.mmbase.util.functions.ParametersImpl(Parameter.EMPTY);
+    public static final Parameters VOID = new ParametersImpl(Parameter.EMPTY);
 
     /**
      * When using reflection, you might need the Parameters as a Class[]. This function provides it.
