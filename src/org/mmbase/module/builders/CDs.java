@@ -17,12 +17,14 @@ import java.io.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
 public class CDs extends MMObjectBuilder {
+    private static Logger log = Logging.getLoggerInstance(CDs.class.getName());
 
 	String diskid;
 	int nrtracks;
@@ -68,31 +70,31 @@ public class CDs extends MMObjectBuilder {
 		
 		try {
         	String command="/export/home/wwwtech/mp3/bin/galette/galette -i";
-			System.out.println("CD -> Command ="+command);
+			log.service("CD -> Command ="+command);
 			p = (Runtime.getRuntime()).exec(command,null);
-			System.out.println("CD -> Process = "+p);
+			log.debug("CD -> Process = "+p);
 			p.waitFor();
 		} catch (Exception e) {
 			s+=e.toString();
 			return s;
 		}
 		dip = new DataInputStream(p.getErrorStream());
-		System.out.println("CD -> Dip = "+dip);
+		log.debug("CD -> Dip = "+dip);
         try {
             while ((tmp = dip.readLine()) != null) {
-				System.out.println("CD -> line = "+tmp);
+				log.debug("CD -> line = "+tmp);
 				if (tmp.indexOf("CDROM:")==0) {
 					int pos=tmp.indexOf("disk id = ");
 					if (pos!=-1) {
 						diskid=tmp.substring(pos+10);
-						System.out.println("CD -> Disk ID="+diskid);
+						log.debug("CD -> Disk ID="+diskid);
 					} else if (tmp.indexOf("TOTAL")!=-1) {
 						String tmp2=tmp.substring(39,48);
 						try {
 							int min=Integer.parseInt(tmp2.substring(0,2));
 							int sec=Integer.parseInt(tmp2.substring(3,5));
 							int msec=Integer.parseInt(tmp2.substring(6,8));
-							System.out.println("CD -> m="+min+" s="+sec+" ms="+msec);
+							log.debug("CD -> m="+min+" s="+sec+" ms="+msec);
 							playtime=(min*60*1000)+(sec*1000)+msec;
 						} catch (Exception e) {};
 					} else {
