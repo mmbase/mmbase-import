@@ -2,6 +2,7 @@
 <%@ page import="org.mmbase.applications.editwizard.*" %>
 <%@ page import="org.mmbase.applications.editwizard.Config" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.net.URL" %>
 <%@ page import="java.io.Writer" %>
 <%@ page import="org.w3c.dom.Document" %>
 <%@ page import="org.w3c.dom.Node" %>
@@ -11,16 +12,16 @@
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.10 2004-05-24 14:02:41 michiel Exp $
+     * @version  $Id: debug.jsp,v 1.11 2004-12-02 15:46:41 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
     String wizard="";
-      
+
     Object con = null;
     if (!ewconfig.subObjects.empty()) {
       con = ewconfig.subObjects.peek();
-      if (popup) { 
+      if (popup) {
         Stack stack = (Stack) ((Config.SubConfig)con).popups.get(popupId);
         if ((stack != null) && !stack.empty()) {
             con = stack.peek();
@@ -35,8 +36,8 @@
         add(doc, ((Config.WizardConfig)con).wiz.getSchema(), wizard);
         add(doc, ((Config.WizardConfig)con).wiz.getPreForm(), wizard);
     }
-    File template = ewconfig.uriResolver.resolveToFile("xsl/debug.xsl");
-    Map map = new HashMap();  
+    URL template = ewconfig.uriResolver.resolveToURL("xsl/debug.xsl", null);
+    Map map = new HashMap();
     map.put("session_byte_size", "" + org.mmbase.util.SizeOf.getByteSize(ewconfig));
     Utils.transformNode(doc, template, ewconfig.uriResolver, out,  map);
 %>
