@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.161 2002-10-08 18:36:31 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.162 2002-10-08 18:53:35 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -759,14 +759,15 @@ public class MMObjectBuilder extends MMTable {
         try {
             nr=Integer.parseInt(key);
         } catch (Exception e) {
+            log.debug("Getting node by alias");
             nr=-1;
         }
         // is not a number, try top obtain the number from the alias builder
-        if ((nr<0) && (mmb.getOAlias()!=null)) {
+        if ((nr < 0) && (mmb.getOAlias()!=null)) {
             nr=mmb.getOAlias().getNumber(key);
         }
         // load the node if the number is right
-        if (nr>0) {
+        if (nr > 0) {
             node=getNode(nr,usecache);
         }
         return node;
@@ -848,9 +849,13 @@ public class MMObjectBuilder extends MMTable {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_" + bul + " WHERE "+mmb.getDatabase().getNumberString()+"="+number);
                 if (rs.next()) {
                     // create a new object and add it to the result vector
-                    MMObjectBuilder bu=mmb.getMMObject(bul);
+                    MMObjectBuilder bu = mmb.getBuilder(bul);
+                    if (bu == null) { 
+                        log.warn("Builder of node " + number + " could not be found, taking it 'object'");
+                        bu = mmb.getBuilder("object");
+                    }
                     if (bu == null) {
-                        log.error("Could not get the builder for nodetype with name : " + bul + "(node #" + number + " nodetype #" + bi + ")");
+                        log.error("Could not get the builder for nodetype with name : " + bul + " (node #" + number + " nodetype #" + bi + ")");
                         return null;
                     }
                     node=new MMObjectNode(bu);
@@ -1028,14 +1033,14 @@ public class MMObjectBuilder extends MMTable {
      */
 
     protected String getQuery(String where) {
-        if (where==null) where="";
-        if (where.indexOf("MMNODE")!=-1) {
+        if (where == null) where="";
+        if (where.indexOf("MMNODE") != -1) {
             where=convertMMNode2SQL(where);
         } else {
             //where=QueryConvertor.altaVista2SQL(where);
-            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
+            where = QueryConvertor.altaVista2SQL(where, mmb.getDatabase());
         }
-        return "SELECT * FROM "+getFullTableName()+" "+where;
+        return "SELECT * FROM " + getFullTableName() + " " + where;
     }
     
     /**
@@ -1457,6 +1462,7 @@ public class MMObjectBuilder extends MMTable {
 		    // dont know what to do with this node,... 
 		    // continue to the next one!
 		    continue;
+
 		}
 
 		Integer number = new Integer(node.getNumber());
@@ -2575,8 +2581,8 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDBLayout_xml(Hashtable fields) {
         sortedDBLayout=new Vector();
-        //sortedDBLayout.addElement("otype");
-        //sortedDBLayout.addElement("owner");
+        sortedDBLayout.addElement("otype");
+        sortedDBLayout.addElement("owner");
 
         FieldDefs node;
 
@@ -2584,11 +2590,13 @@ public class MMObjectBuilder extends MMTable {
         for (Iterator i=orderedfields.iterator();i.hasNext();) {
             node=(FieldDefs)i.next();
             String name=node.getDBName();
-            if(sortedDBLayout.contains(name)) {
-                log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");                
-                continue;                    
+            if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
+                if(sortedDBLayout.contains(name)) {
+                    log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");                
+                    continue;                    
+                }
+                sortedDBLayout.add(name);
             }
-            sortedDBLayout.add(name);
         }
     }
 
