@@ -26,21 +26,31 @@ import org.mmbase.util.logging.Logging;
 /**
 *
 * Groups tags. The tags can referrence each other, by use of the group
-* hash of this class.
+* hash of this class. You can have several types, but they have a
+* certain order. The most complex Context is a Context of type
+* 'session'. If you try to get something from a session context, it
+* will first search in the session, if it cannot find it there, it
+* will try to find a postparameter with that key, if that is also not
+* there, it will try a parameter, and finally it will try to see if
+* the object was registered in this page.
+*
+* Inside a session context you will by the way not register anything
+* in the hashmap of the context, because the session is used for that
+* already.
+*
 *
 * @author Michiel Meeuwissen
-*
 */
 public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
-    private static final int TYPE_HASHMAP = 0;
-    private static final int TYPE_SESSION = 1;
-    private static final int TYPE_PARAMETERS = 2;
-    private static final int TYPE_POSTPARAMETERS = 3;
+    private static final int TYPE_HASHMAP        = 0;
+    private static final int TYPE_PARAMETERS     = 10;
+    private static final int TYPE_POSTPARAMETERS = 20;
+    private static final int TYPE_SESSION        = 30;
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
-    private HashMap nodes = new HashMap(); 
+    private HashMap hashMap = new HashMap(); 
     // this hashmap can always be useful, also if the context is not TYPE_HASHMAP
 
     private int type = TYPE_HASHMAP;
@@ -85,6 +95,15 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
      */
       
     public void  registerNode(String key, Node n) {
+        register(key, n);
+    }
+
+    /** 
+     * Register an Object with a key in the context. If the Context is
+     * a session context, then it will be put in the session, otherwise in the hashmap.
+     */
+
+    public void register(String key, Object n) {
         switch (type) {
         case TYPE_SESSION:
             getHttpRequest().getSession().setAttribute(key, n);
@@ -93,7 +112,7 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         case TYPE_POSTPARAMETERS:
         case TYPE_HASHMAP:
         default:
-            nodes.put(key, n);
+            hashMap.put(key, n);
             break;            
         }
     }
@@ -107,15 +126,16 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         switch (type) {
         case TYPE_SESSION:
             result = getHttpRequest().getSession().getAttribute(key);
-            break;
+            if (result != null) break;
         case TYPE_POSTPARAMETERS:
             result = getPoster().getPostParameter(key);
             if (result != null) break;
         case TYPE_PARAMETERS:
             result = pageContext.getRequest().getParameter(key);
-            break;
+            if (result != null) break;
+        case TYPE_HASHMAP:
         default:
-            result = "";
+            result = null;
         }
         return result;
     }
@@ -135,22 +155,27 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
     public Node getNode(String key) throws JspTagException {
         Node n;
+        String paramValue = null;
         switch (type) {
-        case TYPE_SESSION:
+        case TYPE_SESSION: // node can be in session
             n = (Node) getHttpRequest().getSession().getAttribute(key);
-            break;
+            break;          
+        case TYPE_POSTPARAMETERS: // in parameters can only be a nodenumber...
+            paramValue = getPoster().getPostParameter(key);
         case TYPE_PARAMETERS:
-            String paramValue = pageContext.getRequest().getParameter(key);
+            if (paramValue == null) { // not found as postparameter
+                paramValue = pageContext.getRequest().getParameter(key);
+            }
             if (paramValue != null ) { // found in paramlist
                 n = getCloudProviderVar().getNode(pageContext.getRequest().getParameter(key));
                 break;
             } // else also try with hashmap:
         case TYPE_HASHMAP:
         default:
-            n = (Node) nodes.get(id);
+            n = (Node) hashMap.get(id);
         }
         if (n == null) {
-            throw new JspTagException("No node with id " + key + " was registered");
+            throw new JspTagException("No node with key " + key + " was registered");
         }
         return n; 
     }
