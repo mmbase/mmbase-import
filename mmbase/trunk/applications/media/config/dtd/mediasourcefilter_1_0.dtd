@@ -1,0 +1,17 @@
+<!-- Author Rob Vermeulen (VPRO) -->
+<!ELEMENT mediasourcefilter (chain,preferedSource?,realaudio?)>
+
+<!ELEMENT chain (filter+)>
+<!ELEMENT filter (#PCDATA)>
+
+<!ELEMENT preferedSource (source+)>
+<!ELEMENT source (#PCDATA)>
+<!ATTLIST source
+  format CDATA #REQUIRED
+>
+
+<!ELEMENT realaudio (minspeed,maxspeed,minchannels,maxchannels)>
+<!ELEMENT minspeed (#PCDATA)>
+<!ELEMENT maxspeed (#PCDATA)>
+<!ELEMENT minchannels (#PCDATA)>
+<!ELEMENT maxchannels (#PCDATA)>
