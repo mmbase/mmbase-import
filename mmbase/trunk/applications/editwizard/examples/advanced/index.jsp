@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.11 2002-05-27 22:13:35 michiel Exp $
+    @version  $Id: index.jsp,v 1.12 2002-06-14 11:58:33 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -103,11 +103,15 @@
            <mm:param name="orderby">number</mm:param>
            <mm:param name="directions">down</mm:param>
            </mm:url>">News</a>
-     </td><td>       
-      Demonstrated is how to use editwizards 'libs'. These are pieces
+     </td><td>
+       <ul>       
+         <li> How to use editwizards 'libs'. These are pieces
       of XML stored in the editwizard data directory which you can
-      include in you own wizards. You'll find an example for
-      'subwizards' here as well.
+      include in you own wizards</li>
+       <li>'subwizards'</li>
+       <li>fieldset</li>
+        </ul>
+              
      </td>
   <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/samples/news.xml</mm:param></mm:url>">view XML</a></td>
    </tr>
