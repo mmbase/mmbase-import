@@ -279,23 +279,9 @@ public class RemoteGenerator{
         sb.append("\n");
         sb.append("   //clean up StubToLocalMapper when the class is unreferenced\n");
         sb.append("   public void unreferenced() {\n");
-        sb.append("      log.debug(\"unreferenced \" + mapperCode);\n");
-        sb.append("      StubToLocalMapper.remove(mapperCode);\n");
-        sb.append("      mapperCode = null;\n");
-        sb.append("   }\n");
-        sb.append("   protected void finalize() {\n");
-        sb.append("      if (mapperCode != null ) {\n");
-	sb.append("             log.debug(\"finalize \" + mapperCode);\n");
-        sb.append("             StubToLocalMapper.remove(mapperCode);\n");
+        sb.append("      if (StubToLocalMapper.remove(mapperCode)){\n");
+        sb.append("         mapperCode = null;\n");
         sb.append("      }\n");
-        sb.append("      mapperCode = null;\n");
-        sb.append("   }\n");
-        sb.append("   protected void destroy() {\n");
-        sb.append("      if (mapperCode != null ) {\n");
-        sb.append("         log.debug(\"destroy \" + mapperCode);\n");
-        sb.append("         StubToLocalMapper.remove(mapperCode);\n");
-        sb.append("      }\n");
-        sb.append("      mapperCode = null;\n");
         sb.append("   }\n");
         sb.append("}\n");
         try {
