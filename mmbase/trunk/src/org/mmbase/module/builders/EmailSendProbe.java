@@ -14,6 +14,9 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.SearchQueryException;
+
 
 /**
  * Email send probe, keeps a queue of queued messages
@@ -21,7 +24,7 @@ import org.mmbase.util.logging.*;
  * a way to block until the next event or notify of
  * a possible queue change.
  *
- * @version $Id: EmailSendProbe.java,v 1.8 2003-05-07 21:06:47 kees Exp $
+ * @version $Id: EmailSendProbe.java,v 1.9 2004-09-17 09:24:12 mark Exp $
  * @author Daniel Ockeloen
  */
 public class EmailSendProbe implements Runnable {
@@ -130,6 +133,7 @@ public class EmailSendProbe implements Runnable {
 						int ttime=(int)((System.currentTimeMillis()/1000)); 
 						// het the wanted time
 						int ntime=anode.getIntValue("mailtime");
+
 						// are we ready or do we need to wait some more ?
 						if (ttime>=ntime) {
 							// time has come handle this task now !
@@ -180,6 +184,9 @@ public class EmailSendProbe implements Runnable {
 
 		if (!containsTask(node)) {
 			if (tasks.size()<internalqueuesize) {
+                if (node.getValue("mailtime")==null) {
+                    node.setValue("mailtime",-1);
+                }
 				tasks.addSorted(node);
 			} else {
 			}
@@ -225,7 +232,22 @@ public class EmailSendProbe implements Runnable {
 
 		// get the events for the next 5 min so we can place them
 		// in the queue if needed
-		Enumeration e=parent.search("mailtime=S"+(ttime+maxtasktime),"mailtime",true);
+        Vector result = new Vector();
+
+        // Create query.
+        NodeSearchQuery query = new NodeSearchQuery(parent);
+        BasicLegacyConstraint constr = new BasicLegacyConstraint("mailtime<"+(ttime+maxtasktime)+" OR mailtime IS NULL");
+        query.setConstraint(constr);
+
+        try {
+            List nodes = parent.getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+
+        Enumeration e=result.elements();
+
 		dbqueued=0;
 		while (e.hasMoreElements()) {
 			MMObjectNode qnode=(MMObjectNode)e.nextElement();
