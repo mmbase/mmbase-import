@@ -160,9 +160,13 @@ public class HttpAuth {
 	} 
 
 	public static String getRemoteUser(HttpServletRequest req) {
-        String mimeline = ((String)req.getHeader("Authorization"));
-		String name=(String)p_base64.get(mimeline);
-		return(name);
+		try {
+        	String mimeline = ((String)req.getHeader("Authorization"));
+			String name=(String)p_base64.get(mimeline);
+			return(name);
+		} catch (Exception e) {
+			return "Unknown";
+		}
 	}
 
 	public static String getRemoteUser(scanpage sp) {
