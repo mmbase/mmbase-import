@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.7 2000-11-27 16:33:53 vpro Exp $
+$Id: MMHttpHandler.java,v 1.8 2001-03-26 15:31:04 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/11/27 16:33:53  vpro
+davzev: Added debug in method doGet
+
 Revision 1.6  2000/11/27 14:49:48  vpro
 davzev: Changed debug var from RemoteBuilder.debug to true
 
@@ -27,7 +30,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.7 $ $Date: 2000-11-27 16:33:53 $
+ * @version $Revision: 1.8 $ $Date: 2001-03-26 15:31:04 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable {
@@ -42,6 +45,7 @@ public class MMHttpHandler implements Runnable {
 	Hashtable listeners;
 	
 	public final static String REMOTE_REQUEST_URI_FILE = "remoteXML.db";
+	public final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
 	public MMHttpHandler(Socket clientsocket,Hashtable listeners) {
 		if (debug) debug("MMHttpHandler("+clientsocket+","+listeners+"): Created, initializing..");
@@ -82,10 +86,22 @@ public class MMHttpHandler implements Runnable {
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
 					if (debug) debug("run(): Got method: "+method);
-					if (method.equals("GET")) doGet(tok,in,out);
-					if (method.equals("POST")) doPost(tok,in,out);
+					if (method.equals("GET"))
+						doGet(tok,in,out);
+					if (method.equals("POST")) 
+						doPost(tok,in,out);
 				}
 			}
+			// Read all remaining data that was sent with request.
+			line = in.readLine();
+			if (debug) debug("run: Reading lines of remaining data sent with request value: "+line);
+			while (line.equals("")) {
+				line = in.readLine();
+				if (debug) debug("run: Reading lines of remaining data sent with request value: "+line);
+			}
+
+			// Close socket.
+			if (debug) debug("run: Closing socket.");
 			clientsocket.close();	
 		} catch(Exception e) {
 			debug("run(): ERROR: exception: "+e);
@@ -100,6 +116,7 @@ public class MMHttpHandler implements Runnable {
 	 * @param out the PrintStream
 	 */
 	void doGet(StringTokenizer tok, DataInputStream in, PrintStream out) {
+		String statusCode= null;
 		if (tok.hasMoreTokens()) {
 			String requestUrl=tok.nextToken();
 			int filePos = requestUrl.indexOf(REMOTE_REQUEST_URI_FILE);
@@ -110,13 +127,18 @@ public class MMHttpHandler implements Runnable {
 					String queryString=requestUrl.substring(queryPos+1); //+1 ='?' char.
 					if (debug) debug("doGet: Retrieved querystring: "+queryString);
 					doXMLSignal(queryString);
-				} else
+					statusCode = "200 OK";
+				} else {
 					debug("doGet: ERROR: No querystring: "+requestUrl);
-			}else
+					statusCode = "400 Bad Request"; 
+				}
+			}else {
 				debug("doGet: WARNING: unknown requesturl:"+requestUrl);
+				statusCode = "404 Not Found"; 
+			}
 		}
-		if (debug) debug("doGet: Returning 200 OK");
-		out.println("200 OK");
+		if (debug) debug("doGet: Returning "+statusCode);
+		out.println(statusCode);
 		out.flush();
 	}
 	
@@ -149,20 +171,33 @@ public class MMHttpHandler implements Runnable {
 	}
 
 	void doPost(StringTokenizer tok, DataInputStream in, PrintStream out) {
+		String statusCode = null;
 		Hashtable headers=readHeaders(in);
 		// well is it a post ?
 		String header=(String)headers.get("Content-type");
-        if (header!=null && header.equals("application/x-www-form-urlencoded")) {
-					header=(String)headers.get("Content-length");
-        			if (header!=null) {
-						try {
-							int len=Integer.parseInt(header);
-    						byte[] buffer=readContentLength(len,in);
-    						Hashtable posted=readPostUrlEncoded(buffer);
-						} catch(Exception e) { debug("doPost(): ERROR: could not handle post!"); e.printStackTrace(); }
-					} else debug("doPost(): ERROR: No 'Content-length' specified in this post!");
+        if (header!=null && header.equals(CONTENT_TYPE)) {
+			header=(String)headers.get("Content-length");
+        	if (header!=null) {
+				try {
+					int len=Integer.parseInt(header);
+    				byte[] buffer=readContentLength(len,in);
+    				Hashtable posted=readPostUrlEncoded(buffer);
+					statusCode = "200 OK";
+				} catch(Exception e) { 
+					debug("doPost(): ERROR: could not handle post!"); 
+					e.printStackTrace(); 
+					statusCode = "400 Bad Request, error during reading posted content";
+				}
+			} else {
+				debug("doPost(): ERROR: No 'Content-length' specified in this post!");
+				statusCode = "411 Length Required"; 
+			}
+		} else {
+			debug("doPost(): ERROR: 'Content-type' is: "+header+", should be : "+CONTENT_TYPE);
+			statusCode = "415 Unsupported Media Type"; 
 		}
-		out.println("200 OK");
+		if (debug) debug("doPost: Returning "+statusCode);
+		out.println(statusCode);
 		out.flush();
 	}
 
@@ -261,6 +296,7 @@ public class MMHttpHandler implements Runnable {
                         letter=(char)Integer.parseInt(mimestr.substring(i+1,i+3),16);
                         mimestr=mimestr.substring(0,i)+letter+mimestr.substring(i+3);
                     } catch (Exception e) {
+						e.printStackTrace();
                     }
                     i++;
                 }
