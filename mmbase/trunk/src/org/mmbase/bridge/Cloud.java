@@ -28,6 +28,13 @@ public interface Cloud {
 	public Node getNode(int nodenumber);
 
 	/**
+	 * Retrieve the node from the cloud
+	 * @param nodenumber the number of the node as a string
+	 * @return the requested node
+	 */
+	public Node getNode(String nodenumber);
+	
+	/**
 	 * Retrieves the node with given aliasname
 	 * @param aliasname the aliasname of the node
 	 * @return the requested node
@@ -38,7 +45,7 @@ public interface Cloud {
      * Retrieves all node managers (aka builders) available in this cloud
      * @return an <code>Iterator</code> containing all node managers
      */
-    public List getNodeManagers();
+    public NodeManagerList getNodeManagers();
 
 	/**
      * Retrieves a node manager (aka builder)
@@ -56,18 +63,16 @@ public interface Cloud {
      */
     public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
 
-	/**
-    * Creates a node using a specified NodeManager
-    * The returned node will not be visible in the cloud until the commit() method is called on this node.
-    * @param nodeManagerName name of the NodeManager defining the node structure
-    * @return the newly created (but not yet committed) node
-    */
-    public Node createNode(String nodeManagerName);
+ 	/**
+     * Retrieves all RelationManagers
+     * @return a list of RelationManagers
+     */
+    public RelationManagerList getRelationManagers();
 	
 	/**
-     * Retrieves the context for this cloud
-     * @return the cloud's context
-     */
+    * Retrieves the context for this cloud
+    * @return the cloud's context
+    */
     public CloudContext getCloudContext();
 
     /**
@@ -81,7 +86,7 @@ public interface Cloud {
      * @param name an unique name to use for the transaction
      * @return a <code>Transaction</code> on this cloud
      */
-    public Transaction createTransactionByName(String name);
+    public Transaction createTransaction(String name);
 
     /**
      * Creates a transaction on this cloud.
@@ -90,12 +95,6 @@ public interface Cloud {
      */
     public Transaction openTransaction(String name);
    	
-  	/**
-     * Retrieves the current user name
-     * @return the user name
-     */
-    public String getUserName();
-
   	/**
      * Logs on a user.
      * This results in an environment (a cloud) in which the user is registered.
@@ -122,18 +121,6 @@ public interface Cloud {
 	 * @return return a description of the cloud
      */
     public String getDescription();
-
-    /**
-     * Retrieves the current selected language
-	 * @return return the language as a <code>String</code>
-     */
-    public String getLanguage();
-
-    /**
-     * Sets the current selected language
-	 * @param language the language as a <code>String</code>
-     */
-    public void setLanguage(String language);
 	
 	/**
      * Search nodes in a cloud accoridng to a specified filter.
@@ -158,5 +145,5 @@ public interface Cloud {
      * @param distinct <code>True> indicates the records returned need to be distinct. <code>False</code> indicates double values can be returned.
      * @return a <code>List</code> of found (virtual) nodes
      */
-    public List search(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct);
+    public NodeList getList(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct);
 }

@@ -54,7 +54,7 @@ public class BasicFieldType implements FieldType {
 	 * Retrieve the field's GUI name
 	 */
     public String getGUIName() {
-        return field.getGUIName(nodeManager.getCloud().getLanguage());
+        return field.getGUIName(((BasicCloud)nodeManager.getCloud()).language);
     }
 
 	/**

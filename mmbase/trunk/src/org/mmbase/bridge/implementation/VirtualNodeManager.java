@@ -69,7 +69,7 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Search nodes of this type.
      * Throws an exception since this type is virtual, and searching is not allowed.
      */
-    public List search(String where, String sorted, boolean direction) {
+    public NodeList getList(String where, String sorted, boolean direction) {
         throw new BridgeException("Cannot perform search on a virtual node type");
     }
 }

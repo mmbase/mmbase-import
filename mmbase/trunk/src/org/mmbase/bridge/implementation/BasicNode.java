@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+// import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -22,14 +23,11 @@ import java.util.*;
  */
 public class BasicNode implements Node {
 
-    public static final int ACTION_ADD = 1;     // add a node
+    public static final int ACTION_ADD = 1;      // add a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
     public static final int ACTION_REMOVE = 3;   // remove node
-    public static final int ACTION_ADDRELATION = 4; // add a relation
-    public static final int ACTION_EDITRELATION = 5; // edit a relation
-    public static final int ACTION_REMOVERELATION = 6; // remove relations
-    public static final int ACTION_COMMIT = 7; // commit a node after changes
-
+    public static final int ACTION_LINK = 4;     // add a relation to a node
+    public static final int ACTION_COMMIT = 10;   // commit a node after changes
     /**
     * Reference to the NodeManager
     */
@@ -138,11 +136,9 @@ public class BasicNode implements Node {
     * ACTION_ADD (add a node),<br>
     * ACTION_EDIT (edit node, or change aliasses),<br>
     * ACTION_REMOVE (remove node),<br>
-    * ACTION_ADDRELATION (add a relation),<br>
-    * ACTION_EDITRELATION (edit a relation),<br>
-    * ACTION_REMOVERELATION (remove relations),<br>
+    * ACTION_LINK (add a relation),<br>
     * ACTION_COMMIT (commit a node after changes)
-    * @param action The action to perform.
+     * @param action The action to perform.
     */
     protected void Edit(int action) {
         if (account==null) {
@@ -153,9 +149,22 @@ public class BasicNode implements Node {
 	    if (nodeManager instanceof VirtualNodeManager) {
             throw new BridgeException("Cannot make edits to a virtual node.");
 	    }
+	
+	    int realnumber=noderef.getIntValue("number");
+	    if (realnumber!=-1) {
+	        if (action==ACTION_REMOVE) {
+//	            cloud.assert(Operation.REMOVE,realnumber);
+	        }
+	        if (action==ACTION_LINK) {
+//	            cloud.assert(Operation.LINK,realnumber);
+	        }
+	        if ((action==ACTION_EDIT) && (temporaryNodeId==-1)) {
+//	            cloud.assert(Operation.WRITE,realnumber);
+	        }
+	    }
+	
 	    // check for the existence of a temporary node
 	    if (temporaryNodeId==-1) {
-
             // when committing a temporary node id must exist (otherwise fail).
 	        if (action == ACTION_COMMIT) {
                 throw new BridgeException("This node cannot be comitted (not changed).");
@@ -330,7 +339,9 @@ public class BasicNode implements Node {
 	    if (!(cloud instanceof Transaction)) {
 	        MMObjectNode node= getNode();
 	        if (isnew) {
-	            node.insert(cloud.getUserName());
+//	            node.insert(cloud.getUserName());
+                node.insert("bridge");
+	            cloud.createSecurityInfo(getNodeID());
 	            isnew=false;
 	        } else {
 	            node.commit();
@@ -371,14 +382,6 @@ public class BasicNode implements Node {
 	    remove(false);
 	};
 
-	/**
-	 * Removes the Node.Also removes attached relations if any exist.
-	 */
-	public void removeAll() {
-	    remove(true);
-	};
-
-	
 	private void remove(boolean removeRelations) {
         Edit(ACTION_REMOVE);
         if (isnew) {
@@ -395,7 +398,7 @@ public class BasicNode implements Node {
             // check relations first!
             if (removeRelations) {
                 // option set, remove relations
-                deleteRelations(-1);
+               deleteRelations(-1);
             } else {
                 // option unset, fail if any relations exit
 	            int relations = getNode().getRelationCount();
@@ -438,7 +441,6 @@ public class BasicNode implements Node {
 	 * @param type Type of relation (-1 = don't care)
 	 */
 	private void deleteRelations(int type) {
-        Edit(ACTION_REMOVERELATION);
 	    RelDef reldef=mmb.getRelDef();
 	    Enumeration e = getNode().getRelations();
 	    if (e!=null) {
@@ -462,7 +464,7 @@ public class BasicNode implements Node {
 	/**
 	 * Removes all relations of the node.
 	 */
-	public void removeAllRelations() {
+	public void removeRelations() {
 	    deleteRelations(-1);
 	}
 
@@ -471,7 +473,6 @@ public class BasicNode implements Node {
 	 * @param type of relation
 	 */
 	public void removeRelations(String type) {
-        Edit(ACTION_REMOVERELATION);
 	    RelDef reldef=mmb.getRelDef();
     	int rType=reldef.getGuessedNumber(type);
     	if (rType==-1) {
@@ -485,7 +486,7 @@ public class BasicNode implements Node {
 	 * Retrieve all relations of this node
 	 * @return a code>List</code> of all relations of Node
 	 */
-	private List getRelations(int type) {	
+	private RelationList getRelations(int type) {	
 	
 	    Vector relvector=new Vector();
 	    Enumeration e=getNode().getRelations() ;
@@ -494,19 +495,20 @@ public class BasicNode implements Node {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
 	            if ((type==-1) || (mmnode.getIntValue("rnumber")==type)) {
-	                Relation node = new BasicRelation(mmnode, insrelman);
-	                relvector.add(node);
+//	                if (cloud.check(Operation.READ, mmnode.getIntValue("number"))) {
+	                    relvector.add(mmnode);
+//	                }
 	            }
 	        }
         }
-        return relvector;
+        return new BasicRelationList(relvector,cloud,insrelman);
 	};
 	
 	/**
 	 * Retrieve all relations of this node
 	 * @return a code>List</code> of all relations of Node
 	 */
-	public List getAllRelations() {	
+	public RelationList getRelations() {	
 	    return getRelations(-1);
 	};
 
@@ -515,22 +517,34 @@ public class BasicNode implements Node {
 	 * @param type of relation
 	 * @return a code>List</code> of all relations of the Node of a certain type
 	 */
-	public List getRelations(String type) {
+	public RelationList getRelations(String type) {
 	    Vector relvector=new Vector();
 	    int rType=mmb.getRelDef().getGuessedNumber(type);
     	if (rType==-1) {
-    	    throw new BridgeException("Cannot find relation type.");
+    	    throw new BridgeException("Relation type "+type+" does not exist.");
     	} else {
     	    return getRelations(rType);
     	}
 	};
 
 	/**
+	 * Checks whether the Node has any relations
+	 * @return <code>true</code> if the node has relations
+	 */
+	public boolean hasRelations() {
+	    // this should be done using:
+	    //  return getNode().hasRelations();
+	    // once we submit the relation stuff
+	    return getRelations().size()!=0;
+	};
+
+	
+	/**
 	 * Count the relations attached to the Node
 	 * @return number of relations
 	 */
-	public int countAllRelations() {
-	    return getAllRelations().size();
+	public int countRelations() {
+	    return getRelations().size();
 	};
 
 	/**
@@ -545,17 +559,18 @@ public class BasicNode implements Node {
 	 * Retrieve all related Nodes
 	 * @return a code>List</code> of all related Nodes
 	 */
-	public List getAllRelatedNodes() {
+	public NodeList getRelatedNodes() {
 	    Vector relvector=new Vector();
 	    Enumeration e=getNode().getRelatedNodes().elements();
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Node node = new BasicNode(mmnode, cloud.getNodeManager(mmnode.parent.getTableName()));
-	            relvector.add(node);
+//	            if (cloud.check(Operation.READ, mmnode.getIntValue("number"))) {
+	                relvector.add(mmnode);
+//	            }
 	        }
 	    }
-        return relvector;
+        return new BasicNodeList(relvector,cloud);
 	};
 
 	/**
@@ -563,17 +578,18 @@ public class BasicNode implements Node {
 	 * @param type name of the NodeManager of the related nodes
 	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
-	public List getRelatedNodes(String type) {
+	public NodeList getRelatedNodes(String type) {
 	    Vector relvector=new Vector();
 	    Enumeration e=getNode().getRelatedNodes(type).elements();
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Node node = new BasicNode(mmnode, cloud.getNodeManager(mmnode.parent.getTableName()));
-	            relvector.add(node);
+//	            if (cloud.check(Operation.READ, mmnode.getIntValue("number"))) {
+	                relvector.add(mmnode);
+//	            }
 	        }
 	    }
-        return relvector;
+        return new BasicNodeList(relvector,cloud);
     }
 
 	/**
@@ -670,8 +686,8 @@ public class BasicNode implements Node {
 	 * @param relationManager The relation manager you want to use
 	 * @return the added relation
      */
-    public Relation addRelation(Node destinationNode, RelationManager relationManager) {
-        Edit(ACTION_ADDRELATION);
+    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
+        Edit(ACTION_LINK);
         if (relationManager.getCloud() != cloud) {
             throw new BridgeException("Relation type and node are not in the same transaction or in different clouds");
         }
@@ -681,7 +697,7 @@ public class BasicNode implements Node {
         if (!(cloud instanceof Transaction)  && isnew) {
             throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
 	    }
-	    Relation relation = relationManager.addRelation(this,destinationNode);
+	    Relation relation = relationManager.createRelation(this,destinationNode);
         return relation;
     };
 }

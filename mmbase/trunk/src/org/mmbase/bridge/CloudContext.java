@@ -23,7 +23,7 @@ public interface CloudContext {
 	 * Retrieves all the modules available in this context
 	 * @return all available modules
 	 */
-	public List getModules();
+	public ModuleList getModules();
 	
 	/**
 	 * Retrieves a Module
@@ -36,7 +36,7 @@ public interface CloudContext {
 	 * Retrieves the names of all clouds within this context
 	 * @return a <code>List</code> of all Cloudnames within this contextas a <code>String</code>
 	 */
-	public List getClouds();
+	public CloudList getClouds();
 
 	/**
 	 * Retrieves a Cloud.
@@ -44,12 +44,5 @@ public interface CloudContext {
 	 * @return all Clouds
 	 */
 	public Cloud getCloud(String cloudname);
-
-	/**
-	 * Retrieve a remote CloudContext
-	 * @param cloudcontextUrl place of the remote CloudContext
-	 * @return remote CloudContext
-	 * public CloudContext getCloudContext(String cloudcontextUrl);
-	 */
 
  }

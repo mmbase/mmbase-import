@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+// import org.mmbase.security.*;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
@@ -63,6 +64,7 @@ public class BasicNodeManager implements NodeManager {
     * @return the new <code>Node</code>
     */
     public Node createNode() {
+//        cloud.assert(Operation.CREATE,builder.oType);
         // create object as a temporary node
         int id = cloud.uniqueId();
         System.out.println();
@@ -73,7 +75,8 @@ public class BasicNodeManager implements NodeManager {
         }
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
         // set the owner to userName instead of account
-        node.setValue("owner",cloud.getUserName());
+//        node.setValue("owner",cloud.getUserName());
+        node.setValue("owner","bridge");
         return new BasicNode(node, this, id);
     }
 
@@ -98,7 +101,7 @@ public class BasicNodeManager implements NodeManager {
     public String getGUIName() {
 	    Hashtable singularNames=builder.getSingularNames();
         if (singularNames!=null) {
-            String tmp=(String)singularNames.get(cloud.getLanguage());
+            String tmp=(String)singularNames.get(cloud.language);
             if (tmp!=null) {
                 return tmp;
             }
@@ -112,7 +115,7 @@ public class BasicNodeManager implements NodeManager {
 	public String getDescription() {
 	    Hashtable descriptions=builder.getDescriptions();
         if (descriptions!=null) {
-            String tmp=(String)descriptions.get(cloud.getLanguage());
+            String tmp=(String)descriptions.get(cloud.language);
             if (tmp!=null) {
                 return tmp;
             }
@@ -124,9 +127,8 @@ public class BasicNodeManager implements NodeManager {
 	 * Retrieve all field types of this NodeManager.
 	 * @return a <code>List</code> of <code>FieldType</code> objects
 	 */
-	public List getFieldTypes() {
-	    Vector res= new Vector(fieldTypes.values());
-	    return res;
+	public FieldTypeList getFieldTypes() {
+	    return new BasicFieldTypeList(fieldTypes.values(),cloud,this);
 	}
 
 	/**
@@ -148,20 +150,22 @@ public class BasicNodeManager implements NodeManager {
      * @param direction indicates whether the sort is ascending (true) or descending (false).
      * @return a <code>List</code> of found nodes
      */
-    public List search(String where, String sorted, boolean direction) {
-  		Vector retval = new Vector();
-  		Enumeration nodeEnum = null;
+    public NodeList getList(String where, String sorted, boolean direction) {
+  		Vector v;
   		if ((where!=null) && (!where.trim().equals(""))) {
 		    where="WHERE "+where;
   		}
   		if ((sorted!=null) && (!sorted.trim().equals(""))) {
-		    nodeEnum = builder.searchVector(where,sorted,direction).elements();
+		    v = builder.searchVector(where,sorted,direction);
 	    } else {
-		    nodeEnum = builder.searchVector(where).elements();
+		    v = builder.searchVector(where);
 	    }
-        while(nodeEnum.hasMoreElements()){
-			retval.addElement(new BasicNode((MMObjectNode)nodeEnum.nextElement(),this));
-		}
-  		return retval;
+	    // remove all nodes that cannot be accessed
+	    for(int i=(v.size()-1); i>-1; i--) {
+//	        if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getIntValue("number"))) {
+	            v.remove(i);
+//	        }
+	    }
+	    return new BasicNodeList(v,cloud,this);
     }
 }
