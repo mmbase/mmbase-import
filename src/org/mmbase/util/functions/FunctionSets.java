@@ -64,7 +64,7 @@ public class FunctionSets {
             XMLBasicReader reader = new XMLBasicReader(filename,FunctionSets.class);
             if(reader != null) {
                 functionSets = new Hashtable();
-                for(Enumeration ns = reader.getChildElements("functionSets","functionset"); ns.hasMoreElements(); ) {
+                for(Enumeration ns = reader.getChildElements("functionsets","functionset"); ns.hasMoreElements(); ) {
                     Element n = (Element)ns.nextElement();
                     
                     NamedNodeMap nm = n.getAttributes();
