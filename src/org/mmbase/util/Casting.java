@@ -145,15 +145,22 @@ public class Casting {
     static public int toInt(Object i, int def) {
         int res = def;
         if (i instanceof MMObjectNode) {
-            res=((MMObjectNode)i).getNumber();
+            res = ((MMObjectNode)i).getNumber();
         } else if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
+            res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
-            res=((Number)i).intValue();
-        } else if (i!=null) {
+            res = ((Number)i).intValue();
+        } else if (i != null) {
             try {
-                res=Integer.parseInt(""+i);
-            } catch (NumberFormatException e) {}
+                res = Integer.parseInt("" + i);
+            } catch (NumberFormatException e) {
+                // not an integer? perhaps it is a fload or double represented as String.
+                try {
+                    res = Double.valueOf("" + i).intValue();
+                } catch (NumberFormatException ex) {
+                    // give up, fall back to default.
+                }
+            }
         }
         return res;
     }
