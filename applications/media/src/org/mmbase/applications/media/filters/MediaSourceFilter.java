@@ -8,10 +8,10 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.media.*;
+import org.mmbase.applications.media.builders.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.*;
@@ -99,12 +99,12 @@ public class MediaSourceFilter implements MediaFilter {
         for(Enumeration e = reader.getChildElements(MAIN_TAG + ".chain","filter"); e.hasMoreElements();) {
             Element chainElement =(Element)e.nextElement();
             String  clazz        = reader.getElementValue(chainElement);
-            String  elementId    = reader.getElementAttributeValue(chainElement, "id");
+            String  elementId    = chainElement.getAttribute("id");
             try {
                 Class newclass = Class.forName(clazz);
                 MediaFilter filter = (MediaFilter) newclass.newInstance();
-                if (filter instanceof ResponseInfoComparator) {
-                    chainComp.add((ResponseInfoComparator) filter);
+                if (filter instanceof URLComposerComparator) {
+                    chainComp.add((URLComposerComparator) filter);
                 } else {
                     if (chainComp.size() > 0) { 
                         filters.add(chainComp);
