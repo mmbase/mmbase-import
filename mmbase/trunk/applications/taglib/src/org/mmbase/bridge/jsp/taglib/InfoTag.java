@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -20,9 +20,9 @@ import javax.servlet.jsp.JspException;
  */
 public class InfoTag extends  CloudReferrerTag implements Writer {
 
-    private String nodeManager = null;
-    private String module      = null;
-    private String command     = null;
+    private Attribute nodeManager = Attribute.NULL;
+    private Attribute module      = Attribute.NULL;
+    private Attribute command     = Attribute.NULL;
 
     protected WriterHelper helper = new WriterHelper();
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
@@ -42,29 +42,28 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     public void haveBody() { helper.haveBody(); }
 
     public void setNodemanager(String nm) throws JspTagException {
-        nodeManager = getAttributeValue(nm);
+        nodeManager = getAttribute(nm);
     }
     public void setModule(String m) throws JspTagException {
-        module = getAttributeValue(m);
+        module = getAttribute(m);
     }
     public void setCommand(String c) throws JspTagException {
-        command = getAttributeValue(c);
+        command = getAttribute(c);
     }
-
 
     public int doStartTag() throws JspTagException {
         String result;
-        if (nodeManager != null) {
-            if (module != null) {
+        if (nodeManager != Attribute.NULL) {
+            if (module != Attribute.NULL) {
                 throw new JspTagException("Cannot give both module and nodemanager");
             }
-            result = getCloud().getNodeManager(nodeManager).getInfo(command,
-                                                                    pageContext.getRequest(),
-                                                                    pageContext.getResponse());
-        } else if (module != null) {
-            result = getCloudContext().getModule(module).getInfo(command,
-                                                                 pageContext.getRequest(),
-                                                                 pageContext.getResponse());
+            result = getCloud().getNodeManager(nodeManager.getString(this)).getInfo(command.getString(this),
+                                                                                    pageContext.getRequest(),
+                                                                                    pageContext.getResponse());
+        } else if (module != Attribute.NULL) {
+            result = getCloudContext().getModule(module.getString(this)).getInfo(command.getString(this),
+                                                                                 pageContext.getRequest(),
+                                                                                 pageContext.getResponse());
         } else {
             throw new JspTagException("Must give module or nodemanager");
         }

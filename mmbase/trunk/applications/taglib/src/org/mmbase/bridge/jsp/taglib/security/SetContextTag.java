@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -22,19 +23,21 @@ import org.mmbase.util.logging.Logging;
 public class SetContextTag extends NodeReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(SetContextTag.class.getName());
-    private String name = null;
+    private Attribute name = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
-        name = getAttributeValue(n);
+        name = getAttribute(n);
     }
 
     public int doEndTag() throws JspTagException {        
-        if (name == null) {
-            name = bodyContent.getString();
+        String n;
+        if (name == Attribute.NULL) {
+            n = bodyContent.getString();
+        } else {
+            n = name.getString(this);
         }
-        if (log.isDebugEnabled()) log.debug("Setting context to " + name);
-        getNode().setContext(name);
-        name = null;
+        if (log.isDebugEnabled()) log.debug("Setting context to " + n);
+        getNode().setContext(n);
         return EVAL_PAGE;
     }   
 

@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -28,7 +28,7 @@ public class XsltTag extends ContextReferrerTag  {
 
     private static Logger log = Logging.getLoggerInstance(XsltTag.class.getName());
 
-    private String ext;
+    private Attribute ext = Attribute.NULL;
     private FormatterTag formatter;
 
 
@@ -36,15 +36,15 @@ public class XsltTag extends ContextReferrerTag  {
      * If you use the extends attribute in stead of inline <xsl:import />
      * then the caches can be invalidated (without parsing of xslt beforehand)
      *
-     * @todo This has to be implemented.
+     * @todo This has to be implemented still
      */
     public void setExtends(String e) throws JspTagException {
-        ext = getAttributeValue(e);
+        ext = getAttribute(e);
     }
 
     public int doStartTag() throws JspTagException{
         // Find the parent formatter.
-        formatter = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+        formatter = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
         if (formatter == null && getId() == null) {
             throw new JspTagException("No parent formatter found");
             // living outside a formatter tag can happen the xslttag has an id.
