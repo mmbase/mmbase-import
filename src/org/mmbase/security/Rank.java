@@ -14,13 +14,18 @@ import org.mmbase.util.logging.Logging;
 import java.util.*;
 
 /**
- * This class is somekinda enumeration of the ranks possible within
- * the security context
- * @javadoc
+ * This class defines Rank objects which are used in security implementation. Ranks can be
+ * associated with users. Every Rank has an unique integer 'height' (so every rank is higher or
+ * lower than any other rank) and a String which can be used to identify it.
+ *
+ * Possible Ranks are maintained by static methods in this class. Generally the 'anonymous', 'basic
+ * user' and 'adminstrator' ranks should always be available, and only be delete with good reason.
+ *
+ *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.10 2003-06-30 12:16:05 michiel Exp $
+ * @version $Id: Rank.java,v 1.11 2003-06-30 13:31:11 michiel Exp $
  */
 public final class Rank {
     private static Logger log = Logging.getLoggerInstance(Rank.class);
@@ -128,6 +133,10 @@ public final class Rank {
     public static Set getRanks() {
         return new HashSet(ranks.values());
     }
+
+    /**
+     * @since MMBase-1.6.4
+     */
 
     public boolean equals(Object o) {
         if (o instanceof Rank) {
