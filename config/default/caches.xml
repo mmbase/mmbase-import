@@ -6,7 +6,7 @@
   changing it here works just as well.
 
   @since   MMBase-1.6
-  @version $Id:
+  @version $Id: caches.xml,v 1.2 2002-05-15 17:06:57 michiel Exp $
   @author  Michiel Meeuwissen
 -->
 <caches>
