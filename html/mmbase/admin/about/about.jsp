@@ -18,6 +18,7 @@
    <tr>
      <td class="multidata" colspan="2">
        <h2>Welcome to MMBase Content management system.</h2>
+       <h3>Version: <%= org.mmbase.Version.get() %></h3>
        <p>You are probably running on the binary distribution, which is shipped with a database that is written in Java: <a href="http://www.hsqldb.org">Hsqldb</a>. MMBase does support both commercial and opensource databases and we strongly suggest that you configure MMBase to do.</p>
        <p>If you wish to build your own MMBase version from the sourcecode, you are encouraged to download the <i>source distribution</i>.</p>
        <p>If you run into problems you can get help from the following sources :
