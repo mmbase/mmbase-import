@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.96 2003-06-02 11:37:37 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.97 2003-06-27 13:00:01 nico Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -710,7 +710,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public NodeList getRelatedNodes() {
-        return getRelatedNodes((String) null, null, null);
+        return getRelatedNodes("object", null, null);
     }
 
     public NodeList getRelatedNodes(String type) {
