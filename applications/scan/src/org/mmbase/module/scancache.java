@@ -9,19 +9,25 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.sql.Date;
+import java.util.Hashtable;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletResponse;
 
-import org.mmbase.module.core.*;
-import org.mmbase.module.builders.*;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.module.builders.NetFileSrv;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.gui.html.scanparser;
+import org.mmbase.util.DateSupport;
+import org.mmbase.util.LRUHashtable;
+import org.mmbase.util.RFC1123;
+import org.mmbase.util.fileInfo;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * File cache system.
@@ -34,7 +40,7 @@ import org.mmbase.module.gui.html.scanparser;
  * different ways to handle file caching. The pools currently supported are "PAGE" and "HENK".
  *
  * @rename Scancache
-  * @author Daniel Ockeloen
+ * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @version 10 Apr 2001
  */
@@ -125,8 +131,6 @@ public class scancache extends Module implements scancacheInterface {
      * Reads parameters from the scancache.xml configuration file.
      */
     public void init() {
-        String statmode=getInitParameter("statmode");  // comment out
-
         String tmp=getInitParameter("status");
         log.debug("status "+tmp);
         if (tmp!=null && tmp.equals("active")) status=true;
@@ -165,7 +169,7 @@ public class scancache extends Module implements scancacheInterface {
             String tmp=get(poolName,key,">",sp);
             return tmp;
         } else if (poolName.equals("PAGE")) {
-            return getPage(poolName,key,"");
+            return getPage(poolName,key);
         }
         log.error("get("+poolName+","+key+"): poolname("+poolName+") is an unknown cachetype!");
         return null;
@@ -184,28 +188,27 @@ public class scancache extends Module implements scancacheInterface {
      * @return the page's content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
      */
-    public String getNew(String poolName, String key,String line,scanpage sp) {
+/*    public String getNew(String poolName, String key,String line,scanpage sp) {
         if (status==false) return null; // no cache when inactive
         line=line.substring(0,line.indexOf('>'));
-        // tagger code should be commented out...
-        StringTagger tagger=new StringTagger(line);
-        String counter=tagger.Value("COUNTER");
-        /* org.mmbase
-        log.debug("scancache -> new poolName="+poolName+" key="+key+" line="+line+" tagger="+counter+" stats="+stats);
-        if (counter!=null && stats!=null) {
-            stats.setCount(counter,1);
-        }
-        */
+        
+        // org.mmbase
+//        log.debug("scancache -> new poolName="+poolName+" key="+key+" line="+line+" tagger="+counter+" stats="+stats);
+//        if (counter!=null && stats!=null) {
+//            stats.setCount(counter,1);
+//        }
+		
+		
         if (poolName.equals("HENK")) {
             String tmp=get(poolName,key,">",sp);
             return tmp;
         } else if (poolName.equals("PAGE")) {
-            return getPage(poolName,key,line);
+            return getPage(poolName,key);
         }
         log.error("getNew("+poolName+","+key+"): poolname("+poolName+") is an unknown cachetype!");
         return null;
     }
-
+*/
     /**
      * Retrieve a file from the indicated pool's cache.
      * It is first retrieved from meory. if that fails, the file is retrieved from disk.
@@ -224,19 +227,12 @@ public class scancache extends Module implements scancacheInterface {
      */
     public String get(String poolName, String key, String line,scanpage sp) {
         if (status==false) return null; // no cache when inactive
+        
         // get the interval time
         // (nothing, NOEXPIRE, or an int value)
         String tmp=line.substring(0,line.indexOf('>')).trim();
-        int interval;
-        if (tmp.equals("")) interval = defaultExpireTime;
-        else if (tmp.toUpperCase().equals("NOEXPIRE")) interval = Integer.MAX_VALUE;
-        else try {
-                 interval = Integer.parseInt(tmp);
-             }
-             catch (NumberFormatException n) {
-                 log.error("CACHE "+poolName+": Number format exception for expiration time ("+tmp+")");
-                 interval = defaultExpireTime;
-             }
+		int interval = getExpireInterval(tmp);
+        
         int now=(int)(System.currentTimeMillis()/1000);
 
         // get pool memory cache
@@ -255,10 +251,13 @@ public class scancache extends Module implements scancacheInterface {
 	                if (((now-then)-interval)<0) {
 	                    return value;
 	                } else {
-						log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
-						// RICO signal page-processor
-						signalProcessor(sp,key);
-						return value;
+						// Don't handle flasvar						
+						if (key.indexOf(".flashvar")<0) {
+							log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
+							// RICO signal page-processor
+							signalProcessor(sp,key);
+							return value;						
+						} else return null;
 	                }
 	            } catch(Exception e) {}
 			}
@@ -266,8 +265,11 @@ public class scancache extends Module implements scancacheInterface {
         // not in memorycache, get directly from file instead
         fileInfo fileinfo=loadFile(poolName,key);
         if (fileinfo!=null && fileinfo.value!=null) {
-            if (((now-fileinfo.time)-interval)>0) {
-                log.debug("get("+poolName+","+key+","+line+"): Diskfile expired for file("+fileinfo.time+"), now("+now+") and interval("+interval+") , return old version ");
+            if (((now-fileinfo.time)-interval)>0) {	
+				if (key.indexOf(".flashvar")>=0) { // Don't handle flashvar;					
+					return null;
+				}
+               	 log.debug("get("+poolName+","+key+","+line+"): Diskfile expired for file("+fileinfo.time+"), now("+now+") and interval("+interval+") , return old version ");
 				// RICO signal page-processor
 				signalProcessor(sp,key);
             }
@@ -283,6 +285,62 @@ public class scancache extends Module implements scancacheInterface {
         return null;
     }
 
+	/**
+	 *  getExpireDate.
+	 * @param poolName
+	 * @param key
+	 * @param expireStr
+	 * @return long
+	 */
+	public long getExpireDate(String poolName, String key, String expireStr) {
+		int interval = getExpireInterval(expireStr);
+		return getLastModDate(poolName, key) + (interval * 1000);
+	}
+
+	/**
+	 *  getLastModDate.
+	 * @param poolName
+	 * @param key
+	 * @return long
+	 */
+	public long getLastModDate(String poolName, String key) {
+		if (timepool.containsKey(poolName+key)) {
+			Integer tmp2=(Integer)timepool.get(poolName+key);
+			log.debug("scancache last modified in timepool " + (tmp2.intValue()));
+			return ((long)tmp2.intValue()) * 1000;
+		}
+		log.debug("scancache last modified NOT in timepool");
+		return 0; //don't know
+	}
+
+	/**
+	 * getExpireInterval.
+	 * @param cacheExpire
+	 * @return int
+	 */
+	private int getExpireInterval(String cacheExpire) {
+		int interval;
+		if ("".equals(cacheExpire)) {
+			 interval = defaultExpireTime;
+		}
+		else {
+			if ("NOEXPIRE".equals(cacheExpire.toUpperCase())) {
+				interval = Integer.MAX_VALUE;
+			}
+			else {
+				try {
+		        	interval = Integer.parseInt(cacheExpire);
+		    	}
+		     	catch (NumberFormatException n) {
+		        	log.error("Number format exception for expiration time ("+cacheExpire+")");
+		         	interval = defaultExpireTime;
+		     	}
+			}
+		}
+		log.debug("scancache expire interval: " + interval);
+		return interval;
+	}
+
     /**
      * Retrieve a file from disk.
      * This method loads a file from disk and returns the contents as a string.
@@ -294,33 +352,12 @@ public class scancache extends Module implements scancacheInterface {
      * @param line cache line options, unspecified
      * @return the page's content as a string, or <code>null</code> if no entry was found
      */
-    public String getPage(String poolName, String key,String line) {
+    private String getPage(String poolName, String key) {
         if (status==false) return null;
         fileInfo fileinfo=loadFile(poolName,key);
         if (fileinfo!=null && fileinfo.value!=null) {
             return fileinfo.value;
         } else {
-            // stuff on pagemakers... what does this do?
-            /*
-            if (mmbase!=null) {
-                pagemakers bul=(pagemakers)mmbase.getMMObject("pagemakers");
-                if (bul!=null) {
-                    MMObjectNode node=bul.getNode(1452549);
-                    if (node!=null) {
-                        String state=node.getStringValue("state");
-                        log.debug("scancache -> PAGE STATE="+state);
-                        if (state!=null && state.equals("waiting")) {
-                            node.setValue("info","URL=\""+key+"\" "+line);
-                            node.setValue("state","newpage");
-                            node.commit();
-                        }
-                    }
-                } else {
-                    log.error("scancache-> can't get pagemakers");
-                }
-            }
-            return null;
-            */
             return null;
         }
     }
@@ -451,6 +488,7 @@ public class scancache extends Module implements scancacheInterface {
         }
         // got pool now insert the new item and save to disk
         saveFile(poolName,key,value);
+        
         return (String)pool.put(key,value);
     }
 
@@ -470,21 +508,6 @@ public class scancache extends Module implements scancacheInterface {
 
     }
 
-    /*
-    void readParams() {
-        String tmp=getInitParameter("MaxLines");
-        if (tmp!=null) MaxLines=Integer.parseInt(tmp);
-        tmp=getInitParameter("MaxSize");
-        if (tmp!=null) MaxSize=Integer.parseInt(tmp)*1024;
-        tmp=getInitParameter("Active");
-        if (tmp!=null && (tmp.equals("yes") || tmp.equals("Yes"))) {
-            active=true;
-        } else {
-            active=false;
-        }
-    }
-    */
-
     /**
      * Retrieve a description of the module's function.
      */
@@ -500,7 +523,7 @@ public class scancache extends Module implements scancacheInterface {
      * @param filename the name of the file
      * @param value the value to store in the file
      */
-    public boolean saveFile(String pool,String filename,String value) {
+    private boolean saveFile(String pool,String filename,String value) {
         log.debug("saveFile("+pool+","+filename+",length("+value.length()+" bytes): saving!");
         File sfile = new File(cachepath+pool+filename);
         try {
@@ -552,6 +575,7 @@ public class scancache extends Module implements scancacheInterface {
                 String value=new String(buffer,0);
                 fileinfo.value=value;
                 fileinfo.time=(int)(sfile.lastModified()/1000);
+				log.debug("loadFile last modified " + sfile.lastModified()/1000);
                 return fileinfo;
             }
             scan.close();
