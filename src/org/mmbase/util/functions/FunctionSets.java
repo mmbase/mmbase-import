@@ -25,23 +25,26 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
 
 /**
- * 
- * @javadoc
+ * The implementation of 'set' functions. Such function do belong to a certain namespace of
+ * functions ('sets'), and therefore are identified by 2 Strings: The name of the 'set' and the name
+ * of the function.
+ *
  * @since MMBase-1.8
  */
 public class FunctionSets {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class); 
-    private static Map functionSets = new Hashtable();
+
+    private static Map functionSets = new HashMap();
     private static String functionSetFile;
-    private static boolean init;
+    private static boolean init = false;
    
  
     public static final String DTD_FUNCTIONSET_1_0  = "functionset_1_0.dtd";
-    public static final String DTD_FUNCTIONSETS_1_0 = "functionSets_1_0.dtd";
+    public static final String DTD_FUNCTIONSETS_1_0 = "functionsets_1_0.dtd";
 
     public static final String PUBLIC_ID_FUNCTIONSET_1_0  = "-//MMBase//DTD functionset config 1.0//EN";
-    public static final String PUBLIC_ID_FUNCTIONSETS_1_0 = "-//MMBase//DTD functionSets config 1.0//EN";
+    public static final String PUBLIC_ID_FUNCTIONSETS_1_0 = "-//MMBase//DTD functionsets config 1.0//EN";
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0, DTD_FUNCTIONSET_1_0, FunctionSets.class);
@@ -49,9 +52,12 @@ public class FunctionSets {
     }
 
 
-    public static void readSets() {
+    /**
+     * Reads the current function-set in from functionsets xml
+     */
+    private static void readSets() {
 	init = true;
-        functionSetFile = "functionSets.xml";
+        functionSetFile = "functionsets.xml";
         String filename = MMBaseContext.getConfigPath() + File.separator + "functions" + File.separator + functionSetFile;
         File file = new File(filename);
         if(file.exists()) {
@@ -76,7 +82,7 @@ public class FunctionSets {
                         n3 = nm.getNamedItem("file");
                         if (n3 != null) {
                             setfile = MMBaseContext.getConfigPath()+File.separator+"functions"+File.separator+n3.getNodeValue();
-                            decodeFunctionSet(setfile,name);
+                            decodeFunctionSet(setfile, name);
                         }
 					
 
@@ -92,7 +98,10 @@ public class FunctionSets {
     }
     
 
-    private static void decodeFunctionSet(String filename,String setname) {
+    /**
+     * Reads a 'sub' xml which referred by functionsets.xml (a functionset XML)
+     */
+    private static void decodeFunctionSet(String filename, String setname) {
         
         File file = new File(filename);
         if(file.exists()) {
@@ -212,8 +221,13 @@ public class FunctionSets {
         }
     }
 
-    public static Function getFunction(String setName, String functionName) {
-	if (!init) readSets();
+    /**
+     * Implemention of {@link SetFunction#getFunction(String, String)}
+     */
+    static Function getFunction(String setName, String functionName) {
+	if (!init) {
+            readSets();
+        }
 
 	FunctionSet set = (FunctionSet)functionSets.get(setName);
 	if (set == null) { // retry hack for mmpm
