@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.225 2003-04-11 19:16:12 kees Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.226 2003-04-11 20:14:02 kees Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3381,14 +3381,10 @@ public class MMObjectBuilder extends MMTable {
      * @return the short name in that language, or <code>null</code> if it is not available
      */
     public String getSingularName(String lang) {
-	String retval = null;
         if (singularNames !=null) {
-            retval = (String)singularNames.get(lang);
+            return (String)singularNames.get(lang);
 	}
-        if (retval == null){ 
-            return getSingularName();
-        }
-        return retval;
+        return null;
     }
 
     /**
