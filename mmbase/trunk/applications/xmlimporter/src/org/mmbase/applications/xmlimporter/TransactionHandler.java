@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.4 2002-06-18 09:19:29 pierre Exp $
+ * @version $Id: TransactionHandler.java,v 1.5 2003-01-06 18:29:36 robmaris Exp $
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
@@ -63,7 +63,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
    /** XML file header, consisting of XML and DOCTYPE declaration. */
    private final String xmlHeader =
-   "<?xml version='1.0'?>\n<!DOCTYPE transactions SYSTEM \"transactions_1_0.dtd\">\n";
+   "<?xml version='1.0'?>\n"
+      + "<!DOCTYPE transactions "
+      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' " 
+      + "'http://www.mmbase.org/dtd/transactions_1_0.dtd'>\n";
 
    /**
     * Create new TransactionHandler.
