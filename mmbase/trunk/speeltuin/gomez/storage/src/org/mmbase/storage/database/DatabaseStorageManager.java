@@ -31,9 +31,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.20 2003-08-04 14:23:20 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.21 2003-08-04 14:52:59 pierre Exp $
  */
-public abstract class DatabaseStorageManager implements StorageManager {
+public class DatabaseStorageManager implements StorageManager {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
@@ -1140,16 +1140,28 @@ public abstract class DatabaseStorageManager implements StorageManager {
         createSequenceFromNumberTable();
     }
 
-    //  create sequence using number table
+    //  create sequence using a number table
     //  maybe we should use schemes ??? 
     //
-    //  CREATE_SEQUENCE = CREATE TABLE {0}_numberTable {1] {2}
-    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_numberTable ({1}) VALUES ({2}) 
+    //  CREATE_SEQUENCE = CREATE TABLE {0}_numberTable {1}
+    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_numberTable ({1}) VALUES ({2,number}) 
     private void createSequenceFromNumberTable() throws StorageException {
         try {
             getActiveConnection();
-            Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_numberTable {1] {2}");
-            String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), "int(11)" });
+            // create the type mapping to search for
+            String typeName = FieldDefs.getDBTypeDescription(FieldDefs.TYPE_INTEGER);
+            TypeMapping mapping = new TypeMapping();
+            mapping.name = typeName;
+            // search type mapping
+            List typeMappings = factory.getTypeMappings();
+            int found = typeMappings.indexOf(mapping);
+            if (found== -1) {
+                throw new StorageException("Type " + typeName + " undefined.");
+            }
+            String fieldName = (String)factory.getStorageIdentifier("number");
+            String fieldDef = fieldName+" "+((TypeMapping)typeMappings.get(found)).type + " NOT NULL";
+            Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_numberTable {1}");
+            String query = scheme.format(new Object[] { this, fieldDef });
             Statement s = activeConnection.createStatement();
             s.executeUpdate(query);
 
@@ -1223,7 +1235,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         // get the field index
         // add the field and its index  Scheme: ADD_FIELD
         // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not supported");
+        throw new StorageException("Operation not (yet) supported");
     }
 
     // javadoc is inherited
@@ -1235,7 +1247,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         // get the field index
         // remove the field and its index  Scheme: DROP_FIELD
         // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not supported");
+        throw new StorageException("Operation not (yet) supported");
     }
 
     // javadoc is inherited
@@ -1246,7 +1258,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         // get the field index
         // change the field and its index  Scheme: CHANGE_FIELD
         // select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not supported");
+        throw new StorageException("Operation not (yet) supported");
     }
 
 }
