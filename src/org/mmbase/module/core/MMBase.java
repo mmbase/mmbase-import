@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.124 2004-11-25 12:34:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.125 2004-12-07 10:09:34 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -339,6 +339,10 @@ public class MMBase extends ProcessorModule {
         log.debug("Starting JDBC module");
         // retrieve JDBC module and start it
         jdbc = (JDBCInterface) getModule("JDBC", true);
+        if (jdbc == null) {
+            log.fatal("Could not obtain JDBC module. MMBase cannot be started.");
+            return;
+        }
 
         try {
             MultiConnection con = jdbc.getConnection(jdbc.makeUrl());
@@ -1195,7 +1199,7 @@ public class MMBase extends ProcessorModule {
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
      * Return the actual path.
      * @param builder name of the builder to find
-     * @param path the path to start searching. The path need be closed with a File.separator character.
+     * @param path the path to start searching. The path need be closed with a '/ character
      * @return the file path to the builder xml, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      * @todo The second argument (and perhaps the whole function) is silly, only exists because this
