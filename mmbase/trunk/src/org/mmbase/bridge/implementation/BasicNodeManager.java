@@ -16,6 +16,7 @@ import javax.servlet.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.Operation;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.69 2003-11-20 16:22:00 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.70 2003-12-17 20:51:43 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -264,6 +265,30 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public NodeQuery createQuery() {
         return new BasicNodeQuery(this);
     }
+
+    
+    public NodeList getList(NodeQuery query) {
+        try {
+            boolean checked = cloud.setSecurityConstraint(query);
+            
+            List resultList = mmb.getDatabase().getNodes(query, builder);
+            
+            builder.processSearchResults(resultList);
+            
+            BasicNodeList resultNodeList = new BasicNodeList(resultList, cloud);
+            
+            resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);       
+            
+            if (! checked) {
+                cloud.checkNodes(resultNodeList, query);
+            }
+
+            return resultNodeList;
+        } catch (SearchQueryException sqe) {
+            throw new BridgeException(sqe);
+        }
+    }
+
 
 
 
