@@ -26,6 +26,7 @@ import org.mmbase.module.core.*;
 public class sessionInfo {
 
 	private String classname = getClass().getName();
+	private boolean debug = false;
 
 	private String hostname;
 	private String cookie;
@@ -59,7 +60,7 @@ public class sessionInfo {
 	*/
 	public void addSetValue(String key,String value) {
 
-		debug("addSetValue("+key+","+value+")");
+		if( debug ) debug("addSetValue("+key+","+value+")");
 
 		Vector v=(Vector)setvalues.get(key);
 		if (v==null) {
@@ -67,14 +68,14 @@ public class sessionInfo {
 			v=new Vector();
 			v.addElement(value);
 			setvalues.put(key,v);
-			debug("sessionset="+v.toString());	
+			if( debug ) debug("sessionset="+v.toString());	
 		} else {
 			if (!v.contains(value)) {
 				v.addElement(value);
-				debug("sessionset="+v.toString());	
+				if( debug ) debug("sessionset="+v.toString());	
 			}
 		}
-		debug("addSetValue() -> getSetString("+key+"): " +getSetString(key));
+		if( debug ) debug("addSetValue() -> getSetString("+key+"): " +getSetString(key));
 	}
 
 
@@ -83,7 +84,7 @@ public class sessionInfo {
 	*/
 	public void putSetValue(String key,String value) {
 
-		debug("putSetValue("+key+","+value+")");
+		if( debug ) debug("putSetValue("+key+","+value+")");
 
 		Vector v=(Vector)setvalues.get(key);
 		if (v==null) {
@@ -91,10 +92,10 @@ public class sessionInfo {
 			v=new Vector();
 			v.addElement(value);
 			setvalues.put(key,v);
-			debug("sessionset="+v.toString());	
+			if( debug ) debug("sessionset="+v.toString());	
 		} else {
 			v.addElement(value);
-			debug("sessionset="+v.toString());	
+			if( debug ) debug("sessionset="+v.toString());	
 		}
 	}
 
@@ -107,7 +108,7 @@ public class sessionInfo {
 		if (v!=null) {
 			if (v.contains(value)) {
 				v.removeElement(value);
-				debug("sessionset="+v.toString());	
+				if( debug ) debug("sessionset="+v.toString());	
 			}
 		}
 	}
@@ -131,12 +132,12 @@ public class sessionInfo {
 	* delete the values belonging to the key
 	*/
 	public String clearSet(String key) {
-		debug("sessionset="+key);	
+		if( debug ) debug("sessionset="+key);	
 		Vector v=(Vector)setvalues.get(key);
 		if (v!=null) {
 			v=new Vector();
 			setvalues.put(key,v);
-			debug("sessionset="+v.toString());	
+			if( debug ) debug("sessionset="+v.toString());	
 		}
 		return("");
 	}
@@ -148,7 +149,7 @@ public class sessionInfo {
 	*/
 	public String getSetString(String key) {
 
-		debug("getSetString("+key+")");
+		if( debug ) debug("getSetString("+key+")");
 
 		Vector v=(Vector)setvalues.get(key);
 		if (v!=null) {
@@ -164,7 +165,7 @@ public class sessionInfo {
 			}
 			return(result);
 		} else {
-			debug("getSetString("+key+"): ERROR: this key is non-existent!");
+			if( debug ) debug("getSetString("+key+"): ERROR: this key is non-existent!");
 			return(null);
 		}
 	}
