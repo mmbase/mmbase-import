@@ -30,7 +30,7 @@ public class XMLModuleWriter  {
 
     public static boolean writeXMLFile(String filename,Module mod) {
         String header = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"+
-                        "<!DOCTYPE module PUBLIC \"//MMBase - module//\" \"http://www.mmbase.org/dtd/module.dtd\">\n";
+                        "<!DOCTYPE module PUBLIC \"-//MMBase/DTD module config 1.0//EN\" \"http://www.mmbase.org/dtd/module.dtd\">\n";
         //String header = "";
 
         String body=header+"<module maintainer=\""+mod.getMaintainer()+"\" version=\""+mod.getVersion()+"\">\n\n";

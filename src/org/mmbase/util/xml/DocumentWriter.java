@@ -29,7 +29,7 @@ import javax.xml.transform.dom.DOMSource;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.2 2002-04-03 12:26:26 michiel Exp $
+ * @version $Id: DocumentWriter.java,v 1.3 2002-06-07 13:23:20 pierre Exp $
  */
 abstract public class DocumentWriter  {
 
@@ -57,6 +57,10 @@ abstract public class DocumentWriter  {
      */
     private ResourceBundle messageRB;
 
+    // keep oublic and system id
+    String publicId ="";
+    String systemId ="";
+
     /**
      * Constructs the document writer.
      * The constructor creates a basic document with a root element based on the specified document type parameters.
@@ -69,7 +73,9 @@ abstract public class DocumentWriter  {
      */
     public DocumentWriter(String qualifiedName, String publicId, String systemId) throws DOMException {
         DOMImplementation domImpl=XMLBasicReader.getDocumentBuilder().getDOMImplementation();
-        DocumentType doctype=domImpl.createDocumentType(qualifiedName, publicId, systemId);
+        this.publicId=publicId;
+        this.systemId=systemId;
+        DocumentType doctype=domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
         document=domImpl.createDocument(null,qualifiedName,doctype);
     }
 
@@ -259,17 +265,16 @@ abstract public class DocumentWriter  {
     }
 
     /**
-     * Generates the builder configuration and returns it as astring.
-     * @return the buidler configuration as a string
+     * Generates the document and returns it as a string.
      */
-    public String writeToString(String filename) throws IOException, TransformerException {
+    public String writeToString() throws IOException, TransformerException {
         StringWriter strw=new StringWriter(500);
         write(new StreamResult(strw));
         return strw.toString();
     }
 
     /**
-     * Generates the builder configuration and store it as a file in the given path.
+     * Generates the document and store it as a file in the given path.
      * @param filename the filepath where the configuration is to be stored
      */
     public void writeToFile(String filename) throws IOException, TransformerException {
@@ -277,7 +282,7 @@ abstract public class DocumentWriter  {
     }
 
     /**
-     * Generates the builder configuration and store it in the given stream.
+     * Generates the document and store it in the given stream.
      * @param out the output stream where the configuration is to be stored
      */
     public void writeToStream(OutputStream out) throws IOException, TransformerException {
@@ -285,8 +290,8 @@ abstract public class DocumentWriter  {
     }
 
     /**
-     * Creates a builder configuration file and writes it to the result object.
-     * @param result the StreamResult object where to store the configueration'
+     * Generates the document and writes it to the result object.
+     * @param result the StreamResult object where to store the configuration'
      */
     public void write(StreamResult result) throws IOException, TransformerException {
         Document doc=getDocument();
@@ -301,8 +306,8 @@ abstract public class DocumentWriter  {
         // xml output configuration
         serializer.setOutputProperty(OutputKeys.INDENT, "yes");
         serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "//MMBase - builder//");
-        serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://www.mmbase.org/dtd/builder.dtd");
+        serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, publicId);
+        serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, systemId);
         serializer.transform(new DOMSource(doc), result);
     }
 }

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated-now use org.mmbase.xml.BuilderWriter instead
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.20 2002-04-19 11:17:56 pierre Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.21 2002-06-07 13:23:19 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -36,7 +36,7 @@ public class XMLBuilderWriter  {
      */
     public static boolean writeXMLFile(String filename,MMObjectBuilder bul) {
         String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"+
-                        "<!DOCTYPE builder PUBLIC \"//MMBase - builder//\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
+                        "<!DOCTYPE builder PUBLIC \"-//MMBase/DTD builder config 1.0//EN\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
 
         StringBuffer body = new StringBuffer(500);
         body.append(header);

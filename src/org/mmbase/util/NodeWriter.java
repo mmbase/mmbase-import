@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.17 2002-02-19 19:12:52 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.18 2002-06-07 13:23:19 pierre Exp $
  */
 public class NodeWriter{
 
@@ -68,7 +68,7 @@ public class NodeWriter{
         }
         // Write the header
         write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        //write("<!DOCTYPE builder PUBLIC \"//MMBase - data//\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
+        //write("<!DOCTYPE builder PUBLIC \"-//MMBase/data//EN\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
         Calendar cal= Calendar.getInstance();
         long htimestamp=cal.get(Calendar.YEAR)*10000+
                        (cal.get(Calendar.MONTH)+1)*100+
