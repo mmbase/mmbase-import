@@ -113,7 +113,7 @@ public class NodeWriter{
             write(">\n");
         } else {
             // For a data node, store the alias if at all possible.
-            String tm=mmb.OAlias.getAlias(number);
+            String tm=mmb.getOAlias().getAlias(number);
             if (tm==null) {
                 write("\t<object number=\""+number+"\" owner=\""+owner+"\">\n");
             } else {
