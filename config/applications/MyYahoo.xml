@@ -34,31 +34,31 @@
 
 
   <description>
-	 <![CDATA[MyYahoo is a small application to show you how easy it is to create a program like the topic/url/search
-kind of interface first shown on yahoo.<br />
-It depends on the <strong>resources</strong> application, please install that one before installing this one.]]></description>
+   <![CDATA[MyYahoo is a small application to show you how easy it is to create a program like the topic/url/search kind of interface first shown on yahoo.
+It depends on the Resources application, please install that one before installing this one.
+  ]]></description>
 
   <install-notice>
-	  <![CDATA[Example urls/topics/etc are installed, see the mmexamples page for the example pages.<br />
-This application also installed the <strong>jumpers</strong> builder. The jumpers servlet uses
-this builder to define url shortcuts.<br />
-In order to install the jumpers servlet, you need to add the following code to your web.xml:<br />
-<pre>
-  &lt;filter&gt;
-    &lt;filter-name&gt;Jumpers Filter&lt;/filter-name&gt;
-    &lt;display-name&gt;Jumpers Filter&lt;/display-name&gt;
-    &lt;description&gt;Filter used for jumpers&lt;/description&gt;
-    &lt;filter-class&gt;org.mmbase.servlet.JumpersFilter&lt;/filter-class&gt;
-  &lt;/filter&gt;
+    <![CDATA[Example urls/topics/etc are installed, see the mmexamples page for the example pages.
+This application also installed the jumpers builder. The jumpers servlet uses
+this builder to define url shortcuts.
+In order to install the jumpers servlet, you need to add the following code to your web.xml:
 
-  &lt;filter-mapping&gt;
-    &lt;filter-name&gt;Jumpers Filter&lt;/filter-name&gt;
-    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-  &lt;/filter-mapping&gt;
-</pre>
-And restart your server.<br />
+  <filter>
+    <filter-name>Jumpers Filter</filter-name>
+    <display-name>Jumpers Filter</display-name>
+    <description>Filter used for jumpers</description>
+    <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Jumpers Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+And restart your server.
 Note that this may not work in Orion 1.5.2 or lower.
-See the release notes for more information on installing the jumpers servlet.]]>
-  </install-notice>
+See the release notes for more information on installing the jumpers servlet.
+  ]]></install-notice>
 
 </application>

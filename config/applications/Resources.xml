@@ -20,8 +20,12 @@
   <contextsourcelist/>
 
   <description><![CDATA[Installs a few basic resources such as urls, attachments, images and the image cache.<br />
-A few other applications depend on this application.<br />
+A few other applications depend on this application.
 For images and icaches, either JAI or Imagemagick is required, see the documentation
-for more information about how to install one of these tools.]]></description>
-  <install-notice><![CDATA[Urls, attachments, images and icaches installed.]]></install-notice>
+for more information about how to install one of these tools.
+  ]]></description>
+
+  <install-notice><![CDATA[Urls, attachments, images and icaches installed.
+  ]]></install-notice>
+
 </application>

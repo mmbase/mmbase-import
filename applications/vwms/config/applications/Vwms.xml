@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="Vwms" maintainer="mmbase.org" version="1" auto-deploy="false">
-  
+
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">vwms</builder>
     <builder maintainer="mmbase.org" version="0">vwmtasks</builder>
@@ -22,12 +22,9 @@
 
   <contextsourcelist/>
 
-  <description>Installs builders and relations needed for using virtual
-  webmasters. A little documentation about vwms is provided on the
-  MMBase-website.
-  </description>
+  <description><![CDATA[Installs builders and relations needed for using virtual webmasters. A little documentation about vwms is provided on the MMBase-website.
+  ]]></description>
 
-  <install-notice>
-    Vwms builders and relations installed
-  </install-notice>
+  <install-notice><![CDATA[Vwms builders and relations installed.
+  ]]></install-notice>
 </application>
