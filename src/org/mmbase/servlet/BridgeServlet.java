@@ -36,14 +36,14 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.13 2003-11-12 13:23:30 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.14 2003-12-10 18:38:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public abstract class BridgeServlet extends  MMBaseServlet {
 
 
-    private static final Pattern FILE_PATTERN = Pattern.compile(".*?((?:session=.*\\+)?\\d+)(?:/.*)?");
+    private static final Pattern FILE_PATTERN = Pattern.compile(".*\\D((?:session=.*\\+)?\\d+)(?:/.*)?");
     private static Logger log;
 
     /**
