@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.4 2004-01-27 12:04:49 pierre Exp $
+ * @version $Id: PostgreSQL.java,v 1.5 2004-02-09 13:50:37 pierre Exp $
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL72.class.getName());
@@ -296,9 +296,9 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
         // Now fill the fields
         try {
             preStmt.setEscapeProcessing(false);
-            Enumeration enum = ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();
-            while (enum.hasMoreElements()) {
-                currentField = (FieldDefs) enum.nextElement();
+            Enumeration enumeration = ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();
+            while (enumeration.hasMoreElements()) {
+                currentField = (FieldDefs) enumeration.nextElement();
                 String key = currentField.getDBName();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {

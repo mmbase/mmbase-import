@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.5 2003-03-07 11:49:30 pierre Exp $
+ * @version $Id: Detector.java,v 1.6 2004-02-09 13:50:35 pierre Exp $
  */
 
 public class Detector {
@@ -598,13 +598,10 @@ public class Detector {
          f.write(padStr + "  <childlist>\n");
          Iterator i = childList.iterator();
          while (i.hasNext()) {
-            //s.append(((Detector)enum.nextElement()).toXML(level+1));
              ((Detector) i.next()).toXML(f, level + 1);
          }
          f.write(padStr + "  </childlist>\n");
-         //s.append(pad).append("  </childlist>\n");
       }
-      //s.append(pad).append("</detector>\n");
       f.write(padStr + "</detector>\n");
 
    }

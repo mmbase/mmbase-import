@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.258 2004-02-05 12:14:13 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.259 2004-02-09 13:50:38 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -342,7 +342,7 @@ public class MMObjectBuilder extends MMTable {
 
             // skip initialisation if oType has been set (happend at end of init)
             // note that init can be called twice
-            if (oType != -1) return true; 
+            if (oType != -1) return true;
 
             log.debug("Init of builder " + getTableName());
 
@@ -1131,7 +1131,7 @@ public class MMObjectBuilder extends MMTable {
             MultiConnection con = null;
             Statement stmt = null;
 
-            try {               
+            try {
 
                 //NodeSearchQuery query = new NodeSearchQuery(this);
                 //BasicFieldValueConstraint constraint = new BasiceFieldValueConstraint(
@@ -1140,7 +1140,7 @@ public class MMObjectBuilder extends MMTable {
                 con = mmb.getConnection();
                 stmt = con.createStatement();
                 String query = "SELECT " + builder.getNonByteArrayFields() +" FROM " + builder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
-                
+
                 ResultSet rs = stmt.executeQuery(query);
                 try {
                     if (rs.next()) {
@@ -2267,13 +2267,13 @@ public class MMObjectBuilder extends MMTable {
      */
     public String buildSet(Vector nodes, String fieldName) {
         StringBuffer result = new StringBuffer("(");
-        Enumeration enum = nodes.elements();
+        Enumeration enumeration = nodes.elements();
         MMObjectNode node;
 
-        while (enum.hasMoreElements()) {
-            node = (MMObjectNode)enum.nextElement();
+        while (enumeration.hasMoreElements()) {
+            node = (MMObjectNode)enumeration.nextElement();
 
-            if(enum.hasMoreElements()) {
+            if(enumeration.hasMoreElements()) {
                 result.append(node.getValue(fieldName)).append(", ");
             } else {
                 result.append(node.getValue(fieldName));
@@ -2829,7 +2829,7 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
                 return rtn;
-            }   
+            }
         }
 
         String field;
@@ -3943,9 +3943,9 @@ public class MMObjectBuilder extends MMTable {
     public void setXMLValues(Vector xmlfields) {
         fields = new Hashtable();
 
-        Enumeration enum = xmlfields.elements();
-        while (enum.hasMoreElements()) {
-            FieldDefs def=(FieldDefs)enum.nextElement();
+        Enumeration enumeration = xmlfields.elements();
+        while (enumeration.hasMoreElements()) {
+            FieldDefs def=(FieldDefs)enumeration.nextElement();
             String name=(String)def.getDBName();
             def.setParent(this);
             fields.put(name,def);
@@ -3960,9 +3960,9 @@ public class MMObjectBuilder extends MMTable {
             def.setDBPos(2);
             // required field
             def.setDBNotNull(true);
-            enum = xmlfields.elements();
-            while (enum.hasMoreElements()) {
-                FieldDefs field=(FieldDefs)enum.nextElement();
+            enumeration = xmlfields.elements();
+            while (enumeration.hasMoreElements()) {
+                FieldDefs field=(FieldDefs)enumeration.nextElement();
                 int pos=field.getDBPos();
                 if (pos>1) field.setDBPos(pos+1);
             }

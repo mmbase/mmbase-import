@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.86 2004-02-06 16:15:52 michiel Exp $
+ * @version $Id: Images.java,v 1.87 2004-02-09 13:50:39 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -48,7 +48,7 @@ public class Images extends AbstractImages {
         new Parameter("template",  String.class)
     };
 
-    public final static Parameter[] GUI_PARAMETERS = { 
+    public final static Parameter[] GUI_PARAMETERS = {
         new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS),
         new Parameter("template", String.class)
     };
@@ -465,9 +465,9 @@ public class Images extends AbstractImages {
         }
         // flatten parameters as a 'hashed' key;
         StringBuffer sckey = new StringBuffer("");
-        Iterator enum=params.iterator();
-        while(enum.hasNext()) {
-            sckey.append(enum.next().toString());
+        Iterator enumeration=params.iterator();
+        while(enumeration.hasNext()) {
+            sckey.append(enumeration.next().toString());
         }
         // skip spaces at beginning and ending, URL param escape to avoid everything strange in it.
         String ckey = "";

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.8 2004-01-06 12:23:57 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.9 2004-02-09 13:50:36 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
@@ -338,12 +338,12 @@ public class BuilderReader extends XMLBasicReader {
         Element tmp;
         String lang;
         // Gui
-        Enumeration enum;
+        Enumeration enumeration;
 
         Element descriptions = getElementByPath(field,"field.descriptions");
         if (descriptions!=null) {
-            for (enum = getChildElements(descriptions,"description"); enum.hasMoreElements(); ) {
-                tmp = (Element)enum.nextElement();
+            for (enumeration = getChildElements(descriptions,"description"); enumeration.hasMoreElements(); ) {
+                tmp = (Element)enumeration.nextElement();
                 lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setDescription(lang,getElementValue(tmp));
             }
@@ -351,14 +351,14 @@ public class BuilderReader extends XMLBasicReader {
 
         Element gui = getElementByPath(field,"field.gui");
         if (gui != null) {
-            for (enum = getChildElements(gui,"guiname"); enum.hasMoreElements(); ) {
-                tmp = (Element)enum.nextElement();
+            for (enumeration = getChildElements(gui,"guiname"); enumeration.hasMoreElements(); ) {
+                tmp = (Element)enumeration.nextElement();
                 lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setGUIName(lang,getElementValue(tmp));
             }
             // XXX: deprecated tag 'name'
-            for(enum = getChildElements(gui,"name"); enum.hasMoreElements(); ) {
-                tmp = (Element)enum.nextElement();
+            for(enumeration = getChildElements(gui,"name"); enumeration.hasMoreElements(); ) {
+                tmp = (Element)enumeration.nextElement();
                 lang = getElementAttributeValue(tmp,"xml:lang");
                 def.setGUIName(lang,getElementValue(tmp));
             }
@@ -399,7 +399,7 @@ public class BuilderReader extends XMLBasicReader {
             int searchPos = getEditorPos(editorpos);
             if (searchPos > -1) searchPositions.add(new Integer(searchPos));
             def.setGUISearch(searchPos);
-        } else {       
+        } else {
             // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
             if (def.getDBType() != FieldDefs.TYPE_BYTE
                 && def.getDBState() == FieldDefs.DBSTATE_PERSISTENT  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
@@ -413,8 +413,8 @@ public class BuilderReader extends XMLBasicReader {
             } else {
                 def.setGUISearch(-1);
             }
-                    
-            
+
+
         }
     }
 
@@ -482,9 +482,9 @@ public class BuilderReader extends XMLBasicReader {
         }
         Element p;
         String name, value;
-        for(Enumeration enum = getChildElements("builder.properties","property");
-                        enum.hasMoreElements(); ) {
-            p = (Element)enum.nextElement();
+        for(Enumeration enumeration = getChildElements("builder.properties","property");
+                        enumeration.hasMoreElements(); ) {
+            p = (Element)enumeration.nextElement();
             name = getElementAttributeValue(p,"name");
             value = getElementValue(p);
             results.put(name,value);
@@ -502,9 +502,9 @@ public class BuilderReader extends XMLBasicReader {
         Hashtable results=new Hashtable();
         Element tmp;
         String lang;
-        for (Enumeration enum = getChildElements("builder.descriptions","description");
-             enum.hasMoreElements(); ) {
-            tmp = (Element)enum.nextElement();
+        for (Enumeration enumeration = getChildElements("builder.descriptions","description");
+             enumeration.hasMoreElements(); ) {
+            tmp = (Element)enumeration.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
@@ -520,9 +520,9 @@ public class BuilderReader extends XMLBasicReader {
         Hashtable results=new Hashtable();
         Element tmp;
         String lang;
-        for (Enumeration enum = getChildElements("builder.names","plural");
-             enum.hasMoreElements(); ) {
-            tmp = (Element)enum.nextElement();
+        for (Enumeration enumeration = getChildElements("builder.names","plural");
+             enumeration.hasMoreElements(); ) {
+            tmp = (Element)enumeration.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
@@ -538,9 +538,9 @@ public class BuilderReader extends XMLBasicReader {
         Hashtable results=new Hashtable();
         Element tmp;
         String lang;
-        for (Enumeration enum = getChildElements("builder.names","singular");
-             enum.hasMoreElements(); ) {
-            tmp = (Element)enum.nextElement();
+        for (Enumeration enumeration = getChildElements("builder.names","singular");
+             enumeration.hasMoreElements(); ) {
+            tmp = (Element)enumeration.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
@@ -610,16 +610,16 @@ public class BuilderReader extends XMLBasicReader {
     public boolean equals(Object o) {
         if (o instanceof BuilderReader) {
             BuilderReader b = (BuilderReader) o;
-            return 
+            return
                 getFieldDefs().equals(b.getFieldDefs()) &&
                 getBuilderMaintainer().equals(b.getBuilderMaintainer()) &&
                 getBuilderVersion() == b.getBuilderVersion() &&
                 getBuilderExtends() == b.getBuilderExtends() &&
-                getSingularNames().equals(b.getSingularNames()) && 
-                getPluralNames().equals(b.getPluralNames()) && 
-                getDescriptions().equals(b.getDescriptions()) && 
+                getSingularNames().equals(b.getSingularNames()) &&
+                getPluralNames().equals(b.getPluralNames()) &&
+                getDescriptions().equals(b.getDescriptions()) &&
                 getProperties().equals(b.getProperties()) &&
-                getClassFile().equals(b.getClassFile())                                
+                getClassFile().equals(b.getClassFile())
                 ;
         } else {
             return false;

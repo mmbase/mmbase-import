@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * It allows for emailing on time, repeat mail, stats
  * and using urls as input for subject and body.
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.24 2003-07-02 07:51:33 keesj Exp $
+ * @version $Id: Email.java,v 1.25 2004-02-09 13:50:39 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -379,9 +379,9 @@ public class Email extends MMObjectBuilder {
         String to=null;
         Vector rels=node.getRelatedNodes("people");
         if (rels!=null) {
-            Enumeration enum=rels.elements();
-                while (enum.hasMoreElements()) {
-                MMObjectNode pnode=(MMObjectNode)enum.nextElement();
+            Enumeration enumeration=rels.elements();
+                while (enumeration.hasMoreElements()) {
+                MMObjectNode pnode=(MMObjectNode)enumeration.nextElement();
                 String email=pnode.getStringValue("email");
                 if (to==null || to.equals("")) {
                     to=email;
@@ -401,9 +401,9 @@ public class Email extends MMObjectBuilder {
         String to=null;
         Vector rels=node.getRelatedNodes("users");
         if (rels!=null) {
-            Enumeration enum=rels.elements();
-                while (enum.hasMoreElements()) {
-                MMObjectNode pnode=(MMObjectNode)enum.nextElement();
+            Enumeration enumeration=rels.elements();
+                while (enumeration.hasMoreElements()) {
+                MMObjectNode pnode=(MMObjectNode)enumeration.nextElement();
                 String email=pnode.getStringValue("email");
                 if (to==null || to.equals("")) {
                     to=email;
@@ -544,13 +544,13 @@ public class Email extends MMObjectBuilder {
     }
 
     /**
-     * enum the tasks in memory for the admin tool
+     * enumeration the tasks in memory for the admin tool
      */
     public Vector getMemTasks() {
         Vector results=new Vector();
-        Enumeration enum=sendprobe.tasks.elements();
-            while (enum.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)enum.nextElement();
+        Enumeration enumeration=sendprobe.tasks.elements();
+            while (enumeration.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)enumeration.nextElement();
             results.addElement(""+node.getIntValue("number"));
             int ntime=node.getIntValue("mailtime");
             int ttime=(int)((System.currentTimeMillis()/1000));
