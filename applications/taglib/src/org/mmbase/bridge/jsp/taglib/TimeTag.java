@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.30 2003-08-11 15:27:21 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.31 2003-08-18 14:12:15 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -296,7 +296,13 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         // Calculate the offset
         if(offset != Attribute.NULL) {
             long calculatedDate = date.getTime();
-            long os = Long.parseLong(offset.getString(this))*1000;
+            long os;
+            String off = offset.getString(this);
+            try {
+               os  = Long.parseLong(off) * 1000;
+            } catch (NumberFormatException nfe) {
+                os = new Double(off).longValue() * 1000;
+            }
             date = new Date(calculatedDate + os);
         }
 
