@@ -65,27 +65,29 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         if (getReferid() == null) {
             Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
             compare1 =  w.getWriterValue();
+            if (compare1 == null) compare1 = "";
         } else {
             compare1 = getObject(getReferid());
         }
-        
+
 
         Object compare2;
         if (value != null) {            
-            if (compare1 instanceof Number) {
-                log.debug("found an instance of Number");
-                compare1 = new java.math.BigDecimal(compare1.toString());
-                compare2 = new java.math.BigDecimal(value);
-            }  else {
-                compare2 = value;                   
-            }
+            compare2 = value;                   
             if (referid2 != null) {
                 throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
             }
         } else {            
             compare2 =  getCompare2();
         }
-        // if using 'BigDecimal' then avoid classcastexceptions
+
+        if ((compare1 instanceof Number) && (compare2 instanceof String)) {
+            log.debug("found an instance of Number");
+            compare1 = new java.math.BigDecimal(compare1.toString());
+            compare2 = new java.math.BigDecimal((String)compare2);
+        } 
+
+        // if using 'BigDecimal' then avoid classcastexceptions also if other type is some number.
         if (compare1 instanceof java.math.BigDecimal) {
             if (! (compare2 instanceof java.math.BigDecimal)) {
                 compare2 = new java.math.BigDecimal(compare2.toString());
