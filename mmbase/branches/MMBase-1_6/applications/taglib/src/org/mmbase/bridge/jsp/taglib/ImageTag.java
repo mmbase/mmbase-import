@@ -64,7 +64,7 @@ public class ImageTag extends FieldTag {
         }
 
         String number;
-        if (template == null) {
+        if (template == null || "".equals(template)) {
             // the node/image itself
             number = node.getStringValue("number");
         } else {
