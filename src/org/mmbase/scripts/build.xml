@@ -394,7 +394,7 @@ Change directory to ${build.dir}/orion and run:
   </target>
 
 
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
   <!-- Check the needed packages                                           -->
   <!-- =================================================================== -->
   <target name="check.needed.xerces" depends="init.compile.cust"
@@ -834,7 +834,7 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Install MMBase on top of Orion and MySQL                           -->
+  <!-- Install MMBase on top of Orion and MySQL                            -->
   <!-- =================================================================== -->
   <target name="orion.mysql"
           description="Install MMBase on top of Orion and MySQL"
@@ -907,7 +907,7 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Clean the JUnit test environment                                   -->
+  <!-- Clean the JUnit test environment                                    -->
   <!-- =================================================================== -->
   <target name="clean.junit" description="Clean the JUnit test environment"
           depends="clean.compile">
@@ -916,9 +916,10 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Run the bridgetest classes.                                         -->
+  <!-- Run the bridgetest classes                                          -->
   <!-- =================================================================== -->
-  <target name="junit.run" depends="junit">
+  <target name="run.junit" description="Run the bridgetest classes"
+          depends="junit">
     <java classname="junit.swingui.TestRunner" fork="true">
       <classpath>
         <fileset dir="${build.dir}/junit/lib">
@@ -928,6 +929,58 @@ Change directory to ${build.dir}/orion and run:
       <arg value="org.mmbase.test.bridge.AllTests"/>
       <sysproperty key="mmbase.config" file="${build.dir}/junit/config"/>
     </java>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Compile the AppTool                                                 -->
+  <!-- =================================================================== -->
+  <target name="compile.apptool" description="Compile the AppTool"
+          depends="init.compile">
+    <mkdir dir="${build.dir}/apptool/classes"/>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/apptool/classes"
+           classpathref="compile"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <include name="org/mmbase/module/tools/MMAppTool/*.java"/>
+    </javac>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Build the AppTool                                                   -->
+  <!-- =================================================================== -->
+  <target name="apptool" description="Build the AppTool"
+          depends="compile.apptool">
+    <mkdir dir="${build.dir}/apptool/lib"/>
+    <copy file="${mmbase.jar}" todir="${build.dir}/apptool/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/apptool/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Run the AppTool                                                     -->
+  <!-- =================================================================== -->
+  <target name="run.apptool" description="Run the AppTool"
+          depends="apptool">
+    <java classname="org.mmbase.module.tools.MMAppTool.MMAppTool" fork="true">
+      <classpath>
+        <pathelement location="${build.dir}/apptool/classes"/>
+        <fileset dir="${build.dir}/apptool/lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </java>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the apptool                                                   -->
+  <!-- =================================================================== -->
+  <target name="clean.apptool" description="Clean the apptool">
+    <delete dir="${build.dir}/apptool"/>
   </target>
 
 
