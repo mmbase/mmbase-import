@@ -16,8 +16,7 @@
 
     <mm:import id="sourceWhereClause">snumber=<mm:write referid="thisnumber" /></mm:import>
     <mm:import id="tn" vartype="Integer" jspvar="thisnumber"><mm:write referid="thisnumber" /></mm:import>
-    <table class="edit" summary="relation overview" width="100%" cellspacing="1" cellpadding="3" border="0">
-        
+    <table class="edit" summary="relation overview" width="100%" cellspacing="1" cellpadding="3" border="0">        
         <tr>
             <th colspan="8"><%=m.getString("relations.to")%></th>
         </tr>       
@@ -132,13 +131,13 @@
             <tr>            
                 <td class="data">
                     <!-- begin gomez friendly code -->
-                    <% if(relationDefinition.getIntValue("dir")==1) { %>[<% } %>
+                    <% if(relationDefinition.getIntValue("dir")==1) { %><small><% } %>
                     <!-- end gomez friendly code -->
                     <a href="<%=response.encodeURL("change_node.jsp?node_number=" + typerelNode.getNumber())%>">
                     <%=otherNodeType.getGUIName()%></a>
                     (<a href="<%=response.encodeURL("change_node.jsp?node_number=" + relationDefinition.getNumber())%>">
                      <%=relationDefinition.getValue("gui(sname)")%></a>)
-                    <% if(relationDefinition.getIntValue("dir")==1) { %>]<% } %>
+                    <% if(relationDefinition.getIntValue("dir")==1) { %>(hidden)</small><% } %>
                 </td>
                 <th colspan="3"><%=m.getString("relations.relations")%></th>
                 <th colspan="3"><%=m.getString("relations.related")%></th>
