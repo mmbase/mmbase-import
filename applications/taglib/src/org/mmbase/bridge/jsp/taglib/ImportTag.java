@@ -21,14 +21,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.35 2003-08-27 21:33:33 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.36 2003-10-24 08:23:29 pierre Exp $
  */
 
 public class ImportTag extends WriteTag {
     private static final Logger log = Logging.getLoggerInstance(ImportTag.class);
 
     protected Attribute required = Attribute.NULL;
-    protected Attribute from     = Attribute.NULL; 
+    protected Attribute from     = Attribute.NULL;
 
     protected Attribute externid = Attribute.NULL;
     private   Attribute reset    = Attribute.NULL;
@@ -98,12 +98,13 @@ public class ImportTag extends WriteTag {
             useId = getId();
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
+/*
         if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
             if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
             getContextProvider().getContextContainer().unRegister(useId);
         }
-
-        if (externid != Attribute.NULL) {            
+*/
+        if (externid != Attribute.NULL) {
             if (log.isDebugEnabled()) log.trace("Externid was given " + externid.getString(this));
             if (from == Attribute.NULL) {
                 found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId) != null);
@@ -122,7 +123,7 @@ public class ImportTag extends WriteTag {
             }
         }
         if (found) {
-            helper.setValue(value, WriterHelper.NOIMPLICITLIST); 
+            helper.setValue(value, WriterHelper.NOIMPLICITLIST);
             if (useId != null) {
                 getContextProvider().getContextContainer().reregister(useId, getValue());
             }
@@ -148,6 +149,10 @@ public class ImportTag extends WriteTag {
     }
 
     public int doEndTag() throws JspTagException {
+        if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
+            if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
+            getContextProvider().getContextContainer().unRegister(useId);
+        }
         if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid.getString(this));
         if (externid != Attribute.NULL) {
             if (! found ) {
@@ -158,11 +163,11 @@ public class ImportTag extends WriteTag {
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    helper.setValue(body);       
+                    helper.setValue(body);
                     getContextProvider().getContextContainer().reregister(useId, getValue());
                 }  else {
                     //  might be vartype="list" or so, still need to set
-                    helper.setValue(null);    
+                    helper.setValue(null);
                     getContextProvider().getContextContainer().reregister(useId, getValue());
                 }
             }
