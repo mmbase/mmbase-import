@@ -30,7 +30,7 @@ public class NodeFunction extends Function {
     }
 
     public Object getFunctionValue(Parameters arguments) {
-        return node.getFunctionValue(name, arguments);
+        return node.getFunctionValue(name, arguments).get();
     }
 
 }

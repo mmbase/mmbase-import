@@ -20,7 +20,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.1 2003-11-21 22:01:50 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.2 2003-11-24 16:08:40 michiel Exp $
  * @see Parameter
  */
 
@@ -29,6 +29,7 @@ public class AutodefiningParameters extends Parameters {
 
 
     public AutodefiningParameters() {
+        definition = new Parameter[0];
     }
     /**
      * Sets the value of an argument, and grows the definition array.
@@ -41,6 +42,10 @@ public class AutodefiningParameters extends Parameters {
         newDef[newDef.length - 1] = new Parameter(arg, value.getClass());
         backing.put(arg, value);
         return this;
+    }
+
+    public boolean hasParameter(Parameter param) {
+        return true;
     }
 
 }

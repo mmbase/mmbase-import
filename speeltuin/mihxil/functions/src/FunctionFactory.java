@@ -11,17 +11,16 @@ package org.mmbase.util.functions;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Module;
+import org.mmbase.bridge.*;
 import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
  * This I use now to instantiate function objects, but perhaps it is silly. (Can perhaps add static methods to the impelentation themselves or so).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.3 2003-11-21 22:01:50 michiel Exp $
+ * @version $Id: FunctionFactory.java,v 1.4 2003-11-24 16:08:40 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {
@@ -49,10 +48,12 @@ public class FunctionFactory {
      * 
      */
     private static Map getParameterConstants(Class clazz) {
+        log.service("Finding function parameters of class " + clazz);
         return getParameterConstants(clazz, new HashMap());
     }
     private static Map getParameterConstants(Class clazz, Map map) {
 
+        log.debug("Searching " + clazz);
         Field[] fields = clazz.getDeclaredFields();
         for (int i = 0 ; i < fields.length; i++) {
             Field field = fields[i];
@@ -73,6 +74,7 @@ public class FunctionFactory {
                     name = name.substring(0, underscore);
                 }
                 if (! map.containsKey(name)) { // overriding works, but don't do backwards :-)
+                    log.service("Found a function definition '" + name + "' in " + clazz);
                     map.put(name, (Parameter[])field.get(null));
                 }
             } catch (IllegalAccessException iae) { // never mind
@@ -113,7 +115,7 @@ public class FunctionFactory {
         Parameter[] parameters = (Parameter[]) functions.get(name);
         if (parameters == null) {
             // can set later.
-            log.debug("Trying to use unknown function '" + name + "' on builder '" + nodeManager + "'");            
+            log.warn("Trying to use unknown function '" + name + "' on builder '" + nodeManager + "'");            
             //throw new IllegalArgumentException("The function 'name' cannot be found on the builder '" + nodeManager + "'");
         }
         
