@@ -1555,7 +1555,6 @@ Version: MMBase build ${version}
       <arg value="${build.dir}/docbook2xhtml.xslt" />
       <arg value="${source-documentation.dir}" />
       <arg value="${mmdocs.dir}" />
-      <arg value="usecache=false" />
     </java>
 
   </target>
