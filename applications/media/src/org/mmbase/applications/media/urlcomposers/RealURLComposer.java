@@ -89,6 +89,7 @@ public class RealURLComposer extends FragmentURLComposer  {
 
         if (d > 0) append = true;
         if (append) buf.append(d).append(':');
+        append = true;
         if (h > 0) append = true;
         if (append) buf.append(h).append(':');
         if (min > 0) append = true;
