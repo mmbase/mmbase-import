@@ -29,4 +29,5 @@
 # this will enable you to check out 'src'
 src -d src/org/mmbase mmbase
 
-all -d . src & config & html & documentation
+# to check out everything
+all -d .  &src &config &html &documentation
