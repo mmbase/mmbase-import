@@ -1,3 +1,5 @@
+<!-- Listing relations is rather dirty, perhaps 'mm:lisrelation' could be used -->
+
 <mm:context id="relations">
 <mm:import externid="backpage_cancel" required="true" from="parent"/>
 <mm:import externid="backpage_ok"     required="true" from="parent"/>

@@ -32,7 +32,7 @@
 <mm:present referid="new"><!-- this was a create node -->
    <mm:present referid="ok">
     <mm:import externid="alias_name" />
-    <mm:createnode id="new_node" type="${node_type}">
+    <mm:createnode id="new_node" type="$node_type">
     	<mm:fieldlist id="my_form" type="edit">
             <mm:fieldinfo type="useinput" />
     	</mm:fieldlist>
@@ -58,7 +58,6 @@
 <mm:present referid="ok">
     <mm:import externid="_my_form_change_context" />
     <mm:import externid="_my_form_context" />
-    <mm:import externid="alias_name" />
 
     <mm:node referid="node_number">
         <!-- handle the form -->
@@ -67,28 +66,27 @@
                 <mm:fieldinfo type="useinput" />
             </mm:fieldlist>
         </mm:maywrite>
-        <!-- if alias added (only for new nodes), do that too -->
-        <mm:present referid="alias_name">
-            <mm:createalias name="${alias_name}" />
-        </mm:present>
+
         <!-- if context of node changed, handle that too: -->
         <mm:present referid="_my_form_change_context">
             <mm:maychangecontext>
                <mm:setcontext><mm:write referid="_my_form_context" /></mm:setcontext>
             </mm:maychangecontext>
         </mm:present>
+
     </mm:node>
     <mm:remove referid="redirectTo" />
     <mm:import id="redirectTo"><mm:write referid="backpage_ok" /></mm:import>
 </mm:present>
 </mm:notpresent>
+
 <!-- do the redirect to the page where we want to go to... -->
-<META HTTP-EQUIV="refresh" content="0; url=<mm:url page="${redirectTo}" />" />
+<META HTTP-EQUIV="refresh" content="0; url=<mm:url page="$redirectTo" />" />
 <mm:write referid="style" />
 </head>
 <body>
 <h1>Redirecting</h1>
-<a href="<mm:url page="${redirectTo}" />">
+<a href="<mm:url page="$redirectTo" />">
 Redirecting to main editor page</a>
 </mm:context>
 <%@ include file="foot.jsp"  %>
