@@ -27,8 +27,18 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
 
 /**
+ * MM: I think this code should 
+ * - use the xml to create a pool of ReflectionFunction instances
+ * - maintain the XML.
+ *
+ *
  * 
  * @javadoc
+ * @author Daniel Ockeloen
+ * @version $Id: MMFunctions.java,v 1.3 2003-11-21 22:01:50 michiel Exp $
+ * @since MMBase-1.7
+ * @rename  GlobalFunctions or so (with static methods?)
+ * @todo    use more DOM?
  */
 
 public class MMFunctions extends ProcessorModule {
