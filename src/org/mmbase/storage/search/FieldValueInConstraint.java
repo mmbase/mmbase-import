@@ -17,12 +17,14 @@ import java.util.*;
  * This corresponds to the use of "in (...)" in SQL SELECT-syntax. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface FieldValueInConstraint extends FieldConstraint {
     /**
      * Gets the list of values that is specified for this constraint. 
+     * Depending on the field type, the values are of type 
+     * <code>String</code> or <code>Number</code>.
      */
     SortedSet getValues();
 
