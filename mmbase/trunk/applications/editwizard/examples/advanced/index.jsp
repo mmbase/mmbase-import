@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.23 2004-01-08 21:58:20 michiel Exp $
+    @version  $Id: index.jsp,v 1.24 2004-01-09 20:21:12 johannes Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -53,16 +53,16 @@
   <td class="listcanvas">
    <table>
   <p>
-   This example overrides some XSL's the editwizard bij placing
-   variants in xsl/ relative to this file. It addes a stylesheet by
+   This example overrides some XSL's of the editwizard by placing
+   variants in xsl/ relative to this file. It adds a stylesheet by
    overriding base.xsl.  Furthermore it uses it's private XML
    editwizard definitions, which are also placed relativily to this
    file in the 'tasks' directory.
   </p>
   <p>
-     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a>
-     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/wizard.xsl</mm:param></mm:url>">view xsl/wizard.xsl</a>
-     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/base.xsl</mm:param></mm:url>">view xsl/base.xsl</a>
+     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a><br />
+     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/wizard.xsl</mm:param></mm:url>">view xsl/wizard.xsl</a><br />
+     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/base.xsl</mm:param></mm:url>">view xsl/base.xsl</a><br />
   </p>
   <table class="listcanvas">
    <tr><td>
@@ -81,7 +81,7 @@
   </td><td>
      This is a '2 step' example. You can create/change the date for a
      person and relate a picture in the first step. In the second
-         step then, you can relate articles to the person. We also
+         step, you can relate articles to the person. We also
            demonstrate here how you can jump directly to the wizard to create a
            new person (without having to go to the list first).
   </td>
@@ -105,7 +105,7 @@
         </form>
   </td><td>
      This is the same example, however this version first uses a simple search form to search for
-     any persons whose name matches the given search term.
+     persons whose name matches the given search term.
   </td>
   <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/people.xml</mm:param></mm:url>">view XML</a></td>
   </tr>
@@ -138,7 +138,7 @@
    </td><td>
  Use the editwizards to upload and download attachments e.g. PDF files.
     </td>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/attachments.xml</mm:param></mm:url>">\
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/attachments.xml</mm:param></mm:url>">
 view XML</a></td>
  </tr>
     <tr><td>
