@@ -19,8 +19,15 @@
   application server. 
 </p>
 <p>
-  Start <a href="<mm:url page="transaction.jsp" />">here</a>.
+  Start <a href="<mm:url page="transaction.jsp" />">here for transaction-tests</a>.
 </p>
+<p>
+  The cloud-tag is a rather complex thing, it has some attributes
+  which can influence each other.
+  Start <a href="<mm:url page="cloud.jsp" />">here for cloud tag
+  tests</a>. It will start with a login-popup.
+</p>
+
 <hr />
 <p>
   An alternative <a href="<mm:url page="caches.jsp" />">Caches overview</a>
