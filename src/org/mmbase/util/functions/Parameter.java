@@ -18,7 +18,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.1 2003-12-17 20:41:24 michiel Exp $
+ * @version $Id: Parameter.java,v 1.2 2004-01-24 21:16:26 daniel Exp $
  * @see Parameters
  */
 
@@ -88,10 +88,11 @@ public class Parameter {
         return required;
     }
 
-    void checkType(Object value) {
+    public boolean checkType(Object value) {
         if (! type.isInstance(value)) {
-            throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
+	  	return false; 
         }
+	return true;
     }
 
     
