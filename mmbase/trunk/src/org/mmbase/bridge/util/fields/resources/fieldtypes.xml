@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE fieldtypes PUBLIC "-//MMBase//DTD fieldtypes 0.1//EN" "http://www.mmbase.org/dtd/fieldtypes_0_1.dtd">
+<fieldtypes>
+
+<!-- 
+  version 0.1 of fieldtypes will only add the possibility of set- and get-processor. 
+  I hope this can still be added to MMBase 1.7.0
+
+-->
+
+  <fieldtype id="xml">
+    <!-- processors on every field -->
+    <setprocessor type="string">
+      <class>org.mmbase.core.processors.XMLValidate</class>
+    </setprocessor>
+
+    <!-- and on fields of certain 'guitype' =~ specialization -->
+    <specialization id="mmxf">
+      <setprocessor type="string">
+        <class config="RICH">org.mmbase.util.transformers.XmlField</class>
+        <class>org.mmbase.core.processors.MMXFValidate</class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class>org.mmbase.core.processors.UnXML</class>
+      </getprocessor>
+    </specialization>
+
+  </fieldtype>
+
+  
+  <fieldtype id="string">
+    <specialization id="fillotherfield">
+      <setprocessor type="string">
+        <class>org.mmbase.bridge.util.fields.ComplicatedAndVeryObfucatingFillAlsoOtherFieldsProcessor</class>
+      </setprocessor>
+    </specialization>
+    <specialization id="i18n">
+      <setprocessor>
+        <class>org.mmbase.core.processors.I18N</class>
+      </setprocessor>
+      <getprocessor>
+        <class>org.mmbase.core.processors.I18N</class>
+      </getprocessor>
+    </specialization>
+  </fieldtype>
+
+  
+  <fieldtype id="integer">
+    <specialization id="myenum">
+      <setprocessor type="integer">
+        <class>org.mmbase.core.processors.EnumChecker</class>
+      </setprocessor>
+    </specialization>
+  </fieldtype>
+
+
+  <fieldtype id="node">
+    <setprocessor type="integer">
+      <class>org.mmbase.core.processors.NodeExistsChecker</class>
+    </setprocessor>
+  </fieldtype>
+</fieldtypes>
