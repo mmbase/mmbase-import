@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
@@ -162,7 +162,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
 
-            List args = new Vector();
+            List args = new ArrayList();
             args.add(field.getName());
             args.add(sessionName);
             args.add(getCloud().getLocale().getLanguage());
@@ -248,7 +248,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         switch(type) {
         case Field.TYPE_BYTE: {
-            List args = new Vector();
+            List args = new ArrayList();
             args.add("");
             args.add(sessionName);
             args.add(getCloud().getLocale().getLanguage());
@@ -330,7 +330,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 int value = 0;
                 if (node != null) value = node.getIntValue(field.getName());
                 org.mmbase.bridge.NodeIterator nodes = getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
-                List args = new Vector();
+                List args = new ArrayList();
                 args.add("");
                 args.add(sessionName);
                 args.add(getCloud().getLocale().getLanguage());
@@ -368,15 +368,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
                 while (i.hasNext()) {
                     org.mmbase.bridge.NodeManager nm = i.nextNodeManager();
-                    //int listvalue = nm.getNumber(); // TODO getNumber
-                    String listvalue = nm.getName();
+                    int listvalue = nm.getNumber(); 
                     show.append("<option value=\"").append(listvalue).append("\"");
-                    if (node != null) {
-                        /*
+                    if (node != null) {                       
                         if (listvalue == value) {
                             show.append(" selected=\"selected\"");
-                        }
-                        */
+                        }                        
                     }
                     show.append(">").append(nm.getGUIName()).append("</option>\n");
                 }
