@@ -22,9 +22,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.7 2002-04-17 13:17:37 pierre Exp $
+ * @version $Id: Generator.java,v 1.8 2002-05-15 14:42:07 eduard Exp $
  */
 public  class Generator {
+   
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
     private Document tree;
 
@@ -39,9 +40,9 @@ public  class Generator {
     /**
      * Adds a field to the DOM Document. This means that there will
      * also be added a Node if this is necessary.
-     *
      * @param An MMbase bridge Node.
      * @param An MMBase bridge Field.
+     * @return The field which added.
      */
     public Element addField(Node node, Field field) {
         Element rootElement = getRootElement();
@@ -62,6 +63,7 @@ public  class Generator {
     /**
      * Adds one Node to a DOM Document.
      * @param An MMBase bridge Node.
+     * @return The node which added.
      */
     public Element addNode(Node node) {
         Element rootElement = getRootElement();
@@ -100,6 +102,7 @@ public  class Generator {
     /**
      * Adds one Relation to a DOM Document.
      * @param An MMBase bridge Node.
+     * @return The node which was added
      */
     public Element addRelation(Relation relation) {
         return addNode(relation);
@@ -129,6 +132,7 @@ public  class Generator {
 
     /**
      * Returns the working DOM document.
+     * @return The document, build with the operations done on the generator class
      */
     public Document getDocument() {
         return tree;
@@ -136,22 +140,20 @@ public  class Generator {
 
     /**
      * Returns the document as a String.
+     * @return the xml generated as an string
      */
     public String toString() {
-        return toString(tree, false);
+        return toString(false);
     }
 
     /**
      * Returns the document as a String.
-     *@param ident if the string has to be idented
+     * @param ident if the string has to be idented
+     * @ return the xml generated as an string
      */
     public String toString(boolean ident) {
-        return toString(tree, ident);
-    }
-
-    public static String toString(Document doc, boolean ident) {
         try {
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
+            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(tree);
             if(ident) {
                 format.setIndenting(true);
                 format.setPreserveSpace(false);
@@ -160,13 +162,14 @@ public  class Generator {
             }
             java.io.StringWriter result = new java.io.StringWriter();
             org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(doc);
+            prettyXML.serialize(tree);
             return result.toString();
         }
         catch (Exception e) {
             return e.toString();
         }
     }
+    
     /**
      * This is a helper function that Executes an XPATH query on the give DOM Node.
      * Its only use is to do some error handling.
@@ -200,7 +203,7 @@ public  class Generator {
         return getXMLElement(nodeElement, "field[@name='" + field.getName() + "']");
     }
 
-    private Element addRootElement(Node node) {
+    private Element addRootElement(Node node) {        
         Element rootElement = tree.createElement("objects");
         org.w3c.dom.Attr attr = tree.createAttribute("root");
         attr.setValue("" + node.getNumber());
@@ -263,11 +266,11 @@ public  class Generator {
         // insert the actual value inside the field thing!
         switch(field.getType()) {
             case Field.TYPE_XML:
-                Document doc = node.getXMLValue(field.getName());
+                Document doc = node.getXMLValue(field.getName());                
                 // only fill the field, if field has a value..
-                if(doc!= null) {
+                if(doc!= null) {                    
                     // put the xml inside the field...
-                    fieldElement.appendChild(tree.createCDATASection(toString(doc, false)));
+                    fieldElement.appendChild(importDocument(tree, doc));
                 }
             break;
             case Field.TYPE_BYTE:
@@ -278,6 +281,11 @@ public  class Generator {
         }
         nodeElement.appendChild(fieldElement);
         return fieldElement;
+    }
+    
+    private org.w3c.dom.Node importDocument(Document document, Document toImport) {
+        // TODO: we need to put it inside a namespace
+        return document.importNode(toImport.getDocumentElement(), true); 
     }
 
     private String getFieldFormat(Node node, Field field) {
