@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 public abstract class AbstractTypeHandler implements TypeHandler {
 
     protected FieldInfoTag context;
-    
+
     /**
      * Constructor for AbstractTypeHandler.
      */
@@ -30,7 +30,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         super();
         this.context = context;
     }
-    
+
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
@@ -46,7 +46,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         show.append("\" />");
         return show.toString();
     }
-    
+
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
@@ -54,26 +54,24 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String fieldName = field.getName();
         String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
         if (fieldValue == null) {
-            
+
         } else {
             node.setValue(fieldName,  fieldValue);
-        }        
+        }
         return "";
     }
-    
+
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String search = context.getContextTag().findAndRegisterString(prefix(fieldName));
-        if (search == null || "".equals(search)) {       
+        if (search == null || "".equals(search)) {
             return null;
         }
         return "(" + fieldName + "=" + search + ")";
     }
-
-
 
     /**
      * Puts a prefix before a name. This is used in htmlInput and
