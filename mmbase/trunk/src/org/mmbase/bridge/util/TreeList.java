@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.3 2003-12-18 20:24:16 michiel Exp $
+ * @version $Id: TreeList.java,v 1.4 2003-12-19 12:56:03 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -229,9 +229,9 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
 
         private List nodeIterators     = new ArrayList(); // an iterator for each query result
         private NodeList nextNodes     = TreeList.this.cloud.getCloudContext().createNodeList();
-                                    // contains 'next' nodes for each query result (needed for 'next()')
+                                         // contains 'next' nodes for each query result (needed for 'next()')
         private NodeList previousNodes = TreeList.this.cloud.getCloudContext().createNodeList();
-                                     // contains 'previous' nodes for eacht query result (needed for 'previous()')
+                                         // contains 'previous' nodes for eacht query result (needed for 'previous()')
         private int  currentIterator;                 // number of current iterator which is iterated
         private int  nextIndex;
 
@@ -247,7 +247,17 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
         }
 
         public boolean hasNext() {
-            return nextIndex < TreeList.this.size();
+            if (TreeList.this.foundEnd) { // why bother
+                return nextIndex < TreeList.this.size();
+            } else {
+                int i = 0;
+                while (prepare(i)) {
+                    NodeIterator iterator = (NodeIterator) nodeIterators.get(i);
+                    if (iterator.hasNext()) return true;
+                    i++;
+                }
+                return false;
+            }
         }
 
 
@@ -310,7 +320,12 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
          * Depth of the last node fetched with next() or nextNode()
          */
         public int currentDepth() {
-            return (((Query) TreeList.this.queries.get(currentIterator)).getSteps().size() + 1) / 2;            
+            int depth = (((Query) TreeList.this.queries.get(currentIterator)).getSteps().size() + 1) / 2; 
+            if (nextIndex == 0) { 
+                return depth -1;
+            } else {
+                return depth;
+            }
         }
 
         public Object next() {
