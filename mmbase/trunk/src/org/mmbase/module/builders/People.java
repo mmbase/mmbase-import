@@ -11,9 +11,12 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import java.sql.*;
+
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
+
 
 /**
  * @author Daniel Ockeloen
@@ -21,16 +24,15 @@ import org.mmbase.util.*;
  */
 public class People extends MMObjectBuilder {
 	
-        // debug level make sure its false in cvs !
-	public boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(People.class.getName());
 
-        // cache the 100 most active people, enh. is to allow
-        // people to set it in people.xml
+    // cache the 100 most active people, enh. is to allow
+    // people to set it in people.xml
 	LRUHashtable cache = new LRUHashtable(100);
 	
-        /**
-        * replace call, when called in format MMBASE-BUILDER-users-xxxxx
-        */
+	/**
+	 * replace call, when called in format MMBASE-BUILDER-users-xxxxx
+	 */
 	public String replace(scanpage sp, StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
@@ -46,15 +48,15 @@ public class People extends MMObjectBuilder {
         	return("");
     	}		
 
-        /**
-        * get the object number of this user based on the
-        * current user/cookie as defined by the key
-        */
+    /**
+     * get the object number of this user based on the
+     * current user/cookie as defined by the key
+     */
 	public int getNumber(String key) {
 
 		Integer n=(Integer)cache.get(key);
 		if (n!=null) {
-			if (debug) debug("people positive cache");
+			log.debug("People - "+key+" people found in cache.");
 			return(n.intValue());
 		}
 
@@ -74,7 +76,7 @@ public class People extends MMObjectBuilder {
 					if (node2!=null) {
 						int number=node2.getIntValue("number");
 						cache.put(key,new Integer(number));
-						if (debug) debug("people positive");
+						log.debug("People - people positive");
 						return(number);
 					}
 				}
@@ -83,13 +85,11 @@ public class People extends MMObjectBuilder {
 		return(-1);
 	}
 
-        /**
-        * flush caches of the (cookie defined) user
-        * also signals the session module
-        */
+	/**
+ 	 * flush caches of the (cookie defined) user
+   	 * also signals the session module
+  	 */
 	public void flushCache(String key) {
 		cache.remove(key);
 	}	
-
-	
 }
