@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="java.util.*, java.io.*, java.text.* " session="false"%>
+<%@page import="java.util.*, java.io.*, java.text.* " session="true"%>
 <mm:cloud>
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
