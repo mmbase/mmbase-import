@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.41 2002-11-14 16:22:11 robmaris Exp $
+ * @version $Id: MMInformix42Node.java,v 1.42 2002-11-28 13:04:54 robmaris Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -751,10 +751,14 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     }
 
 
-    /*
-    * Method: parseFieldPart
-    *
-    */
+    /**
+     * Not to be confused with {@link #parseFieldPart(String,int,String)
+     * parseFieldPart(String,int,String)}.
+     *
+     * @deprecated This code no longer serves a purpose, and is called from 
+     *             nowhere.
+     * @deprecated-now RvM: Can be removed safely.
+     */
     public String parseFieldPart(String fieldname, String dbtype, String part) {
         if (log.isDebugEnabled()) log.trace(" ");
 
