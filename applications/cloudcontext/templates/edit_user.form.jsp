@@ -3,7 +3,7 @@
   <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
   </mm:fieldlist>
-  <mm:fieldlist fields="lastlogon">
+  <mm:fieldlist fields="lastlogon?">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="guivalue" /></td></tr>
   </mm:fieldlist>
   <mm:field name="username">
