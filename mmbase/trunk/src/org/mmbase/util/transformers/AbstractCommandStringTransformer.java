@@ -47,4 +47,8 @@ public abstract class AbstractCommandStringTransformer extends StringTransformer
         }
         return s;
     }
+
+    public String toString() {
+        return getCommand()[0].toUpperCase();
+    }
 }
