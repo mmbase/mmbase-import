@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.35 2000-11-19 00:24:48 daniel Exp $
+	$Id: HtmlBase.java,v 1.36 2000-11-29 12:05:22 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.35  2000/11/19 00:24:48  daniel
+	turned cachedebug off
+	
 	Revision 1.34  2000/11/08 16:48:12  pierre
 	pierre: removeFunctions now recognizes underscores in tablenames
 	
@@ -134,14 +137,14 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.35 2000-11-19 00:24:48 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.36 2000-11-29 12:05:22 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
 	private String classname = getClass().getName();
 	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
-	private int multilevel_cachesize=150;
+	private int multilevel_cachesize=300;
 	private LRUHashtable multilevel_cache;
 	private boolean cachedebug=false;
 
@@ -1003,14 +1006,16 @@ public class HtmlBase extends ProcessorModule {
 
 	private boolean getReload(scanpage sp,StringTagger tagger) {
 		boolean rtn=false;
+		boolean done=false;
 		String memcache;
 		if (tagger!=null) {
 			memcache=tagger.Value("MEMCACHE");
 			if (memcache!=null && memcache.equals("NO")) {
 				rtn=true;
+				done=true;
 			}
 		}
-		if (sessions!=null) {
+		if (!done && sessions!=null) {
 			sessionInfo session=sessions.getSession(sp,sp.sname);
 			if (session!=null) {
 				rtn=sp.reload;
