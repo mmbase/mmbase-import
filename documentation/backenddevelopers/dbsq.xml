@@ -9,7 +9,7 @@
 
     <date>dec 5th 2002</date>
 
-    <edition>$Id: dbsq.xml,v 1.3 2002-12-05 09:57:12 robmaris Exp $</edition>
+    <edition>$Id: dbsq.xml,v 1.4 2003-01-22 18:44:24 robmaris Exp $</edition>
 
     <authorgroup>
       <author>
@@ -78,11 +78,6 @@
     <title>resources</title>
 
     <itemizedlist>
-      <listitem>
-        <para>Sourcecode is available from <filename>\dbsq\src</filename> in
-        CVS module speeltuin.</para>
-      </listitem>
-
       <listitem>
         <para>Sourcecode of JUnit tests is available from \dbsq\test\src in
         CVS module speeltuin.</para>
@@ -238,7 +233,7 @@
 </programlisting>
 
       <screen> Result:
-        SELECT images.title AS title FROM &#60;basename&#62;_images images
+        SELECT title FROM &#60;basename&#62;_images images
 </screen>
 
       <para>Add a related step.</para>
@@ -250,7 +245,7 @@
 </programlisting>
 
       <screen> Result:
-        SELECT images.title AS title
+        SELECT images.title
         FROM &#60;basename&#62;_images images,
             &#60;basename&#62;_insrel insrel,
             &#60;basename&#62;_pools pools
@@ -266,11 +261,11 @@
 </programlisting>
 
       <screen> Result:
-        SELECT images.title AS title,
-            pools.name AS name
-        FROM &#60;basename&#62;images images,
-            &#60;basename&#62;insrel insrel,
-            &#60;basename&#62;pools pools
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools
         WHERE (images.number=insrel.snumber
         AND pools.number=insrel.dnumber)
 </screen>
@@ -281,15 +276,14 @@
 </programlisting>
 
       <screen> Result:
-        SELECT images.title AS title,
-            pools.name AS name 
-        FROM &#60;basename&#62;images images,
-            &#60;basename&#62;insrel insrel,
-            &#60;basename&#62;pools pools 
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
-        AND pools.number=insrel.dnumber)
-</screen>
+        AND pools.number=insrel.dnumber)</screen>
 
       <para>Add field value constraint.</para>
 
@@ -299,11 +293,11 @@
 </programlisting>
 
       <screen> Result:
-        SELECT images.title AS title,
-            pools.name AS name 
-        FROM &#60;basename&#62;images images,
-            &#60;basename&#62;insrel insrel,
-            &#60;basename&#62;pools pools 
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools 
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber)
@@ -316,11 +310,11 @@
 </programlisting>
 
       <screen> Result:
-        SELECT images.title AS title,
-            pools.name AS name 
-        FROM test1_images images,
-            test1_insrel insrel,
-            test1_pools pools 
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools 
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber) 
@@ -340,8 +334,8 @@
 </programlisting>
 
       <screen> Result:
-        SELECT COUNT(images.number) AS number_count 
-        FROM &#60;basename&#62;images images
+        SELECT COUNT(number) AS number_count 
+        FROM &#60;basename&#62;_images images
 </screen>
 
       <para>Add grouping on a second field.</para>
@@ -351,9 +345,9 @@
 </programlisting>
 
       <screen> Result:
-        SELECT COUNT(images.number) AS number_count,
-            images.title AS title 
-        FROM &#60;basename&#62;images images 
+        SELECT COUNT(number) AS number_count,
+            title
+        FROM &#60;basename&#62;_images images 
         GROUP BY title
 </screen>
 
@@ -514,7 +508,8 @@ public interface SearchQueryHandler {
 
         <para>This will creates a query equivalent to:</para>
 
-        <screen>        SELECT * FROM &#60;basename&#62;_pools pools</screen>
+        <screen>        SELECT * FROM &#60;basename&#62;_pools pools
+</screen>
 
         <para>This code executes the query and prints the result - real nodes
         with these fields: number, otype, owner, name, description.</para>
@@ -550,9 +545,9 @@ public interface SearchQueryHandler {
         <para>This creates the following query:</para>
 
         <screen>        SELECT 
-            pools.number as number, 
-            insrel.number as number, 
-            images.number as number
+            pools.number, 
+            insrel.number, 
+            images.number
         FROM 
             &#60;basename&#62;_pools pools, 
             &#60;basename&#62;_insrel insrel, 
@@ -594,7 +589,17 @@ public interface SearchQueryHandler {
         query3.addField(step3b, insrel.getField(&#34;number&#34;));
         query3.addField(step3c, images.getField(&#34;number&#34;));</programlisting>
 
-        <para>This creates the following query:</para>
+        <para>This creates the following query:<programlisting>        SELECT 
+            pools0.number, 
+            insrel.number, 
+            images3.number
+        FROM 
+            &#60;basename&#62;_pools pools0, 
+            &#60;basename&#62;_insrel insrel, 
+            &#60;baename&#62;_images images3
+        WHERE (pools0.number = insrel.snumber
+        AND images3.number = insrel.dnumber)
+</programlisting></para>
 
         <para>Execution results in clusternodes with these fields:
         pools0.number, insrel.number, images3.number.</para>
@@ -627,11 +632,12 @@ public interface SearchQueryHandler {
         <para>This creates the following query:</para>
 
         <screen>        SELECT 
-            pools.number as field1,
-            pools.name as field2,
-            pools.description as field3
+            number AS field1,
+            name AS field2,
+            description AS field3
         FROM 
-            &#60;basename&#62;_pools pools</screen>
+            &#60;basename&#62;_pools pools
+</screen>
 
         <para>This code executes the query and prints the results -
         resultnodes with these fields: field1, field2, field3</para>
@@ -666,14 +672,15 @@ public interface SearchQueryHandler {
         <para>This creates the following query:</para>
 
         <screen>        SELECT 
-            COUNT(pools.number) as count,
-            MIN(pools.number) as min_number,
-            MAX(pools.number) as max_number
+            COUNT(number) AS pool_count,
+            MIN(number) AS min_number,
+            MAX(number) AS max_number
         FROM 
-            &#60;basename&#62;_pools pools</screen>
+            &#60;basename&#62;_pools pools
+</screen>
 
         <para>This code executes the query and prints the result - a
-        resultnode with these fields: count, min_number, max_number</para>
+        resultnode with these fields: pool_count, min_number, max_number</para>
 
         <programlisting>        // Execute, result as resultnodes.
         List nodes5 = handler.getNodes(query5, new ResultBuilder(mmbase, query5));
@@ -717,7 +724,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
@@ -750,7 +757,7 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS title FROM &#60;basename&#62;_images images
+        SELECT title FROM &#60;basename&#62;_images images
  */
         System.out.println(&#34;Result:\n&#34; + sqlHandler.toSql(query, sqlHandler));
         
@@ -762,7 +769,7 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS title
+        SELECT images.title
         FROM &#60;basename&#62;_images images,
             &#60;basename&#62;_insrel insrel,
             &#60;basename&#62;_pools pools
@@ -778,11 +785,11 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS title,
-            pools.name AS name
-        FROM &#60;basename&#62;images images,
-            &#60;basename&#62;insrel insrel,
-            &#60;basename&#62;pools pools
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools
         WHERE (images.number=insrel.snumber
         AND pools.number=insrel.dnumber)
  */
@@ -793,11 +800,11 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS title,
-            pools.name AS name 
-        FROM &#60;basename&#62;images images,
-            &#60;basename&#62;insrel insrel,
-            &#60;basename&#62;pools pools 
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber)
@@ -811,11 +818,11 @@ public class QuerySampleCode {
         
 /* 
  Result:
-        SELECT images.title AS title,
-            pools.name AS name 
-        FROM &#60;basename&#62;images images,
-            &#60;basename&#62;insrel insrel,
-            &#60;basename&#62;pools pools 
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools 
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber)
@@ -828,11 +835,11 @@ public class QuerySampleCode {
 
 /* 
  Result:
-        SELECT images.title AS title,
-            pools.name AS name 
-        FROM test1_images images,
-            test1_insrel insrel,
-            test1_pools pools 
+        SELECT images.title,
+            pools.name
+        FROM &#60;basename&#62;_images images,
+            &#60;basename&#62;_insrel insrel,
+            &#60;basename&#62;_pools pools 
         WHERE pools.number IN (100) 
         AND (images.number=insrel.snumber 
         AND pools.number=insrel.dnumber) 
@@ -851,8 +858,8 @@ public class QuerySampleCode {
 
 /* 
  Result:
-        SELECT COUNT(images.number) AS number_count 
-        FROM &#60;basename&#62;images images
+        SELECT COUNT(number) AS number_count 
+        FROM &#60;basename&#62;_images images
  */
         System.out.println(&#34;Result:\n&#34; + sqlHandler.toSql(query, sqlHandler));
 
@@ -862,9 +869,9 @@ public class QuerySampleCode {
 
 /* 
  Result:
-        SELECT COUNT(images.number) AS number_count,
-            images.title AS title 
-        FROM &#60;basename&#62;images images 
+        SELECT COUNT(number) AS number_count,
+            title
+        FROM &#60;basename&#62;_images images 
         GROUP BY title
  */
         System.out.println(&#34;Result:\n&#34; + sqlHandler.toSql(query, sqlHandler));
@@ -897,7 +904,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
@@ -969,9 +976,9 @@ public class QueryHandlerSampleCode {
 /*
  Query:
         SELECT 
-            pools.number as number, 
-            insrel.number as number, 
-            images.number as number
+            pools.number, 
+            insrel.number, 
+            images.number
         FROM 
             &#60;basename&#62;_pools pools, 
             &#60;basename&#62;_insrel insrel, 
@@ -1011,9 +1018,9 @@ public class QueryHandlerSampleCode {
 /*
  Query:
         SELECT 
-            pools0.number as number, 
-            insrel.number as number, 
-            images3.number as number
+            pools0.number, 
+            insrel.number, 
+            images3.number
         FROM 
             &#60;basename&#62;_pools pools0, 
             &#60;basename&#62;_insrel insrel, 
@@ -1047,9 +1054,9 @@ public class QueryHandlerSampleCode {
 /*
  Query:
         SELECT 
-            pools.number as field1,
-            pools.name as field2,
-            pools.description as field3
+            number AS field1,
+            name AS field2,
+            description AS field3
         FROM 
             &#60;basename&#62;_pools pools
  */
@@ -1073,7 +1080,7 @@ public class QueryHandlerSampleCode {
         BasicStep step5a = query5.addStep(pools);
         // Add some aggregated fields with field aliases.
         query5.addAggregatedField(step5a, pools.getField(&#34;number&#34;), 
-            AggregatedField.AGGREGATION_TYPE_COUNT).setAlias(&#34;count&#34;);
+            AggregatedField.AGGREGATION_TYPE_COUNT).setAlias(&#34;pool_count&#34;);
         query5.addAggregatedField(step5a, pools.getField(&#34;number&#34;), 
             AggregatedField.AGGREGATION_TYPE_MIN).setAlias(&#34;min_number&#34;);
         query5.addAggregatedField(step5a, pools.getField(&#34;number&#34;), 
@@ -1082,9 +1089,9 @@ public class QueryHandlerSampleCode {
 /*
  Query:
         SELECT 
-            COUNT(pools.number) as count,
-            MIN(pools.number) as min_number,
-            MAX(pools.number) as max_number
+            COUNT(number) AS pool_count,
+            MIN(number) AS min_number,
+            MAX(number) AS max_number
         FROM 
             &#60;basename&#62;_pools pools
  */
@@ -1100,7 +1107,7 @@ public class QueryHandlerSampleCode {
 
 /*
  Returns: 
-        a resultnode with these fields: count, min_number, max_number      
+        a resultnode with these fields: pool_count, min_number, max_number      
  */ 
 
         System.exit(0);
