@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.19 2002-09-24 10:35:35 michiel Exp $
+    @version  $Id: index.jsp,v 1.20 2003-05-12 08:39:09 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -187,6 +187,21 @@ view XML</a></td>
        Demonstrated is how to use 'posrel', and how to create 'optionlists'.
      </td>
   <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/mags.xml</mm:param></mm:url>">view XML</a></td>
+      </tr>
+
+    <tr><td>
+    <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+        	 <mm:param name="wizard">tasks/people</mm:param>
+           <mm:param name="nodepath">news,people</mm:param>
+           <mm:param name="fields">people.number,news.title,people.firstname,people.lastname</mm:param>
+           <mm:param name="orderby">people.lastname</mm:param>
+           <mm:param name="searchfields">people.lastname</mm:param>
+           </mm:url>">Authors</a>
+     </td><td>
+       Demo of multilevel search
+     </td>
+  <td>
+   </td>
       </tr>
      </table>
 
