@@ -35,13 +35,13 @@ You can return to this installation script any time.<br />
            String[] steps= {
             "Resources",
             "MyNews",
-            "MyCompany",
-            "MyUsers",
-            "MyYahoo",
             "Community",
             "BugTracker",
             "Codings",
-            "RichText"
+            "RichText",
+            "MyCompany",
+            "MyUsers",
+            "MyYahoo"
           };
            boolean first=true;
            boolean installed=false;
