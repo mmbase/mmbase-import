@@ -1,0 +1,46 @@
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<application name="Media" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="true">
+  <neededbuilderlist>
+    <builder maintainer="mediaproject.mmbase.org" version="1">mediafragments</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">audiofragments</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">videofragments</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">lookup</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">mediasources</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">audiosources</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">videosources</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">insrel</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="mediafragments"  to="mediasources" type="related" />
+
+    <!-- the following should not be needed (because of inheritance) -->
+    <relation from="audiofragments"  to="audiosources" type="related" />
+    <relation from="videofragments"  to="videosources" type="related" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+  </datasourcelist>
+  
+  <relationsourcelist>
+  </relationsourcelist>
+  
+  <contextsourcelist>
+  </contextsourcelist>
+
+  <description>
+     Relations needed for the media-project
+  </description>
+
+  <install-notice>
+     The needed relations for the media functionality are created
+  </install-notice>
+</application>
