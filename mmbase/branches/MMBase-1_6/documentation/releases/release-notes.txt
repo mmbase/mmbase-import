@@ -321,7 +321,10 @@ Known Issues and Problems:
   "Performance issue resolved regarding MMObjectNode::getRelated() and
   MMObjectNode::getRelated(type) where type is a builder". It will be
   fixed in MMBase-1.6.2.
+
 [1.6.0]
+- There's a problem when using the scan-editors and the storageclasses
+  with mysql. See bug #4452 for more information and for a workaround.
 - Jsp-editors aren't working completly when using Tomcat 4.0.x, you'll
   get an "Illegal target of jump or branch"-error when trying to add
   relations. You could try the my_editors as an alternative or upgrade
