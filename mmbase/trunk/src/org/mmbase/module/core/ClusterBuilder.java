@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.11 2002-10-03 07:24:54 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.12 2002-10-08 09:45:02 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -94,7 +94,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else {
             throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
         }
-
+        
     }
 
     // logging variable
@@ -829,88 +829,86 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a condition as a <code>String</code>
      */
     protected String getRelationString(Vector alltables, int searchdir, HashMap roles) {
+        StringBuffer result = new StringBuffer("");
+        TypeDef typedef = mmb.getTypeDef();
+        TypeRel typerel = mmb.getTypeRel();
+        InsRel insrel   = mmb.getInsRel();
+        RelDef reldef   = mmb.getRelDef();
+        int siz = alltables.size() - 2;
 
-        StringBuffer result=new StringBuffer("");
-        int siz;
-        String src,dst;
-        int so,ro;
-        TypeDef typedef;
-        TypeRel typerel;
-        InsRel insrel;
-        RelDef reldef;
+        // get basic object builder
+        // if it exists, you can use 'object' in nodepaths
+        int rootnr = mmb.getRootType();
 
-        typedef=mmb.getTypeDef();
-        typerel=mmb.getTypeRel();
-        reldef=mmb.getRelDef();
-        insrel=mmb.getInsRel();
-        siz=alltables.size()-2;
+        if (log.isDebugEnabled()) log.debug("SEARCHDIR=" + searchdir);
 
-        log.debug("SEARCHDIR="+searchdir);
 
-        for (int i=0;i<siz;i+=2) {
-            boolean desttosrc=false;
-            boolean srctodest=false;
-            src=getTableName((String)alltables.elementAt(i));                            // name of the source table
-            dst=getTableName((String)alltables.elementAt(i+2));                        // name of destination table
+        for (int i = 0; i < siz; i += 2) {
+            boolean desttosrc = false;
+            boolean srctodest = false;
+            if (! result.toString().equals("")) result.append(" AND ");
 
-            Integer rnum = (Integer)roles.get((String)alltables.elementAt(i+1));  // role ?
-            so=typedef.getIntValue(src);                                // get the number of the source
-            ro=typedef.getIntValue(dst);                                // get the number of the destination
-
-            if (!result.toString().equals("")) result.append(" AND ");
-
-            // check if  a definite rnumber was requested...
-            if (rnum!=null) {
-                result.append(idx2char(i+1)+".rnumber="+rnum.intValue()+" AND ");
-                srctodest=(searchdir!=SEARCH_SOURCE) && typerel.reldefCorrect(so,ro,rnum.intValue());
-                desttosrc=(searchdir!=SEARCH_DESTINATION) && typerel.reldefCorrect(ro,so,rnum.intValue());
-            } else {
-                MMObjectNode typenode;
-                // get basic object builder
-                // if it exists, you can use 'object' in nodepaths
-                int rootnr=mmb.getRootType();
-                for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
-                    // get the allowed relation definitions
-                    typenode = (MMObjectNode)e.nextElement();
-                    desttosrc= (searchdir!=SEARCH_DESTINATION) &&
-                               (desttosrc ||
-                                (ro==rootnr) || // ignore root 'object' type
-                                typenode.getIntValue("dnumber")==ro);
-                    srctodest= (searchdir!=SEARCH_SOURCE) &&
-                               (srctodest ||
-                               (so==rootnr) || // ignore root 'object' type
-                                typenode.getIntValue("snumber")==so);
-                    if (desttosrc && srctodest) break;
+            {
+                Integer rnum = (Integer) roles.get((String) alltables.elementAt( i + 1));  // role ?
+                String src = getTableName((String) alltables.elementAt(i));                          // name of the source table
+                String dst = getTableName((String) alltables.elementAt(i + 2));                        // name of destination table
+                          
+                int s = typedef.getIntValue(src);                                // get the number of the source
+                int d = typedef.getIntValue(dst);                                // get the number of the destination
+                
+                // check if  a definite rnumber was requested...
+                if (rnum != null) {
+                    result.append(idx2char(i + 1) + ".rnumber=" + rnum.intValue() + " AND ");
+                    srctodest = (searchdir != SEARCH_SOURCE)      && typerel.reldefCorrect(s, d, rnum.intValue());
+                    desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.reldefCorrect(d, s, rnum.intValue());
+                } else {
+                    for (Enumeration e = typerel.getAllowedRelations(s, d); e.hasMoreElements(); ) {
+                        // get the allowed relation definitions
+                        MMObjectNode typenode = (MMObjectNode) e.nextElement();
+                        desttosrc = (searchdir != SEARCH_DESTINATION) &&
+                                    (desttosrc ||
+                                        (d == rootnr) || // ignore root 'object' type
+                                         typenode.getIntValue("snumber") == d
+                                     );
+                        srctodest = (searchdir != SEARCH_SOURCE) &&
+                                    (srctodest ||
+                                         (s == rootnr) || // ignore root 'object' type
+                                          typenode.getIntValue("snumber") == s
+                                    );
+                        if (desttosrc && srctodest) break;
+                    }
                 }
             }
 
             // check for directionality if supported
-            String dirstring="";
-            if (InsRel.usesdir && (searchdir!=SEARCH_ALL)) {
-                dirstring=" AND "+idx2char(i+1)+".dir<>1";
+            String dirstring;
+            if (InsRel.usesdir && (searchdir != SEARCH_ALL)) {
+                dirstring = " AND " + idx2char(i + 1) + ".dir <> 1";
+            } else {
+                dirstring = "";
             }
 
-            if (desttosrc && srctodest && (searchdir==SEARCH_EITHER)) { // support old
-                desttosrc=false;
+            if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
+                desttosrc = false;
             }
             if (desttosrc) {
                 // there is a typed relation from destination to src
                 if (srctodest) {
                     // there is ALSO a typed relation from src to destination - make a more complex query
                     result.append(
-                           "(("+numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
-                                numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber ) OR ("+
-                                numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
-                                numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring+"))");
+                           "(("+ numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".snumber AND "+
+                                 numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".dnumber ) OR ("+
+                                 numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".dnumber AND "+
+                                 numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".snumber" + dirstring + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
-                    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
-                                numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring);
+                    result.append(numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".dnumber AND "+
+                                  numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".snumber" + dirstring);
                 }
             } else {
                 // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
-                            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber");
+                result.append(numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".snumber AND "+
+                              numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".dnumber");
             }
 
         }
