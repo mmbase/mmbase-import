@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Each one contains a Queue of Image request jobs it has to do, which is constantly watched for new jobs.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.16 2004-02-23 19:05:00 pierre Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.17 2004-03-10 15:04:28 michiel Exp $
  * @see ImageRequest
  */
 public class ImageRequestProcessor implements Runnable {
@@ -90,6 +90,7 @@ public class ImageRequestProcessor implements Runnable {
         try {
             if (inputpicture == null || inputpicture.length == 0) {
                 if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + id);
+                // no node gets created, so node remains 'null'.
             } else {
                 if (log.isDebugEnabled()) log.debug("processRequest : Converting : " + id);
                 picture = convert.convertImage(inputpicture, params);
@@ -114,7 +115,11 @@ public class ImageRequestProcessor implements Runnable {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting output " + id + " (" + req.count() + " times requested now)");
                 }
-                req.setContainer(new ByteFieldContainer(node.getNumber(), picture));
+                if (node != null) {
+                    req.setContainer(new ByteFieldContainer(node.getNumber(), picture));
+                } else {
+                    req.setContainer(new ByteFieldContainer(-1, picture));
+                }
                 if (log.isDebugEnabled()) log.debug("Removing key " + id);
                 table.remove(ckey);
             }
