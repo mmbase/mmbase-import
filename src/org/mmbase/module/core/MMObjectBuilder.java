@@ -27,6 +27,8 @@ import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.module.gui.html.EditState;  // argh
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.util.logging.*;
 
@@ -49,7 +51,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.183 2002-11-21 14:58:21 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.184 2002-11-26 11:20:30 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1058,6 +1060,44 @@ public class MMObjectBuilder extends MMTable {
         }
         return nodecount;
     }
+    
+    /**
+     * Counts number of nodes matching a specified constraint. 
+     * The constraint is specified by a query that selects nodes of
+     * a specified type, which must be the nodetype corresponding 
+     * to this builder.
+     *
+     * @param query The query.
+     * @return The number of nodes.
+     * @throws IllegalArgumentException When the nodetype specified
+     *         by the query is not the nodetype corresponding to this builder.
+     * @since MMBase-1.7
+     */
+    public int count(NodeSearchQuery query) throws SearchQueryException {
+        // Test if nodetype corresponds to builder.
+        if (query.getBuilder() != this) {
+            throw new IllegalArgumentException(
+            "Wrong builder for query on '" + query.getBuilder().getTableName()
+            + "'-table: " + this.getTableName());
+        }
+        
+        // Wrap in modifiable query, replace fields by one count field.
+        ModifiableQuery modifiedQuery = new ModifiableQuery(query);
+        Step step = (Step) query.getSteps().get(0);
+        FieldDefs numberFieldDefs = getField("number");
+        AggregatedField field = new BasicAggregatedField(
+            step, numberFieldDefs, AggregatedField.AGGREGATION_TYPE_COUNT);
+        List newFields = new ArrayList(1);
+        newFields.add(field);
+        modifiedQuery.setFields(newFields);
+        
+        // Execute query, return result.
+        List results = mmb.getDatabase().getNodes(modifiedQuery, 
+            new ResultBuilder(mmb, modifiedQuery));
+        ResultNode result = (ResultNode) results.get(0);
+        return result.getIntValue("number");
+    }
+
 
     /**
      * Enumerate all the objects that match the searchkeys
