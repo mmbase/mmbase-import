@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.26 $ $Date: 2001-03-05 21:24:29 $
+ * @version $Revision: 1.27 $ $Date: 2001-03-06 10:06:46 $
  */
 public abstract class Module {
 
@@ -412,7 +412,7 @@ public abstract class Module {
 
 					}
 				} catch (java.lang.ClassNotFoundException cnfe) {
-					System.err.println("[error]["+ModuleXML.class.getName()+"]Could not load class with name '"+cname+"', which was "+
+					System.err.println("[error][" + Module.class.getName() + "]Could not load class with name '"+cname+"', which was "+
 							"specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
 				} catch (Exception e) {
 					e.printStackTrace();
