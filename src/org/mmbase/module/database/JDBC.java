@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.25 2002-04-19 11:48:10 eduard Exp $
+ * @version $Id: JDBC.java,v 1.26 2002-04-26 14:44:43 eduard Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -404,6 +404,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @return a <code>String</code> whith some information about the connection
      */
      public String toString() {
-        return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
+            if(driver==null) return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "'";
+            return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
      }
 }
