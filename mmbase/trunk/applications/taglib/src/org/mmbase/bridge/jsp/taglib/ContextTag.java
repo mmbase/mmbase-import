@@ -63,9 +63,9 @@ public class ContextTag extends ContextReferrerTag {
     private HttpServletRequest httpRequest = null;
     private HttpSession        httpSession = null;
 
-    public void release() {   
+    public void release() {
         log.debug("releasing");
-        super.release();       
+        super.release();
     }
 
     // avoid casting
@@ -76,12 +76,12 @@ public class ContextTag extends ContextReferrerTag {
         return httpRequest;
     }
 
-    
+
     private HttpSession getSession() {
         if (httpSession == null) {
             httpSession = getHttpRequest().getSession();
         }
-        return httpSession;        
+        return httpSession;
     }
 
     public void setId(String i) {
@@ -91,7 +91,7 @@ public class ContextTag extends ContextReferrerTag {
 
     /**
      * Returns the id of the context. If there was no id-attibute in
-     * this tag, then the id is implicitily 'context'.  
+     * this tag, then the id is implicitily 'context'.
      */
 
     public String getId() {
@@ -119,15 +119,15 @@ public class ContextTag extends ContextReferrerTag {
         }
         return parent;
     }
-    
+
 
     /**
      *
-     * 
+     *
      * @param key the key (id) of the node to register
      * @param node the node to put in the hashmap
      */
-      
+
     public void  registerNode(String key, Node n) throws JspTagException {
         register(key, n);
     }
@@ -135,7 +135,7 @@ public class ContextTag extends ContextReferrerTag {
 
     //
 
-    public boolean findAndRegister(int from, String referid, String newid) throws JspTagException { 
+    public boolean findAndRegister(int from, String referid, String newid) throws JspTagException {
         if (newid == null) {
             throw new JspTagException("Cannot register with id is null");
         }
@@ -161,7 +161,7 @@ public class ContextTag extends ContextReferrerTag {
             }
             break;
         case TYPE_PAGE:
-            //result = pageContext.getAttribute(referid);            
+            //result = pageContext.getAttribute(referid);
             break;
         default:
             result = null;
@@ -191,11 +191,11 @@ public class ContextTag extends ContextReferrerTag {
         log.debug("in session");
         if (findAndRegister(TYPE_SESSION, externid, newid)) return true;
         // don't unregister now, it stays registered as a null value,t hat is registerd, but not found.
-        return false;               
+        return false;
     }
-    
 
-    /** 
+
+    /**
      * Register an Object with a key in the context. If the Context is
      * a session context, then it will be put in the session, otherwise in the hashmap.
      */
@@ -228,7 +228,7 @@ public class ContextTag extends ContextReferrerTag {
         return (getObject(key) != null);
     }
 
-    final private HashMap getHashMap() {             
+    final private HashMap getHashMap() {
         String key = "CONTEXT:" + getId();
         log.debug("using HashMap " + key);
         if (pageContext.getAttribute(key) == null) {
@@ -240,12 +240,12 @@ public class ContextTag extends ContextReferrerTag {
     private boolean isRegistered(String key) {
         return (getHashMap().containsKey(key));
     }
-    
+
     public Object getObject(String key) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("getting object " + key + " from Context " + getId());
         }
-        //Object result = pageContext.getAttribute(id);        
+        //Object result = pageContext.getAttribute(id);
         //if (result == null) {
 
         if (! isRegistered(key)) {
@@ -255,16 +255,13 @@ public class ContextTag extends ContextReferrerTag {
         log.debug("found object " + key + " in context " + getId() + " value: " + result);
         return result;
     }
-    public String getString(String key) throws JspTagException {
-        return (String) getObject(key);
-    }
 
     public String getStringFindAndRegister(String id) throws JspTagException {
         boolean found = findAndRegister(id, id);
         if (! found) {
             throw new JspTagException("No object with id " + id + " could be found in Context '" + getId() + "'");
         }
-        return getString(id);
+        return getObjectAsString(id);
     }
 
     public String getObjectAsString(String key) throws JspTagException {
@@ -273,8 +270,8 @@ public class ContextTag extends ContextReferrerTag {
         if (o instanceof Node) {
             Node n = (Node) o;
             return "" + n.getNumber();
-        } 
-        return o.toString();        
+        }
+        return o.toString();
     }
 
     public byte[] getBytes(String key) throws JspTagException {
@@ -294,13 +291,13 @@ public class ContextTag extends ContextReferrerTag {
         Enumeration e = pageContext.getAttributeNamesInScope(pageContext.PAGE_SCOPE);
         while (e.hasMoreElements()) {
             result.add(e.nextElement());
-        }        
-        return result;        
+        }
+        return result;
     }
 
     public int doAfterBody() throws JspTagException {
         try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());            
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
