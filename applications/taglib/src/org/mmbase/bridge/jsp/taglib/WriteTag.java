@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.45 2005-03-14 19:02:35 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.46 2005-03-29 16:08:56 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -194,6 +194,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("End writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 }
