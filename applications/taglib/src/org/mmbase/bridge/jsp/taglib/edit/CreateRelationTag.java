@@ -49,7 +49,7 @@ public class CreateRelationTag extends NodeTag {
     public int doStartTag() throws JspTagException{            
         CloudProvider c = findCloudProvider();
         RelationManager rm = getCloudProviderVar().getRelationManager(role);
-        ContextTag    con = findContext();
+        ContextTag    con = getContextTag();
         Node sourceNode      = con.getNode(source);
         Node destinationNode = con.getNode(destination);        
 

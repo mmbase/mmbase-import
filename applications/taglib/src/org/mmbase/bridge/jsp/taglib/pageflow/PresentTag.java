@@ -30,8 +30,7 @@ public class PresentTag extends ContextReferrerTag {
     }
 
     protected String getKey() throws JspTagException {
-        ContextTag cp = findContext();        
-        String param = (String) cp.getObject(key);
+        String param = getContextTag().getString(key);
         if (param == null) {
             param = pageContext.getRequest().getParameter(key); 
         }
