@@ -129,9 +129,9 @@ public class EncodeHandler implements Runnable {
 		System.out.println("EncodeHandler g2encoder started");
 
 		g2encoders bul=(g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");	
-		MMObjectNode g2node=bul.getNode(2318578);
+		MMObjectNode g2node=bul.getNode(2483396);
 		if (!g2node.getStringValue("state").equals("waiting")) {
-			g2node=bul.getNode(2308755);
+			g2node=bul.getNode(2477342);
 		}
 		if (g2node.getStringValue("state").equals("waiting")) {
 			node.setValue("status",2);

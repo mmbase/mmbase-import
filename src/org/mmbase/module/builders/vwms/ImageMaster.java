@@ -30,6 +30,8 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	Hashtable properties;
 	boolean first=true;
 	Object syncobj=new Object();
+	Queue files2copy=new Queue(128);
+	FileCopier filecopier=new FileCopier(files2copy);
 
 	public ImageMaster() {
 		System.out.println("PageMaster ready for action");
@@ -135,11 +137,14 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 				String dsthost=getProperty(dstserver+":host");
 				String dstpath=getProperty(dstserver+":path");
 
+/*
 				SCPcopy scpcopy=new SCPcopy(sshpath,dstuser,dsthost,dstpath);
 
 				synchronized(syncobj) {
 					scpcopy.copy(srcpath,filename);
 				}
+*/
+				files2copy.append(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename));
 
 				// remove the tmp image file
 
