@@ -27,9 +27,29 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.43 2004-10-12 10:48:45 michiel Exp $
+ * @version $Id: InsRel.java,v 1.44 2004-11-09 13:57:40 pierre Exp $
  */
 public class InsRel extends MMObjectBuilder {
+
+    /** Base 'insrel' builder name */
+    public static final String INSREL_BUILDER    = "insrel";
+
+    /** Name of the field containing the source object number */
+    public static final String FIELD_SNUMBER     = "snumber";
+    /** Name of the field containing the source object number */
+    public static final String FIELD_SOURCE      = FIELD_SNUMBER;
+    /** Name of the field containing the destination object number */
+    public static final String FIELD_DNUMBER     = "dnumber";
+    /** Name of the field containing the destination object number */
+    public static final String FIELD_DESTINATION = FIELD_DNUMBER;
+    /** Name of the field containing the role (reldef) object number */
+    public static final String FIELD_RNUMBER     = "rnumber";
+    /** Name of the field containing the role (reldef) object number */
+    public static final String FIELD_ROLE        = FIELD_RNUMBER;
+    /** Name of the field containing the directionality */
+    public static final String FIELD_DIR            = "dir";
+    /** Name of the field containing the directionality */
+    public static final String FIELD_DIRECTIONALITY = FIELD_DIR;
 
     private static final Logger log = Logging.getLoggerInstance(InsRel.class);
 
@@ -82,7 +102,7 @@ public class InsRel extends MMObjectBuilder {
      * @see #usesdir
      */
     public boolean init() {
-        FieldDefs dirField = getField("dir");
+        FieldDefs dirField = getField(FIELD_DIRECTIONALITY);
         boolean hasDirField = dirField!=null && dirField.getDBState() == FieldDefs.DBSTATE_PERSISTENT;
         if (!created()) {
             // check whether directionality is in use, and whether a dir field is present.
@@ -92,7 +112,7 @@ public class InsRel extends MMObjectBuilder {
             // If the builder to be created is insrel (the basic builder), the system ignores the error
             // and continues without directionality (backward compatibility).
             //
-            if (usesdir && !hasDirField && (!getTableName().equals("insrel"))) {
+            if (usesdir && !hasDirField && (!getTableName().equals(INSREL_BUILDER))) {
                 log.fatal("FATAL ERROR: Builder "+getTableName()+" has no dir field but directionality support was turned on.");
                 log.fatal("Table for "+getTableName()+" was NOT created.");
                 log.fatal("MMBase continues, but use of the "+getTableName()+" builder will fail.");
@@ -119,16 +139,16 @@ public class InsRel extends MMObjectBuilder {
      * @return     The node again
      */
     private MMObjectNode alignRelNode(MMObjectNode node) {
-        int snumber=getNodeType(node.getIntValue("snumber"));
-        int dnumber=getNodeType(node.getIntValue("dnumber"));
-        int rnumber = node.getIntValue("rnumber");
+        int snumber=getNodeType(node.getIntValue(FIELD_SOURCE));
+        int dnumber=getNodeType(node.getIntValue(FIELD_DESTINATION));
+        int rnumber = node.getIntValue(FIELD_ROLE);
         TypeRel typeRel = mmb.getTypeRel();
         if (  (!typeRel.reldefCorrect(snumber, dnumber, rnumber))
             && typeRel.reldefCorrect(dnumber, snumber, rnumber)
               ) {
-            dnumber= node.getIntValue("snumber");
-            node.setValue("snumber", node.getIntValue("dnumber"));
-            node.setValue("dnumber", dnumber);
+            dnumber= node.getIntValue(FIELD_SOURCE);
+            node.setValue(FIELD_SOURCE, node.getIntValue(FIELD_DESTINATION));
+            node.setValue(FIELD_DESTINATION, dnumber);
         }
         return node;
     }
@@ -147,9 +167,9 @@ public class InsRel extends MMObjectBuilder {
         int result = -1;
         MMObjectNode node = getNewNode(owner);
         if( node != null ) {
-            node.setValue("snumber",snumber);
-            node.setValue("dnumber",dnumber);
-            node.setValue("rnumber",rnumber);
+            node.setValue(FIELD_SOURCE,snumber);
+            node.setValue(FIELD_DESTINATION,dnumber);
+            node.setValue(FIELD_ROLE,rnumber);
             result = insert(owner,node);
         } else {
             log.error("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): Cannot create new node("+node+")!");
@@ -166,17 +186,17 @@ public class InsRel extends MMObjectBuilder {
      */
     public int insert(String owner, MMObjectNode node) {
         int result = -1;
-        int snumber=node.getIntValue("snumber");
+        int snumber = node.getIntValue(FIELD_SOURCE);
         if( snumber >= 0 ) {
-            int dnumber=node.getIntValue("dnumber");
+            int dnumber = node.getIntValue(FIELD_DESTINATION);
             if( dnumber >= 0 ) {
-                int rnumber=node.getIntValue("rnumber");
+                int rnumber = node.getIntValue(FIELD_ROLE);
                 if( rnumber > 0 ) {
                     if (usesdir) {
-                        MMObjectNode reldef=getNode(rnumber);
-                        int dir= reldef.getIntValue("dir");
-                        if (dir<=0) dir =2;
-                        node.setValue("dir",dir);
+                        MMObjectNode reldef = getNode(rnumber);
+                        int dir = reldef.getIntValue(FIELD_DIRECTIONALITY);
+                        if (dir <= 0) dir = 2;
+                        node.setValue(FIELD_DIRECTIONALITY,dir);
                     }
                     node=alignRelNode(node);
                     if (log.isDebugEnabled()) {
@@ -186,14 +206,6 @@ public class InsRel extends MMObjectBuilder {
                     // remove cache for these nodes (enforce update)
                     deleteRelationCache(snumber);
                     deleteRelationCache(dnumber);
-                    // Gerard: temporary removed here, should be removed from databaselayer!!!!
-                    /*
-                      MMObjectNode n1=getNode(snumber);
-                      MMObjectNode n2=getNode(dnumber);
-                      
-                      mmb.mmc.changedNode(n1.getNumber(),n1.getTableName(),"r");
-                      mmb.mmc.changedNode(n2.getNumber(),n2.getTableName(),"r");
-                    */
                 } else {
                     log.error("insert("+owner+","+node+"): rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
                 }
@@ -211,8 +223,8 @@ public class InsRel extends MMObjectBuilder {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-        int snumber = node.getIntValue("snumber");
-        int dnumber = node.getIntValue("dnumber");
+        int snumber = node.getIntValue(FIELD_SOURCE);
+        int dnumber = node.getIntValue(FIELD_DESTINATION);
         super.removeNode(node);
         deleteRelationCache(snumber);
         deleteRelationCache(dnumber);
@@ -278,9 +290,9 @@ public class InsRel extends MMObjectBuilder {
             Vector list = new Vector();
             for(Enumeration e = re.elements(); e.hasMoreElements(); ) {
                 MMObjectNode node = (MMObjectNode) e.nextElement();
-                int nodenr = node.getIntValue("snumber");
+                int nodenr = node.getIntValue(FIELD_SOURCE);
                 if (nodenr == src) {
-                    nodenr = node.getIntValue("dnumber");
+                    nodenr = node.getIntValue(FIELD_DESTINATION);
                 }
                 String tableName = typedef.getValue(getNodeType(nodenr));
                 if (tableName != null) {
@@ -305,8 +317,8 @@ public class InsRel extends MMObjectBuilder {
         try {
             NodeSearchQuery q = new NodeSearchQuery(this);
             Integer s = new Integer(src);
-            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), s);
-            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), s);
+            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField(FIELD_SOURCE)), s);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField(FIELD_DESTINATION)), s);
 
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
             constraint.addChild(constraint1).addChild(constraint2);
@@ -333,8 +345,8 @@ public class InsRel extends MMObjectBuilder {
         try {
             NodeSearchQuery q = new NodeSearchQuery(this);
             Integer s = new Integer(src);
-            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), s);
-            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), s);
+            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField(FIELD_SOURCE)), s);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField(FIELD_DESTINATION)), s);
 
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
             constraint.addChild(constraint1).addChild(constraint2);
@@ -360,11 +372,11 @@ public class InsRel extends MMObjectBuilder {
      *       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
      */
     public Vector getAllRelationsVector(int src, int rnumber) {
-        if (rnumber==-1) {
+        if (rnumber == -1) {
             return getAllRelationsVector(src);
         } else {
             // assures that retrieved nodes are correct
-            MMObjectBuilder builder=mmb.getRelDef().getBuilder(rnumber);
+            MMObjectBuilder builder = mmb.getRelDef().getBuilder(rnumber);
             return builder.searchVector("WHERE (snumber="+src+" OR dnumber="+src+") AND rnumber="+rnumber);
         }
     }
@@ -399,11 +411,11 @@ public class InsRel extends MMObjectBuilder {
      *       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
      */
     public Vector getRelationsVector(int src, int rnumber) {
-        if (rnumber==-1) {
+        if (rnumber == -1) {
             return getRelationsVector(src);
         } else {
             // assures that retrieved nodes are correct
-            MMObjectBuilder builder=mmb.getRelDef().getBuilder(rnumber);
+            MMObjectBuilder builder = mmb.getRelDef().getBuilder(rnumber);
             if (usesdir) {
                 return builder.searchVector("WHERE (snumber="+src+" OR (dnumber="+src+" and dir<>1)) AND rnumber="+rnumber);
             } else {
@@ -423,7 +435,7 @@ public class InsRel extends MMObjectBuilder {
      * @return The corresponding <code>MMObjectNode</code> if the exact relation exists,<code>null</code> otherwise
      */
     public MMObjectNode getRelation(int snumber, int dnumber, int rnumber) {
-        Enumeration e=search("WHERE snumber="+snumber+" AND dnumber="+dnumber+" and rnumber="+rnumber);
+        Enumeration e = search("WHERE snumber="+snumber+" AND dnumber="+dnumber+" and rnumber="+rnumber);
         if (e.hasMoreElements()) {
             return (MMObjectNode)e.nextElement();
         }
@@ -472,8 +484,8 @@ public class InsRel extends MMObjectBuilder {
     * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
     public Enumeration getRelated(int src,int otype) {
-        Vector se=getRelatedVector(src,otype);
-        if (se!=null) return se.elements();
+        Vector se = getRelatedVector(src,otype);
+        if (se != null) return se.elements();
         return null;
     }
 
@@ -485,9 +497,9 @@ public class InsRel extends MMObjectBuilder {
     */
     public Enumeration getRelated(String sourceNode,String wtype, String role) {
         try {
-            int src=Integer.parseInt(sourceNode);
-            int otype=mmb.getTypeDef().getIntValue(wtype);
-            int rnumber=mmb.getRelDef().getNumberByName(role);
+            int src = Integer.parseInt(sourceNode);
+            int otype = mmb.getTypeDef().getIntValue(wtype);
+            int rnumber = mmb.getRelDef().getNumberByName(role);
             return getRelated(src,otype,rnumber);
         } catch(Exception e) {}
         return null;
@@ -501,8 +513,8 @@ public class InsRel extends MMObjectBuilder {
     */
     public Enumeration getRelated(int src,String wtype, String role) {
         try {
-            int otype=mmb.getTypeDef().getIntValue(wtype);
-            int rnumber=mmb.getRelDef().getNumberByName(role);
+            int otype = mmb.getTypeDef().getIntValue(wtype);
+            int rnumber = mmb.getRelDef().getNumberByName(role);
             return getRelated(src,otype,rnumber);
         } catch(Exception e) {}
         return null;
@@ -516,8 +528,8 @@ public class InsRel extends MMObjectBuilder {
     * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
     public Enumeration getRelated(int src,int otype, int rnumber) {
-        Vector se=getRelatedVector(src,otype,rnumber);
-        if (se!=null) return se.elements();
+        Vector se = getRelatedVector(src,otype,rnumber);
+        if (se != null) return se.elements();
         return null;
     }
 
@@ -543,39 +555,39 @@ public class InsRel extends MMObjectBuilder {
     * @deprecated
      */
     public Vector getRelatedVector(int src,int otype, int rnumber) {
-        Vector list=null;
-        if (rnumber==-1) {
-            list=(Vector)relatedCache.get(new Integer(src));
+        Vector list = null;
+        if (rnumber == -1) {
+            list = (Vector)relatedCache.get(new Integer(src));
         }
-        if (list==null) {
-            list=new Vector();
+        if (list == null) {
+            list = new Vector();
             MMObjectNode node,node2;
             int nodenr = -1;
-            for(Enumeration e=getRelations(src,rnumber); e.hasMoreElements(); ) {
-                    node=(MMObjectNode)e.nextElement();
-                    nodenr=node.getIntValue("snumber");
-                    if (nodenr==src) {
-                        nodenr=node.getIntValue("dnumber");
+            for(Enumeration e = getRelations(src,rnumber); e.hasMoreElements(); ) {
+                    node = (MMObjectNode)e.nextElement();
+                    nodenr = node.getIntValue(FIELD_SOURCE);
+                    if (nodenr == src) {
+                        nodenr = node.getIntValue(FIELD_DESTINATION);
                     }
                     node2=getNode(nodenr);
-                    if(node2!=null) {
+                    if(node2 != null) {
                         list.addElement(node2);
                     }
             }
-            if (rnumber==-1) {
+            if (rnumber == -1) {
                 relatedCache.put(new Integer(src),list);
             }
         }
         // oke got the Vector now lets get the correct otypes
 
         Vector results = null;
-        if (otype==-1) {
-            results=new Vector(list);
+        if (otype == -1) {
+            results = new Vector(list);
         } else {
-            results=new Vector();
-            for (Enumeration e=list.elements();e.hasMoreElements();) {
-                MMObjectNode node=(MMObjectNode)e.nextElement();
-                if (node.getOType()==otype) {
+            results = new Vector();
+            for (Enumeration e = list.elements(); e.hasMoreElements();) {
+                MMObjectNode node = (MMObjectNode)e.nextElement();
+                if (node.getOType() == otype) {
                     results.addElement(node);
                 }
             }
@@ -584,7 +596,7 @@ public class InsRel extends MMObjectBuilder {
     }
 
     public String getGUIIndicator(MMObjectNode node) {
-        return node.getStringValue("snumber") + "->" + node.getStringValue("dnumber");
+        return node.getStringValue(FIELD_SOURCE) + "->" + node.getStringValue(FIELD_DESTINATION);
     }
 
 
@@ -599,8 +611,8 @@ public class InsRel extends MMObjectBuilder {
     **/
     public String getGUIIndicator(String field, MMObjectNode node) {
         try {
-            if (field.equals("dir")) {
-                int dir=node.getIntValue("dir");
+            if (field.equals(FIELD_DIRECTIONALITY)) {
+                int dir=node.getIntValue(FIELD_DIRECTIONALITY);
                 if (dir == 2) {
                     return "bidirectional";
                 } else if (dir==1) {
@@ -608,21 +620,21 @@ public class InsRel extends MMObjectBuilder {
                 } else {
                     return "unknown";
                 }
-            } else if (field.equals("snumber")) {
-                MMObjectNode node2 = getNode(node.getIntValue("snumber"));
+            } else if (field.equals(FIELD_SOURCE)) {
+                MMObjectNode node2 = getNode(node.getIntValue(FIELD_SOURCE));
                 String ty = "=" + mmb.getTypeDef().getValue(node2.getOType());
                 if (node2 != null) {
-                    return "" + node.getIntValue("snumber") + ty + "(" + node2.getGUIIndicator()+")";
+                    return "" + node.getIntValue(FIELD_SOURCE) + ty + "(" + node2.getGUIIndicator()+")";
                 }
-            } else if (field.equals("dnumber")) {
-                MMObjectNode node2 = getNode(node.getIntValue("dnumber"));
+            } else if (field.equals(FIELD_DESTINATION)) {
+                MMObjectNode node2 = getNode(node.getIntValue(FIELD_DESTINATION));
                 String ty = "=" + mmb.getTypeDef().getValue(node2.getOType());
                 if (node2 != null) {
-                    return "" + node.getIntValue("dnumber") + ty + "(" + node2.getGUIIndicator() + ")";
+                    return "" + node.getIntValue(FIELD_DESTINATION) + ty + "(" + node2.getGUIIndicator() + ")";
                 }
-            } else if (field.equals("rnumber")) {
-                MMObjectNode node2 = mmb.getRelDef().getNode(node.getIntValue("rnumber"));
-                return ""+node.getIntValue("rnumber")+"="+node2.getGUIIndicator();
+            } else if (field.equals(FIELD_ROLE)) {
+                MMObjectNode node2 = mmb.getRelDef().getNode(node.getIntValue(FIELD_ROLE));
+                return "" + node.getIntValue(FIELD_ROLE) + "=" + node2.getGUIIndicator();
             }
         } catch (Exception e) {
         }
@@ -671,8 +683,8 @@ public class InsRel extends MMObjectBuilder {
     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
     **/
     public int getGuessedNumber(String name) {
-        RelDef reldef=mmb.getRelDef();
-        if (reldef!=null) {
+        RelDef reldef = mmb.getRelDef();
+        if (reldef != null) {
             return reldef.getNumberByName(name);
         }
         return -1;
@@ -685,16 +697,16 @@ public class InsRel extends MMObjectBuilder {
     * @param node The node whose defaults to set.
     */
     public void setDefaults(MMObjectNode node) {
-        if (tableName.equals("insrel")) return;
+        if (tableName.equals(INSREL_BUILDER)) return;
 
-        if (relnumber==-1) {
-            MMObjectNode n=mmb.getRelDef().getDefaultForBuilder(this);
-            if (n==null) {
+        if (relnumber == -1) {
+            MMObjectNode n = mmb.getRelDef().getDefaultForBuilder(this);
+            if (n == null) {
                 log.warn("Can not determine default reldef for ("+getTableName()+")");
             } else {
-                relnumber=n.getNumber();
+                relnumber = n.getNumber();
             }
         }
-        node.setValue("rnumber",relnumber);
+        node.setValue(FIELD_ROLE,relnumber);
     }
 }

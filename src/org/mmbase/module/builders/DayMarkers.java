@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.35 2004-11-09 09:38:30 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.36 2004-11-09 13:57:39 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -354,7 +354,7 @@ public class DayMarkers extends MMObjectBuilder {
                 rtn=""+getDayCount(getDayCountDeltaMonth(ival,delta));
             } else if (token.equals("TIMETOOBJECTNUMBER")){
                 ival=fetchIntValue(command);
-                rtn=""+getDayCount(ival/SECONDS_IN_A_DAY);
+                rtn=""+getDayCount((int)(ival/SECONDS_IN_A_DAY));
             } else {
                 rtn="UnknownCommand";
             }
@@ -491,7 +491,7 @@ public class DayMarkers extends MMObjectBuilder {
      */
     public java.util.Date getDate(MMObjectNode node) {
         int dayCount = node.getIntValue(FIELD_DAYCOUNT);
-         return new java.util.Date(((long)dayCount)*MILLISECONDS_IN_A_DAY);
+        return new java.util.Date(((long)dayCount)*MILLISECONDS_IN_A_DAY);
     }
 
     /**
