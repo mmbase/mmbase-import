@@ -2562,4 +2562,45 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	<extends>contextreader</extends>
     <see>formatter</see>
    </tag>
+  <tag>
+    <name>time</name>
+    <extends>writer</extends>
+    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.TimeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.TimeTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+	    The time taglib can be used for all kind of manipulations regarding to times.</info>
+    <attribute>
+        <name>time</name>
+        <required>false</required>
+    <rtexprvalue>false</rtexprvalue>
+    <info>The time attribute specifies the time to be used, this can be done in multiple ways. 1) When the time attribute is not specified the current time will be taken. 2) Specify the time in seconds from EPOC (this is the way how MMBase handles times). 3) By using keywords, such as: yesterday, tomorrow, today, now. 4) By specifying the time in a human readable way, such as: Friday 10 January 2002. In the last case the attribute inputformat should be used to tell the time taglib how to read the human readable time.</info>
+    </attribute>
+    <attribute>
+        <name>inputformat</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>       
+	<info>The inputformat attribute should only be used when the time attribute contains a human readable time. The comprehensive syntax for this attribute can be found at http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html. Notice that if times have the following form they will be parsed automatically, and this attribute can be ommited: yyyy/mm/dd hh:mm:ss, yyyy/mm/dd, and hh:mm:ss.</info>
+    </attribute>
+    <attribute>
+        <name>offset</name>
+	<required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>The offset attribute can be used to change the time specified with the time attribute. The offset is expressed in seconds.</info>
+    </attribute>
+    <attribute>
+        <name>format</name>
+	<required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>The format attribute specifes how to display the time. If the format attribute is not used the time will be displayed in seconds from EPOC. The syntax of the format attribute is identical to the syntax of the inputformat attribute. Instead of using the format attribute you can also use the MMBase formatter taglib.</info>
+    </attribute>
+    <attribute>
+        <name>language</name>
+	<required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>The language attribute enables you to display the days and months in another language. If this attribute is not used the default system language will be used.</info>
+    </attribute>
+  </tag>
 </taglib>
