@@ -17,18 +17,22 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.2 2003-02-05 11:41:24 michiel Exp $
+ * @version $Id: Format.java,v 1.3 2003-02-16 18:47:55 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
 public final class Format {   // final class!!
     private static Logger log = Logging.getLoggerInstance(Format.class.getName());
-    public final static String RESOURCE = "org.mmbase.applications.media.builders.resources.formats";
+
+    //public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
+    // in case you want i18ed format strings.
     
     private static List formats = new ArrayList(); // to make possible to get the Format object by int.
     private int    number; // for storage     
     private String id;     // for toString(), and as identifier in config file etc.
                            // Also sync with common extension?
+                           // perhaps this could as well be used for storage
+    
     
     private Format(int n, String i) { // private constructor!!
         number = n; id = i; 
