@@ -12,6 +12,8 @@ package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.module.builders.MultiRelations;
+import org.mmbase.util.StringTagger;
 import java.util.*;
 
 /**
@@ -189,4 +191,52 @@ public class BasicCloud implements Cloud {
     public String getDescription(){
         return description;
     }
+
+	/**
+     * Search nodes in a cloud.
+     * @param where the contraint
+     * @param order the field on which you want to sort
+     * @param direction true=UP false=DOWN
+     * @return a <code>List</code> of found nodes
+     */
+    public List search(String nodes, String nodeTypes, String fields, String where, String sorted, String direction, boolean distinct) {
+  		StringTagger tagger= new StringTagger(
+  		                    "NODES='"+nodes+"' TYPES='"+nodeTypes+"' FIELDS='"+fields+
+  		                  "' SORTED='"+sorted+"' DIR='"+direction+"'",
+  		                    ' ','=',',','\'');
+  		
+  		String sdistinct="";
+        if (distinct) sdistinct="YES";
+
+        Vector snodes = tagger.Values("NODES");
+  		Vector sfields = tagger.Values("FIELDS");
+  		Vector tables = tagger.Values("TYPES");
+  		Vector orderVec = tagger.Values("SORTED");
+  		Vector sdirection =tagger.Values("DIR"); // minstens een : UP
+		if (direction==null) {
+		    sdirection=new Vector();
+		    sdirection.addElement("UP"); // UP == ASC , DOWN =DESC
+		}
+	  		
+  		MultiRelations multirel = (MultiRelations)cloudContext.mmb.getMMObject("multirelations");
+  		int nrfields = sfields.size();
+  		Vector retval = new Vector();
+  		if (nrfields==0) { return retval; }
+  		if (where!=null) {
+  		    if (where.trim().equals("")) {
+  		        where = null;
+  		    } else {
+  		        where="WHERE "+where;
+  		    }
+  		}	
+  		Vector v = multirel.searchMultiLevelVector(snodes,sfields,sdistinct,tables,where,orderVec,sdirection);
+  		if (v!=null) {
+  		    for(Enumeration nodeEnum = v.elements(); nodeEnum.hasMoreElements(); ){
+  		        MMObjectNode node = (MMObjectNode)nodeEnum.nextElement();
+                retval.addElement(new BasicNode(node,this));
+  		    }
+		}
+  		return retval;
+    }
+
 }

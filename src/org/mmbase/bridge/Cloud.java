@@ -107,4 +107,14 @@ public interface Cloud {
 	 * @return return a description of the cloud
      */
     public String getDescription();
+
+
+	/**
+     * Search nodes in a cloud.
+     * @param where the contraint
+     * @param order the field on which you want to sort
+     * @param direction true=UP false=DOWN
+     * @return a <code>List</code> of found nodes
+     */
+    public List search(String nodes, String nodeTypes, String fields, String where, String sorted, String direction, boolean distinct);
 }
