@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: MultiRelations.java,v 1.7 2000-03-21 15:46:13 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.8 2000-03-24 14:33:59 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.7  2000/03/21 15:46:13  wwwtech
+	Removed private debug method and private field classname, using inherited instead
+	
 	Revision 1.6  2000/03/20 13:17:30  wwwtech
 	Rico: added super.getValue for global function support
 	
@@ -41,7 +44,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.7 2000-03-21 15:46:13 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.8 2000-03-24 14:33:59 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -354,7 +357,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(v);
 	}
 
-	private String getSelectString(Vector alltables,Vector rfields) {
+	protected String getSelectString(Vector alltables,Vector rfields) {
 		String result="";
 		String val,table,field;
 		int pos,idx,x,y;
@@ -483,7 +486,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(rtn);
 	}
 
-	private String getTableString(Vector alltables) {
+	protected String getTableString(Vector alltables) {
 		StringBuffer result=new StringBuffer("");
 		String val;
 		int idx=0;
@@ -498,7 +501,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result.toString());
 	}
 
-	private String getRelationString(Vector alltables) {
+	protected String getRelationString(Vector alltables) {
 		StringBuffer result=new StringBuffer("");
 		int siz;
 		String src,rel,dst;
@@ -531,7 +534,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result.toString());
 	}
 
-	private String idx2char(int idx) {
+	protected String idx2char(int idx) {
 		return(""+new Character((char)('a'+idx)));
 	}
 

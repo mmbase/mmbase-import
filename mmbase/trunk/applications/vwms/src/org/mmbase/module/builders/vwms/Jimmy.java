@@ -16,6 +16,7 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
+import nl.vpro.mmbase.module.builders.*;
 import org.mmbase.module.builders.Properties;
 
 /**

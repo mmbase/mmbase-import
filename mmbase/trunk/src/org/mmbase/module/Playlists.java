@@ -1,5 +1,5 @@
 /*
- * $Id: Playlists.java,v 1.3 2000-02-24 13:16:13 wwwtech Exp $
+ * $Id: Playlists.java,v 1.4 2000-03-24 14:33:53 wwwtech Exp $
  * 
  * VPRO (C)
  * This source file is part of mmbase and is (c) by VPRO until it is being
@@ -7,6 +7,9 @@
  * MMBase partners.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/02/24 13:16:13  wwwtech
+ * - (marcel) Changed System.out into debug
+ *
  */
 
 package org.mmbase.module;
@@ -30,12 +33,14 @@ import org.mmbase.module.database.*;
  * @author Rob Vermeulen
  * @author Rico Jansen
  * 
- * @version $Revision: 1.3 $ $Date: 2000-02-24 13:16:13 $
+ * @version $Revision: 1.4 $ $Date: 2000-03-24 14:33:53 $
  */
 public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 
 	private String classname = getClass().getName();
 	private boolean debug	 = false; 
+	private void debug( String msg ) { System.out.println( classname +":"+msg ); }
+	private static void debug2( String msg ) { System.out.println( "org.mmbase.module.Playlists:"+msg ); }
 
 	private static final int maxRAspeed   = 96000;
 	private static final int minRAspeed   = 16000;
@@ -114,15 +119,15 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	*
 	*/
 	public Vector  getList(HttpServletRequest requestInfo,StringTagger tagger, String value) {
-		//System.out.println("Playlist->"+tagger);
-		//System.out.println("Playlist->"+value);
+		//debug("Playlist->"+tagger);
+		//debug("Playlist->"+value);
     		String line = Strip.DoubleQuote(value,Strip.BOTH);
 
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
 			if (cmd.equals("PLAYLIST")) return(doPlayList(tok,tagger));
-			System.out.println("Playlists : getList not parsed : "+line);
+			debug("Playlists : getList not parsed : "+line);
 		}
 		return(null);
 	}
@@ -168,7 +173,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 			int end = (a*(int)Math.ceil(playlistsize/(double)b))-1;
 			for (int index=begin; index<=end; index++) {
 				try {	
-					//System.out.println("Playlists -> index = "+index);
+					//debug("Playlists -> index = "+index);
 					PlaylistItem newi=(PlaylistItem)list.elementAt(index);
 					results.addElement(""+newi.id);
 					results.addElement(newi.title);
@@ -216,16 +221,16 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	*/
 	public boolean process(HttpServletRequest req, Hashtable cmds,Hashtable vars) {
 		String doProcess = (String)vars.get("DO");
-		if(doProcess==null) System.out.println("Playlists -> No 'PRC-VAR-DO' specified in HTML-page.");
+		if(doProcess==null) debug("Playlists -> No 'PRC-VAR-DO' specified in HTML-page.");
 
 		if(doProcess.equals("VOTE")) {
 			return computeVotes(cmds, (String)vars.get("NODE"));
-			//System.out.println("IGNORE ON VOTES");
+			//debug("IGNORE ON VOTES");
 			//return(true);
 		}
 		if(doProcess.equals("SELECTED")) {
-			System.out.println("cmds = "+cmds);
-			System.out.println("vars = "+vars);
+			debug("cmds = "+cmds);
+			debug("vars = "+vars);
 		}
 		return(true);
 	}
@@ -369,11 +374,11 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 					 if (p.size()>0) {
 						program=vector2string(p);
 					 } else {
-						System.out.println("Playlists : No programs in pool "+node);
+						debug("Playlists : No programs in pool "+node);
 					}
 				   }
 				} catch(Exception e) {
-					System.out.println("servdb>no pool defined");
+					debug("servdb>no pool defined");
 				}
 			}
 			if (poolNr!=null) 
@@ -437,7 +442,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 					//time("doRAMFile(end node)", false);
 
 				} catch(Exception e) {
-					System.out.println("servdb>no pool defined");
+					debug("servdb>no pool defined");
 				}
 
 				if (debug) debug("doRAMFile(): end pool");
@@ -492,7 +497,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 				} 
 				catch(Exception e) 
 				{
-					System.out.println("servdb>no epipool defined");
+					debug("servdb>no epipool defined");
 				}
 
 				if (debug) debug("doRAMFile(): end epipool");
@@ -590,7 +595,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 						if (debug) debug("PJingles Vector "+PJingles);
 				   }
 				} catch(Exception e) {
-					System.out.println("servdb>no pool defined");
+					debug("servdb>no pool defined");
 				}
 			}
 
@@ -710,8 +715,8 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		result.getBytes(0,result.length(),data,0);	
 
 		if (debug) debug("getRAMFile() : End");
-//		System.out.println("Playlists2 -> ");
-//		System.out.println(result);
+//		debug("Playlists2 -> ");
+//		debug(result);
 
 		time("getRAMFile(end)", false);
 		return(data);	
@@ -985,14 +990,14 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 
 		//temp fix daniel to solve server problems at streams.omroep.nl
 /*
-		System.out.println("Checking url="+result);
+		debug("Checking url="+result);
 		int checkpos=result.indexOf("streams.omroep.nl/vpro");
 		if (checkpos!=-1) {
 			// so it wants togo to the streams server remap it to local machine
 			String result2=result.substring(0,checkpos);
 			result2+="station.vpro.nl";
 			result2+=result.substring(checkpos+22);
-			System.out.println("Check rewrite="+result2);
+			debug("Check rewrite="+result2);
 			return(result2);
 		}
 */
@@ -1041,7 +1046,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 						times++;
 						r++;
 					} catch (Exception e) {
-                        			//System.out.println("Playlists shuffleFreq -> "+e);
+                        			//debug("Playlists shuffleFreq -> "+e);
                         			// Trying to put some last elements into the vector
 					}
                 		}
@@ -1126,7 +1131,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 			stmt.close();
 			con.close();	
 		} catch(Exception f) {
-			System.out.println("ERROR");
+			debug("ERROR");
 			f.printStackTrace();
 		}
 		if (debug) debug(" "+res);
@@ -1160,7 +1165,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		// loop these relations to filter any audioparts from it.
 		while (w.hasMoreElements()) {
 			MMObjectNode relnode=(MMObjectNode)w.nextElement();
-			//System.out.println("Rel="+relnode);
+			//debug("Rel="+relnode);
 			int otherNr=relnode.getIntValue("sNumber");
 			if (nodeNr==otherNr) {
 				otherNr=relnode.getIntValue("dNumber");
@@ -1178,7 +1183,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 				newi.startdate=relnode.getIntValue("startdate");
 				newi.title=othernode.getStringValue("title");
 
-				//System.out.println("OTHER="+newi);
+				//debug("OTHER="+newi);
 				result.addElement(newi);
 			}
 		}
@@ -1349,7 +1354,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		Vector dirvec=new Vector();
 		dirvec.addElement("UP");
 
-		//System.out.println("BAH");
+		//debug("BAH");
 		Vector vec=multirelations.searchMultiLevelVector(pnumber,fields,"NO",tables,"WHERE status=3",ordervec,dirvec);
 		//debug("BAH2="+vec);
 		Enumeration e=vec.elements();
@@ -1382,11 +1387,11 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 
 				result.addElement(newi);
 				} catch(Exception f) {
-					System.out.println("ERROR");
+					debug("ERROR");
 					f.printStackTrace();
 				}
 		}	
-		//System.out.println("BAH="+result);
+		//debug("BAH="+result);
 		return(result);
 	}
 
@@ -2270,9 +2275,9 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	 * computes the votes	
 	 */
 	public boolean computeVotes(Hashtable votes, String playlistId) {
-		//System.out.println("Playlists -> votes "+votes);
-		//System.out.println("Playlists -> playlistId "+playlistId);
-		System.out.println("** VOTES START **");
+		//debug("Playlists -> votes "+votes);
+		//debug("Playlists -> playlistId "+playlistId);
+		debug("** VOTES START **");
 
 		MMObjectBuilder bul=mmbase.getMMObject("pools");
 		MMObjectNode node=bul.getNode(playlistId);
@@ -2287,12 +2292,12 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 					} else {
 						newi.score--;
 					}
-					//System.out.println("Playlists -> Nieuwe score "+newi);
+					//debug("Playlists -> Nieuwe score "+newi);
 					if (!dirtyItems.contains(newi)) dirtyItems.addElement(newi);
 				}
 			}
 			}
-			System.out.println("** VOTES END **");
+			debug("** VOTES END **");
 			return true;	
 		}
 		return false;
@@ -2302,7 +2307,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	 * zet de huidige scores in de 'vorige' score-lijst
 	 */
 	public boolean computeWeekVotes(String playlistId) {
-		//System.out.println("Playlists -> Computing weekvotes for node "+playlistId);
+		//debug("Playlists -> Computing weekvotes for node "+playlistId);
 
 		MMObjectBuilder bul=mmbase.getMMObject("pools");
 		MMObjectNode node=bul.getNode(playlistId);
@@ -2320,7 +2325,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 				// erin, je reset namelijk de scores... XXXXX
 				if (!dirtyItems.contains(newi)) dirtyItems.addElement(newi);
 			}
-			////System.out.println(dirtyItems);
+			////debug(dirtyItems);
 			return true;
 		}	
 		return false;
@@ -2366,10 +2371,10 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 				}
                 break;
             default:
-				System.out.println("Playlists -> uhhh, deze dag vang ik niet af");
+				debug("Playlists -> uhhh, deze dag vang ik niet af");
                 break;
         }
-		System.out.println("Playlists -> Nog "+x+" minuten tot maandag 7:00");
+		debug("Playlists -> Nog "+x+" minuten tot maandag 7:00");
 		return(x*60);
 	}
 
@@ -2395,14 +2400,14 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 					if(currentTime>lastupdated+waittime) {
             			stmt.executeUpdate("update vpro4_playlistupdate set lastupdated="+currentTime+" where plnumber="+plnumber+";");
 						computeWeekVotes(""+plnumber);
-						System.out.println("Playlists }=> weekVotes("+plnumber+") at "+currentTime);
+						debug("Playlists }=> weekVotes("+plnumber+") at "+currentTime);
 					}
             	}
             	stmt.close();
             	con.close();
         	} catch (SQLException e) {
             	e.printStackTrace();
-				System.out.println("Playlists -> checkVotes, het berekenen van de 'weekvotes' ging fout."); 
+				debug("Playlists -> checkVotes, het berekenen van de 'weekvotes' ging fout."); 
         	}
 		}
 		try {
@@ -2410,9 +2415,9 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 			while (dirtyItems.size()>0) {
 				PlaylistItem changed=(PlaylistItem)dirtyItems.elementAt(0);
 				MMObjectNode relnode=bul.getNodeDef(changed.relid);
-				System.out.println("Updating node "+relnode);
+				debug("Updating node "+relnode);
 				if (relnode.getIntValue("otype")!=11017) {
-					System.out.println("Playlist WEIRD ="+relnode);
+					debug("Playlist WEIRD ="+relnode);
 				} else {
 					relnode.setValue("score",changed.score);
 					relnode.setValue("oldpos",changed.oldpos);
@@ -2422,10 +2427,10 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 				try {Thread.sleep(5000);} catch (InterruptedException e){}
 			}
 		} catch (Exception e) {
-			System.out.println("PLaylist error");
+			debug("PLaylist error");
 			e.printStackTrace();
 		}
-		System.out.println("Playlists -> checkVotes afgerond");
+		debug("Playlists -> checkVotes afgerond");
 		*/
 	}
 
@@ -2441,7 +2446,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 			item=(PlaylistItem)e.nextElement();
 			if (ones.contains(new Integer(item.id))) results.addElement(item);
 		}
-		//System.out.println("RESULTS="+results);
+		//debug("RESULTS="+results);
 		return(results);
 	}
 
@@ -2472,7 +2477,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
                     b.append(between+preobj+obj+postobj);
                 }
             } else {
-                System.out.println("Filter-> makeSet : Invalid filmkey");
+                debug2("Filter-> makeSet : Invalid filmkey");
             }
         }
         b.append(post);
@@ -2544,25 +2549,20 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		int nr;
 		MMObjectNode node;
 
-//		System.out.println("Playlists -> Alias Key "+key);
+//		debug("Playlists -> Alias Key "+key);
 		try {
 			nr=Integer.parseInt(key);
 		} catch (Exception e) {
 			nr=-1;
 		}
-//		System.out.println("Playlists -> Alias Number "+nr);
+//		debug("Playlists -> Alias Number "+nr);
 		if (nr>0) {
 			node=oalias.getNode(nr);
 		} else {
 			node=oalias.getAliasedNode(key);
 		}
-//		System.out.println("Playlists -> Alias Node "+node);
+//		debug("Playlists -> Alias Node "+node);
 		return(node);
-	}
-
-	private void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );
 	}
 
 	long oldtime   = 0;
@@ -2640,7 +2640,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		Vector dirvec=new Vector();
 		dirvec.addElement("UP");
 
-		//System.out.println("BAH");
+		//debug("BAH");
 		Vector vec=multirelations.searchMultiLevelVector(pnumber,fields,"NO",tables,"",ordervec,dirvec);
 		Enumeration e=vec.elements();
 		v=new Vector();
@@ -2705,7 +2705,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 			stmt.close();
 			con.close();	
 		} catch(Exception f) {
-			System.out.println("ERROR");
+			debug("ERROR");
 			f.printStackTrace();
 		}
 		return(result);

@@ -206,7 +206,7 @@ public class RawVideosProbe implements Runnable {
 	private boolean encodeMPG(MMObjectNode node) {
 		boolean needbreak=false;
 		int id;
-
+		/*
 		try {
 			// we want to create a mp3 file
 			mpegl3Interface mpeg=parent.mmb.mpegl3.getFree();
@@ -227,6 +227,7 @@ public class RawVideosProbe implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 		return(needbreak);
 	}
 
@@ -234,7 +235,7 @@ public class RawVideosProbe implements Runnable {
 		boolean needbreak=false;
 		boolean encoded=false;
 		int id,rt;
-
+		/*
 		try {
 			// we want to create a RA file
 			raencoderInterface ra=parent.mmb.raenc.getFree();
@@ -279,6 +280,7 @@ public class RawVideosProbe implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 		return(needbreak);
 	}
 
@@ -316,6 +318,7 @@ public class RawVideosProbe implements Runnable {
 	private int verifyEncode(MMObjectNode node,int id) {
 		// Dependency on Linux is HERE
 		int rtn=2;
+		/*
 		VideoObject movje=null;
 		Execute exec=new Execute();
 		String res,name;
@@ -375,6 +378,7 @@ public class RawVideosProbe implements Runnable {
 			// WAV not found ??
 			System.out.println("verifyEncode : MOV not found "+id+" !!!!!!!!");
 		}
+		*/
 		return(rtn);
 	}
 
