@@ -102,9 +102,7 @@ public class FunctionSets {
    private static void decodeFunctionSet(String filename,String setname) {
 
         File file = new File(filename);
-	log.info("ARGGG1");
         if(file.exists()) {
-	   log.info("ARGGG2");
             XMLBasicReader reader = new XMLBasicReader(filename,FunctionSets.class);
 	
 	    String status=reader.getElementValue("functionset.status");
