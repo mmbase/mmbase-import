@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version 9-11-2000
+ * @version $Id: NodeWriter.java,v 1.16 2002-02-04 12:58:09 pierre Exp $
  */
 public class NodeWriter{
 
