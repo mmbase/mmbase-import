@@ -22,5 +22,6 @@
 	 <!-- get hsqldb and  junit and store it in the test dir -->
     <get src="${ibiblio.url}/hsqldb/jars/hsqldb-1.7.1.jar" dest="${lib.test.dir}/hsqldb-1.7.1.jar" usetimestamp="true"/>
     <get src="${ibiblio.url}/junit/jars/junit-3.8.jar" dest="${lib.test.dir}/junit-3.8.jar" usetimestamp="true"/>
+	 <get src="${ibiblio.url}/commons-fileupload/jars/commons-fileupload-1.0.jar" dest="${lib.test.dir}/commons-fileupload-1.0.jar" usetimestamp="true"/>
   </target>
 </project>
