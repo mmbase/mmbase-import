@@ -37,14 +37,14 @@ public class CVSReader {
      * The header is represented by a <code>Hashtable</code> of name-values
      * where name is a column name and value the index of that column.
      */
-    Hashtable name2pos;
+    protected Hashtable name2pos;
     /**
      * The content of the CVS file body (the records or rows).
      * Each entry in <code>rows</code> represents a line or record in the CVS body.
      * Each line is represented by a <code>Vector</code> of values. The position of those
      * values matches with teh columns from the header.
      */
-    Vector rows=new Vector();
+    protected Vector rows=new Vector();
 
     /**
      * Constructor for the CVS Reader.

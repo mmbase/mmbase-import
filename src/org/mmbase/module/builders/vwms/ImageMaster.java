@@ -79,7 +79,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * calls each time it is called.
      * The first time this method is call, nothing happens (?)
      * <br>
-     * Very similar to {@link ImageMaster.probeCall}.
+     * Very similar to {@link #probeCall}.
      *
      * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise
      */
@@ -121,7 +121,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a remote node is changed.
-	 * @param machine Name of the machine that changed the node. 
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -133,7 +133,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a local node is changed.
-	 * @param machine Name of the machine that changed the node. 
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -146,7 +146,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Called when a local or remote node is changed.
      * Does not take any action.
-	 * @param machine Name of the machine that changed the node. 
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new

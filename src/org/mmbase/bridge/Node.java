@@ -153,7 +153,7 @@ public interface Node {
      *
      * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
-     * @see Cloud.getList
+     * @see Cloud#getList
      */
     public Node getNodeValue(String fieldname);
 

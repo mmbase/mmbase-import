@@ -109,7 +109,7 @@ public class NetFileSrv extends MMObjectBuilder {
     /**
      * Handles a service request on a file.
      * Depending on the service/subservice, a VWM (such as {@link PageMaster}) is invoked.
-     * This method is called from the {@link scancache} module to handle page caching.
+     * This method is called from the {@link org.mmbase.module.scancache} module to handle page caching.
      * The VWM invoked is responsible for creating NetFile entries (if needed).
      * @param service the service to be performed
      * @param subservice the subservice to be performed

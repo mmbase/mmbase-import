@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
  */
 /*
-$Id: JDBC.java,v 1.19 2001-06-05 13:55:53 pierre Exp $
+$Id: JDBC.java,v 1.20 2001-07-02 15:09:48 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.19  2001/06/05 13:55:53  pierre
+pierre: changed JDBC admin routines so username/password info is stripped from a database poolname
+
 Revision 1.18  2001/06/03 22:22:30  daniel
 reinstalled support for jdbc admin tool as it was in james
 
@@ -58,7 +61,7 @@ package org.mmbase.module.database;
 
 import java.util.*;
 import java.sql.*;
-import java.util.*;
+import java.sql.DriverManager;
 
 import javax.servlet.http.*;
 
@@ -71,8 +74,7 @@ import org.mmbase.util.logging.*;
  * JDBC Module the module that provides you access to the loaded JDBC interfaces
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.19 2001-06-05 13:55:53 pierre Exp $
+ * @version $Id: JDBC.java,v 1.20 2001-07-02 15:09:48 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -229,7 +231,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Routine build the url to give to the DriverManager
      * to open the connection. This way a servlet/module
      * doesn't need to care about what database it talks to.
-     * @see java.sql.DriverManager.getConnection
+     * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl() {
         return(makeUrl(JDBChost,JDBCport,JDBCdatabase));
@@ -239,7 +241,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Routine build the url to give to the DriverManager
      * to open the connection. This way a servlet/module
      * doesn't need to care about what database it talks to.
-     * @see java.sql.DriverManager.getConnection
+     * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String dbm) {
         return(makeUrl(JDBChost,JDBCport,dbm));
@@ -249,7 +251,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Routine build the url to give to the DriverManager
      * to open the connection. This way a servlet/module
      * doesn't need to care about what database it talks to.
-     * @see java.sql.DriverManager.getConnection
+     * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String host,String dbm) {
         return(makeUrl(host,JDBCport,dbm));
@@ -259,7 +261,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Routine build the url to give to the DriverManager
      * to open the connection. This way a servlet/module
      * doesn't need to care about what database it talks to.
-     * @see java.sql.DriverManager.getConnection
+     * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String host,int port,String dbm) {
         String pre,post;

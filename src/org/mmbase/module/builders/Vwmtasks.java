@@ -114,7 +114,8 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
 
     /**
      * VWM maintenance scheduler.
-     * Calls the {@link #getVwmTasks} method, after which the thread sleeps for a number of seconds as set in {@link SLEEP_TIME}.
+     * Calls the {@link #getVwmTasks} method, after which the thread sleeps
+     * for a number of seconds as set in {@link #SLEEP_TIME}.
      */
     public void run() {
         kicker.setPriority(Thread.MIN_PRIORITY+1);
@@ -193,9 +194,9 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      * This routine selects all tasks that are to be performed.
      * In order to be selected, a task should be new or recently changed, it's status should indicate that it needs a request, and
      * the desired machine to execute the code should match this machine.
-     * The tasks are passed to the VWM that is associted with the task.
+     * The tasks are passed to the VWM that is associated with the task.
      */
-    private void getVwmTasks() {
+    protected void getVwmTasks() {
         String vwm,task;
         // get out alter ego Vwms Builder to pass the new tasks
         if (vwms==null) vwms=(Vwms)mmb.getMMObject("vwms");

@@ -67,7 +67,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * This method overrides the default emthod in MMObhjectBuilder, which
      * would otherwise attempt to access the database.
      * @return Always true.
-     * @see create
+     * @see #create
      */
     public boolean init() {
         return true;

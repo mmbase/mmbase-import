@@ -40,35 +40,21 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     protected void debug(String msg) { log.debug(msg); }
 
     /**
-    * Scheduler of tasks depending on VWMtask nodes assocaited with this Vwm.
+    * Scheduler of tasks depending on VWMtask nodes associated with this Vwm.
     */
-    VwmProbe probe;
-
-    /**
-    * The creation node of this VWM.
-    * Used to retrive the maintenance time and to maintain VWM state information.
-    */
-    MMObjectNode wvmnode;
-
-    /**
-    * Thread in which the VWM runs.
-    * This field can be sued to stop the VWM.
-    * Setting kicker to null (either from outside the thread or within) will cause the VWM
-    * to terminate it's {@link #run} method.
-    */
-    Thread kicker=null;
+    protected VwmProbe probe;
 
     /**
     * Sleep time in seconds.
     * This is the interval in which the VWM performs it's maintenance probes.
     */
-    int sleeptime;
+    protected int sleeptime;
 
     /**
-    * What clients are using this VWM.
-    * Each client implements the {@link VwmCallBackInterface}, and can be invoked when important changes occur.
+    * The creation node of this VWM.
+    * Used to retrieve the maintenance time and to maintain VWM state information.
     */
-    Vector clients = new Vector();
+    protected MMObjectNode wvmnode;
 
     /**
     * Name of the VWM.
@@ -78,9 +64,24 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 
     /**
     * The VWMs builder that holds the VWM's node.
-    * The same as the <code>parent</code> attribute of {@link #vwmnode} (but a bit easier in use).
+    * The same as the <code>parent</code> attribute of the vwm node (but a bit easier in use).
+    * @see #getVwmNode
     */
     protected Vwms Vwms;
+
+    /**
+    * Thread in which the VWM runs.
+    * This field can be used to stop the VWM.
+    * Setting kicker to null (either from outside the thread or within) will cause the VWM
+    * to terminate it's {@link #run} method.
+    */
+    Thread kicker=null;
+
+    /**
+    * What clients are using this VWM.
+    * Each client implements the {@link VwmCallBackInterface}, and can be invoked when important changes occur.
+    */
+    Vector clients = new Vector();
 
     /**
     * Initialize the Vwm.
@@ -127,7 +128,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 
     /**
      * VWM maintenance scheduler.
-     * Calls the {@link #probeCall} method, after which the thread sleeps for a number of seconds as set in {@link sleeptime}.
+     * Calls the {@link #probeCall} method, after which the thread sleeps for a number of seconds as set in {@link #sleeptime}.
      */
     public void run() {
         kicker.setPriority(Thread.MIN_PRIORITY+1);
@@ -174,7 +175,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 
     /**
     * Performs periodic maintenance.
-    * This method is called by the VWM's own {@link #run}} method.
+    * This method is called by the VWM's own {@link #run} method.
     * Since this does not actually do anything, perhaps this method should be abstract.
     * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise
     */

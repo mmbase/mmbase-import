@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.9 2001-04-12 11:46:45 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.10 2001-07-02 15:09:49 pierre Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -116,8 +116,8 @@ public class HttpPost {
     * (as returned by a multiple select form) it returns true
     * if so and false if not. It will also return false when
     * the parameter doesn't exist.
-    * @see getPostMultiParameter
-    * @see getPostParameter
+    * @see #getPostMultiParameter
+    * @see #getPostParameter
     */
     public boolean checkPostMultiParameter(String name) {
         Object obj;
@@ -138,9 +138,9 @@ public class HttpPost {
     * This method returns the Hashtable containing the POST information.
     * Use of this method is discouraged.
     * Instead use getPostMultiParameter, getPostParameter and checkPostMulitparameter
-    * @see getPostMultiParameter
-    * @see getPostParameter
-    * @see checkPostMultiParameter
+    * @see #getPostMultiParameter
+    * @see #getPostParameter
+    * @see #checkPostMultiParameter
     */
     public Hashtable getPostParameters() {
         if (!postDecoded) decodePost(req);
@@ -150,8 +150,8 @@ public class HttpPost {
     /**
     * This method returns the value of the postparameter as a String.
     * If it is a parameter with multiple values it returns the first one.
-    * @see getPostMultiParameter
-    * @see checkPostMultiParameter
+    * @see #getPostMultiParameter
+    * @see #checkPostMultiParameter
     * @exception PostValueToLargeException will be thrown when the postParameterValue
     * is saved on disk instead of memory.
     */
@@ -179,7 +179,7 @@ public class HttpPost {
     * In case of a parameter with one value, it returns it as a Vector
     * with one element.
     * it laso converts the byte[] into strings
-    * @see checkPostMultiParameter
+    * @see #checkPostMultiParameter
     */
     public Vector getPostMultiParameter(String name) {
         Object obj=null;
@@ -206,9 +206,8 @@ public class HttpPost {
     /**
     * This method returns the filename containing the postparametervalue
     * If it is a parameter with multiple values it returns the first one.
-    * @see getPostMultiParameter
-    * @see checkPostMultiParameter
-    * @see getMaximumPostbufferSize
+    * @see #getPostMultiParameter
+    * @see #checkPostMultiParameter
     */
     public String getPostParameterFile(String name) {
         Object obj=null;
@@ -251,8 +250,8 @@ public class HttpPost {
     /**
     * This method returns the value of the postparameter as a String.
     * If it is a parameter with multiple values it returns the first one.
-    * @see getPostMultiParameter
-    * @see checkPostMultiParameter
+    * @see #getPostMultiParameter
+    * @see #checkPostMultiParameter
     */
     public String getPostParameter(String name) {
         Object obj=null;

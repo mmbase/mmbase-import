@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.104 $ $Date: 2001-07-02 11:08:41 $
+ * @version $Revision: 1.105 $ $Date: 2001-07-02 15:09:45 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -152,7 +152,7 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Detemines whether the cache need be refreshed?
     * Seems useless, as this value is never changed (always true)
-    * @see readSearchResults
+    * @see #readSearchResults
     */
     public boolean replaceCache=true;
 
@@ -259,7 +259,7 @@ public class MMObjectBuilder extends MMTable {
     * The method retrieves data from the TypeDef builder, or adds data to thet builder if the
     * current builder si not yet registrered.
     * @return Always true.
-    * @see create
+    * @see #create
     */
     public boolean init() {
         database=mmb.getDatabase();
@@ -444,7 +444,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Get a new node, using this builder as its parent. The new node is not a part of the cloud yet, and thus has
-    * the value -1 as a number. (Call {@link @insert} to add the node to the cloud).
+    * the value -1 as a number. (Call {@link #insert} to add the node to the cloud).
     * @param owner The administrator creating the new node.
     * @return A newly initialized <code>MMObjectNode</code>.
     */
@@ -1823,7 +1823,7 @@ public class MMObjectBuilder extends MMTable {
         * @param version the version number (or <code>null</code> if not applicable) to filter on
         * @return the found path as a <code>String</code>, or <code>null</code> if not found
         * @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
-        * this method should be moved to the {@link #org.mmbase.module.gui.html.scanparser} class.
+        * this method should be moved to the {@link org.mmbase.module.gui.html.scanparser} class.
         */
         public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
                 File dir = new File(documentRoot+path);
@@ -2302,7 +2302,7 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Gets Dutch Short name.
     * Actually returns the builders short name in wither the 'current langauge', or default langauge 'us', whichever is available.
-    * If this fails, the value set with {@link #SetDutchSName} is used instead.
+    * If this fails, the value set with {@link #setDutchSName} is used instead.
     * @returns the 'dutch' short name
     * @deprecated use {@link #getSingularName} instead.
     */
