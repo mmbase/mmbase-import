@@ -29,9 +29,9 @@ public class UserContext extends org.mmbase.security.UserContext {
 	return name;
     }
 
-    public boolean anonymous() {
+    public boolean isAnonymous() {
         log.debug("anonymous function (" + name + ")");
-        return name.equals("");
+        return getIdentifier().equals("");
     }
    
 }
