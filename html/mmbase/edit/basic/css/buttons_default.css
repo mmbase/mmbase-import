@@ -53,3 +53,11 @@ span.next:before {
   content: url(../images/next.gif); /* makes it work in Mozilla */
 }
 
+span.tree {
+  background:  url(../images/search.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.tree:before   { 
+  content: url(../images/search.gif);
+}

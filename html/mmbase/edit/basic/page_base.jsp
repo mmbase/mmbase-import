@@ -2,6 +2,9 @@
 %><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
 <%!
+
+// stack stuff (for the bread-crumb). Might appear a tag for this sometime.
+
 void push(Stack stack, String id,  String url) {
    stack.push(new String[] {id, url});
 }
@@ -23,18 +26,7 @@ String toHtml(Stack stack, HttpServletRequest request) {
   }
   return buf.toString();
 }
-%>
-<% 
-
-response.setContentType("text/html; charset=utf-8");
-// as many browsers as possible should not cache:
-response.setHeader("Cache-Control", "no-cache");
-response.setHeader("Pragma","no-cache");
-long now = System.currentTimeMillis();
-response.setDateHeader("Expires",  now);
-response.setDateHeader("Last-Modified",  now);
-response.setDateHeader("Date",  now);
-
+%><% 
 
 Stack urlStack = (Stack) session.getAttribute("editor_stack");
 

@@ -28,3 +28,8 @@ span.next:before {
   font-weight: bold;
   content: ">";
 }
+
+span.tree:before {
+  font-weight: bold;
+  content: ":-)";
+}

@@ -1,6 +1,7 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
-<mm:write referid="style" />
+%><mm:content type="text/html" language="$config.lang" expires="0">
+<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+<mm:write referid="style" escape="none" />
 <title>Create a node</title>
 </head>
 <mm:context id="create_node">
@@ -46,3 +47,4 @@
 </mm:context>
 <%@ include file="foot.jsp" %>
 </mm:cloud>
+</mm:content>
