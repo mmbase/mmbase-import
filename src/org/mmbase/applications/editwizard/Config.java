@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26.2.8 2003-06-02 12:37:52 vpro Exp $
+ * @version $Id: Config.java,v 1.26.2.9 2003-06-02 13:22:21 vpro Exp $
  */
 
 public class Config {
@@ -230,10 +230,10 @@ public class Config {
                 throw new WizardException("The parameter 'fields' is required but not given."); 
             }
             
-            age         = configurator.getParam("age", new Integer(age)).intValue();
+            age = configurator.getParam("age", new Integer(age)).intValue();
             if (age>=99999) age=-1;
             
-            start       = configurator.getParam("start", new Integer(start)).intValue();
+            start = configurator.getParam("start", new Integer(start)).intValue();
             searchType=configurator.getParam("searchtype", searchType);
             searchFields=configurator.getParam("searchfields", searchFields);
             searchValue=configurator.getParam("searchvalue", searchValue);
