@@ -76,7 +76,8 @@ public class FieldSelector implements CommandHandlerInterface {
 		for (;h.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)h.nextElement();
 			results.addElement(""+node.getIntValue("number"));
-			if (node.getIntValue("dir")==1) {
+			// *** changed
+			if (node.getIntValue("dir")==2) {
 				results.addElement(node.getStringValue("sguiname")+"/"+node.getStringValue("dguiname"));
 			} else {
 				results.addElement(node.getStringValue("dguiname"));
