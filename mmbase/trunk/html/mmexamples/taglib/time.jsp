@@ -16,12 +16,12 @@ time tag attributes see the
 </p>
 <mm:log />
 <table>
-<tr><td colspan="2">Show the time in seconds from the start of the epoc</td></tr>
+<tr><td colspan="2">Show the time in seconds from the start of the epoch</td></tr>
 <tr valign="top">
   <td width="50%"><pre>&lt;mm:time time="now" /&gt;</pre></td>
   <td width="50%"><mm:time time="now"/></td>
 </tr>
-<tr><td colspan="2">Show the time in seconds from EPOC and format it in a nice way</td></tr>
+<tr><td colspan="2">Show the time in seconds from the epoch and format it in a nice way</td></tr>
 <tr valign="top">
   <td width="50%"><pre>&lt;mm:time time="now" format="EEEE d MMMM" /&gt;</pre></td>
   <td width="50%"><mm:time time="now" format="EEEE d MMMM" /></td>
@@ -60,7 +60,7 @@ How to use jspvars and taglib vars.
   <td width="50%"><%@include file="codesamples/timeenv.jsp" %></td>
 </tr>
 <tr><td colspan="2"> 
-Using a field of a node that is a time. TODO: add working examples.
+Using a field of a node that is a time.
 </td></tr>
 <tr valign="top">
   <td width="50%">
