@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Basic [builder]
  * @author Daniel Ockeloen
- * @version $Id: People.java,v 1.7 2003-09-01 13:29:44 pierre Exp $
+ * @version $Id: People.java,v 1.8 2004-09-27 13:24:06 marcel Exp $
  */
 public class People extends MMObjectBuilder {
 
@@ -103,6 +103,8 @@ public class People extends MMObjectBuilder {
      * also signals the session module
      */
     public void flushCache(String key) {
-        peopleCache.remove(key);
+        //bugfix #6583: NullPointerException when key = null
+        if(key!=null) 
+            peopleCache.remove(key);
     }
 }
