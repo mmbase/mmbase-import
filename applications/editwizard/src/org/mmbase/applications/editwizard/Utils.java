@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.35 2003-08-26 12:56:05 michiel Exp $
+ * @version $Id: Utils.java,v 1.36 2003-11-27 12:49:11 pierre Exp $
  */
 
 public class Utils {
@@ -52,7 +52,9 @@ public class Utils {
      * @return     a DocumentBuilder.
      */
     public static DocumentBuilder getDocumentBuilder(boolean validate) {
-	return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate, new XMLErrorHandler(validate, XMLErrorHandler.ERROR), new XMLEntityResolver(validate, Utils.class));
+        return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate,
+            new XMLErrorHandler(validate, XMLErrorHandler.ERROR),
+            new XMLEntityResolver(validate, Utils.class));
     }
 
     /**
@@ -80,7 +82,7 @@ public class Utils {
      */
     public static Document loadXMLFile(File file) throws WizardException {
         try {
-            try {	  
+            try {
                 DocumentBuilder b = getDocumentBuilder(true);
                 return b.parse(file);
             } catch (SAXParseException ex) {
@@ -88,12 +90,12 @@ public class Utils {
                 DocumentBuilder b = getDocumentBuilder(false);
                 Document d = b.parse(file);
                 if (d.getDoctype() == null) {
-                    log.warn("No DocumentType speficied in " + file);
+                    log.warn("No DocumentType specified in " + file);
                     return d;
                 } else {
                     throw new WizardException("Error on line " + ex.getLineNumber() + " (column " + ex.getColumnNumber() + ") of schema xml file " + ex.getSystemId() + ": " + ex.getMessage());
                 }
-            }        
+            }
         } catch (SAXException e) {
             throw new WizardException("Could not load schema xml file '"+file + "' (SAX)\n" + Logging.stackTrace(e));
         } catch (IOException ioe) {
@@ -235,7 +237,7 @@ public class Utils {
         try {
             // return the value of the node if that node is itself a text-holding node
             if ((node.getNodeType()==Node.TEXT_NODE) ||
-                (node.getNodeType()==Node.CDATA_SECTION_NODE) || 
+                (node.getNodeType()==Node.CDATA_SECTION_NODE) ||
                 (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
                 return node.getNodeValue();
             }
@@ -266,11 +268,11 @@ public class Utils {
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
         return selectSingleNodeText(node, xpath, defaultvalue, null);
     }
-    
+
     /**
-     * Selects a single node using the given xpath and uses the given node a a starting context and returns the textnode found. 
+     * Selects a single node using the given xpath and uses the given node a a starting context and returns the textnode found.
      * If no text is found, the default value is given.
-     * If a cloud argument is passed, it is used to select the most approprite text (using xml:lang attributes) depending on 
+     * If a cloud argument is passed, it is used to select the most approprite text (using xml:lang attributes) depending on
      * the cloud's properties.
      *
      * @param  node  the contextnode to start the xpath from.
@@ -286,7 +288,7 @@ public class Utils {
             if (cloud != null) {
                 x=XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
             }
-            // if not found or n.a., just grab the first you can find 
+            // if not found or n.a., just grab the first you can find
             if (x == null || (x instanceof XNodeSet && x.nodelist().getLength() < 1)) {
                 x = XPathAPI.eval(node, xpath);
             }
@@ -322,7 +324,7 @@ public class Utils {
 
     /**
      * Same as above, but without the params.
-     * This method first removes all text/CDATA nodes. It then adds the parsed text as either a text ndoe or a CDATA node. 
+     * This method first removes all text/CDATA nodes. It then adds the parsed text as either a text ndoe or a CDATA node.
      */
     public static void storeText(Node node, String text) {
         Node t = node.getFirstChild();
@@ -486,10 +488,10 @@ public class Utils {
             StreamResult streamResult = new StreamResult(result);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer serializer = tf.newTransformer();
-            serializer.setOutputProperty(OutputKeys.INDENT,"yes"); 
-            // Indenting not very nice int all xslt-engines, but well, its better then depending 
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            // Indenting not very nice int all xslt-engines, but well, its better then depending
             // on a real xslt or lots of code.
-            serializer.transform(domSource, streamResult); 
+            serializer.transform(domSource, streamResult);
             return result.toString();
         } catch (Exception e) {
             return e.toString();
