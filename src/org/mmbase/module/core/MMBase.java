@@ -281,6 +281,20 @@ public class MMBase extends ProcessorModule  {
 	}
 
 	/**
+	* Safely close a database connection and/or a database statement.
+	* @param con The connection to close. Can be <code>null</code>.
+	* @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
+	*/
+	public void closeConnection(MultiConnection con, Statement stmt) {
+            try {
+                if (stmt!=null) stmt.close();
+            } catch(Exception g) {}
+            try {
+                if (con!=null) con.close();
+            } catch(Exception g) {}
+	}	
+	
+	/**
 	 * Get a direct database connection, should only be used
 	 * if you want to do database specific things that use non-jdbc
 	 * interface calls. Use very sparingly
