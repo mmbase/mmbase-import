@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>org.mmbase.security</title>
+  </head>
+  <body>
+    <p>
+      The security infrastructure of MMBase. MMBase has a pluggable security system, which is
+      currently called from within the bridge implementation.  The core of this setup are the
+      abstract classes `Authorization' and `Authenication'.
+    </p>
+    <p>
+      There are several interesting security implementation available in a standard MMBase
+      installation, but you can always implement your own. The implementations can be found in
+      subpackages of org.mmbase.bridge.implementation.
+    </p>
+    <ul>
+    <li>
+     The most powerful implementation is the 'context' implementation which supplies a a system of
+     user, groups and 'contextes', which is configured by a sophisticated xml file.
+    </li>
+    <li>
+     The default implementation however is the 'cloud' implementation which is a more simple simple
+     system with only users (no groups) which are stored as MMBase objects, so you can administrate this with the normal MMBase edit tools.
+   </li>
+   </ul>
+    
+    <!-- version of package description $Id: package.html,v 1.1 2002-04-19 22:13:07 michiel Exp $ -->
+    @since   MMBase-1.4
+    @see     org.mmbase.bridge
+    @see     org.mmbase.security.implementation
+    @see     org.mmbase.security.implementation.context
+    @see     org.mmbase.security.implementation.basic
+    @see     org.mmbase.security.implementation.cloud
+  </body>
+</html>
