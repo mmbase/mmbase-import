@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.22 2004-07-09 14:08:30 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.23 2004-07-09 17:26:37 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -36,6 +36,7 @@ public class ListNodesTag extends AbstractNodeListTag {
     protected Attribute path       = Attribute.NULL;
     protected Attribute element    = Attribute.NULL;
     protected Attribute searchDirs = Attribute.NULL;
+    protected Attribute nodes      = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -66,6 +67,12 @@ public class ListNodesTag extends AbstractNodeListTag {
      */
     public void setSearchdirs(String s) throws JspTagException {
         searchDirs = getAttribute(s);
+    }
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setNodes(String n) throws JspTagException {
+       nodes = getAttribute(n);
     }
 
 
@@ -108,6 +115,9 @@ public class ListNodesTag extends AbstractNodeListTag {
         }
         if (orderby != Attribute.NULL) {
             Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+        }
+        if (nodes != Attribute.NULL) {
+            Queries.addStartNodes(query, nodes.getString(this));
         }
         return query;
     }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.8 2004-06-30 17:51:55 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.9 2004-07-09 17:26:37 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -33,6 +33,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
+    protected  Attribute   nodes       = Attribute.NULL;
 
 
     public void setPath(String t) throws JspTagException {
@@ -46,6 +47,14 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     public void setFields(String f) throws JspTagException {
         fields = getAttribute(f);
     }
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setNodes(String n) throws JspTagException {
+        nodes = getAttribute(n);
+    }
+
 
     public Query getQuery() {
         if (query.isUsed()) query = (Query) query.clone();
@@ -63,6 +72,8 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
         Queries.addFields(query, (String) fields.getValue(this));
+
+        Queries.addStartNodes(query, nodes.getString(this));
 
         return EVAL_BODY;
     }
