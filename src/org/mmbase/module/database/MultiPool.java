@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.16 2002-10-10 19:03:46 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.17 2002-10-11 12:19:49 michiel Exp $
  */
 public class MultiPool {
 
@@ -65,25 +65,26 @@ public class MultiPool {
         this.maxQuerys=maxQuerys;
         this.databasesupport=databasesupport;
 
-        semaphore = new DijkstraSemaphore(conMax);
-
         // put connections on the pool
         for (int i = 0; i < conMax ; i++) {
+            Connection con;
             if (name.equals("url") && password.equals("url")) {
-                Connection con = DriverManager.getConnection(url);
-                initConnection(con);
-                pool.add(new MultiConnection(this,con));
+                con = DriverManager.getConnection(url);
             } else {
-                Connection con = DriverManager.getConnection(url,name,password);
-                initConnection(con);
-                pool.add(new MultiConnection(this,con));
+                con = DriverManager.getConnection(url,name,password);                
             }
+            initConnection(con);
+            pool.add(new MultiConnection(this,con));
         }
+
+        semaphore = new DijkstraSemaphore(pool.size());
+
         dbm = getDBMfromURL(url);
    }
 
     /**
      * Check the connections
+     * @bad-constant  Max life-time of a query must be configurable
      */
     public void checkTime() {
         if (log.isDebugEnabled()) {
@@ -142,7 +143,8 @@ public class MultiPool {
             }
 
 
-            if ((busyPool.size() + pool.size()) != conMax) { // cannot happen, I hope.
+            if ((busyPool.size() + pool.size()) != conMax) { 
+                // cannot happen, I hope...
                 log.error("Number of connections is not correct: "+ (busyPool.size()+pool.size()) + " != " + conMax);
                 // Check if there are dups in the pools
                 for(Iterator i = busyPool.iterator(); i.hasNext();) {
