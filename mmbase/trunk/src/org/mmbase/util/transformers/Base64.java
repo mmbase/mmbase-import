@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Map;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -36,7 +37,7 @@ public class Base64 extends AbstractTransformer implements ByteToCharTransformer
      * Used when registering this class as a possible Transformer
      */
 
-    public HashMap transformers() {
+    public Map transformers() {
         HashMap h = new HashMap();
         h.put(ENCODING, new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
         return h;

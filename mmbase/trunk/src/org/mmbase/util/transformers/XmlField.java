@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.mmbase.util.StringObject;
 
@@ -488,7 +489,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     } 
 
 
-    public HashMap transformers() {
+    public Map transformers() {
         HashMap h = new HashMap();
         h.put("mmxf_rich".toUpperCase(),  new Config(XmlField.class, RICH, "Converts to enriched ASCII"));
         h.put("mmxf_poor".toUpperCase(),  new Config(XmlField.class, POOR));

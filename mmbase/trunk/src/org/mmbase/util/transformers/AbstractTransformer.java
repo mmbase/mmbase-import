@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -23,5 +23,5 @@ public abstract class AbstractTransformer implements Transformer {
     public void configure(int t) {
         to = t;
     }
-    public abstract HashMap transformers();
+    public abstract Map transformers();
 }
