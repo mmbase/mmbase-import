@@ -1,35 +1,35 @@
-<form action="<mm:url referids="portal?,page?,base" page="/" />" method="POST">
-<table cellspacing="0" cellpadding="0" class="list" width="97%">
-<tr class="listsearch">
-  <td colspan="3">
-   Maintainer:
-   <select name="smaintainer">
-     <option value="-1">any</option>
-       <mm:listnodescontainer path="users,groups">
-         <mm:constraint field="groups.name" value="BugTrackerCommitors" />
-         <mm:sortorder  field="lastname" />
-         <mm:listnodes>
-           <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="smaintainer">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
-        </mm:listnodes>
-      </mm:listnodescontainer>
-    </select>
-  </td>
-  <td colspan="4">
-   Submitter:
-   <select name="ssubmitter">
-     <option value="-1">any</option>
-       <mm:listnodescontainer path="users">
-         <mm:sortorder  field="lastname" />
-         <mm:listnodes>
-           <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="ssubmitter">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
-        </mm:listnodes>
-      </mm:listnodescontainer>
-    </select>
-  </td>
+<form action="<mm:url referids="parameters,$parameters" />" method="post">
+<table class="list">
+  <tr class="listsearch">
+    <td colspan="3">
+      Maintainer:
+      <select name="smaintainer">
+        <option value="-1">any</option>
+        <mm:listnodescontainer path="users,groups">
+          <mm:constraint field="groups.name" value="BugTrackerCommitors" />
+          <mm:sortorder  field="lastname" />
+          <mm:listnodes>
+            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="smaintainer">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
+          </mm:listnodes>
+        </mm:listnodescontainer>
+      </select>
+    </td>
+    <td colspan="4">
+      Submitter:
+      <select name="ssubmitter">
+        <option value="-1">any</option>
+        <mm:listnodescontainer path="users">
+          <mm:sortorder  field="lastname" />
+          <mm:listnodes>
+            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="ssubmitter">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
+          </mm:listnodes>
+        </mm:listnodescontainer>
+      </select>
+    </td>
   <td colspan="2">&nbsp;</td>
 </tr>
 <tr class="listsearch">
-   <td width="50">
+  <td width="50">
       <input name="sbugid" size="4" />
     </td>
     <td width="50">
@@ -58,7 +58,7 @@
               <mm:compare referid2="stypetest"><option value="<mm:write/>" selected="true"><mm:write referid="stypeitem"/></option></mm:compare>
               <mm:compare referid2="stypetest" inverse="true"><option value="<mm:write/>"><mm:write referid="stypeitem"/></option></mm:compare>
              </mm:index>
-        </mm:stringlist>
+           </mm:stringlist>
 	</select>
         </mm:context>
 	</td>
@@ -103,7 +103,7 @@
 </tr>
 <!-- the real searchpart -->
 
-<mm:url id="pagingurl" referids="portal?,page?,base,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer,ssubmitter" write="false" />
+<mm:url id="pagingurl" referids="parameters,$parameters,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer,ssubmitter" write="false" />
 
 <mm:write referid="smaintainer">
   <mm:compare value="-1">
@@ -226,7 +226,7 @@
 			 <mm:field name="bugreports.issue" escape="inline"/>&nbsp;
 		</td>
 		<td>
-		    <a href="<mm:url referids="portal?,page?,base" page="$base/fullview.jsp"><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" align="right"></a>
+		    <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="images/arrow-right.gif" />" border="0" align="right"></a>
 		</td>
 </tr>
  <mm:last><mm:index id="lastindex" write="false" /></mm:last>
@@ -238,10 +238,10 @@
      <mm:write referid="noffset">
        <mm:isgreaterthan value="0">
          <mm:isgreaterthan value="15">
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="$base/images/arrow-left.gif" />" border="0" /></a>
+           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="images/arrow-left.gif" />" border="0" /></a>
          </mm:isgreaterthan>
          <mm:write id="previouspage" value="${+ $noffset - 15}" vartype="integer" write="false" />
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="$base/images/arrow-left.gif" />" border="0" /></a>
+         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="images/arrow-left.gif" />" border="0" /></a>
        </mm:isgreaterthan>
      </mm:write>
    </td>
@@ -274,10 +274,10 @@
   <td colspan="1" class="listpaging">
      <mm:write value="${+ $noffset + 15}" vartype="integer">
        <mm:islessthan value="$total">
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" /></a>
+         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="images/arrow-right.gif" />" border="0" /></a>
          <mm:islessthan value="${+ $total - 15}">
            <mm:write id="lastoffset" value="${+ ($lastpage  - 1) * 15}" vartype="integer" write="false" />
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" /></a>
+           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="images/arrow-right.gif" />" border="0" /></a>
          </mm:islessthan>
        </mm:islessthan>
      </mm:write>
@@ -286,25 +286,6 @@
 
 </mm:listcontainer>
 </table>
-<!-- end of the searchpart -->
-<center>
-<table cellspacing="0" cellpadding="0" align="middle" width="80%">
-<tr>
 
-		<mm:present referid="user" inverse="true" >
-			<td>
-			 <center><font color="#000000">We have no idea who you are please login !<a href="<mm:url referids="portal?,page?,base" page="$base/changeUser.jsp" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" valign="middle"></A></font>
-			</td>
-		</mm:present>
-		<mm:present referid="user">
-			<td colspan="1">
-			<br />
-			<mm:node number="$user">
-			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="portal?,page?,base" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url referids="portal?,page?,user,base" page="$base/newBug.jsp" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" ></a>
-			</td>
-			</mm:node>
-		</mm:present>
-</tr>
-</table>
-</center>
+<%@include file="../whoami.jsp" %>
 </form>

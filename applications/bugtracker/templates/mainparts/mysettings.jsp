@@ -1,6 +1,6 @@
 <center>
 <table cellspacing="0" cellpadding="0" class="list" width="85%">
-<form action="<mm:url referid="portal?,page?" page="/index.jsp?flap=mysettings" />" method="post">
+<form action="<mm:url referid="parameters,$parameters" page="/index.jsp?flap=mysettings" />" method="post">
 
 <tr><th>Setting</th><th>Current Value</th></tr>
 <mm:node referid="user">
@@ -36,7 +36,7 @@
 			 Areas
 		</th>
 </tr>
-<form action="<mm:url referids="portal?,page?" page"/index.jsp?flap=mysettings" />" method="post">
+<form action="<mm:url referids="parameters,$parameters" page"/index.jsp?flap=mysettings" />" method="post">
 <tr>
 		<th>
 			Remove Area
