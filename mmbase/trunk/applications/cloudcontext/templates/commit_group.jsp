@@ -75,27 +75,12 @@
       <mm:createnode type="mmbasecontexts">
       </mm:createnode>
     </mm:present>
-   <mm:import id="operations" vartype="list">create,read,write,delete</mm:import>
-   <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Groups.GRANT_ARGUMENTS">
-     <mm:listnodes id="thiscontext" type="mmbasecontexts">  
-       <mm:param name="context"><mm:field name="name" /></mm:param>
-       <mm:stringlist referid="operations">
-         <mm:param name="operation"><mm:write /></mm:param>
-         <mm:import id="right" externid="$_:$thiscontext" />
-         <mm:compare referid="right" value="on">
-            <mm:function node="group" name="grant" />
-         </mm:compare>
-         <mm:compare referid="right" value="on" inverse="true">
-             <mm:function node="group" name="revoke" />
-         </mm:compare>
-       </mm:stringlist>
-   <tr><td></td></tr>
-   </mm:listnodes>
-   </mm:functioncontainer>
+   <%@include file="commitGroupOrUserRights.jsp" %>
    </table>
    </mm:node>
-
- <% response.sendRedirect("index_groups.jsp"); %>
+<mm:write referid="group" jspvar="group" vartype="node">
+ <% response.sendRedirect("index_groups.jsp?group=" + group.getNumber()); %>
+</mm:write>
   </mm:cloud>
   </body>
 </html>

@@ -25,7 +25,12 @@
  </div>
  
   <p class="action">
+   <mm:maycreate type="mmbasecontexts">
     <a href="<mm:url page="create_context.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create context"  /></a>
+   </mm:maycreate>
+   <mm:maycreate type="mmbasecontexts" inverse="true">
+     You are not allowed to create new security contexts.
+   </mm:maycreate>
   </p>
  
    <mm:notpresent referid="context">
@@ -61,7 +66,7 @@
    </mm:notpresent>
    <mm:present referid="context">
      <mm:stringlist referid="context">
-      <mm:node number="$_">
+      <mm:node id="currentcontext" number="$_">
           <%@include file="context.div.jsp" %>
       </mm:node>
      </mm:stringlist>
