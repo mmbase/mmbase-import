@@ -1,7 +1,5 @@
 <%@ include file="page_base.jsp"
-%><% urlStack.clear();
-   push(urlStack, "home", request);
- %><mm:import externid="userlogon" from="parameters" />
+%><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
@@ -13,6 +11,21 @@
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
 
 <body class="basic" <mm:present referid="node_type">onLoad="document.search.elements[0].focus();"</mm:present>>
+
+<% urlStack.clear(); %>
+<mm:import externid="search" />
+<mm:import externid="page" />
+
+<mm:url id="thisurl" referids="node_type,search?,page?" write="false">
+  <mm:present referid="search">
+    <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+      <mm:fieldinfo type="reusesearchinput" />
+    </mm:fieldlist>
+  </mm:present>
+</mm:url>
+<mm:write referid="thisurl" vartype="string" jspvar="url">
+<%   push(urlStack, "home", url);  %>
+</mm:write>
 
 <table summary="node editors" width="100%" class="super">
   <tr align="left">
