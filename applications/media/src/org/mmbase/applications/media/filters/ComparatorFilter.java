@@ -16,13 +16,13 @@ import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 
 /**
- * Just a Comparator but it adds two functions:
- * - compareResonseInfo for easy overriding without Casting
- * - configure can be overridden to add configuration for this Comparator to the mediasourcefilter.xml
+ * Implements a Filter as a Comparator. That means that it only sorts,
+ * and the implementation is done by implementating it as an
+ * Comparator.
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class URLComposerComparator implements Comparator, Filter {
+abstract public class ComparatorFilter implements Comparator, Filter {
 
     /**
      * Implement this.

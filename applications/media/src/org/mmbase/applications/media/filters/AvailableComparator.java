@@ -13,9 +13,9 @@ package org.mmbase.applications.media.filters;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 
 /**
- * This can sort a list with the available urls on top.
+ * This can sort a list of URLComposers with the available ones on top.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableComparator.java,v 1.1 2003-02-03 17:50:22 michiel Exp $
+ * @version $Id: AvailableComparator.java,v 1.2 2003-02-05 14:28:49 michiel Exp $
  */
 public class AvailableComparator extends  PreferenceComparator {
 
