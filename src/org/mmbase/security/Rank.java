@@ -26,10 +26,14 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.14 2005-03-01 14:12:55 michiel Exp $
+ * @version $Id: Rank.java,v 1.15 2005-03-16 10:32:10 michiel Exp $
  */
 public final class Rank implements Comparable, java.io.Serializable {
+
     private static Logger log = Logging.getLoggerInstance(Rank.class);
+
+    private static final int serialVersionUID = 1; // increase this if object chages.
+
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
 
