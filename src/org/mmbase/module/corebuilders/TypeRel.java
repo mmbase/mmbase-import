@@ -40,7 +40,7 @@ public class TypeRel extends MMObjectBuilder {
 	 * question was correct or not.
 	 * This is needed to make sure that a relation is correctly inserted.
 	 */
-	private Hashtable relDefCorrectCache=new Hashtable(10);
+	private Hashtable relDefCorrectCache=new Hashtable(128);
 
 	/**
 	* Constructor for the TypeRel builder
