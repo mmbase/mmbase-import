@@ -739,9 +739,6 @@
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
 			<param name="provider" type="String" description="" />
-			<return type="None">
-				<field name="name" type="String" description="" />
-			</return>
 		</function>
 
 
@@ -754,9 +751,6 @@
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
 			<param name="provider" type="String" description="" />
-			<return type="None">
-				<field name="name" type="String" description="" />
-			</return>
 		</function>
 
 
@@ -769,9 +763,6 @@
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
 			<param name="provider" type="String" description="" />
-			<return type="None">
-				<field name="name" type="String" description="" />
-			</return>
 		</function>
 
 
@@ -782,9 +773,6 @@
 			<class>org.mmbase.applications.packaging.gui.Controller</class>
 			<method>signalRemoteChange</method>
 			<param name="id" type="String" description="" />
-			<return type="None">
-				<field name="name" type="String" description="" />
-			</return>
 		</function>
 
 		<function name="uninstallPackage">
@@ -796,9 +784,6 @@
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
 			<param name="provider" type="String" description="" />
-			<return type="None">
-				<field name="name" type="String" description="" />
-			</return>
 		</function>
 
 
@@ -811,9 +796,6 @@
 			<param name="id" type="String" description="" />
 			<param name="version" type="String" description="" />
 			<param name="provider" type="String" description="" />
-			<return type="None">
-				<field name="name" type="String" description="" />
-			</return>
 		</function>
 
 		<function name="getPackageManagerSettings">
