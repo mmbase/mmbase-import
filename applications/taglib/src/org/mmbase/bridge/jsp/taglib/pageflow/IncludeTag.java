@@ -178,8 +178,8 @@ public class IncludeTag extends UrlTag {
      
             if (nudeUrl.indexOf('/') == 0) { // absolute on servercontex
                 urlString = nudeUrl + params;
-                //externalRelative(bodyContent, request.getContextPath() + urlString, request, response);
-                internal(bodyContent, urlString, request, response);
+                externalRelative(bodyContent, request.getContextPath() + urlString, request, response);
+                //internal(bodyContent, urlString, request, response);
             } else if (nudeUrl.indexOf(':') == -1) { // relative
 		log.debug("URL was relative");
                 urlString =
@@ -198,8 +198,8 @@ public class IncludeTag extends UrlTag {
 		} else {
 		    urlString = urlString.substring(colIndex + 1) + params;
 		}
-                //externalRelative(bodyContent, urlString, request, response);
-                internal(bodyContent, urlString, request, response);
+                externalRelative(bodyContent, urlString, request, response);
+                //internal(bodyContent, urlString, request, response);
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
             }
@@ -281,24 +281,59 @@ public class IncludeTag extends UrlTag {
  *
  */
 
+class Bytes extends java.io.ByteArrayOutputStream {
+    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
+    Bytes() {
+        super();
+        log.debug("making bytes");
+    }
+    
+    public void write(byte[] i) throws java.io.IOException {
+        log.debug("writebyte[] ");
+        super.write(i);
+    }
+    public void write(int i)  {
+        log.debug("write ");
+        super.write(i);
+    }
+    public void write(byte[] i, int of, int len) {
+        log.debug("writebyte[] 2");
+        super.write(i, of, len);
+    }    
+    public void writeTo(java.io.OutputStream o) throws java.io.IOException {
+        log.debug("outputstream");
+        super.writeTo(o);
+    }    
+
+    
+}
+
 class StreamWrapper extends ServletOutputStream {
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
     
-    private java.io.ByteArrayOutputStream buffer;
+    private Bytes buffer;
     private String coding;
-    protected StreamWrapper(HttpServletResponse resp) {
+    StreamWrapper(HttpServletResponse resp) {
+        log.debug("making streamwrapper");
         coding = resp.getCharacterEncoding();
-        this.buffer = new java.io.ByteArrayOutputStream();
+        this.buffer = new Bytes();
     }
     
     public void write(int i) {
-        try {
-            buffer.write(i);
-        } catch (Exception e) {
-            log.error(e.toString());
-        }
+        log.debug("x");
+        buffer.write(i);
     }
-    
+    public void write(byte[] i) throws java.io.IOException  {
+
+        log.debug("x");
+        buffer.write(i);
+        
+    }
+    public void write(byte[] i, int of, int len) {
+        log.debug("x");
+        buffer.write(i, of, len);
+    }    
+
     public String toString() {
         try {
             return new String(buffer.toByteArray(), coding);
@@ -327,6 +362,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     }
     
     public ServletOutputStream getOutputStream() {
+        log.debug("getting outputstream");
         return stream;
     }
 
@@ -335,6 +371,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     
    
     public String toString() {
+        log.debug("getting string");
         String test = stream.toString();
         return test;
     }
