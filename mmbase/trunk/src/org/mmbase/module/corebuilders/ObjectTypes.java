@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.21 2002-10-25 08:26:13 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.22 2002-10-25 08:42:37 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -199,11 +199,11 @@ public class ObjectTypes extends TypeDef {
         }
         Enumeration e = mmb.getTypeRel().search("WHERE snumber="+builder.oType+" OR dnumber="+builder.oType);
         if (e.hasMoreElements()) {
-            String typedefs="#"+((MMObjectNode)e.nextElement()).getNumber();
+            String typerels="#"+((MMObjectNode)e.nextElement()).getNumber();
             while (e.hasMoreElements()) {
-              typedefs=typedefs+", #"+((MMObjectNode)e.nextElement()).getNumber();
+              typerels=typerels+", #"+((MMObjectNode)e.nextElement()).getNumber();
             }
-            throw new RuntimeException("Cannot delete node which represents a builder, it is referenced by typedefs: "+typedefs);
+            throw new RuntimeException("Cannot delete node which represents a builder, it is referenced by typerels: "+typerels);
         }
     }
 

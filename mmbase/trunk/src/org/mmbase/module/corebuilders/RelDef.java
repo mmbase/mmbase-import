@@ -251,7 +251,19 @@ public class RelDef extends MMObjectBuilder {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
-    public void removeNode(MMObjectNode node) {
+     public void removeNode(MMObjectNode node) {
+        Enumeration e = mmb.getTypeRel().search("WHERE rnumber="+node.getNumber());
+        if (e.hasMoreElements()) {
+            String typerels="#"+((MMObjectNode)e.nextElement()).getNumber();
+            while (e.hasMoreElements()) {
+              typerels=typerels+", #"+((MMObjectNode)e.nextElement()).getNumber();
+            }
+            throw new RuntimeException("Cannot delete reldef node, it is referenced by typerels: "+typerels);
+        }
+        int i = mmb.getInsRel().count("WHERE rnumber="+node.getNumber());
+        if (i>0) {
+            throw new RuntimeException("Cannot delete reldef node, it is still used in relations");
+        }
         String name=node.getStringValue("sname");
         super.removeNode(node);
         removeFromCache(node);
