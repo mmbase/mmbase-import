@@ -22,7 +22,7 @@ import org.mmbase.storage.util.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.13 2003-07-31 16:26:02 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.14 2003-08-01 14:16:11 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -51,8 +51,10 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      */
     protected ChangeManager changeManager;
 
-    // The map with disallowed fieldnames and (if given) alternates
-    private Map disallowedFields;
+    /** The map with disallowed fieldnames and (if given) alternates
+     *
+     */
+    protected Map disallowedFields;
 
     /**
      * Stores the MMBase reference, and initializes the attribute map.
@@ -182,11 +184,11 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         setAttribute(key,new Boolean(value));
     }
 
-        public List getTypeMappings() {
+    public List getTypeMappings() {
         return Collections.unmodifiableList(typeMappings);
     }
 
-        public Map getDisallowedFields() {
+    public Map getDisallowedFields() {
         return Collections.unmodifiableMap(disallowedFields);
     }
 
@@ -194,7 +196,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * Sets the map of disallowed Fields.
      * Unlike setAttributes(), this actually replaces the existing disallowed fields map.
      */
-        protected void setDisallowedFields(Map disallowedFields) {
+    protected void setDisallowedFields(Map disallowedFields) {
         this.disallowedFields = new HashMap(disallowedFields);
     }
 
@@ -217,7 +219,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      *  <li>For MMObjectNode: the object number as a Integer</li>
      *  <li>For FieldDefs: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
      * </ul>
-     * Note that 'basename' is a property from the mmbase module, set in mmabseroot.xml.<br />
+     * Note that 'basename' is a property from the mmbase module, set in mmbaseroot.xml.<br />
      * You can override this method if you intend to use different ids.
      *
      * @see Storable
@@ -236,10 +238,18 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
             return ((MMObjectNode)mmobject).getIntegerValue("number");
         } else if (mmobject instanceof FieldDefs) {
             String id = ((FieldDefs)mmobject).getDBName();
+            if (!hasOption(Attributes.DISALLOWED_FIELD_CASE_SENSITIVE)) {
+                id = id.toUpperCase();
+            }
             if (disallowedFields.containsKey(id)) {
                 id = (String)disallowedFields.get(id);
                 if (id == null) {
-                    throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
+                    String prefix = (String)getAttribute("defaultStorageIdentifierPrefix");
+                     if (prefix!=null) {
+                        return prefix+"_"+id; 
+                    } else {
+                        throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
+                    }
                 }
             }
             return id;
@@ -254,6 +264,6 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
 
     abstract public double getVersion();
 
-        abstract public boolean supportsTransactions();
+    abstract public boolean supportsTransactions();
 
 }

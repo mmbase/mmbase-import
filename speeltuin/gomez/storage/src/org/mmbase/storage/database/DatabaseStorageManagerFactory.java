@@ -7,9 +7,10 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage;
+package org.mmbase.storage.database;
 
 import java.io.File;
+import java.util.StringTokenizer;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.mmbase.storage.*;
 import org.mmbase.storage.util.StorageReader;
 
 import org.mmbase.module.core.MMBase;
@@ -40,13 +42,29 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.8 2003-07-31 09:53:37 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.9 2003-08-01 14:16:12 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
+    private static final String STANDARD_SQL_KEYWORDS =
+      "ABSOLUTE,ACTION,ADD,ALL,ALLOCATE,ALTER,AND,ANY,ARE,AS,ASC,ASSERTION,AT,AUTHORIZATION,AVG,BEGIN,BETWEEN,BIT,BIT_LENGTH,"+
+      "BOTH,BY,CASCADE,CASCADED,CASE,CAST,CATALOG,CHAR,CHARACTER,CHAR_LENGTH,CHARACTER_LENGTH,CHECK,CLOSE,COALESCE,COLLATE,COLLATION,"+
+      "COLUMN,COMMIT,CONNECT,CONNECTION,CONSTRAINT,CONSTRAINTS,CONTINUE,CONVERT,CORRESPONDING,COUNT,CREATE,CROSS,CURRENT,CURRENT_DATE,"+
+      "CURRENT_TIME,CURRENT_TIMESTAMP,CURRENT_USER,CURSOR,DATE,DAY,DEALLOCATE,DEC,DECIMAL,DECLARE,DEFAULT,DEFERRABLE,DEFERRED,DELETE,"+
+      "DESC,DESCRIBE,DESCRIPTOR,DIAGNOSTICS,DISCONNECT,DISTINCT,DOMAIN,DOUBLE,DROP,ELSE,END,END-EXEC,ESCAPE,EXCEPT,EXCEPTION,EXEC,"+
+      "EXECUTE,EXISTS,EXTERNAL,EXTRACT,FALSE,FETCH,FIRST,FLOAT,FOR,FOREIGN,FOUND,FROM,FULL,GET,GLOBAL,GO,GOTO,GRANT,GROUP,HAVING,HOUR,"+
+      "IDENTITY,IMMEDIATE,IN,INDICATOR,INITIALLY,INNER,INPUT,INSENSITIVE,INSERT,INT,INTEGER,INTERSECT,INTERVAL,INTO,IS,ISOLATION,JOIN,"+
+      "KEY,LANGUAGE,LAST,LEADING,LEFT,LEVEL,LIKE,LOCAL,LOWER,MATCH,MAX,MIN,MINUTE,MODULE,MONTH,NAMES,NATIONAL,NATURAL,NCHAR,NEXT,NO,"+
+      "NOT,NULL,NULLIF,NUMERIC,OCTET_LENGTH,OF,ON,ONLY,OPEN,OPTION,OR,ORDER,OUTER,OUTPUT,OVERLAPS,PAD,PARTIAL,POSITION,PRECISION,"+
+      "PREPARE,PRESERVE,PRIMARY,PRIOR,PRIVILEGES,PROCEDURE,PUBLIC,READ,REAL,REFERENCES,RELATIVE,RESTRICT,REVOKE,RIGHT,ROLLBACK,ROWS,"+
+      "SCHEMA,SCROLL,SECOND,SECTION,SELECT,SESSION,SESSION_USER,SET,SIZE,SMALLINT,SOME,SPACE,SQL,SQLCODE,SQLERROR,SQLSTATE,SUBSTRING,"+
+      "SUM,SYSTEM_USER,TABLE,TEMPORARY,THEN,TIME,TIMESTAMP,TIMEZONE_HOUR,TIMEZONE_MINUTE,TO,TRAILING,TRANSACTION,TRANSLATE,TRANSLATION,"+
+      "TRIM,TRUE,UNION,UNIQUE,UNKNOWN,UPDATE,UPPER,USAGE,USER,USING,VALUE,VALUES,VARCHAR,VARYING,VIEW,WHEN,WHENEVER,WHERE,WITH,WORK,"+
+      "WRITE,YEAR,ZONE";
+    
     /**
      * The datasource in use by this factory.
      * The datasource is retrieved either from the application server, or by wrapping the JDBC Module in a generic datasource.
@@ -125,6 +143,25 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             // alter table support options
             setOption("database.supportsAlterTableWithAddColumn",metaData.supportsAlterTableWithAddColumn());
             setOption("database.supportsAlterTableWithDropColumn",metaData.supportsAlterTableWithDropColumn());
+            // create a default disallowedfields list:
+            // get the standard sql keywords
+            StringTokenizer tokens = new StringTokenizer(STANDARD_SQL_KEYWORDS,", ");
+            while (tokens.hasMoreTokens()) {
+                String tok = tokens.nextToken();
+                disallowedFields.put(tok,null);
+            }
+            // get the extra reserved sql keywords (according to the JDBC driver)
+            // not sure what case these are in ???
+            String sqlKeywords = (""+metaData.getSQLKeywords()).toUpperCase();
+            tokens = new StringTokenizer(sqlKeywords,", ");
+            while (tokens.hasMoreTokens()) {
+                String tok = tokens.nextToken();
+                disallowedFields.put(tok,null);
+            }
+            /* It would theoretically be possible to also create a default typemapping by
+               calling metaData.getTypeInfo()
+               Were not doing this yet, but maybe something to add for the future
+            */
             con.close();
         } catch (SQLException se) {
             throw new StorageInaccessibleException(se);
