@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.141 2002-06-13 12:41:20 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.142 2002-06-15 16:03:50 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -124,6 +124,7 @@ public class MMObjectBuilder extends MMTable {
      * should be sorted on the order of fields as they are defined in the tabel.
      * The first two fields are 'otype' and 'owner'.
      * The field 'number' (the actual first field of a database table record) is not included in this collection.
+     * @deprecated this vector should not be used - if the order of the fields is an issue, use getFields(sortorder).
      */
     public Vector sortedDBLayout = null;
 
@@ -291,7 +292,7 @@ public class MMObjectBuilder extends MMTable {
         log.info(tableName);
         return database.create(this);
     }
-    
+
     /**
      * Drops the builder table from the current database
      */
@@ -300,7 +301,7 @@ public class MMObjectBuilder extends MMTable {
         if(size() > 0) throw new RuntimeException("cannot drop a builder, that still contains nodes");
         return database.drop(this);
     }
-    
+
     /**
      * Tests whether the data in a node is valid (throws an exception if this is not the case).
      * @param node The node whose data to check
@@ -648,7 +649,7 @@ public class MMObjectBuilder extends MMTable {
                 stmt2.close();
                 con.close();
             }
-        } 
+        }
         catch (SQLException e) {
             // something went wrong print it to the logs
             log.error(Logging.stackTrace(e));
@@ -769,7 +770,7 @@ public class MMObjectBuilder extends MMTable {
                 log.error("The nodetype of node #" + number + " could not be found(nodetype # " + bi + ")");
                 return null;
             }
-            
+
             MultiConnection con =null;
             Statement stmt = null;
             try {
@@ -1312,10 +1313,10 @@ public class MMObjectBuilder extends MMTable {
                     //fieldtype=rd.getColumnTypeName(i);
                     node=database.decodeDBnodeField(node,fieldname,rs,i);
                 }
-                
-                // maybe we retrieved the wrong type of node, if so,.. retrieve the correct one! 
+
+                // maybe we retrieved the wrong type of node, if so,.. retrieve the correct one!
                 // TODO: research for performance
-                boolean returnCorrectObjectBuilderTypes = false;                
+                boolean returnCorrectObjectBuilderTypes = false;
                 if(returnCorrectObjectBuilderTypes && oType != node.getOType()) {
                     if(oType != -1) {
                         // this node had the wrong node type, and the builder was started...(TypeDef has to be started some day)
@@ -1334,7 +1335,7 @@ public class MMObjectBuilder extends MMTable {
                     }
                     else log.info("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
                 }
-                
+
                 // clear the changed signal
                 node.clearChanged(); // huh ?
                 results.addElement(node);
@@ -1349,7 +1350,7 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
             }
-        } 
+        }
         catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
         }
@@ -1576,18 +1577,31 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Get the field definitions for the editor, sorted according to the specified order.
+     * @return a vector with ordered FieldDefs
+     */
+    public Vector getFields(int sortorder) {
+        Vector orderedFields = new Vector();
+        for (Enumeration e=fields.elements();e.hasMoreElements();) {
+            FieldDefs node=(FieldDefs)e.nextElement();
+            if ((sortorder==FieldDefs.ORDER_CREATE) ||
+                ((sortorder==FieldDefs.ORDER_EDIT) && (node.getGUIPos()>-1)) ||
+                ((sortorder==FieldDefs.ORDER_SEARCH) && (node.getGUISearch()>-1)) ||
+                ((sortorder==FieldDefs.ORDER_LIST) && (node.getGUIList()>-1))
+               ) orderedFields.addElement(node);
+        }
+        FieldDefs.sort(orderedFields,sortorder);
+        return orderedFields;
+    }
+
+    /**
      * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
      * Used for creating search-forms.
      * @return a vector with FieldDefs
      */
     public Vector getEditFields() {
         if (sortedEditFields == null) {
-            sortedEditFields = new Vector();
-            for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                FieldDefs node=(FieldDefs)e.nextElement();
-                if (node.getGUISearch()>-1) sortedEditFields.addElement(node);
-            }
-            FieldDefs.sort(sortedEditFields,FieldDefs.ORDER_SEARCH);
+            sortedEditFields = getFields(FieldDefs.ORDER_SEARCH);
         }
        return sortedEditFields;
     }
@@ -1599,16 +1613,10 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector getSortedListFields() {
         if (sortedListFields == null) {
-            sortedListFields = new Vector();
-            for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                FieldDefs node=(FieldDefs)e.nextElement();
-                if (node.getGUIList()>-1) sortedListFields.addElement(node);
-            }
-            FieldDefs.sort(sortedListFields,FieldDefs.ORDER_LIST);
+            sortedListFields = getFields(FieldDefs.ORDER_LIST);
         }
         return sortedListFields;
     }
-
 
     /**
      * Get the field definitions for the editor, sorted according to it's GUIPos property (as set in the builder xml file).
@@ -1617,12 +1625,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector getSortedFields() {
         if (sortedFields == null) {
-            sortedFields = new Vector();
-            for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                FieldDefs node=(FieldDefs)e.nextElement();
-                if (node.getGUIPos()>-1) sortedFields.addElement(node);
-            }
-            FieldDefs.sort(sortedFields,FieldDefs.ORDER_EDIT);
+            sortedFields = getFields(FieldDefs.ORDER_EDIT);
         }
         return sortedFields;
     }
@@ -2203,6 +2206,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Stores the fieldnames of a table in a vector, based on the current fields definition.
      * The fields 'otype' and 'owner' become the first and second fieldnames.
+     * @deprecated sortedDBLayout should not be used any more. use the getFields(sortorder) method instead
      * @param fields A list of the builder's FieldDefs
      */
     public void setDBLayout_xml(Hashtable fields) {
@@ -2211,15 +2215,13 @@ public class MMObjectBuilder extends MMTable {
         sortedDBLayout.addElement("owner");
 
         FieldDefs node;
-        for (int i=1;i<20;i++) {
-            for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                node=(FieldDefs)e.nextElement();
-                if (node.getDBPos()==i) {
-                    String name=node.getDBName();
-                    if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
-                        sortedDBLayout.addElement(name);
-                    }
-                }
+
+        Vector orderedfields=getFields(FieldDefs.ORDER_CREATE);
+        for (Enumeration e=orderedfields.elements();e.hasMoreElements();) {
+            node=(FieldDefs)e.nextElement();
+            String name=node.getDBName();
+            if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
+                sortedDBLayout.addElement(name);
             }
         }
     }
