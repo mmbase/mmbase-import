@@ -254,9 +254,38 @@ public class Encode {
      * @author Michiel Meeuwissen
      */
     public static void  main(String[] argv) {        
-        if (argv.length == 0) { // supply help
+        String coding = null;
+        boolean decode = false;
+        String string = null;
+
+        {   // read arguments.
+            int cur = 0;
+            while (cur < argv.length) {
+                if ("-decode".equals(argv[cur])) {
+                    decode = true;
+                } else if ("-encode".equals(argv[cur])) {                    
+                } else if ("-class".equals(argv[cur])) {
+                    register(argv[++cur]);
+                } else {
+                    if (coding == null) {
+                        coding = argv[cur];
+                        if (! isEncoding(coding)) {
+                            throw new RuntimeException (coding + " is not a  known coding");
+                        }
+                    } else if (argv[cur].charAt(0) == '-') {
+                        throw new RuntimeException ("unknown option " + argv[cur]);
+                    } else {
+                        if (string == null) string = "";
+                        string += " " + argv[cur];
+                    }
+                }
+                cur++;                                            
+            }            
+        }
+
+        if (coding == null) { // supply help
             System.out.println("org.mmbase.util.Encode main is for testing purposes only\n");
-            System.out.println("   use: java org.mmbase.util.Encode [encode|decode] <coding> [string]\n\n");
+            System.out.println("   use: java -Dmmbase.config=... org.mmbase.util.Encode [-class <classname> [-class ..]] [-encode|-decode] <coding> [string]\n\n");
             System.out.println("On default it encodes and gets the string from STDIN\n\n"); 
             System.out.println("possible decoding are");
             Vector v = new Vector(possibleEncodings());
@@ -267,43 +296,23 @@ public class Encode {
                 System.out.println(enc + "   " + ((Config)encodings.get(enc)).info);
             }
         } else {
-            String coding = null;
-            boolean decode = false;
-            String string;
 
-            {   // read arguments.
-                int next = 0;
-                if ("decode".equals(argv[next])) {
-                    decode = true;
-                    next++;
-                } else if ("encode".equals(argv[next])) {
-                    next++;
-                }             
-                coding = argv[next++];
-                if (! isEncoding(coding)) {
-                    System.err.println(coding + " is not a known coding");
-                    return;
-                }
-
-                boolean stdin = argv.length <= next;
-            
-                if (stdin) { //  put STDIN in the string.
-                    string = "";
-                    try {
-                        java.io.BufferedReader stdinReader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
-                        String line = stdinReader.readLine();
-                        while (line != null) {
+            if (string == null) {
+                //  put STDIN in the string.
+                string = "";
+                try {
+                    java.io.BufferedReader stdinReader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+                    String line = stdinReader.readLine();
+                    while (line != null) {
                             string += line + "\n";
                             line = stdinReader.readLine();
-                        }
-                        System.out.println("----------------");
-                    } catch (java.io.IOException e) {
-                        System.err.println(e.toString());
-                    }                
-                } else {
-                    string = argv[next++];
-                }
+                    }
+                    System.out.println("----------------");
+                } catch (java.io.IOException e) {
+                    System.err.println(e.toString());
+                }                
             }
+
             // do the job:
             if (decode) {              
                 System.out.println(new String(decodeBytes(coding, string)));
