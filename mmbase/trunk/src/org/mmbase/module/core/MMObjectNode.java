@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.60 $ $Date: 2002-02-27 09:33:32 $
+ * @version $Revision: 1.61 $ $Date: 2002-02-27 11:00:50 $
  */
 
 public class MMObjectNode {
@@ -532,11 +532,11 @@ public class MMObjectNode {
      */
     public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
-
+        
         if (!(o instanceof Document)) {
             // do conversion from string to Document thing...
             log.debug("Strange, i expected that the field would contain an xml object");
-            o = convertStringToXml(fieldName, (String) o);
+            o = convertStringToXml(fieldName,  getStringValue(fieldName));
         }
         return (Document) o;
     }
@@ -1272,7 +1272,7 @@ public class MMObjectNode {
         else {
             // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
             // till that time, we only accept as guitype 'mmxf', when not, we will put an message in the log
-            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + ")");            
+            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + " with field:"+fieldName+")");
         }
         
         try {                
@@ -1322,7 +1322,7 @@ public class MMObjectNode {
         else {
             // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
             // till that time, we only accept as guitype 'mmxf', when not, we will put an message in the log
-            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + ")");            
+            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + " with field:"+fieldName+")");
         }
         try {
             //make a string from the XML
