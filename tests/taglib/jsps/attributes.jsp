@@ -3,7 +3,7 @@
 <body>
 <mm:import externid="abcde">ABC</mm:import>
 <mm:import externid="test" vartype="Integer" >1234</mm:import>
-<mm:import externid="list" vartype="List" >fiets,auto,step</mm:import>
+<mm:import externid="list" vartype="List" >fiets,auto,,step</mm:import>
 
 <table width="100%" border="1">
  <tr><th>description</th><th>Should be</th><th>Is really</th><th>Remarks</th></tr>
@@ -22,9 +22,9 @@
   <mm:import id="b">10</mm:import>
   <tr><td>Expr. with var</td><td>30</td><td><mm:write value="${+$a*$b}" /></td><td>&nbsp;</td></tr>
   <tr><td>Expr. with var (explicit cast to integer)</td><td>30</td><td><mm:write value="${+$a*$b}" vartype="integer" /></td><td>&nbsp;</td></tr>
-  <tr><td>Writing list with mm:write value</td><td>fiets,auto,step</td><td><mm:write value="$list" /></td><td>[fiets, auto, step] in 1.6</td></tr>
-  <tr><td>Writing list with mm:write referid</td><td>fiets,auto,step</td><td><mm:write referid="list" /></td><td>[fiets, auto, step] in 1.6</td></tr>
-  <tr><td>AliasList (or stringlist)</td><td>fiets, auto, step</td><td><mm:aliaslist referid="list"><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td><td>&nbsp;</td></tr>
+  <tr><td>Writing list with mm:write value</td><td>fiets,auto,,step</td><td><mm:write value="$list" /></td><td>[fiets, auto, step] in 1.6</td></tr>
+  <tr><td>Writing list with mm:write referid</td><td>fiets,auto,,step</td><td><mm:write referid="list" /></td><td>[fiets, auto, step] in 1.6</td></tr>
+  <tr><td>AliasList (or stringlist)</td><td>fiets, auto, , step</td><td><mm:aliaslist referid="list"><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td><td>&nbsp;</td></tr>
  </table>
   
 <hr />
