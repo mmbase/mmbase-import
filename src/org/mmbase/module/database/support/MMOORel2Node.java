@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.6 2001-07-09 12:30:03 jaco Exp $
+$Id: MMOORel2Node.java,v 1.7 2002-11-14 16:22:11 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2001/07/09 12:30:03  jaco
+jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
+
 Revision 1.5  2001/04/11 11:41:22  michiel
 michiel: new logging system
 
@@ -69,7 +72,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.6 $ $Date: 2001-07-09 12:30:03 $
+* @$Revision: 1.7 $ $Date: 2002-11-14 16:22:11 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -654,8 +657,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				// -----------------------------------------------
 				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
 				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
 			} else {
 				int num = node.getIntValue("number");
 				if (log.debug) log.debug("commit(): changed("+bul.tableName+","+num+")");
@@ -705,8 +708,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			if (bul instanceof InsRel) {
 				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
 				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getName(),"r");
+				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
 			}
 			else {
 				log.warn("removeNode("+bul.tableName+","+number+"): want to remove it, but not an insrel (not implemented).");

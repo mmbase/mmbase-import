@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.40 2002-08-01 12:16:55 mark Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41 2002-11-14 16:22:11 robmaris Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -517,8 +517,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 MMObjectNode n2 = bul.getNode(node.getIntValue("dnumber"));
                 n1.delRelationsCache();
                 n2.delRelationsCache();
-                mmb.mmc.changedNode(n1.getIntValue("number"), n1.getTableName(), "r");
-                mmb.mmc.changedNode(n2.getIntValue("number"), n2.getTableName(), "r");
+                mmb.mmc.changedNode(n1.getIntValue("number"), n1.getName(), "r");
+                mmb.mmc.changedNode(n2.getIntValue("number"), n2.getName(), "r");
             } else {
                 mmb.mmc.changedNode(node.getIntValue("number"), bul.tableName, "n");
             }
@@ -654,7 +654,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                     node.setValue(prefix + fieldname, "$SHORTED");
                     break;
                 default:
-                    log.warn("decodeDBNodeField(): unknown type=" + type + " builder=" + node.getTableName() + " fieldname=" + fieldname);
+                    log.warn("decodeDBNodeField(): unknown type=" + type + " builder=" + node.getName() + " fieldname=" + fieldname);
                     break;
             }
         } catch (SQLException e) {
@@ -1075,8 +1075,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 // figure out tables to send the changed relations
                 MMObjectNode n1 = bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2 = bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"), n1.getTableName(), "r");
-                mmb.mmc.changedNode(n2.getIntValue("number"), n2.getTableName(), "r");
+                mmb.mmc.changedNode(n1.getIntValue("number"), n1.getName(), "r");
+                mmb.mmc.changedNode(n2.getIntValue("number"), n2.getName(), "r");
             } else {
                 mmb.mmc.changedNode(node.getIntValue("number"), bul.tableName, "c");
             }
@@ -1119,8 +1119,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             if (bul instanceof InsRel) {
                 MMObjectNode n1 = bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2 = bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"), n1.getTableName(), "r");
-                mmb.mmc.changedNode(n2.getIntValue("number"), n2.getTableName(), "r");
+                mmb.mmc.changedNode(n1.getIntValue("number"), n1.getName(), "r");
+                mmb.mmc.changedNode(n2.getIntValue("number"), n2.getName(), "r");
             } else
                 log.warn("removeNode(" + bul.tableName + "," + number + "): want to remove it, but not an insrel (not implemented).");
         }
