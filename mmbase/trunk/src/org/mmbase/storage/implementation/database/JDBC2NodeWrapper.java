@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.5 2003-09-09 14:29:57 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.6 2003-09-10 09:59:48 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -78,6 +78,11 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             String mmfieldName = prefix + getDisallowedField(fieldName);
             FieldDefs field = node.getBuilder().getField(mmfieldName);
+            if (field ==null) {
+                log.warn("Cannot determine field, fieldname passed: " + fieldName +
+                          " prefix passed: " + prefix +
+                          " from builder : " + node.getBuilder().getTableName());
+            }
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
             // getValue is protected, so can call it from the same package..
             Object value = sm.getValue(rs, i, field);
