@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.21 2004-01-07 15:11:19 pierre Exp $
+ * @version $Id: Message.java,v 1.22 2004-01-07 15:29:09 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -147,7 +147,7 @@ public class Message extends MMObjectBuilder {
     public boolean activate() {
         if (!active) {
             channelBuilder = (Channel) mmb.getMMObject("channel");
-            active = channelBuilder!=null;
+            active = channelBuilder != null;
         }
         return active;
     }
