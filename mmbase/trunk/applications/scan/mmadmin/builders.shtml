@@ -1,9 +1,8 @@
-<PROCESSOR MMBASE>
+<PROCESSOR MMEXAMPLES>
 <SECURE>
 <HTML>
 <HEAD>
    <TITLE>MMADMIN tools</TITLE>
-<INCLUDE /javascript/beeldvergroting/beeldvergroting.txt>
 </HEAD>
 <BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
 <IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
@@ -13,21 +12,45 @@
 <TR>
 	<TD BGCOLOR="FFFFFF">
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Name</B>
+	<B>Naam</B>
 	</TD>
 	<TD BGCOLOR="FFFFFF">
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>description</B>
+	<B>Version</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Installed</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Maintainer</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Actions</B>
 	</TD>
 </TR>
-<LIST OBJECTS TYPE="typedef" FIELDS="name,description" WHERE="">
+
+<LIST BUILDERS PROCESSOR="MMEXAMPLES" ITEMS="4">
 <TR>
-	<TD BGCOLOR="#444477">
-	$ITEM1
-	</TD>
-	<TD BGCOLOR="#444477">
-	$ITEM2&nbsp;
-	</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM1
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM2
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM3
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM4
+		</TD>
+		<TD BGCOLOR="#444477">
+			<A HREF="builders_actions.shtml?$ITEM1">
+			<FONT COLOR="#FFFFFF">select</FONT>
+			</A>
+		</TD>
 </TR>
 </LIST>
 </TABLE>

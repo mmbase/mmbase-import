@@ -1,0 +1,105 @@
+<PROCESSOR MMEXAMPLES>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
+<PART /mmadmin/nav.shtml?2>
+<BR>
+<FONT COLOR="#000000">
+<CENTER><B>Builder Description</B></CENTER>
+</FONT>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description</B>
+	</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444477">
+			<BR>
+			$MOD-MMEXAMPLES-BUILDERDESCRIPTION-$PARAM1
+			<BR>
+			<BR>
+		</TD>
+</TR>
+</TABLE>
+</CENTER>
+
+
+<BR>
+<FONT COLOR="#000000">
+<CENTER><B>Save Builder</B></CENTER>
+</FONT>
+<BR>
+<CENTER>
+<FORM ACTION="builders_result.shtml?$PARAM1" METHOD="POST">
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Setting</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Value</B>
+	</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444477">
+			<B>ClassFile</B>	
+		</TD>
+		<TD BGCOLOR="#444477">
+			$MOD-MMEXAMPLES-BUILDERCLASSFILE-$PARAM1
+		</TD>
+</TR>
+</TABLE>
+</CENTER>
+
+<BR>
+<FONT COLOR="#000000">
+<CENTER><B>Save Builder</B></CENTER>
+</FONT>
+<BR>
+<CENTER>
+<FORM ACTION="builders_result.shtml" METHOD="POST">
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Path</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Confirm</B>
+	</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#444477">
+			Save &nbsp;&nbsp; <B>$PARAM1</B>
+		</TD>
+		<TD BGCOLOR="#444477">
+				<INPUT NAME="PRC-VAR-PATH" VALUE="/tmp/$PARAM1.xml" SIZE="20">
+		</TD>
+		<TD BGCOLOR="#444477">
+				<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMEXAMPLES">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-BUILDERSAVE" VALUE="$PARAM1">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+</CENTER>
+
+
+</BODY>
+</HTML>
