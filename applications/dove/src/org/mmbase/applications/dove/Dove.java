@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.10 2002-04-17 13:17:35 pierre Exp $
+ * @version $Id: Dove.java,v 1.11 2002-05-22 13:35:13 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1027,7 +1027,10 @@ public class Dove extends AbstractDove {
                     Element objectelement=doc.createElement(OBJECT);
                     objectelement.setAttribute(ELM_TYPE,type);
                     objectelement.setAttribute(ELM_NUMBER,alias);
-                    if (!fillFields(alias,mmbasenode,objectelement,values,orgvalues)) return false;
+                    if (!fillFields(alias,mmbasenode,objectelement,values,orgvalues)) {
+                        out.appendChild(objectelement);
+                        return false;
+                    }
                     mmbasenode.commit();
                     // add node to response
                     out.appendChild(objectelement);
