@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.198 2002-12-11 12:04:25 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.199 2002-12-24 18:02:50 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1249,6 +1249,9 @@ public class MMObjectBuilder extends MMTable {
         try {
             return getNodes(query);
         } catch (SearchQueryException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e + Logging.stackTrace(e));
+            }
             throw new SQLException(e.toString());
         }
     }
