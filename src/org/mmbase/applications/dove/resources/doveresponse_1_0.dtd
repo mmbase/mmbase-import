@@ -28,8 +28,12 @@
 <!ATTLIST getconstraints type NMTOKEN #REQUIRED >
 <!ATTLIST getconstraints xml:lang NMTOKEN "en" >
 
-<!ELEMENT getlist (#PCDATA) >
+<!ELEMENT getlist (query+|error) >
 <!ATTLIST getlist id ID #IMPLIED>
+
+<!ELEMENT query (object?|error)>
+<!ATTLIST query xpath CDATA #REQUIRED >
+<!ATTLIST query where CDATA #IMPLIED >
 
 <!ELEMENT put (new|error) >
 <!ATTLIST put id ID #IMPLIED>
@@ -49,17 +53,18 @@
 
 <!ELEMENT relations (relation*) >
 
-<!ELEMENT object (field*)>
+<!ELEMENT object ((field|relation)*)>
 <!ATTLIST object number NMTOKEN #REQUIRED >
 <!ATTLIST object type NMTOKEN #REQUIRED >
 
-<!ELEMENT relation (field*)>
+<!ELEMENT relation ((field|object)*)>
+<!ATTLIST relation type NMTOKEN #REQUIRED >
+<!ATTLIST relation number NMTOKEN #REQUIRED >
 <!ATTLIST relation role NMTOKEN #REQUIRED>
 <!ATTLIST relation source NMTOKEN #REQUIRED >
 <!ATTLIST relation destination NMTOKEN #REQUIRED >
-<!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
 
-<!ELEMENT field (#PCDATA | (guiname,guitype,maxlength,required))>
+<!ELEMENT field (#PCDATA | (guiname,description,guitype,maxlength,required))>
 <!ATTLIST field name NMTOKEN #REQUIRED >
 
 <!ELEMENT guiname (#PCDATA) >
