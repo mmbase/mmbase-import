@@ -83,14 +83,17 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     }
 
 
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         if (commit) {
             ((Transaction) getCloudVar()).commit();
             if (getId() != null) {
                 getContextTag().unRegister(getId());
             }
         }
+        return EVAL_PAGE;
+    }
 
+    public int doAfterBody() throws JspTagException {
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
             return SKIP_BODY;

@@ -136,7 +136,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         helper.setValue(value);
-        helper.setJspvar(pageContext);        
+        helper.setPageContext(pageContext);
+        helper.setJspvar();        
         if (getId() != null) {           
             getContextTag().register(getId(), helper.getValue());
         }
@@ -147,11 +148,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     /**
      * write the value of the field.
      **/
-    public int doAfterBody() throws JspTagException { 
+    public int doEndTag() throws JspTagException { 
         helper.setBodyContent(bodyContent);
-        if ((! "".equals(bodyContent.getString()) && getReferid() != null)) {
+        if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
         }        
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 }

@@ -40,10 +40,10 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
         try{
             if(bodyContent != null)
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            return SKIP_BODY;
         } catch(java.io.IOException e){
             throw new JspTagException("IO Error: " + e.getMessage());
         }
-        return EVAL_PAGE;
     }   
 
     public int doEndTag() throws JspTagException {

@@ -80,9 +80,9 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     /**
     *
     **/
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 
 }

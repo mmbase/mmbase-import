@@ -68,8 +68,8 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         return EVAL_BODY_TAG;
     }
 
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 }

@@ -34,6 +34,11 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         setFieldVar(name);
         return EVAL_BODY_TAG;
     }
+
+    public int doEndTag() throws JspTagException {
+        return EVAL_PAGE;
+    }
+
     /**
      * Set the value of the field.
      */
