@@ -45,6 +45,7 @@
 <h3>relations</h3>
 <mm:node referid="node">
   countrelations: <mm:countrelations /> (should be 1)<br />
+  countrelations: <mm:countrelations type="urls" /> (should be 1)<br />
   1 url: <mm:relatednodes type="urls">
      <mm:field name="url" />
   </mm:relatednodes>
