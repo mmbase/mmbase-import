@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.29 2003-04-08 12:04:35 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
