@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.4 2003-12-03 11:26:05 keesj Exp $
+ * @version $Id: MultiPart.java,v 1.5 2004-08-31 16:25:08 rob Exp $
  **/
 
 public class MultiPart {
@@ -152,7 +152,7 @@ public class MultiPart {
             log.debug("Creating HttpPost instance");
             o = new org.mmbase.util.HttpPost(req);
             coding = c;
-            log.debug("created");
+            log.debug("Created with encoding: "+coding);
         }
 
         /**
@@ -212,7 +212,7 @@ public class MultiPart {
 
             String encoding = coding;
             // determine encoding
-            // get first 40 bytes to determine if this is a xml type
+            // get first 60 bytes to determine if this is a xml type
             byte[] xmlbytes = new byte[60];
             int sz = data.length;
             if (sz > 60)
