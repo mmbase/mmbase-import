@@ -85,7 +85,7 @@ public class MMAdmin extends ProcessorModule {
 			if (token.equals("SERVERRESTART")) {
 				String user=(String)cmds.get(cmdline);
 				doRestart(user);
-			} else if (token.equals("LOAD")) {
+			} else if (token.equals("LOAD") && !kioskmode) {
 				Versions ver=(Versions)mmb.getMMObject("versions");
 				String appname=(String)cmds.get(cmdline);
 				String path=MMBaseContext.getConfigPath()+("/applications/");
@@ -344,10 +344,6 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	private boolean installApplication(String applicationname) {
-		if (kioskmode) {
-			System.out.println("MMAdmin> refused installing app , im in kiosk mode");
-			return(false);
-		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
 		if (app!=null) {
