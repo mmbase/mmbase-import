@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.53 2002-11-01 11:39:52 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.54 2002-11-10 19:06:14 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -870,7 +870,7 @@ public class MMAdmin extends ProcessorModule {
                 // fill the config...
                 org.w3c.dom.Document config = null;
                 try {
-                    config =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(appFile);
+                    config =  org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(appFile);
                 }
                 catch(org.xml.sax.SAXException se) {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
@@ -1226,7 +1226,7 @@ public class MMAdmin extends ProcessorModule {
     Vector getFields(String buildername) {
         Vector results=new Vector();
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul=new XMLBuilderReader(path+buildername+".xml",mmb);
+        XMLBuilderReader bul = new XMLBuilderReader(path+buildername+".xml", mmb);
         if (bul!=null) {
             Vector defs=bul.getFieldDefs();
             for (Enumeration h = defs.elements();h.hasMoreElements();) {
