@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.25 2003-08-20 08:45:05 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.26 2003-08-20 08:46:33 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -435,7 +435,7 @@ public class MediaFragments extends MMObjectBuilder {
 			if(userChannels!=null) {
 				info.put("channels",""+userChannels);
 			}
-                    return url = getURL(media, info);
+                    return getURL(media, info);
                 } else {
 			log.error("No mediafragment specified"); 
                     return null;
