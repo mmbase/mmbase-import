@@ -29,6 +29,12 @@ public class IncludeTag extends UrlTag {
 
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
 
+    protected int DEBUG_NONE=0;
+    protected int DEBUG_HTML=1;
+    protected int DEBUG_CSS=2;
+    
+    protected int debugtype = 0;
+    
     public int doAfterBody() throws JspTagException {
         if (page == null) {
             throw new JspTagException("Attribute 'page' was not specified");
@@ -90,6 +96,7 @@ public class IncludeTag extends UrlTag {
                            
             if (log.isDebugEnabled()) log.debug("found url: >" + urlString + "<");
 
+            debugStart(urlString);
     	    URL includeURL = new URL(urlString); 
             
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
@@ -108,19 +115,55 @@ public class IncludeTag extends UrlTag {
                 connection.setRequestProperty("Cookie", koekjes); 
             }
             
-            InputStreamReader in = new InputStreamReader (connection.getInputStream());
+            BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+	   
+	    int buffersize=10240;
+	    char[] buffer = new char[buffersize];
+	    StringBuffer string = new StringBuffer();
+	    int len=0;
+	    while ((len = in.read(buffer,0,buffersize))!=-1) {
+		    string.append(buffer,0,len);
+	    }
+            bodyContent.print(string);
             
-            while (in.ready()) {
-                bodyContent.write(in.read());
-            }
-	    
             if (getId() != null) {
                 getContextTag().register(getId(), bodyContent.getString());
             }
+            debugEnd(urlString);
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
         }        
         return SKIP_BODY;
+    }
+    
+    public void setDebug(String p) throws JspTagException {
+        String dtype = getAttributeValue(p); 
+        if (dtype.toLowerCase().equals("html"))
+            debugtype = DEBUG_HTML;
+        if (dtype.toLowerCase().equals("css"))
+            debugtype = DEBUG_CSS;
+    }
+    
+    protected void debugStart(String url) {
+        try {
+            if (debugtype == DEBUG_HTML) {
+                bodyContent.write("\n<!-- Include page = '" + url + "' -->\n");
+            }
+            if (debugtype == DEBUG_CSS) {
+                bodyContent.write("\n/* Include page = '" + url + "' */\n");
+            }
+        }  catch (Exception e) {}
+    }
+     
+    protected void debugEnd(String arg) {
+        try {
+            if (debugtype == DEBUG_HTML) {
+                bodyContent.write("\n<!-- END Include page = '" + arg + "' -->\n");
+            }
+            if (debugtype == DEBUG_CSS) {
+                bodyContent.write("\n/* END Include page = '" + arg + "' */\n");
+            }
+        } catch (Exception e) {}
     }
 }
