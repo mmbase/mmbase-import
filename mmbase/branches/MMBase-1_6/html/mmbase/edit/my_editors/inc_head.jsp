@@ -1,6 +1,6 @@
 <mm:import externid="conf_max" jspvar="conf_max" vartype="String">10</mm:import>
 <mm:import externid="o" jspvar="ofs_str" vartype="String">0</mm:import>
-<mm:import externid="conf_days" jspvar="conf_days" vartype="String">20</mm:import>
+<mm:import externid="conf_days" jspvar="conf_days" vartype="String">99</mm:import>
 <% // Set and get some values
 int max = Integer.parseInt(conf_max);
 int ofs = Integer.parseInt(ofs_str);
@@ -19,17 +19,24 @@ int ofs = Integer.parseInt(ofs_str);
   <tr>
     <td width="50"><a href="index.jsp"><img src="img/mmbase-edit-40.gif" alt="my_editors" width="41" height="40" border="0" hspace="4" vspace="4" /></a></td>
     <td>
-	  <div class="top-title">my_editors - <%= title %></div>
+	  <div class="top-title"><%= title %></div>
 	  <div class="top-links"><a class="top-links" href="index.jsp">home</a> - 
 	  <a class="top-links" href="help.jsp">help</a> -
 	  <a class="top-links" href="config.jsp">configure</a> -
 	  logged on as:  <%= wolk.getUser().getIdentifier() %> (rank: <%= wolk.getUser().getRank() %>) - 
 	  <a href="logout.jsp">log out</a> </div>
 	</td>
+	<td align="right">
+	<form action="edit_object.jsp" method="post">
+	  <div class="top-links"><input type="text" name="nr" size="12" maxlength="255" /><br />
+	  Insert node number or alias to edit</div>
+	</form>
+	</td>
   </tr><tr bgcolor="#CCCCCC"> 
-    <td colspan="2"><div class="top-links">
-	  my_editors 
+    <td colspan="3"><div class="top-links">
+	  <a href="index.jsp">my_editors</a> 
 	  <% if (path1 != null) { %>&gt; <a class="top-links" href="index.jsp?ntype=<%= path1 %>">overview <%= path1 %></a> <% } %>
+	  <% if (title != null) { %>&gt; <%= title.toLowerCase() %> <% } %>
 	</div></td>
   </tr>
 </table>
