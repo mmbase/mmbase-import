@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.2 2003-09-02 22:16:56 michiel Exp $
+ * @version $Id: Queries.java,v 1.3 2003-09-03 19:34:12 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -256,6 +256,9 @@ public class Queries {
     public static Query addConstraints(Query query, String constraints) {
         if (constraints == null || constraints.equals("")) return query;
         constraints = convertClauseToDBS(constraints);
+        if (!validConstraints(constraints)) {
+            throw new BridgeException("invalid constraints:" + constraints);
+        }
         Constraint newConstraint = query.createConstraint(constraints);
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
@@ -271,42 +274,104 @@ public class Queries {
     /**
      * Adds sort orders to the query, using two strings. Like in 'getList' of Cloud. Several tag-attributes need this.
      *
+     * @todo implement for normal query.
      */
     public static Query addSortOrders(NodeQuery query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
+        if (sorted == null) return query;
         if (directions == null) {
             directions = "";
         }
+       
+        StringTokenizer sortedTokenizer     = new StringTokenizer(sorted, ",");
+        StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
         
-        if (sorted != null) {
-            StringTokenizer sortedTokenizer     = new StringTokenizer(sorted, ",");
-            StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
-
-            Step step = query.getNodeStep();
-            NodeManager nodeManager = query.getNodeManager();
-
-            while (sortedTokenizer.hasMoreElements()) {
-                String    fieldName = sortedTokenizer.nextToken().trim();
-                int dot = fieldName.indexOf('.');
-
-                StepField sf;
-                if (dot == -1) {
-                    sf = query.getStepField(nodeManager.getField(fieldName));
-                } else {
-                    sf =  query.createStepField(fieldName);
-                }
-
-                int dir = SortOrder.ORDER_ASCENDING;
-                if (directionsTokenizer.hasMoreElements()) {
-                    String direction = directionsTokenizer.nextToken().trim();
-                    if (direction.equalsIgnoreCase("DOWN")) {
-                        dir = SortOrder.ORDER_DESCENDING;
-                    } else {
-                        dir = SortOrder.ORDER_ASCENDING;
-                    }
-                }
-                query.addSortOrder(sf, dir);
+        Step step = query.getNodeStep();
+        NodeManager nodeManager = query.getNodeManager();
+        
+        while (sortedTokenizer.hasMoreTokens()) {
+            String    fieldName = sortedTokenizer.nextToken().trim();
+            int dot = fieldName.indexOf('.');
+            
+            StepField sf;
+            if (dot == -1) {
+                sf = query.getStepField(nodeManager.getField(fieldName));
+            } else {
+                sf =  query.createStepField(fieldName);
             }
+            
+            int dir = SortOrder.ORDER_ASCENDING;
+            if (directionsTokenizer.hasMoreTokens()) {
+                String direction = directionsTokenizer.nextToken().trim();
+                if (direction.equalsIgnoreCase("DOWN")) {
+                    dir = SortOrder.ORDER_DESCENDING;
+                } else {
+                    dir = SortOrder.ORDER_ASCENDING;
+                }
+                }
+            query.addSortOrder(sf, dir);
+        }
+        return query;
+    }
+
+    protected static String removeDigits(String complete) {
+        int end = complete.length() - 1;
+        while (Character.isDigit(complete.charAt(end))) end--;
+        return complete.substring(0, end + 1);
+    }
+
+    /**
+     * Adds path of steps to an existing query. The query may contain steps already. Per step also
+     * the 'search direction' may be specified.
+     */
+    public static Query addPath(Query query, String path, String searchDirs) {
+        if (path == null || path.equals("")) return query;
+        if (searchDirs == null) {
+            searchDirs = "";
+        }
+       
+        StringTokenizer pathTokenizer     = new StringTokenizer(path, ",");
+        StringTokenizer searchDirsTokenizer = new StringTokenizer(searchDirs, ",");
+
+        Cloud cloud = query.getCloud();
+
+        if (query.getSteps().size() == 0 ) {
+            String completeFirstToken = pathTokenizer.nextToken().trim();
+            String firstToken      = removeDigits(completeFirstToken);
+            Step step = query.addStep(cloud.getNodeManager(firstToken));
+            if (! firstToken.equals(completeFirstToken)) {
+                query.setAlias(step, completeFirstToken);
+            }
+        }
+
+        String searchDir = null; // outside the loop, so defaulting to previous searchDir
+        while (pathTokenizer.hasMoreTokens()) {
+            String completeToken = pathTokenizer.nextToken().trim();                          
+            String token      = removeDigits(completeToken); 
+
+            if (searchDirsTokenizer.hasMoreTokens()) {
+                searchDir = searchDirsTokenizer.nextToken();
+            }
+
+            if (cloud.hasRole(token)) {
+                if (! pathTokenizer.hasMoreTokens()) throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")" );
+                String nodeManagerAlias = pathTokenizer.nextToken().trim();
+                String nodeManagerName  = removeDigits(nodeManagerAlias);
+                NodeManager nodeManager = cloud.getNodeManager(nodeManagerName);
+                RelationStep relationStep = query.addRelationStep(nodeManager, token, searchDir);
+                if (! token.equals(completeToken)) query.setAlias(relationStep, completeToken);
+                if (! nodeManagerName.equals(nodeManagerAlias)) {
+                    Step next = relationStep.getNext();
+                    query.setAlias(next, nodeManagerAlias);
+                }                
+            } else {
+                NodeManager nodeManager  = cloud.getNodeManager(token);
+                Step step = query.addRelationStep(nodeManager, null, searchDir);
+                if (! token.equals(completeToken)) query.setAlias(step, completeToken);
+            }
+        }
+        if (searchDirsTokenizer.hasMoreTokens()) {
+            throw new BridgeException("Too many search directions (" + path + "/" + searchDirs + ")" );
         }
         return query;
     }
@@ -319,8 +384,9 @@ public class Queries {
         Cloud cloud = query.getCloud();       
         Query count = query.aggregatingClone();        
         Step step = (Step) (count.getSteps().get(0));
-        count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        
+        count.addAggregatedField(step, 
+                                 cloud.getNodeManager(step.getTableName()).getField("number"), 
+                                 AggregatedField.AGGREGATION_TYPE_COUNT);        
         Node result = (Node) cloud.getList(count).get(0);
         return result.getIntValue("number");
     }
