@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.10 2000-11-24 13:15:33 vpro Exp $
+	$Id: TransactionManager.java,v 1.11 2000-12-14 10:54:52 rico Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2000/11/24 13:15:33  vpro
+	Rico: fixed removeNode
+	
 	Revision 1.9  2000/11/24 13:08:26  vpro
 	Rico: fixed removeNode
 	
@@ -49,7 +52,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.10 2000-11-24 13:15:33 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.11 2000-12-14 10:54:52 rico Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -67,27 +70,31 @@ public class TransactionManager implements TransactionManagerInterface {
 	private Object usermanager;
 	private MMBase mmbase;
 	protected Hashtable transactions=new Hashtable();
-	protected TransactionResolver trs;
+	protected TransactionResolver transactionResolver;
 
 	public TransactionManager(MMBase mmbase,TemporaryNodeManagerInterface tmpn) {
 		this.mmbase=mmbase;
 		this.tmpNodeManager=tmpn;
-		trs=new TransactionResolver(mmbase);
+		transactionResolver=new TransactionResolver(mmbase);
 		// Probably this is going to be retrieved from mmbase
 		// so findUserName can actually do something
 		usermanager=new Object();
 	}
 
-	public String create(Object user,String transactionname) {
+	public String create(Object user,String transactionname) 
+		throws TransactionManagerException {
 		if (!transactions.containsKey(transactionname)) {
 			Vector v=new Vector();
 			transactions.put(transactionname,v);
+		} else {
+			throw new TransactionManagerException("transaction already exists");
 		}
 		if (_debug) debug("create transaction for "+transactionname);
 		return(transactionname);
 	}
 
-	public String addNode(String transactionname,String owner,String tmpnumber) {
+	public String addNode(String transactionname,String owner,String tmpnumber) 
+		throws TransactionManagerException {
 		MMObjectNode node;
 		Vector v;
 
@@ -104,16 +111,19 @@ public class TransactionManager implements TransactionManagerInterface {
 				if (n==-1) {
 					v.addElement(node);
 				} else {
-					debug("addNode(): node not added as it was already in the transaction "+tmpnumber);
+					throw new TransactionManagerException(
+						"node not added as it was already in the transaction");
 				}
 			}
 		} else {
-			debug("Can't add node as it doesn't exist "+tmpnumber);
+			throw new TransactionManagerException(
+						"System error: Can't add node as it doesn't exist ");
 		}
 		return(tmpnumber);
 	}
 
-	public String removeNode(String transactionname,String owner,String tmpnumber) {
+	public String removeNode(String transactionname,String owner,String tmpnumber) 
+		throws TransactionManagerException {
 		MMObjectNode node;
 		Vector v;
 
@@ -126,19 +136,23 @@ public class TransactionManager implements TransactionManagerInterface {
 				if (n>=0) {
 					v.removeElementAt(n);
 				} else {
-					debug("removeNode(): node is not in transaction "+transactionname+", "+tmpnumber);
+					throw new TransactionManagerException(
+						"node is not in transaction ");
 				}
 			} else {
-				debug("removeNode(): transaction doesn't exist "+transactionname);
+				throw new TransactionManagerException(
+						"transaction doesn't exist ");
 			}
 		} else {
-			debug("removeNode(): Can't remove node as it doesn't exist "+tmpnumber);
+			throw new TransactionManagerException(
+						"System error: node doesn't exist ");
 		}
 		return(tmpnumber);
 	}
 
 
-	public String deleteObject(String transactionname,String owner,String tmpnumber) {
+	public String deleteObject(String transactionname,String owner,String tmpnumber)
+		throws TransactionManagerException	{
 		MMObjectNode node;
 		Vector v;
 
@@ -155,13 +169,15 @@ public class TransactionManager implements TransactionManagerInterface {
 				if (n==-1) {
 					v.addElement(node);
 				} else {
-					debug("addNode(): node not added as it was already in the transaction "+tmpnumber);
+					throw new TransactionManagerException(
+						"node already in transaction "+tmpnumber);
 				}
 			}
 			// Mark it as to delete
 			node.setValue("_exists",EXISTS_NOLONGER);
 		} else {
-			debug("Can't add node as it doesn't exist "+tmpnumber);
+			throw new TransactionManagerException(
+						"node doesn't exist "+tmpnumber);
 		}
 		return(tmpnumber);
 	}
@@ -176,7 +192,8 @@ public class TransactionManager implements TransactionManagerInterface {
 		return(rtn);
 	}
 
-	public String cancel(Object user,String transactionname) {
+	public String cancel(Object user,String transactionname)
+		throws TransactionManagerException {
 		Vector v;
 
 		v=(Vector)transactions.get(transactionname);
@@ -184,25 +201,26 @@ public class TransactionManager implements TransactionManagerInterface {
 			transactions.remove(transactionname);
 			if (_debug) debug("Removed transaction "+transactionname+ "\n   "+v);
 		} else {
-			debug("Can't find transaction "+transactionname);
+			throw new TransactionManagerException("transaction unknown");
 		}
 		return(transactionname);
 	}
 
 
-	public String commit(Object user,String transactionname) {
+	public String commit(Object user,String transactionname)
+		throws TransactionManagerException {
 		return(commit(user,transactionname,false));
-
 	}
 
-	protected String commit(Object user,String transactionname,boolean debug) {
+	protected String commit(Object user,String transactionname,boolean debug)
+		throws TransactionManagerException {
 		Vector v;
 		String s;
 
 		v=(Vector)transactions.get(transactionname);
 		if (v!=null) {
 			boolean resolved;
-			resolved=trs.resolve(v,debug);
+			resolved=transactionResolver.resolve(v,debug);
 			if (!resolved) {
 				debug("Can't resolve transaction "+transactionname);
 				debug("Nodes \n"+v);
