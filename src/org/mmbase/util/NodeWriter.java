@@ -42,7 +42,7 @@ public class NodeWriter{
      * Constructor, opens the initial xml file and writes a header.
      * The file opened for writing is [directory]/[buildername].xml.
      *
-     * @param mmb NNBase object for retrieving type information
+     * @param mmb MMBase object for retrieving type information
      * @param resultsmsgs vector of strings fro reporting results.
      * @param directory  the directory to write the files to (including the
      *                   trailing slash).
@@ -69,9 +69,20 @@ public class NodeWriter{
         // Write the header
         write("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
         //write("<!DOCTYPE builder PUBLIC \"//MMBase - data//\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
+        Calendar cal= Calendar.getInstance();
+        long htimestamp=cal.get(Calendar.YEAR)*10000+
+                       (cal.get(Calendar.MONTH)+1)*100+
+                       cal.get(Calendar.DAY_OF_MONTH);
+        long ltimestamp= cal.get(Calendar.AM_PM)*120000+
+                         cal.get(Calendar.HOUR)*10000+
+                         cal.get(Calendar.MINUTE)*100+
+                         cal.get(Calendar.SECOND);
+        long timestamp=(htimestamp*1000000)+ltimestamp;
+
         write("<" + builderName + " "
-              + "exportsource=\"mmbase://127.0.0.1/install/b1\" "
-              + "timestamp=\"20000602143030\">\n");
+              + "exportsource=\"mmbase://"+   // was: mmbase://127.0.0.1/install/b1
+              mmb.getHost()+"/"+mmb.getJDBC().getDatabaseName()+"/"+mmb.getBaseName()+"\" "+
+              "timestamp=\""+timestamp+"\">\n"); // was : 20000602143030
         // initialize the nr of nodes written
         nrOfNodes = 0;
     }
