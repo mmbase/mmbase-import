@@ -11,6 +11,7 @@ package org.mmbase.module.builders.vwms;
 
 import java.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.*;
 
 /**
@@ -24,12 +25,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImagePusher.java,v 1.7 2003-03-10 11:50:24 pierre Exp $
+ * @version $Id: ImagePusher.java,v 1.8 2004-02-06 16:17:29 michiel Exp $
  */
 public class ImagePusher implements Runnable {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(ImagePusher.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ImagePusher.class);
 
     /**
      * The thread reference.

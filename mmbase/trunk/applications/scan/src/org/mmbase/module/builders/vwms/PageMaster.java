@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.gui.html.*;
@@ -30,13 +31,12 @@ import org.mmbase.module.gui.html.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PageMaster.java,v 1.14 2003-03-10 11:50:24 pierre Exp $
+ * @version $Id: PageMaster.java,v 1.15 2004-02-06 16:17:29 michiel Exp $
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
 
-    // Logger class
-    private static Logger log = Logging.getLoggerInstance(PageMaster.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(PageMaster.class);
 
     // field used to skip first probeCall (why???)
     boolean first=true;
