@@ -13,6 +13,7 @@ import java.util.*;
 import java.awt.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.module.corebuilders.*;
 
 public class BuilderRect extends Object {
