@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18.2.1 2003-02-16 15:31:02 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.2 2003-02-20 13:45:24 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -311,7 +311,6 @@ public class ClusterBuilder extends VirtualBuilder {
         Vector alltables,selectTypes;
         MMObjectNode basenode;
         HashMap roles= new HashMap();
-        int snode;
 
         boolean isdistinct = pdistinct!=null && pdistinct.equalsIgnoreCase("YES");
         if (isdistinct) {
@@ -349,38 +348,33 @@ public class ClusterBuilder extends VirtualBuilder {
         // Note that node number -1 is seen as no source node
         if ((snodes!=null) && (snodes.size()>0)) {
             String str;
-            snode = -1;
+            basenode=null;
 
             // go trough the whole list and verify that it are all integers
             // from last to first,,... since we want snode to be the one that contains the first..
             for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
-                str = (String)snodes.elementAt(i);
-                try {
-                    snode=Integer.parseInt(str);
+                str = ((String)snodes.elementAt(i)).trim();
+                // '-1' means no node, so skip
+                if (!str.equals("-1")) {
+                    basenode=getNode(str);
+                    if (basenode==null) {
+                        throw new RuntimeException("Cannot find node: "+str);
+                    }
+                    snodes.setElementAt(""+basenode.getNumber(), i);
                 }
-                catch(NumberFormatException e) {
-                    // maybe it was not an integer, hmm lets look in OAlias table then
-                    snode = mmb.OAlias.getNumber(str);
-                    if (snode<0) snode=0;
-                }
-                snodes.setElementAt(""+snode, i);
             }
 
             int sidx;
             StringBuffer bb=new StringBuffer();
 
-            if (snode>0) {
-                basenode=getNode(""+snode);
-                if (basenode!=null) {
-                    // not very neat... but it works
-                    sidx=alltables.indexOf(basenode.parent.tableName);
-                    if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
-                    // if we can't find the real parent assume object
-                    if (sidx<0) sidx=alltables.indexOf("object");
-                    if (sidx<0) sidx=0;
-                } else {
-                    sidx=0;
-                }
+            // if a basenode is given (i.e. node is not -1)
+            if (basenode!=null) {
+                // not very neat... but it works
+                sidx=alltables.indexOf(basenode.parent.tableName);
+                if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
+                // if we can't find the real parent assume object
+                if (sidx<0) sidx=alltables.indexOf("object");
+                if (sidx<0) sidx=0;
                 str=idx2char(sidx);
                 bb.append(getNodeString(str,snodes));
                 // Check if we got a relation to ourself
