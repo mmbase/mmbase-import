@@ -93,7 +93,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.21 2004-11-02 18:29:11 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.22 2004-11-03 17:41:59 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -748,9 +748,9 @@ public class ResourceLoader extends ClassLoader {
             if (con.getDoInput()) {
                 long lm = con.getLastModified();
                 if (lm  > 0 && usedUrl != null  && lastModified > 0 && lm > lastModified) {
-                    log.warn("File " + con.getURL() + " is newer then " + usedUrl + " but shadowed by it");
+                    log.warn("File " + con.getURL() + " is newer (" + new Date(lm) + " then " + usedUrl + "(" + new Date(lastModified) + ") but shadowed by it");
                 }
-                if (usedUrl == null) {
+                if (usedUrl == null && lm > 0) {
                     usedUrl = con.getURL();
                     lastModified = lm;
                 }
@@ -770,7 +770,10 @@ public class ResourceLoader extends ClassLoader {
         while (i.hasNext()) {
             PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
             if (cf instanceof NodeURLStreamHandler) {
-                return cf.openConnection(name).getURL();
+                URLConnection con = cf.openConnection(name);
+                if (con.getDoInput()) {
+                    return con.getURL();
+                }
             } else if (cf instanceof FileURLStreamHandler) {
                 FileConnection con = (FileConnection) cf.openConnection(name);
                 File file = con.getFile();
