@@ -1,0 +1,105 @@
+body.basic { 
+       background-color: white;
+
+       margin-top: 1em;
+       color: #42BDAD; 
+}
+
+body.navigationbar {
+             background-color: #00425A;
+             color: white;
+}
+
+a:link { color: #42BDAD; }
+a:visited { color: #42BDAD; }
+a:active { color: yellow; }
+
+table   { width : 93%; }
+
+td {
+    color: #42BDAD;
+    vertical-align : top;
+    horizontal-align : left;	
+    border-width: 1;		
+}	
+
+th {
+   background-color: #42BDAD;
+   color: black;
+   font-weight:bold
+}
+
+textarea.small {
+     height: 6em;
+}
+textarea.big   {
+	 height: 15em;
+}
+
+.data {
+     background-color: #00425A;
+     color: #42BDAD;
+}
+.navigate {
+    background-color: #42BDAD;
+    color: #00425A;
+}
+
+.edit {
+     background-color: #00425A;
+     color: white;
+}
+.search {
+     background-color: white;
+     color: black;
+}
+
+.linkdata {
+     background-color: #00425A;
+     color: white;
+     text-align: center
+}
+
+.listdata {
+     background-color: #00425A;
+     color: #42BDAD;
+     text-align: left
+}
+
+.multidata  {
+     background-color: #00425A;
+     color: #42BDAD;
+     padding-top: 1em;
+}
+
+.currentmenuitem {
+    font-family: arial, verdana, helvetica, geneva;
+    font-size: medium;
+    color: white;
+    text-decoration: none
+}
+.menuitem {
+    font-family: arial, verdana, helvetica, geneva;
+    font-size: medium;
+    color: #42BDAD;
+    text-decoration: none
+}
+
+
+.small {
+    width: 100%;
+}
+
+.buttons {
+    text-align: right
+}
+textarea.small {
+    height: 6em;
+}
+textarea.big {
+    height: 15em;
+    width: 100%;    
+}
+input {
+}
+

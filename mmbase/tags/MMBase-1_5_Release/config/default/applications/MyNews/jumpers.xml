@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<jumpers exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20000602143030">
+	<node number="1085" owner="admin">
+		<url>/mmexamples/scan/mynews/start.shtml</url>
+		<id>null</id>
+		<name>mynews</name>
+	</node>
+	<node number="1085112" owner="admin">
+		<url>/mmexamples/jsp/mynews/index.jsp</url>
+		<id>null</id>
+		<name>jspmynews</name>
+	</node>
+
+</jumpers>

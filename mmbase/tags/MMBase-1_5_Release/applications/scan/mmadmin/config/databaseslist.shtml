@@ -1,0 +1,58 @@
+<!--
+Display list of xml files in configuration category
+-->
+<PROCESSOR Config>
+<SECURE>
+<html>
+<head><title>MMConfig: databases</title></head>
+
+<BODY BACKGROUND="../beeld/bgmmbaselogo.jpg" TEXT="#000000" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="../beeld/mmbaselogosmall.gif" ALIGN="right"> 
+
+<table border=1>
+<PART /mmadmin/config/menu.shtml?databases>
+  <tr>
+    <td colspan=4 align=left>
+<table>
+<tr>
+  <td><b>database</b></td>
+  <td><b>status</b></td>
+  <td><b>check</b></td>
+  <td><b>source</b></td>
+</tr>
+<LIST SHOW category="databases">
+<tr>
+  <td><a href="xslconvert.shtml?$PARAM1/$ITEM1+dbview">$ITEM1</a></td>
+<LIF $ITEM3=Etrue>
+  <td bgcolor="#63DE31"><font color="#63DE31">#</font></td>
+<ELSE>
+  <td bgcolor="#FF0000"><font color="#FF0000">#</font></td>
+</IF>
+<LIF $ITEM2=Etrue>
+  <td>ok</td>
+</IF>
+<LIF $ITEM2=Enodtd>
+  <td>no dtd defined</td>
+</IF>
+<LIF $ITEM2=Efalse>
+  <td>xml error!</td>
+</IF>
+<LIF $ITEM2=Etrue>
+  <td><a href="configdetail.shtml?show+databases+$ITEM1">xml</a></td>
+</IF>
+<LIF $ITEM2=Enodtd>
+  <td><a href="configdetail.shtml?show+databases+$ITEM1">xml</a></td>
+</IF>
+<LIF $ITEM2=Efalse>
+  <td><a href="configdetail.shtml?annotate+databases+$ITEM1">annotated xml</a></td>
+</IF>
+</tr>
+</LIST>
+</table>
+</td>
+</tr>
+</table>
+</center>
+
+</body>
+</html>

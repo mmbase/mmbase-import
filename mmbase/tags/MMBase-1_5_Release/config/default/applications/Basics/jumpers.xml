@@ -1,0 +1,31 @@
+<jumpers exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+	<node number="138" owner="system">
+		<name>edit</name>
+		<id>-1</id>
+		<url>/mmeditors/index.shtml</url>
+	</node>
+
+	<node number="7690" owner="system">
+		<name>jspedit</name>
+		<id>-1</id>
+		<url>/mmeditors/jsp/index.jsp</url>
+	</node>
+
+	<node number="139" owner="system">
+		<name>admin</name>
+		<id>-1</id>
+		<url>/mmadmin/index.shtml</url>
+	</node>
+
+	<node number="7989" owner="system">
+		<name>jspadmin</name>
+		<id>-1</id>
+		<url>/mmadmin/jsp/default.jsp</url>
+	</node>
+
+	<node number="625" owner="system">
+		<name>demo</name>
+		<id>-1</id>
+		<url>/mmexamples/index.html</url>
+	</node>
+</jumpers>

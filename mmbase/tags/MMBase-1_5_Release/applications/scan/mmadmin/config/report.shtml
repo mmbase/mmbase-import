@@ -1,0 +1,9 @@
+<SECURE>
+<html>
+<head><title>report</title></head>
+<body bgcolor="#FFFFFF">
+REPORT
+<hr>
+$MOD-CONFIG-REPORT
+</body>
+</html>

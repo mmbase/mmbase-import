@@ -1,0 +1,6 @@
+Help per field in the editors
+------------------------------
+
+In a subdir per language you can add a directory per builder.
+If that subdir contains a <field>.shtml it will be included
+below the input field in the editor

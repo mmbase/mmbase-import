@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module>
+
+  <!-- <status>
+	what is the status of this module, options : active or inactive
+  -->
+  <status>inactive</status>
+
+  <!-- <classfile>
+	main classfile that this module is defined in
+  -->
+	<classfile>org.mmbase.module.gui.flash.MMFlash</classfile>
+
+  <!-- <properties>
+     you can define properties to be used by the classfile (if used) it uses
+     a key/value system. Its a optional tag.
+   -->
+	<properties>
+
+		  <!-- <property name="generatortemppath">
+		  	Path where the temporary files will be created (*.sws files)
+		   -->
+		<property name="generatortemppath">/tmp/flash/</property>
+
+		  <!-- <property name="generatorpath">
+			Path where the flash generator can be found, not nessecary when 
+			the program can be found in a directory of the PATH variable.
+		   -->		
+		<property name="generatorpath"></property>
+		
+		  <!-- <property name="generatorprogram">
+			Name of the generator program, which should be used. Normally would 
+			be "swift-generator" from http://www.swift-tools.com/swift-generator.html
+			-->			
+		<property name="generatorprogram">swift-generator</property>
+	</properties>
+</module>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j SYSTEM "../dtd/logging.dtd">
+
+<logging>
+  <!-- example: SimpleImpl -->
+  <!--
+   <class>org.mmbase.util.logging.SimpleImpl</class>
+   <configuration>stdout,info</configuration>
+  -->
+   <class>org.mmbase.util.logging.log4j.Log4jImpl</class>
+   <configuration>log4j.xml</configuration>
+</logging>

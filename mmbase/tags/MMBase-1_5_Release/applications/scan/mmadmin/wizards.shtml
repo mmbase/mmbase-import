@@ -1,0 +1,38 @@
+<PROCESSOR MMBASE>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#FFFFFF" LINK="#000000" ALINK="#555555" VLINK="#555555"><CENTER>
+<BR>
+<TABLE width=80% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	Wizards help you with creating pages, listings, how to query mmbase etc etc. It uses a step-by-step guide to show you how to build things up and gives you the needed 'code' to use as a result. It doesn't build the pages for you but provides a powerful tool to help you create the codes needed to convert your static templates to dynamic/mmbase generated pages.
+	</TD>
+</TR>
+<TR>
+	<FORM ACTION="wizards/index.shtml?2" METHOD="POST">
+		<TD BGCOLOR="#00425A">
+			1. Select the wanted wizard and select next 2 : 
+			<SELECT INPUT NAME="SESSION-WIZ">
+
+			<OPTION VALUE="objects">LIST OBJECTS
+			<OPTION VALUE="relations">LIST RELATIONS
+			<OPTION VALUE="multilevel">LIST MULTILEVEL
+			</SELECT>
+		</TD>
+</TR>
+<TR>
+		<TD BGCOLOR="#00425A">
+			<CENTER><INPUT TYPE="SUBMIT" VALUE="Goto Step 2">
+		</TD>
+	</FORM>
+</TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
