@@ -62,14 +62,14 @@
              <mm:compare referid="teststatus" value="passed">
        	             <td class="td_test_tbs">
                         <mm:compare referid="feedback" value="0">S</mm:compare>
-                        <mm:write referid="goodanswers"/>/<mm:write referid="falseanswers"/>
+                        goed: <mm:write referid="goodanswers"/> / fout: <mm:write referid="falseanswers"/>
                     </td>
              </mm:compare>
              
              <mm:compare referid="teststatus" value="failed">
        	             <td class="td_test_failed">
                          <mm:compare referid="feedback" value="0">F</mm:compare>
-                         <mm:write referid="goodanswers"/>/<mm:write referid="falseanswers"/></td>
+                         goed: <mm:write referid="goodanswers"/> / fout: <mm:write referid="falseanswers"/></td>
        	     </mm:compare>
             
         </mm:compare>
