@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.11 2002-07-18 11:37:40 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.12 2002-08-14 21:02:28 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -75,7 +75,7 @@
                 <input type="checkbox" style="position:absolute; top:0; left:0; visibility:hidden;" name="{@number}" did="{@number}" id="cb_{@number}" />
                 <xsl:choose>
                   <xsl:when test="@type='images'">
-                    <xsl:value-of select="node:function(string(@number), 'gui()')" disable-output-escaping="yes" />
+                    <xsl:value-of select="node:function($cloud, string(@number), 'gui()')" disable-output-escaping="yes" />
                     <b><xsl:value-of select="field[1]" /></b><br />
                     <xsl:value-of select="field[2]" /><br />
                   </xsl:when>

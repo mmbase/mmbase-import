@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.63 2002-08-14 18:12:03 michiel Exp $
+ * @version $Id: Wizard.java,v 1.64 2002-08-14 21:04:59 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -397,6 +397,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
         params.put("referrer",   referrer);
         params.put("language",   language);
         params.put("popupid",    popupId);
+        params.put("cloud",      cloud);
 
         if (templatesDir != null) params.put("templatedir",  templatesDir);
         try {
