@@ -117,15 +117,28 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
     protected String writerid = null;
     
+    
     /**
-     * Find the parent writer tag.
+     * Find the parent writer tag. It also calls haveBody on this
+     * parent tag, so that this knows that it has a body. If a
+     * write-tag has a body, then on default it will not write itself,
+     * but only communicate itself tot the body's tags.
      */
     public Writer findWriter() throws JspTagException {
-        Writer w;        
-        w = (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
+        return findWriter(true);
+
+    }
+    /**
+     * @since MMBase-1.6.2
+     */
+    public Writer findWriter(boolean th) throws JspTagException {
+        Writer w = (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid, th);
         w.haveBody();
         return w;
     }
+
+
+
     /**
      * Sets the writer attribute.
      */
