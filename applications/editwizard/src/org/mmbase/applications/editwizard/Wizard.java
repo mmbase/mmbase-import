@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.62 2002-08-13 17:31:19 michiel Exp $
+ * @version $Id: Wizard.java,v 1.63 2002-08-14 18:12:03 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -124,6 +124,11 @@ public class Wizard implements org.mmbase.util.Sizeable {
      *
      */
     private List errors = new Vector();
+
+    /**
+     * 
+     */
+    private String popupId = "";  
 
 
     public int getByteSize() {
@@ -290,8 +295,9 @@ public class Wizard implements org.mmbase.util.Sizeable {
      */
     protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException, SecurityException {
         if (wizardConfig.wizard == null) throw new WizardException("Wizardname may not be null");
-        wizardName=wizardConfig.wizard;
-        dataId=wizardConfig.objectNumber;
+        wizardName  = wizardConfig.wizard;
+        popupId     = wizardConfig.popupId;
+        dataId      = wizardConfig.objectNumber;
 
         File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
         wizardStylesheetFile = uriResolver.resolveToFile("xsl/wizard.xsl");
@@ -350,7 +356,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
         }
 
         // initialize an editor session
-        if (currentFormId == null){currentFormId = determineNextForm("first");}
+        if (currentFormId == null) { currentFormId = determineNextForm("first"); }
     }
 
     /**
@@ -390,10 +396,8 @@ public class Wizard implements org.mmbase.util.Sizeable {
         params.put("sessionkey", sessionKey);
         params.put("referrer",   referrer);
         params.put("language",   language);
-        /*
-        params.put("popup",      popup);
-        params.put("level",      level);
-        */
+        params.put("popupid",    popupId);
+
         if (templatesDir != null) params.put("templatedir",  templatesDir);
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
