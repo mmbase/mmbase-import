@@ -15,15 +15,16 @@
      </mm:present>
 
      <mm:import externid="reason">please</mm:import>
+     <mm:import externid="exactreason" />
      <mm:import externid="referrer">index.jsp</mm:import>
       <mm:compare referid="reason" value="failed">
         <p class="failed">
-          <%=getPrompt(m, "failed")%>
+          <%=getPrompt(m, "failed")%> (<mm:write referid="exactreason" />)
         </p>
       </mm:compare>
       <mm:compare referid="reason" value="rank">
         <p class="failed">
-          <%=getPrompt(m, "failed_rank")%>
+          <%=getPrompt(m, "failed_rank")%> (<mm:write referid="exactreason" />)
         </p>
       </mm:compare>
 
