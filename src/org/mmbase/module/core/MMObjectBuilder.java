@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.251 2003-11-07 11:07:50 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.252 2003-11-13 15:43:55 keesj Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -4024,13 +4024,16 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-     * hostname, parses the hostname from a url, so http://www.somesite.com/index.html
-     * becomed www.somesite.com
+     * hostname, parses the hostname from a url, so http://www.mmbase.org/bug
+     * becomed www.mmbase.org
      * @deprecated Has nothing to do with mmbase nodes. Should be in org.mmbase.util
      */
     public String hostname_function(String url) {
         if (url.startsWith("http://")) {
             url=url.substring(7);
+        }
+        if (url.startsWith("https://")) {
+            url=url.substring(8);
         }
         int pos=url.indexOf("/");
         if (pos!=-1) {
