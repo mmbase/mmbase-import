@@ -61,6 +61,7 @@ public class CreateRelationTag extends NodeTag {
         r.commit();
 
         setNodeVar(r);
+        fillVars();
         return EVAL_BODY_TAG; 
     }
     
