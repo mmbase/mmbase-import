@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.16 2003-04-24 15:19:41 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.17 2003-04-24 15:55:49 michiel Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -29,7 +29,7 @@
         <para><ulink url="releases/readme.txt">Read This First (text)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/release-notes.txt">Release Notes MMBase Version 1.6 (text)</ulink></para>
+        <para><ulink url="releases/release-notes.txt">Release Notes MMBase Version (text)</ulink></para>
       </listitem>
       <listitem>
         <para><ulink url="releases/installation.txt">Installation Notes (text)</ulink></para>
