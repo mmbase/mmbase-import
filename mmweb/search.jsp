@@ -55,7 +55,7 @@
 			  <a href="{translate(@href,';','&amp;')}"><xsl:value-of select="."/></a>
 		</xsl:template>
 	</mm:xslt>
-  <<jsp:getProperty name="search" property="result" />
+  <jsp:getProperty name="search" property="result" />
 </mm:formatter>
  </mm:isnotempty>
 </mm:present>
