@@ -467,9 +467,11 @@ public class ContextTag extends ContextReferrerTag {
         boolean valid = true;
         char chars[] = newid.toCharArray();
         if (chars.length < 1) {
+            log.debug("Id must be longer then 0");
             valid = false;
         } else {
             if (Character.isLetter(chars[0]) || chars[0] == '_') {
+                if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + chars);
                 for (int i = 1; i < chars.length; ++i) {
                     if (! isContextVarNameChar(chars[0])) {
                         valid = false;
@@ -477,6 +479,7 @@ public class ContextTag extends ContextReferrerTag {
                     }
                 }
             } else {
+                if (log.isDebugEnabled()) log.debug("First character is not valid: " + chars[0]);
                 valid = false;
             }
         }
@@ -570,14 +573,15 @@ public class ContextTag extends ContextReferrerTag {
         return result;
     }
     */
-
     public int doAfterBody() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
 
         try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            if (bodyContent != null) {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
