@@ -10,24 +10,25 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-//import java.io.*;
-//import java.sql.*;
 
 import org.mmbase.module.builders.*;
-//import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * If this class is used as the class for your builder, then an
+ * 'handle' byte field is assumed to contain an image. You builder
+ * will work together with 'icaches', and with imagemagick (or jai).
  *
- * images holds the images and provides ways to insert, retract and
- * search on them.
+ * This means that is has the following properties: ImageConvertClass,
+ * ImageConvert.ConverterCommand, ImageConvert.ConverterRoot and
+ * MaxConcurrentRequests
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.54 2002-05-24 13:25:58 eduard Exp $
+ * @version $Id: Images.java,v 1.55 2002-06-28 20:55:04 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -104,6 +105,10 @@ public class Images extends AbstractImages {
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if ("cache".equals(function)) {
             return new Integer(cacheImage(node, field));
+        }  else if ("path".equals(function)) {
+            return getServletPath() + node.getNumber();
+        } else if ("cachepath".equals(function)) {
+            return getServletPath() + cacheImage(node, field);
         } else {
             return super.executeFunction(node, function, field);
         }
@@ -125,7 +130,7 @@ public class Images extends AbstractImages {
             return null; // ObjectBuilder itself will handle this case.
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = getServlet();
+        String servlet    = getServletPath();
         String imageThumb = servlet + node.getIntValue("cache(s(100x60))");
         String image      = servlet + node.getNumber();
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
@@ -210,6 +215,19 @@ public class Images extends AbstractImages {
         log.debug("getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
         return mimetype;
     }
+
+
+    /**
+     * Returns the image format.
+     *
+     * @since MMBase-1.6
+     */
+    protected String getImageFormat(MMObjectNode node) {
+        String format = node.getStringValue("itype");
+        if (format == null || format.equals("")) format = "jpg";
+        return format;
+    }
+
 
     /**
      * Explicity cache this image with the given template and return the cached node number.
