@@ -451,11 +451,11 @@ public class BasicCreator implements CreatorInterface {
 	Iterator e=files.iterator();
 	while (e.hasNext()) {
 		String fn=(String)e.next();
-		if (fn.endsWith("/")) {
+		if (fn.endsWith(File.separator)) {
 			Iterator f=files.iterator();
 			while (f.hasNext()) {
 				String fn2=(String)f.next();
-				if (!fn2.endsWith("/") && fn2.indexOf(fn)!=-1) {
+				if (!fn2.endsWith(File.separator) && fn2.indexOf(fn)!=-1) {
 					filtered.add(fn);
 					break;
 				}
@@ -618,7 +618,7 @@ public class BasicCreator implements CreatorInterface {
 			Iterator files=getFileNames(new ArrayList(),basedir,include,exclude).iterator();
 			while (files.hasNext()) {
 				String fn=(String)files.next();
-                                if (!fn.endsWith(File.separator)) {
+                                if (!fn.endsWith("/")) {
       				FileInputStream file = new FileInputStream(fn);
         			packageStep substep=step.getNextPackageStep();
 	       	 		substep.setUserFeedBack("adding "+guiname+" file : "+fn);
