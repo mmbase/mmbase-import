@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.5 2002-05-07 14:40:50 michiel Exp $
+     * @version  $Id: list.jsp,v 1.6 2002-05-14 19:22:36 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -158,8 +158,8 @@ int maxpages   = ewconfig.list_maxpagecount;
 
 if (start>results.size()-1) start = results.size()-1;
 if (start<0) start=0;
-int end=len+start;
-if (end>results.size()) end=results.size();
+int end = len+start;
+if (end > results.size()) end = results.size();
 
 // place all objects
 String s = "<list count=\"" + results.size() + "\" />";
@@ -174,8 +174,9 @@ if (multilevel) {
     if (mainmanager.charAt(mainmanager.length()-1)<='9') mainmanager=mainmanager.substring(0,mainmanager.length()-1);
 }
 
-if (start>=end) {
-    org.w3c.dom.Node obj = addObject(docel, null,null,cloud.getNodeManager(mainmanager).getName());
+if (start >= end) {
+    // Michiel: I don't know what this if for. I commented it out, because it caused nullpointer exception.
+    // org.w3c.dom.Node obj = addObject(docel, null,null,cloud.getNodeManager(mainmanager).getName());
 
 } else {
     for (int i=start; i< end; i++) {
