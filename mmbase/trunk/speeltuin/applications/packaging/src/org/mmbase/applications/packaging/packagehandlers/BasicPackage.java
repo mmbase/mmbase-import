@@ -173,6 +173,12 @@ public class BasicPackage implements PackageInterface {
 		}	
 	}
 
+        if (UninstallManager.isActive()) {
+                if (this==UninstallManager.getUnInstallingPackage()) {
+                        return "uninstalling";
+                }
+        }
+
 
 	if (PackageManager.isInstalledVersion(this)) {
 		return "installed";
