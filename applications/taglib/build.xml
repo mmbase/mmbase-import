@@ -11,13 +11,11 @@
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
   &base;
 
-  <target name="dependent.jar" depends="taglib.tld,jar">
-  </target>
-
-  <target name="dependent.package" depends="dependent.jar,taglib.doc,package" />
-	<target name="dependent.install" depends="dependent.jar,dependent.install.documentation,install" />
-	<target name="dependent.documentation" depends="taglib.doc,documentation" />
-	<target name="dependent.install.documentation" depends="dependent.documentation,install.documentation" />
+  <target name="dependent.jar"           depends="taglib.tld,jar" />
+  <target name="dependent.package"       depends="dependent.jar,taglib.doc,package" />
+  <target name="dependent.install"       depends="dependent.jar,dependent.install.documentation,install" />
+  <target name="dependent.documentation" depends="taglib.doc,documentation" />
+  <target name="dependent.install.documentation" depends="dependent.documentation,install.documentation" />
 
 
   
@@ -55,7 +53,7 @@
 
 
   <target name="taglib.doc" description="Make the MMBase taglib taglib documentation"
-          depends="compile,taglib.doc.check" unless="taglib.doc.uptodate" if="build.documentation">
+          depends="init,compile,taglib.doc.check" unless="taglib.doc.uptodate" if="do.documentation">
     <mkdir dir="${project.build.dir}/documentation/reference"/>
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
