@@ -12,8 +12,8 @@ package org.mmbase.util;
 /**
  * Encodes and decodes to and from Base64 notation.
  * <p>
- * Based on the code from <code>Base64</code> v.1.4 from Robert Harder, 
- * available from 
+ * Based on the code from <code>Base64</code> v.1.4 from Robert Harder,
+ * available from
  * <a href="http://iharder.net/xmlizable">http://iharder.net/xmlizable</a>,
  * and adapted to replace the original MMBase code.
  * </p>
@@ -22,27 +22,27 @@ package org.mmbase.util;
  * @author Rob van Maris
  */
 public class Base64 {
-   
+
    /** Specify encoding (value is <tt>true</tt>). */
    public final static boolean ENCODE = true;
-   
-   
+
+
    /** Specify decoding (value is <tt>false</tt>). */
    public final static boolean DECODE = false;
-   
-   
+
+
    /** Maximum line length (76) of Base64 output. */
    private final static int MAX_LINE_LENGTH = 76;
-   
-   
+
+
    /** The equals sign (=) as a byte. */
    private final static byte EQUALS_SIGN = (byte)'=';
-   
-   
+
+
    /** The new line character (\n) as a byte. */
    private final static byte NEW_LINE = (byte)'\n';
-   
-   
+
+
    /** The 64 valid Base64 values. */
    private final static byte[] ALPHABET = {
       (byte)'A', (byte)'B', (byte)'C', (byte)'D', (byte)'E', (byte)'F', (byte)'G',
@@ -56,7 +56,7 @@ public class Base64 {
       (byte)'0', (byte)'1', (byte)'2', (byte)'3', (byte)'4', (byte)'5',
       (byte)'6', (byte)'7', (byte)'8', (byte)'9', (byte)'+', (byte)'/'
    };
-   
+
    /**
     * Translates a Base64 value to either its 6-bit reconstruction value
     * or a negative number indicating some other meaning.
@@ -94,18 +94,18 @@ public class Base64 {
         -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,     // Decimal 231 - 243
         -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9         // Decimal 244 - 255 */
    };
-   
+
    private final static byte BAD_ENCODING    = -9; // Indicates error in encoding
    private final static byte WHITE_SPACE_ENC = -5; // Indicates white space in encoding
    private final static byte EQUALS_SIGN_ENC = -1; // Indicates equals sign in encoding
-   
-   
+
+
    /** Defeats instantiation. */
    private Base64(){}
-   
+
    /* ********  E N C O D I N G   M E T H O D S  ******** */
-   
-   
+
+
     /**
      * Encodes the base64 string.
      *
@@ -115,7 +115,7 @@ public class Base64 {
     public static String encode(String mimel) {
        return encodeString(mimel);
     }
-    
+
    /**
     * Encodes the first three bytes of array <var>threeBytes</var>
     * and returns a four-byte array in Base64 notation.
@@ -126,9 +126,9 @@ public class Base64 {
    private static byte[] encode3to4( byte[] threeBytes )
    {   return encode3to4( threeBytes, 3 );
    }   // end encodeToBytes
-   
-   
-   
+
+
+
    /**
     * Encodes up to the first three bytes of array <var>threeBytes</var>
     * and returns a four-byte array in Base64 notation.
@@ -146,9 +146,9 @@ public class Base64 {
        encode3to4( threeBytes, 0, numSigBytes, dest, 0 );
        return dest;
    }
-   
-   
-   
+
+
+
    /**
     * Encodes up to three bytes of the array <var>source</var>
     * and writes the resulting four Base64 bytes to <var>destination</var>.
@@ -178,7 +178,7 @@ public class Base64 {
       // --------|    ||    ||    ||    | Six bit groups to index ALPHABET
       //          >>18  >>12  >> 6  >> 0  Right shift necessary
       //                0x3f  0x3f  0x3f  Additional AND
-      
+
       // Create buffer with zero-padding if there are only one or two
       // significant bytes passed in the array.
       // We have to shift left 24 in order to flush out the 1's that appear
@@ -186,7 +186,7 @@ public class Base64 {
       int inBuff =   ( numSigBytes > 0 ? ((source[ srcOffset     ] << 24) >>>  8) : 0 )
       | ( numSigBytes > 1 ? ((source[ srcOffset + 1 ] << 24) >>> 16) : 0 )
       | ( numSigBytes > 2 ? ((source[ srcOffset + 2 ] << 24) >>> 24) : 0 );
-      
+
       switch( numSigBytes ) {
          case 3:
             destination[ destOffset     ] = ALPHABET[ (inBuff >>> 18)        ];
@@ -194,26 +194,26 @@ public class Base64 {
             destination[ destOffset + 2 ] = ALPHABET[ (inBuff >>>  6) & 0x3f ];
             destination[ destOffset + 3 ] = ALPHABET[ (inBuff       ) & 0x3f ];
             return destination;
-            
+
          case 2:
             destination[ destOffset     ] = ALPHABET[ (inBuff >>> 18)        ];
             destination[ destOffset + 1 ] = ALPHABET[ (inBuff >>> 12) & 0x3f ];
             destination[ destOffset + 2 ] = ALPHABET[ (inBuff >>>  6) & 0x3f ];
             destination[ destOffset + 3 ] = EQUALS_SIGN;
             return destination;
-            
+
          case 1:
             destination[ destOffset     ] = ALPHABET[ (inBuff >>> 18)        ];
             destination[ destOffset + 1 ] = ALPHABET[ (inBuff >>> 12) & 0x3f ];
             destination[ destOffset + 2 ] = EQUALS_SIGN;
             destination[ destOffset + 3 ] = EQUALS_SIGN;
             return destination;
-            
+
          default:
             return destination;
       }   // end switch
    }   // end encode3to4
-   
+
    /**
     * Serializes an object and returns the Base64-encoded
     * version of that serialized object. If the object
@@ -226,7 +226,7 @@ public class Base64 {
    public static String encodeObject( java.io.Serializable serializableObject ) {
       return encodeObject( serializableObject, true );
    }   // end encodeObject
-   
+
    /**
     * Serializes an object and returns the Base64-encoded
     * version of that serialized object. If the object
@@ -241,12 +241,12 @@ public class Base64 {
       java.io.ByteArrayOutputStream baos  = null;
       java.io.OutputStream          b64os = null;
       java.io.ObjectOutputStream    oos   = null;
-      
+
       try {
          baos  = new java.io.ByteArrayOutputStream();
          b64os = new Base64.OutputStream( baos, Base64.ENCODE, breakLines );
          oos   = new java.io.ObjectOutputStream( b64os );
-         
+
          oos.writeObject( serializableObject );
       }   // end try
       catch( java.io.IOException e ) {
@@ -258,11 +258,11 @@ public class Base64 {
          try{ b64os.close(); } catch( Exception e ){}
          try{ baos.close();  } catch( Exception e ){}
       }   // end finally
-      
+
       return new String( baos.toByteArray() );
    }   // end encode
-   
-   
+
+
    /**
     * Encodes a byte array into Base64 notation.
     * Equivalen to calling
@@ -273,7 +273,7 @@ public class Base64 {
    public static String encodeBytes( byte[] source ) {
       return encodeBytes( source, true );
    }   // end encodeBytes
-   
+
    /**
     * Encodes a byte array into Base64 notation.
     * Equivalen to calling
@@ -285,8 +285,8 @@ public class Base64 {
    public static String encodeBytes( byte[] source, boolean breakLines ) {
       return encodeBytes( source, 0, source.length, breakLines );
    }   // end encodeBytes
-   
-   
+
+
    /**
     * Encodes a byte array into Base64 notation.
     *
@@ -297,8 +297,8 @@ public class Base64 {
    public static String encodeBytes( byte[] source, int off, int len ) {
       return encodeBytes( source, off, len, true );
    }   // end encodeBytes
-   
-   
+
+
    /**
     * Encodes a byte array into Base64 notation.
     *
@@ -318,7 +318,7 @@ public class Base64 {
       int lineLength = 0;
       for( ; d < len2; d+=3, e+=4 ) {
          encode3to4( source, d+off, 3, outBuff, e );
-         
+
          lineLength += 4;
          if( breakLines && lineLength == MAX_LINE_LENGTH ) {
             outBuff[e+4] = NEW_LINE;
@@ -326,16 +326,16 @@ public class Base64 {
             lineLength = 0;
          }   // end if: end of line
       }   // en dfor: each piece of array
-      
+
       if( d < len ) {
          encode3to4( source, d+off, len - d, outBuff, e );
          e += 4;
       }   // end if: some padding needed
-      
+
       return new String( outBuff, 0, e );
    }   // end encodeBytes
-   
-   
+
+
    /**
     * Encodes a string in Base64 notation with line breaks
     * after every 75 Base64 characters.
@@ -349,7 +349,7 @@ public class Base64 {
    public static String encodeString( String s ) {
       return encodeString( s, true );
    }   // end encodeString
-   
+
    /**
     * Encodes a string in Base64 notation with line breaks
     * after every 75 Base64 characters.
@@ -364,9 +364,9 @@ public class Base64 {
    public static String encodeString( String s, boolean breakLines ) {
       return encodeBytes( s.getBytes(), breakLines );
    }   // end encodeString
-   
-   
-   
+
+
+
    /**
     * Reads a file and either encodes or decodes it.
     *
@@ -377,9 +377,9 @@ public class Base64 {
    public static byte[] readFile( String file, boolean encode ) {
       return readFile( new java.io.File( file ), encode );
    }   // end readFile
-   
-   
-   
+
+
+
    /**
     * Reads a file and either encodes or decodes it.
     *
@@ -393,28 +393,28 @@ public class Base64 {
       int    nextIndex       = 0;
       int    b               = -1;
       Base64.InputStream bis = null;
-      
+
       try{
          bis = new Base64.InputStream(
          new java.io.BufferedInputStream(
          new java.io.FileInputStream( file ) ), encode );
-         
+
          while( (b = bis.read()) >= 0 ){
-            
+
             // Resize array?
             if( nextIndex >= data.length ){
                byte[] temp = new byte[ data.length << 1 ];
                System.arraycopy( data,0, temp,0,data.length );
                data = temp;
             }   // end if: resize array
-            
+
             data[ nextIndex++ ] = (byte)b;
-            
+
          }   // end while: each byte
-         
+
          returnValue = new byte[ nextIndex ];
          System.arraycopy( data,0, returnValue,0,nextIndex );
-         
+
       }   // end try
       catch( java.io.IOException e ){
          returnValue = null;
@@ -422,11 +422,11 @@ public class Base64 {
       finally{
          try{ bis.close(); }catch( Exception e ){}
       }   // end finally
-      
+
       return returnValue;
    }   // end readFile
-   
-   
+
+
    /**
     * Writes a byte array to a file either encoding
     * it or decoding it as specified.
@@ -439,9 +439,9 @@ public class Base64 {
    public static boolean writeFile( byte[] data, String file, boolean encode ) {
       return writeFile( data, 0, data.length, new java.io.File( file ), encode );
    }   // end writeFile
-   
-   
-   
+
+
+
    /**
     * Writes a byte array to a file either encoding
     * it or decoding it as specified.
@@ -454,9 +454,9 @@ public class Base64 {
    public static boolean writeFile( byte[] data, java.io.File file, boolean encode ) {
       return writeFile( data, 0, data.length, file, encode );
    }   // end writeFile
-   
-   
-   
+
+
+
    /**
     * Writes a byte array to a file either encoding
     * it or decoding it as specified.
@@ -471,15 +471,15 @@ public class Base64 {
    public static boolean writeFile( byte[] data, int offset, int length, java.io.File file, boolean encode ) {
       Base64.OutputStream bos = null;
       boolean success = false;
-      
+
       try{
          bos = new Base64.OutputStream(
          new java.io.BufferedOutputStream(
          new java.io.FileOutputStream( file ) ), encode );
-         
+
          bos.write( data, offset, length );
          success = true;
-         
+
       }   // end try
       catch( java.io.IOException e ){
          success = false;
@@ -487,12 +487,12 @@ public class Base64 {
       finally{
          try{ bos.close(); }catch( Exception e ){}
       }   // end finally
-      
+
       return success;
    }   // end writeFile
-   
-   
-   
+
+
+
    /**
     * Simple helper method that Base64-encodes a file
     * and returns the encoded string or <tt>null</tt>
@@ -503,14 +503,14 @@ public class Base64 {
     */
    public static String encodeFromFile( String rawfile ) {
       byte[] ebytes = readFile( rawfile, ENCODE );
-      
+
       return ebytes == null ? null : new String( ebytes );
    }   // end encodeFromFile
-   
-   
-   
+
+
+
     /**
-     * Decodes the base64 string. The length of this string must be a 
+     * Decodes the base64 string. The length of this string must be a
      * multiple of 4, all trailing characters are ignored.
      *
      * @param mimel the string to decode
@@ -520,7 +520,7 @@ public class Base64 {
        try {
           return new String(bytes, "ISO-8859-1");
        } catch (java.io.UnsupportedEncodingException e) {
-          // Will never happen, every implementation of the Java platform 
+          // Will never happen, every implementation of the Java platform
           // is required to support ISO-8859-1.
           throw new RuntimeException(
             "Unable to decode Base64, encoding ISO-8859-1 not supported.");
@@ -538,10 +538,10 @@ public class Base64 {
    public static byte[] decodeFromFile( String encfile ) {
       return readFile( encfile, DECODE );
    }   // end encodeFromFile
-   
-   
-   
-   
+
+
+
+
    /**
     * Simple helper method that Base64-encodes data to a file.
     *
@@ -552,9 +552,9 @@ public class Base64 {
    public static boolean encodeToFile( byte[] rawdata, String file ) {
       return writeFile( rawdata, file, ENCODE );
    }   // end encodeFromFile
-   
-   
-   
+
+
+
    /**
     * Simple helper method that Base64-decodes data to a file.
     *
@@ -565,13 +565,13 @@ public class Base64 {
    public static boolean decodeToFile( byte[] encdata, String file ) {
       return writeFile( encdata, file, DECODE );
    }   // end encodeFromFile
-   
-   
-   
-   
+
+
+
+
    /* ********  D E C O D I N G   M E T H O D S  ******** */
-   
-   
+
+
    /**
     * Decodes the first four bytes of array <var>fourBytes</var>
     * and returns an array up to three bytes long with the
@@ -584,16 +584,16 @@ public class Base64 {
       byte[] outBuff1 = new byte[3];
       int    count    = decode4to3( fourBytes, 0, outBuff1, 0 );
       byte[] outBuff2 = new byte[ count ];
-      
+
       for( int i = 0; i < count; i++ )
          outBuff2[i] = outBuff1[i];
-      
+
       return outBuff2;
    }
-   
-   
-   
-   
+
+
+
+
    /**
     * Decodes four bytes from array <var>source</var>
     * and writes the resulting bytes (up to three of them)
@@ -623,11 +623,11 @@ public class Base64 {
          //              | ( ( DECODABET[ source[ srcOffset + 1] ] << 24 ) >>> 12 );
          int outBuff =   ( ( DECODABET[ source[ srcOffset    ] ] & 0xFF ) << 18 )
          | ( ( DECODABET[ source[ srcOffset + 1] ] & 0xFF ) << 12 );
-         
+
          destination[ destOffset ] = (byte)( outBuff >>> 16 );
          return 1;
       }
-      
+
       // Example: DkL=
       else if( source[ srcOffset + 3 ] == EQUALS_SIGN ) {
          // Two ways to do the same thing. Don't know which way I like best.
@@ -637,12 +637,12 @@ public class Base64 {
          int outBuff =   ( ( DECODABET[ source[ srcOffset     ] ] & 0xFF ) << 18 )
          | ( ( DECODABET[ source[ srcOffset + 1 ] ] & 0xFF ) << 12 )
          | ( ( DECODABET[ source[ srcOffset + 2 ] ] & 0xFF ) <<  6 );
-         
+
          destination[ destOffset     ] = (byte)( outBuff >>> 16 );
          destination[ destOffset + 1 ] = (byte)( outBuff >>>  8 );
          return 2;
       }
-      
+
       // Example: DkLE
       else {
          try{
@@ -655,12 +655,12 @@ public class Base64 {
             | ( ( DECODABET[ source[ srcOffset + 1 ] ] & 0xFF ) << 12 )
             | ( ( DECODABET[ source[ srcOffset + 2 ] ] & 0xFF ) <<  6)
             | ( ( DECODABET[ source[ srcOffset + 3 ] ] & 0xFF )      );
-            
-            
+
+
             destination[ destOffset     ] = (byte)( outBuff >> 16 );
             destination[ destOffset + 1 ] = (byte)( outBuff >>  8 );
             destination[ destOffset + 2 ] = (byte)( outBuff       );
-            
+
             return 3;
          }catch( Exception e){
             System.out.println(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) );
@@ -671,9 +671,9 @@ public class Base64 {
          }   //e nd catch
       }
    }   // end decodeToBytes
-   
-   
-   
+
+
+
    /**
     * Decodes data from Base64 notation.
     *
@@ -684,8 +684,8 @@ public class Base64 {
       byte[] bytes = s.getBytes();
       return decode( bytes, 0, bytes.length );
    }   // end decode
-   
-   
+
+
    /**
     * Decodes data from Base64 notation and
     * returns it as a string.
@@ -698,8 +698,8 @@ public class Base64 {
    public static String decodeToString( String s )
    {   return new String( decodeToBytes( s ) );
    }   // end decodeToString
-   
-   
+
+
    /**
     * Attempts to decode Base64 data and deserialize a Java
     * Object within. Returns <tt>null if there was an error.
@@ -709,14 +709,14 @@ public class Base64 {
     */
    public static Object decodeToObject( String encodedObject ) {
       byte[] objBytes = decodeToBytes( encodedObject );
-      
+
       java.io.ByteArrayInputStream bais = null;
       java.io.ObjectInputStream    ois  = null;
-      
+
       try {
          bais = new java.io.ByteArrayInputStream( objBytes );
          ois  = new java.io.ObjectInputStream( bais );
-         
+
          return ois.readObject();
       }   // end try
       catch( java.io.IOException e ) {
@@ -732,8 +732,8 @@ public class Base64 {
          try{ ois.close();  } catch( Exception e ){}
       }   // end finally
    }   // end decodeObject
-   
-   
+
+
    /**
     * Decodes Base64 content in byte array format and returns
     * the decoded byte array.
@@ -747,7 +747,7 @@ public class Base64 {
       int    len34   = len * 3 / 4;
       byte[] outBuff = new byte[ len34 ]; // Upper limit on size of output
       int    outBuffPosn = 0;
-      
+
       byte[] b4        = new byte[4];
       int    b4Posn    = 0;
       int    i         = 0;
@@ -756,7 +756,7 @@ public class Base64 {
       for( i = 0; i < len; i++ ) {
          sbiCrop = (byte)(source[i] & 0x7f); // Only the low seven bits
          sbiDecode = DECODABET[ sbiCrop ];
-         
+
          if( sbiDecode >= WHITE_SPACE_ENC ) // White space, Equals sign or better
          {
             if( sbiDecode >= EQUALS_SIGN_ENC ) {
@@ -764,35 +764,35 @@ public class Base64 {
                if( b4Posn > 3 ) {
                   outBuffPosn += decode4to3( b4, 0, outBuff, outBuffPosn );
                   b4Posn = 0;
-                  
+
                   // If that was the equals sign, break out of 'for' loop
                   if( sbiCrop == EQUALS_SIGN )
                      break;
                }   // end if: quartet built
-               
+
             }   // end if: equals sign or better
-            
+
          }   // end if: white space, equals sign or better
          else {
             System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
             return null;
          }   // end else:
       }   // each input character
-      
+
       byte[] out = new byte[ outBuffPosn ];
       System.arraycopy( outBuff, 0, out, 0, outBuffPosn );
       return out;
    }   // end decode
-   
-   
-   
-   
+
+
+
+
    /* ********  I N N E R   C L A S S   I N P U T S T R E A M  ******** */
-   
-   
-   
+
+
+
    /**
-    * A {@link Base64#InputStream} will read data from another
+    * A {@link Base64.InputStream} will read data from another
     * {@link java.io.InputStream}, given in the constructor,
     * and encode/decode to/from Base64 notation on the fly.
     *
@@ -807,20 +807,20 @@ public class Base64 {
       private int     numSigBytes;    // Number of meaningful bytes in the buffer
       private int     lineLength;
       private boolean breakLines;     // Break lines at less than 80 characters
-      
-      
+
+
       /**
-       * Constructs a {@link Base64#InputStream} in DECODE mode.
+       * Constructs a {@link Base64.InputStream} in DECODE mode.
        *
        * @param in the {@link java.io.InputStream} from which to read data.
        */
       public InputStream( java.io.InputStream in ) {
          this( in, Base64.DECODE );
       }   // end constructor
-      
-      
+
+
       /**
-       * Constructs a {@link Base64#InputStream} in
+       * Constructs a {@link Base64.InputStream} in
        * either ENCODE or DECODE mode.
        *
        * @param in the {@link java.io.InputStream} from which to read data.
@@ -831,10 +831,10 @@ public class Base64 {
       public InputStream( java.io.InputStream in, boolean encode ) {
          this( in, encode, true );
       }   // end constructor
-      
-      
+
+
       /**
-       * Constructs a {@link Base64#InputStream} in
+       * Constructs a {@link Base64.InputStream} in
        * either ENCODE or DECODE mode.
        *
        * @param in the {@link java.io.InputStream} from which to read data.
@@ -852,7 +852,7 @@ public class Base64 {
          this.position = -1;
          this.lineLength = 0;
       }   // end constructor
-      
+
       /**
        * Reads enough of the input stream to convert
        * to/from Base64 and returns the next byte.
@@ -868,22 +868,22 @@ public class Base64 {
                for( int i = 0; i < 3; i++ ) {
                   try {
                      int b = in.read();
-                     
+
                      // If end of stream, b is -1.
                      if( b >= 0 ) {
                         b3[i] = (byte)b;
                         numBinaryBytes++;
                      }   // end if: not end of stream
-                     
+
                   }   // end try: read
                   catch( java.io.IOException e ) {
                      // Only a problem if we got no data at all.
                      if( i == 0 )
                         throw e;
-                     
+
                   }   // end catch
                }   // end for: each needed input byte
-               
+
                if( numBinaryBytes > 0 ) {
                   encode3to4( b3, 0, numBinaryBytes, buffer, 0 );
                   position = 0;
@@ -893,7 +893,7 @@ public class Base64 {
                   return -1;
                }   // end else
             }   // end if: encoding
-            
+
             // Else decoding
             else {
                byte[] b4 = new byte[4];
@@ -903,13 +903,13 @@ public class Base64 {
                   int b = 0;
                   do{ b = in.read(); }
                   while( b >= 0 && DECODABET[ b & 0x7f ] <= WHITE_SPACE_ENC );
-                  
+
                   if( b < 0 )
                      break; // Reads a -1 if end of stream
-                  
+
                   b4[i] = (byte)b;
                }   // end for: each needed input byte
-               
+
                if( i == 4 ) {
                   numSigBytes = decode4to3( b4, 0, buffer, 0 );
                   position = 0;
@@ -921,16 +921,16 @@ public class Base64 {
                   // Must have broken out from above.
                   throw new java.io.IOException( "Improperly padded Base64 input." );
                }   // end
-               
+
             }   // end else: decode
          }   // end else: get data
-         
+
          // Got data?
          if( position >= 0 ) {
             // End of relevant data?
             if( /*!encode &&*/ position >= numSigBytes )
                return -1;
-            
+
             if( encode && breakLines && lineLength >= MAX_LINE_LENGTH ) {
                lineLength = 0;
                return '\n';
@@ -939,25 +939,25 @@ public class Base64 {
                lineLength++;   // This isn't important when decoding
                // but throwing an extra "if" seems
                // just as wasteful.
-               
+
                int b = buffer[ position++ ];
-               
+
                if( position >= bufferLength )
                   position = -1;
-               
+
                return b & 0xFF; // This is how you "cast" a byte that's
                // intended to be unsigned.
             }   // end else
          }   // end if: position >= 0
-         
+
          // Else error
          else {
             // When JDK1.4 is more accepted, use an assertion here.
             throw new java.io.IOException( "Error in Base64 code reading stream." );
          }   // end else
       }   // end read
-      
-      
+
+
       /**
        * Calls {@link #read} repeatedly until the end of stream
        * is reached or <var>len</var> bytes are read.
@@ -974,10 +974,10 @@ public class Base64 {
          int b;
          for( i = 0; i < len; i++ ) {
             b = read();
-            
+
             //if( b < 0 && i == 0 )
             //    return -1;
-            
+
             if( b >= 0 )
                dest[off + i] = (byte)b;
             else if( i == 0 )
@@ -987,20 +987,20 @@ public class Base64 {
          }   // end for: each byte read
          return i;
       }   // end read
-      
+
    }   // end inner class InputStream
-   
-   
-   
-   
-   
-   
+
+
+
+
+
+
    /* ********  I N N E R   C L A S S   O U T P U T S T R E A M  ******** */
-   
-   
-   
+
+
+
    /**
-    * A {@link Base64#OutputStream} will write data to another
+    * A {@link Base64.OutputStream} will write data to another
     * {@link java.io.OutputStream}, given in the constructor,
     * and encode/decode to/from Base64 notation on the fly.
     *
@@ -1014,20 +1014,20 @@ public class Base64 {
       private int     bufferLength;
       private int     lineLength;
       private boolean breakLines;
-      
-      
+
+
       /**
-       * Constructs a {@link Base64#OutputStream} in ENCODE mode.
+       * Constructs a {@link Base64.OutputStream} in ENCODE mode.
        *
        * @param out the {@link java.io.OutputStream} to which data will be written.
        */
       public OutputStream( java.io.OutputStream out ) {
          this( out, Base64.ENCODE );
       }   // end constructor
-      
-      
+
+
       /**
-       * Constructs a {@link Base64#OutputStream} in
+       * Constructs a {@link Base64.OutputStream} in
        * either ENCODE or DECODE mode.
        *
        * @param out the {@link java.io.OutputStream} to which data will be written.
@@ -1038,10 +1038,10 @@ public class Base64 {
       public OutputStream( java.io.OutputStream out, boolean encode ) {
          this( out, encode, true );
       }   // end constructor
-      
-      
+
+
       /**
-       * Constructs a {@link Base64#OutputStream} in
+       * Constructs a {@link Base64.OutputStream} in
        * either ENCODE or DECODE mode.
        *
        * @param out the {@link java.io.OutputStream} to which data will be written.
@@ -1059,8 +1059,8 @@ public class Base64 {
          this.position     = 0;
          this.lineLength   = 0;
       }   // end constructor
-      
-      
+
+
       /**
        * Writes the byte to the output stream after
        * converting to/from Base64 notation.
@@ -1078,17 +1078,17 @@ public class Base64 {
             if( position >= bufferLength )  // Enough to encode.
             {
                out.write( Base64.encode3to4( buffer, bufferLength ) );
-               
+
                lineLength += 4;
                if( breakLines && lineLength >= MAX_LINE_LENGTH ) {
                   out.write( NEW_LINE );
                   lineLength = 0;
                }   // end if: end of line
-               
+
                position = 0;
             }   // end if: enough to output
          }   // end if: encoding
-         
+
          // Else, Decoding
          else {
             // Meaningful Base64 character?
@@ -1105,9 +1105,9 @@ public class Base64 {
             }   // end else: not white space either
          }   // end else: decoding
       }   // end write
-      
-      
-      
+
+
+
       /**
        * Calls {@link #write} repeatedly until <var>len</var>
        * bytes are written.
@@ -1120,10 +1120,10 @@ public class Base64 {
          for( int i = 0; i < len; i++ ) {
             write( theBytes[ off + i ] );
          }   // end for: each byte written
-         
+
       }   // end write
-      
-      
+
+
       /**
        * Appropriately pads Base64 notation when encoding
        * or throws an exception if Base64 input is not
@@ -1132,7 +1132,7 @@ public class Base64 {
        */
       public void flush() throws java.io.IOException {
          super.flush();
-         
+
          if( position > 0 ) {
             if( encode ) {
                out.write( Base64.encode3to4( buffer, position ) );
@@ -1142,11 +1142,11 @@ public class Base64 {
                throw new java.io.IOException( "Base64 input not properly padded." );
             }   // end else: decoding
          }   // end if: buffer partially full
-         
+
          out.flush();
       }   // end flush
-      
-      
+
+
       /**
        * Flushes and closes (I think, in the superclass) the stream.
        *
@@ -1154,13 +1154,13 @@ public class Base64 {
       public void close() throws java.io.IOException {
          super.close();
          //this.flush();
-         
+
          out.close();
-         
+
          buffer = null;
          out    = null;
       }   // end close
-      
+
    }   // end inner class OutputStream
-   
+
 }   // end class Base64

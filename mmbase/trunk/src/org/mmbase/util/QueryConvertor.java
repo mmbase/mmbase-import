@@ -58,7 +58,7 @@ public class QueryConvertor {
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
      * @param db the database to use when converting fieldnames
-     * @deprecated Use {@link #setConstraint() setConstraint()} to parse 
+     * @deprecated Use {@link #setConstraint setConstraint()} to parse
      *        these expressions.
      */
     public static String altaVista2SQL(String query,MMJdbc2NodeInterface db) {
@@ -69,7 +69,7 @@ public class QueryConvertor {
     /**
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
-     * @deprecated Use {@link #setConstraint() setConstraint()} to parse 
+     * @deprecated Use {@link #setConstraint setConstraint()} to parse
      *        these expressions.
      */
     public static String altaVista2SQL(String query) {
@@ -87,10 +87,10 @@ public class QueryConvertor {
 
         return buffer.toString();
     }
-    
+
     /**
      * Sets constraint for a
-     * {@link org.mmbase.storage.search.BasicSearchQuery
+     * {@link org.mmbase.storage.search.implementation.BasicSearchQuery
      * BasicSearchQuery} object.
      * <p>
      * The constraint may be specified as either one of these formats:
@@ -101,7 +101,7 @@ public class QueryConvertor {
      * </ul>
      * If the query contains more than one step, the fields must be of the form
      * <em>stepalias.fiels</em>.
-     * <p>See {@link org.mmbase.storage.search.legacy.ConstraintParser} for 
+     * <p>See {@link org.mmbase.storage.search.legacy.ConstraintParser} for
      * more on how SQL search conditions are supported.
      *
      * @param query The query.
@@ -113,13 +113,13 @@ public class QueryConvertor {
 
         if (where == null || where.trim().length() == 0) {
             // Empty constraint.
-            
+
         } else if (where.substring(0, 6).equalsIgnoreCase("WHERE ")) {
             // "where"-clause.
             // Strip leading "where ".
-            constraint = 
+            constraint =
                 new ConstraintParser(query).toConstraint(where.substring(6));
-            
+
         } else {
             // AltaVista format.
             DBQuery parsedQuery = new DBQuery(where);
@@ -192,7 +192,7 @@ class DBQuery  extends ParseItem {
             ((ParseItem)enum.nextElement()).sqlConversion(result);
         }
     }
-    
+
     /**
      * Converts this query to a constraint for a search query.
      *
@@ -203,14 +203,14 @@ class DBQuery  extends ParseItem {
     Constraint toConstraint(BasicSearchQuery query) {
         BasicCompositeConstraint compositeConstraint = null;
         BasicFieldValueConstraint fieldValueConstraint = null;
-        
+
         Iterator iItems = items.iterator();
         DBLogicalOperator logicalOperator = null;
         while (iItems.hasNext()) {
-            
+
             // Logical operator requires compositeConstraint.
             if (logicalOperator != null) {
-                
+
                 // Create new composite constraint when not present already.
                 if (compositeConstraint == null) {
                     if (logicalOperator.logOperator == DBLogicalOperator.OR) {
@@ -223,13 +223,13 @@ class DBQuery  extends ParseItem {
                                 CompositeConstraint.LOGICAL_AND);
                     }
                     compositeConstraint.addChild(fieldValueConstraint);
-                    
-                // If a composite constraint is already present, add a new 
-                // child composite constraint if the logical operator is 
+
+                // If a composite constraint is already present, add a new
+                // child composite constraint if the logical operator is
                 // not compatible.
-                } else if (compositeConstraint.getLogicalOperator() 
+                } else if (compositeConstraint.getLogicalOperator()
                         == CompositeConstraint.LOGICAL_AND) {
-                    if (logicalOperator.logOperator 
+                    if (logicalOperator.logOperator
                             == DBLogicalOperator.OR) {
                         BasicCompositeConstraint compositeConstraint2
                             = new BasicCompositeConstraint(
@@ -237,9 +237,9 @@ class DBQuery  extends ParseItem {
                         compositeConstraint2.addChild(compositeConstraint);
                         compositeConstraint = compositeConstraint2;
                     }
-                } else if (compositeConstraint.getLogicalOperator() 
+                } else if (compositeConstraint.getLogicalOperator()
                         == CompositeConstraint.LOGICAL_OR) {
-                    if (logicalOperator.logOperator 
+                    if (logicalOperator.logOperator
                             != DBLogicalOperator.OR) {
                         BasicCompositeConstraint compositeConstraint2
                             = new BasicCompositeConstraint(
@@ -249,9 +249,9 @@ class DBQuery  extends ParseItem {
                     }
                 }
             }
-     
+
             DBConditionItem condition = (DBConditionItem) iItems.next();
-            
+
             // Find corresponding field in query.
             BasicStepField field = null;
             Iterator iFields = query.getFields().iterator();
@@ -261,14 +261,14 @@ class DBQuery  extends ParseItem {
                 if (alias2 == null) {
                     alias2 = field2.getStep().getTableName();
                 }
-                if ((condition.prefix == null 
+                if ((condition.prefix == null
                         || alias2.equals(condition.prefix))
                     && field2.getFieldName().equals(condition.fieldName)) {
                     field = field2;
                     break;
                 }
             }
-            
+
             if (field == null) {
                 // Field not found, find step and add field.
                 BasicStep step = null;
@@ -291,20 +291,20 @@ class DBQuery  extends ParseItem {
                     }
                 }
 
-                FieldDefs fieldDefs 
+                FieldDefs fieldDefs
                     = step.getBuilder().getField(condition.fieldName);
                 if (fieldDefs == null) {
                     // Field not found.
-                    throw new IllegalStateException("Field with name '" 
+                    throw new IllegalStateException("Field with name '"
                         + condition.fieldName + "' not found in builder "
                         + step.getTableName());
                 } else {
                     field = query.addField(step, fieldDefs);
                 }
             }
-            
+
             int fieldType = field.getType();
-            if (fieldType == FieldDefs.TYPE_STRING 
+            if (fieldType == FieldDefs.TYPE_STRING
                 || fieldType == FieldDefs.TYPE_XML) {
                 // String field.
                 fieldValueConstraint = new BasicFieldValueConstraint(field, condition.value.getValue());
@@ -314,12 +314,12 @@ class DBQuery  extends ParseItem {
                 Object numericalValue = new Double(condition.value.getValue());
                 fieldValueConstraint = new BasicFieldValueConstraint(field, numericalValue);
             }
-            
+
             switch (condition.operator) {
                 case DBConditionItem.NOTEQUAL:
                     fieldValueConstraint.setOperator(FieldValueConstraint.NOT_EQUAL);
                     break;
-                    
+
                 case DBConditionItem.EQUAL:
                     if (fieldType == FieldDefs.TYPE_STRING
                         || fieldType == FieldDefs.TYPE_XML) {
@@ -332,15 +332,15 @@ class DBQuery  extends ParseItem {
                 case DBConditionItem.GREATER:
                     fieldValueConstraint.setOperator(FieldValueConstraint.GREATER);
                     break;
-                
+
                 case DBConditionItem.SMALLER:
                     fieldValueConstraint.setOperator(FieldValueConstraint.LESS);
                     break;
-                
+
                 case DBConditionItem.GREATEREQUAL:
                     fieldValueConstraint.setOperator(FieldValueConstraint.GREATER_EQUAL);
                     break;
-                
+
                 case DBConditionItem.SMALLEREQUAL:
                     fieldValueConstraint.setOperator(FieldValueConstraint.LESS_EQUAL);
                     break;
@@ -349,21 +349,21 @@ class DBQuery  extends ParseItem {
                     // Unknown operator.
                     throw new IllegalStateException(
                         "Invalid operator value: " + condition.operator);
-                    
+
             }
-            
+
             // Add to compositeConstraint when present.
             if (compositeConstraint != null) {
-                fieldValueConstraint.setInverse(logicalOperator.logOperator 
+                fieldValueConstraint.setInverse(logicalOperator.logOperator
                     == DBLogicalOperator.NOT);
                 compositeConstraint.addChild(fieldValueConstraint);
             }
-            
+
             if (iItems.hasNext()) {
                 logicalOperator = (DBLogicalOperator) iItems.next();
             }
         }
-        
+
         if (compositeConstraint != null) {
             return compositeConstraint;
         } else {
@@ -390,23 +390,23 @@ class DBConditionItem extends ParseItem {
     public static final int NOTEQUAL=0, EQUAL = 1, GREATER = 2, SMALLER = 3, GREATEREQUAL=4,SMALLEREQUAL=5;
     // logger
     //private static Logger log = Logging.getLoggerInstance(DBConditionItem.class.getName());
-    
+
     /** The fieldname. */
     String fieldName = null;
-    
+
     /** The table alias prefix (if present). */
     String prefix = null;
-    
-    /** 
-     * The field identifier as it appears in SQL expressions, with 
+
+    /**
+     * The field identifier as it appears in SQL expressions, with
      * table alias prefix (if present), and the fieldname converted to
      * an allowed fieldname.
      */
     String identifier = null;
 
-    /** 
-     * The comparison operator, must be one of the constants defined 
-     * in this class. 
+    /**
+     * The comparison operator, must be one of the constants defined
+     * in this class.
      */
     int operator = 0;
 
@@ -426,7 +426,7 @@ class DBConditionItem extends ParseItem {
             throw new IllegalArgumentException(
             "No '=' found in query item '" + item + "'");
         }
-        
+
         fieldName = item.substring(0, conditionPos);
         int prefixPos = fieldName.indexOf(".");
         if (prefixPos != -1) {
@@ -515,14 +515,14 @@ class DBConditionItem extends ParseItem {
  * Basic Class for storing values.
  */
 class DBValue extends ParseItem {
-    
+
     private String value = null;
-    
+
     /**
      * Constructor, only subclasses can be instantiated.
      */
     protected DBValue() {}
-    
+
     /**
      * Determines whether a value is a string, a string with wildcards, or
      * a number, and returns the appropriate class.
@@ -540,7 +540,7 @@ class DBValue extends ParseItem {
         else
             return new DBNumberValue(value);
     }
-    
+
     /**
      * Sets value property.
      *
@@ -549,7 +549,7 @@ class DBValue extends ParseItem {
     protected void setValue(String value) {
         this.value = value;
     }
-    
+
     /**
      * Gets value property.
      *

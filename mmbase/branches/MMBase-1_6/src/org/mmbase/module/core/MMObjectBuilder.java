@@ -54,59 +54,6 @@ import org.mmbase.util.logging.*;
  */
 public class MMObjectBuilder extends MMTable {
 
-    /**
-     * Escapes the 5 predefined xml entity characters. Only the characters "<"
-     * and "&" are strictly illegal in XML. Apostrophes, quotation marks and
-     * greater than signs are legal, but it is a good habit to replace them.
-     * 
-     * @param body text to convert
-     * @return String with escaped chars
-     * 
-     * @since 1.6.2
-     * @deprecated will only be avaialbe in 1.6. temporarily required
-     * 
-     */
-    private String getEscapeXml(String body) {
-        String rtn="";
-        if (body!=null) {
-            StringObject obj=new StringObject(body);
-            obj.replace("&", "&amp;");
-            obj.replace("\"", "&quot;");
-            obj.replace("'", "&apos;");
-            obj.replace("<","&lt;");
-            obj.replace(">","&gt;");
-            rtn=obj.toString();
-        }
-        return rtn;
-    }
-
-     /**
-     * Returns a Javascript string version of a string,
-     * escaping single and double quotes with a backslash
-     * and replacing linefeeds with \n and removing
-     * cariage returns \r
-     *
-     * @param body text to convert
-     * @return the convert text
-     * 
-     * @since 1.6.2
-     * @deprecated will only be avaialbe in 1.6. temporarily required
-     */
-    private String getEscapeJavaScript(String body) {
-        String rtn="";
-        if (body!=null) {
-            StringObject obj=new StringObject(body);
-            obj.replace("\\", "\\\\");
-
-            obj.replace("'","\\'");
-            obj.replace("\"","\\\"");
-            obj.replace("\n","\\n");
-            obj.replace("\r", "");
-            rtn=obj.toString();
-        }
-        return rtn;
-    }
-
     /** Max size of the object type cache, config/caches.xml can override this */
     public final static int OBJ2TYPE_MAX_SIZE=20000;
 
@@ -122,7 +69,7 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Will not be available anymore in 1.7
      */
     public static Cache obj2type;
-    
+
     static {
         obj2type = new Cache(OBJ2TYPE_MAX_SIZE) {
             public String getName()        { return "TypeCache"; }
@@ -203,7 +150,6 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Detemines whether the cache need be refreshed?
      * Seems useless, as this value is never changed (always true)
-     * @see #processSearchResults(List)
      */
     public boolean REPLACE_CACHE=true;
 
@@ -603,9 +549,9 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Creates list of descendant-builders. 
+     * Creates list of descendant-builders.
      *
-     * @since MMBase-1.6.2     
+     * @since MMBase-1.6.2
      */
     public List getDescendants() {
         ArrayList result = new ArrayList();
@@ -3586,4 +3532,58 @@ public class MMObjectBuilder extends MMTable {
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
     }
+
+    /**
+     * Escapes the 5 predefined xml entity characters. Only the characters "&lt;"
+     * and "&amp;" are strictly illegal in XML. Apostrophes, quotation marks and
+     * greater than signs are legal, but it is a good habit to replace them.
+     *
+     * @param body text to convert
+     * @return String with escaped chars
+     *
+     * @since 1.6.2
+     * @deprecated will only be available in 1.6. temporarily required
+     *
+     */
+    private String getEscapeXml(String body) {
+        String rtn="";
+        if (body!=null) {
+            StringObject obj=new StringObject(body);
+            obj.replace("&", "&amp;");
+            obj.replace("\"", "&quot;");
+            obj.replace("'", "&apos;");
+            obj.replace("<","&lt;");
+            obj.replace(">","&gt;");
+            rtn=obj.toString();
+        }
+        return rtn;
+    }
+
+    /**
+     * Returns a Javascript string version of a string,
+     * escaping single and double quotes with a backslash
+     * and replacing linefeeds with \n and removing
+     * cariage returns \r
+     *
+     * @param body text to convert
+     * @return the convert text
+     *
+     * @since 1.6.2
+     * @deprecated will only be available in 1.6. temporarily required
+     */
+    private String getEscapeJavaScript(String body) {
+        String rtn="";
+        if (body!=null) {
+            StringObject obj=new StringObject(body);
+            obj.replace("\\", "\\\\");
+
+            obj.replace("'","\\'");
+            obj.replace("\"","\\\"");
+            obj.replace("\n","\\n");
+            obj.replace("\r", "");
+            rtn=obj.toString();
+        }
+        return rtn;
+    }
+
 }

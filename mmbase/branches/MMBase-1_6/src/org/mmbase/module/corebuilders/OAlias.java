@@ -20,12 +20,12 @@ import org.mmbase.util.logging.Logging;
  * The OAlias builder is an optional corebuilder used to associate aliases with nodes.
  * Each OAlias object contains a name field (the alias), and a destination field (the number of
  * the object referenced).
- * This builder is not used directly. If you add aliases, use {@link MMObjectBuilder.createAlias} instead
+ * This builder is not used directly. If you add aliases, use {@link MMObjectBuilder#createAlias} instead
  * of the builder's insert method.
  * MMBase will run without this builder, but most applications use aliases.
  *
  * @author Rico Jansen
- * @version $Id: OAlias.java,v 1.10.2.2 2002-11-26 10:00:33 pierre Exp $
+ * @version $Id: OAlias.java,v 1.10.2.3 2003-03-06 17:47:05 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
