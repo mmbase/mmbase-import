@@ -30,7 +30,7 @@
   <td class="linkdata" colspan="2"><a href="/edit" target="editors">The MMBase Editors (SCAN) : http://host:port/edit</a></td>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="/mmeditors/jsp/">The MMBase Editors (jsp) : http://host:port/mmeditiors/jsp/</a> (coming soon)</td>
+  <td class="linkdata" colspan="2"><a href="/mmeditors/jsp/">The MMBase Editors (jsp) : http://host:port/mmeditors/jsp/</a> (coming soon)</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 
