@@ -68,11 +68,15 @@ public class scanpage {
 	private Vector buildparams() {
 		Vector params=new Vector();
 		if (querystring!=null) {
-			StringTokenizer tok=new StringTokenizer(querystring,"+\n\r");
-			// rico 
-			while(tok.hasMoreTokens()) {
-				params.addElement(tok.nextToken());
+			String paramline=querystring;
+			//StringTokenizer tok=new StringTokenizer(querystring,"+\n\r",true);
+			int pos=paramline.indexOf("+");
+			while(pos!=-1) {
+				params.addElement(paramline.substring(0,pos));
+				paramline=paramline.substring(pos+1);
+			    pos=paramline.indexOf("+");
 			}
+			params.addElement(paramline);
 		}
 		return(params);
 	}
@@ -89,11 +93,15 @@ public class scanpage {
 
 	public boolean setParamsLine(String paramline) {
 		this.params=new Vector();
-		StringTokenizer tok=new StringTokenizer(paramline,"+\n\r");
+		//StringTokenizer tok=new StringTokenizer(paramline,"+\n\r");
 		// rico 
-		while(tok.hasMoreTokens()) {
-			params.addElement(tok.nextToken());
+		int pos=paramline.indexOf("+");
+		while(pos!=-1) {
+			params.addElement(paramline.substring(0,pos));
+			paramline=paramline.substring(pos+1);
+		    pos=paramline.indexOf("+");
 		}
+		params.addElement(paramline);
 		return(true);
 	}
 
