@@ -16,14 +16,14 @@
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
 <tr align="left">
- <th class="header" colspan="5">Description of <%=database%></th>
+ <th class="header" colspan="5"><!-- Description --><%=database%> database</th>
 </tr>
-<tr>
+<!-- tr>
  <td class="multidata" colspan="5">
         <p>In one of the next MMBase-releases you'll find here detailed information about
             the <%=database%>-databasemodule.</p>&nbsp;
  </td>
-</tr>
+</tr-->
 
 <tr><td>&nbsp;</td></tr>
 
