@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.9 2004-05-02 15:02:02 nico Exp $
+  @version $Id: prompts.xsl,v 1.10 2004-09-15 13:04:50 jaco Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -104,14 +104,14 @@
 <xsl:variable name="filter_required" >Estas devige enigi serĉeron.</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
-  <xsl:value-of select="$title" disable-output-escaping="yes"  />(<xsl:value-of select="/list/@count" /> da eroj)
+  <xsl:value-of select="$title" disable-output-escaping="yes"  />(eroj <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pa&#x11D;o <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Jen la ŝanĝeblaj eroj.</xsl:variable>
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Elektu unu aŭ pli da eroj el la listo</xsl:variable>
 <xsl:template name="prompt_no_results" >Neniu ero troviĝis</xsl:template>
 <xsl:template name="prompt_more_results" >(troviĝis pli da eroj...)</xsl:template>
-<xsl:template name="prompt_result_count" >(<xsl:value-of select="/list/@count" /> da eroj trovitaj)</xsl:template>
+<xsl:template name="prompt_result_count" >(eroj <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pa&#x11D;o <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)</xsl:template>
 <xsl:variable name="tooltip_cancel_search" >Nefaru</xsl:variable>
 <xsl:variable name="tooltip_end_search" >Aldoni</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
