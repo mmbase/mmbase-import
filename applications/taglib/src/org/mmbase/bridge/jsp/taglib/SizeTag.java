@@ -13,6 +13,7 @@ import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.containers.*;
+import org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 
@@ -20,7 +21,7 @@ import org.mmbase.bridge.util.Queries;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.22 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: SizeTag.java,v 1.23 2005-03-14 19:02:35 michiel Exp $ 
  */
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
@@ -63,12 +64,18 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
                 throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
             }
             QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
-            nodeListContainerSize(c);            
+            if (c instanceof TreeContainerTag) {
+                helper.setValue(new Integer(((TreeContainerTag)c).getTree().size()));
+            } else {
+                nodeListContainerSize(c);
+            }
         } else if (parentListId != Attribute.NULL) {
             listProviderSize(getList());            
         } else {
             QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
-            if (tag instanceof QueryContainer) {
+            if (tag instanceof TreeContainerTag) {
+                helper.setValue(new Integer(((TreeContainerTag)tag).getTree().size()));
+            } else if (tag instanceof QueryContainer) {
                 nodeListContainerSize((QueryContainer) tag);
             } else {
                 listProviderSize((ListProvider) tag);

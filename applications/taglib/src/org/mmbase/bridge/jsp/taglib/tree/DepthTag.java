@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthTag.java,v 1.3 2004-06-30 17:51:57 michiel Exp $
+ * @version $Id: DepthTag.java,v 1.4 2005-03-14 19:02:35 michiel Exp $
  */
 public class DepthTag extends TreeReferrerTag implements Writer {
 
@@ -36,7 +36,8 @@ public class DepthTag extends TreeReferrerTag implements Writer {
     }
 
     public int doEndTag() throws JspTagException {       
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }    
 
 }

@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.59 2005-03-02 23:06:48 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.60 2005-03-14 19:02:35 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -38,7 +38,7 @@ public class WriterHelper extends BodyTagSupport {
     public static final boolean NOIMPLICITLIST = true;
     public static final boolean IMPLICITLIST   = false;
 
-    public static final String STACK_ATTRIBUTE = "org_mmbase_taglib__stack";
+    public static final String STACK_ATTRIBUTE = "org.mmbase.bridge.jsp.taglib._Stack";
 
     static final int TYPE_UNKNOWN = -10;
     static final int TYPE_UNSET   = -1;
@@ -201,8 +201,13 @@ public class WriterHelper extends BodyTagSupport {
             if (log.isDebugEnabled()) {
                 log.debug("write is unset, using default " + overrideWrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
             }
-            if (overrideWrite != null) return overrideWrite.booleanValue();
-            return "".equals(getString()) && (! hasBody);
+            if (overrideWrite != null) {
+                log.debug("override-write was used --> " + overrideWrite);
+                return overrideWrite.booleanValue();
+            }
+            boolean result = "".equals(getString()) && (! hasBody);
+            log.debug("Result " + result + " with body-string '" + getString() + "' and hasbody " + hasBody);
+            return result; 
         } else {
             if (log.isDebugEnabled()) {
                 log.debug("Write: " + write);
@@ -496,6 +501,7 @@ public class WriterHelper extends BodyTagSupport {
         try {
             String body = getString();
             if (isWrite()) {
+                log.debug("Must write to page");
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 if (pageContext == null) throw new JspTagException("PageContext is null. No value set?");
                 getPageString(pageContext.getOut()).write(body);

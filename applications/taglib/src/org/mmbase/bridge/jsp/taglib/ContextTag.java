@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.70 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: ContextTag.java,v 1.71 2005-03-14 19:02:35 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -285,10 +285,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        container.release();
-        container = null;
-        parent = null;
-        cloudContext = null;
+        container.clear();
+
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {
@@ -301,6 +299,15 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return SKIP_BODY;
     }
 
+    public int doEndTag() throws JspTagException {
+        container = null;
+        parent = null;
+        cloudContext = null;
+        return super.doEndTag();
+    }
+
+
+    
 
 }
 

@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.34 2005-03-02 23:06:48 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.35 2005-03-14 19:02:35 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -46,7 +46,7 @@ public class ContentTag extends LocaleTag  {
 
     private static final long DEFAULT_EXPIRE_TIME = 60; // one minute
 
-    public static final String ESCAPER_KEY = "org.mmbase.bridge.jsp.taglib.ContentTag.ESCAPER";
+    public static final String ESCAPER_KEY = "org.mmbase.bridge.jsp.taglib.escaper";
 
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; } 
