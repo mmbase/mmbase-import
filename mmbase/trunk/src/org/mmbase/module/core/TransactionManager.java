@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
+	$Id: TransactionManager.java,v 1.3 2000-10-13 11:47:26 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/10/13 11:41:34  vpro
+	Rico: made it working
+	
 	Revision 1.1  2000/08/14 19:19:05  rico
 	Rico: added the temporary node and transaction support.
 	      note that this is rather untested but based on previously
@@ -25,7 +28,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.3 2000-10-13 11:47:26 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -151,7 +154,7 @@ public class TransactionManager implements TransactionManagerInterface {
 					debug("Nodes \n"+v);
 				} else {
 					debug("commited "+transactionname);
-					if (!debug) transactions.remove(transactionname);
+					// if (!debug) transactions.remove(transactionname);
 				}
 			}
 		} else {
