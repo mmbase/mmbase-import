@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.4 2002-08-22 12:33:49 pierre Exp $
+  @version $Id: prompts.xsl,v 1.5 2002-11-12 16:28:11 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -63,10 +63,10 @@
 <xsl:variable name="tooltip_no_save">De wijzigingen kunnen niet worden bewaard, sommige gegevens zijn niet correct ingevoerd.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Annuleren</xsl:template>
-<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijigingen worden niet bewaard.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen worden niet bewaard.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Deze taak kan niet worden afgebroken.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
-<xsl:template name="prompt_step">Stap <xsl:value-of select="position()" /></xsl:template>
+<xsl:template name="prompt_step"><nobr>Stap <xsl:value-of select="position()" /></nobr></xsl:template>
 <xsl:variable name="tooltip_step_not_valid" > is niet correct. Klik hier om te corrigeren.</xsl:variable>
 <xsl:variable name="tooltip_valid" >Het huidige formulier is correct.</xsl:variable>
 <xsl:variable name="tooltip_not_valid" >Het huidige formulier is niet correct. Corrigeer de rood gemarkeerde velden.</xsl:variable>
