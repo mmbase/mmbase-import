@@ -938,6 +938,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>field</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
       Gets the field `name' from node `node' (can also be
       list).
@@ -975,14 +976,14 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	</info>
     </attribute>
     <attribute>
-        <name>head</name>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>write</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-		<refercontext>true</refercontext>
-	<info>
-	  Like `name', but does not return the value of the field, but
-	  the GUI-name of the field.
-	</info>
     </attribute>
   </tag>
   <tag>
@@ -1628,7 +1629,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   <tag>
     <name>write</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.WriteTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
     Can be used to create an jsp variable from a variable in the
     context. Or, if the attribute `jspvar' is missing, to write the
@@ -1644,11 +1645,11 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     </attribute>
     <attribute>
         <name>referid</name>
-        <required>true</required>
+        <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 		<refercontext>true</refercontext>
 	<info>
-	The key of the variable to get.
+	The key of the variable to get. It it is missing, than the parent Writer tag is written (if it exist).
 	</info>
     </attribute>
     <attribute>
@@ -1685,6 +1686,11 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 	<possiblevalue>
           <value>List</value>
     </possiblevalue>
+    </attribute>
+    <attribute>
+        <name>write</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
