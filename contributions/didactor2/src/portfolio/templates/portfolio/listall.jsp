@@ -41,11 +41,27 @@
   </div>
 
   <div class="contentBodywit">
-  <mm:listnodes type="people" orderby="lastname,firstname">
+  <mm:import id="startChar" externid="c" jspvar="startChar"/>
+  <% 
+  boolean cvalid = false;
+  for (char c = 'a'; c <= 'z' ; c++) { 
+      if (String.valueOf(c).equals(startChar)) {
+          cvalid = true;
+      }
+      %>
+      <a href="?c=<%= c %>"><%= String.valueOf(c).toUpperCase() %></a>
+      <% if (c != 'z') { %> | <% } %>
+  <% } %><p/><% 
+  if (cvalid) { %>
+  <mm:listnodes type="people" orderby="lastname,firstname" constraints="lastname LIKE '${startChar}%'">
+    <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type"/></mm:import>
+    <mm:compare referid="nodetype" value="contacts" inverse="true">
        <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="contact"><mm:field name="number"/></mm:param>
         </mm:treefile>"><mm:field name="firstname"/> <mm:field name="lastname"/></a><br>
+    </mm:compare>
    </mm:listnodes>
+  <% } %>
   </div>
 </div>
 

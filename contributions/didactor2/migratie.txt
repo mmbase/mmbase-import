@@ -1,6 +1,20 @@
 Migratie issues
 
-2004-02-13
+2005-03-08
+
+The people builder has been extended, therefore we now need to update the
+database:
+
+    ALTER TABLE mmb_people ADD remarks TEXT;
+    ALTER TABLE mmb_contacts ADD remarks TEXT;
+
+The portfolio folders have changed. Run
+
+    /migrate-2005-03-08.jsp
+
+
+
+2005-02-13
 
 For the metadata editors the builder metadefinition has been extended with two additional
 fields. For the metadata and the metadata editors to run correctly the following changes
@@ -52,7 +66,7 @@ ALTER TABLE mmb_metadefinition ADD required INT(1);
     zie script makeallwars.sh voor extra shortcut
 
 
-2004-01-26
+2005-01-26
 
  alter table mmb_attachments modify column title varchar(255);
  alter table mmb_people modify column email varchar(255);

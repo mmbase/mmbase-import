@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="people" maintainer="didactor.nl" version="2" extends="object">
+<builder name="people" maintainer="didactor.nl" version="3" extends="object">
   <status>active</status>
 
   <classfile>nl.didactor.builders.PeopleBuilder</classfile>
@@ -422,6 +422,37 @@
         <name>description</name>
         <!-- MMBase datatype and demands on it -->
         <type state="persistent" size="2048" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Remarks by the person</description>
+        <description xml:lang="nl">Opmerkingen van de persoon</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Remarks</guiname>
+        <guiname xml:lang="nl">Opmerkingen</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>15</input>
+          <!-- position in list area of the editor -->
+          <list>-1</list>
+          <!-- position in search area of the editor -->
+          <search>-1</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>remarks</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent"  notnull="false" size="65535" key="false">STRING</type>
       </db>
     </field>
   </fieldlist>
