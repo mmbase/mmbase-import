@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.16 2003-12-17 09:16:44 michiel Exp $
+ * @version $Id: BasicList.java,v 1.16.2.1 2005-02-25 15:52:54 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
@@ -58,6 +58,18 @@ public class BasicList extends ArrayList implements BridgeList  {
         convertAll();
         return super.contains(o);
     }
+
+    public boolean remove(Object o) {
+        // make sure every element is of the right type, otherwise 'equals' is very odd..
+        convertAll();
+        return super.remove(o);
+    }
+    public boolean removeAll(Collection c) {
+        // make sure every element is of the right type, otherwise 'equals' is very odd..
+        convertAll();
+        return super.removeAll(c);
+    }
+
 
     /*
      * validates that an object can be converted to the excpected format
