@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMMysql42Node.java,v 1.6 2000-03-30 13:11:43 wwwtech Exp $
+$Id: MMMysql42Node.java,v 1.7 2000-03-31 15:15:27 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/30 13:11:43  wwwtech
+Rico: added license
+
 Revision 1.5  2000/03/29 10:44:51  wwwtech
 Rob: Licenses changed
 
@@ -37,7 +40,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.6 $ $Date: 2000-03-30 13:11:43 $
+* @$Revision: 1.7 $ $Date: 2000-03-31 15:15:27 $
 */
 public class MMMysql42Node implements MMJdbc2NodeInterface {
 
@@ -361,7 +364,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 
 		if (number == 0) return(insertRootNode(bul));
 
-		/* $Id: MMMysql42Node.java,v 1.6 2000-03-30 13:11:43 wwwtech Exp $
+		/* $Id: MMMysql42Node.java,v 1.7 2000-03-31 15:15:27 wwwtech Exp $
 		// Original code, not deleted for savety reasons (will be deleted soon),davzev
 		String tmp="";
 		for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
@@ -388,11 +391,11 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 				// debug("Insert: DBState = "+DBState+", skipping key: "+key);
 			} else {
-				debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key);
+				debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
 			}
 		}
 
-		/* $Id: MMMysql42Node.java,v 1.6 2000-03-30 13:11:43 wwwtech Exp $
+		/* $Id: MMMysql42Node.java,v 1.7 2000-03-31 15:15:27 wwwtech Exp $
 		// Original code, not deleted for savety reasons (will be deleted soon),davzev
 		MultiConnection con=null;
 		PreparedStatement stmt=null;
@@ -454,7 +457,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key);
+					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
 				}
 			}
 
