@@ -48,7 +48,7 @@ Applications build file
     <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" />
   </target>
 
-  <target name="mmbase">
+  <target name="mmbase" depends="init">
     <ant dir="${source.dir}" target="jar" />
     <ant dir="${source.dir}" target="expand.hsqldb" />
   </target>
@@ -56,6 +56,7 @@ Applications build file
   <target name="media" depends="mmbase,editwizard">
      <ant dir="media"      target="package" />
   </target>
+
 
   <target name="aselect" depends="mmbase">
      <ant dir="aselect"      target="package" />
