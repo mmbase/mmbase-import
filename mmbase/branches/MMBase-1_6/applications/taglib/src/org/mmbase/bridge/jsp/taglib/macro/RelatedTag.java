@@ -22,6 +22,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Shortcut for List where the start node is the parent node.
+ *
+ * @author Michiel Meeuwissen
+ * @author Jacco de Groot
+ * @author Pierre van Rooden
+ * @version $Id: RelatedTag.java,v 1.16.2.2 2003-04-09 14:27:00 pierre Exp $
  */
 public class RelatedTag extends ListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
@@ -38,6 +43,6 @@ public class RelatedTag extends ListTag {
         return (nodesString == null || nodesString.equals("")) ? "" + getNode().getNumber() : nodesString;
     }
     protected String getPath() throws JspTagException {
-        return getBaseNode().getNodeManager().getName() + "," + super.getPath();
+        return getBaseNode().getNodeManager().getName() + "0," + super.getPath();
     }
 }
