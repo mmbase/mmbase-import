@@ -14,7 +14,7 @@ package org.mmbase.util.functions;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: ProviderFunction.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: ProviderFunction.java,v 1.2 2004-11-29 12:45:07 pierre Exp $
  */
 public class ProviderFunction extends AbstractFunction {
 
@@ -23,9 +23,19 @@ public class ProviderFunction extends AbstractFunction {
      */
     private FunctionProvider provider;
 
+    /**
+     * @javadoc
+     */
     protected ProviderFunction(String name, Parameter[] def, ReturnType returnType, FunctionProvider provider) {
         super(name, def, returnType);
         this.provider = provider;
+    }
+
+    /**
+     * @javadoc
+     */
+    public FunctionProvider getFunctionProvider() {
+        return provider;
     }
 
     /**
