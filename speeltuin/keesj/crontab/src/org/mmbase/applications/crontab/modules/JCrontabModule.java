@@ -28,12 +28,13 @@ public class JCrontabModule extends ReloadableModule {
 
     /**
      * Interpretates all initParameters as crontab entries. The key is not very important but must
-     * be unique. The value are actually two or three values, separated by tabs newlines or '|',
+     * be unique. The value are actually two or three or four values, separated by tabs newlines or '|',
      * whatever you like most.
      <pre>
       &lt;cron time&gt;
-      [&lt;description&gt;] 
       &lt;class name of a JCronJob&gt;
+      [&lt;description&gt;] 
+      [&lt;configuration-string&gt;] 
       </pre>
      */
     public void init() {
@@ -42,30 +43,33 @@ public class JCrontabModule extends ReloadableModule {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             String value = (String) entry.getValue();
-            StringTokenizer tokens = new StringTokenizer(value, "\t\n|");
+            String[] tokens = value.trim().split("[\t\n|]");
             String times;
-            if (tokens.hasMoreTokens()) {
-                times = tokens.nextToken().trim();
+            if (tokens.length > 0) {
+                times = tokens[0].trim();
             } else {
                 log.error("No times in " + value);
                 continue;
             }
             String className;
-            if (tokens.hasMoreTokens()) {
-                className = tokens.nextToken().trim();
+            if (tokens.length > 1) {
+                className = tokens[1].trim();
             } else {
                 log.error("No className  " + value);
                 continue;
             }
-            String description;
-            if (tokens.hasMoreTokens()) {
-                description = className;
-                className = tokens.nextToken().trim();
-            } else {
-                description = times;
+            String description = null;
+            String configString = null;
+            if (tokens.length > 2) {
+                description = tokens[2].trim();
             }
+            if (tokens.length > 3) {
+                configString = tokens[3].trim();
+            }
+
             try {
                 JCronEntry job = new JCronEntry((String) entry.getKey(), times, description, className);
+                job.setConfiguration(configString);
                 myEntries.add(job);
                 jCronDaemon.add(job);
             } catch (Exception e) {
