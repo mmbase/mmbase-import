@@ -22,7 +22,7 @@
     <title xml:lang="en">Meta info + Valid time</title>
     <title xml:lang="nl">Meta info + Geldigheid</title>
 
-    <list fdatapath="relation[@role='posrel' and @source=object/@number]" minoccurs="1" maxoccurs="1" >
+    <list searchdir="source" role="posrel" destination="&type;fragments" maxoccurs="1" >
       <title xml:lang="en">Base stream</title>
       <title xml:lang="nl">Basis stream</title>
       <item>

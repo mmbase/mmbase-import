@@ -2,7 +2,7 @@
 List with posrelated fragments 
 -->
 
-<list fdatapath="relation[@role='posrel' and @destination=object/@number]" orderby="field[@name='pos']">
+<list destination="&type;fragments" searchdir="destination" role="posrel" orderby="field[@name='pos']">
   <title>Items</title>       
   <item>          
     <field name="title" />
