@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.28 2003-03-07 08:50:16 pierre Exp $
+ * @version $Id: RelDef.java,v 1.29 2003-06-05 09:12:02 michiel Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -61,7 +61,7 @@ public class RelDef extends MMObjectBuilder {
     public static boolean usesbuilder = false;
 
     // cache of relation definitions
-    private Hashtable relCache=new Hashtable();
+    private Hashtable relCache = new Hashtable();
 
     // cache of valid relationbuilders
     private Hashtable relBuilderCache=null;
@@ -89,9 +89,9 @@ public class RelDef extends MMObjectBuilder {
      * it's sname/dname combination.
      */
     private void addToCache(MMObjectNode node) {
-        Integer rnumber=(Integer)node.getValue("number");
-        relCache.put(node.getStringValue("sname"),rnumber);
-        relCache.put(node.getStringValue("sname")+"/"+node.getStringValue("dname"),rnumber);
+        Integer rnumber = (Integer) node.getValue("number");
+        relCache.put(node.getStringValue("sname"), rnumber);
+        relCache.put(node.getStringValue("sname") + "/" + node.getStringValue("dname"), rnumber);
     }
 
     /**
@@ -101,7 +101,7 @@ public class RelDef extends MMObjectBuilder {
      */
     private void removeFromCache(MMObjectNode node) {
         relCache.remove(node.getStringValue("sname"));
-        relCache.remove(node.getStringValue("sname")+"/"+node.getStringValue("dname"));
+        relCache.remove(node.getStringValue("sname") + "/" + node.getStringValue("dname"));
     }
 
     /**
@@ -111,10 +111,11 @@ public class RelDef extends MMObjectBuilder {
      *         caught and logged.
      */
     private boolean readCache() {
+        relCache.clear();
         // add insrel (default behavior)
-        relCache.put("insrel",new Integer(-1));
+        relCache.put("insrel", new Integer(-1));
         // add relation definiation names
-        for (Enumeration e=search(null);e.hasMoreElements();) {
+        for (Enumeration e = search(null); e.hasMoreElements();) {
             MMObjectNode n= (MMObjectNode)e.nextElement();
             addToCache(n);
          }
@@ -234,15 +235,15 @@ public class RelDef extends MMObjectBuilder {
      */
     public int insert(String owner, MMObjectNode node) {
         // check RelDef for duplicates
-        String sname=node.getStringValue("sname");
-        String dname=node.getStringValue("dname");
-        if (getNumberByName(sname+'/'+dname)!=-1) {
-            log.error("The reldef with sname="+sname+" and dname="+dname+" already exists");
-            throw new RuntimeException("The reldef with sname="+sname+" and dname="+dname+
-                                        " already exists");
+        String sname = node.getStringValue("sname");
+        String dname = node.getStringValue("dname");
+        if (getNumberByName(sname + '/' + dname) != -1) {
+            log.error("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
+            throw new RuntimeException("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
         }
-        int number=super.insert(owner,node);
-        if (number!=-1) {
+        int number = super.insert(owner,node);
+        log.service("Created new reldef " + sname + "/" + dname);
+        if (number != -1) {
             addToCache(node);
         }
         return number;
@@ -424,8 +425,8 @@ public class RelDef extends MMObjectBuilder {
      */
     public int getNumberByName(String role, boolean searchBidirectional) {
         Integer number;
-        number=(Integer)relCache.get(role);
-        if (number!=null) {
+        number=(Integer) relCache.get(role);
+        if (number != null) {
             return number.intValue();
         }
         if (searchBidirectional) {
