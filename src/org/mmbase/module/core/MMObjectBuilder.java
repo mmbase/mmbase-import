@@ -473,13 +473,11 @@ public class MMObjectBuilder extends MMTable {
 		}
 	}
 
-
-
 	/**
 	* Enumerate all the objects that match the searchkeys
 	*/
 	public Enumeration search(String where) {
-		return(searchVector(where).elements());
+		return searchVector(where).elements();
 	}
 
 	/**
@@ -497,8 +495,6 @@ public class MMObjectBuilder extends MMTable {
 		return(basicSearch(query));
 	}
 
-
-
 	/**
 	* Enumerate all the objects that are within this set
 	*/
@@ -512,7 +508,6 @@ public class MMObjectBuilder extends MMTable {
 	private Vector basicSearch(String query) {
 		// test with counting
 		statCount("search");
-
 	
 		MultiConnection con=null;
 		Statement stmt=null;
@@ -536,7 +531,7 @@ public class MMObjectBuilder extends MMTable {
 			} catch(Exception g) {}
 			//e.printStackTrace();
 		}
-		return(null);
+		return new Vector(); // Return an empty Vector
 	}
 
 
