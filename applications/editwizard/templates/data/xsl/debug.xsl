@@ -50,7 +50,7 @@
         </style>
     </head>
 
-    <script language="javascript" src="tools.js" >
+    <script language="javascript" src="../javascript/tools.js" >
     </script>
     <script language="javascript">
        var selectedTab=0;

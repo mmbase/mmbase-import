@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.30 2002-07-02 21:17:37 michiel Exp $
+  @version $Id: wizard.xsl,v 1.31 2002-07-05 10:41:54 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -27,7 +27,6 @@
   <xsl:template match="/">
     <xsl:apply-templates select="wizard" />
   </xsl:template>
-
 
   <xsl:template name="beforeform" />
 
@@ -57,7 +56,7 @@
               message_mindate="{$message_mindate}" message_maxdate="{$message_maxdate}"
               message_dateformat="{$message_dateformat}"
               message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
-              message_listtooshort="{$message_listtooshort}"            
+              message_listtooshort="{$message_listtooshort}"
               invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
         >
           <input type="hidden" name="curform" value="{/wizard/curform}" />
@@ -160,8 +159,22 @@
             <xsl:apply-templates select="@*" />
           </input>
         </xsl:when>
-        <xsl:when test="@ftype='text'">
-          <xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>" dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);"</xsl:text>
+        <xsl:when test="@ftype='text' or @ftype='html'">
+          <span>
+          <xsl:text disable-output-escaping="yes">&lt;textarea
+                name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>"
+                dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>"
+                ftype="</xsl:text><xsl:value-of select="@ftype" /><xsl:text>"
+                class="width400" wrap="soft"
+                onkeyup="validate_validator(event);"
+                onblur="validate_validator(event);"</xsl:text>
+          <xsl:choose>
+            <xsl:when test="@cols">
+              <xsl:text>cols="</xsl:text><xsl:value-of select="@cols" /><xsl:text>"</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>cols="80"</xsl:text>
+            </xsl:otherwise></xsl:choose>
           <xsl:choose>
             <xsl:when test="@rows">
               <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
@@ -172,6 +185,7 @@
           <xsl:apply-templates select="@*" />
           <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of disable-output-escaping="yes" select="value" />
           <xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
+          </span>
         </xsl:when>
         <xsl:when test="@ftype='relation' or @ftype='enum'">
           <select name="{@fieldname}" class="width400" onchange="validate_validator(event);" onblur="validate_validator(event);">
@@ -197,30 +211,30 @@
             <span style="width:400;"><xsl:value-of select="optionlist/option[@id=current()/value]" /></span>
           </xsl:if>
         </xsl:when>
-        <xsl:when test="@ftype='date'">
+        <xsl:when test="(@ftype='datetime') or (@ftype='date') or (@ftype='time')">
           <div>
             <input type="hidden" name="{@fieldname}" value="{value}" id="{@fieldname}">
               <xsl:apply-templates select="@*" />
             </input>
 
-            <xsl:if test="(@dttype='datetime') or (@dttype='date')">
-              <select name="internal_{@fieldname}_day" dttype="day" onchange="validate_validator(event);" onblur="validate_validator(event);">
+            <xsl:if test="(@ftype='datetime') or (@ftype='date')">
+              <select name="internal_{@fieldname}_day" onchange="validate_validator(event);" onblur="validate_validator(event);">
                 <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
               </select><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <select name="internal_{@fieldname}_month" dttype="month" onchange="validate_validator(event);" onblur="validate_validator(event);">
+              <select name="internal_{@fieldname}_month" onchange="validate_validator(event);" onblur="validate_validator(event);">
                 <xsl:call-template name="optionlist_months" />
               </select><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <input name="internal_{@fieldname}_year" dttype="year" type="text" value="" size="5" maxlength="4" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
+              <input name="internal_{@fieldname}_year" type="text" value="" size="5" maxlength="4" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
             </xsl:if>
 
-            <xsl:if test="@dttype='datetime'">
+            <xsl:if test="@ftype='datetime'">
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>at<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
             </xsl:if>
 
-            <xsl:if test="(@dttype='datetime') or (@dttype='time')">
-              <input name="internal_{@fieldname}_hours" dttype="hour" type="text" value="" size="2" maxlength="2" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
+            <xsl:if test="(@ftype='datetime') or (@ftype='time')">
+              <input name="internal_{@fieldname}_hours" type="text" value="" size="2" maxlength="2" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <input name="internal_{@fieldname}_minutes" dttype="minutes" type="text" value="" size="2" maxlength="2" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
+              <input name="internal_{@fieldname}_minutes" type="text" value="" size="2" maxlength="2" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
             </xsl:if>
           </div>
         </xsl:when>
@@ -239,9 +253,9 @@
            </xsl:if>
           </nobr>
         </xsl:when>
-        <xsl:when test="@ftype='binary'">
+        <xsl:when test="@ftype='image'">
           <xsl:choose>
-            <xsl:when test="@dttype='image' and not(upload)">
+            <xsl:when test="@dttype='binary' and not(upload)">
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
                   <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
@@ -251,7 +265,7 @@
                 </div>
               </div>
             </xsl:when>
-            <xsl:when test="@dttype='image' and upload">
+            <xsl:when test="@dttype='binary' and upload">
               <div class="imageupload"><input type="hidden" name="{@fieldname}" value="YES" />
                 <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128" />
                 <br />
@@ -261,6 +275,18 @@
                 <br />
                 <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_image_upload" /></a>
               </div>
+            </xsl:when>
+            <xsl:otherwise>
+          <span>
+            <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+          </span>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="@ftype='file'">
+          <xsl:choose>
+            <xsl:when test="@dttype='data'">
+            <a href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',', string(@number), ')'))}"><xsl:call-template name="prompt_do_download" /></a>
             </xsl:when>
             <xsl:otherwise>
               <nobr><input type="hidden" name="{@fieldname}" value="YES" />
@@ -276,12 +302,7 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
-        <xsl:when test="@ftype='image'">
-          <span>
-            <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
-          </span>
 
-        </xsl:when>
         <xsl:when test="@ftype='realposition'">
        <span style="width:128" >
           <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
