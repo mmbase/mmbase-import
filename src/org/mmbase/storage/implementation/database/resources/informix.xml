@@ -4,7 +4,7 @@
 	<!-- Informix configuration resource. -->
 	<storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
 
-	<!-- use the manager for relational databases -->
+	<!-- use the manager for object related databases -->
 	<storagemanager classname="org.mmbase.storage.implementation.database.DatabaseStorageManager" version="0.1" />
 
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.InformixSqlHandler" />
