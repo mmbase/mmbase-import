@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.21 2000-09-08 11:44:19 wwwtech Exp $
+$Id: scanparser.java,v 1.22 2000-09-12 12:22:45 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.21  2000/09/08 11:44:19  wwwtech
+Rob added message ERROR in SORTPOS (sortpos counts from 0 .. n)
+
 Revision 1.20  2000/07/22 21:12:20  daniel
 changes mmbase.mode
 
@@ -83,7 +86,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.21 $ $Date: 2000-09-08 11:44:19 $
+ * @$Revision: 1.22 $ $Date: 2000-09-12 12:22:45 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -325,7 +328,9 @@ public class scanparser extends ProcessorModule {
 
 
 		if (debug) debug("handle_line(): scanparser-> debug 3");
-
+		
+		// <LIST text1> text2 </LIST>
+		// The code below will hand text1 and text2 to the method do_list(text1, text2, session, sp)
 		while ((precmd=body.indexOf("<LIST ",postcmd))!=-1) {
 			newbody.append(body.substring(postcmd+1,precmd));
 			prepostcmd=precmd+6;
@@ -344,6 +349,30 @@ public class scanparser extends ProcessorModule {
 				postcmd=prepostcmd;
 			}
 		}
+
+
+		// <TRANSACTION text1> text2 </TRANSACTION>
+		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
+		postcmd=-1;
+		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
+			newbody.append(body.substring(postcmd+1,precmd));
+			prepostcmd=precmd+12;
+			if ((postcmd=body.indexOf('>',precmd))!=-1) {
+				end_pos2=body.indexOf("</TRANSACTION>",prepostcmd);
+				if (end_pos2!=-1) {
+					try {
+						newbody.append(do_transaction(body.substring(prepostcmd,postcmd),body.substring(postcmd+1,end_pos2),session,sp));
+					} catch(Exception e) {
+						debug("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
+						e.printStackTrace();
+					}
+					postcmd=end_pos2+14;
+				} 
+			} else {
+				postcmd=prepostcmd;
+			}
+		}
+
 
 
 
@@ -1790,5 +1819,11 @@ public class scanparser extends ProcessorModule {
 			rtn="scanpage==NULL";
 		}
 		return(rtn);
+	}
+
+	private String do_transaction(String cmd,String template, sessionInfo session,scanpage sp) throws ParseException {
+		System.out.println("cmd = "+cmd);
+		System.out.println("template = "+template);
+		return "Transaction parsed";	
 	}
 }
