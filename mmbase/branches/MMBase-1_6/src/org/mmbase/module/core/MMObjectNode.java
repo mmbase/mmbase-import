@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.11 2003-02-14 08:50:30 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.12 2003-02-19 19:03:07 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -211,22 +211,32 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the contents of the node as a string.
      */
     public String toString() {
-	String result="";
+        if (parent != null) {
+            return parent.toString(this);
+        } else {
+            return defaultToString();
+        }
+    }
+
+    /**
+     * @since MMBase-1.6.2
+     */
+    String defaultToString() {        
+    	StringBuffer result=new StringBuffer("prefix='"+prefix+"'");
 	try {
-	    result="prefix='"+prefix+"'";
 	    Enumeration e=values.keys();
 	    while (e.hasMoreElements()) {
 		String key=(String)e.nextElement();
 		int dbtype=getDBType(key);
 		String value=""+values.get(key);  // XXX:should be retrieveValue ?
 		if (result.equals("")) {
-		    result=key+"="+dbtype+":'"+value+"'";
+		    result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
 		} else {
-		    result+=","+key+"="+dbtype+":'"+value+"'";
+		    result.append(","+key+"="+dbtype+":'"+value+"'");
 		}
 	    }
 	} catch(Exception e) {}
-	return result;
+	return result.toString();
     }
 
 
@@ -1037,10 +1047,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param wantedtype the 'type' of related nodes (NOT the relations!).
      * @return An <code>int</code> indicating the number of nodes found
      */
-    public int getRelationCount(String wantedtype) {
-	int count=0;
-	int otype=parent.mmb.getTypeDef().getIntValue(wantedtype);
-	if (otype!=-1) {
+  public int getRelationCount(String wt) {
+         int count = 0;
+         MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
+         if (wantedType != null) {
 	    if (relations==null) {
 		relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
 		relation_cache_miss++;
@@ -1057,13 +1067,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 		    } else {
 			nodetype=parent.getNodeType(snumber);
 		    }
-		    if (nodetype==otype) {
-			count +=1;
-		    }
+                    MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
+                     if (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType)) {
+                         count++;
+                     }
 		}
 	    }
 	} else {
-	    log.warn("getRelationCount is requested with an invalid Builder name (otype "+wantedtype+" does not exist)");
+	    log.warn("getRelationCount is requested with an invalid Builder name (otype "+wt+" does not exist)");
 	}
 	return count;
     }
@@ -1376,6 +1387,50 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	return getByteSize(new org.mmbase.util.SizeOf());
     }
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
+
+
 	return sizeof.sizeof(values) + sizeof.sizeof(relations);
     }
+
+
+    /**
+     * @since MMBase-1.6.2
+     */
+    public int hashCode() {
+        if (parent != null) {
+            return parent.hashCode(this);
+        } else {
+            return super.hashCode();
+        }
+    }
+
+    /**
+     * @since MMBase-1.6.2
+     */
+    public boolean equals(Object o) {
+        if (o instanceof MMObjectNode) {                
+            MMObjectNode n = (MMObjectNode) o;
+            if (parent != null) {
+                return parent.equals(this, n);
+            } else {
+                return defaultEquals(n);
+            }
+        }
+        return false;
+    }
+    /**
+     * @since MMBase-1.6.2
+     */
+    public boolean defaultEquals(MMObjectNode n) {
+        /*
+        if (getNumber() >= 0) {  // we know when real nodes are equal
+            return n.getNumber() == getNumber();
+        } else { // I don't know about others
+            return super.equals(n); // compare as objects.
+        } 
+        */
+        return super.equals(n); // compare as objects.
+    }
+
+
 }
