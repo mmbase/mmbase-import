@@ -53,8 +53,9 @@
 		     {0} the name of the field to create.
 				 {1} the field type definitions (i.e. int(11))
 				 NOTE: if you ommit this scheme no secondary keys are created
-		-->
+		-->   
     <key>{0} {1} NOT NULL, UNIQUE ({0})</key>
+
   </scheme>
   <!-- <mapping>
         defines how mmbase should map the different types mmbase to this
@@ -88,31 +89,32 @@
     -->
   <disallowed>
     <field name="parent" replacement="m_parent"/>
-    <field name="type" replacement="m_type"/>
-    <field name="data" replacement="m_data"/>
-    <field name="key" replacement="m_key"/>
-    <field name="keys" replacement="m_keys"/>
-    <field name="from" replacement="m_from"/>
+    <field name="type"   replacement="m_type"/>
+    <field name="data"   replacement="m_data"/>
+    <field name="key"    replacement="m_key"/>
+    <field name="keys"   replacement="m_keys"/>
+    <field name="from"   replacement="m_from"/>
     <field name="global" replacement="m_global"/>
-    <field name="use" replacement="m_use"/>
-    <field name="time" replacement="m_time"/>
+    <field name="use"    replacement="m_use"/>
+    <field name="time"   replacement="m_time"/>
     <field name="status" replacement="m_status"/>
-    <field name="month" replacement="m_month"/>
-    <field name="day" replacement="m_day"/>
-    <field name="hour" replacement="m_hour"/>
-    <field name="comment" replacement="m_comment"/>
-    <field name="hosts" replacement="m_hosts"/>
-    <field name="to" replacement="m_to"/>
-    <field name="second" replacement="m_second"/>
-    <field name="local" replacement="m_local"/>
-    <field name="group" replacement="m_group"/>
-    <field name="fields" replacement="m_fields"/>
-    <field name="int" replacement="m_int"/>
-    <field name="create" replacement="m_create"/>
-    <field name="read" replacement="m_read"/>
-    <field name="write" replacement="m_write"/>
-    <field name="column" replacement="m_column"/>
-    <field name="order" replacement="m_order"/>
+    <field name="month"  replacement="m_month"/>
+    <field name="day"    replacement="m_day"/>
+    <field name="hour"   replacement="m_hour"/>
+    <field name="comment"    replacement="m_comment"/>
+    <field name="hosts"      replacement="m_hosts"/>
+    <field name="to"         replacement="m_to"/>
+    <field name="second"     replacement="m_second"/>
+    <field name="local"      replacement="m_local"/>
+    <field name="group"      replacement="m_group"/>
+    <field name="fields"     replacement="m_fields"/>
+    <field name="int"        replacement="m_int"/>
+    <field name="create"     replacement="m_create"/>
+    <field name="read"       replacement="m_read"/>
+    <field name="write"      replacement="m_write"/>
+    <field name="column"     replacement="m_column"/>
+    <field name="order"      replacement="m_order"/>
+    <field name="references" replacement="m_references"/>
   </disallowed>
 </database>
 
