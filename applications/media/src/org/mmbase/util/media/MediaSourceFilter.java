@@ -44,8 +44,9 @@ import java.lang.Integer;
 public class MediaSourceFilter implements MediaFilter {    
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
 
-    public static String MAIN_TAG         = "mediasourcefilter";
-    public static String FILTERCONFIGS_TAG = "filterConfigs";
+    public static final String MAIN_TAG          = "mainFilter";
+    public static final String FILTERCONFIGS_TAG = "filterConfigs";
+    public static final String FILTERCONFIG_TAG  = "config";
         
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -59,7 +60,8 @@ public class MediaSourceFilter implements MediaFilter {
      * Construct the MediaSourceFilter
      */
     private MediaSourceFilter() {
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "mediasourcefilter.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), 
+                                   "media" + File.separator + "mediasourcefilter.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
             return;
@@ -95,10 +97,11 @@ public class MediaSourceFilter implements MediaFilter {
 
         ChainComparator chainComp = new ChainComparator();
         for(Enumeration e = reader.getChildElements(MAIN_TAG + ".chain","filter"); e.hasMoreElements();) {
-            Element chainElement=(Element)e.nextElement();
-            String  chainValue = reader.getElementValue(chainElement);
+            Element chainElement =(Element)e.nextElement();
+            String  clazz        = reader.getElementValue(chainElement);
+            String  elementId    = reader.getElementAttributeValue(chainElement, "id");
             try {
-                Class newclass = Class.forName(chainValue);
+                Class newclass = Class.forName(clazz);
                 MediaFilter filter = (MediaFilter) newclass.newInstance();
                 if (filter instanceof ResponseInfoComparator) {
                     chainComp.add((ResponseInfoComparator) filter);
@@ -109,17 +112,32 @@ public class MediaSourceFilter implements MediaFilter {
                     }
                     filters.add(filter);
                 }
-                log.service("Added mediasourcefilter " + chainValue);
-                filter.configure(reader, filterConfigs);
+                log.service("Added mediasourcefilter " + clazz);
+                if (elementId != null) {                    
+                    // find right configuration
+                    boolean found = false;
+                    Enumeration f = reader.getChildElements(filterConfigs, FILTERCONFIG_TAG);
+                    while (f.hasMoreElements()) {
+                        Element config = (Element) f.nextElement();
+                        String filterAtt = reader.getElementAttributeValue(config, "filter");
+                        if (filterAtt.equals(elementId)) {
+                            log.service("Configuring " + elementId +"/" + clazz);
+                            filter.configure(reader, config);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (! found) log.service("No configuration found for filter " + elementId);
+                }
             } catch (ClassNotFoundException ex) {
-                log.error("Cannot load filter " + chainValue + "\n" + ex);
+                log.error("Cannot load filter " + clazz + "\n" + ex);
             } catch (InstantiationException ex1) {
-                log.error("Cannot load filter " + chainValue + "\n" + ex1);
+                log.error("Cannot load filter " + clazz + "\n" + ex1);
             } catch (IllegalAccessException ex2) {
-                log.error("Cannot load filter " + chainValue + "\n" + ex2);
+                log.error("Cannot load filter " + clazz + "\n" + ex2);
             }                   
         }
-        if (chainComp.size() > 0) filters.add(chainComp);
+        if (chainComp.size() > 0) filters.add(chainComp); // make sure it is at least empty
     }
 
     public List filter(List urls) {

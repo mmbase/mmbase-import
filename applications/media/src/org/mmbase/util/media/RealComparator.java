@@ -25,12 +25,12 @@ import java.util.*;
  * between two values (configured in mediasourcefilter.xml).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.6 2003-01-21 23:04:00 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.7 2003-02-03 11:06:34 michiel Exp $
  */
 public class RealComparator extends  ChainComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
 
-
+    public static final String CONFIG_TAG          = "config.realAudio";
     /**
      * Prefer real a little if this filter is used?
      * Other possibility: Impelmeent it that if one of both ResponseInfo are no reals, that they are equal then.
@@ -53,8 +53,8 @@ public class RealComparator extends  ChainComparator {
         private int maxSpeed        = -1;    
         public void configure(XMLBasicReader reader, Element e) {
             try {
-                minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minspeed")));
-                maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxspeed")));
+                minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minspeed")));
+                maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxspeed")));
             } catch (Exception ex) {
                 log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
                 log.error(Logging.stackTrace(ex));
@@ -109,8 +109,8 @@ public class RealComparator extends  ChainComparator {
 
         public void configure(XMLBasicReader reader, Element e) {
             try {
-                minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minchannels")));
-                maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxchannels")));
+                minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minchannels")));
+                maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxchannels")));
             } catch (Exception ex) {
                 log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
                 log.error(Logging.stackTrace(ex));
