@@ -22,8 +22,8 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Wizard.java,v 1.6 2002-02-25 12:47:05 pierre Exp $
- * 
+ * @version $Id: Wizard.java,v 1.7 2002-02-26 14:13:55 pierre Exp $
+ *
  */
 public class Wizard {
     // logging
@@ -32,13 +32,13 @@ public class Wizard {
     public final static short ERROR   = 1;
     public final static short WARNING = 2;
     // Some of these variables are placed public, for debugging reasons.
-    private Document preform;
+    public Document preform;
 
     /**
      * The cloud used to connect to MMBase
      */
     private Cloud cloud;
-    
+
     // basepath where all data files reside. Will be set from the jsp files.
     public String path="";
 
@@ -269,27 +269,27 @@ public class Wizard {
                 String formEncoding = req.getCharacterEncoding();
                      if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
                      String result;
-                    if (formEncoding == null) { 
+                    if (formEncoding == null) {
                          log.debug("request did not mention coding");
                          // The form encoding was not known, so probable the local was used or ISO-8859-1
                          // lets make sure it is right:
                          try {
                              if (cloud != null) {
                                  log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
-                                 result = new String(req.getParameter(name).getBytes(), 
+                                 result = new String(req.getParameter(name).getBytes(),
                                                      cloud.getCloudContext().getDefaultCharacterEncoding());
                              } else { // no cloud? I don't know how to get default char encoding then.
                                  // suppose it utf-8
                                  log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
-                                 result = new String(req.getParameter(name).getBytes(), "UTF-8");                                
+                                 result = new String(req.getParameter(name).getBytes(), "UTF-8");
                              }
                          } catch (java.io.UnsupportedEncodingException e) {
                              log.warn(e.toString());
                              result = req.getParameter(name);
                          }
-                    } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.                            
+                    } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
                          result = req.getParameter(name);
-                     }                    
+                     }
                     storeValue(ids[0], ids[1], result);
             }
         }
@@ -786,7 +786,7 @@ public class Wizard {
                 }
                 Utils.setAttribute(datacontext, "orderby", orderbyvalue);
             }
-            sorteddatalist.put(orderbyvalue,datacontext);
+            sorteddatalist.put(orderbyvalue+"."+dataindex,datacontext);
         }
 
         // Create an item node for each datanode in the datalist.
@@ -1004,7 +1004,7 @@ public class Wizard {
         @param  value   The (String) value what should be stored in the data.
     */
     private void storeValue(String did, String fid, String value) {
-        if (log.isDebugEnabled()) 
+        if (log.isDebugEnabled())
             log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
         String ftype = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@ftype").getNodeValue();
         Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
@@ -1059,7 +1059,7 @@ public class Wizard {
                 } catch (RuntimeException e){
                     // Have to accumulate the exceptions and report them at the end.
                     String errormsg=Logging.stackTrace(e);
-                    log.error(errormsg);                      
+                    log.error(errormsg);
                     errors.add(new WizardException("* Could not process command:"+commandname + "="+commandvalue+"\n"+errormsg));
                 }
             }
