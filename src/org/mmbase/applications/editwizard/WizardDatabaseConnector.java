@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.11 2002-04-19 20:20:28 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.12 2002-05-15 12:02:56 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -80,7 +80,7 @@ public class WizardDatabaseConnector {
     /**
      * This method loads relations from MMBase and stores the result in the given object node.
      *
-     * @param       object          The objectnode where the results should be appended to.
+     * @param       object          The objectNode where the results should be appended to.
      * @param       objectnumber    The objectnumber of the parentobject from where the relations should originate.
      * @param       loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
      */
@@ -218,10 +218,10 @@ public class WizardDatabaseConnector {
 
         if (!cmd.hasError()) {
             // place object in targetNode
-            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
-            tagDataNode(objectnode);
-            targetNode.appendChild(objectnode);
-            return objectnode;
+            Node objectNode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
+            tagDataNode(objectNode);
+            targetNode.appendChild(objectNode);
+            return objectNode;
         } else {
             throw new Exception("Could not fire getData command for object " + objectnumber);
         }
@@ -268,10 +268,10 @@ public class WizardDatabaseConnector {
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
-            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
-            tagDataNode(objectnode);
-            targetNode.appendChild(objectnode);
-            return objectnode;
+            Node objectNode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
+            tagDataNode(objectNode);
+            targetNode.appendChild(objectNode);
+            return objectNode;
         } else {
             throw new Exception("getNew command returned an error. Objecttype="+objecttype);
         }
@@ -292,12 +292,47 @@ public class WizardDatabaseConnector {
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
-            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/relation").cloneNode(true), true);
-            tagDataNode(objectnode);
-            targetNode.appendChild(objectnode);
-            return objectnode;
+            Node objectNode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/relation").cloneNode(true), true);
+            tagDataNode(objectNode);
+            targetNode.appendChild(objectNode);
+            return objectNode;
         } else {
             throw new Exception("getNewRelation command returned an error. role="+role + ", source="+sourceobjectnumber+", dest="+destinationobjectnumber);
+        }
+    }
+
+    /**
+     * Adds or replaces values specified for fields in the wizard to a recently created node.
+     * @param data the document conatining all (current) object data
+     * @param targetParentNode The place where the results should be appended.
+     * @param objectDef The objectdefinition.
+     * @param objectNode The new object
+     * @param params The parameters to use when creating the objects and relations.
+     */
+    private void fillObjectFields(Document data, Node targetParentNode, Node objectDef, Node objectNode, Hashtable params) {
+        // fill-in (or place) defined fields and their values.
+        NodeList fields = Utils.selectNodeList(objectDef, "field");
+        for (int i=0; i<fields.getLength(); i++) {
+            Node field = fields.item(i);
+            String fieldname = Utils.getAttribute(field, "name");
+            // does this field already exist?
+            Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
+            String value=Utils.getText(field);
+            if ((value!=null) && value.startsWith("{")) {
+                Node parent=data.getDocumentElement();
+                log.debug(parent.toString());
+                log.debug(value.substring(1,value.length()-1));
+                value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"X");
+            }
+            if (datafield!=null) {
+                // yep. fill-in
+                Utils.storeText(datafield, value, params); // place param values inside if needed
+            } else {
+                // nope. create. (Or, actually, clone and import node from def and place it in data
+                Node newfield = targetParentNode.getOwnerDocument().importNode(field.cloneNode(true), true);
+                objectNode.appendChild(newfield);
+                Utils.storeText(newfield, value, params); // process innerText: check for params
+            }
         }
     }
 
@@ -336,7 +371,7 @@ public class WizardDatabaseConnector {
 
         // no relations to add here..
         NodeList relations = null;
-        Node objectnode = null;
+        Node objectNode = null;
 
         // check if we maybe should create multiple objects or relations
         if (nodename.equals("action")) {
@@ -350,46 +385,20 @@ public class WizardDatabaseConnector {
         }
 
         if (nodename.equals("relation")) {
-            // objectnode equals targetParentNode
-            objectnode = targetParentNode;
+            // objectNode equals targetParentNode
+            objectNode = targetParentNode;
             relations = Utils.selectNodeList(objectDef, ".");
         }
 
         if (nodename.equals("object")) {
             try {
                 // create a new object of the given type
-                objectnode = getNew(targetParentNode, objecttype);
+                objectNode = getNew(targetParentNode, objecttype);
             } catch (Exception e) {
                 log.error("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
                 throw new WizardException("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
             }
-
-            // fill-in (or place) defined fields and their values.
-            NodeList fields = Utils.selectNodeList(objectDef, "field");
-            for (int i=0; i<fields.getLength(); i++) {
-                Node field = fields.item(i);
-                String fieldname = Utils.getAttribute(field, "name");
-                // does this field already exist?
-                Node datafield = Utils.selectSingleNode(objectnode, "field[@name='"+fieldname+"']");
-                if (datafield!=null) {
-                    // yep. fill-in
-                    String value=Utils.getText(field);
-                    if ((value!=null) && value.startsWith("{")) {
-                            Node parent=data.getDocumentElement();
-
-                            log.info(parent.toString());
-                            log.info(value.substring(1,value.length()-1));
-
-                            value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"X");
-                    }
-                    Utils.storeText(datafield, value, params); // place param values inside if needed
-                } else {
-                    // nope. create. (Or, actually, clone and import node from def and place it in data
-                    Node newfield = targetParentNode.getOwnerDocument().importNode(field.cloneNode(true), true);
-                    objectnode.appendChild(newfield);
-                    Utils.storeText(newfield, Utils.getText(newfield), params); // process innerText: check for params
-                }
-            }
+            fillObjectFields(data,targetParentNode,objectDef,objectNode,params);
             relations = Utils.selectNodeList(objectDef, "relation");
         }
 
@@ -419,25 +428,18 @@ public class WizardDatabaseConnector {
 
             String role="related";
             String snumber="";
-            Node relationnode = null;
+            Node relationNode = null;
 
             try {
                 // create the relation now we can get all needed params
                 role = Utils.getAttribute(relation, "role", "related");
-                snumber = Utils.getAttribute(objectnode, "number");
-                relationnode = getNewRelation(objectnode, role, snumber, dnumber);
+                snumber = Utils.getAttribute(objectNode, "number");
+                relationNode = getNewRelation(objectNode, role, snumber, dnumber);
 
-                // place pre-defined fields in relation node (eg. pos-fields in posrel relation)
-                NodeList flds = Utils.selectNodeList(relation, "field");
-                Utils.appendNodeList(flds, relationnode);
+                fillObjectFields(data,targetParentNode,relation,relationNode,params);
 
-                // check if some params should be replaced.
-                flds = Utils.selectNodeList(relationnode, "field");
-                for (int j=0; j<flds.getLength(); j++) {
-                    Utils.storeText(flds.item(j), Utils.getText(flds.item(j)), params);
-                }
-                tagDataNode(relationnode);
-                lastCreatedRelation = relationnode;
+                tagDataNode(relationNode);
+                lastCreatedRelation = relationNode;
             } catch (Exception e) {
                 log.error("Could NOT create relation in createObject. Role="+role+", snumber="+snumber+", destination="+dnumber);
                 return null;
@@ -447,13 +449,13 @@ public class WizardDatabaseConnector {
                 // now check if we need to load the inside object...
                 if (inside_object==null) {
                     // yep. we don't have it yet. Let's load it
-                    inside_object = getData(relationnode, dnumber);
+                    inside_object = getData(relationNode, dnumber);
                     // but annotate that thisone is loaded from mmbase. Not a new one
                     Utils.setAttribute(inside_object, "already-exists", "true");
                 } else {
                     // we already have it. Let's copy/clone and place it.
-                    inside_object = relationnode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
-                    relationnode.appendChild(inside_object);
+                    inside_object = relationNode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
+                    relationNode.appendChild(inside_object);
                 }
             } catch (Exception e) {
                 log.error("Could NOT place inside object in createObject. Message: "+e.getMessage());
@@ -463,7 +465,7 @@ public class WizardDatabaseConnector {
         if (nodename.equals("relation")) {
             return lastCreatedRelation;
         } else {
-            return objectnode;
+            return objectNode;
         }
     }
 
