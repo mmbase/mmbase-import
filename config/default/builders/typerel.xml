@@ -53,6 +53,12 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
+	<!-- These  properties influence cache size inside typerel -->
+	<property name="art_cache_size">128</property>
+	<property name="reldef_cache_size">128</property>
+	<property name="reltype_cache_size">512</property>
+	<!-- This switches relation type caching on or off -->
+    <property name="reltype_cache_active">true</property>
 </properties>
 
 <!-- <fieldlist>
