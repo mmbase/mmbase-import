@@ -24,13 +24,15 @@ import org.mmbase.util.logging.Logging;
 /**
  * ClusterBuilder is a builder which creates 'virtual' nodes.
  * This is an alternate class for 'MultiRelations', which will be used by the MMCI.
- * The old class will eventually be deprecated, but is supported to allow the
+ * The old class may eventually get deprecated, but is supported to allow the
  * new system to be developed without accidentally breaking older code.
  * <br />
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
  * which is in turn based on the relations that exist between nodes.<br>
  * The builder supplies a method to retrieve these virtual nodes, {@link #searchMultiLevelVector}.
  * Other public methods in this builder function to handle the requests for data obtained from this particular node.
+ * Individual nodes in a 'cluster' node can be retrieved by calling the getNodeValue() method, with the builder name
+ * of the needed node as parameter value.
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
