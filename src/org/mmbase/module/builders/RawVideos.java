@@ -19,9 +19,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @deprecation contains commented-out code
+ * @deprecated contains commented-out code
  * @author Daniel Ockeloen
- * @version $Id: RawVideos.java,v 1.9 2002-01-28 14:35:52 pierre Exp $
+ * @version $Id: RawVideos.java,v 1.10 2003-03-07 08:50:10 pierre Exp $
  */
 public class RawVideos extends MMObjectBuilder {
 

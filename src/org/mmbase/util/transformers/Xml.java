@@ -16,13 +16,14 @@ import java.util.Map;
 
 /**
  * Transformations related to escaping in XML.
- *
  * @author Michiel Meeuwissen
+ * @author Kees Jongenburger
+ * @version $Id: Xml.java,v 1.6 2003-03-07 08:50:35 pierre Exp $
  */
 
 public class Xml extends AbstractTransformer implements CharTransformer {
-    
-    private final static int ESCAPE           = 1;     
+
+    private final static int ESCAPE           = 1;
     private final static int ESCAPE_ATTRIBUTE = 2;
     private final static int ESCAPE_ATTRIBUTE_DOUBLE = 3;
     private final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
@@ -48,52 +49,47 @@ public class Xml extends AbstractTransformer implements CharTransformer {
 
     /**
      * Attributes of XML tags cannot contain quotes.
-     *
-     * @author Michiel Meeuwissen
-     * @version 2001-09-14
      */
     public static String XMLAttributeEscape(String att, char quot) {
         StringBuffer sb = new StringBuffer();
-	char[] data = att.toCharArray();
-	char c;
-	for (int i =0 ; i < data.length; i++){
-	    c = data[i];
-	    if (c == quot){
+        char[] data = att.toCharArray();
+        char c;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
+            if (c == quot){
                 if (quot == '"') {
                     sb.append("&quot;");
                 } else {
                     sb.append("&apos;");
                 }
 
-    	    } else {
-    	    	sb.append(c);
-    	    }
-	}
-	return sb.toString();
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
     public static String XMLAttributeEscape(String att) {
         StringBuffer sb = new StringBuffer();
-	char[] data = att.toCharArray();
-	char c;
-	for (int i =0 ; i < data.length; i++){
-	    c = data[i];
+        char[] data = att.toCharArray();
+        char c;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
             if (c == '"') {
                 sb.append("&quot;");
             } else if (c == '\'')  {
                 sb.append("&apos;");
             } else {
-    	    	sb.append(c);
-    	    }
-	}
-	return sb.toString();        
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
-   
+
     /**
      * Utility class for escaping and unescaping
-     * (XML)data 
-     * @author Kees Jongenburger
-     * @version 23-01-2001
-     * @param xml the xml to encode 
+     * (XML)data
+     * @param xml the xml to encode
      * @return the encoded xml data
      * <UL>
      * <LI>& is replaced by &amp;amp;</LI>
@@ -103,85 +99,83 @@ public class Xml extends AbstractTransformer implements CharTransformer {
      * </UL>
      **/
     public static String XMLEscape(String xml){
-    	StringBuffer sb = new StringBuffer();
-	char[] data = xml.toCharArray();
-	char c;
-	for (int i =0 ; i < data.length; i++){
-	    c = data[i];
-	    if (c =='&'){
-    	    	sb.append("&amp;");
-    	    } 
-	    else if (c =='<'){
-	    	sb.append("&lt;");
-    	    } 
-	    else if (c =='>'){
-    	    	sb.append("&gt;");
-    	    } 
-	    else if (c =='"'){
-    	    	sb.append("&quot;");
-    	    } 
-	    else {
-    	    	sb.append(c);
-    	    }
-	}
-	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        char[] data = xml.toCharArray();
+        char c;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
+            if (c =='&'){
+                sb.append("&amp;");
+            }
+            else if (c =='<'){
+                sb.append("&lt;");
+            }
+            else if (c =='>'){
+                sb.append("&gt;");
+            }
+            else if (c =='"'){
+                sb.append("&quot;");
+            }
+            else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     private static String removeNewlines(String incoming) {
-    	String ret = incoming.replace('\n', ' ');
-    	return ret.replace('\r', ' ');	
+        String ret = incoming.replace('\n', ' ');
+        return ret.replace('\r', ' ');
     }
 
     /**
      * Utility class for escaping and unescaping
-     * (XML)data 
-     * @author Kees Jongenburger
-     * @version 23-01-2001
+     * (XML)data
      * @param data the data to decode to (html/xml) where
      * <UL>
      * <LI>& was replaced by &amp;amp;</LI>
      * <LI>" was replaced by &amp;quot;</LI>
-     * <LI>&lt; was replaced by &amp;lt;</LI> 
+     * <LI>&lt; was replaced by &amp;lt;</LI>
      * <LI>&gt; was replaced by &amp;gt;</LI>
      * </UL>
      * @return the decoded xml data
      **/
     public static String XMLUnescape(String data){
-	StringBuffer sb = new StringBuffer(); 
-	int i;
-	for (i =0; i < data.length();i++){
-	    char c = data.charAt(i); 
-	    if (c == '&'){
-		int end = data.indexOf(';',i+1);
-		//if we found no amperstand then we are done
-		if (end == -1){
-		    sb.append(c);
-		    continue;
-		}
-		String entity = data.substring(i+1,end);
+        StringBuffer sb = new StringBuffer();
+        int i;
+        for (i =0; i < data.length();i++){
+            char c = data.charAt(i);
+            if (c == '&'){
+                int end = data.indexOf(';',i+1);
+                //if we found no amperstand then we are done
+                if (end == -1){
+                    sb.append(c);
+                    continue;
+                }
+                String entity = data.substring(i+1,end);
 //		System.out.println(entity);
-		i+= entity.length()  + 1;
-		if (entity.equals("amp")){
-		    sb.append('&');
-		} 
-		else if (entity.equals("lt")){
-    	    	    sb.append('<'); 
-    	    	} 
-		else if (entity.equals("gt")){
-                    sb.append('>'); 
-		} 
-		else if (entity.equals("quot")){
-                    sb.append('"'); 
-		} 
-		else {
+                i+= entity.length()  + 1;
+                if (entity.equals("amp")){
+                    sb.append('&');
+                }
+                else if (entity.equals("lt")){
+                    sb.append('<');
+                }
+                else if (entity.equals("gt")){
+                    sb.append('>');
+                }
+                else if (entity.equals("quot")){
+                    sb.append('"');
+                }
+                else {
                     sb.append("&" + entity + ";");
-		}
-	    } 
-	    else {
-    	    	sb.append(c);
-    	    }
-	}
-	return sb.toString();
+                }
+            }
+            else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     public Writer transform(Reader r) {
@@ -189,7 +183,7 @@ public class Xml extends AbstractTransformer implements CharTransformer {
     }
     public Writer transformBack(Reader r) {
         throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
-    } 
+    }
 
     public String transform(String r) {
         switch(to){
@@ -208,12 +202,12 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         case ESCAPE_ATTRIBUTE:
         case ESCAPE_ATTRIBUTE_DOUBLE:
         case ESCAPE_ATTRIBUTE_SINGLE: return XMLUnescape(r);
-        case ESCAPE_ATTRIBUTE_HTML: 
+        case ESCAPE_ATTRIBUTE_HTML:
             // we can only try, the removing of newlines cannot be undone.
             return XMLUnescape(r);
         default: throw new UnsupportedOperationException("Cannot transform");
         }
-    } 
+    }
     public String getEncoding() {
         switch(to){
         case ESCAPE:                    return "ESCAPE_XML";

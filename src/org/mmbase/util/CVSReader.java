@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @versiosn 11 Apr 2001
+ * @version 11 Apr 2001
  */
 public class CVSReader {
 
@@ -51,7 +51,7 @@ public class CVSReader {
 
     /**
      * Constructor for the CVS Reader.
-     * @filename The CVS file to read
+     * @param filename The CVS file to read
      */
     public CVSReader(String filename) {
         readCVS(filename);

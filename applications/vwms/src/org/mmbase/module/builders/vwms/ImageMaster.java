@@ -117,7 +117,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a remote node is changed.
-	 * @param machine Name of the machine that changed the node.
+         * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -129,7 +129,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a local node is changed.
-	 * @param machine Name of the machine that changed the node.
+         * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -142,7 +142,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Called when a local or remote node is changed.
      * Does not take any action.
-	 * @param machine Name of the machine that changed the node.
+         * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -311,7 +311,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Handles a images/main service request.
-     * Schedules requests to mirror the file using {@l;ink #doMainRequest}<br />
+     * Schedules requests to mirror the file using {@link #doMainRequest}<br />
      * @param node the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)

@@ -1,17 +1,12 @@
 /*
- * ClassName: TransactionsParser.java
- *
- * Date: dec. 1st. 2001
- *
- * Copyright notice:
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- *
- */
 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.xmlimporter;
 
 import java.io.*;
@@ -45,7 +40,7 @@ import org.apache.xerces.parsers.SAXParser;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.5 2003-03-03 16:27:00 vpro Exp $
+ * @version $Id: TransactionsParser.java,v 1.6 2003-03-07 08:50:03 pierre Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -96,7 +91,7 @@ public class TransactionsParser extends DefaultHandler {
    public final String xmlHeader =
    "<?xml version='1.0'  encoding='" + ENCODING + "'?>\n"
       + "<!DOCTYPE transactions "
-      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' " 
+      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' "
       + "'http://www.mmbase.org/dtd/transactions_1_0.dtd'>\n";
 
     /** Logger instance. */
@@ -251,8 +246,8 @@ public class TransactionsParser extends DefaultHandler {
                      // Create parent directory if it does not exist already.
                      reportFile.getParentFile().mkdirs();
                   }
-                  
-                  
+
+
 
                   appendReportFile(xmlHeader + parsedLine + "\n");
                }
@@ -600,13 +595,11 @@ public class TransactionsParser extends DefaultHandler {
 
    /**
     * Parse xml and execute transactions accordingly.
-    * @xmlTransactions Text of valid transactions xml document.
     * @param input The input source.
     * @throws TransactionHandlerException Except for IO exceptions every exception is wrapped in a TransactionException.
     * @throws IOException If an IO problem occurs while reading the XML data.
     */
-   public synchronized void parse(java.io.Reader input)
-   throws IOException, TransactionHandlerException {
+   public synchronized void parse(java.io.Reader input) throws IOException, TransactionHandlerException {
 
       //XMLReader parser = null;
       org.apache.xerces.parsers.SAXParser parser = null;

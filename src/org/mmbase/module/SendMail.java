@@ -20,6 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Johannes Verelst
+ * @version $Id: SendMail.java,v 1.13 2003-03-07 08:50:06 pierre Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
@@ -33,45 +34,45 @@ public class SendMail extends AbstractSendMail {
     }
 
     public void unload() { }
-    
-   
+
+
     public void shutdown() { }
-    
+
     public void init() {
         mailhost = getInitParameter("mailhost");
         log.debug("Module SendMail started (mailhost=" + mailhost + ")");
     }
 
-    /** 
-     * Connect to the mailhost
+    /**
+     * Connect to the mailhost.
      * When a connection is initiated, the mailserver should send a greeting in the form:
      *       "220 " Domain [ SP text ] CRLF
-     *
-     * According to RFC 2821 we must send a 'HELO' line to identify ourselves:
-     * Client: HELO servername
+     * <br />
+     * According to RFC 2821 we must send a 'HELO' line to identify ourselves:<br />
+     * Client: HELO servername<br />
      * Server: 250 servername
      */
-    private boolean connect(String host, int port) { 
+    private boolean connect(String host, int port) {
         log.service("SendMail connected to host=" + host + ", port=" + port + ")");
         String result="";
 
         try {
             connect = new Socket(host, port);
-        } catch (Exception e) { 
+        } catch (Exception e) {
             log.error("SendMail cannot connect to host=" + host + ", port=" + port + ")." + e);
             return false;
         }
 
         try {
            out = new DataOutputStream(connect.getOutputStream());
-        } catch (IOException e) {     
+        } catch (IOException e) {
             log.error("Sendmail cannot get outputstream." + e);
             return false;
         }
 
         try {
             in = new DataInputStream(connect.getInputStream());
-        } catch (IOException e) { 
+        } catch (IOException e) {
             log.error("SendMail cannot get inputstream." + e);
             return false;
         }
@@ -98,7 +99,7 @@ public class SendMail extends AbstractSendMail {
             out.flush();
             result = in.readLine();
             log.debug("SendMail " + getStateInfo(result) + " based on answer=" + result);
-        
+
             if (result.indexOf("250") != 0) {
                 log.error("SendMail: Server didn't respond with a '250 OK' after our HELO");
                 out.writeBytes("QUIT\r\n");
@@ -114,29 +115,30 @@ public class SendMail extends AbstractSendMail {
         return true;
     }
 
-    /** 
-     * Send mail
-     * 
+    /**
+     * Send mail.
+     * <pre>
      * The conversation goes as follows:
-     * Client: MAIL FROM:<fromaddress>
+     * Client: MAIL FROM: &lt;fromaddress&gt;
      * Server: 250 OK
-     * Client: RCPT TO:<toaddress>
+     * Client: RCPT TO: &lt;toaddress&gt;
      * Server: 250 OK
      * Client: DATA
-     * Server: 354 Start mail input; end with <CRLF>.<CRLF>
+     * Server: 354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;
      * Client: all data
      * Client: .
      * Server: 250 OK
      * Client: QUIT
-     * Server: <closes connection>
-     */    
+     * Server: &lt;closes connection&gt;
+     * </pre>
+     */
     public synchronized boolean sendMail(String from, String to, String data, Map headers) {
         if (headers != null) {
-            String headerString = "";       
+            String headerString = "";
             for (Iterator i = headers.entrySet().iterator(); i.hasNext();) {
                 Map.Entry e  = (Map.Entry) i.next();
                 headerString += e.getKey() + ": " + e.getValue() + "\r\n";
-            }    
+            }
             headerString += "\r\n";
             data = headerString + data;
         }
@@ -144,7 +146,7 @@ public class SendMail extends AbstractSendMail {
         log.service("SendMail sending mail to " + to);
         String answer="";
 
-        // Connect to mail-host 
+        // Connect to mail-host
         if (!connect(mailhost, 25)) {
             log.error("SendMail cannot connect to mailhost host=" + mailhost + ", from:" + from + ", to:" + to);
             return false;
@@ -155,7 +157,7 @@ public class SendMail extends AbstractSendMail {
             out.flush();
             answer = in.readLine();
             log.debug("SendMail " + getStateInfo(answer) + " based on answer=" + answer);
-        
+
             if (answer.indexOf("250") != 0) {
                 cleanClose(answer, from, to);
                 return false;
@@ -169,30 +171,30 @@ public class SendMail extends AbstractSendMail {
                 answer = in.readLine();
                 log.debug("SendMail " + getStateInfo(answer) + " based on answer=" + answer);
                 if (answer.indexOf("250") != 0) {
-                    cleanClose(answer, from, to);            
+                    cleanClose(answer, from, to);
                     return false;
                 }
             }
-            
+
             out.writeBytes("DATA\r\n");
             out.flush();
             answer = in.readLine();
             log.debug("SendMail " + getStateInfo(answer) + " based on answer=" + answer);
             if (answer.indexOf("354") != 0)  {
-                cleanClose(answer, from, to);            
+                cleanClose(answer, from, to);
                 return false;
             }
-                
+
             out.writeBytes(data);
             out.writeBytes("\r\n.\r\n");
             out.flush();
             answer = in.readLine();
             log.debug("SendMail " + getStateInfo(answer) + " based on answer=" + answer);
             if (answer.indexOf("250")!=0) {
-                cleanClose(answer, from, to);            
+                cleanClose(answer, from, to);
                 return false;
             }
-            
+
             out.writeBytes("QUIT\r\n");
             out.flush();
             in.close();
@@ -257,13 +259,13 @@ public class SendMail extends AbstractSendMail {
 
     /**
      * checks the e-mail address
-     */ 
+     */
     public String verify(String name) {
         String answer = "";
- 
+
         // Connect to mail-host
         if (!connect(mailhost, 25)) return "Error";
- 
+
         try {
             out.writeBytes("VRFY " + name + "\r\n");
             out.flush();
@@ -284,15 +286,15 @@ public class SendMail extends AbstractSendMail {
     }
 
     /**
-     * gives all the members of a mailinglist 
-     */    
+     * gives all the members of a mailinglist
+     */
     public List expand(String name) {
         String answer="";
         List ret = new Vector();
- 
+
         /** Connect to mail-host **/
         if (!connect(mailhost, 25)) return ret;
- 
+
         try {
             out.writeBytes("EXPN " + name + "\r\n");
             out.flush();

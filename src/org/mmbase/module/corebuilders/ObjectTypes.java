@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.24 2002-11-28 10:34:34 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.25 2003-03-07 08:50:15 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -211,7 +211,7 @@ public class ObjectTypes extends TypeDef {
      * Remove a node from the cloud, when the represented builder was active
      * it will also be unloaded
      * @param node The node to remove.
-     * @throw RuntimeException When the operation could not be performed
+     * @throws RuntimeException When the operation could not be performed
      */
     public void removeNode(MMObjectNode node) {
         log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
@@ -258,7 +258,7 @@ public class ObjectTypes extends TypeDef {
         // the field with the name 'name' may not be changed.....
         if(originalValue != null && !originalValue.equals(newValue)) {
             if(fieldname.equals("name")) {
-		// restore the original value...
+                // restore the original value...
                 node.values.put(fieldname,originalValue);
                 return false;
             } else if (fieldname.equals("config")) {

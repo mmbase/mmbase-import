@@ -232,7 +232,7 @@ public class InsRel extends MMObjectBuilder {
      * @param src this is the number of the MMObjectNode requesting the relations
      * @param otype the object type of the nodes you want to have. -1 means any node.
      * @param rnumber Identifying number of the role (reldef)
-     * @returns An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     * @return An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
      */
     public Enumeration getRelations(int src,int otype, int rnumber) {
@@ -247,7 +247,7 @@ public class InsRel extends MMObjectBuilder {
      * @param usedirectionality if <code>true</code> teh result si filtered on unidirectional relations.
      *                          specify <code>false</code> if you want to show unidoerctional relations
      *                          from destination to source.
-     * @returns An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     * @return An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
      */
     public Enumeration getRelations(int src,int otype, int rnumber, boolean usedirectionality) {
@@ -272,7 +272,7 @@ public class InsRel extends MMObjectBuilder {
                 MMObjectBuilder nodeBuilder = mmb.getBuilder(typedef.getValue(getNodeType(nodenr)));
                 if (nodeBuilder != null && (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder))) {
                     list.add(node);
-                }                 
+                }
             }
             return list.elements();
         }
@@ -420,7 +420,7 @@ public class InsRel extends MMObjectBuilder {
     * Get MMObjectNodes of a specified type related to a specified MMObjectNode
     * @param src this is the number of the source MMObjectNode
     * @param otype the object type of the nodes you want to have
-    * @returns An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
+    * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
     public Enumeration getRelated(int src,int otype) {
         Vector se=getRelatedVector(src,otype);
@@ -464,7 +464,7 @@ public class InsRel extends MMObjectBuilder {
     * @param src this is the number of the source MMObjectNode
     * @param otype the object type of the nodes you want to have
     * @param rnumber Identifying number of the role (reldef)
-    * @returns An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
+    * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
     public Enumeration getRelated(int src,int otype, int rnumber) {
         Vector se=getRelatedVector(src,otype,rnumber);
@@ -476,7 +476,7 @@ public class InsRel extends MMObjectBuilder {
     * Get MMObjectNodes related to a specified MMObjectNode
     * @param src this is the number of the MMObjectNode requesting the relations
     * @param otype the object type of the nodes you want to have. -1 means any node.
-    * @returns A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+    * @return A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
     *   according to the specified filter(s).
     **/
     public Vector getRelatedVector(int src,int otype) {
@@ -488,7 +488,7 @@ public class InsRel extends MMObjectBuilder {
      * @param src this is the number of the MMObjectNode requesting the relations
      * @param otype the object type of the nodes you want to have. -1 means any node.
      * @param rnumber Identifying number of the role (reldef)
-     * @returns A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     * @return A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
      */
     public Vector getRelatedVector(int src,int otype, int rnumber) {

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.58 2003-03-06 13:28:10 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.59 2003-03-07 08:50:26 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1663,7 +1663,7 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * @javadoc
-     * @deprecation contains code taht is commented-out, can be removed (?)
+     * @deprecated contains code taht is commented-out, can be removed (?)
      */
     public void setBuilderDBKey(Hashtable vars) {
         if (kioskmode) {

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.29 2002-12-04 13:54:37 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.30 2003-03-07 08:50:07 pierre Exp $
  */
 public class AudioParts extends MediaParts {
     //logging
@@ -66,8 +66,7 @@ public class AudioParts extends MediaParts {
     }
 
     /**
-     * When an audiopart is inserted, the start & stop times still need to be
-     * saved.(start & stop are not real fields, these were later)
+     * When an audiopart is inserted, the start &amp; stop times still need to be saved.
      * @param ed the editstate
      * @param node the audiopart node that has just been inserted.
      * @return -1

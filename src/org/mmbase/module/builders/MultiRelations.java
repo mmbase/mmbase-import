@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.builders;
 
@@ -25,18 +25,18 @@ import org.mmbase.util.logging.Logging;
  * MultiRelations is a builder which creates 'virtual' nodes.
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
  * which is in turn based on the relations that exist between nodes.<br>
- * The builder supplies a method to retrieve these virtual nodes: {@link 
- * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int) 
+ * The builder supplies a method to retrieve these virtual nodes: {@link
+ * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
  * searchMultiLevelVector()}.
  * Other public methods in this builder function to handle the requests for data obtained from this particular node.
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.29 2003-03-04 14:12:20 nico Exp $
+ * @version $Id: MultiRelations.java,v 1.30 2003-03-07 08:50:09 pierre Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
-    
+
     /**
      * Search for all valid relations.
      * When searching relations, return both relations from source to deastination and from destination to source,
@@ -46,12 +46,12 @@ public class MultiRelations extends MMObjectBuilder {
      * instead.
      */
     public static final int SEARCH_BOTH = ClusterBuilder.SEARCH_BOTH;
-    
+
     /**
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
      *
-     * @deprecated Use 
+     * @deprecated Use
      * {@link org.mmbase.module.core.ClusterBuilder#SEARCH_DESTINATION}
      * instead.
      */
@@ -76,7 +76,7 @@ public class MultiRelations extends MMObjectBuilder {
      * instead.
      */
     public static final int SEARCH_ALL = ClusterBuilder.SEARCH_ALL;
-    
+
     /**
      * Search for either destination or source.
      * When searching a multilevel, return either relations from source to destination OR from destination to source.
@@ -88,10 +88,10 @@ public class MultiRelations extends MMObjectBuilder {
      * instead.
      */
     public static final int SEARCH_EITHER = ClusterBuilder.SEARCH_EITHER;
-    
+
     // logging variable
     private static Logger log = Logging.getLoggerInstance(MultiRelations.class.getName());
-    
+
     /**
      * Creates an instance of the MultiRelations builder.
      * Called from the MMBase class.
@@ -104,8 +104,8 @@ public class MultiRelations extends MMObjectBuilder {
         m.mmobjs.put(tableName,this);
         virtual=true;
     }
-    
-    
+
+
     /**
      * Creates a new builder table in the current database.
      * This method does not perform any action in MultiRelations, as there is no actual table associated with this builder.
@@ -113,8 +113,8 @@ public class MultiRelations extends MMObjectBuilder {
     public boolean create() {
         return true;
     }
-    
-    
+
+
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
      * This method does not perform any action in MultiRelations.
@@ -126,7 +126,7 @@ public class MultiRelations extends MMObjectBuilder {
         // no insert allowed on this builder, so signal -1
         return -1;
     }
-    
+
     /**
      * What should a GUI display for this node.
      * This version displays the contents of the 'name' field.
@@ -141,7 +141,7 @@ public class MultiRelations extends MMObjectBuilder {
             return str;
         }
     }
-    
+
     /**
      * What should a GUI display for this node/field combo.
      * Default is null (indicating to display the field as is)
@@ -153,8 +153,8 @@ public class MultiRelations extends MMObjectBuilder {
     public String getGUIIndicator(String field,MMObjectNode node) {
         return null;
     }
-    
-    
+
+
     /**
      * Return a field's database type. The returned value is one of the following values
      * declared in FieldDefs:
@@ -182,7 +182,7 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return FieldDefs.TYPE_UNKNOWN;
     }
-    
+
     /**
      * Provides additional functionality when obtaining field values.
      * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
@@ -217,7 +217,7 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return null;
     }
-    
+
     /**
      * Return all the objects that match the searchkeys.
      * @param snode The number of the node to start the search with. The node has to be present in the first table
@@ -244,7 +244,7 @@ public class MultiRelations extends MMObjectBuilder {
         v.addElement(""+snode);
         return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
     }
-    
+
     /**
      * Return all the objects that match the searchkeys.
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -269,7 +269,7 @@ public class MultiRelations extends MMObjectBuilder {
     public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
         return searchMultiLevelVector(snodes,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
     }
-    
+
     /**
      * Return all the objects that match the searchkeys.
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -289,7 +289,7 @@ public class MultiRelations extends MMObjectBuilder {
      * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
-     * @param searchDir Specifies in which direction relations are to be 
+     * @param searchDir Specifies in which direction relations are to be
      *      followed, this must be one of the values defined by this class.
      * @return a <code>Vector</code> containing all matching nodes
      */
@@ -297,7 +297,7 @@ public class MultiRelations extends MMObjectBuilder {
             Vector snodes,Vector fields,String pdistinct,
             Vector tables,String where, Vector orderVec,Vector direction,
             int searchdir) {
-                
+
         // Try to handle using the SearchQuery framework.
         try {
             ClusterBuilder clusterBuilder = mmb.getClusterBuilder();
@@ -318,43 +318,43 @@ public class MultiRelations extends MMObjectBuilder {
                     + "\nFalling back to legacy code in MultiRelations...");
             }
         }
-        
+
         // Legacy code starts here.
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
         MMObjectNode basenode;
         int snode;
-        
+
         // Get all the fieldnames
         if (pdistinct!=null && pdistinct.equals("YES")) {
             distinct="distinct";
         }  else {
             distinct="";
         }
-        
+
         // Get ALL tables (including missing reltables)
         alltables=getAllTables(tables);
         if (alltables==null) return null;
-        
+
         // Get the destination select string;
         select=getSelectString(alltables,fields);
         if (select==null) return null;
-        
+
         // Get the tables names corresponding to the fields (for the mapping)
         selectTypes=getSelectTypes(alltables,select);
-        
+
         // create the order parts
         order=getOrderString(alltables,orderVec,direction);
-        
+
         // get all the table names
         stables=getTableString(alltables);
-        
+
         // Supporting more then 1 source node or no source node at all
         // Note that node number -1 is seen as no source node
         if ((snodes!=null) && (snodes.size()>0)) {
             String str;
             snode = -1;
-            
+
             // go trough the whole list and verify that it are all integers
             // from last to first,,... since we want snode to be the one that contains the first..
             for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
@@ -371,10 +371,10 @@ public class MultiRelations extends MMObjectBuilder {
                 }
                 snodes.setElementAt(""+snode, i);
             }
-            
+
             int sidx;
             StringBuffer bb=new StringBuffer();
-            
+
             if (snode>0) {
                 basenode=getNode(""+snode);
                 // not very neat... but it works
@@ -395,15 +395,15 @@ public class MultiRelations extends MMObjectBuilder {
         } else {
             basenodestring="";
         }
-        
+
         // get the relation string
         relstring=getRelationString(alltables, searchdir);
         if ((relstring.length()>0) && (basenodestring.length()>0)) {
             relstring=" AND "+relstring;
         }
-        
+
         // create the extra where parts
-        
+
         if (where!=null && !where.trim().equals("")) {
             where=QueryConvertor.altaVista2SQL(where).substring(5);
             where=getWhereConvert(alltables,where,tables);
@@ -413,7 +413,7 @@ public class MultiRelations extends MMObjectBuilder {
         } else {
             where="";
         }
-        
+
         try {
             MultiConnection con=null;
             Statement stmt=null;
@@ -427,7 +427,7 @@ public class MultiRelations extends MMObjectBuilder {
                     query="select "+distinct+" "+select+" from "+stables+" "+order;
                 }
                 log.debug("Query "+query);
-                
+
                 ResultSet rs=stmt.executeQuery(query);
                 MMObjectNode node;
                 Vector results=new Vector();
@@ -456,7 +456,7 @@ public class MultiRelations extends MMObjectBuilder {
             return null;
         }
     }
-    
+
     /**
      * Stores the tables/builder names used in the request for each field to return.
      * @param rfields the list of requested fields
@@ -473,8 +473,8 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return result;
     }
-    
-    
+
+
     /**
      * Creates a full chain of table names.
      * This includes adding relation tables when not specified, and converting table names by
@@ -486,7 +486,7 @@ public class MultiRelations extends MMObjectBuilder {
         Vector alltables=new Vector();
         boolean lastrel=true;  // true: prevents the first tab;le to be preceded by a relation table
         String orgtable,curtable;
-        
+
         for (Enumeration e=tables.elements();e.hasMoreElements();) {
             orgtable=(String)e.nextElement();
             //            curtable= getTableName(Strip.DoubleQuote(curtable,Strip.BOTH));
@@ -511,7 +511,7 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return alltables ;
     }
-    
+
     /**
      * Returns the number part of a tablename, provided it has one.
      * The number is the numeric digit appended at a name in order to make using a table more than once possible.
@@ -527,7 +527,7 @@ public class MultiRelations extends MMObjectBuilder {
             return -1;
         }
     }
-    
+
     /**
      * Returns the name part of a tablename.
      * The name part is the table anme moinus the numeric digit appended at a name (if appliable).
@@ -543,7 +543,7 @@ public class MultiRelations extends MMObjectBuilder {
             return table;
         }
     }
-    
+
     /**
      * Determines the SQL-query version of a tablename.
      * Thisis done by searching for teh appropriate tablename in a known list, and caclulating a name based on teh index in that list.
@@ -571,7 +571,7 @@ public class MultiRelations extends MMObjectBuilder {
      return null;
  }
     }
-    
+
     /**
      * Determines the SQL-query version of a field name.
      * Basically, this means replacing the table name specified in the user's field name by the one created
@@ -599,7 +599,7 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return null;
     }
-    
+
     /**
      * Retrieves a comma-seperated list of fieldnames from a value (possibly a function name)
      */
@@ -635,7 +635,7 @@ public class MultiRelations extends MMObjectBuilder {
             }
         }
     }
-    
+
     /**
      * Creates a select string for the Multi level query.
      * This consists of a list of fieldnames, preceded by a tablename.
@@ -662,7 +662,7 @@ public class MultiRelations extends MMObjectBuilder {
             return result;
         }
     }
-    
+
     /**
      * Creates an order string for the Multi level query.
      * This consists of a list of fieldnames (preceded by a tablename), with an ascending or descending order.
@@ -675,7 +675,7 @@ public class MultiRelations extends MMObjectBuilder {
         String result="";
         String val,field,dir;
         int opos;
-        
+
         if (orders==null) return result.toString();
         // Convert direction table
         for (int pos=0; pos<direction.size(); pos++) {
@@ -687,7 +687,7 @@ public class MultiRelations extends MMObjectBuilder {
                 direction.setElementAt("ASC",pos);  // UP is ASC
             }
         }
-        
+
         opos=0;
         for (Enumeration r=orders.elements();r.hasMoreElements();opos++) {
             val=(String)r.nextElement();
@@ -711,7 +711,7 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return result;
     }
-    
+
     /**
      * Creates a WHERE clause for the Multi level query.
      * This involves replacing fieldnames in the clouse with those fit for the SQL query.
@@ -724,12 +724,12 @@ public class MultiRelations extends MMObjectBuilder {
         String atable,table,result=where;
         int cx;
         char ch;
-        
+
         for (Enumeration e=tables.elements();e.hasMoreElements();) {
             //            atable=Strip.DoubleQuote((String)e.nextElement(),Strip.BOTH);
             atable=(String)e.nextElement();
             table = getSQLTableName(alltables,atable);
-            
+
             // This translates the long tablename to the short one
             // i.e. people.account to a.account.
             cx=result.indexOf(atable+".",0);
@@ -755,7 +755,7 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return result;
     }
-    
+
     /**
      * This method defines what is 'allowed' in tablenames.
      * Multilevel uses this to find out what is a tablename and what not
@@ -763,7 +763,7 @@ public class MultiRelations extends MMObjectBuilder {
     private boolean isTableNameChar(char ch) {
         return  (ch=='_') || Character.isLetterOrDigit(ch);
     }
-    
+
     /**
      * This method defines what is 'allowed' in tablenames.
      * Multilevel uses this to find out what is a tablename and what not
@@ -772,7 +772,7 @@ public class MultiRelations extends MMObjectBuilder {
         StringBuffer result=new StringBuffer("");
         String val;
         int idx=0;
-        
+
         for (Enumeration r=alltables.elements();r.hasMoreElements();) {
             val=(String)r.nextElement();
             if (!result.toString().equals("")) result.append(", ");
@@ -782,12 +782,12 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return result.toString();
     }
-    
+
     // get a reference to the number field in a table
     private String numberOf(String table) {
         return table+"."+mmb.getDatabase().getNumberString();
     };
-    
+
     /**
      * Creates a condition string which checks the relations between nodes.
      * The string can then be added to the query's where clause.
@@ -797,7 +797,7 @@ public class MultiRelations extends MMObjectBuilder {
     protected String getRelationString(Vector alltables) {
         return getRelationString(alltables, SEARCH_EITHER);
     }
-    
+
     /**
      * Creates a condition string which checks the relations between nodes.
      * The string can then be added to the query's where clause.
@@ -814,28 +814,28 @@ public class MultiRelations extends MMObjectBuilder {
         TypeRel typerel;
         InsRel insrel;
         RelDef reldef;
-        
+
         typedef=mmb.getTypeDef();
         typerel=mmb.getTypeRel();
         reldef=mmb.getRelDef();
         insrel=mmb.getInsRel();
         siz=alltables.size()-2;
-        
+
         log.debug("SEARCHDIR="+searchdir);
-        
-        
+
+
         for (int i=0;i<siz;i+=2) {
             boolean desttosrc=false;
             boolean srctodest=false;
             src=getTableName((String)alltables.elementAt(i));                            // name of the source table
             dst=getTableName((String)alltables.elementAt(i+2));                        // name of destination table
-            
+
             rnum=-1;
             so=typedef.getIntValue(src);                                // get the number of the source
             ro=typedef.getIntValue(dst);                                // get the number of the destination
-            
+
             if (!result.toString().equals("")) result.append(" AND ");
-            
+
             // check if  a definite rnumber was requested...
             if (rnum>-1) {
                 result.append(idx2char(i+1)+".rnumber="+rnum+" AND ");
@@ -851,13 +851,13 @@ public class MultiRelations extends MMObjectBuilder {
                     if (desttosrc && srctodest) break;
                 }
             }
-            
+
             // check for directionality if supported
             String dirstring="";
             if (InsRel.usesdir && (searchdir!=SEARCH_ALL)) {
                 dirstring=" AND "+idx2char(i+1)+".dir<>1";
             }
-            
+
             if (desttosrc && srctodest && (searchdir==SEARCH_EITHER)) { // support old
                 desttosrc=false;
             }
@@ -880,11 +880,11 @@ public class MultiRelations extends MMObjectBuilder {
                 result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
                 numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber");
             }
-            
+
         }
         return result.toString();
     }
-    
+
     /**
      * Converts an index to a one-character string.
      * I.e. o becomes 'a', 1 becomes 'b', etc.
@@ -895,11 +895,11 @@ public class MultiRelations extends MMObjectBuilder {
     protected String idx2char(int idx) {
         return ""+new Character((char)('a'+idx));
     }
-    
+
     private String getNodeString(String bstr,Vector snodes) {
         String snode,str;
         StringBuffer bb=new StringBuffer();
-        
+
         //        snode=Strip.DoubleQuote((String)snodes.elementAt(0),Strip.BOTH);
         snode=(String)snodes.elementAt(0);
         if (snodes.size()>1) {
@@ -915,9 +915,10 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return bb.toString();
     }
-    
+
     /**
-     * Get text from a blob field. the text is cut if it is to long.
+     * Get text from a blob field.
+     * The text is cut if it is to long.
      * @param fieldname name of the field
      * @param number number of the object in the table
      * @return a <code>String</code> containing the contents of a field as text
@@ -934,7 +935,7 @@ public class MultiRelations extends MMObjectBuilder {
                 tname="object";
                 fname=fieldname;
             }
-            
+
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where "+mmb.getDatabase().getNumberString()+"="+number);
@@ -950,10 +951,11 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return null;
     }
-    
-    
+
+
     /**
-     * Get binary data of a database blob field. the data is cut if it is to long.
+     * Get binary data of a database blob field.
+     * The data is cut if it is to long.
      * @param fieldname name of the field
      * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text
@@ -985,5 +987,5 @@ public class MultiRelations extends MMObjectBuilder {
         }
         return null;
     }
-    
+
 }
