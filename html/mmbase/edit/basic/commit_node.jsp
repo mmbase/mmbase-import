@@ -35,7 +35,7 @@
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
     </mm:createnode>	
-    <mm:node id="new_node2" referid="new_node" jspvar="node">
+    <mm:node id="new_node2" referid="new_node">
       
       <mm:remove referid="redirectTo" /> 
 
