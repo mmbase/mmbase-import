@@ -175,6 +175,18 @@ public class MMBase extends ProcessorModule  {
 			bul2.start();
 		}
 
+		// temp code to generate xml files
+		/*
+		t = mmobjs.elements(); 
+		while (t.hasMoreElements()) {
+			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+			String name=fbul.getTableName();
+			System.out.println("NAME="+name);
+			if (!name.equals("multirelations")) {
+				XMLBuilderWriter.writeXMLFile("/tmp/"+fbul.getTableName()+".xml",fbul);
+			}
+		}
+		*/
 	}
 
 	public void onload() {
@@ -497,6 +509,67 @@ public class MMBase extends ProcessorModule  {
 	}
 
 	boolean initBuilder(String builder,String path) {
+		// start of new code for XML config support
+		if ((new File(path+builder+".xml")).exists()) {
+			XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
+			return(initBuilder_xml(builder,path,parser));
+		} else {
+			return(initBuilder_plain(builder,path));
+		}
+		// end of new new
+	}
+
+	boolean initBuilder_xml(String builder,String path,XMLBuilderReader parser) {
+		System.out.println("PARSER="+parser);
+
+		Hashtable tmp=parser.getDescriptions();
+		String description=(String)tmp.get("en");
+		String dutchsname="Default!";
+		String objectname=builder; // should this allow override in file ?
+		int searchage=parser.getSearchAge();
+		String classname=parser.getClassFile();
+
+		if (!classname.equals("core")) {
+			debug(" Starting builder XML : "+objectname);
+			try {
+				// is it a full name or inside the org.mmase.* path
+				int pos=classname.indexOf('.');
+				Class newclass=null;
+				if	(pos==-1) {
+					newclass=Class.forName("org.mmbase.module.builders."+classname);
+				} else {
+					newclass=Class.forName(classname);
+				}
+				//debug("Vwms -> Loaded load class : "+newclass);
+
+				MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
+				// debug("MMBase -> started : "+newclass);
+
+				bul.setMMBase(this);
+				bul.setTableName(objectname);
+				bul.setDescription(description);
+				bul.setDutchSName(dutchsname);
+				bul.setSingularNames(parser.getSingularNames());
+				bul.setPluralNames(parser.getPluralNames());
+				bul.setClassName(classname);
+				bul.setSearchAge(""+searchage);
+				bul.setXMLValues(parser.getFieldDefs()); // temp  ?
+				bul.init();
+				// bul.getEditFields();
+				mmobjs.put(objectname,bul);
+
+				// oke set the huge hack for insert layout 
+				//bul.setDBLayout(fields);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					return(false);
+				}
+		}
+		return(true);
+	}
+
+	boolean initBuilder_plain(String builder,String path) {
 		//if( debug ) debug("MMBase -> "+builder);
 		String classname=null;
 		MMObjectBuilder bul=null;
