@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.18 2000-07-18 18:58:59 daniel Exp $
+$Id: JamesServlet.java,v 1.19 2000-07-22 21:25:23 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2000/07/18 18:58:59  daniel
+add support for mmdemo
+
 Revision 1.17  2000/06/21 14:41:51  wwwtech
 rob
 
@@ -63,7 +66,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.18 2000-07-18 18:58:59 daniel Exp $
+* @version $Id: JamesServlet.java,v 1.19 2000-07-22 21:25:23 daniel Exp $
 */
 
 class DebugServlet {
@@ -95,15 +98,17 @@ public class JamesServlet extends HttpServlet {
 
 	static {
 
+		/*
 		String dtmp=System.getProperty("mmbase.mode");
 		if (dtmp!=null && dtmp.equals("demo")) {
 			String curdir=System.getProperty("user.dir");
 			outputfile=curdir+"/log/mmbase.log";
-			System.out.println("DEMO LOG="+outputfile);
 		} else {
 			outputfile = System.getProperty("mmbase.outputfile");       
 		}
+		*/
 
+		outputfile = System.getProperty("mmbase.outputfile");       
 		if (outputfile != null) {
 			try {
 				PrintStream mystream=new PrintStream(new FileOutputStream(outputfile,true));
