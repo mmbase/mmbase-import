@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.5 2000-11-27 12:35:09 vpro Exp $
+$Id: cdplayers.java,v 1.6 2001-01-05 14:12:33 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/11/27 12:35:09  vpro
+davzev: Removed debug method now uses super, added comments
+
 */
 package org.mmbase.remote.builders;
 
@@ -24,7 +27,7 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version $Revision: 1.5 $ $Date: 2000-11-27 12:35:09 $
+ * @version $Revision: 1.6 $ $Date: 2001-01-05 14:12:33 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {
@@ -58,7 +61,7 @@ public class cdplayers extends RemoteBuilder {
 	 * @param ctype a String with the node change type.
 	 */
 	public void nodeRemoteChanged(String serviceRef,String builderName,String ctype) {		
-		if( debug ) debug("nodeRemoteChanged("+serviceRef+","+builderName+","+ctype+")");
+		if( debug ) debug("nodeRemoteChanged("+serviceRef+","+builderName+","+ctype+"): Calling nodeChanged");
 		nodeChanged(serviceRef,builderName,ctype);
 	}
 
@@ -82,12 +85,12 @@ public class cdplayers extends RemoteBuilder {
 	 * @param ctype a String with the node change type.
 	 */
 	public void nodeChanged(String nodenr,String buildername,String ctype) {		
-		debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
-		// get the node
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+") Getting "+buildername+" node "+nodenr+" to find out what to do.");
+		// gets the node using a request.
 		getNode();
 				
 		String state=getStringValue("state");
-		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): Node state is: "+state);
 		if (state.equals("version")) {
 			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
@@ -106,6 +109,8 @@ public class cdplayers extends RemoteBuilder {
 		} else if (state.equals("claimed")) {
 			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doClaimed()");
 			setClaimed();
+		} else {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): ERROR unknown state: "+state);
 		}
 	}
 
@@ -191,14 +196,17 @@ public class cdplayers extends RemoteBuilder {
 		commit();
 	}
 
+	/**
+	 * Loads the implemention for the cdplayers service using the properties.
+	 */
 	void getConfig() {
-		classname=(String)props.get("implementation");
-		debug("getConfig(): loading("+classname+")");
+		String implClassName=(String)props.get("implementation");
+		debug("getConfig(): loading("+implClassName+")");
 		try {
-			Class newclass=Class.forName(classname);
+			Class newclass=Class.forName(implClassName);
 			impl = (cdplayerInterface)newclass.newInstance();
 		} catch (Exception f) {
-			debug("getConfig(): ERROR: Can't load class("+classname+")");
+			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
 		}
 	}
 }
