@@ -26,6 +26,11 @@ import org.mmbase.module.core.*;
  */
 public interface NodeManager {
 
+	public final static int ORDER_CREATE = 0;
+	public final static int ORDER_EDIT = 1;
+	public final static int ORDER_LIST = 2;
+	public final static int ORDER_SEARCH = 3;
+
     /**
     * Creates a new node. The returned node will not be visible in the cloud
     * until the commit() method is called on this node. Until then it will have
@@ -70,6 +75,14 @@ public interface NodeManager {
      * @return a list of all fields defined for this node manager
      */
     public FieldList getFields();
+
+	/**
+	 * Retrieve a subset of field types of this NodeManager, depending on a given order.
+	 *
+	 * @param order the order in which to list the fields
+	 * @return a <code>List</code> of <code>FieldType</code> objects
+	 */
+	public FieldList getFields(int order);
 
     /**
      * Returns the field with the specified name.

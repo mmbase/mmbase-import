@@ -71,4 +71,10 @@ public class BasicField implements Field {
         return field.getDBState();
 	}
 
+	/**
+	* retrieve the size of the field (i.e. the maximum length for a String)
+	*/
+	public int getSize() {
+	    return field.getDBSize();
+	}
 }
