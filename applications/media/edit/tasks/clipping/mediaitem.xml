@@ -17,6 +17,8 @@
 		<field name="subtitle" />
 		<field name="intro" />
 		<field name="body" />
-    <field name="start"  ftype="realposition" />
+    <field name="start"  ftype="realposition">
+    </field>
     <field name="stop"   ftype="realposition" />
+
   </form-schema>

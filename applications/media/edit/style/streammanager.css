@@ -63,8 +63,17 @@ textarea {
   background-color : #F0F2F5;
   }
 
+
+span.realpositionitem  {
+  width: 100%;
+}
+
 span.realpositionitem input.input {
    width: 150px;
+}
+
+span.realpositionitem input.check {
+  margin-left: 3ex;
 }
 
 nobr input.input {

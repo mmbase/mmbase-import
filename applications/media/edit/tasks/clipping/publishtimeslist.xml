@@ -9,7 +9,7 @@
     <relation destinationtype="publishtimes" role="related" >
       <object type="publishtimes">      
         <field name="begin" />
-        <field name="end" />
+        <field name="end"><!-- 2100 4102441200--></field>
       </object>
     </relation>
   </action>
