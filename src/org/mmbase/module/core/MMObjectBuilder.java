@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.245 2003-09-04 08:21:39 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.246 2003-09-04 11:05:33 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -85,21 +85,17 @@ public class MMObjectBuilder extends MMTable {
 
     };
 
-
-
     /**
      * The cache that contains the last X types of all requested objects
      * @since 1.7
      */
     private static Cache typeCache;
 
-
     /**
      * Results of getNodes
      * @since 1.7
      */
     protected static NodeListCache listCache = NodeListCache.getCache();
-
 
     static {
         typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
@@ -235,7 +231,8 @@ public class MMObjectBuilder extends MMTable {
      */
     private Stack ancestors = new Stack();
 
-    /** Version information for builder registration
+    /**
+     * Version information for builder registration
      * Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml
      * builder file
      */
@@ -2254,7 +2251,7 @@ public class MMObjectBuilder extends MMTable {
         if (fields == null) {
             log.error("getDBType(): fielddefs are null on object : "+tableName);
             return FieldDefs.TYPE_UNKNOWN;
-        }        
+        }
         FieldDefs fieldDefs = getField(fieldName);
         if (fieldDefs == null) {
             //perhaps prefixed with own tableName[0-9]? (allowed since MMBase-1.7)
@@ -2262,7 +2259,7 @@ public class MMObjectBuilder extends MMTable {
             if (dot > 0) {
                 if (fieldName.startsWith(tableName)) {
                     if (tableName.length() <= dot  ||
-                        Character.isDigit(fieldName.charAt(dot - 1))) { 
+                        Character.isDigit(fieldName.charAt(dot - 1))) {
                         fieldName = fieldName.substring(dot + 1);
                         fieldDefs = getField(fieldName);
                     }
@@ -2603,7 +2600,7 @@ public class MMObjectBuilder extends MMTable {
 
     }
     */
-    
+
 
     /**
      * Executes a function on the field of a node, and returns the result.
@@ -3375,6 +3372,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return the MMBase object
+     * @since 1.7
      */
     public MMBase getMMBase() {
         return mmb;
