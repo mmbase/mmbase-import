@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.15 $ $Date: 2000-12-24 23:16:32 $
+ * @version $Revision: 1.16 $ $Date: 2000-12-24 23:17:04 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -40,7 +40,6 @@ public abstract class ModuleXML extends Module {
 
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results=loadModulesFromDisk_xml();
-	System.out.println("AAAAAAA="+results);
 	if (results!=null) {
         	return(results);
 	} else {
