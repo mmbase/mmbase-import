@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.244 2004-02-26 22:11:49 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.245 2004-02-26 23:55:31 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5353,6 +5353,17 @@ The 0 is just counter, which starts at 0 on every page.
 			</info>
 		</attribute>
 		<attribute>
+			<name>maxtotal</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+        In stead of 'max' you could also use maxtotal. The tag will calculate how many batches
+        'previousbatches' did need, and if that is zero, there can be 'maxtotal' next batches. If it
+        is more then zero, nextbatches will get less. If there are both many next batches and
+        previous batches, then they get both the half of 'maxtotal' batches.
+			</info>
+		</attribute>
+		<attribute>
 			<name>indexoffset</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -5390,11 +5401,18 @@ The 0 is just counter, which starts at 0 on every page.
 			</info>
 		</attribute>
 		<attribute>
+			<name>maxtotal</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <see tag="nextbatches" attribute="maxtotal" />
+		</attribute>
+		<attribute>
 			<name>indexoffset</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="nextbatches" attribute="indexoffset" />
 		</attribute>
+
 	</tag>
 
 
