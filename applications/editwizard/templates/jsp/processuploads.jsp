@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.5 2002-05-28 14:15:15 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.6 2002-06-28 12:48:22 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -66,7 +66,7 @@ if (ewconfig.subObjects.size() > 0) {
                 }
 
                 byte[] buf = bos.toByteArray();
-                wizardConfig.wiz.setUpload(fieldname, buf, f.getFileName(), f.getFilePathName());
+                wizardConfig.wiz.setBinary(fieldname, buf, f.getFileName(), f.getFilePathName());
             }
 
         }
