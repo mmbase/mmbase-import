@@ -3,7 +3,7 @@
 <mm:cloud name="mmbase" jspvar="wolk" method="http" rank="basic user">
 <%
 // Twee nieuwe strings 
-String type = "";			// Type of node
+String ntype = "";			// Type of node
 String node_gui = "";		// GUI variable set in builder
 String node_man = "";		// Nodemanager?
 %>
@@ -15,10 +15,10 @@ String node_man = "";		// Nodemanager?
 <mm:import jspvar="action" externid="action" />
 <mm:node number="<%= nr %>">
 <%-- Get some information about the node: its type and GUI name --%>
-<mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% type = n_type; %></mm:nodeinfo>
+<mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% ntype = n_type; %></mm:nodeinfo>
 <mm:nodeinfo type="guinodemanager" jspvar="n_gui" vartype="String" write="false"><% node_gui = n_gui; %></mm:nodeinfo>
 
-<% String path1 = type;		// Eerst stukje van kruimelpad %>
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
 
@@ -59,14 +59,19 @@ String node_man = "";		// Nodemanager?
 		</tr>
 	</mm:fieldlist>
 	<tr>
-	  <td>&nbsp;</td>
-	  <td class="name">
-		<input type="submit" name="action" value="Change" /> Change relation 
-		<input type="submit" name="action" value="Delete" /> Remove relation
-	  </td>
+	  <td align="right"><input type="submit" name="action" value="Change" /></td><td> Change relation  </td>
+	</tr><tr>
+	  <td align="right"><input type="submit" name="action" value="Delete" /></td><td>Remove relation</td>
 	</tr>
 </mm:notpresent>
 
+<tr>
+  <td align="right"><a href="edit_object.jsp?nr=<%= ref %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0"></a></td>
+  <td>
+	Back to the <a href="edit_object.jsp?nr=<%= ref %>">edit page</a> of 
+	<mm:node number="<%= ref %>"><b><mm:field name="gui()" /></b></mm:node>.
+  </td>
+</tr>
 </table>
 </form>
 
@@ -85,10 +90,6 @@ String node_man = "";		// Nodemanager?
 		<p class="message">The relation is removed.</p>
 	<% } %>
 </mm:present>
-
-<p>Back to the <a href="edit_object.jsp?nr=<%= ref %>">edit page</a> of 
-<mm:node number="<%= ref %>"><b><mm:field name="gui()" /></b></mm:node>.
-</p>
 
 </mm:node>
 </mm:context>

@@ -15,8 +15,9 @@
 <% String path1 = node_type;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
-<p>Terug naar de <a href="edit_object.jsp?nr=<%= node_nr %>">edit pagina</a>.</p>
-
+<p><a href="edit_object.jsp?nr=<%= node_nr %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0"></a>
+Back to the <a href="edit_object.jsp?nr=<%= node_nr %>">edit page</a> of 
+<mm:node number="<%= node_nr %>"><b><mm:field name="gui()" /></b></mm:node>.</p>
 
 <%-- ### Start search (include?) ### --%>
 <%-- Action: we do allways need a node type !!!!!!!!!!! --%>
@@ -37,7 +38,7 @@
 // We will try to use a day offset
 // Get day of today in days since 01/01/1970
 Date today = new Date();
-int days_ofs = Integer.parseInt(dayofs);
+int days_ofs = Integer.parseInt(conf_days);
 int today_days = (int)(today.getTime() / (60 * 60 * 24)) / 1000;
 int search_day = today_days - days_ofs;
 int day_found = 0;
@@ -104,7 +105,7 @@ int list_index = 0;		// Index value of the list
 </tr>
 <mm:listnodes id="node_number" type="$ntype" 
 	directions="DOWN" orderby="number"
-	max="<%= max_str %>" offset="<%= ofs_str %>"
+	max="<%= conf_max %>" offset="<%= ofs_str %>"
 	constraints="<%= search_str %>">
 	<mm:first>
 	<tr>
@@ -120,9 +121,9 @@ int list_index = 0;		// Index value of the list
   	    <%= list_index %>
   	  </td>
   	  <% int i = 0; %>
-	  <mm:fieldlist type="list"><td><% if (i==0) { %><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"><% } %><mm:fieldinfo type="guivalue" /><% if (i==0) { %></a><% } %> </td> <% i++; %></mm:fieldlist>
+	  <mm:fieldlist type="list"><td><% if (i==0) { %><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"></mm:maywrite><% } %><mm:fieldinfo type="guivalue" /><% if (i==0) { %><mm:maywrite></a></mm:maywrite><% } %> </td> <% i++; %></mm:fieldlist>
   	  <td nowrap="nowrap">
-  	    <a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a>
+  	    <mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></mm:maywrite>
 		<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
   	    <a title="relate" href="relate_object.jsp?nr=<%= node_nr %>&amp;kind=<%= rel_kind %>&amp;rnr=<mm:field name="number" />"><img src="img/mmbase-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a> 
   	  </td>
@@ -163,7 +164,7 @@ int list_index = 0;		// Index value of the list
 		</tr>
 		<tr valign="top">
 		  <td align="right" class="name">Days old</td>
-		  <td><input type="text" name="dayofs" value="<%= dayofs %>" size="9" maxlength="9"></td>
+		  <td><input type="text" name="conf_days" value="<%= conf_days %>" size="9" maxlength="9"></td>
 		</tr>
 		<mm:fieldlist nodetype="$ntype" type="search">
 			<tr valign="top">
