@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: configuration.xml,v 1.8 2002-09-17 06:35:11 michiel Exp $</date>
+    <date>$Id: configuration.xml,v 1.9 2002-10-10 14:26:05 michiel Exp $</date>
     <title>MMBase configuration documentation</title>
   </articleinfo>
   <section>
@@ -236,6 +236,26 @@
     <taglib-location>/WEB-INF/lib/oscache.jar</taglib-location>
   </taglib>
 
+ <resource-ref>
+    <description>
+      Email module mail resource. This resource must be configured in
+      the application server.
+    </description>
+    <res-ref-name>mail/MMBase</res-ref-name>
+    <res-type>javax.mail.Session</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <resource-ref>
+    <description>
+      Datasource for the MMBase Database. This datasource must be
+      configured in the application server.
+    </description>
+    <res-ref-name>jdbc/MMBase</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
 </web-app>
 ]]>
           </programlisting>
@@ -307,13 +327,62 @@
     <para>
       In the databases subdirectory of the configuration you find the xml's describing the supported
       databases. In an actual installation, all but one can be removed. It must correspond to the
-      `database' property in config/modules/mmbaseroot.xml
+      `database' property in config/modules/mmbaseroot.xml. You can
+      also let them all and remove the database property from
+      mmbaseroot.xml, then the 'lookup.xml' file will be used to
+      determin the right database configuration using the available drivers.
     </para>
     <para>
       The other file closely related to the database connections is config/modules/jdbc.xml. Here you
-      have to configure the username/password for acces to the database. The database name itset,
+      can configure the username/password for acces to the database. The database name itself,
       the port number on which the database is listening etc.
+      <example>
+        <title>An example jdbc.xml</title>        
+        <programlisting id="jdbc.xml"><![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <status>active</status>  
+  <classfile>org.mmbase.module.database.JDBC</classfile>
+  <properties>  
+    <property name="url">jdbc:mysql://localhost/$DBM?user=mmbase&amp;password=abcdef</property>
+    <property name="user">url</property>
+    <property name="password">url</property>
+    <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
+    <property name="database">bbol2_db</property>
+    <property name="connections">20</property>
+    <property name="driver">org.gjt.mm.mysql.Driver</property>
+    <property name="host">localhost</property>
+    <property name="port">3306</property>
+    <property name="querys">256</property>
+  </properties>
+</module>
+]]>
+          </programlisting>
+        </example>
     </para>
+    <para>
+      It is also possible to use the `data-sources' of the application
+      server. The jdbc.xml then looks like this:
+      <example>
+        <title>An example jdbc.xml, using data-source</title>        
+        <programlisting id="jdbc.xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <status>active</status>
+  <classfile>org.mmbase.module.database.Naming</classfile>
+  <properties>
+    <property name="context">java:comp/env</property>
+    <property name="datasource">jdbc/MMBase</property>
+  </properties>
+</module>
+]]>
+          </programlisting>
+        </example>
+      So using this the configuration of the database is totally left
+      to the application server.
+     </para>
   </section>
   <section id="logging">
     <title>Configuring logging</title>
@@ -578,12 +647,18 @@
     <section id="dtd">
       <title>DTD's and validation</title>
       <para>
-        The format of XML's is defined by dtd's. All MMBase specific XML's (recognizable by the
-        DOCTTYPE) are validated when parsed (from MMBase 1.6 onwards). This means that the dtd's for
-        all these XML type <emphasis>must</emphasis> be available. You can store them all in
-        config/dtd where MMBase will find them. It they are not there, an internet connection is
-        needed for MMBase to fetch them from the mmbase site.
-        <!-- TODO:  We should try to use schema's, for validation and auto-generation of documentation -->
+        The format of XML's is defined by dtd's. All MMBase specific
+        XML's (recognizable by the DOCTTYPE) are validated when parsed
+        (from MMBase 1.6 onwards). This means that the dtd's for all
+        these XML type must be available. They are available in the
+        mmbase.jar, so you normally will not have to worry about
+        them. You can store them in config/dtd where MMBase will find
+        them first, so you could override the ones in the jar (useful
+        during development). It they cannot be found, validation will
+        occur with an empty DTD, resulting in lots of errors in your
+        log.
+        <!-- TODO: We should try to use schema's, for
+        validation and auto-generation of documentation -->
       </para>
       <para>
         Validation of non MMBase specific xml's, like web.xml and `log4j.xml' is left to the
