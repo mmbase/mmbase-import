@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.255 2004-05-26 11:39:59 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.256 2004-06-03 17:08:51 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -517,6 +517,18 @@ version: $Id: mmbase-taglib.xml,v 1.255 2004-05-26 11:39:59 michiel Exp $
 			<possiblevalue>
 				<value>Date</value>
 				<info>java.util.Date</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>Field</value>
+				<info>org.mmbase.bridge.Field</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>FieldValue</value>
+				<info>org.mmbase.bridge.FieldValue</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>Boolean</value>
+				<info>java.lang.boolean</info>
 			</possiblevalue>
 		</attribute>
 		<attribute>
