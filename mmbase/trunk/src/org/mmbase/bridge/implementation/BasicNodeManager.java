@@ -11,16 +11,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+
 import javax.servlet.*;
+
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.security.*;
-import org.mmbase.util.*;
+import org.mmbase.security.Operation;
+import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 
 
 /**
@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.66 2003-10-09 14:32:28 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.67 2003-10-13 08:34:24 keesj Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {

@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.105 2003-09-02 20:12:38 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.106 2003-10-13 08:34:24 keesj Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -932,12 +932,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         } else {
             return cloud.check(Operation.DELETE, getNode().getNumber());
         }
-    }
-
-    public boolean mayLink() {
-        String message = "Node.mayLink() is deprecated.";
-        log.warn(message);
-        throw new java.lang.UnsupportedOperationException(message);
     }
 
     public boolean mayChangeContext() {

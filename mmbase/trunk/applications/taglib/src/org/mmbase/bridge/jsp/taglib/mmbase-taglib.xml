@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.206 2003-09-24 21:17:24 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.207 2003-10-13 08:34:23 keesj Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3452,16 +3452,6 @@ like the parameter list or the session (where ever it is available) --&gt;
 &lt;delete referid="this_list"&gt;
 &lt;delete referid="my_page"&gt;
     </example>
-  </tag>
-  <tag>
-    <name>maylink</name>
-    <extends>nodereferrer</extends>
-    <extends>condition</extends>
-    <type>mmbase.security</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
-    <info>
-    This tag will be removed!
-    </info>
   </tag>
   <tag>
     <name>maychangecontext</name>
