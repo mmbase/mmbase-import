@@ -27,55 +27,93 @@ import org.mmbase.util.*;
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
+	private String classname = getClass().getName();
+	private boolean debug = true;
+	private void debug(String msg){System.out.println(classname+":"+msg);}
+
 	Hashtable cache=null;
 
 	public void setTableName(String tableName) {
+		if( debug ) debug("setTableName("+tableName+"), started.");
+	
 		super.setTableName(tableName);
 		MMServers bul=(MMServers)mmb.getMMObject("mmservers");
 		if (bul!=null) {
 			bul.setCheckService(tableName);
-		}
+		}else
+			if( debug ) debug("setTableName("+tableName+"): ERROR: mmbase not found!");
+		
 	}
 
 	
 	public String doClaim(StringTokenizer tok) {
+		boolean 		result 		= false;
+
+		String 			cdplayer 	= null;
+		String 			name		= null;
+		MMObjectNode 	node 		= null;
+
+		if( debug ) debug("doClaim("+tok+"), getting username and nodenr..");
+
 		if (tok.hasMoreTokens()) {
-			String cdplayer=tok.nextToken();
+			cdplayer=tok.nextToken();
 			if (tok.hasMoreTokens()) {
-				String name=tok.nextToken();
-				MMObjectNode node=getNode(cdplayer);
+				name=tok.nextToken();
+				node=getNode(cdplayer);
 				if (node!=null) {
+					if( debug ) debug("doClaim("+cdplayer+","+name+"): claiming resource");
 					node.setValue("state","claimed");
 					node.setValue("info","user="+name+" lease=3");
 					node.commit();
+					result = true;
 				}
+				else
+					debug("doClaim("+cdplayer+","+name+"): ERROR: Could not get node for this cdplayer("+cdplayer+")!");
 			}
 		}
+		if( result ) 
+		{
+			if( debug ) debug("doClaim("+cdplayer+","+name+"), successfully claimed.");
+		}
+		else
+			debug("doClaim("+cdplayer+","+name+"): ERROR: Not claimed!");
+			
 		return("");
 	}
 
 
 	public MMObjectNode getClaimedBy(String owner) {
-		MMObjectNode result=null;
-
+		if( debug ) debug("getClaimedBy("+owner+"), seeking nodenr..");
+		
+		MMObjectNode result	= null;
+		MMObjectNode node 	= null;
+		MMObjectNode node2 	= null;
 		if (cache==null) cache=getCache();
+
 		// hunt down the claimed node by this user
+		// ---------------------------------------
 		Enumeration e=cache.elements();
 		while (e.hasMoreElements()) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("CLAIMNode="+node);
-			node=getNode(node.getIntValue("number"));
-			System.out.println("CLAIMNode2="+node);
-			String info=node.getStringValue("info");
+			node=(MMObjectNode)e.nextElement();
+			if( debug ) debug("CLAIMNode="+node);
+
+			node2=getNode(node.getIntValue("number"));
+			if( debug ) debug("CLAIMNode2="+node2);
+
+			String info=node2.getStringValue("info");
 			StringTagger tagger=new StringTagger(info);
 			String user=tagger.Value("user");
+
 			if (user!=null && user.equals(owner)) {
-				System.out.println("USER CLAIMED FOUND ! : "+node);
-				result=node;
+				if( debug ) debug("getClaimedBy("+owner+"): found node("+node2+")");
+				result=node2;
 			}
 		}
-		if (result!=null) return(getNode(result.getIntValue("number")));
-		return(null);
+
+		if (result!=null) 
+			return(getNode(result.getIntValue("number")));
+		else
+			return(null);
 	}
 
 
@@ -87,7 +125,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 			int number=node.getIntValue("number");
 			cache.put(new Integer(number),node);
 		}
-		System.out.println("CACHE="+cache);
+		if( debug ) debug("getCache(): cache("+cache+")");
 		return(cache);
 	}
 
@@ -96,20 +134,32 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	// the Service builder _must_ update all the mmbase admins to reflect
 	// new state. Next version will support name with authentication.
 	public void addService(String name, String localclass, MMObjectNode mmserver) throws Exception {
-		System.out.println("Service Builder ("+tableName+") add service called !");
-		System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" ");
+		boolean result = false;
+
+		if( debug ) debug("addService("+name+","+localclass+","+mmserver+"), inserting.");
+
+		//System.out.println("Service Builder ("+tableName+") add service called !");
+		//System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" ");
+
 		MMObjectNode newnode=getNewNode("system");
 		newnode.setValue("name",name);
-		newnode.setValue("devtype","class="+localclass);
+		newnode.setValue("cdtype","C="+localclass); // Warning this will be altered to devtype
 		newnode.setValue("state","waiting");
 		newnode.setValue("info","");
 		int newid=insert("system",newnode);
 		if (newid!=-1) {
 			InsRel bul=(InsRel)mmb.getMMObject("insrel");
-			RelDef bul2=(RelDef)mmb.getMMObject("reldef");
-			bul.insert("system",newid,mmserver.getIntValue("number"),bul2.getGuessedByName("related"));
+			bul.insert("system",newid,mmserver.getIntValue("number"),14);	
+			result = true;
 		}
-		
+
+		if( result ) 
+		{
+			if( debug )	
+				debug("addService("+name+","+localclass+","+mmserver+"): successfully inserted");
+		}
+		else
+			debug("addService("+name+","+localclass+","+mmserver+"): ERROR: failure to insert!");
 	}
 	
 	// adds a service to this builder, name is allways valid and correct
@@ -118,8 +168,10 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	// adds a init hashtable for use for authentication and other startup
 	// params.
 	public void addService(String name, String localclass, MMObjectNode mmserver, Hashtable initparams) throws Exception {
-		System.out.println("Service Builder ("+tableName+") add service called !");
-		System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" "+initparams);
+
+		if( debug ) debug("addService("+name+","+localclass+","+mmserver+","+initparams+"), called, but we do nothing.");
+		//System.out.println("Service Builder ("+tableName+") add service called !");
+		//System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" "+initparams);
 		
 	}
 
@@ -127,39 +179,70 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	// but that its not running at the moment. possible model will be removed 
 	// results in offline state for X hours and removed in X days.
 	public void removeService(String name) throws Exception {
+		if( debug ) debug("removeService("+name+"), called, but we do nothing.");
+
 	}
 
 	// remove a service, does not mean it will be 100% removed from mmbase 
 	// but that its not running at the moment. possible model will be removed 
 	// results in offline state for X hours and removed in X days.
 	public void removeService(String name, Hashtable initparams) throws Exception {
+		if( debug ) debug("removeService("+name+","+initparams+"), called, but we do nothing.");
+
 	}
 
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		System.out.println("Service Node remote ="+number);
+		if( debug ) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"), sending to remote");
 		sendToRemote(number,builder,ctype);
 		return(true);
 	}
 
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+		if( debug ) debug("nodeLocalChanged("+number+","+builder+","+ctype+"), sending to remote");
 		System.out.println("Service Node local ="+number);
 		sendToRemote(number,builder,ctype);
 		return(true);
 	}
 
 	public void sendToRemote(String number,String builder,String ctype) {
+
+		if( debug ) debug("sendToRemote("+number+","+builder+","+ctype+"), sending to remote..");
+
+		boolean result = false;
+		String name = null;
+		String nodename = null;
+		MMObjectNode node = null;
+		MMObjectNode thisnode = null;
+
+		MMServers bul = (MMServers)mmb.getMMObject("mmservers");
+		
 		// figure out what server we are attached to.
+		// ------------------------------------------
 		Enumeration e=mmb.getInsRel().getRelated(number,"mmservers");
 		if  (e.hasMoreElements()) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();	
-			String name=node.getStringValue("name");
-			MMServers bul=(MMServers)mmb.getMMObject("mmservers");
+			node=(MMObjectNode)e.nextElement();	
+			if(debug)debug("sendToRemote(): got node("+node+"), checking name..");
+			name=node.getStringValue("name");
+			if(debug)debug("sendToRemote(): got name("+name+"), getting proto..");
 			ProtocolDriver pd=bul.getDriverByName(name);
-			MMObjectNode thisnode=getNode(number);
+			if(debug)debug("sendToRemote(): got prot("+pd  +"), getting  node..");
+			thisnode=getNode(number);
 			if (thisnode!=null) {
-				pd.signalRemoteNode(thisnode.getStringValue("name"),builder,ctype);
+				nodename = thisnode.getStringValue("name");
+				if( debug ) debug("sendToRemote("+number+","+builder+","+ctype+"), sending a signalRemoteNode("+nodename+","+builder+","+ctype+")..");
+				pd.signalRemoteNode(nodename,builder,ctype);
+				result = true;
 			}
-		}	
+			else
+				debug("sendToRemote("+number+","+builder+","+ctype+"): ERROR: Could not get node("+number+")!");
+		}
+
+		if( result ) 	
+		{
+			if( debug ) debug("sendToRemote("+number+","+builder+","+ctype+"), successfully signalled to node("+nodename+") with number("+number+")");
+		}
+		else
+			debug("sendToRemote("+number+","+builder+","+ctype+"): ERROR: could not signal node("+nodename+") with number("+number+")");  
 	}
 }
