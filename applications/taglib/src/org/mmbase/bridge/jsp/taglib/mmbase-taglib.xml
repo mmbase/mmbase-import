@@ -554,7 +554,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>createRelation</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.CreateRelationTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateRelationTag</tagclass>
     <info>
     Creates a relation between two nodes.
     </info>
@@ -596,7 +596,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>createNode</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.CreateNodeTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag</tagclass>
     <info>
     Creates a new node
     </info>
@@ -628,7 +628,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>setField</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.SetFieldTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
     <info>
       Changes the field 'name' from node 'node' (can also be
       list).
@@ -653,7 +653,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>transaction</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.TransactionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
      The transaction tag creates a transaction. A transaction is
@@ -686,7 +686,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>deleteNode</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.DeleteNodeTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       This tag extends the `node' tag, and is precisely the same. The

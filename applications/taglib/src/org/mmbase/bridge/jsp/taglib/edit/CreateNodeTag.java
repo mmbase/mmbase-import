@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.edit;
 
 import java.io.IOException;
 
@@ -19,6 +19,8 @@ import javax.servlet.jsp.tagext.BodyContent;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
+
+import org.mmbase.bridge.jsp.taglib.AbstractNodeProviderTag;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

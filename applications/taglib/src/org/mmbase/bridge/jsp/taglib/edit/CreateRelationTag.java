@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.edit;
 
 import java.io.IOException;
 
@@ -20,10 +20,13 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Relation;
 
+import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.CloudProvider;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
-*
+* A tag lib to create relations. 
 *
 * @author Michiel Meeuwissen
 */
