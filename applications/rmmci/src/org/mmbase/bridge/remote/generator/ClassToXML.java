@@ -28,12 +28,13 @@ public class ClassToXML {
 
     public static Element classToXML(String className, Document document) throws Exception {
         Hashtable methodHash = new Hashtable();
-        Element xmle = document.createElement("class");
+        Class clazz = Class.forName(className);
+
+        Element xmle = document.createElement(clazz.isInterface() ? "interface" : "class");
         xmle.setAttribute("name", className);
         int shortIndex = className.lastIndexOf(".");
         xmle.setAttribute("shortname", className.substring(shortIndex + 1));
 
-        Class clazz = Class.forName(className);
         Class[] interfaceClasses = clazz.getInterfaces();
         String implementsString = "";
         for (int counter = 0; counter < interfaceClasses.length; counter++) {
@@ -62,12 +63,13 @@ public class ClassToXML {
                 System.arraycopy(methods, 0, temp, 0, methods.length);
                 temp[methods.length] = extraMethods[x];
                 methods = temp;
-                System.err.println("adding " + name + " to " + className);
+                //System.err.println("adding " + name + " to " + className);
             }
         }
 
         //Method toString = xmle.getClass().getM
         for (int i = 0; i < methods.length; i++) {
+            if (Modifier.isStatic(methods[i].getModifiers())) continue;
             boolean createMethod = true;
             //see if the declared method belongs to the same class
             //we need to declare it
@@ -84,6 +86,7 @@ public class ClassToXML {
                 }
             }
             if (createMethod) {
+                //System.out.println("Creating method " + methods[i].getReturnType() + " " + methods[i].getName());
                 String key = "";
                 Element method = document.createElement("method");
                 key += "method";
@@ -101,10 +104,10 @@ public class ClassToXML {
                 key += ")";
                 method.appendChild(parameters);
 
-                Element returValue = document.createElement("output");
+                Element returnValue = document.createElement("output");
                 Class returnType = methods[i].getReturnType();
-                returValue.appendChild(ClassToXML.classToXML(returnType, document));
-                method.appendChild(returValue);
+                returnValue.appendChild(ClassToXML.classToXML(returnType, document));
+                method.appendChild(returnValue);
                 if (methodHash.get(key) == null) {
                     xmle.appendChild(method);
                     methodHash.put(key, "true");
