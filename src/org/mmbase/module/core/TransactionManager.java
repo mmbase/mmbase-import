@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.7 2000-11-24 12:08:38 vpro Exp $
+	$Id: TransactionManager.java,v 1.8 2000-11-24 12:15:22 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.7  2000/11/24 12:08:38  vpro
+	Rico: increased debug
+	
 	Revision 1.6  2000/11/24 12:07:30  vpro
 	Rico: increased debug
 	
@@ -40,7 +43,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.7 2000-11-24 12:08:38 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.8 2000-11-24 12:15:22 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -257,12 +260,14 @@ public class TransactionManager implements TransactionManagerInterface {
 			tmpstate=node.getDBState("_number");
 			if ((tmpstate==FieldDefs.DBSTATE_UNKNOWN || tmpstate==FieldDefs.DBSTATE_VIRTUAL)) {
  				exists=node.getStringValue("_exists");
-				if (exists.equals(EXISTS_NO)) {
-						nodeexist[i]=I_EXISTS_NO;
+				if (exists==null) {
+					debug("performCommits: exists field does not exist "+node);
+				} else if (exists.equals(EXISTS_NO)) {
+					nodeexist[i]=I_EXISTS_NO;
 				} else if (exists.equals(EXISTS_YES)) {
-						nodeexist[i]=I_EXISTS_YES;
+					nodeexist[i]=I_EXISTS_YES;
 				} else if (exists.equals(EXISTS_NOLONGER)) {
-						nodeexist[i]=I_EXISTS_NOLONGER;
+					nodeexist[i]=I_EXISTS_NOLONGER;
 				} else {
 					debug("performCommits: invalid value for _exists "+node);
 				}
