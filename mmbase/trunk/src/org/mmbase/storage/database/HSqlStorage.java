@@ -11,8 +11,6 @@ package org.mmbase.storage.database;
 
 import java.sql.ResultSet;
 import java.util.*;
-import org.mmbase.storage.*;
-import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
 
@@ -25,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: HSqlStorage.java,v 1.4 2003-05-05 13:30:59 michiel Exp $
+ * @version $Id: HSqlStorage.java,v 1.5 2003-05-08 15:25:54 kees Exp $
  */
 public class HSqlStorage extends RelationalDatabaseStorage {
     /**
