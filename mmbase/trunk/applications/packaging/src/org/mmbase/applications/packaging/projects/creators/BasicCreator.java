@@ -43,6 +43,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
     private String type="unknown/unknown";
     private String description="";
 
+
     private ArrayList packagesteps;
     private packageStep projectstep;
     ArrayList relatedtargetcreate =  new  ArrayList();
@@ -679,6 +680,14 @@ public class BasicCreator implements CreatorInterface,Runnable {
         return(getItemStringValue(target,"releasenotes"));
    }
 
+   public String getInstallReset(Target target) {
+        String tmp=getItemStringValue(target,"installreset");
+	if (tmp!=null && !tmp.equals("")) {
+		return tmp;
+	} 
+	return "false";
+   }
+
    public String getInstallationNotes(Target target) {
         return(getItemStringValue(target,"installationnotes"));
    }
@@ -742,6 +751,51 @@ public class BasicCreator implements CreatorInterface,Runnable {
         step.setUserFeedBack("added "+guiname+" file : "+dfn+" ... done");
    }
 
+
+   public void addScreenshotFiles(JarOutputStream jarfile,Target target) {
+	try {
+      		JarEntry entry = new JarEntry("screenshots"+File.separator);
+        	jarfile.putNextEntry(entry);
+	} catch (Exception e) {
+		e.printStackTrace();
+		return;
+	}
+
+        for (Iterator i = target.getScreenshots().iterator(); i.hasNext();) {
+                String name=(String)i.next();
+                String filen=(String)i.next(); // not used here
+                String description=(String)i.next(); // not used here
+		String fn=target.getBaseDir()+"packaging"+File.separator+filen;
+
+		String dfn=filen;
+		log.info("SCREENSHOW ADD FILE="+fn);
+		log.info("SCREENSHOW ADD DFILE="+dfn);
+        	packageStep step=getNextPackageStep();
+        	step.setUserFeedBack("added screenshot file : "+dfn+" ... done");
+        	byte[] buffer = new byte[1024];
+  		int bytesRead;
+     		try {
+      		FileInputStream file = new FileInputStream(fn);
+      		try {
+       			JarEntry entry = new JarEntry(dfn);
+       	         	jarfile.putNextEntry(entry);
+       			while ((bytesRead = file.read(buffer)) != -1) {
+       	 			jarfile.write(buffer, 0, bytesRead);
+       			}
+	        } catch (Exception e) {
+      		} finally {
+       		file.close();
+      		}
+	} catch (Exception e) {
+		e.printStackTrace();
+        	step.setUserFeedBack("added screenshot file : "+dfn+" ... error file not found");
+                step.setType(packageStep.TYPE_ERROR);
+		return;
+	}
+        step.setUserFeedBack("added screenshot file : "+dfn+" ... done");
+	}
+   }
+
   public String getRelatedPeopleXML(String type,String subtype,Target target) {
 	String result="\t<"+type+">\n";
 	List people=getRelatedPeople(type,target);
@@ -758,6 +812,38 @@ public class BasicCreator implements CreatorInterface,Runnable {
 		}
 	}
 	result+="\t</"+type+">\n";
+	return result;
+  }
+
+
+  public String getScreenshotsXML(Target target) {
+	String result="\t<screenshots>\n";
+	ArrayList l=target.getScreenshots();
+	if (l!=null) {
+        	for (Iterator i = l.iterator(); i.hasNext();) {
+			String name=(String)i.next();
+			String file=(String)i.next();
+			String description=(String)i.next();
+			result+="\t\t<screenshot name=\""+name+"\" file=\""+file+"\">"+description+"</screenshot>\n";
+		}
+	}
+	result+="\t</screenshots>\n";
+	return result;
+  }
+
+
+  public String getStarturlsXML(Target target) {
+	String result="\t<starturls>\n";
+	ArrayList l=target.getStarturls();
+	if (l!=null) {
+        	for (Iterator i = l.iterator(); i.hasNext();) {
+			String name=(String)i.next();
+			String link=(String)i.next();
+			String description=(String)i.next();
+			result+="\t\t<url name=\""+name+"\" link=\""+link+"\">"+description+"</url>\n";
+		}
+	}
+	result+="\t</starturls>\n";
 	return result;
   }
 
@@ -786,6 +872,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	decodeStringItem(target,"description");
 	decodeStringItem(target,"releasenotes");
 	decodeStringItem(target,"installationnotes");
+	decodeStringItem(target,"installreset");
 	decodeStringAttributeItem(target,"license","type");
 	decodeStringAttributeItem(target,"license","version");
 	decodeStringAttributeItem(target,"license","name");
@@ -793,6 +880,8 @@ public class BasicCreator implements CreatorInterface,Runnable {
   	decodeRelatedPeople(target,"supporters","supporter");
   	decodeRelatedPeople(target,"developers","developer");
   	decodeRelatedPeople(target,"contacts","contact");
+  	decodeScreenshots(target);
+  	decodeStarturls(target);
   	decodePackageDepends(target,"packagedepends");
   	decodePublishProvider(target);
 	return true;
@@ -857,6 +946,68 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	return true;
   }
 
+
+  public boolean decodeScreenshots(Target target) {
+	ExtendedDocumentReader reader=target.getReader();
+	ArrayList list=new ArrayList();
+        org.w3c.dom.Node n=reader.getElementByPath(prefix+".screenshots");
+	if (n!=null) {
+       	org.w3c.dom.Node n2=n.getFirstChild();
+      	while (n2!=null) {
+       		if (n2.getNodeName().equals("screenshot")) {
+        		NamedNodeMap nm=n2.getAttributes();
+              		if (nm!=null) {
+				String name="";
+				String file="";
+				String description="";
+                       		org.w3c.dom.Node n3=nm.getNamedItem("name");
+                       		if (n3!=null) name=n3.getNodeValue();
+                       		n3=nm.getNamedItem("file");
+                       		if (n3!=null) file=n3.getNodeValue();
+				n3=n2.getFirstChild();
+                       		if (n3!=null) description=n3.getNodeValue();
+				log.info("SCREENSHOT="+name+" "+file+"D="+description);
+				target.addScreenshot(name,file,description);
+
+			}
+		}
+        	n2=n2.getNextSibling();
+		}
+	}
+	return true;
+  }
+
+
+  public boolean decodeStarturls(Target target) {
+	ExtendedDocumentReader reader=target.getReader();
+	ArrayList list=new ArrayList();
+        org.w3c.dom.Node n=reader.getElementByPath(prefix+".starturls");
+	if (n!=null) {
+       	org.w3c.dom.Node n2=n.getFirstChild();
+      	while (n2!=null) {
+       		if (n2.getNodeName().equals("url")) {
+        		NamedNodeMap nm=n2.getAttributes();
+              		if (nm!=null) {
+				String name="";
+				String link="";
+				String description="";
+                       		org.w3c.dom.Node n3=nm.getNamedItem("name");
+                       		if (n3!=null) name=n3.getNodeValue();
+                       		n3=nm.getNamedItem("link");
+                       		if (n3!=null) link=n3.getNodeValue();
+				n3=n2.getFirstChild();
+                       		if (n3!=null) description=n3.getNodeValue();
+				log.info("STARTURL="+name+" "+link+"D="+description);
+				target.addStarturl(name,link,description);
+
+			}
+		}
+        	n2=n2.getNextSibling();
+		}
+	}
+	return true;
+  }
+
    public String getItemStringValue(Target target,String name) {
 	Object o=target.getItem(name);
 	if (o!=null) return (String)o;
@@ -886,6 +1037,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	body+="\t<license type=\""+getLicenseType(target)+"\" version=\""+getLicenseVersion(target)+"\" name=\""+getLicenseName(target)+"\" />\n";
 	body+="\t<releasenotes>"+getReleaseNotes(target)+"</releasenotes>\n";
 	body+="\t<installationnotes>"+getInstallationNotes(target)+"</installationnotes>\n";
+	body+="\t<installreset>"+getInstallReset(target)+"</installreset>\n";
 	return body;
    }
 
@@ -1035,6 +1187,22 @@ public class BasicCreator implements CreatorInterface,Runnable {
      */
     public int getProgressBarValue() {
         return (int) progressbar;
+    }
+
+
+    /**
+     *  set the progressBarValue attribute of the BasicPackage object
+     */
+    public void setProgressBarValue(int value) {
+	progressbar=value;
+    }
+
+
+    /**
+     *  set the subprogressBarValue attribute of the BasicPackage object
+     */
+    public void setSubProgressBarValue(int value) {
+	subprogressbar=value;
     }
 
 

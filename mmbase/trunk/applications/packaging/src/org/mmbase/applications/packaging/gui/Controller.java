@@ -323,11 +323,65 @@ public class Controller {
         return list;
     }
 
-    public List getBundleInfo(String id,String wv,String wp) {
-                List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-                MMObjectNode virtual = builder.getNewNode("admin");
+    public List getBundleScreenshots(String id,String wv,String wp) {
+            List list = new ArrayList();
+             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        BundleInterface b=null;
+        if (wv.equals("best")) {
+            b=(BundleInterface)BundleManager.getBundle(id);
+        } else {
+            // ok lets decode the version and provider we want
+            b=(BundleInterface)BundleManager.getBundle(id,wv,wp);
+        }
+        if (b!=null) {
+            List screenshots=b.getScreenshots();
+            if (screenshots!=null) {
+                for (Iterator i = screenshots.iterator(); i.hasNext();) {
+                        MMObjectNode virtual = builder.getNewNode("admin");
+                	virtual.setValue("name",(String)i.next());
+                	virtual.setValue("file",(String)i.next());
+                	virtual.setValue("description",(String)i.next());
+                	list.add(virtual);
+            	}
+            }
+        }
+        return list;
+    }
+
+
+    public List getBundleStarturls(String id,String wv,String wp) {
+            List list = new ArrayList();
+             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        BundleInterface b=null;
+        if (wv.equals("best")) {
+            b=(BundleInterface)BundleManager.getBundle(id);
+        } else {
+            // ok lets decode the version and provider we want
+            b=(BundleInterface)BundleManager.getBundle(id,wv,wp);
+        }
+        if (b!=null) {
+            List starturls=b.getStarturls();
+            if (starturls!=null) {
+                for (Iterator i = starturls.iterator(); i.hasNext();) {
+                        MMObjectNode virtual = builder.getNewNode("admin");
+                	virtual.setValue("name",(String)i.next());
+                	virtual.setValue("link",(String)i.next());
+                	virtual.setValue("description",(String)i.next());
+                	list.add(virtual);
+            	}
+            }
+        }
+        return list;
+    }
+
+    public List getBundleInfo(String id,String wv,String wp) {
+        List list = new ArrayList();
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+
+        MMObjectNode virtual = builder.getNewNode("admin");
 
         BundleInterface b=null;
         if (wv.equals("best")) {

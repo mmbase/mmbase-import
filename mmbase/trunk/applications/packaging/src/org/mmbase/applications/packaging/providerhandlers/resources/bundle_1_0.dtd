@@ -2,7 +2,7 @@
     bundle.dtd
 -->
 
-<!ELEMENT bundle (description*,license*,releasenotes*,installationnotes*,initiators*,supporters*,developers*,contacts*,neededpackages)>
+<!ELEMENT bundle (description*,license*,releasenotes*,installationnotes*,installreset*,screenshots*,starturls*,initiators*,supporters*,developers*,contacts*,neededpackages)>
 <!ELEMENT description (#PCDATA)>
 <!ATTLIST bundle name CDATA #IMPLIED>
 <!ATTLIST bundle type CDATA #IMPLIED>
@@ -19,6 +19,19 @@
 <!ELEMENT releasenotes (#PCDATA)>
 
 <!ELEMENT installationnotes (#PCDATA)>
+
+
+<!ELEMENT installreset (#PCDATA)>
+
+<!ELEMENT screenshots (screenshot*)>
+<!ELEMENT screenshot (#PCDATA)>
+<!ATTLIST screenshot name CDATA #IMPLIED>
+<!ATTLIST screenshot file CDATA #IMPLIED>
+
+<!ELEMENT starturls (url*)>
+<!ELEMENT url (#PCDATA)>
+<!ATTLIST url name CDATA #IMPLIED>
+<!ATTLIST url link CDATA #IMPLIED>
 
 <!ELEMENT initiators (initiator*)>
 <!ELEMENT initiator (#PCDATA)>

@@ -111,6 +111,14 @@ public class BundleContainer implements BundleInterface {
         return activeBundle.getRelatedPeople(type);
     }
 
+    public List getScreenshots() {
+        return activeBundle.getScreenshots();
+    }
+
+    public List getStarturls() {
+        return activeBundle.getStarturls();
+    }
+
     public String getName() {
         return activeBundle.getName();
     }

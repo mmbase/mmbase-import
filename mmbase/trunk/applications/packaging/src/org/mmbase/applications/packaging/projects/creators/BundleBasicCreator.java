@@ -103,6 +103,9 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 		createBundleMetaFile(jarfile,target,newversion);
         	step.setUserFeedBack("creating bundle.xml file...done");
 
+		// add screenshots
+		addScreenshotFiles(jarfile,target);
+
 		// set to 35%
         	increaseProgressBar(100);
 
@@ -197,8 +200,9 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 	body+="\t<license type=\""+getLicenseType(target)+"\" version=\""+getLicenseVersion(target)+"\" name=\""+getLicenseName(target)+"\" />\n";
 	body+="\t<releasenotes>\n"+getReleaseNotes(target)+"\n</releasenotes>\n";
 	body+="\t<installationnotes>\n"+getInstallationNotes(target)+"\n</installationnotes>\n";
-
-
+        body+="\t<installreset>"+getInstallReset(target)+"</installreset>\n";
+  	body+=getScreenshotsXML(target);
+  	body+=getStarturlsXML(target);
   	body+=getRelatedPeopleXML("initiators","initiator",target);
   	body+=getRelatedPeopleXML("supporters","supporter",target);
   	body+=getRelatedPeopleXML("developers","developer",target);
@@ -312,6 +316,8 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
    public String getXMLFile(Target target) {
         String body=getDefaultXMLHeader(target);
 	body+=getDefaultXMLMetaInfo(target);
+        body+=getScreenshotsXML(target);
+        body+=getStarturlsXML(target);
         body+=getRelatedPeopleXML("initiators","initiator",target);
         body+=getRelatedPeopleXML("supporters","supporter",target);
         body+=getRelatedPeopleXML("developers","developer",target);

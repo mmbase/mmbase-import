@@ -53,7 +53,7 @@ public class BasicBundle implements BundleInterface {
     private ProviderInterface provider;
     private ShareInfo shareinfo;
     private HashMap neededpackages = new HashMap();
-    private ArrayList initiators,supporters,contacts,developers;
+    private ArrayList initiators,supporters,contacts,developers,screenshots,starturls;
     private float progressbar = 0;
     private float progressstep = 1;
     private PackageInterface pkg = null;
@@ -100,6 +100,14 @@ public class BasicBundle implements BundleInterface {
 
     public Iterator getNeededPackages() {
         return neededpackages.values().iterator();
+    }
+
+    public List getScreenshots() {
+        return screenshots;
+    }
+
+    public List getStarturls() {
+        return starturls;
     }
     
     public String getVersion() {
@@ -531,6 +539,10 @@ public class BasicBundle implements BundleInterface {
                        licenseversion = n4.getNodeValue();
                    }
                }
+           } else if (n2.getNodeName().equals("screenshots")) {
+		screenshots = decodeRelatedScreenshots(n2);
+           } else if (n2.getNodeName().equals("starturls")) {
+		starturls = decodeRelatedStarturls(n2);
            } else if (n2.getNodeName().equals("initiators")) {
                initiators = decodeRelatedPeople(n2,"initiator");
            } else if (n2.getNodeName().equals("supporters")) {
@@ -571,6 +583,100 @@ public class BasicBundle implements BundleInterface {
                    if (n3 != null) p.setMailto(n3.getNodeValue());
                }
                list.add(p);
+           }
+           n2 = n2.getNextSibling();
+       }
+       return list;
+   }
+
+
+   private ArrayList decodeRelatedScreenshots(org.w3c.dom.Node n) {
+       ArrayList list = new ArrayList();
+       org.w3c.dom.Node n2 = n.getFirstChild();
+       while (n2 != null) {
+           if (n2.getNodeName().equals("screenshot")) {
+               NamedNodeMap nm = n2.getAttributes();
+	       String ufile="";
+               if (nm != null) {
+		   String name="";
+		   String file="";
+		   String description="";
+                   org.w3c.dom.Node n3 = nm.getNamedItem("name");
+                   if (n3 != null) name=n3.getNodeValue();
+                   n3 = nm.getNamedItem("file");
+                   if (n3 != null) file=n3.getNodeValue();
+                   n3=n2.getFirstChild();
+                   if (n3!=null) description=n3.getNodeValue();
+
+		   // tricky tricky how do we handle where to find
+		   // the file. if local we write to a tmp dir for now
+		   // so a browser can find it. and if remote thats
+		   // allready done by our remote counterpart so we aim
+		   // to that.
+		   if (provider!=null) {
+			String method=provider.getMethod();
+			if (method.equals("disk")) {
+				String htmldir=MMBaseContext.getHtmlRoot() + File.separator+"mmbase"+File.separator+"packagemanager"+File.separator+"images"+File.separator;
+				ufile=File.separator+"mmbase"+File.separator+"packagemanager"+File.separator+"images"+File.separator+getId()+File.separator+file;
+                    		File d = new File(htmldir+getId());
+                    		if (!d.exists()) {
+                        		d.mkdir();
+                    		}
+                    		d = new File(htmldir+getId()+File.separator+"screenshots");
+                    		if (!d.exists()) {
+                        		d.mkdir();
+                    		}
+        			JarFile jf = getJarFile();
+				if (jf!=null) {
+                    			try {
+            					JarEntry je = jf.getJarEntry(file);
+                        			BufferedInputStream in = new BufferedInputStream(jf.getInputStream(je));
+                     				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(htmldir+getId()+File.separator+file));
+                        			int val;
+                        			while ((val = in.read()) != -1) {
+                            				out.write(val);
+                        			}
+                        			out.close();
+                    			} catch (IOException f) {
+                        			f.printStackTrace();
+                    			}
+				}	
+			} else if (method.equals("http")) {
+				log.info("HTTP METHOD");
+			}
+		   }
+
+               	   list.add(name);
+               	   list.add(ufile);
+               	   list.add(description);
+               }
+           }
+           n2 = n2.getNextSibling();
+       }
+       return list;
+   }
+
+
+   private ArrayList decodeRelatedStarturls(org.w3c.dom.Node n) {
+       ArrayList list = new ArrayList();
+       org.w3c.dom.Node n2 = n.getFirstChild();
+       while (n2 != null) {
+           if (n2.getNodeName().equals("url")) {
+               NamedNodeMap nm = n2.getAttributes();
+               if (nm != null) {
+		   String name="";
+		   String link="";
+		   String description="";
+                   org.w3c.dom.Node n3 = nm.getNamedItem("name");
+                   if (n3 != null) name=n3.getNodeValue();
+                   n3 = nm.getNamedItem("link");
+                   if (n3 != null) link=n3.getNodeValue();
+                   n3=n2.getFirstChild();
+                   if (n3!=null) description=n3.getNodeValue();
+               	   list.add(name);
+               	   list.add(link);
+               	   list.add(description);
+               }
            }
            n2 = n2.getNextSibling();
        }

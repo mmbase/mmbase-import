@@ -42,6 +42,8 @@ public class Target {
     String publishsharepassword;
     boolean publishstate;
     boolean isbundle;
+    private ArrayList screenshots = new ArrayList();
+    private ArrayList starturls = new ArrayList();
     HashMap items = new HashMap();
     ExtendedDocumentReader reader;  
     Project parent;
@@ -92,6 +94,13 @@ public class Target {
         return depends;
     }
 
+    public ArrayList getScreenshots() {
+        return screenshots;
+    }
+
+    public ArrayList getStarturls() {
+        return starturls;
+    }
 
     /**
      *  Gets the path attribute of the Target object
@@ -281,6 +290,20 @@ public class Target {
     public boolean addPackageDepends(String packageid, String version) {
         return creator.addPackageDepends(this, packageid, version);
     }
+
+    public void addScreenshot(String name, String file, String description) {
+	screenshots.add(name);
+	screenshots.add(file);
+	screenshots.add(description);
+    }
+
+
+    public void addStarturl(String name, String link, String description) {
+	starturls.add(name);
+	starturls.add(link);
+	starturls.add(description);
+    }
+
 
 
     /**
@@ -839,7 +862,7 @@ public class Target {
 		ProviderInterface o=ProviderManager.getProvider(publishprovider);
 		if (o != null && b !=null) {
 			o.setPackageStep(step);
-			boolean result = o.publish(b,getPublishSharePassword());
+			boolean result = o.publish(getCreator(),b,getPublishSharePassword());
 			return result;
 		}
 	} else if (!isBundle()) {
@@ -858,7 +881,7 @@ public class Target {
 		ProviderInterface o=ProviderManager.getProvider(publishprovider);
 		if (o != null && p !=null) {
 			o.setPackageStep(step);
-			boolean result = o.publish(p,getPublishSharePassword());
+			boolean result = o.publish(getCreator(),p,getPublishSharePassword());
 			return result;
 		}
 	}
