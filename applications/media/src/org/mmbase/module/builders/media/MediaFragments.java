@@ -227,7 +227,7 @@ public class MediaFragments extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    protected boolean isSubFragment(MMObjectNode mediafragment) {
+    public boolean isSubFragment(MMObjectNode mediafragment) {
         int mediacount = mediafragment.getRelationCount("mediasources");        
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
@@ -237,7 +237,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediafragment sub media fragment
      * @return the parent media fragment
      */
-    protected MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+    public MMObjectNode getParentFragment(MMObjectNode mediafragment) {
         Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
         if(!e.hasMoreElements()) {

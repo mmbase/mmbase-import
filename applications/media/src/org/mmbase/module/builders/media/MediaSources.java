@@ -58,8 +58,15 @@ public class MediaSources extends MMObjectBuilder {
         int size = 0;
         for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements(); e.nextElement()) size++;
         formats = new String[size];    
-        int i = 0;
-        for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements(); formats[i++] = formatsBundle.getString((String) e.nextElement()));        
+        for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements();) {
+            String key = (String) e.nextElement();
+            int index = Integer.parseInt(key) - 1; 
+            if (index >= 0 && index <= size) {
+                formats[index] = formatsBundle.getString(key);
+            } else {
+                log.error("Configuration error, the media formats were not numbered right");
+            }
+        }
     }
 
     
@@ -313,10 +320,10 @@ public class MediaSources extends MMObjectBuilder {
                     }
                 } else if (args.get(0).equals("codec")) {
                     int val = node.getIntValue("codec");
-                    return MediaSources.convertNumberToCodec(val);
+                    return convertNumberToCodec(val);
                 } else if (args.get(0).equals("format")) {
                     int val = node.getIntValue("format");
-                    return MediaSources.convertNumberToFormat(val);
+                    return convertNumberToFormat(val);
                 } else {
                     return node.getStringValue((String) args.get(0));
                 }            
