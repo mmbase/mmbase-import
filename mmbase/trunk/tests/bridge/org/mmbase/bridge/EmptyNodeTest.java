@@ -60,6 +60,8 @@ public class EmptyNodeTest extends NodeTest {
                 assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("xml")) {
                 // I don't know..
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail("Unknown fieldtype encountered " + fieldTypes[i]);
             }
@@ -98,6 +100,13 @@ public class EmptyNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             Document value = node.getXMLValue(fieldTypes[i] + "field");
             assertTrue("KNOWN bug. Empty XML Field not null (as javadoc sais it should) but '" + value + "'", value == null); 
+        }
+    }
+
+    public void testGetNodeValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Node value = node.getNodeValue(fieldTypes[i] + "field");
+            assertTrue("KNOWN bug. Empty Node Field not null  but '" + value + "'", value == null); 
         }
     }
 

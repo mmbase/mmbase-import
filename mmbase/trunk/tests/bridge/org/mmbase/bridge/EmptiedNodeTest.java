@@ -26,12 +26,9 @@ public class EmptiedNodeTest extends EmptyNodeTest {
         // Create a empty test node.
         Cloud cloud = getCloud();
         node = cloud.getNodeManager("aa").createNode();
-        node.setValue("bytefield", null);
-        node.setValue("doublefield", null);
-        node.setValue("floatfield", null);
-        node.setValue("intfield", null);
-        node.setValue("longfield", null);
-        node.setValue("stringfield", null);
+        for (int i = 0; i < fieldTypes.length; i++) {
+            node.setValue(fieldTypes[i] + "field", null);
+        }
         node.commit();
     }
 

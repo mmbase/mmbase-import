@@ -45,6 +45,8 @@ public class FilledNodeTest extends NodeTest {
         // Create a test node.
         Cloud cloud = getCloud();
         node = cloud.getNodeManager("aa").createNode();
+        Node typedefNode = cloud.getNodeManager("bb");
+        assertTrue(typedefNode != null);
         byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
         node.setValue("bytefield", bytes);
         node.setValue("doublefield", new Double(Double.MAX_VALUE));
@@ -53,6 +55,7 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("longfield", new Long(Long.MAX_VALUE));
         node.setValue("stringfield", "Bridge testing!");     
         node.setValue("xmlfield", getEmptyDocument());
+        node.setValue("nodefield", typedefNode);
         node.commit();
     }
 
@@ -80,6 +83,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("xml")) {
                 //   assertTrue(getEmptyDocument().isEqualNode((org.w3c.dom.Node)object)); java 1.5
                 assertTrue(Casting.toString(getEmptyDocument()).equals(Casting.toString((Document)object)));
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -106,6 +111,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue("Bridge testing!".equals(new String(bytes)));
             } else if (fieldTypes[i].equals("xml")) {
                 // System.err.println("Don't know what getByteValue on get XML Field should give: " + bytes);
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -129,6 +136,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(d == -1);
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(d == -1);
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -152,6 +161,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(f == -1);
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(f == -1);
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -175,6 +186,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(integer == -1);
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(integer == -1);
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -198,6 +211,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(l == -1);
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(l == -1);
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -222,6 +237,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("xml")) {
                 assertTrue(Casting.toString(getEmptyDocument()).equals(string));
                 // System.err.println("Don't know what getStringValue on get XML Field should give: '" + string + "'");
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
@@ -246,10 +263,18 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("xml")) {
                 //assertTrue(getEmptyDocument().isEqualNode(document)); java 1.5
                 assertTrue(Casting.toString(getEmptyDocument()).equals(Casting.toString(document)));
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
                 fail();
             }
         }
+    }
+    public void testGetNodeValue() {
+        Node nodeValue = node.getNodeValue("nodefield");
+        assertTrue(nodeValue != null);
+        assertTrue(nodeValue.getNumber() == getCloud().getNodeManager("bb").getNumber());
+        // getNodeValue on other types not defined (according to javadoc), so not tested here.
     }
 
 }

@@ -21,14 +21,10 @@ import org.mmbase.tests.*;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml"};
+    protected String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node"};
 
     public NodeTest(String name) {
         super(name);
-    }
-
-    public void setUp() {
-        System.out.println(this.getClass().getName());
     }
 
     abstract public void testGetValue();
@@ -43,6 +39,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetByteValue();
@@ -57,6 +54,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetDoubleValue();
@@ -71,6 +69,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetFloatValue();
@@ -85,6 +84,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetIntValue();
@@ -99,6 +99,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetLongValue();
@@ -113,6 +114,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetStringValue();
@@ -127,6 +129,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetLongValue();
         testGetXMLValue();
+        testGetNodeValue();
     }
 
     abstract public void testGetXMLValue();
@@ -141,6 +144,22 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetLongValue();
         testGetStringValue();
+        testGetNodeValue();
+    }
+
+    abstract public void testGetNodeValue();
+
+    public void testGetNodeValueCache() {
+        // Test if the first call doesn't make MMBase cache an incorrect value.
+        testGetNodeValue();
+        testGetValue();
+        testGetByteValue();
+        testGetDoubleValue();
+        testGetFloatValue();
+        testGetIntValue();
+        testGetLongValue();
+        testGetStringValue();
+        testGetXMLValue();
     }
 
     public void testSetSNumber() {
@@ -220,7 +239,7 @@ public abstract class NodeTest extends BridgeTest {
      
         if (otherContext.equals(context)) {
             otherContext = context + "other";
-            System.err.println(this.getClass().getName() + " TESTWARNING testSetContext: Could not find other context than " + context + " setting to '" + otherContext + "'");
+            System.err.println(this.getClass().getName() + " TESTWARNING testSetContext: Could not find other context than " + context + ", setting to '" + otherContext + "'");
         }
         
         // set context to something different:
