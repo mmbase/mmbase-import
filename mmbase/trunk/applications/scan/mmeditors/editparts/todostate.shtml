@@ -38,7 +38,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E1>
 					<OPTION VALUE="-1">Unknown
@@ -48,7 +48,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E2>
 					<OPTION VALUE="-1"> Unknown
@@ -58,7 +58,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E3>
 					<OPTION VALUE="-1"> Unknown
@@ -68,7 +68,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E4>
 					<OPTION VALUE="-1"> Unknown
@@ -78,7 +78,7 @@
 					<OPTION VALUE="4" SELECTED> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E5>
 					<OPTION VALUE="-1"> Unknown
@@ -88,7 +88,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5" SELECTED> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E6>
 					<OPTION VALUE="-1"> Unknown
@@ -98,7 +98,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6" SELECTED> Testing
-					<OPTION VALUE="7"> Fisnished
+					<OPTION VALUE="7"> Finished
 				</IF>
 				<IF $MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^=E7>
 					<OPTION VALUE="-1"> Unknown
@@ -108,7 +108,7 @@
 					<OPTION VALUE="4"> Underway
 					<OPTION VALUE="5"> Stopped
 					<OPTION VALUE="6"> Testing
-					<OPTION VALUE="7" SELECTED> Fisnished
+					<OPTION VALUE="7" SELECTED> Finished
 				</IF>
 				</SELECT><BR>
 				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
