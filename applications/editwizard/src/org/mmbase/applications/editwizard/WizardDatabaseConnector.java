@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.20 2002-08-26 14:38:50 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.21 2002-10-04 22:20:35 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -279,7 +279,7 @@ public class WizardDatabaseConnector {
      * @param       loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
      *
      */
-    public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws Exception {
+    public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws WizardException, SecurityException {
         // fires getRelations command and places results targetNode
         ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, queryrelations);
         fireCommand(cmd);
@@ -291,7 +291,7 @@ public class WizardDatabaseConnector {
             }
             Utils.appendNodeList(relations, targetNode);
         } else {
-            throw new Exception("Could NOT fire getRelations command for object " + objectnumber);
+            throw new WizardException("Could NOT fire getRelations command for object " + objectnumber);
         }
     }
 
@@ -302,18 +302,21 @@ public class WizardDatabaseConnector {
      * @param       objecttype      The objecttype which should be created.
      * @return     The resulting object node.
      */
-    public Node getNew(Node targetNode, String objecttype) throws Exception {
+    public Node getNew(Node targetNode, String objecttype) throws WizardException, SecurityException {
         // fires getNew command and places result in targetNode
         ConnectorCommandGetNew cmd = new ConnectorCommandGetNew(objecttype);
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
+            if (targetNode == null) {
+                throw new WizardException("No targetNode found");
+            }
             Node objectNode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
             tagDataNode(objectNode);
             targetNode.appendChild(objectNode);
             return objectNode;
         } else {
-            throw new Exception("getNew command returned an error. Objecttype="+objecttype);
+            throw new WizardException("getNew command returned an error. Objecttype=" + objecttype);
         }
     }
 
@@ -326,7 +329,7 @@ public class WizardDatabaseConnector {
      * @param     destinationobjectnumber the number of the destination object
      * @return   The resulting relation node.
      */
-    public Node getNewRelation(Node targetNode, String role, String sourceobjectnumber, String destinationobjectnumber) throws Exception {
+    public Node getNewRelation(Node targetNode, String role, String sourceobjectnumber, String destinationobjectnumber) throws WizardException, SecurityException {
         // fires getNewRelation command and places result in targetNode
         ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceobjectnumber, destinationobjectnumber);
         fireCommand(cmd);
@@ -337,7 +340,7 @@ public class WizardDatabaseConnector {
             targetNode.appendChild(objectNode);
             return objectNode;
         } else {
-            throw new Exception("getNewRelation command returned an error. role="+role + ", source="+sourceobjectnumber+", dest="+destinationobjectnumber);
+            throw new WizardException("getNewRelation command returned an error. role="+role + ", source="+sourceobjectnumber+", dest="+destinationobjectnumber);
         }
     }
 
@@ -389,7 +392,7 @@ public class WizardDatabaseConnector {
      * @param params The params to use when creating the objects and relations.
      * @return The resulting object(tree) node.
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params) throws WizardException, SecurityException {
         return createObject(data, targetParentNode, objectDef, params, 1);
     }
 
@@ -424,7 +427,7 @@ public class WizardDatabaseConnector {
      *                     The first ordernr in a list is 1
      * @return The resulting object(tree) node.
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException, SecurityException {
 
         String objecttype = Utils.getAttribute(objectDef, "type");
 
@@ -432,41 +435,35 @@ public class WizardDatabaseConnector {
         String nodename = objectDef.getNodeName();
 
         // no relations to add here..
-        NodeList relations = null;
-        Node objectNode = null;
+        NodeList relations;
+        Node objectNode;
 
         // check if we maybe should create multiple objects or relations
         if (nodename.equals("action")) {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
-            Node firstobject=null;
-            for (int i=0; i<objectdefs.getLength(); i++) {
-                firstobject=createObject(data,targetParentNode, objectdefs.item(i), params);
+            Node firstobject = null;
+            for (int i=0; i < objectdefs.getLength(); i++) {
+                firstobject = createObject(data, targetParentNode, objectdefs.item(i), params);
             }
+            log.debug("This is an action");
             return firstobject;
-        }
-
-        if (nodename.equals("relation")) {
+        } else if (nodename.equals("relation")) {
             // objectNode equals targetParentNode
             objectNode = targetParentNode;
             relations = Utils.selectNodeList(objectDef, ".");
-        }
-
-        if (nodename.equals("object")) {
-            try {
-                // create a new object of the given type
-                objectNode = getNew(targetParentNode, objecttype);
-            } catch (Exception e) {
-                log.error("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
-                throw new WizardException("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
-            }
+        } else if (nodename.equals("object")) {
+            // create a new object of the given type
+            objectNode = getNew(targetParentNode, objecttype);
             fillObjectFields(data,targetParentNode,objectDef,objectNode,params,createorder);
             relations = Utils.selectNodeList(objectDef, "relation");
+        } else {
+           throw new WizardException("Can only create with 'action' 'object' or 'relation' nodes");
         }
 
         // Let's see if we need to create new relations (maybe even with new objects inside...
         Node lastCreatedRelation = null;
 
-        for (int i=0; i<relations.getLength(); i++) {
+        for (int i=0; i < relations.getLength(); i++) {
             Node relation = relations.item(i);
             String dnumber = Utils.getAttribute(relation, "destination", null);
             dnumber=Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
@@ -474,20 +471,15 @@ public class WizardDatabaseConnector {
             String snumber="";
             Node relationNode = null;
             Node inside_object = null;
-            try {
-                // create the relation now we can get all needed params
-                role = Utils.getAttribute(relation, "role", "related");
-                snumber = Utils.getAttribute(objectNode, "number");
-                // dnumber can be null
-                relationNode = getNewRelation(objectNode, role, snumber, dnumber);
-                fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
-
-                tagDataNode(relationNode);
-                lastCreatedRelation = relationNode;
-            } catch (Exception e) {
-                log.error("Could NOT create relation in createObject. Role="+role+", snumber="+snumber+", destination="+dnumber);
-                return null;
-            }
+            // create the relation now we can get all needed params
+            role = Utils.getAttribute(relation, "role", "related");
+            snumber = Utils.getAttribute(objectNode, "number");
+            // dnumber can be null
+            relationNode = getNewRelation(objectNode, role, snumber, dnumber);
+            fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
+            
+            tagDataNode(relationNode);
+            lastCreatedRelation = relationNode;
 
             if (dnumber==null) {
                 // no dnumber given! create the object
@@ -523,8 +515,7 @@ public class WizardDatabaseConnector {
 //                    relationNode.appendChild(inside_object);
                 }
             } catch (Exception e) {
-                log.error("Could NOT place inside object in createObject. Message: "+e.getMessage());
-                return null;
+                throw new WizardException("Could NOT place inside object in createObject. Message: "+e.getMessage());
             }
         }
         if (nodename.equals("relation")) {
@@ -541,14 +532,15 @@ public class WizardDatabaseConnector {
      * @param binaries a HashMap containing files (binaries) uploaded in the wizard
      */
     private Element sendCommand(Element cmd, Map binaries) throws WizardException {
-        Element results=null;
-        try {
-            Document tmp = Utils.emptyDocument();
-            Dove dove = new Dove(tmp);
-            results = dove.executeRequest(cmd,userCloud,binaries);
-        } catch (Exception e) {
-            log.error("Error while communicating with Dove servlet."+e.getMessage());
-            throw new WizardException("Error while communicating with Dove servlet. Message:"+e.getMessage());
+        Dove    dove    = new Dove(Utils.emptyDocument());
+        Element results = dove.executeRequest(cmd, userCloud, binaries);
+        NodeList errors = Utils.selectNodeList(results, ".//error");
+        if (errors.getLength() > 0){
+            StringBuffer errorMessage = new StringBuffer("Errors received from MMBase Dove servlet: ");
+            for (int i = 0; i < errors.getLength(); i++){
+                errorMessage.append(Utils.getText(errors.item(i))).append("\n");
+            }
+            throw new WizardException(errorMessage.toString());
         }
         return results;
     }
