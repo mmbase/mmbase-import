@@ -21,7 +21,6 @@ public class XMLApplicationWriter  {
 
     public static Vector writeXMLFile(XMLApplicationReader app,String targetpath,String goal,MMBase mmb) {
 	Vector resultmsgs=new Vector();
-	System.out.println("STARTED XML WRITER ON : "+app);
 
 	// again this is a stupid class generating the xml file
 	// the second part called the extractor is kind of neat
@@ -130,7 +129,8 @@ public class XMLApplicationWriter  {
 	for (Enumeration e=builders.elements();e.hasMoreElements();) {
 		Hashtable bset=(Hashtable)e.nextElement();
 		String path=(String)bset.get("path");
-		body+="\t\t<datasource path=\""+path+"\" />\n";
+		String builder=(String)bset.get("builder");
+		body+="\t\t<datasource builder=\""+builder+"\"path=\""+path+"\" />\n";
 	}
 	body+="\t</datasourcelist>\n\n";
 
@@ -144,7 +144,8 @@ public class XMLApplicationWriter  {
 	for (Enumeration e=builders.elements();e.hasMoreElements();) {
 		Hashtable bset=(Hashtable)e.nextElement();
 		String path=(String)bset.get("path");
-		body+="\t\t<relationsource path=\""+path+"\" />\n";
+		String builder=(String)bset.get("builder");
+		body+="\t\t<relationsource builder=\""+builder+"\" path=\""+path+"\" />\n";
 	}
 	body+="\t</relationsourcelist>\n\n";
 	return(body);	
