@@ -274,7 +274,7 @@ response.setDateHeader("Last-Modified", ct);
    <mm:param name="bla">bloe</mm:param>
    <mm:booleanfunction name="isitso">
      It is true!
-   </mm:booleanfunction
+   </mm:booleanfunction>
    ..
    <mm:nodelistfunction name="listthosenodes">
       <mm:field name="blabla" /><br />
