@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @version $Id: RawAudios.java,v 1.13 2002-01-25 15:49:06 pierre Exp $
+ * @version $Id: RawAudios.java,v 1.14 2002-01-28 14:35:52 pierre Exp $
  */
 public class RawAudios extends MMObjectBuilder {
 
