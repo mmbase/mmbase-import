@@ -29,16 +29,20 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.3 2002-06-25 21:27:18 michiel Exp $
+ * @version $Id: ResultCache.java,v 1.4 2002-10-29 23:55:06 michiel Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {
 
     private static Logger log = Logging.getLoggerInstance(ResultCache.class.getName());
 
-    private static final int maxResultSize = 1500;
     private static int cacheSize = 50;
     private static ResultCache cache;
+
+
+    protected int getDefaultMaxEntrySize() {
+        return 1500;
+    }
 
     /**
      * Returns the XSLT Result cache.
@@ -104,7 +108,7 @@ public class ResultCache extends Cache {
      */
     public String get(Templates temp, Source xsl, Map params, Properties props, Document src) {
         String key = getKey(xsl, params, props, src);
-        log.debug("Getting cached result of XSL transformation: " + key);
+        log.debug("Getting result of XSL transformation: " + key);
         String result = (String) get(key);
         if (result == null) {
             try {
@@ -131,7 +135,7 @@ public class ResultCache extends Cache {
             }
             // if result is not too big, then it can be cached:
             if (isActive()) {
-                if (result.length() < maxResultSize) {
+                if (result.length() < getMaxEntrySize()) {
                     log.service("Put xslt Result in cache with key " + key);
                     super.put(key, result);
                 } else {
