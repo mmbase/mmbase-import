@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.5 2003-03-04 13:44:42 nico Exp $
+ * @version $Id: FieldValue.java,v 1.6 2004-03-02 12:42:25 pierre Exp $
  */
 public interface FieldValue {
 
@@ -31,7 +31,7 @@ public interface FieldValue {
     /**
      * Returns the value as an Object.
      * The object type may vary and is dependent on how data was stored in a field.
-     * I.e. It may be possible for an Integer field to return it's value as a String 
+     * I.e. It may be possible for an Integer field to return it's value as a String
      * if it was stored that way in the first place.
      *
      * @return  the field value as an object
@@ -54,7 +54,8 @@ public interface FieldValue {
 
     /**
      * Returns the value as an boolean (<code>true</code> or  <code>false</code>).
-     * If the actual value is numeric, this call returns <code>true</code>
+     * If the actual value is a Boolean object, this call returns it's (primitive) boolean value.
+     * If the actual value is a Number object, this call returns <code>true</code>
      * if the value is a positive, non-zero, value. In other words, values '0'
      * and '-1' are concidered <code>false</code>.
      * If the value is a string, this call returns <code>true</code> if
@@ -68,7 +69,7 @@ public interface FieldValue {
 
     /**
      * Returns the value as a byte array.
-     * This function returns either the value of a byte field, or the byte value of a string 
+     * This function returns either the value of a byte field, or the byte value of a string
      * (converted using the default encoding, i.e. UTF8)
      * Other types of values return an empty byte-array.
      *
@@ -79,10 +80,10 @@ public interface FieldValue {
     /**
      * Returns the value as a float.
      * This function attempts to convert the value to a float.
-     * Numeric fields are simply converted. 
+     * Numeric fields are simply converted.
      * Boolean fields return 0.0 if false, and 1.0 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1.0.
      *
      * @return  the field value as a float
@@ -95,7 +96,7 @@ public interface FieldValue {
      * Numeric fields are simply converted. Double may be truncated.
      * Boolean fields return 0.0 if false, and 1.0 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1.0.
      *
      * @return  the field value as a double
@@ -105,10 +106,10 @@ public interface FieldValue {
     /**
      * Returns the value as a long.
      * This function attempts to convert the value to a long.
-     * Numeric fields are simply converted. Double and float values may be truncated. 
+     * Numeric fields are simply converted. Double and float values may be truncated.
      * Boolean fields return 0 if false, and 1 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1
      *
      * @return  the field value as a long.
@@ -123,7 +124,7 @@ public interface FieldValue {
      * Long values return -1 of the value is too large.
      * Boolean fields return 0 if false, and 1 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1
      *
      * @return  the field value as an int.
@@ -170,7 +171,7 @@ public interface FieldValue {
      * This method fails (throws a IllegalArgumentException) if the Field is not of type TYPE_XML.
      * If the value cannot be converted, this method returns <code>null</code>
      *
-     * @param tree the DOM Document to which the Element is added 
+     * @param tree the DOM Document to which the Element is added
      *             (as the document root element)
      * @return  the field value as an Element
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
@@ -179,13 +180,13 @@ public interface FieldValue {
 
     /**
      * Sets the value, passing any Object
-     * The object type may vary and is generally stored in memory as-is, which means that, 
-     * generally, the get() method returns the same object. 
-     * Note that for an XML field String values are converted to a XML document, and individual builders 
+     * The object type may vary and is generally stored in memory as-is, which means that,
+     * generally, the get() method returns the same object.
+     * Note that for an XML field String values are converted to a XML document, and individual builders
      * may make their own changes.
-     * The object is converted to the actual type (using the getXXX() methods detailed above) once the node 
+     * The object is converted to the actual type (using the getXXX() methods detailed above) once the node
      * is stored, though that does not affect the data in-memory until the Node is read anew from the storage.
-     * Note that this behavior may change in the future and therefor code should not be dependent on this. 
+     * Note that this behavior may change in the future and therefor code should not be dependent on this.
      * By preference, use the more specific methods for setting data (i.e. setString()).
      *
      * @see #get()
