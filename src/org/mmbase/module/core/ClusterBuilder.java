@@ -38,10 +38,11 @@ import org.mmbase.util.logging.*;
  * {@link MMObjectNode#getNodeValue(String) getNodeValue()} method, using
  * the builder name (or step alias) as argument.
  *
+ * @sql
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.65 2004-10-12 10:55:40 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.66 2004-11-09 09:36:55 pierre Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
