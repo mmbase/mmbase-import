@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.13 2004-12-14 08:52:47 pierre Exp $
+ * @version $Id: ValueIntercepter.java,v 1.14 2004-12-15 12:38:38 daniel Exp $
  * @since MMBase-1.7
  */
 
@@ -410,7 +410,7 @@ public class ValueIntercepter {
         int type = field.getType();
 
         if (type == Field.TYPE_UNKNOWN) {
-            log.warn("TYPE UNKNOWN commit " + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            if (node.getNumber()!=-1) log.warn("TYPE UNKNOWN commit " + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
             return;
         }
 
@@ -436,7 +436,7 @@ public class ValueIntercepter {
     public static final Object processSet(final int setType, final Node node, final Field field, final  Object value) {
         int type = field.getType();
         if (type == Field.TYPE_UNKNOWN) {
-            log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            if (node.getNumber()!=-1) log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
             return value;
         }
 
@@ -466,7 +466,7 @@ public class ValueIntercepter {
         int type = field.getType();
 
         if (type == Field.TYPE_UNKNOWN) {
-            log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
+            if (node.getNumber()!=-1) log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber());
             return value;
         }
 
