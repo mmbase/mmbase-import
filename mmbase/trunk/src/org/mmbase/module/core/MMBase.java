@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.74 2002-10-09 14:52:09 michiel Exp $
+ * @version $Id: MMBase.java,v 1.75 2002-10-10 12:04:05 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1237,11 +1237,13 @@ public class MMBase extends ProcessorModule  {
 	    String databasename = getInitParameter("DATABASE");
 	    if(databasename == null){
 		DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+		if(jdbc == null) throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
 		// How do we know for sure that the JDBC.init() has been called first?
-		// the only way is by using the startModule, (little bit scary to use here)
+		// the only way is by using the startModule, (little bit scary to use here)	       
                 Module m = (Module) jdbc;
                 if(!m.hasStarted()) {
                     // STUPID
+		    log.error("jdbc module not started, trying to do an explicit start of jdbc module");
                     m.startModule();
                 }
 		try {
