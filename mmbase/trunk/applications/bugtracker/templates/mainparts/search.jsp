@@ -93,11 +93,13 @@
 	if (spriority!=null && !spriority.equals("")) { if (!where.equals("")) where+=" and ";where+="bugreports.bpriority="+spriority; }
 %>
 </mm:present>
+<%--
 <mm:list path="pools,bugreports,areas" nodes="BugTracker.Start" orderby="bugreports.bugid" directions="down" constraints="<%=where%>">
 	<mm:last>
 		<mm:import id="total"><mm:index/></mm:import>
 	</mm:last>
 </mm:list>
+--%>
 <% String total="0"; %>
 <mm:present referid="total">
   <mm:write referid="total" jspvar="tmp" vartype="integer">
@@ -143,7 +145,7 @@
 			 <mm:field name="areas.name" />&nbsp;
 		</td>
 		<td>
-			 <mm:field name="bugreports.issue" />&nbsp;
+			 <mm:field name="bugreports.issue" escape="inline"/>&nbsp;
 		</td>
 		<td>
 			<A HREF="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:field name="bugreports.number" />"><IMG SRC="images/arrow-right.gif" BORDER="0" ALIGN="right"></A>

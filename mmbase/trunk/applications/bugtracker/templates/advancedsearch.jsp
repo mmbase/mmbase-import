@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@page language="java" contentType="text/html; charset=utf-8"
-
-%><mm:cloud
+%>
+<mm:cloud
 ><%@include file="/includes/getids.jsp" 
 %><%@include file="/includes/header.jsp"
 
