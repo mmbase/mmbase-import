@@ -143,7 +143,6 @@
         <description xml:lang="en">List of additional information, specified in name = value pairs</description>
         <description xml:lang="nl">Lijst van naam = waarde paren met extra informatie</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Information</guiname>
         <guiname xml:lang="nl">Informatie</guiname>
@@ -153,6 +152,58 @@
         <name>info</name>
         <!-- was text -->
         <type state="persistent" size="512" notnull="false">STRING</type>
+      </db>
+		</field>    
+
+
+    <!-- Virtual fields --> 
+
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Channel where this message is belonging to</description>
+        <description xml:lang="nl">Kanaal van dit bericht</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Channel</guiname>
+        <guiname xml:lang="nl">Kanaal</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <db>
+        <name>channel</name>
+        <type state="virtual" notnull="false">NODE</type>
+      </db>
+		</field>    
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">The user object for this message</description>
+        <description xml:lang="nl">Het gebruikersobject voor dit bericht</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">User object</guiname>
+        <guiname xml:lang="nl">Gebruikersobject</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <db>
+        <name>user</name>
+        <type state="virtual" notnull="false">NODE</type>
+      </db>
+		</field>    
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">The user name for this message</description>
+        <description xml:lang="nl">Het gebruikername voor dit bericht</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">User name</guiname>
+        <guiname xml:lang="nl">Gebruikersnaam</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <db>
+        <name>username</name>
+        <type state="virtual" size="512" notnull="false">STRING</type>
       </db>
 		</field>    
   </fieldlist>
