@@ -3,22 +3,27 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.3 2003-07-09 18:41:32 michiel Exp $
+#  $Id: cvsmail,v 1.4 2003-12-14 13:15:42 michiel Exp $
 
 use strict;
 use FileHandle;
 
 # arguments
-my ($log_filename, $user, $files) = @ARGV;
+my ($log_filename, $user, $files, $toaddress) = @ARGV;
 
 # configuration
 my $basedir     = "/usr/local/cvs/CVSROOT/log";
-my $toaddress   = "cvs\@mmbase.org";
+my $defaulttoaddress   = "cvs\@mmbase.org";
 my $cvs         = "/usr/local/bin/cvs";
 
+
 if (! defined $files) {
-    print "Needs three arguments\n";
+    print "Needs (at least) three arguments\n";
     exit 0;
+}
+
+if (! defined $toaddress) {
+    $toaddress = $defaulttoaddress;
 }
 
 my @files = split(" ", $files);
