@@ -37,6 +37,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
 
+  <property name="project.package" value="org/mmbase" />
+
 
   <property name="source.dir"   location="../.." />
   <property name="build.dir"    value="${source.dir}/build" /><!-- mmbase build dir -->
@@ -115,17 +117,20 @@ Create a build.xml with a DOCTYPE like this:
   </copy>
   <mkdir dir="${project.metainf.dir}" />
   
-    <echo file="${project.build.dir}/manifest.mf">
-Name: org/mmbase
-Vendor: MMBase community
-URL: http://${project.name}.mmbase.org
-Comment: The MMBase Content Managment System
-Version: ${distro}.${version}
-Distribution: ${distro}
-Build-by: ${ant.version}
-Build-java-version: ${ant.java.version}
-Build-compiler: ${build.compiler}
-</echo>
+
+    <manifest file="${project.build.dir}/manifest.mf">
+      <section name="${project.package}">
+        <attribute name="Vendor" value="MMBase Community" />
+        <attribute name="URL" value="http://${project.name}.mmbase.org" />
+        <attribute name="Comment" value="The MMBase Content Managment System" />
+        <attribute name="Version" value="${distro}.${version}" />
+        <attribute name="Distribution" value="${distro}" />
+        <attribute name="Build-by"     value="${ant.version}" />
+        <attribute name="Build-java-version" value="${ant.java.version}" />
+        <attribute name="Build-compile" value="${build.compiler}" />
+      </section>
+    </manifest>
+
     <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
@@ -189,8 +194,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <exclude name="config/**" />
         <exclude name="documentation/**" />
         <exclude name="src/**" />
-        <exclude name="build/**" />
-        <exclude name="build${project.build.postfix}/**" />
+        <exclude name="build*/**" />
       </patternset>
     </zipfileset>
   </zip>          
