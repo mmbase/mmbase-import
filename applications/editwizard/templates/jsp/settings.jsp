@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.39 2003-09-23 12:11:44 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.40 2004-05-02 15:34:43 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -164,6 +164,7 @@ if (request.getParameter("remove") != null) {
    }
    if (log.isDebugEnabled()) log.debug("Sending command " + sendCmd + " , " + objnr);
    %>
+   window.opener.saveScroll();
    window.opener.doSendCommand("<%=sendCmd%>","<%=objnr%>");
 <%          } %>
  } catch (e) {}
