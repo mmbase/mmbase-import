@@ -87,14 +87,14 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
-  <!-- mmbase-taglibs-0.8 for backwards-compatibility, not working at the moment
+  <!-- mmbase-taglib-0.8 for backwards-compatibility, not working at the moment
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-0.8</taglib-uri>
     <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
   </taglib>
   -->
 
-  <!-- mmbase-taglibs-1.0 -->
+  <!-- mmbase-taglib-1.0 -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
