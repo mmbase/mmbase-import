@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.8 2000-04-15 20:40:03 wwwtech Exp $
+$Id: MMPostgres42Node.java,v 1.9 2000-05-02 10:20:51 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/04/15 20:40:03  wwwtech
+fixes for informix and split in sql92
+
 Revision 1.7  2000/04/12 11:34:57  wwwtech
 Rico: built type of builder detection in create phase
 
@@ -30,6 +33,9 @@ Revision 1.2  2000/03/20 15:40:03  wwwtech
 davzev: Changed insert method, now insert will be done depending on DBState.
 
 */
+
+// Ignore a compiler error from this class if you are not using PostGres
+
 package org.mmbase.module.database.support;
 
 import java.util.*;
@@ -41,6 +47,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
 
+// PostgreSQL largeobject support
+import postgresql.largeobject.*;
+
 
 /**
 * MMPostgres42Node implements the MMJdbc2NodeInterface for
@@ -49,37 +58,51 @@ import org.mmbase.util.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.8 $ $Date: 2000-04-15 20:40:03 $
+* @$Revision: 1.9 $ $Date: 2000-05-02 10:20:51 $
 */
 public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	private LargeObjectManager lobj=null;
 	MMBase mmb;
 
 	public MMPostgres42Node() {
 	}
 
 	public void init(MMBase mmb) {
+		Connection c=null;
 		this.mmb=mmb;
+		try {
+			c=mmb.getDirectConnection();
+			lobj=((postgresql.Connection)c).getLargeObjectAPI();
+		} catch (Exception e) {
+			debug("Can't get LargeObejctManager "+e);
+			e.printStackTrace();
+		}
+		try {
+			c.close();
+		} catch (SQLException e) {
+			debug("Can't close connection");
+			e.printStackTrace();
+		}			
 	}
 
 	public boolean create(MMObjectBuilder bul,String tableName) {
 		// Note that builder is null when tableName='object'
-			// get us a propertie reader	
-			ExtendedProperties Reader=new ExtendedProperties();
+		// get us a propertie reader	
+		ExtendedProperties Reader=new ExtendedProperties();
 
-			// load the properties file of this server
+		// load the properties file of this server
 
-			String root=System.getProperty("mmbase.config");
-			Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
+		String root=System.getProperty("mmbase.config");
+		Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
 		
-			String createtable=(String)prop.get("CREATETABLE_PG");
+		String createtable=(String)prop.get("CREATETABLE_PG");
 
-
-			if (createtable!=null && !createtable.equals("")) {	
-    		createtable = Strip.DoubleQuote(createtable,Strip.BOTH);
+		if (createtable!=null && !createtable.equals("")) {	
+   			createtable = Strip.DoubleQuote(createtable,Strip.BOTH);
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
@@ -93,9 +116,9 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				System.out.println("can't create table "+tableName);
 				e.printStackTrace();
 			}
-			} else {
-				System.out.println("MMObjectBuilder-> Can't create table no CREATETABLE_ defined");
-			}
+		} else {
+			System.out.println("MMObjectBuilder-> Can't create table no CREATETABLE_ defined");
+		}
 		return(true);
 	}
 
@@ -257,8 +280,6 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			String result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// System.out.println("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-/*KP.dbg("getShortedText: calling <SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number+">");*/
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
 			if (rs.next()) {
 				result=getDBText(rs,1);
@@ -301,19 +322,12 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* get byte of a database blob
 	*/
 	public byte[] getDBByte(ResultSet rs,int idx) {
-		String str=null;
-		InputStream inp;
-		DataInputStream input;
 		byte[] bytes=null;
-		int siz;
 		try {
-			inp=rs.getBinaryStream(idx);
-			siz=inp.available(); // DIRTY
-			input=new DataInputStream(inp);
-			bytes=new byte[siz];
-			input.readFully(bytes);
-			input.close();
-			inp.close();
+			int oid=rs.getInt(idx);
+			LargeObject obj=lobj.open(oid,LargeObjectManager.READ);
+			int size=obj.size();
+			bytes=obj.read(size);
 		} catch (Exception e) {
 			System.out.println("MMObjectBuilder -> MMPostgres byte  exception "+e);
 			e.printStackTrace();
@@ -331,25 +345,9 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		byte[] isochars;
 		int siz;
 
-		if (0==1) return("");
 		try {
-			inp=rs.getAsciiStream(idx);
-			if (inp==null) {
-				//System.out.println("MMObjectBuilder -> MPostgres42Node DBtext no ascii "+inp);
-				 return("");
-			}
-			if (rs.wasNull()) {
-				System.out.println("MMObjectBuilder -> MPostgres42Node DBtext wasNull "+inp);
-				return("");
-			}
-			siz=inp.available(); // DIRTY
-			if (siz==0 || siz==-1) return("");
-			input=new DataInputStream(inp);
-			isochars=new byte[siz];
-			input.readFully(isochars);
+			isochars=rs.getBytes(idx);
 			str=new String(isochars,"ISO-8859-1");
-			input.close();
-			inp.close();
 		} catch (Exception e) {
 			System.out.println("MMObjectBuilder -> MMPostgres text  exception "+e);
 			e.printStackTrace();
@@ -567,9 +565,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			e.printStackTrace();
 		}
 		try {
-			ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
-			stmt.setAsciiStream(i,stream,isochars.length);
-			stream.close();
+			stmt.setBytes(i,isochars);
 		} catch (Exception e) {
 			System.out.println("MMObjectBuilder : Can't set ascii stream");
 			e.printStackTrace();
@@ -582,9 +578,10 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	*/
 	public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
 		try {
-			ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
-			stmt.setBinaryStream(i,stream,bytes.length);
-			stream.close();
+			int oid=lobj.create(LargeObjectManager.READ|LargeObjectManager.WRITE);
+			LargeObject obj=lobj.open(oid,LargeObjectManager.WRITE);
+			obj.write(bytes);
+			stmt.setInt(i,oid);
 		} catch (Exception e) {
 			System.out.println("MMObjectBuilder : Can't set byte stream");
 			e.printStackTrace();
@@ -784,14 +781,6 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
 		throws SQLException
 	{
-/*KP.dbg("*** setValuePreparedStatement with key="+key);*/
-try
-{
-	Thread.sleep(1);
-}
-catch(Exception e)
-{
-}
 		String type = node.getDBType(key);
 		if(type==null)
 			stmt.setString(i, "");
