@@ -60,31 +60,40 @@ public class ConfigBasicPackage extends BasicPackage implements PackageInterface
             step = getNextInstallStep();
             step.setUserFeedBack("receiving package ..");
             JarFile jf = getJarFile();
-            step.setUserFeedBack("receiving package ... done (" + jf + ")");
+            if (jf != null) {
+                step.setUserFeedBack("receiving package ... done (" + jf + ")");
 
-            // step 3
-            step = getNextInstallStep();
-            step.setUserFeedBack("checking dependencies ..");
-            if (dependsInstalled(jf, step)) {
-
-                step.setUserFeedBack("checking dependencies ... done");
-
-                // step 4
+                // step 3
                 step = getNextInstallStep();
-                step.setUserFeedBack("installing config files ..");
-                installConfigFiles(jf, step);
-                step.setUserFeedBack("installing config files ... done");
+                step.setUserFeedBack("checking dependencies ..");
+                if (dependsInstalled(jf, step)) {
 
-                // step 5
-                step = getNextInstallStep();
-                step.setUserFeedBack("updating mmbase registry ..");
-                updateRegistryInstalled();
-                step.setUserFeedBack("updating mmbase registry ... done");
+                    step.setUserFeedBack("checking dependencies ... done");
+
+                    // step 4
+                    step = getNextInstallStep();
+                    step.setUserFeedBack("installing config files ..");
+                    installConfigFiles(jf, step);
+                    step.setUserFeedBack("installing config files ... done");
+
+                    // step 5
+                    step = getNextInstallStep();
+                    step.setUserFeedBack("updating mmbase registry ..");
+                    updateRegistryInstalled();
+                    step.setUserFeedBack("updating mmbase registry ... done");
+                } else {
+                    step.setUserFeedBack("checking dependencies ... failed");
+                    setState("failed");
+                    result = false;
+                }
             } else {
-                step.setUserFeedBack("checking dependencies ... failed");
-                setState("failed");
-                result = false;
+                step.setUserFeedBack("getting the mmp package...failed (server down or removed disk ? )");
+                step.setType(installStep.TYPE_ERROR);
+                try {
+                    Thread.sleep(2000);
+                } catch(Exception ee) {}
             }
+
             // step 6
             step = getNextInstallStep();
             step.setUserFeedBack("config files installer ended");
