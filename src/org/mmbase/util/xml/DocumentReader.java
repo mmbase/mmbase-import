@@ -39,7 +39,8 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.1 2003-08-18 16:50:52 pierre Exp $
+ * @version $Id: DocumentReader.java,v 1.2 2004-05-06 12:34:42 keesj Exp $
+ * @since MMBase-1.7
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);

@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.24 2004-02-23 19:05:00 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.25 2004-05-06 12:34:44 keesj Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -30,7 +30,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * Cache with 'ckey' keys.
      * @since MMBase-1.6.2
      */
-    abstract protected static class  CKeyCache extends org.mmbase.cache.Cache {
+    abstract protected static class CKeyCache extends org.mmbase.cache.Cache {
         protected CKeyCache(int i) {
             super(i);
         }
@@ -39,13 +39,13 @@ public abstract class AbstractImages extends AbstractServletBuilder {
          * This depends now on the fact that ckeys start with the original node-number
          */
 
-        void   remove(int originalNodeNumber) {
+        void remove(int originalNodeNumber) {
             String prefix = "" + originalNodeNumber;
             log.debug("removing " + prefix);
-            Iterator keys  = keySet().iterator();
+            Iterator keys = keySet().iterator();
             List removed = new ArrayList();
             while (keys.hasNext()) {
-                String key = (String) keys.next();
+                String key = (String)keys.next();
                 log.debug("checking " + key);
                 if (key.startsWith(prefix)) {
                     // check is obviously to crude, e.g. if node number happens to be 4,
@@ -60,12 +60,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             }
             keys = removed.iterator();
             while (keys.hasNext()) {
-                String key = (String) keys.next();
+                String key = (String)keys.next();
                 remove(key);
             }
         }
     }
-
 
     protected String getAssociation() {
         return "images";
@@ -82,11 +81,15 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
     /**
      * Returns GUI Indicator for node
+     * @since MMBase-1.7
      */
     protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters a) {
         return getGUIIndicatorWithAlt(node, "*", a); /// Gui indicator of a whole node.
     }
 
+    /**
+     * @since MMBase-1.7
+     */
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
@@ -136,6 +139,4 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         }
     }
 
-
 }
-

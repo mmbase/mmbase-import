@@ -37,7 +37,7 @@ import javax.servlet.http.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.84 2004-04-19 10:38:20 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.85 2004-05-06 12:34:29 keesj Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -744,6 +744,7 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * @javadoc
+     * @since MMBase-1.7
      */
     protected boolean installDataSources(Vector ds, String appname, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
@@ -1860,6 +1861,7 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * @javadoc
+     * @since MMBase-1.7
      */
     public void setBuilderDescription(Hashtable vars) {
         if (kioskmode) {

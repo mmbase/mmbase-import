@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.12 2004-01-08 15:03:57 pierre Exp $
+ * @version $Id: MMTable.java,v 1.13 2004-05-06 12:34:32 keesj Exp $
  */
 public class MMTable {
 
@@ -53,7 +53,7 @@ public class MMTable {
     /**
      * Retrieve the table name (without the clouds' base name)
      * @return a <code>String</code> containing the table name
-     *
+     * @since MMBase-1.7
      */
     public String getTableName() {
         return tableName;
@@ -62,6 +62,7 @@ public class MMTable {
     /**
      * Retrieve the full table name (including the clouds' base name)
      * @return a <code>String</code> containing the full table name
+     * @since MMBase-1.7
      */
     public String getFullTableName() {
         return mmb.baseName+"_"+tableName;

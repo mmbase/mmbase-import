@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.264 2004-03-10 10:08:35 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.265 2004-05-06 12:34:36 keesj Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -438,6 +438,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Removes the builder from the storage.
+     * @since MMBase-1.7
      */
     public void delete() {
         log.service("trying to drop table of builder: '"+tableName+"' with database class: '"+mmb.getDatabase().getClass().getName()+"'");
@@ -2111,6 +2112,7 @@ public class MMObjectBuilder extends MMTable {
      *
      * @param results The nodes. After returning, partially retrieved nodes
      *        in the result are replaced <em>in place</em> by complete nodes.
+     *  @since MMBase-1.7
      */
     public void processSearchResults(List results) {
         Map convert = new HashMap();

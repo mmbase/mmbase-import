@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.16 2004-01-27 12:04:45 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.17 2004-05-06 12:34:46 keesj Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -103,6 +103,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     /**
      * This reads database specific content from the database configuration document.
      * @param document the database configuration document
+     * @since MMBase-1.7
      */
     protected void deployDatabaseReader(XMLDatabaseReader reader) {
         String path = reader.getBlobDataDir();
@@ -766,6 +767,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     /**
      * creates an sql statements and calls {@link #getBytes(MMObjectNode,String)}
      * @javadoc
+     * @since MMBase-1.7
      */
     public final byte[] getBytes(String tableName, String fieldName, int number) {
         byte[] result = null;

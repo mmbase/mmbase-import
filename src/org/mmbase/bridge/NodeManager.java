@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.32 2004-04-07 15:10:55 keesj Exp $
+ * @version $Id: NodeManager.java,v 1.33 2004-05-06 12:34:41 keesj Exp $
  */
 public interface NodeManager extends Node {
 
@@ -63,6 +63,7 @@ public interface NodeManager extends Node {
     /**
      * Retrieve a  list of descendant nodemanagers (the Nodemanager that - posisbly indirectly - extend from this nodemanager)
      * @return a list of NodeManagers
+     * @since MMBase-1.7
      */
     public NodeManagerList getDescendants();
 
@@ -130,6 +131,7 @@ public interface NodeManager extends Node {
      *
      * @param locale the locale that determines the language for the description
      * @return the description of this node manager
+     * @since MMBase-1.7
      */
     public String getDescription(Locale locale);
 

@@ -21,7 +21,8 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92WithViews.java,v 1.6 2004-03-11 23:25:03 eduard Exp $
+ * @version $Id: Sql92WithViews.java,v 1.7 2004-05-06 12:34:43 keesj Exp $
+ * @since MMBase-1.7
  */
 public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92WithViews.class.getName());

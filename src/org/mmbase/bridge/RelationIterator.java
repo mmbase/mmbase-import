@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: RelationIterator.java,v 1.4 2003-03-04 09:19:05 pierre Exp $
+ * @version $Id: RelationIterator.java,v 1.5 2004-05-06 12:34:40 keesj Exp $
  */
 public interface RelationIterator extends NodeIterator {
 
@@ -25,6 +25,7 @@ public interface RelationIterator extends NodeIterator {
 
     /**
      * Returns the previous element in the iterator as a Relation
+     * @since MMBase-1.7
      */
     public Relation previousRelation();
 
