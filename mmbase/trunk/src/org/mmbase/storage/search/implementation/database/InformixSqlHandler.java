@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.14 2004-08-30 11:43:44 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.15 2004-10-12 09:11:39 mark Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -568,17 +568,29 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
 
             Vector combinedElements = new Vector();
+            boolean skipCombination = false;
             for (int counter = 0; counter < orElements.size(); counter++) {
                 for (int counter2 = counter; counter2 < orElements.size(); counter2++) {
-                    // Dont combine  with same element. That doesn't make sense
+                    // determine if the combination is valid and may be added to the relational constraints
+                    if (counter%2==0 && counter2-counter==1) {
+                       // this combination may not be added
+                       skipCombination=true;
+                    } else {
+                       skipCombination=false;
+                    }
+                    // Don't combine  with same element. That doesn't make sense
                     // If there are just two relation-constraint-elements, we don't need to combine
                     if (counter != counter2 && orElements.size() > 2) {
                         // also add the additinal constraints
-                        combinedElements.addElement(orElements.elementAt(counter) + " AND " + orElements.elementAt(counter2) + unionConstraints);
+                        if (skipCombination==false ) {
+                            combinedElements.addElement(orElements.elementAt(counter) + " AND " + orElements.elementAt(counter2) + unionConstraints);
+                        }
                     } else {
                         // If there's just one OR (two OR-elements), add the elements seperately
                         // also add the additinal constraints
-                        if (counter == counter2 && orElements.size() <= 2) combinedElements.addElement(orElements.elementAt(counter) + "" + unionConstraints);
+                        if (counter == counter2 && orElements.size() <= 2) {
+                            combinedElements.addElement(orElements.elementAt(counter) + "" + unionConstraints);
+                        }
                     }
                 }
             }
