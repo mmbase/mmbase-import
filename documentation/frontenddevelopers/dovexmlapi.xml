@@ -4,8 +4,8 @@
 <article class="specification">
   <articleinfo>
     <title>Dove 1.1 XML API</title>
-    <date>20 july 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.9 2003-04-05 10:43:19 pierre Exp $</edition>
+    <date>20 July 2002</date>
+    <edition>$Id: dovexmlapi.xml,v 1.10 2003-06-30 11:23:02 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -26,9 +26,9 @@
     <sidebar>
       <title>A Note On XML Validation</title>
       <para>The XML you pass to the Dove is an already parsed tree, to support varying methods of obtaining the XML. This means that XML validation needs to be done by the calling code.</para>
-      <para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forego this kind of 'validation', or may fail if it does not recognize attributes, so assuming this behavior is discouraged, and is not a part of the API specification.</para>
+      <para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognise a tag. Future implementations may forego this kind of 'validation', or may fail if it does not recognise attributes, so assuming this behaviour is discouraged, and is not a part of the API specification.</para>
       <note>
-        <para>Specific behavior of the default Dove implementation are included in this document as a note (like this).</para>
+        <para>Specific behaviour of the default Dove implementation are included in this document as a note (like this).</para>
       </note>
     </sidebar>
     <sidebar>
@@ -36,7 +36,7 @@
       <para>The commands handled below will include a syntax description and, were appropriate, an example.</para>
       <programlisting format="linespecific"><![CDATA[The syntax descriptions will be in a DTD format, and shown as source text (like this).]]></programlisting>
       <para>Only syntax relevant to the appropriate section will be shown (the actual DTD differs slightly as some elements are used in various places).</para>
-      <para>The examples are fictious XML documents. To shorten the examples, the XML declaration and DOCTYPE elements are not included.</para>
+      <para>The examples are fictitious XML documents. To shorten the examples, the XML declaration and DOCTYPE elements are not included.</para>
       <programlisting format="linespecific"><![CDATA[The XML examples, or fractions thereof, are shown as source text (like this).]]></programlisting>
       <para>This document deals with three versions of Dove: 1.0 beta (included in MMBase 1.5), 1.0 (included in MMBase 1.5.1), and 1.1. (MMBase 1.6).</para>
       <para>Where appropriate, notes will be used to indicate which versions support certain functionality.</para>
@@ -44,7 +44,7 @@
     <section>
       <title>Passing Commands</title>
       <para>The root element of the request xml is the <sgmltag>request</sgmltag> tag.</para>
-      <para>Each request tag contains at most one <sgmltag>security</sgmltag> tag (containing user login information), and one or more dove command tags (each tag being one command). If more than one command is passed, the commands are handled in the order that they apprear in the xml.</para>
+      <para>Each request tag contains at most one <sgmltag>security</sgmltag> tag (containing user login information), and one or more dove command tags (each tag being one command). If more than one command is passed, the commands are handled in the order that they appear in the xml.</para>
       <programlisting format="linespecific"><![CDATA[
 <!ELEMENT request (security?,(getdata|getnew|getnewrelation|getrelations| getconstraints|getlist|put)+) >
       ]]></programlisting>
@@ -52,7 +52,7 @@
       <note>
         <para>Custom Dove implementations may implement additional commands.</para>
       </note>
-      <para>The command tags support an <sgmltag class="attribute">id</sgmltag> attribute. The attribute has no significance to the Dove, but is ment to support a client-generated id system. When an id attribute is provided, this attribute is also returned in the appropriate tag in the response.</para>
+      <para>The command tags support an <sgmltag class="attribute">id</sgmltag> attribute. The attribute has no significance to the Dove, but is meant to support a client-generated id system. When an id attribute is provided, this attribute is also returned in the appropriate tag in the response.</para>
       <para>The result of the commands are tallied and returned in an xml with as root the <sgmltag>response</sgmltag> tag.</para>
       <para>The body of the xml contains either an error tag (when connecting to MMBase failed), or a list of tags containing the results of the command passed, in the order that those commands were given. The response does not contain any security information, even if the request did.</para>
       <programlisting format="linespecific"><![CDATA[
@@ -64,8 +64,8 @@
       </note>
       <sidebar>
         <title>How to Call Dove</title>
-        <para>The <classname>org.mmbase.applications.dove.Dove</classname> Java class contains the code that processes the xml tree. If you want to use the Dove from java code, you should first create a DOM tree, containing the command to run. You then instantiate Dove, using a DOM Document to be used for creating the response, and finally call the executeRequest method, passing the entity that contains the root of the request. For more information on calling the class we refer to the MMBase API docuumentation</para>
-        <para>If you want to call Dove remote, you can also install the DoveServlet (comments on configuring this servlet can be found in the sample web.xml that comes with MMBase). You can call this servlet using a html form containing an 'xml' field that should then contain the xml to parse and run. The result of the call is the xml repsone (in text format).</para>
+        <para>The <classname>org.mmbase.applications.dove.Dove</classname> Java class contains the code that processes the xml tree. If you want to use the Dove from java code, you should first create a DOM tree, containing the command to run. You then instantiate Dove, using a DOM Document to be used for creating the response, and finally call the executeRequest method, passing the entity that contains the root of the request. For more information on calling the class we refer to the MMBase API documentation</para>
+        <para>If you want to call Dove remote, you can also install the DoveServlet (comments on configuring this servlet can be found in the sample web.xml that comes with MMBase). You can call this servlet using a html form containing an 'xml' field that should then contain the xml to parse and run. The result of the call is the xml response (in text format).</para>
       </sidebar>
     </section>
     <section>
@@ -282,7 +282,7 @@
     <para>By default, all fields of a relation are returned. If you only want to retrieve certain fields, you can do so by specifying these fields by including <sgmltag>field</sgmltag> tags in the body of the relation tag. The field tags' <sgmltag class="attribute">name</sgmltag> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned.</para>
     <note>
       <para>In Dove 1.0, a <sgmltag>searchdir</sgmltag> attribute can be specified to limit the result
-      based on directionality. The value 'source' limits the returned relations to those that link TO the specifed object FROM a 'source' object, 'destination' limits the relatiosn to those that link FROM the specified object TO a 'destination object, and 'both' (the default) returns all relations, except those that would violate directionality (i.e. uni-directional relations).</para>
+      based on directionality. The value 'source' limits the returned relations to those that link TO the specified object FROM a 'source' object, 'destination' limits the relations to those that link FROM the specified object TO a 'destination object, and 'both' (the default) returns all relations, except those that would violate directionality (i.e. uni-directional relations).</para>
     </note>
     <programlisting format="linespecific"><![CDATA[
 <!ENTITY % searchdir "(source,destination,both)">
@@ -304,7 +304,7 @@
     <para>The response contains the requested relation objects, wrapped by the object used to retrieve them. All additional fields of the relations are also returned.</para>
     <note>
       <para>
-        The common relation fields <database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as field elements, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>.These fields contain MMBase object numbers (snumber and dnumber of the relation). It is possible to check if the initiating node was the source or the destination of the relations, by checking wether its number is in the 'source' or in de 'destination' attribute. The role attribute contains the forward role (<database class="field">sname</database> field) of the relation.</para>
+        The common relation fields <database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as field elements, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>.These fields contain MMBase object numbers (snumber and dnumber of the relation). It is possible to check if the initiating node was the source or the destination of the relations, by checking whether its number is in the 'source' or in the 'destination' attribute. The role attribute contains the forward role (<database class="field">sname</database> field) of the relation.</para>
     </note>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getrelations (object+) >
@@ -545,7 +545,7 @@
 <!ATTLIST getnewrelation source NMTOKEN #REQUIRED >
 <!ATTLIST getnewrelation destination NMTOKEN #REQUIRED >
 ]]></programlisting>
-    <para>The response contains the new relation, in a fashion similar to getrelations. The getnewrelation element itself also contains the original attributes passed. All additonal fields of the relation are returned. </para>
+    <para>The response contains the new relation, in a fashion similar to getrelations. The getnewrelation element itself also contains the original attributes passed. All additional fields of the relation are returned. </para>
     <note>
       <para><database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as fields, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>.</para>
     </note>
@@ -591,7 +591,7 @@
   <section>
     <title>getconstraints</title>
     <para>A <sgmltag>getconstraints</sgmltag> command obtains constraint information for an object type.</para>
-    <para>The type should be specified in the <sgmltag class="attribute">type</sgmltag> attribute. An optional <sgmltag class="attribute">xml:lang</sgmltag> attribute can be specified to indicate the preferred language of any gui information (help text, prompts, etc.).  A Dove implementation that supports this will return data in the preferred language where possible. the language specified should be in teh <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format, such as 'en', 'nl', or the like.</para>
+    <para>The type should be specified in the <sgmltag class="attribute">type</sgmltag> attribute. An optional <sgmltag class="attribute">xml:lang</sgmltag> attribute can be specified to indicate the preferred language of any gui information (help text, prompts, etc.).  A Dove implementation that supports this will return data in the preferred language where possible. the language specified should be in the <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format, such as 'en', 'nl', or the like.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getconstraints (object+) >
 <!ATTLIST getconstraints id ID #IMPLIED>
@@ -696,9 +696,9 @@
     <title>getlist</title>
     <para>The <sgmltag>getlist</sgmltag>command is used to retrieve lists of nodes using a set of criteria , such as nodetype and field content. The tag contains a set of <sgmltag>query</sgmltag> tags, each specifying the constraints to retrieve nodes with.</para>
     <para>Each query element should have a <sgmltag class="attribute">xpath</sgmltag> attribute to indicate the nodemanager to run the list on, and optionally a <sgmltag class="attribute">where</sgmltag> attribute that contains the field-constraints.</para>
-    <para>The <sgmltag class="attribute">xpath</sgmltag> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". It is possible taht in future implementations more versatile xpaths can be used</para>
+    <para>The <sgmltag class="attribute">xpath</sgmltag> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". It is possible that in future implementations more versatile xpaths can be used</para>
     <para>The <sgmltag class="attribute">where</sgmltag> attribute uses a SQL syntax to check a field, such as "name LIKE '%a%'". It is in all respects the same as the constraints attribute as used in the mm:listnodes tag of the MMBase taglib (described elsewhere).</para>
-    <para>Fields to retrieve can be limited in the same way as witha  <sgmltag>getdata</sgmltag> command: by specifying the fields in an <sgmltag>object</sgmltag> tag.</para>
+    <para>Fields to retrieve can be limited in the same way as with a  <sgmltag>getdata</sgmltag> command: by specifying the fields in an <sgmltag>object</sgmltag> tag.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getlist (query+) >
 <!ATTLIST getlist id ID #IMPLIED>
@@ -812,7 +812,7 @@
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field href CDATA #IMPLIED >
 ]]></programlisting>
-    <para>If the out is succesful, the <sgmltag>response</sgmltag> tag contains a result list of <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in the <sgmltag>new</sgmltag> tag.</para>
+    <para>If the out is successful, the <sgmltag>response</sgmltag> tag contains a result list of <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in the <sgmltag>new</sgmltag> tag.</para>
     <para>This list consists of all changed and added nodes - deleted nodes are not included.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT put (new|error) >
