@@ -60,7 +60,8 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.242 2003-09-01 12:39:07 pierre Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: MMObjectBuilder.java,v 1.243 2003-09-02 20:03:02 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -954,7 +955,7 @@ public class MMObjectBuilder extends MMTable {
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      */
     public MMObjectNode getNode(String key) {
-        return getNode(key,true);
+        return getNode(key, true);
     }
 
     /**
@@ -2250,19 +2251,30 @@ public class MMObjectBuilder extends MMTable {
      * @return the field's type.
      */
     public int getDBType(String fieldName) {
-        if (fields==null) {
+        if (fields == null) {
             log.error("getDBType(): fielddefs are null on object : "+tableName);
             return FieldDefs.TYPE_UNKNOWN;
+        }        
+        FieldDefs fieldDefs = getField(fieldName);
+        if (fieldDefs == null) {
+            //perhaps prefixed with own name ? (allowed since MMBase-1.7)
+            String prefix = tableName + '.';            
+            if (fieldName.startsWith(prefix)) {
+                fieldName = fieldName.substring(prefix.length());
+                fieldDefs = getField(fieldName);
+            }
         }
-        FieldDefs node=getField(fieldName);
-        if (node==null) {
+
+        if (fieldDefs == null) {
+
             // log warning, except for virtual builders
-            if (!virtual) {
+            if (!virtual) { // should getDBType not be overridden in Virtual Builder then?
                 log.warn("getDBType(): Can't find fielddef on field '"+fieldName+"' of builder "+tableName);
+                log.debug(Logging.stackTrace(new Throwable()));
             }
             return FieldDefs.TYPE_UNKNOWN;
         }
-        return node.getDBType();
+        return fieldDefs.getDBType();
     }
 
     /**
@@ -2578,6 +2590,17 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * perhaps we need something like this
+     * @since MMBase-1.7
+     */
+    /*
+    public Arguments getFunctionArguments(String function) {
+
+    }
+    */
+    
+
+    /**
      * Executes a function on the field of a node, and returns the result.
      * This method is called by the builder's {@link #getValue} method.
      * Derived builders should override this method to provide additional functions.
@@ -2676,7 +2699,9 @@ public class MMObjectBuilder extends MMTable {
                 if (arguments.size() < 2) { // support for login info not needed
                     rtn = getGUIIndicator(field, node);
                 } else {
-                    locale = new Locale((String) arguments.get(1), "");
+                    String language = (String) arguments.get(1);
+                    if (language == null) language = mmb.getLanguage();
+                    locale = new Locale(language, "");
                     if (null == field || "".equals(field)) {
                         rtn = getLocaleGUIIndicator(locale, node);
                     } else {
@@ -3951,14 +3976,15 @@ public class MMObjectBuilder extends MMTable {
     /**
      * hostname, parses the hostname from a url, so http://www.somesite.com/index.html
      * becomed www.somesite.com
+     * @deprecated Has nothing to do with mmbase nodes. Should be in org.mmbase.util
      */
     public String hostname_function(String url) {
         if (url.startsWith("http://")) {
-                url=url.substring(7);
+            url=url.substring(7);
         }
         int pos=url.indexOf("/");
         if (pos!=-1) {
-                url=url.substring(0,pos);
+            url=url.substring(0,pos);
         }
         return url;
     }
