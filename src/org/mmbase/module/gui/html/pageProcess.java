@@ -28,6 +28,7 @@ public class pageProcess implements Runnable {
 		this.sp=sp;
 		this.uri=uri;
 		this.parser=parser;
+		this.start();
 	}
 
     /**
