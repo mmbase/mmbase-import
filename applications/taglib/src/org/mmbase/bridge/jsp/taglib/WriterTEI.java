@@ -22,10 +22,6 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  **/
 public class WriterTEI extends TagExtraInfo {
     
-    public WriterTEI() { 
-        super(); 
-    }
-
     protected int scope() {
         return VariableInfo.NESTED;
     }
@@ -41,7 +37,7 @@ public class WriterTEI extends TagExtraInfo {
         if (jspvarAttribute != null) {
             variableInfo = new VariableInfo[1];
             
-            String typeAttribute    = (String) data.getAttribute("type"); 
+            String typeAttribute    = (String) data.getAttribute("vartype"); 
             if (typeAttribute == null) typeAttribute = defaultType();           
             String type;
             switch (WriterHelper.stringToType(typeAttribute)) {
