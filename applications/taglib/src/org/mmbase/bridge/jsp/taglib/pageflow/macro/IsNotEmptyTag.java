@@ -9,16 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow.macro;
 
-import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
-
 /**
  * Checks if the parent writer is not empty.
  * 
  * @author Michiel Meeuwissen 
  */
 
-public class IsNotEmptyTag extends CompareTag  {
-    protected boolean doCompare(String compare) {
-        return ! "".equals(compare);
+public class IsNotEmptyTag extends IsEmptyTag  {
+    protected boolean doCompare(Comparable compare1, Comparable compare2) {
+        return ! super.doCompare(compare1, compare2);
     }
 }
