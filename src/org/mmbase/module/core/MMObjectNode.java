@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.68 $ $Date: 2002-03-30 00:11:12 $
+ * @version $Revision: 1.69 $ $Date: 2002-04-03 11:19:28 $
  */
 
 public class MMObjectNode {
@@ -1268,15 +1268,19 @@ public class MMObjectNode {
      * Convert a String value of a field to a Document
      * @param fieldName The field to be used.
      * @param value     The current value of the field, (can be null)
-     * @return A DOM Document.
+     * @return A DOM <code>Document</code> or <code>null</code> if there was no value and builder allowed  to be null
+     * @throws RuntimeException When value was null and not allowed by builer, and xml failures.
      */
     private Document convertStringToXml(String fieldName, String value) {
-        if(value == null) {
+        value = value.trim();
+        if(value == null || value.length()==0) {
             log.debug("field was empty");
-            value = "";
-        }
-                
-        // value = value.trim();
+            // may only happen, if the field may be null...
+            if(parent.getField(fieldName).getDBNotNull()) {
+                throw new RuntimeException("field with name '"+fieldName+"' may not be null");
+            }
+            return null;
+        }                
         if (value.startsWith("<")) { 
             // removing doc-headers if nessecary
 
