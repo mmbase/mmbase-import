@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.10 2003-07-29 17:04:03 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.11 2003-08-01 16:31:36 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -257,6 +257,10 @@ public class BasicQuery implements Query  {
         query.setOffset(offset);
         return this;
 
+    }
+
+    public LegacyConstraint      createConstraint(String s) {
+        return new BasicLegacyConstraint(s);
     }
 
     public FieldNullConstraint    createConstraint(StepField f) {
