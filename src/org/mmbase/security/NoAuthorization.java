@@ -9,17 +9,24 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.util.Set;
+import org.mmbase.security.SecurityException;
+import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 /**
- * This class is used when no authorization is configured.
- * @javadoc
+ * This class is used when no authorization is configured. Everything is allowed.
+ *
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.7 2002-07-26 08:47:33 vpro Exp $
+ * @version $Id: NoAuthorization.java,v 1.8 2003-11-26 19:46:28 michiel Exp $
  */
-public class NoAuthorization extends Authorization {
-    private static Logger log=Logging.getLoggerInstance(NoAuthorization.class.getName());
+final public class NoAuthorization extends Authorization {
+
+    private static final Logger log = Logging.getLoggerInstance(NoAuthorization.class);
+
+    // This defined the 'context' used everywhere where one is needed.
+    private static final String EVERYBODY = "everybody";
+    private static final Set    possibleContexts = Collections.unmodifiableSet(new HashSet(Arrays.asList( new String[]{EVERYBODY})));
 
     /**
      *	This method does nothing
@@ -46,7 +53,8 @@ public class NoAuthorization extends Authorization {
     }
 
     /**
-     * This method does nothing
+     * No authorization means that everyting is allowed
+     * @return true
      */
     public boolean check(UserContext user, int nodeid, Operation operation) {
         return true;
@@ -59,7 +67,8 @@ public class NoAuthorization extends Authorization {
     }
 
     /**
-     * This method does nothing
+     * No authorization means that everyting is allowed
+     * @return true
      */
     public boolean check(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) {
         return true;
@@ -68,32 +77,28 @@ public class NoAuthorization extends Authorization {
     /**
      * This method does nothing
      */
-    public void verify(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) throws SecurityException {
     }
 
-    // used to get some very basic functionality inside the security..
-    private static String EVERYBODY = "everybody";
 
     /**
      * This method does nothing, except from giving a specified string back
      */
-    public String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public String getContext(UserContext user, int nodeid) throws SecurityException {
         return EVERYBODY;
     }
 
     /**
-     * This method does nothing, except from checking if the setContext was valid..
+     * Since this is not authorization, we simply allow every change of context.
      */
-    public void setContext(UserContext user, int nodeid, String context) throws org.mmbase.security.SecurityException {
-        if(!EVERYBODY.equals(context)) throw new org.mmbase.security.SecurityException("unknown context");
+    public void setContext(UserContext user, int nodeid, String context) throws SecurityException {        
+        //if(!EVERYBODY.equals(context)) throw new SecurityException("unknown context");
     }
 
     /**
      * This method does nothing, except from returning a dummy value
      */
-    public Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
-        java.util.HashSet contexts = new java.util.HashSet();
-    contexts.add(EVERYBODY);
-    return contexts;
+    public Set getPossibleContexts(UserContext user, int nodeid) throws SecurityException {
+        return possibleContexts;
     }
 }
