@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.34 $ $Date: 2001-07-16 10:08:08 $
+ * @version $Revision: 1.35 $ $Date: 2001-07-18 12:06:15 $
  */
 public abstract class Module {
 
@@ -433,7 +433,6 @@ public abstract class Module {
                 String bname=files[i];
                 if (bname.endsWith(".xml")) {
                     bname=bname.substring(0,bname.length()-4);
-                    System.out.println(dirname+bname+".xml");
                     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
                     if (parser!=null) {
                         if (parser.getStatus().equals("active")) {
