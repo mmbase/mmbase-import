@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.81 2003-05-13 13:25:31 michiel Exp $
+ * @version $Id: Wizard.java,v 1.82 2003-05-27 11:17:09 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -279,12 +279,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      */
     protected void storeConfigurationAttributes(Config.WizardConfig wizardConfig) {
         variables.put("wizardname", wizardName);
-        if (dataId != null) variables.put("objectnumber", dataId);
         // set attributes from config
-        for (Iterator i = wizardConfig.attributes.entrySet().iterator(); i.hasNext();) {
-            Map.Entry en = (Map.Entry)i.next();
-            variables.put(en.getKey().toString(),en.getValue().toString());
-        }
+        // this sets: origin, debug, objectnumber, and wizard
+        variables.putAll(wizardConfig.getAttributes());
     }
 
     /**
@@ -399,9 +396,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("sessionkey", sessionKey);
         params.put("referrer",   referrer);
         params.put("language",   cloud.getLocale().getLanguage());
-        params.put("popupid",    popupId);
         params.put("cloud",      cloud);
-        params.put("debug",      "" + debug);
         if (templatesDir != null) params.put("templatedir",  templatesDir);
 
         Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
@@ -735,7 +730,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         createFormField(form, field, fieldDataNode);
                     } else {
                         // throw an exception, but ONLY if the datapath was created from a 'name' attribute
-                        // (only in that case can we be sure that the path is fauklty - in otehr cases
+                        // (only in that case can we be sure that the path is faulty - in otehr cases
                         // the path can be valid but point to a related object that is not present)
                         String fname = Utils.getAttribute(field, "name", null);
                         if (fname!=null) {
@@ -907,7 +902,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             String fdatapath = Utils.getAttribute(singleNode, "fdatapath", null);
             if (fdatapath == null) {
                 if (name == null) {
-                    fdatapath = "object/field[@name='number']";
+                    fdatapath = "@number";
                 } else if ("number".equals(name)) {                    
                     Utils.setAttribute(singleNode, "ftype", "data"); // the number field may of course never be edited
                     fdatapath = "@number";
@@ -929,7 +924,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         } else if (nodeName.equals("list")) {
             // List nodes
             String role        = Utils.getAttribute(singleNode, "role", null); //"insrel");
-            String destination = Utils.getAttribute(singleNode, "destination", null);
+            String destination = Utils.getAttribute(singleNode, "destinationtype", null);
+            // legacy: use destination if destinationtype not given
+            if (destination==null) destination = Utils.getAttribute(singleNode, "destination", null);
 
             String searchString   = Utils.getAttribute(singleNode, "searchdir", null);
             String fdatapath   = Utils.getAttribute(singleNode, "fdatapath", null);
@@ -937,49 +934,36 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             if (fdatapath != null) {
                 if (searchString  != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'searchdir' attributes");
                 if (role        != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'role' attributes");
-                if (destination != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'destination' attributes");
+                if (destination != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'destinationtype' attributes");
             } else {
-                if (role ==  null)     role = "insrel"; // should this not be 'related'? 'insrel' is not a role!
 
-                int searchDir;
-                if (searchString == null) { 
-                    if (destination == null) throw new WizardException("Either 'fdatapath', 'destination' or 'searchdir' should be specified");
-                    searchDir = ClusterBuilder.SEARCH_BOTH;
-                } else {
+                // determine role                
+                fdatapath = "";
+                if (role !=  null) fdatapath = "@role='"+role+"'";
+
+                // determine destination type
+                if (destination !=  null) { 
+                    if (!fdatapath.equals("")) fdatapath+=" and ";
+                    fdatapath += "object/@type='" + destination + "'";
+                }
+
+                // determine searchdir
+                int searchDir=ClusterBuilder.SEARCH_BOTH;
+                if (searchString != null) { 
                     searchDir = ClusterBuilder.getSearchDir(searchString);
                 }
-                
-                switch(searchDir) {
-                case ClusterBuilder.SEARCH_SOURCE:
-                    if (destination != null) {
-                        fdatapath = "relation[@role='" + role + "' and @source=object/@number and object/@type='" + destination + "']";
-                    } else {
-                        fdatapath = "relation[@role='" + role + "' and @source=object/@number]";
-                    }
-                    break;
-                case ClusterBuilder.SEARCH_DESTINATION:
-                    if (destination != null) {
-                        fdatapath = "relation[@role='" + role + "' and @destination=object/@number and object/@type='" + destination + "']";
-                    } else {
-                        fdatapath = "relation[@role='" + role + "' and @destination=object/@number]";
-                    }
-                    break;
-                case ClusterBuilder.SEARCH_BOTH:
-                case ClusterBuilder.SEARCH_ALL:
-                case ClusterBuilder.SEARCH_EITHER:
-                    if (destination != null) {
-                        fdatapath = "relation[@role='" + role + "' and object/@type='" + destination + "']";
-                    } else {
-                        fdatapath = "relation[@role='" + role + "']"; // no idea if this makes sense, but it is better then 'null' for destination
-                    }
-                    break;
-                default: 
-                    throw new WizardException("Unknown searchDir?"); // should not happend (because of dtd), but well..
+                if (searchDir == ClusterBuilder.SEARCH_SOURCE) {
+                    if (!fdatapath.equals("")) fdatapath+=" and ";
+                    fdatapath += "@source=object/@number";
+                } else if (searchDir == ClusterBuilder.SEARCH_DESTINATION) {
+                    if (!fdatapath.equals("")) fdatapath+=" and ";
+                    fdatapath += "@destination=object/@number";
                 }
+                fdatapath = "relation["+fdatapath+"]";
                 // normal list or a list inside a list?
                 String parentname = singleNode.getParentNode().getNodeName();
                 if (parentname.equals("item")) {
-                    fdatapath = "object/" + fdatapath;
+                    fdatapath="object/"+fdatapath;
                 }
 
                 Utils.setAttribute(singleNode, "fdatapath", fdatapath);
@@ -1339,47 +1323,46 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             log.debug("String value " + value + " in " + did + " for field " + fid);
             log.trace("Using data: " + Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
         }
-	String xpath =  ".//*[@fid='" + fid + "']/@dttype";
+        String xpath =  ".//*[@fid='" + fid + "']/@dttype";
         Node dttypeNode = Utils.selectSingleNode(schema, xpath);
 
         if (dttypeNode == null) {
-	    String msg = "No node with fid=" + fid + " could be found";
-	    if(log.isDebugEnabled() && schema != null) {
-		msg += "\nxpath was:" + xpath + "on:\n"  + schema.getDocumentElement();
-	    }
+            String msg = "No node with fid=" + fid + " could be found";
+            if(log.isDebugEnabled() && schema != null) {
+                msg += "\nxpath was:" + xpath + "on:\n"  + schema.getDocumentElement();
+            }
             throw new WizardException(msg);
         }
 
         String dttype = dttypeNode.getNodeValue();
-	xpath = ".//*[@did='" + did + "']";
+        xpath = ".//*[@did='" + did + "']";
         Node datanode = Utils.selectSingleNode(data, xpath);
 
         if (datanode == null){
-	    String msg = "Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName;
-	    if(log.isDebugEnabled() && data != null) {
-		msg += "\nxpath was:" + xpath + "on:\n"  + data.getDocumentElement();
-	    }
-	    log.warn(msg);
-	    return;
-	}
-	// everything seems to be ok
-	if (dttype.equals("binary")) {
+            String msg = "Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName;
+            if(log.isDebugEnabled() && data != null) {
+                msg += "\nxpath was:" + xpath + "on:\n"  + data.getDocumentElement();
+            }
+            log.warn(msg);
+            return;
+        }
+    
+    	// everything seems to be ok
+        if (dttype.equals("binary")) {
             // binaries are stored differently
             if (getBinary(did) != null) {
                 Utils.setAttribute(datanode, "href", did);
                 Utils.storeText(datanode,getBinaryName(did));
             }
-        }
-	else {  // default behavior: store content as text
+        } else {  // default behavior: store content as text
             Utils.storeText(datanode, value);
         }
     }
 
-
     /**
      * This method processes the commands sent over http.
      *
-     * @param       req     The ServletRequest where the commands (name/value pairs) reside.
+     * @param req The ServletRequest where the commands (name/value pairs) reside.
      */
     private void processCommands(ServletRequest req) throws WizardException, SecurityException  {
 
@@ -1427,15 +1410,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
     /**
      * This method is usually called by #processCommands and processes one command.
-     * @param       cmd     The command to be processed.
-     * Possible wizardcommands are:
-     * - delete-item
-     * - add-item
-     * - move-up
-     * - move-down
-     * - goto-form
-     * - cancel
-     * - commit
+     * Possible wizard commands are:
+     * <ul>
+     *   <li>delete-item</li>
+     *   <li>update-item</li>
+     *   <li>add-item</li>
+     *   <li>move-up</li>
+     *   <li>move-down</li>
+     *   <li>start-wizard</li>
+     *   <li>goto-form</li>
+     *   <li>cancel</li>
+     *   <li>commit</li>
+     * </ul>
+     * @param cmd The command to be processed
      *
      */
     public void processCommand(WizardCommand cmd) throws WizardException, SecurityException {
