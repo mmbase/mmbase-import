@@ -20,10 +20,10 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.*;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.cache.xslt.*;
 import org.mmbase.util.xml.URIResolver;
@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.38 2004-04-15 10:55:00 michiel Exp $
+ * @version $Id: Utils.java,v 1.39 2004-11-11 17:44:44 michiel Exp $
  */
 
 public class Utils {
@@ -80,15 +80,15 @@ public class Utils {
      * @return     The loaded xml Document
      * @throws     WizardException if the document is invalid
      */
-    public static Document loadXMLFile(File file) throws WizardException {
+    public static Document loadXMLFile(URL file) throws WizardException {
         try {
             try {
                 DocumentBuilder b = getDocumentBuilder(true);
-                return b.parse(file);
+                return b.parse(file.openStream(), file.toExternalForm());
             } catch (SAXParseException ex) {
                 // try without validating, perhaps no doc-type was specified
                 DocumentBuilder b = getDocumentBuilder(false);
-                Document d = b.parse(file);
+                Document d = b.parse(file.openStream(), file.toExternalForm());
                 if (d.getDoctype() == null) {
                     log.warn("No DocumentType specified in " + file);
                     return d;
@@ -472,9 +472,15 @@ public class Utils {
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, File xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
-        Source xsl = new StreamSource(xslFile);
+        Source xsl;
+        try {
+            xsl = new StreamSource(xslFile.openStream());
+            xsl.setSystemId(ResourceLoader.toInternalForm(xslFile));
+        } catch (IOException io) {
+            throw new TransformerException(io);
+        }
         Templates cachedXslt = cache.getTemplates(xsl, uri);
         if (cachedXslt == null) {
             cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
@@ -528,7 +534,7 @@ public class Utils {
      * @return     the documentelement of the resulting xml (of the transformation)
      */
 
-    public static Node transformNode(Node node, File xslFile, URIResolver uri) throws TransformerException {
+    public static Node transformNode(Node node, URL xslFile, URIResolver uri) throws TransformerException {
         DOMResult res = new DOMResult();
         transformNode(node, xslFile, uri, res, null);
         return res.getNode();
@@ -537,7 +543,7 @@ public class Utils {
     /**
      * same as above, but now you can supply a params hashtable.
      */
-    public static Node transformNode(Node node, File xslFile, URIResolver uri, Map params) throws TransformerException {
+    public static Node transformNode(Node node, URL xslFile, URIResolver uri, Map params) throws TransformerException {
         DOMResult res = new DOMResult();
         transformNode(node, xslFile, uri, res, params);
         return res.getNode();
@@ -547,13 +553,13 @@ public class Utils {
     /**
      * same as above, but now the result is written to the writer.
      */
-    public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out) throws TransformerException {
         transformNode(node, xslFile, uri, out, null);
     }
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
+    public static void transformNode(Node node, URL xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
         if (log.isDebugEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         StringWriter res = new StringWriter();
@@ -569,7 +575,7 @@ public class Utils {
 
     public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node, uri.resolveToFile(xslFile), uri, res, params);
+        transformNode(node, uri.resolveToURL(xslFile, null), uri, res, params);
         return res.getNode();
     }
 
