@@ -10,14 +10,31 @@
 	<loginmode type="open" />
 	<logoutmode type="open" />
 
+	<guestreadmode type="open" />
+	<guestwritemode type="open" />
+
  	<forum id="submarine" language="nl">
 		<accountcreation type="closed" />
-		<accountremoval type="open" />
-		<loginmode type="open" />
-		<logoutmode type="open" />
+		<accountremoval type="closed" />
+		<loginmode type="closed" />
+		<logoutmode type="closed" />
 		<postarea id="Algemeen" language="nl">
 		</postarea>
 		<postarea id="Misc" language="nl">
+		</postarea>
+	</forum>
+
+
+ 	<forum id="test" language="nl">
+		<guestreadmode type="open" />
+		<guestwritemode type="closed" />
+		<postarea id="gast gebied" language="nl">
+			<guestreadmode type="open" />
+			<guestwritemode type="open" />
+		</postarea>
+		<postarea id="leden gebied" language="nl">
+			<guestreadmode type="closed" />
+			<guestwritemode type="closed" />
 		</postarea>
 	</forum>
  </forums>
