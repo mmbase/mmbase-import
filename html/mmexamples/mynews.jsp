@@ -13,7 +13,7 @@
     </tr>
     <tr>
       <td colspan="2" valign="top">
-	<p>MyNews is an easy example that show how to create a small magazine with news articles.</p>
+    <p>MyNews is an easy example that show how to create a small magazine with news articles.</p>
         <p>This page will give information about how a magazine like this MyNews magazine is structured.
           On your filesystem in the directory /mmexamples/jsp/mynews you will find the templates that show the actual layout of the MyNews magazine.
         </p>
@@ -46,10 +46,10 @@
       <th>Cloud Design</th>
       <th>Picture</th>
     </tr>
-    <tr>
-      <td valign="top">
-	Click on the image to get a good view of the MyNews Cloud Design.<br />
-	The MyNews application consists of 7 builders (objects of a certain type), namely:
+    <tr valign="top">
+      <td>
+    Click on the image to get a good view of the MyNews Cloud Design.<br />
+    The MyNews application consists of 7 builders (objects of a certain type), namely:
         attachments, mags, images, news, mmevents, urls, and people.<br />
         In this example we will not use the attachments, images and mmevent builders.<br />
         A magazine is a collection of articles or 'news' items.
@@ -58,10 +58,10 @@
         A news article can have relations with attachments, images and urls (all possibly ordered), and
         with mmevents (a publication date) and people (such as the article's author).
       </td>
-	<td>
-	<a href="../share/images/mynews_cloud.jpg" target="img">
-	<img src="../share/images/mynews_cloud.jpg" width="300" />
-	</a>
+    <td>
+    <a href="../share/images/mynews_cloud.jpg" target="img">
+    <img src="../share/images/mynews_cloud.jpg" width="300" />
+    </a>
       </td>
     </tr>
     <tr><td>&nbsp;</td></tr>
@@ -69,9 +69,9 @@
       <th>Manual</th>
       <th>Picture</th>
     </tr>
-    <tr>
-      <td valign="top">
-	With the object cloud design described above you can create webpages like the one you see on the right (By clicking the MyNews url you can see the MyNews magazine in real action). The MyNews magazine consists of a couple of news items. The Title and the Introducation of the newsitems are visualized in this picture. After selecting a news item the complete article will be showed.
+    <tr valign="top">
+      <td>
+    With the object cloud design described above you can create webpages like the one you see on the right (By clicking the MyNews url you can see the MyNews magazine in real action). The MyNews magazine consists of a couple of news items. The Title and the Introducation of the newsitems are visualized in this picture. After selecting a news item the complete article will be showed.
       </td>
       <td><a href="../share/images/mynews_manual.jpg" target="img"><img src="../share/images/mynews_manual.jpg" width="300" /></a></td>
     </tr>
