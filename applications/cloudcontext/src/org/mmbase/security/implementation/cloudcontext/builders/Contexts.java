@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.25 2003-11-16 14:09:53 michiel Exp $
+ * @version $Id: Contexts.java,v 1.26 2003-11-19 16:41:00 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -320,14 +320,18 @@ public class Contexts extends MMObjectBuilder {
     protected SortedSet getAllContexts() {
         SortedSet all = (SortedSet) invalidableObjects.get("ALL");
         if (all == null) {
-            Enumeration enumeration = search(null);  // list all  Contextes simply..
-            all = new TreeSet();
-            while (enumeration.hasMoreElements()) {
-                MMObjectNode context = (MMObjectNode) enumeration.nextElement();
-                all.add(context.getStringValue("name"));
+            try {
+                Iterator i = getNodes(new NodeSearchQuery(this)).iterator();  // list all  Contextes simply..
+                all = new TreeSet();
+                while (i.hasNext()) {
+                    MMObjectNode context = (MMObjectNode) i.next();
+                    all.add(context.getStringValue("name"));
+                }
+                
+                invalidableObjects.put("ALL", all);
+            } catch (SearchQueryException sqe) {
+                log.error(sqe + Logging.stackTrace(sqe));
             }
-
-            invalidableObjects.put("ALL", all);
         }
         return all;
     }

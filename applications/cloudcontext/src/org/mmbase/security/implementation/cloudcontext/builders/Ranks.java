@@ -12,6 +12,8 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.Encode;
@@ -24,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.8 2003-09-24 22:30:29 michiel Exp $
+ * @version $Id: Ranks.java,v 1.9 2003-11-19 16:41:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -47,15 +49,19 @@ public class Ranks extends MMObjectBuilder {
         boolean res = super.init();
         mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
-         Enumeration allRanks = search(null);  
-         while (allRanks.hasMoreElements()) {
-             MMObjectNode rank = (MMObjectNode) allRanks.nextElement();
-             String name = rank.getStringValue("name");
-             Rank r = Rank.getRank(name);
-             if (r == null) {                  
-                 Rank.createRank(rank.getIntValue("rank"), name);
-             }
-         }
+        try {
+            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();        
+            while (i.hasNext()) {
+                MMObjectNode rank = (MMObjectNode) i.next();
+                String name = rank.getStringValue("name");
+                Rank r = Rank.getRank(name);
+                if (r == null) {                  
+                    Rank.createRank(rank.getIntValue("rank"), name);
+                }
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe + Logging.stackTrace(sqe));            
+        }
          return res;
     }
     /**
@@ -65,23 +71,27 @@ public class Ranks extends MMObjectBuilder {
         int res = super.insert(owner, node);
         int rank = node.getIntValue("rank");
         String name  = node.getStringValue("name");
-        Enumeration allRanks = search(null);  
-        while (allRanks.hasMoreElements()) {
-            MMObjectNode otherNode = (MMObjectNode) allRanks.nextElement();
-            if (node.getNumber() == otherNode.getNumber()) continue;
-            Rank r = getRank(otherNode);
-            if(r.getInt() == rank) {
-                // there is a unique key on rank so insert will have failed.
-                // this tells us why.                
-                throw new SecurityException("Cannot insert rank '" + name + "', because there is already is a rank with rank weight " + rank + " (" + r + ")");
+        try {
+            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();        
+            while (i.hasNext()) {
+                MMObjectNode otherNode = (MMObjectNode) i.next();
+                if (node.getNumber() == otherNode.getNumber()) continue;
+                Rank r = getRank(otherNode);
+                if(r.getInt() == rank) {
+                    // there is a unique key on rank so insert will have failed.
+                    // this tells us why.                
+                    throw new SecurityException("Cannot insert rank '" + name + "', because there is already is a rank with rank weight " + rank + " (" + r + ")");
+                }
+                if(r.toString().equals(name)) {
+                    // there is a unique key on name so insert will have failed.
+                    // this tells us why.                           
+                    throw new SecurityException("Cannot insert rank '" + name + "', because there is already a rank with that name");
+                }
+                
+                // TODO, fix core!  peculiar checks, only because core give unclear messages!! 
             }
-            if(r.toString().equals(name)) {
-                // there is a unique key on name so insert will have failed.
-                // this tells us why.                           
-                throw new SecurityException("Cannot insert rank '" + name + "', because there is already a rank with that name");
-            }
-
-            // TODO, fix core!  peculiar checks, only because core give unclear messages!! 
+        } catch (SearchQueryException sqe) {
+            log.error(sqe + Logging.stackTrace(sqe));
         }
         Rank.createRank(rank, name);      
         return res;
