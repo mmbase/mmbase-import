@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>20 July 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.10 2003-06-30 11:23:02 johannes Exp $</edition>
+    <edition>$Id: dovexmlapi.xml,v 1.11 2003-07-01 14:45:28 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -26,9 +26,9 @@
     <sidebar>
       <title>A Note On XML Validation</title>
       <para>The XML you pass to the Dove is an already parsed tree, to support varying methods of obtaining the XML. This means that XML validation needs to be done by the calling code.</para>
-      <para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognise a tag. Future implementations may forego this kind of 'validation', or may fail if it does not recognise attributes, so assuming this behaviour is discouraged, and is not a part of the API specification.</para>
+      <para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forego this kind of 'validation', or may fail if it does not recognize attributes, so assuming this behavior is discouraged, and is not a part of the API specification.</para>
       <note>
-        <para>Specific behaviour of the default Dove implementation are included in this document as a note (like this).</para>
+        <para>Specific behavior of the default Dove implementation are included in this document as a note (like this).</para>
       </note>
     </sidebar>
     <sidebar>

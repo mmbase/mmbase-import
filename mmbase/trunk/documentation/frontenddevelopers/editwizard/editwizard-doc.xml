@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 September 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.18 2003-06-30 11:41:44 johannes Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.19 2003-07-01 14:45:28 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -37,7 +37,7 @@
 	<section id="introduction">
 		<title>Introduction</title>
 		<para>The editwizards allow designers to easily create wizard-like web-entry forms for content entry and maintenance.</para>
-		<para>The wizards are not intended to edit all possible relations and fields of an object; they are more suitable for special content tasks, such as editing a news item or adding a user to the system and placing images and organisational information along with it. A wizard with more than 3 steps is generally over the top.</para>
+		<para>The wizards are not intended to edit all possible relations and fields of an object; they are more suitable for special content tasks, such as editing a news item or adding a user to the system and placing images and organizational information along with it. A wizard with more than 3 steps is generally over the top.</para>
 		<para>In this document you will learn how to install the editwizards on your MMBase release, and how to create your own wizards. First the basics are explained, and how the most simple wizards should be set up. Then, you'll see how more complex wizards can be created.</para>
 	</section>
 	<section id="installation">
@@ -220,7 +220,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 		</section>
 		<section id="loadaction">
 			<title>Load action</title>
-			<para>Generally, the wizard needs to know what objects and relations to &lt;load&gt; before the wizard-pages are displayed. By default, it loads the MMBase object that was passed to it, and all its fields. But often we will want to edit more than one object at once. In that case, we need to also load these other objects. You can use the load-action to define the load behaviour of the wizards, forcing it to load related objects so you can edit or display them along with the main object. Example:</para>
+			<para>Generally, the wizard needs to know what objects and relations to &lt;load&gt; before the wizard-pages are displayed. By default, it loads the MMBase object that was passed to it, and all its fields. But often we will want to edit more than one object at once. In that case, we need to also load these other objects. You can use the load-action to define the load behavior of the wizards, forcing it to load related objects so you can edit or display them along with the main object. Example:</para>
 			<programlisting format="linespecific">
 			<![CDATA[
 <action type="load" >

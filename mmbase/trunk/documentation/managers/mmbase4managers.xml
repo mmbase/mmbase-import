@@ -5,7 +5,7 @@
 
     <date>August 2002</date>
 
-    <edition>$Id: mmbase4managers.xml,v 1.5 2003-06-30 13:29:13 johannes Exp $</edition>
+    <edition>$Id: mmbase4managers.xml,v 1.6 2003-07-01 14:45:30 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -353,7 +353,7 @@
       Application Server. There are several commercial products available
       (IBM&#39;s WebSphere or BEA&#39;s WebLogic), but also Open Source
       products are available. Currently the Tomcat product from the Jakarta
-      organisation is a popular and robust product to run your MMBase
+      organization is a popular and robust product to run your MMBase
       websites.</para>
     </section>
 
@@ -436,7 +436,7 @@
       <title>Adding your own features to MMBase</title>
 
       <para>[todo: Describe the possibility of adding features to MMBase or
-      customize its working behaviour because the full source code is
+      customize its working behavior because the full source code is
       available through the OSS license model. Also describe that adding
       features to MMBase can be donated by the author to MMBase, thus
       contributing to the functional richness of the product.</para>
