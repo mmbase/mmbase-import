@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.64 2002-08-14 18:15:02 michiel Exp $
+  @version $Id: wizard.xsl,v 1.65 2002-08-14 21:02:28 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -18,6 +18,7 @@
   <xsl:param name="objectnumber"></xsl:param>
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
+
 
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of wizard
@@ -344,7 +345,7 @@
         <xsl:when test="@ftype='function'">
           <xsl:if test="not(string(number(@number)) = 'NaN')">
             <xsl:apply-templates select="value" mode="line">              
-              <xsl:with-param name="val"><xsl:value-of select="node:function(string(@number), string(value))" disable-output-escaping="yes" /></xsl:with-param>
+              <xsl:with-param name="val"><xsl:value-of select="node:function($cloud, string(@number), string(value))" disable-output-escaping="yes" /></xsl:with-param>
             </xsl:apply-templates>
           </xsl:if>
         </xsl:when>
@@ -467,7 +468,7 @@
             <xsl:when test="@dttype='binary' and not(upload)">
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
-                  <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
+                  <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
                   <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
                   <xsl:call-template name="prompt_image_upload" />
                   </a>
@@ -487,7 +488,7 @@
             </xsl:when>
             <xsl:otherwise>
           <span>
-            <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+            <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
           </span>
             </xsl:otherwise>
           </xsl:choose>
@@ -495,13 +496,13 @@
         <xsl:when test="@ftype='file'">
           <xsl:choose>
             <xsl:when test="@dttype='data'">
-              <a target="_new" href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a>
+              <a target="_new" href="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a>
             </xsl:when>
             <xsl:otherwise>
               <nobr><input type="hidden" name="{@fieldname}" value="YES" />
                 <xsl:choose>
                   <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" /><br />
-                  <a target="_new" href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
+                  <a target="_new" href="{node:function(cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
                   </xsl:when>
                   <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
@@ -557,7 +558,7 @@
           <tr>
             <td>          
               <!-- the image -->
-              <img src="{node:function(string(@destination), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
+              <img src="{node:function($cloud, string(@destination), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
             </td>
             <td colspan="2">
               <xsl:if test="field|fieldset">

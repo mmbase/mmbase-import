@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.16 2002-08-14 18:15:02 michiel Exp $
+  @version $Id: base.xsl,v 1.17 2002-08-14 21:02:28 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -22,6 +22,8 @@
 
   <xsl:param name="ew_context"></xsl:param><!-- The web-application's context -->
   <xsl:param name="ew_path"></xsl:param><!-- The directory in which the editwizards are installed (relative to context root) -->
+
+  <xsl:param name="cloud" />
 
   <xsl:variable name="rootew_path"><xsl:value-of select="$ew_context" /><xsl:value-of select="$ew_path" /></xsl:variable>
   
