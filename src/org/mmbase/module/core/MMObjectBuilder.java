@@ -57,9 +57,9 @@ import org.mmbase.util.logging.Logging;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @author Johan Verelst
+ * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.211 2003-02-26 13:52:20 johannes Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.212 2003-02-26 15:41:33 johannes Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -824,7 +824,7 @@ public class MMObjectBuilder extends MMTable {
             }
 
             if(numbers.length() > MAX_QUERY_SIZE) {
-                result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+                result.addAll(basicSearch("SELECT " + getNonByteArrayFields() + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
                 numbers = new StringBuffer();
                 first = true;
             }
@@ -833,7 +833,7 @@ public class MMObjectBuilder extends MMTable {
         // now that we have a comma seperated string of numbers, we can
         // the search with a where-clause containing this list
         if(! numbers.toString().equals("")) {
-            result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+            result.addAll(basicSearch("SELECT " + getNonByteArrayFields() + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
         } // else everything from cache
 
         // check that we didnt loose any nodes
@@ -3928,12 +3928,12 @@ public class MMObjectBuilder extends MMTable {
      * This method returns all fields of the builder that have a FieldDefs.DBSTATE_PERSISTENT or a FieldDefs.DBSTATE_SYSTEM DBState ecluding fields  that have a DBType FieldDefs.TYPE_BYTE
      * @param builderName the name of the builder
      * @return a String containing the fields in the database separated by a comma
-     * @since  MMBase-1.6
+     * @since  MMBase-1.6.2
      * 
      **/
-    private String getNonByteArrayFields(String builderName){
+    private String getNonByteArrayFields(){
         StringBuffer sb = new StringBuffer();
-        Iterator fieldIter = mmb.getBuilder(builderName).getFields(FieldDefs.ORDER_CREATE).iterator();
+        Iterator fieldIter = getFields(FieldDefs.ORDER_CREATE).iterator();
         
         boolean first = true;
         
