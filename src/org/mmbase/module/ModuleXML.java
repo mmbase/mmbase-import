@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.5 $ $Date: 2000-05-19 15:24:35 $
+ * @version $Revision: 1.6 $ $Date: 2000-06-20 09:40:39 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -78,7 +78,7 @@ public abstract class ModuleXML extends Module {
 		
 		// get us a (normal) propertie reader	
 		ExtendedProperties Reader=new ExtendedProperties();
-        Hashtable mods = null;		
+	        Hashtable mods = null;		
 		String filename_upper;
 
 		// load the properties file of this server
@@ -101,7 +101,7 @@ public abstract class ModuleXML extends Module {
 		    mods = Reader.readProperties(filename);
 		}
 
-debug("mods =" + mods.toString());
+		if (debug) debug("mods =" + mods.toString());
 
 		// oke try loading all these modules and start em up
 		for (Enumeration e=mods.keys();e.hasMoreElements();) {
@@ -144,8 +144,8 @@ debug("mods =" + mods.toString());
 						// Warning this is rather blunt
 						filename = filename_upper + ".properties";
 					    modprops = Reader.readProperties(filename);
-						System.out.println("ModuleXML -> "+filename);
-						System.out.println("ModuleXML -> "+modprops);
+						//System.out.println("ModuleXML -> "+filename);
+						//System.out.println("ModuleXML -> "+modprops);
 					 }
 					//debug("loadModulesFromDisk(): MOD "+key+" "+modprops);
 					if (modprops!=null) {

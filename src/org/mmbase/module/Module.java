@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.13 $ $Date: 2000-05-03 22:40:29 $
+ * @version $Revision: 1.14 $ $Date: 2000-06-20 09:40:18 $
  */
 public abstract class Module {
 
@@ -265,7 +265,7 @@ public abstract class Module {
     public static synchronized Hashtable loadModulesFromDisk_plain() {
         Class newclass;
 
-        debug("loadModulesFromDisk(): mmbase.config="+System.getProperty("mmbase.config"));
+        if (debug) debug("loadModulesFromDisk(): mmbase.config="+System.getProperty("mmbase.config"));
         mmbaseconfig=System.getProperty("mmbase.config");
         MMBaseContext.setConfigPath(mmbaseconfig);
 
@@ -304,7 +304,7 @@ public abstract class Module {
                     // extra check to load propertie files from weird places (security reasons for example)
                     String tmp=System.getProperty("mmbase.mod_"+key);
                     if (tmp!=null) {
-                        debug("Reading "+key+" mod file from : "+tmp);
+                        if (debug) debug("Reading "+key+" mod file from : "+tmp);
                         filename=tmp;
                     }
                     Hashtable modprops = Reader.readProperties(filename);
@@ -335,7 +335,7 @@ public abstract class Module {
 		}
 
 		// so now really give em their init
-		debug("startModules(): init the modules("+modules+")");
+		if (debug) debug("startModules(): init the modules("+modules+")");
 		for (Enumeration e=modules.elements();e.hasMoreElements();) {
 			Module mod=(Module)e.nextElement();
 			if (debug) debug("startModules(): mod.init("+mod+")");
@@ -364,7 +364,7 @@ public abstract class Module {
 				modules=loadModulesFromDisk();
 			}
 
-			debug("getModule("+name+"): Modules not loaded, loading them..");
+			if (debug) debug("getModule("+name+"): Modules not loaded, loading them..");
 			startModules();
 			// also start the maintaince thread that calls all modules every x seconds
 			mprobe = new ModuleProbe(modules);
