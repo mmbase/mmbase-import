@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.Cloud;
+
 import java.io.IOException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
@@ -22,16 +24,19 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.15 2005-01-05 19:18:25 michiel Exp $ 
+ * @version $Id: LocaleTag.java,v 1.16 2005-04-04 12:16:28 michiel Exp $ 
  */
 
-public class LocaleTag extends ContextReferrerTag  {
+public class LocaleTag extends CloudReferrerTag  {
     private static final Logger log = Logging.getLoggerInstance(LocaleTag.class);
 
+    protected static final String KEY = "javax.servlet.jsp.jstl.fmt.locale.page";
     private Attribute language = Attribute.NULL;
     private Attribute country =  Attribute.NULL;
 
     protected Locale locale;
+    protected Locale prevLocale = null;
+    protected Cloud  cloud;
     private String jspvar = null;
 
     // ------------------------------------------------------------
@@ -71,8 +76,17 @@ public class LocaleTag extends ContextReferrerTag  {
             pageContext.setAttribute(jspvar, locale);
         }
         // compatibility with jstl fmt tags:
-        // should use the constant, but that would make compile-time dependency.
-        pageContext.setAttribute("javax.servlet.jsp.jstl.fmt.locale.page", locale, PageContext.PAGE_SCOPE);
+        // should use their constant, but that would make compile-time dependency.
+        prevLocale = (Locale) pageContext.getAttribute(KEY, PageContext.PAGE_SCOPE);
+        pageContext.setAttribute(KEY, locale, PageContext.PAGE_SCOPE);
+        CloudProvider cloudProvider = findCloudProvider(false);
+        if (cloudProvider != null) {
+            cloud = cloudProvider.getCloudVar();
+            prevLocale = cloud.getLocale();
+            cloud.setLocale(locale);
+        } else {
+            cloud = null;
+        }
         return EVAL_BODY;
     }
     public int doAfterBody() throws JspTagException {
@@ -86,6 +100,17 @@ public class LocaleTag extends ContextReferrerTag  {
             }
         }
         return SKIP_BODY;
+    }
+    public int doEndTag() throws JspTagException {
+        if (prevLocale != null) {
+            pageContext.setAttribute(KEY, prevLocale, PageContext.PAGE_SCOPE);
+            if (cloud != null) {
+                cloud.setLocale(prevLocale);
+            }
+        } else {
+            pageContext.removeAttribute(KEY, PageContext.PAGE_SCOPE);
+        }
+        return super.doEndTag();
     }
 
 }
