@@ -32,14 +32,14 @@ public class XMLBuilderReader  {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-			//if there's a dtd use it to validate, otherwise do nothing
+	    //if there's a dtd use it to validate, otherwise do nothing
             parser.setFeature("http://apache.org/xml/features/validation/dynamic", true);
             //set own errorHandler
-			XMLErrorHandler errorHandler = new XMLErrorHandler();
+	    XMLErrorHandler errorHandler = new XMLErrorHandler();
             parser.setErrorHandler(errorHandler);
-			//use own entityResolver for converting the dtd's url to a local file
+	    //use own entityResolver for converting the dtd's url to a local file
             EntityResolver resolver = new XMLEntityResolver();
-	        parser.setEntityResolver(resolver);
+	    parser.setEntityResolver(resolver);
             parser.parse(filename);
             document = parser.getDocument();
 	

@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBaseContext;
  * Take the systemId and converts it into a local file
  *
  * @author Gerard van Enk
- * @version $Revision: 1.1 $ $Date: 2000-07-03 22:26:08 $
+ * @version $Revision: 1.2 $ $Date: 2000-07-04 10:20:27 $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -36,21 +36,21 @@ public class XMLEntityResolver implements EntityResolver {
     public InputSource resolveEntity(String publicId, String systemId) 
       throws SAXException, IOException { 
         if (systemId != null) {
-			//does systemId contain a mmbase-dtd 
-			if (systemId.indexOf("http://www.mmbase.org/") != -1) {
-				int i = systemId.indexOf("dtd/");
-				String dtdName = systemId.substring(i);
+	    //does systemId contain a mmbase-dtd 
+	    if (systemId.indexOf("http://www.mmbase.org/") != -1) {
+	        int i = systemId.indexOf("/dtd/");
+		String dtdName = systemId.substring(i);
                 String dtdLocation = MMBaseContext.getConfigPath()+dtdName;
-	            System.out.println("dtdLocation = "+dtdLocation);
-				InputStreamReader dtdInputStreamReader = 
+	        System.out.println("dtdLocation = "+dtdLocation);
+		InputStreamReader dtdInputStreamReader = 
                   new InputStreamReader(new FileInputStream(dtdLocation));
-				InputSource dtdInputSource = new InputSource();
-				dtdInputSource.setCharacterStream(dtdInputStreamReader);
+	        InputSource dtdInputSource = new InputSource();
+		dtdInputSource.setCharacterStream(dtdInputStreamReader);
                 return dtdInputSource;
-			}
+	    }
         } 
         // it's a systemId we can't do anything with, 
-		// so let the parser decide what to do
+	// so let the parser decide what to do
         return null; 
     } 
 }
