@@ -441,7 +441,8 @@ public class servdb extends JamesServlet {
                                         // ---
                                         if (req.getRequestURI().indexOf("attachment")!=-1) {
                                             cline.buffer=getAttachment(getParamVector(req));
-                                            cline.mimetype="application/x-binary";
+					    cline.mimetype=getAttachmentMimeType(getParamVector(req));
+                                            //cline.mimetype="application/x-binary";
                                             mimetype=cline.mimetype;
                                         }
 
@@ -772,7 +773,9 @@ public class servdb extends JamesServlet {
      * @return Byte array with contents of 'handle' field of attachment builder
      */
     public byte[] getAttachment(Vector params) {
-        debug("getAttachment(): param="+params);
+	if (debug) {
+	    debug("getAttachment(): param="+params);
+	}
         String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getMMObject("attachments");
@@ -799,6 +802,36 @@ public class servdb extends JamesServlet {
             return null;
         }
     }
+
+    /**
+     * Mimetype of attachment
+     * cjr@dds.nl, July 27th 2000
+     *
+     * @return Mimetype of attachment
+     */
+    public String getAttachmentMimeType(Vector params) {
+        if (params.size()==1) {
+            MMObjectBuilder bul=mmbase.getMMObject("attachments");
+            MMObjectNode node=null;
+            try {
+                node=bul.getNode((String)params.elementAt(0));
+            } catch(Exception e) {
+                if (debug) debug("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
+                return null;
+            }
+
+            if (node!=null) {
+                return node.getStringValue("mimetype");
+            } else {
+                //result="Sorry no valid mmnode so no attachment can be given";
+		return "application/x-binary";
+            }
+        } else {
+            if (debug) debug("getAttachmentMimeType called with "+params.size()+" arguments, instead of exactly 1");
+            return null;
+        }
+    }
+
 
     /**
     *
