@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.20 2001-03-12 08:58:27 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.21 2001-03-12 11:32:22 pierre Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 
@@ -727,11 +727,21 @@ public class MultiRelations extends MMObjectBuilder {
 	    return table+"."+mmb.getDatabase().getNumberString();
 	};
 	
+	/**
+	* Creates a condition string which checks the relations between nodes.
+	* The string can then be added to the query's where clause.
+	* @param alltables the tablenames to use
+	* @return a condition as a <code>String</code>
+	*/
+	protected String getRelationString(Vector alltables) {
+	    return getRelationString(alltables, SEARCH_EITHER);
+	}
 	
 	/**
 	* Creates a condition string which checks the relations between nodes.
 	* The string can then be added to the query's where clause.
 	* @param alltables the tablenames to use
+	* @param searchdir the directionality option to use
 	* @return a condition as a <code>String</code>
 	*/
 	protected String getRelationString(Vector alltables, int searchdir) {
