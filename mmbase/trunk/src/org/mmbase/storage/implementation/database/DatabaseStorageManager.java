@@ -28,11 +28,16 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.44 2004-01-22 19:14:39 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.45 2004-02-04 09:04:55 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
+
+    // sequenceLock is used to synchronize access to the createKey() and createSequence()
+    // methods, so that at least within a JVM no conflicts can occur when obtaining a new key;
+    // Since it is only used for synchronizing on class level, it does not itself contain data.
+    protected static final Object sequenceLock = new Object();
 
     /**
      * The factory that created this manager
@@ -212,37 +217,39 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     public int createKey() throws StorageException {
-        try {
-            getActiveConnection();
-            Statement s = activeConnection.createStatement();
-            String query;
-            Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
-            if (scheme != null) {
+        synchronized (sequenceLock) {
+            try {
+                getActiveConnection();
+                Statement s = activeConnection.createStatement();
+                String query;
+                Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
+                if (scheme != null) {
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
+                    logQuery(query);
+                    s.executeUpdate(query);
+                    s.close();
+                }
+                scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
                 logQuery(query);
-                s.executeUpdate(query);
-                s.close();
+                s = activeConnection.createStatement();
+                ResultSet result = s.executeQuery(query);
+                if (result.next()) {
+                    int keynr = result.getInt(1);
+                    s.close();
+                    result.close();
+                    return keynr;
+                } else {
+                    result.close();
+                    s.close();
+                    throw new StorageException("The sequence table is empty.");
+                }
+            } catch (SQLException se) {
+                log.error(Logging.stackTrace(se));
+                throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
             }
-            scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
-            query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
-            logQuery(query);
-            s = activeConnection.createStatement();
-            ResultSet result = s.executeQuery(query);
-            if (result.next()) {
-                int keynr = result.getInt(1);
-                s.close();
-                result.close();
-                return keynr;
-            } else {
-                result.close();
-                s.close();
-                throw new StorageException("The sequence table is empty.");
-            }
-        } catch (SQLException se) {
-            log.error(Logging.stackTrace(se));
-            throw new StorageException(se);
-        } finally {
-            releaseActiveConnection();
         }
     }
 
@@ -1267,42 +1274,44 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when the sequence can not be created
      */
     protected void createSequence() throws StorageException {
-        try {
-            getActiveConnection();
-            // create the type mapping to search for
-            String typeName = FieldDefs.getDBTypeDescription(FieldDefs.TYPE_INTEGER);
-            TypeMapping mapping = new TypeMapping();
-            mapping.name = typeName;
-            // search type mapping
-            List typeMappings = factory.getTypeMappings();
-            int found = typeMappings.indexOf(mapping);
-            if (found == -1) {
-                throw new StorageException("Type " + typeName + " undefined.");
+        synchronized (sequenceLock) {
+            try {
+                getActiveConnection();
+                // create the type mapping to search for
+                String typeName = FieldDefs.getDBTypeDescription(FieldDefs.TYPE_INTEGER);
+                TypeMapping mapping = new TypeMapping();
+                mapping.name = typeName;
+                // search type mapping
+                List typeMappings = factory.getTypeMappings();
+                int found = typeMappings.indexOf(mapping);
+                if (found == -1) {
+                    throw new StorageException("Type " + typeName + " undefined.");
+                }
+                String fieldName = (String)factory.getStorageIdentifier("number");
+                String fieldDef = fieldName + " " + ((TypeMapping)typeMappings.get(found)).type + " NOT NULL, PRIMARY KEY(" + fieldName + ")";
+                String query;
+                Statement s;
+                Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
+                if (scheme != null) {
+                    query = scheme.format(new Object[] { this, fieldDef });
+                    logQuery(query);
+                    s = activeConnection.createStatement();
+                    s.executeUpdate(query);
+                    s.close();
+                }
+                scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
+                if (scheme != null) {
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1)});
+                    logQuery(query);
+                    s = activeConnection.createStatement();
+                    s.executeUpdate(query);
+                    s.close();
+                }
+            } catch (SQLException se) {
+                throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
             }
-            String fieldName = (String)factory.getStorageIdentifier("number");
-            String fieldDef = fieldName + " " + ((TypeMapping)typeMappings.get(found)).type + " NOT NULL, PRIMARY KEY(" + fieldName + ")";
-            String query;
-            Statement s;
-            Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
-            if (scheme != null) {
-                query = scheme.format(new Object[] { this, fieldDef });
-                logQuery(query);
-                s = activeConnection.createStatement();
-                s.executeUpdate(query);
-                s.close();
-            }
-            scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
-            if (scheme != null) {
-                query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1)});
-                logQuery(query);
-                s = activeConnection.createStatement();
-                s.executeUpdate(query);
-                s.close();
-            }
-        } catch (SQLException se) {
-            throw new StorageException(se);
-        } finally {
-            releaseActiveConnection();
         }
     }
 
