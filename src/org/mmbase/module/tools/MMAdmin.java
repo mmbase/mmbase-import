@@ -30,7 +30,7 @@ import org.mmbase.util.xml.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.78 2003-09-19 12:55:39 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.79 2003-10-24 10:03:12 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -681,7 +681,7 @@ public class MMAdmin extends ProcessorModule {
                     && installRelDefs(app.getNeededRelDefs(), result)
                     && installAllowedRelations(app.getAllowedRelations(), result)
                     && installDataSources(app.getDataSources(), applicationName, result)
-                    && installRelationSources(app.getRelationSources(), result)) {
+                    && installRelationSources(app.getRelationSources(), applicationName, result)) {
                     if (installedVersion == -1) {
                         ver.setInstalledVersion(name, "application", maintainer, version);
                     } else {
@@ -778,36 +778,44 @@ public class MMAdmin extends ProcessorModule {
                 }
             }
 
-            // treat NODE fields now.
-            Iterator i = nodeFieldNodes.iterator();
-            while (i.hasNext()) {
-                MMObjectNode importedNode = (MMObjectNode) i.next();
-                String exportsource = (String) importedNode.values.get("__exportsource");
-                // clean it up
-                importedNode.values.remove("__exportsource");
-
-                List fields = importedNode.parent.getFields();
-                Iterator j = fields.iterator();
-                while (j.hasNext()) {
-                    FieldDefs def = (FieldDefs) j.next();
-                    if (def.getDBType() == FieldDefs.TYPE_NODE && ! (def.getDBName().equals("number"))) {
-                        String fieldName = def.getDBName();
-
-                        updateFieldWithTypeNode(
-                           syncbul,
-                           importedNode,
-                           exportsource,
-                           fieldName);
-                    }
-                }
-                if (importedNode.isChanged()) {
-                    importedNode.commit();
-                }
-            }
+            treatNodeFields(nodeFieldNodes, syncbul);
 
             return result.isSuccess();
         } else {
             return result.error("Application installer : can't reach syncnodes builder"); //
+        }
+    }
+
+    private void treatNodeFields(List nodeFieldNodes, MMObjectBuilder syncbul) {
+        Iterator i = nodeFieldNodes.iterator();
+        while (i.hasNext()) {
+            MMObjectNode importedNode = (MMObjectNode) i.next();
+            String exportsource = (String) importedNode.values.get("__exportsource");
+            // clean it up
+            importedNode.values.remove("__exportsource");
+
+            List fields = importedNode.parent.getFields();
+            Iterator j = fields.iterator();
+            while (j.hasNext()) {
+                FieldDefs def = (FieldDefs) j.next();
+                if (def.getDBType() == FieldDefs.TYPE_NODE &&
+                    !def.getDBName().equals("number") &&
+                    !def.getDBName().equals("snumber") &&
+                    !def.getDBName().equals("dnumber") &&
+                    !def.getDBName().equals("rnumber")
+                   ) {
+                    String fieldName = def.getDBName();
+
+                    updateFieldWithTypeNode(
+                       syncbul,
+                       importedNode,
+                       exportsource,
+                       fieldName);
+                }
+            }
+            if (importedNode.isChanged()) {
+                importedNode.commit();
+            }
         }
     }
 
@@ -897,11 +905,11 @@ public class MMAdmin extends ProcessorModule {
           exportnumber = -1;
       }
 
-      // clean it up (don't know if this is necessary, but don't risc anything!)
+      // clean it up (don't know if this is necessary, but don't risk anything!)
       importedNode.values.remove("__" + fieldname);
 
       int localNumber = -1;
-      String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
+      String query = "where exportnumber=" + exportnumber + " and exportsource='" + exportsource + "'";
       Enumeration b = syncbul.search(query);
       if (b.hasMoreElements()) {
           MMObjectNode n2 = (MMObjectNode) b.nextElement();
@@ -913,15 +921,16 @@ public class MMAdmin extends ProcessorModule {
    /**
      * @javadoc
      */
-    boolean installRelationSources(Vector ds, ApplicationResult result) {
+    boolean installRelationSources(Vector ds, String appname, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
         if (syncbul != null) {
+            List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
             for (Enumeration h = ds.elements(); h.hasMoreElements();) {
                 Hashtable bh = (Hashtable)h.nextElement();
                 String path = (String)bh.get("path");
-                path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator + path;
-                if (fileExists(path)) {
-                    XMLRelationNodeReader nodereader = new XMLRelationNodeReader(path, mmb);
+                String prepath = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+                if (fileExists(prepath + path)) {
+                    XMLRelationNodeReader nodereader = new XMLRelationNodeReader(prepath+ path, prepath + appname + File.separator, mmb);
 
                     String exportsource = nodereader.getExportSource();
                     int timestamp = nodereader.getTimeStamp();
@@ -969,6 +978,7 @@ public class MMAdmin extends ProcessorModule {
                             newnode.setValue("dnumber", dnumber);
                             int localnumber = -1;
                             if (snumber != -1 && dnumber != -1) {
+                                // localnumber = doKeyMergeNode(syncbul, newnode, exportsource, result);
                                 localnumber = newnode.insert("import");
                                 if (localnumber != -1) {
                                     MMObjectNode syncnode = syncbul.getNewNode("import");
@@ -977,15 +987,37 @@ public class MMAdmin extends ProcessorModule {
                                     syncnode.setValue("timestamp", timestamp);
                                     syncnode.setValue("localnumber", localnumber);
                                     syncnode.insert("import");
+                                    if (localnumber == newnode.getNumber()) {
+
+                                        // determine if there were NODE fields, which need special treatment later.
+                                        List fields = newnode.parent.getFields();
+                                        Iterator i = fields.iterator();
+                                        while (i.hasNext()) {
+                                            FieldDefs def = (FieldDefs) i.next();
+
+                                            // Fields with type NODE and notnull=true will be handled
+                                            // by the doKeyMergeNode() method.
+                                            if (def.getDBType() == FieldDefs.TYPE_NODE
+                                                && ! def.getDBName().equals("number")
+                                                && ! def.getDBNotNull()) {
+
+                                                newnode.values.put("__exportsource", exportsource);
+                                                nodeFieldNodes.add(newnode);
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             } else {
                                 result.error("Cannot sync relation (exportnumber==" + exportnumber
                                         + ", snumber:" + snumber + ", dnumber:" + dnumber + ")");
                             }
+
                         }
                     }
                 }
             }
+            treatNodeFields(nodeFieldNodes,syncbul);
         } else {
             result.error("Application installer : can't reach syncnodes builder");
         }
