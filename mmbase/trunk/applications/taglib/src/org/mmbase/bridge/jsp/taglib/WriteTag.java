@@ -15,6 +15,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.43 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: WriteTag.java,v 1.44 2005-02-02 20:56:58 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -41,6 +42,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
     private Attribute sessionVar = Attribute.NULL;
     private Attribute cookie     = Attribute.NULL;
+    private Attribute applicationVar  = Attribute.NULL;
+    private Attribute requestVar  = Attribute.NULL;
     // private Attribute page       = Attribute.NULL;
 
     private Attribute value      = Attribute.NULL;
@@ -53,6 +56,21 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     public void setCookie(String s) throws JspTagException {
         cookie = getAttribute(s);
     }
+
+    /**
+     * @since MMBase-1.7.4
+     */
+    public void setApplication(String s) throws JspTagException {
+        applicationVar = getAttribute(s);
+    }
+    /**
+     * @since MMBase-1.7.4
+     */
+    public void setRequest(String s) throws JspTagException {
+        requestVar = getAttribute(s);
+    }
+
+
 
     /*
       // A page attribute is not needed, because we have already taglib vars, which take the same function (and are actually stored here)
@@ -108,6 +126,15 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             pageContext.getSession().setAttribute(sessionVar.getString(this), helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
+        if (requestVar != Attribute.NULL) {
+            pageContext.setAttribute(requestVar.getString(this), helper.getValue(), PageContext.REQUEST_SCOPE);
+            helper.overrideWrite(false); // default behavior is not to write to page if wrote to request.
+        }
+        if (applicationVar != Attribute.NULL) {
+            pageContext.setAttribute(applicationVar.getString(this), helper.getValue(), PageContext.APPLICATION_SCOPE);
+            helper.overrideWrite(false); // default behavior is not to write to page if wrote to application.
+        }
+
         if (cookie != Attribute.NULL) {
             Object v = helper.getValue();
             String cookievalue;

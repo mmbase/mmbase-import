@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.21.2.2 2004-08-31 16:45:16 rob Exp $
+ * @version $Id: ContextContainer.java,v 1.21.2.3 2005-02-02 20:55:39 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -38,6 +38,8 @@ public class ContextContainer extends HashMap {
     public static final int LOCATION_SESSION        = 30;
     public static final int LOCATION_COOKIE         = 40;
     public static final int LOCATION_ATTRIBUTES     = 50;
+    public static final int LOCATION_REQUEST        = 50; 
+    public static final int LOCATION_APPLICATION    = 55;
     public static final int LOCATION_THIS           = 60; // current value, if there is one
 
 
@@ -61,7 +63,11 @@ public class ContextContainer extends HashMap {
         } else if ("cookie".equals(s)) {
             location = LOCATION_COOKIE;
         } else if ("attributes".equals(s)) {
-            location = LOCATION_ATTRIBUTES;
+            location = LOCATION_REQUEST;
+        } else if ("request".equals(s)) {
+            location = LOCATION_REQUEST;
+        } else if ("application".equals(s)) {
+            location = LOCATION_APPLICATION;
         } else if ("this".equals(s)) {
             location = LOCATION_THIS;
         } else {
@@ -78,7 +84,8 @@ public class ContextContainer extends HashMap {
         case LOCATION_PAGE:        return "page";
         case LOCATION_MULTIPART:   return "multipart";
         case LOCATION_COOKIE:      return "cookie";
-        case LOCATION_ATTRIBUTES:  return "attributes";
+        case LOCATION_REQUEST:     return "request";
+        case LOCATION_APPLICATION: return "application";
         case LOCATION_THIS:        return "this";
         default:                   return "<>";
         }
@@ -521,8 +528,11 @@ public class ContextContainer extends HashMap {
         case LOCATION_PAGE:
             result = pageContext.getAttribute(referId);
             break;
-        case LOCATION_ATTRIBUTES:
-            result = ((HttpServletRequest) pageContext.getRequest()).getAttribute(referId);
+        case LOCATION_REQUEST:
+            result = pageContext.getAttribute(referId, PageContext.REQUEST_SCOPE);
+            break;
+        case LOCATION_APPLICATION:
+            result = pageContext.getAttribute(referId, PageContext.APPLICATION_SCOPE);
             break;
         case LOCATION_THIS:
             result = simpleGet(referId, false);
