@@ -19,6 +19,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.security.*;
 import org.w3c.dom.Document;
 
 import org.mmbase.cache.RelatedNodesCache;
@@ -36,7 +37,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.113 2003-11-10 21:23:24 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.114 2003-11-19 13:03:10 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -162,6 +163,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     // object to sync access to properties
     private Object properties_sync = new Object();
 
+    // temporarily holds a new context for a node
+    private String newContext = null;
+
     /**
      * Main constructor.
      * @param parent the node's parent, an instance of the node's builder.
@@ -233,11 +237,75 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * Insert this node into the database or other storage system.
+     * Insert this node into the storage
+     * @param username the name of the user who inserts the node. This value is ignored
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
         return parent.insert(userName, this);
+    }
+
+    /**
+     * Insert this node into the database or other storage system.
+     * @param user the user who inserts the node.
+     *        Used to set security-related information
+     * @return the new node key (number field), or -1 if the insert failed
+     */
+    public int insert(UserContext user) {
+        int nodeID = parent.safeInsert(this,user.getIdentifier());
+        if (nodeID != -1) {
+            MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
+            mmbaseCop.getAuthorization().create(user, nodeID);
+            if (newContext != null) {
+                mmbaseCop.getAuthorization().setContext(user,nodeID,newContext);
+                newContext = null;
+            }
+        }
+        return nodeID;
+    }
+
+    /**
+     * Commit this node to the storage
+     * @param user the user who commits the node.
+     *        Used to set security-related information
+     * @return <code>true</code> if succesful
+     */
+    public boolean commit(UserContext user) {
+        boolean success = parent.safeCommit(this);
+        if (success) {
+            MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
+            mmbaseCop.getAuthorization().update(user, getNumber());
+            if (newContext != null) {
+                mmbaseCop.getAuthorization().setContext(user,getNumber(),newContext);
+                newContext = null;
+            }
+        }
+        return success;
+    }
+
+    /**
+     * Remove this node from the storage
+     * @param user the user who removes the node.
+     *        Used to set security-related information
+     */
+    public void remove(UserContext user) {
+        parent.removeNode(this);
+        parent.getMMBase().getMMBaseCop().getAuthorization().remove((UserContext)user,getNumber());
+    }
+
+    /**
+     * Sets teh context for this node
+     * @param user the user who changes the context the node.
+     * @param context the new context
+     * @param now if <code>true</code>, the context is changed instantly, otherwise it is changed
+     *        after the node is send to storage.
+     */
+    public void setContext (UserContext user, String context, boolean now) {
+       if (now) {
+            parent.getMMBase().getMMBaseCop().getAuthorization().setContext(user,getNumber(),context);
+       } else {
+           newContext = context;
+       }
     }
 
     /**
@@ -1048,7 +1116,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return null;
         }
     }
-    
+
     /**
      * @since MMBase-1.7
      * @scope public?
@@ -1060,7 +1128,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             relations = parent.getRelations_main(getNumber());
             relationsCache.put(number, relations);
 
-        } else {            
+        } else {
             relations = (List) relationsCache.get(number);
         }
         return relations;

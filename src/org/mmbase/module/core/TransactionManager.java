@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.24 2002-09-23 11:02:56 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.25 2003-11-19 13:03:10 pierre Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -293,11 +293,14 @@ public class TransactionManager implements TransactionManagerInterface {
                     case I_EXISTS_YES:
                         if (!debug) {
                             // use safe commit, which locks the node cache
-                            if (node.parent.safeCommit(node)) {
+                            boolean commitOK;
+                            if (user instanceof UserContext) {
+                                commitOK = node.commit((UserContext)user);
+                            } else {
+                                commitOK = node.parent.safeCommit(node);
+                            }
+                            if (commitOK) {
                                 nodestate[i]=COMMITED;
-                                if (user instanceof UserContext) {
-                                    mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
-                                }
                             } else {
                                 nodestate[i]=FAILED;
                             }
@@ -313,11 +316,14 @@ public class TransactionManager implements TransactionManagerInterface {
                             log.debug("node "+i+" insert ");
                         }
                         if (!debug) {
-                            if (node.parent.safeInsert(node,username)!=-1) {
+                            int insertOK;
+                            if (user instanceof UserContext) {
+                                insertOK = node.insert((UserContext)user);
+                            } else {
+                                insertOK = node.parent.safeInsert(node, username);
+                            }
+                            if (insertOK > 0) {
                                 nodestate[i] = COMMITED;
-                                if (user instanceof UserContext) {
-                                    mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
-                                }
                             } else {
                                 nodestate[i] = FAILED;
                                 String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
@@ -350,12 +356,14 @@ public class TransactionManager implements TransactionManagerInterface {
                 switch(nodeexist[i]) {
                     case I_EXISTS_YES:
                         if (!debug) {
-                            // use safe commit, which locks the node cache
-                            if (node.parent.safeCommit(node)) {
+                            boolean commitOK;
+                            if (user instanceof UserContext) {
+                                commitOK = node.commit((UserContext)user);
+                            } else {
+                                commitOK = node.parent.safeCommit(node);
+                            }
+                            if (commitOK) {
                                 nodestate[i]=COMMITED;
-                                if (user instanceof UserContext) {
-                                    mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
-                                }
                             } else {
                                 nodestate[i]=FAILED;
                             }
@@ -371,14 +379,16 @@ public class TransactionManager implements TransactionManagerInterface {
                             log.debug("node "+i+" insert ");
                         }
                         if (!debug) {
-                            boolean res=false;
-                            if (node.parent.safeInsert(node,username)!=-1) {
-                                nodestate[i]=COMMITED;
-                                if (user instanceof UserContext) {
-                                    mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
-                                }
+                            int insertOK;
+                            if (user instanceof UserContext) {
+                                insertOK = node.insert((UserContext)user);
                             } else {
-                                nodestate[i]=FAILED;
+                                insertOK = node.parent.safeInsert(node, username);
+                            }
+                            if (insertOK > 0) {
+                                nodestate[i] = COMMITED;
+                            } else {
+                                nodestate[i] = FAILED;
                                 String message = "relation failed(transaction 2.0: [rollback?])";
                                 log.error(message);
                             }
@@ -414,9 +424,10 @@ public class TransactionManager implements TransactionManagerInterface {
                         }
                         if (!debug) {
                             // no return information
-                            node.parent.removeNode(node);
                             if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().remove((UserContext)user, node.getNumber());
+                                node.remove((UserContext)user);
+                            } else {
+                                node.parent.removeNode(node);
                             }
                             nodestate[i]=COMMITED;
                         } else {
@@ -449,9 +460,10 @@ public class TransactionManager implements TransactionManagerInterface {
                         }
                         if (!debug) {
                             // no return information
-                            node.parent.removeNode(node);
                             if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().remove((UserContext)user,node.getNumber());
+                                node.remove((UserContext)user);
+                            } else {
+                                node.parent.removeNode(node);
                             }
                             nodestate[i]=COMMITED;
                         } else {
@@ -478,7 +490,11 @@ public class TransactionManager implements TransactionManagerInterface {
     }
 
     public String findUserName(Object user) {
-        return "";
+        if (user instanceof UserContext) {
+            return ((UserContext)user).getIdentifier();
+        } else {
+            return "";
+        }
     }
 
 }
