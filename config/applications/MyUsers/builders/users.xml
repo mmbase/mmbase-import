@@ -76,7 +76,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">firstname</name>
+				<name>firstname</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 			</db>
@@ -109,7 +109,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">lastname</name>
+				<name>lastname</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 			</db>
@@ -142,7 +142,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">email</name>
+				<name>email</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 			</db>
@@ -175,7 +175,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">account</name>
+				<name>account</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 			</db>
@@ -207,7 +207,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">password</name>
+				<name>password</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 			</db>
@@ -239,7 +239,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">description</name>
+				<name>description</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="1024" notnull="true" key="false">STRING</type>
 			</db>

@@ -7,7 +7,7 @@
 	the changes are persistent then)
 
 	@since   MMBase-1.6
-	@version $Id: caches.xml,v 1.5 2003-07-30 09:15:30 michiel Exp $
+	@version $Id: caches.xml,v 1.6 2003-08-28 09:18:26 michiel Exp $
 	@author  Michiel Meeuwissen
 
 -->
@@ -30,7 +30,7 @@
 
 	<!-- cluster nodes -->
 	<cache name="MultilevelCache">
-		<status>active</status>
+		<status>inactive</status>
 		<size>300</size>
 	</cache>
 

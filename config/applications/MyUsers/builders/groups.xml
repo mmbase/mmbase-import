@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="groups" maintainer="mmbase.org" version="0" extends="object">
-	<!-- @version $Id: groups.xml,v 1.2 2003-04-10 15:18:15 pierre Exp $ -->
+	<!-- @version $Id: groups.xml,v 1.3 2003-08-28 09:18:28 michiel Exp $ -->
 	<!-- <status>
 		what is the status of this builder options : active or inactive
 -->
@@ -61,7 +61,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">name</name>
+				<name>name</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 			</db>
@@ -93,7 +93,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">description</name>
+				<name>description</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
 			</db>

@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.2 2003-04-18 11:01:16 michiel Exp $
+   @version $Id: log4j.xml,v 1.3 2003-08-28 09:18:30 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -20,7 +20,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
     <!ENTITY mmlevel    "org.mmbase.util.logging.log4j.Log4jLevel" >
-    <!ENTITY logdir   "/tmp/" >
+    <!ENTITY logdir   "/home/mmbase/log/" >
 ]>
 
 <!-- 
@@ -58,26 +58,20 @@
   See in the eother examples how to configure a log file.
   -->
 
-  <appender name="logfile" class="org.apache.log4j.ConsoleAppender" >
-    <param name="Target" value="System.out" />
+  <appender name="logfile" class="org.apache.log4j.FileAppender" >
+    <param name="File" value="&logdir;mmbase.log" />
     <param name="Encoding"   value="UTF-8" />    
-    <layout class="org.apache.log4j.PatternLayout">
-       <param name="ConversionPattern" value="%d{ABSOLUTE} %-7p %c{4} - %m%n" />
-    </layout>
-    <!-- for debugging, logging memory use, method and line-number is
-    often useful
     <layout class="org.mmbase.util.logging.log4j.MMPatternLayout">
-      <param name="ConversionPattern" value="%d{ABSOLUTE} %q %k kb %c{4} %M.%L - %m%n" />
+      <param name="ConversionPattern" value="%d{ABSOLUTE} %q  %c{4} %M.%L - %m%n" />
     </layout>
-    -->
   </appender>
 
   <!-- 
   A different appender for 'page' logging. This is writing to stdout now too, but probably you want 
   this to go to another file.
   -->     
-  <appender name="pagedebug" class="org.apache.log4j.ConsoleAppender" >
-    <param name="Target" value="System.out" />
+  <appender name="pagedebug" class="org.apache.log4j.FileAppender" >
+    <param name="File" value="&logdir;mmbase.log" />
     <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} PAGE %-7p %c{2} %L - %m%n" />
@@ -109,21 +103,15 @@
 
 
   <!-- SQL logging -->
-  <!--
   <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
     <level class="&mmlevel;" value ="debug" />   
     <appender-ref ref="sqllog" />
   </logger>
-   -->
 
-  <!-- examples: different level for a few subtrees -->
-   <logger name="org.mmbase.bridge" >
-     <level class="&mmlevel;" value ="info" />
-   </logger>
-  
-  <logger name="org.mmbase.security" >
-    <level class="&mmlevel;" value ="warn" />
+  <logger name="org.mmbase.bridge.implementation.BasicCloud" >
+    <level class="&mmlevel;" value ="trace" />
   </logger>
+
 
   <!-- perhaps you use your own extensions to MMBase -->
   <logger name="nl.omroep" >

@@ -6,7 +6,7 @@
 	<searchage>1000</searchage>
 
 	<names>
-		 <!-- singles per language as defined by ISO 639 -->
+    <!-- singles per language as defined by ISO 639 -->
 		 <singular xml:lang="en">Version Control</singular>
 		 <singular xml:lang="nl">Versiebeheer</singular>
 		 <singular xml:lang="eo">Versiestrilo</singular>
