@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.108 2005-03-01 15:00:30 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.109 2005-03-01 15:15:27 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -199,7 +199,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     protected String getAuthenticate() throws JspTagException {
         String a = authenticate.getString(this);
         if (a.equals("")) {
-            return cloudContext.getAuthentication(getName()).getTypes(getMethod())[0];
+            return cloudContext.getAuthentication().getTypes(getMethod())[0];
         }
         return a;
     }
@@ -211,9 +211,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     protected int getMethod() throws JspTagException {
         String m = method.getString(this).toLowerCase();
         if ("".equals(m)) {
-           return  cloudContext.getAuthentication(getName()).getDefaultMethod(request.getProtocol());
+           return  cloudContext.getAuthentication().getDefaultMethod(request.getProtocol());
         } else {
-            return cloudContext.getAuthentication(getName()).getMethod(m);
+            return cloudContext.getAuthentication().getMethod(m);
         }
     }
 
@@ -555,7 +555,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             // add some information for actual logout
             // Logout is loging in with 'anonymous' with some extra info.
-            Parameters logoutInfo = cloudContext.getAuthentication(getName()).createParameters("anonymous");
+            Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
             logoutInfo.setIfDefined(Parameter.REQUEST, request);
             logoutInfo.setIfDefined(Parameter.RESPONSE, response);
             logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, getAuthenticate());
@@ -1037,7 +1037,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
         // check how to log on:
         if (method == AuthenticationData.METHOD_DELEGATE || method == AuthenticationData.METHOD_SESSIONDELEGATE) {
-            user = cloudContext.getAuthentication(getName()).createParameters(getAuthenticate());
+            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             user.setIfDefined(Parameter.REQUEST, request);
             user.setIfDefined(Parameter.RESPONSE, response);
             if (logon != null) {
@@ -1048,19 +1048,19 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             sessionCloud = method == AuthenticationData.METHOD_SESSIONDELEGATE;
         } else if (method == AuthenticationData.METHOD_HTTP) {
-            user = cloudContext.getAuthentication(getName()).createParameters(getAuthenticate());
+            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             sessionCloud = true;
             if (doHTTPAuthentication(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
         } else if (loginpage != Attribute.NULL && (method == AuthenticationData.METHOD_LOGINPAGE || method == AuthenticationData.METHOD_UNSET)) {
-            user = cloudContext.getAuthentication(getName()).createParameters(getAuthenticate());
+            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             sessionCloud = true;
             if (doLoginPage(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
         } else if (logon != null && pwd != Attribute.NULL) {
-            user = cloudContext.getAuthentication(getName()).createParameters(getAuthenticate());
+            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             user.set(AuthenticationData.PARAMETER_USERNAME, logon.get(0));
             user.set(AuthenticationData.PARAMETER_PASSWORD, pwd.getString(this));
             if (method == AuthenticationData.METHOD_PAGELOGON) {
