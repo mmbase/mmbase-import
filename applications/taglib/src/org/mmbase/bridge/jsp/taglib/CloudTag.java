@@ -324,7 +324,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
     public int doStartTag() throws JspTagException {
 
-        Vector logon = logonatt != null ? StringSplitter.split(logonatt) : null;
+        List logon = logonatt != null ? StringSplitter.split(logonatt) : null;
         if (logon != null && logon.size() == 0) logon = null;
 
         // check if this is a reuse:
