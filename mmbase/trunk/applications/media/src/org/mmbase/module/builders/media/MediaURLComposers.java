@@ -21,7 +21,7 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaURLComposers.java,v 1.1 2003-01-03 21:35:44 michiel Exp $
+ * @version $Id: MediaURLComposers.java,v 1.2 2003-01-07 09:06:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaURLComposers extends MMObjectBuilder {    
@@ -41,20 +41,24 @@ public class MediaURLComposers extends MMObjectBuilder {
 
     public class ResponseInfo  {
         private URL    url;
-        private String mimeType;
+        private MMObjectNode source;
         private boolean available;
-        ResponseInfo(URL u, String m, boolean a) {
-            url = u; mimeType = m; available = a;
+        ResponseInfo(URL u, MMObjectNode s, boolean a) {
+            url = u; source = s; available = a;
         }
-        ResponseInfo(URL u, String m) {
-            this(u, m, true);
+        ResponseInfo(URL u, MMObjectNode s) {
+            this(u, s, true);
         }
-        public URL    getURL()       { return url;      }
-        public String getMimeType()  { return mimeType; }
-        public boolean isAvailable() { return available; }
+        public URL          getURL()      { return url;       }
+        public MMObjectNode getSource()   { return source;  }
+        public boolean      isAvailable() { return available; }
         
         public String toString() {
-            return url.toString();
+            if (available) {
+                return url.toString();
+            } else {
+                return "{" + url.toString() + "}";
+            }
         }
     }
 
@@ -81,7 +85,7 @@ public class MediaURLComposers extends MMObjectBuilder {
      * @throws IllegalArgumentException if provider or source is null
      */
 
-    protected URL getURL(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map preferences) throws MalformedURLException {        
+    protected URL getURL(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, List preferences) throws MalformedURLException {        
         if (provider == null) throw new IllegalArgumentException("Cannot create URL without a provider");
         if (source   == null) throw new IllegalArgumentException("Cannot create URL without a source");
         return 
@@ -100,7 +104,7 @@ public class MediaURLComposers extends MMObjectBuilder {
         MMObjectNode provider   = null;
         MMObjectNode source     = null;
         MMObjectNode fragment   = null;
-        Map info   = null;
+        List info   = null;
         if (arguments != null && arguments.size() > 0) {
             provider = (MMObjectNode) arguments.get(0);
             if (arguments.size() > 1) {
@@ -108,13 +112,16 @@ public class MediaURLComposers extends MMObjectBuilder {
                 if (arguments.size() > 2) {
                     fragment = (MMObjectNode) arguments.get(2);
                     if (arguments.size() > 3) {
-                        info = (Map) arguments.get(3);
+                        info = arguments.subList(3, arguments.size());
                     }
                 }
             }
         }
         URL url = getURL(n, provider, source, fragment, info);
-        return new ResponseInfo(url, source.getStringValue("format"));
+        boolean online;
+        Boolean fragmentAvailable = (Boolean) fragment.getFunctionValue(MediaFragments.FUNCTION_AVAILABLE, null);
+        boolean providerAvailable = (provider.getIntValue("state") == 1); // todo: use symbolic constant
+        return new ResponseInfo(url, source, fragmentAvailable.booleanValue() && providerAvailable);
     }
     
     protected Object executeFunction(MMObjectNode node, String function, List args) {
