@@ -29,14 +29,14 @@
         MMBase has been build under the <a href="<mm:url page="mmbase/mpl-1.0.jsp" />">Mozilla Public License, Version 1.0</a>
       </p>
       <p>
-        <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a username and password. <br />
+        <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a user name and password. <br />
         Please use the following credentials: <br />
-        <b>Username:</b> <tt>admin</tt><br />
+        <b>User name:</b> <tt>admin</tt><br />
         <b>Password:</b> <tt>admin2k</tt><br />
         We strongly advise you to change this administrator password as soon as possible, read the documentation for more details.
       </p>  
       <p>
-        Consicely, for further upgrading this demo-installation of MMBase to a producation environment we advice to do the following
+        Concisely, for further upgrading this demo-installation of MMBase to a production environment we advice to do the following
       </p>
       <ul>
         <li>Evaluate all builder xmls from config/builders (and below). Remove all which you don't
@@ -69,6 +69,7 @@
   </tr>
   <% } %>
 
+    <% if (pageContext.getServletContext().getResource("/mmbase/admin") != null) { %>  
   <tr>
     <td>Manage your MMBase installation</td>
     <td>
@@ -82,7 +83,7 @@
       <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>  
-
+    <% } %>
     <% if (pageContext.getServletContext().getResource("/mmdocs") != null) { %>  
   <tr>
     <td>MMBase Documentation</td>
@@ -98,7 +99,7 @@
   <tr>
     <td>www.mmbase.org</td>
     <td>
-      Link to the MMBase website.
+      Link to the MMBase web-site.
     </td>
     <td class="link" >
       <a href="http://www.mmbase.org"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
