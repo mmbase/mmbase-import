@@ -57,7 +57,7 @@ public class ContextAuthentication extends Authentication {
 	
 	
     	// do the xpath query...
-    	String xpath = "/config/loginmodules/module";
+    	String xpath = "/contextconfig/loginmodules/module";
     	log.debug("gonna execute the query:" + xpath );
 	NodeIterator found;
 	try {
