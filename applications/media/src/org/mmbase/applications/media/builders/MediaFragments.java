@@ -32,8 +32,8 @@ import org.mmbase.util.logging.Logging;
  * The classification, and replace methods are added for backwards compatibility.
  *
  * @author Rob Vermeulen (VPRO)
- * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.17 2003-07-10 08:48:20 vpro Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: MediaFragments.java,v 1.18 2003-07-10 17:12:35 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -240,16 +240,17 @@ public class MediaFragments extends MMObjectBuilder {
      *
      * @param mediaFragment the media fragment
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
-     * @return the url of the audio file
+     * @return the url of the media source best describing this fragment
      */ 
     protected  String getURL(MMObjectNode fragment, Map info) {
         log.debug("Getting url of a fragment.");        
 	String key = URLCache.toKey(fragment, info);
-        if(cache.containsKey(key)) {
-		log.debug("Cache hit, key = "+key);
-		return (String)cache.get(key);
+
+        if (cache.containsKey(key)) {
+            log.debug("Cache hit, key = "+key);
+            return (String)cache.get(key);
 	} else {
-		log.debug("No cache hit, key = "+key);
+            log.debug("No cache hit, key = "+key);
 	}
 
         List urls = getFilteredURLs(fragment, info);
@@ -259,8 +260,8 @@ public class MediaFragments extends MMObjectBuilder {
         } 
 	// put result in cache
 	// XXX also notify the cache with objects that invalidate the cache
-	log.debug("Add to cache, key="+key);
-	cache.put(key,result,null);
+	log.debug("Add to cache, key=" + key);
+	cache.put(key, result, null);
 	return result;
     }
 
