@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.5 2004-12-06 16:13:38 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.6 2004-12-09 14:58:02 pierre Exp $
  * @since MMBase-1.8
  */
 public class SetFunction extends AbstractFunction {
@@ -82,7 +82,7 @@ public class SetFunction extends AbstractFunction {
             try {
                 functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
             } catch(NoSuchMethodException e) {
-                throw new RuntimeException("Function method  not found : " + className + "." + methodName + "(" + getParameterDefinition()+")", e);
+                throw new RuntimeException("Function method not found : " + className + "." + methodName + "(" + getParameterDefinition()+")", e);
             }
         }
     }
