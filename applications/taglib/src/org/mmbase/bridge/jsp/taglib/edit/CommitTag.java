@@ -31,15 +31,13 @@ public class CommitTag extends CloudReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
 
-    public void setTransaction(String t) {
-        setCloud(t);
+    private String transaction = null;
+    public void setTransaction(String t) throws JspTagException {
+        transaction = getAttributeValue(t);
     }
 
     protected void doAction(Transaction t) {
         t.commit();
-    }
-    protected String actionName() {
-        return "commit";
     }
 
     public int doStartTag() throws JspTagException{
@@ -50,17 +48,15 @@ public class CommitTag extends CloudReferrerTag {
         } catch (java.lang.ClassNotFoundException e) {
             throw new JspTagException ("Could not find TransactionTag class");  
         }
-        TransactionTag tt = (TransactionTag) findAncestorWithClass((Tag)this, transactionClass); 
-
-        if (tt == null) {
-            log.warn("No transaction tag found, no " + actionName() + " could be done");
-        } else {
-            Transaction trans = (Transaction) tt.getCloudVar();
-            doAction(trans);
-            if (tt.getId() != null) {
-                getContextTag().unRegister(tt.getId());
-            }
+        TransactionTag tt = (TransactionTag)  findParentTag("org.mmbase.bridge.jsp.taglib.edit.TransactionTag", transaction, true);
+        Transaction trans = (Transaction) tt.getCloudVar();
+        doAction(trans);
+        /*
+          why should we do this??
+        if (tt.getId() != null) {
+            getContextTag().unRegister(tt.getId());
         }
+        */
         return SKIP_BODY;    
     }    
 }
