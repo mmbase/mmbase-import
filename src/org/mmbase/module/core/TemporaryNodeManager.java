@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.25 2001-09-10 08:24:38 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.26 2002-02-22 13:04:07 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -156,54 +156,55 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                 if (value instanceof String) {
                     stringValue=(String)value;
                     switch(type) {
-                        case FieldDefs.TYPE_STRING:
-                            node.setValue(field, stringValue);
-                            break;
-                        case FieldDefs.TYPE_INTEGER:
-                            try {
-                                i=Integer.parseInt(stringValue);
-                                node.setValue(field,i);
-                            } catch (NumberFormatException x) {
-                                log.error("Value for field " + field + " is not a number " + stringValue);
-                            }
-                            break;
-                        case FieldDefs.TYPE_BYTE:
-                            log.error("We don't support casts from String to Byte");
-                            break;
-                        case FieldDefs.TYPE_FLOAT:
-                            try {
-                                f=Float.parseFloat(stringValue);
-                                node.setValue(field,f);
-                            } catch (NumberFormatException x) {
-                                log.error("Value for field " + field + " is not a number " + stringValue);
-                            }
-                            break;
-                        case FieldDefs.TYPE_DOUBLE:
-                            try {
-                                d=Double.parseDouble(stringValue);
-                                node.setValue(field,d);
-                            } catch (NumberFormatException x) {
-                                log.error("Value for field " + field + " is not a number " + stringValue);
-                            }
-                            break;
-                        case FieldDefs.TYPE_LONG:
-                            try {
-                                l=Long.parseLong(stringValue);
-                                node.setValue(field,l);
-                            } catch (NumberFormatException x) {
-                                log.error("Value for field "+field+" is not a number "+stringValue);
-                            }
-                            break;
-                        default:
-                            log.error("Unknown type for field "+field);
-                            break;
+                    case FieldDefs.TYPE_XML:
+                    case FieldDefs.TYPE_STRING:
+                        node.setValue(field, stringValue);
+                        break;
+                    case FieldDefs.TYPE_INTEGER:
+                        try {
+                            i=Integer.parseInt(stringValue);
+                            node.setValue(field,i);
+                        } catch (NumberFormatException x) {
+                            log.error("Value for field " + field + " is not a number " + stringValue);
+                        }
+                        break;
+                    case FieldDefs.TYPE_BYTE:
+                        log.error("We don't support casts from String to Byte");
+                        break;
+                    case FieldDefs.TYPE_FLOAT:
+                        try {
+                            f=Float.parseFloat(stringValue);
+                            node.setValue(field,f);
+                        } catch (NumberFormatException x) {
+                            log.error("Value for field " + field + " is not a number " + stringValue);
+                        }
+                        break;
+                    case FieldDefs.TYPE_DOUBLE:
+                        try {
+                            d=Double.parseDouble(stringValue);
+                            node.setValue(field,d);
+                        } catch (NumberFormatException x) {
+                            log.error("Value for field " + field + " is not a number " + stringValue);
+                        }
+                        break;
+                    case FieldDefs.TYPE_LONG:
+                        try {
+                            l=Long.parseLong(stringValue);
+                            node.setValue(field,l);
+                        } catch (NumberFormatException x) {
+                            log.error("Value for field "+field+" is not a number "+stringValue);
+                        }
+                        break;
+                    default:
+                        log.error("Unknown type for field "+field);
+                        break;
                     }
                 } else {
                     node.setValue(field,value);
                 }
             } else {
-                node.setValue(field,value);
-//                debug("Invalid type for field "+field);
+                node.setValue(field, value);
+                log.warn("Invalid type for field " + field);
                 return "unknown";
             }
         } else {
