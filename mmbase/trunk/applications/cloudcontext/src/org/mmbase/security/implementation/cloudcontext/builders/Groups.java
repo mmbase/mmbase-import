@@ -26,7 +26,7 @@ import org.mmbase.storage.search.implementation.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.8 2003-08-15 19:42:28 michiel Exp $
+ * @version $Id: Groups.java,v 1.9 2003-09-05 17:39:45 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
@@ -75,13 +75,14 @@ public class Groups extends MMObjectBuilder {
      * Checks wether group or user identified by number is contained by group (also indirectly)
      */
     protected boolean contains(MMObjectNode containingGroupNode, int containedObject) {
-        return contains(containingGroupNode, containedObject, true);
+        return contains(containingGroupNode, containedObject, new HashSet());
     }
 
     /**
      * Checks wether group or user identified by number is contained by group.
+     *
      */
-    protected boolean contains(MMObjectNode containingGroupNode, int containedObject, boolean recurse) {
+    protected boolean contains(MMObjectNode containingGroupNode, int containedObject, Set recurse) {
         int containingGroup = containingGroupNode.getNumber();
         if (log.isDebugEnabled()) {
             log.debug("Checking if user/group " + containedObject + " is contained by group " + containingGroupNode + "(" + containingGroup + ")");
@@ -104,11 +105,14 @@ public class Groups extends MMObjectBuilder {
                     log.trace("yes!");
                     result = Boolean.TRUE;
                     break;
-                } else if (recurse) { // recursively call on groups
+                } else if (recurse != null) { // recursively call on groups
                     log.trace("recursively");
-                    if (contains(containingGroupNode, source)) {
-                        result = Boolean.TRUE;
-                        break;
+                    if (! recurse.contains(new Integer(source))) { // TODO check logic
+                        recurse.add(new Integer(source));
+                        if (contains(containingGroupNode, source, recurse)) {
+                            result = Boolean.TRUE;
+                            break;
+                        }
                     }
                 }
             }
@@ -124,7 +128,7 @@ public class Groups extends MMObjectBuilder {
             Iterator  nodes = getNodes(new NodeSearchQuery(this)).iterator();
             while (nodes.hasNext()) {
                 MMObjectNode group = (MMObjectNode) nodes.next();
-                if (contains(group, containedObject, false)) result.add(new Integer(group.getNumber()));
+                if (contains(group, containedObject, null)) result.add(new Integer(group.getNumber()));
             }
         } catch (org.mmbase.storage.search.SearchQueryException sqe) {
             log.error(sqe.toString());
