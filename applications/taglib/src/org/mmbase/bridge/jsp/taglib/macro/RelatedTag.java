@@ -24,7 +24,7 @@ public class RelatedTag extends ListTag {
     private String parentNodeId = null;
     private String relatedNodesString=null;
     private String relatedPathString=null;
-    private String number    = null;
+    //private String number    = null;
 
     /**
      * Override original ListTag method.
@@ -47,20 +47,20 @@ public class RelatedTag extends ListTag {
     public void setPath(String path) throws JspTagException {
         this.relatedPathString = getAttributeValue(path);
     }
-
+    /*
     public void setNumber(String number) throws JspTagException {
         this.number = getAttributeValue(number);
     }
+    */
 
     public int doStartTag() throws JspTagException {
-        Node node = null;
-        if ((number!=null) && !number.equals("")) {
-            node=getCloudProviderVar().getNode(number);
-        } else {
-            String classname = "org.mmbase.bridge.jsp.taglib.NodeProvider";
-            NodeProvider nodeProvider = (NodeProvider)findParentTag(classname,parentNodeId);
-            node=nodeProvider.getNodeVar();
+
+        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
         }
+
+        Node node = getNode();
         nodesString=node.getStringValue("number");
         if (relatedNodesString!=null) {
            nodesString+=","+relatedNodesString;
