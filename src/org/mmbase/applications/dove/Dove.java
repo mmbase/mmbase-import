@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.42 2003-11-20 16:21:59 pierre Exp $
+ * @version $Id: Dove.java,v 1.43 2003-11-21 09:48:35 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -533,23 +533,23 @@ public class Dove extends AbstractDove {
                 out.setAttribute(ELM_TYPE,nodeManagerName);
                 NodeManager nm =cloud.getNodeManager(nodeManagerName);
 
+                Locale locale = cloud.getLocale();
                 String lang= in.getAttribute(ELM_LANG);
-                if ("".equals(lang)) {
-                    lang=cloud.getLocale().getLanguage();
-                } else {
+                if (!"".equals(lang)) {
                     out.setAttribute(ELM_LANG,lang);
+                    locale = new Locale(lang);
                 }
 
                 // singular name
-                Element elm=addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR,lang),out);
+                Element elm=addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR,locale),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
                 // plural name
-                elm=addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL,lang),out);
+                elm=addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL,locale),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
                 // description
-                elm=addContentElement(DESCRIPTION,nm.getDescription(lang),out);
+                elm=addContentElement(DESCRIPTION,nm.getDescription(locale),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
                 // parent
@@ -586,8 +586,8 @@ public class Dove extends AbstractDove {
                         field.setAttribute(ELM_NAME,fname);
                         fields.appendChild(field);
                         // guiname (XXX:language is ignored)
-                        elm=addContentElement(GUINAME,fielddef.getGUIName(lang),field);
-                        elm=addContentElement(DESCRIPTION,fielddef.getDescription(lang),field);
+                        elm=addContentElement(GUINAME,fielddef.getGUIName(locale),field);
+                        elm=addContentElement(DESCRIPTION,fielddef.getDescription(locale),field);
                         if (lang!=null) elm.setAttribute(ELM_LANG,lang);
                         // guitype
                         String guiType = fielddef.getGUIType();
