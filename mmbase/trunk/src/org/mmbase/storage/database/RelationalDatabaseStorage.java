@@ -31,10 +31,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.7 2003-05-02 14:57:39 michiel Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.8 2003-05-02 20:23:20 michiel Exp $
+ * @todo This function contains a lot of methods which do not seem
+ *       specific for a 'relational' database. They should perhaps be moved
+ *        to 'abstract' databasestorage
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
-
     /**
      * Logging instance
      */
@@ -44,6 +46,13 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      * Constructs the Ansi SQL database layer support class
      */
     public RelationalDatabaseStorage() {
+        super();
+    }
+
+
+    // javadoc inherited
+    public boolean supportsExtendedTables() {
+        return false;
     }
 
     /**
@@ -57,91 +66,59 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
         checkNumberTable();
     }
 
-    /**
-     * Returns whether this storage layer supports extended tables.
-     * @return boolean true if extended tables are supported
-     */
-    public boolean supportsExtendedTables() {
-        return false;
-    }
+
     /**
      * Get text from blob
      * @javadoc
      */
-    public String getText(String tableName,String fieldname,int number) {
-        String result=null;
-        String sqlselect=selectSQL(tableName,fieldname,number);
-        DatabaseTransaction trans=null;
+    public String getText(String tableName, String fieldName, int number) {
+        log.debug("getText");
+        String result = null;
+        String sqlselect = selectSQL(tableName, fieldName, number);
+        DatabaseTransaction trans = null;
         try {
-            trans=createDatabaseTransaction();
-            ResultSet rs=trans.executeQuery(sqlselect);
-            if ((rs!=null) && rs.next()) {
-                result=getDBText(rs,1);
+            trans = createDatabaseTransaction();
+            ResultSet rs = trans.executeQuery(sqlselect);
+            if ((rs != null) && rs.next()) {
+                result = getDBText(rs,1);
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("getText found " + result + " with '" + sqlselect + "'") ;
             }
             trans.commit();
         } catch (Exception e) {
-            if (trans!=null) trans.rollback();
+            if (trans != null) trans.rollback();
         }
         return result;
     }
 
 
-    /**
-     * Get byte of a database blob
-     * @javadoc
-     */
-    public byte[] getBytes(String tableName,String fieldname,int number) {
-        byte[] result=null;
-        String sqlselect=selectSQL(tableName,fieldname,number);
-        DatabaseTransaction trans=null;
-        try {
-            trans=createDatabaseTransaction();
-            ResultSet rs=trans.executeQuery(sqlselect);
-            if ((rs!=null) && rs.next()) {
-                result=getDBByte(rs,1);
-            }
-            trans.commit();
-        } catch (Exception e) {
-            if (trans!=null) trans.rollback();
-        }
-        return result;
-    }
-
-    /**
-     * Get byte of a database blob
-     * @javadoc
-     */
+    // this looks a bit dirty.  perhaps the nicer version of
+    // PostgreslStorage should be moved to AbstractDatabaseStorage,
+    // and this one moved to MySqlStorage
+    
+    // javadoc inherited
+    /*
     public byte[] getDBByte(ResultSet rs,int idx) {
         byte[] bytes=null;
         try {
-            InputStream inp=rs.getBinaryStream(idx);
-            int siz=inp.available(); // DIRTY
-            DataInputStream input=new DataInputStream(inp);
-            bytes=new byte[siz];
+            InputStream inp = rs.getBinaryStream(idx);
+            int siz = inp.available(); // DIRTY
+            DataInputStream input = new DataInputStream(inp);
+            bytes = new byte[siz];
+            if (log.isDebugEnabled()) {
+                log.debug("got " + bytes.length + " bytes for field  " + idx);
+            }
             input.readFully(bytes);
             input.close(); // this also closes the underlying stream
         } catch (Exception e) {
-            log.error("MMObjectBuilder -> MMMysql byte  exception "+e);
+            log.error("byte  exception "+e);
             log.error(Logging.stackTrace(e));
         }
         return bytes;
     }
-    
+    */
 
-    /**
-     * Set byte array in database
-     * @javadoc
-     */
-    public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
-        try {
-            ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
-            stmt.setBinaryStream(i,stream,bytes.length);
-            stream.close();
-        } catch (Exception e) {
-            log.error("MMObjectBuilder : Can't set byte stream");
-            log.error(Logging.stackTrace(e));
-        }
-    }
 
     /**
      * Checks if the numberTable exists.
@@ -191,13 +168,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
         return number;
     }
 
-    /**
-     * Gives an unique number for a node to be inserted.
-     * This method will work with multiple mmbases
-     * @param trans the transaction to use for obtaining the key
-     * @return unique number
-     * @throws StorageException if an error occurred while obtaining the key
-     */
+    // javadoc inherited from Storage
     public synchronized int createKey(Transaction trans) throws StorageException {
         DatabaseTransaction dbtrans = (DatabaseTransaction) trans;
         dbtrans.executeUpdate("UPDATE "+getFullTableName("numberTable")+" SET "+getNumberString()+" = "+getNumberString()+"+1;");
@@ -219,7 +190,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
 
         if (super.insertIntoTable(builder,node,trans)==-1) return -1;
 
-        MMObjectBuilder parent=getParentBuilder(builder);
+        MMObjectBuilder parent = getParentBuilder(builder);
 
         // call the database to update the parent table
         if (parent!=null) {
