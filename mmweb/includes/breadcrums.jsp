@@ -9,7 +9,7 @@ while(c<currentPath.size()) {
 <!-- <mm:write referid="portal" jspvar="myportal" write="false"/> -->
 <!-- <mm:field name="number" jspvar="mypage" write="false"/> -->
 <%-- <%=createUrlXXX(myportal, "page", mypage)%> --%>
-<a href="/index.jsp?portal=<mm:write referid="portal"/>&page=<mm:field name="number"/>">
+<a href="<mm:url page="/index.jsp?portal=$portal"><mm:param name="page"><mm:field name="number"/></mm:param></mm:url>">
 <mm:field name="title" />
 </a>
 	</mm:node><%

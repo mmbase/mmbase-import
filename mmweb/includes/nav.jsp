@@ -179,7 +179,7 @@ Menu<%= p %> = new Array("<mm:field name="name"/>","/index.jsp?portal=<mm:field 
 			><mm:compare referid="portal" value="$thisportal" inverse="true"
 			><% p++; %>
 Menu<%= p %> = new Array("<mm:field name="portals2.name" 
-	/>","/index.jsp?portal=<mm:field name="portals2.number"/>","",0,26,142);
+	/>","<mm:url page="/index.jsp"><mm:param name="portal"><mm:field name="portals2.number"/></mm:param></mm:url>","",0,26,142);
 		</mm:compare
 	></mm:field
 ><mm:remove referid="thisportal"
