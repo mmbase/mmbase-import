@@ -38,8 +38,7 @@ public class EmptyNodeTest extends NodeTest {
     public void testGetValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Object value = node.getValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field did not return null, but " + value + " a " + (value == null ? "" : value.getClass().getName()), 
-                       value == null);
+            assertTrue("Empty " + fieldTypes[i] + " field did not return null, but " + value + " a " + (value == null ? "" : value.getClass().getName()), value == null);
         }
     }
 
