@@ -37,6 +37,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private final static int NOT_FOUND_THROW = 0;
     private final static int NOT_FOUND_SKIP  = 1;
+    private final static int NOT_FOUND_PROVIDENULL  = 2;
 
 
     private int notfound = NOT_FOUND_THROW;
@@ -73,8 +74,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             notfound = NOT_FOUND_THROW;
         } else if ("throwexception".equalsIgnoreCase(is)) {
             notfound = NOT_FOUND_THROW;
+        } else if ("null".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_PROVIDENULL;
+        } else if ("providenull".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_PROVIDENULL;
         } else {
-            throw new JspTagException("Invalid value for attribute 'ifnotfound' " + is + "(" + i + ")");
+            throw new JspTagException("Invalid value for attribute 'notfound' " + is + "(" + i + ")");
         }
     }
     /**
@@ -135,6 +140,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             log.warn(e.toString());
             switch(notfound) {
             case NOT_FOUND_SKIP:  return SKIP_BODY;
+            case NOT_FOUND_PROVIDENULL: node = null; break;
             default: throw e;
             }
         }
@@ -143,7 +149,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
         // if direct parent is a Formatter Tag, then communicate
         FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
-        if (f!= null && f.wantXML()) {
+        if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
         }
         
