@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.19 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.20 2003-08-27 21:29:44 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -45,8 +45,6 @@ public class BasicQuery implements Query  {
     protected BasicSearchQuery query;
 
     protected Cloud cloud; // reference to the cloud.
-
-
 
 
     BasicQuery(Cloud c) {
@@ -155,6 +153,9 @@ public class BasicQuery implements Query  {
 
     // similar constants to those of CluserBuilder but still different ?!
     protected int getRelationStepDirection(String search) {
+        if (search == null) {
+            return RelationStep.DIRECTIONS_BOTH;
+        }
         search = search.toUpperCase();
         if ("DESTINATION".equals(search)) {
             return RelationStep.DIRECTIONS_DESTINATION;
@@ -246,7 +247,7 @@ public class BasicQuery implements Query  {
     public StepField createStepField(String fieldIdentifier) {
         int point = fieldIdentifier.indexOf('.');
         String stepAlias = fieldIdentifier.substring(0, point);
-        String fieldName = fieldIdentifier.substring(point + 1);
+       String fieldName = fieldIdentifier.substring(point + 1);
         Step step = getStep(stepAlias);
         NodeManager nm = cloud.getNodeManager(step.getTableName());
         Field field = nm.getField(fieldName);
