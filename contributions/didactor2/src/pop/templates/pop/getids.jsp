@@ -1,3 +1,4 @@
+<mm:import id="currentpop">-1</mm:import>
 <mm:import externid="command">no</mm:import>
 <mm:import externid="returnto">-1</mm:import>
 <mm:import externid="currentfolder">-1</mm:import>
@@ -5,7 +6,7 @@
   <mm:import externid="currentprofile">-1</mm:import>
   <mm:list nodes="$user" path="people,related,pop">
     <mm:first>
-      <mm:import id="currentpop"><mm:field name="pop.number"/></mm:import>
+      <mm:import id="currentpop" reset="true"><mm:field name="pop.number"/></mm:import>
       <mm:compare referid="currentprofile" value="-1">
         <mm:list nodes="$currentpop" path="pop,related,profiles">
           <mm:first>
@@ -17,10 +18,17 @@
     </mm:first>
   </mm:list>
 </mm:compare>
+<mm:compare referid="currentfolder" value="1">
+  <mm:list nodes="$user" path="people,related,pop">
+    <mm:first>
+      <mm:import id="currentpop" reset="true"><mm:field name="pop.number"/></mm:import>
+    </mm:first>
+  </mm:list>
+</mm:compare>
 <mm:compare referid="currentfolder" value="2">
   <mm:list nodes="$user" path="people,related,pop">
     <mm:first>
-      <mm:import id="currentpop"><mm:field name="pop.number"/></mm:import>
+      <mm:import id="currentpop" reset="true"><mm:field name="pop.number"/></mm:import>
     </mm:first>
   </mm:list>
 </mm:compare>

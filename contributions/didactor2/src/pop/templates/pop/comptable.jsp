@@ -14,15 +14,14 @@
     </mm:compare>
   <mm:listnodescontainer type="pop">
   <mm:constraint field="number" referid="currentpop" operator="EQUAL"/>
-    <di:table>
-      <di:row>
-        <di:headercell>&nbsp;</di:headercell>
-        <di:headercell>Competentie</di:headercell>
-        <di:headercell>Aan gewerkt door middel van</di:headercell>
-        <di:headercell>Zelfbeoordeling</di:headercell>
-        <di:headercell>Voornemens</di:headercell>
-      </di:row>
-
+    <div><table class="poplistTable">
+      <tr style="vertical-align:top;">
+        <th class="listHeader">&nbsp;</th>
+        <th class="listHeader">Competentie</th>
+        <th class="listHeader">Aan gewerkt door middel van</th>
+        <th class="listHeader">Zelfbeoordeling</th>
+        <th class="listHeader">Voornemens</th>
+      </tr>
       <mm:listnodes>
         <%@ include file="getcompetencies.jsp" %>
         <%  TreeMap competenciesIterator = (TreeMap) allCompetencies.clone();
@@ -30,13 +29,13 @@
               String thisCompetencie = (String) competenciesIterator.firstKey();
               if (((Integer)allCompetencies.get(thisCompetencie)).intValue()==1) { %>
                 <mm:node number="<%= thisCompetencie %>">
-                  <di:row>
-                    <di:cell>
+                  <tr style="vertical-align:top;">
+                    <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/present.gif" objectlist="$includePath" referids="$referids"/>" border="0"
                           alt="deze competentie was al aanwezig voor de cursus"/>
-                    </di:cell>
+                    </td>
                     <%@ include file="comptablecell.jsp" %>
-                  </di:row>
+                  </tr>
                 </mm:node>
         <%    } 
               competenciesIterator.remove(thisCompetencie);
@@ -46,13 +45,13 @@
               String thisCompetencie = (String) competenciesIterator.firstKey();
               if (((Integer)allCompetencies.get(thisCompetencie)).intValue()==2) { %>
                 <mm:node number="<%= thisCompetencie %>">
-                  <di:row>
-                    <di:cell>
+                  <tr style="vertical-align:top;">
+                    <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/developed.gif" objectlist="$includePath" referids="$referids"/>" border="0"
                           alt="deze competentie is behaald tijdens de cursus"/>
-                    </di:cell>
+                    </td>
                     <%@ include file="comptablecell.jsp" %>
-                  </di:row>
+                  </tr>
                 </mm:node>
         <%    } 
               competenciesIterator.remove(thisCompetencie);
@@ -63,20 +62,20 @@
               int flag = ((Integer)allCompetencies.get(thisCompetencie)).intValue();
               if (flag==3 || flag==4) { %>
                 <mm:node number="<%= thisCompetencie %>">
-                  <di:row>
-                    <di:cell>
+                  <tr style="vertical-align:top;">
+                    <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/todevelop.gif" objectlist="$includePath" referids="$referids"/>" border="0"
                           alt="deze competentie is nodig"/>
-                    </di:cell>
+                    </td>
                     <%@ include file="comptablecell.jsp" %>
-                  </di:row>
+                  </tr>
                 </mm:node>
         <%    } 
               competenciesIterator.remove(thisCompetencie);
             } 
         %>
       </mm:listnodes>
-    </di:table>
+    </table></div>
   </mm:listnodescontainer>
 </div>
 </fmt:bundle>
