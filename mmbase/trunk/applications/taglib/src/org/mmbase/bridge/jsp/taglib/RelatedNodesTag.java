@@ -24,15 +24,18 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.32 2003-12-18 11:53:46 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.33 2004-07-09 14:08:30 michiel Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
+
     protected Attribute type = Attribute.NULL;
     protected Attribute path = Attribute.NULL;
+    protected Attribute element = Attribute.NULL;
     protected Attribute role = Attribute.NULL;
-    protected Attribute searchDir = Attribute.NULL;
+    protected Attribute searchDir = Attribute.NULL;  // for use with 'role' and 'type'
+    protected Attribute searchDirs = Attribute.NULL; // for use with 'path' and 'element'
 
     protected Attribute container = Attribute.NULL;
 
@@ -64,6 +67,25 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     }
 
     /**
+     * @since MMBase-1.7.1
+     */
+    public void setPath(String p) throws JspTagException {
+        path = getAttribute(p);
+    }
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setElement(String e) throws JspTagException {
+        element = getAttribute(e);
+    }
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setSearchdirs(String s) throws JspTagException {
+        searchDirs = getAttribute(s);
+    }
+
+    /**
      * Performs the search
      */
     public int doStartTag() throws JspTagException {
@@ -75,29 +97,61 @@ public class RelatedNodesTag extends AbstractNodeListTag {
 
         NodeQuery query;
         Cloud cloud = getCloud();
-        if (type != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
+        if (type != Attribute.NULL || path != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
 
             // obtain a reference to the node through a parent tag
             Node parentNode = getNode();
             if (parentNode == null) {
-                throw new JspTagException("Could not find parent node!!");
+                throw new TaglibException("Could not find parent node!!");
             }
             
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.addNode(step1, parentNode);
 
-            NodeManager otherManager;
-            if (type == Attribute.NULL) {
-                otherManager = cloud.getNodeManager("object");
+
+            String searchDirections;
+            if (searchDir == Attribute.NULL) { // searchdir is a bit deprecated.
+                searchDirections = (String) searchDirs.getValue(this);
             } else {
-                otherManager = cloud.getNodeManager(type.getString(this));
+                if (searchDirs != Attribute.NULL) {
+                    throw new TaglibException("Cannot specify both 'searchdir' and 'searchdirs' attributes. ");
+                }
+                searchDirections = (String) searchDir.getValue(this);
             }
 
-            RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
-            Step step3 = step2.getNext();
+            NodeManager otherManager;
+            if (path == Attribute.NULL) {
+                if (type == Attribute.NULL) {
+                    otherManager = cloud.getNodeManager("object");
+                } else { 
+                    if (element != Attribute.NULL) {
+                        throw new TaglibException("Cannot specify both 'element' and 'type' attributes");
+                    }
+                    otherManager = cloud.getNodeManager(type.getString(this));
+                }               
+                RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), searchDirections);
+                Step step3 = step2.getNext();                
+                query.setNodeStep(step3); // makes it ready for use as NodeQuery
+            } else {
+                if (role != Attribute.NULL) {
+                    throw new TaglibException("Cannot specify both 'path' and 'role' attributes");
+                }
+                Queries.addPath(query, (String) path.getValue(this), searchDirections);
+                if (element != Attribute.NULL) {
+                    String alias = element.getString(this);
+                    Step nodeStep = query.getStep(alias);
+                    if (nodeStep == null) { 
+                        throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
+                    }
+                    query.setNodeStep(nodeStep);
+                } else {
+                    // default to third step (first step is the related node, second is the relation)
+                    query.setNodeStep((Step) query.getSteps().get(2));
+                }
+            }
 
-            query.setNodeStep(step3); // makes it ready for use as NodeQuery
+
 
         } else {
             query = (NodeQuery) c.getQuery();

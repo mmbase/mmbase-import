@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.21 2004-01-19 17:22:08 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.22 2004-07-09 14:08:30 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -31,6 +32,10 @@ public class ListNodesTag extends AbstractNodeListTag {
 
     protected Attribute type = Attribute.NULL;
     protected Attribute container = Attribute.NULL;
+
+    protected Attribute path       = Attribute.NULL;
+    protected Attribute element    = Attribute.NULL;
+    protected Attribute searchDirs = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -45,18 +50,56 @@ public class ListNodesTag extends AbstractNodeListTag {
 
 
     /**
+     * @since MMBase-1.7.1
+     */
+    public void setPath(String p) throws JspTagException {
+        path = getAttribute(p);
+    }
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setElement(String e) throws JspTagException {
+        element = getAttribute(e);
+    }
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setSearchdirs(String s) throws JspTagException {
+        searchDirs = getAttribute(s);
+    }
+
+
+    /**
      * @since MMBase-1.7
      */
     protected NodeQuery getQuery() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
-        if (c == null || type != Attribute.NULL) {
-            if (type == Attribute.NULL) {
-                throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
+        if (c == null || type != Attribute.NULL || path != Attribute.NULL) {           
+            if (type == Attribute.NULL && path == Attribute.NULL) {
+                throw new JspTagException("Attribute 'type' or 'path' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
             }
-            NodeManager nodeManager = getCloud().getNodeManager(type.getString(this));
-            query = nodeManager.createQuery();            
+            if (type != Attribute.NULL) {
+                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodes");
+                NodeManager nodeManager = getCloud().getNodeManager(type.getString(this));
+                query = nodeManager.createQuery();            
+            } else {
+                query = getCloud().createNodeQuery();
+                Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+            
+                if (element != Attribute.NULL) {
+                    String alias = element.getString(this);
+                    Step nodeStep = query.getStep(alias);
+                    if (nodeStep == null) { 
+                        throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
+                    }
+                    query.setNodeStep(nodeStep);
+                } else {
+                    // default to first step
+                    query.setNodeStep((Step) query.getSteps().get(0));
+                }
+            }
         } else {            
             query = (NodeQuery) c.getQuery();
         }
