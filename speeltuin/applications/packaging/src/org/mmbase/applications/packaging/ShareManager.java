@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class ShareManager {
-    private static Logger log = Logging.getLoggerInstance(ShareManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ShareManager.class);
     private static boolean state=false;
 
     private static String callbackurl="";

@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class DataApps1Creator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(DataApps1Creator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DataApps1Creator.class);
 
 
     public static final String DTD_PACKAGING_DATA_APPS1_1_0 = "packaging_data_apps1_1_0.dtd";

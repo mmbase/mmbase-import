@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class ProviderFileWriter  {
 
-    private static Logger log = Logging.getLoggerInstance(ProviderFileWriter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ProviderFileWriter.class);
 
     public static boolean write() {
         String body =

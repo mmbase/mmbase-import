@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
 public class ShareClientSession {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(ShareClientSession.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ShareClientSession.class); 
 
    private String callbackurl;
 

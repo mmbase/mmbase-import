@@ -31,7 +31,7 @@ import org.xml.sax.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class BasicCreator implements CreatorInterface {
-    private static Logger log = Logging.getLoggerInstance(BasicCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicCreator.class);
     Class cl;
     String prefix;
     

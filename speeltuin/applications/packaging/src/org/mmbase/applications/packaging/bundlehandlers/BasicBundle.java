@@ -33,7 +33,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class BasicBundle implements BundleInterface {
-    private static Logger log = Logging.getLoggerInstance(BasicBundle.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicBundle.class);
     
     private String name;
     private String id;

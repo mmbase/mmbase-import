@@ -31,7 +31,7 @@ import org.xml.sax.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class ProviderManager {
-    private static Logger log = Logging.getLoggerInstance(ProviderManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ProviderManager.class);
     private static boolean state=false;
     
     // Contains all providers key=provider value=reference to provider

@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class BundleVersionContainer  {
-    private static Logger log = Logging.getLoggerInstance(BundleVersionContainer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BundleVersionContainer.class);
 
     private ShareInfo shareinfo;
 

@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class DisplayHtmlCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(DisplayHtmlCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DisplayHtmlCreator.class);
 
 
     public static final String DTD_PACKAGING_DISPLAY_HTML_1_0 = "packaging_display_html_1_0.dtd";

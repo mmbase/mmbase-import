@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class EditorWizardCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(EditorWizardCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(EditorWizardCreator.class);
 
     public static final String DTD_PACKAGING_EDITOR_WIZARD_1_0 = "packaging_editor_wizard_1_0.dtd";
     public static final String PUBLIC_ID_PACKAGING_EDITOR_WIZARD_1_0 = "-//MMBase//DTD packaging_editor_wizard config 1.0//EN";

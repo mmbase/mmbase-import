@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class JavaJarCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(JavaJarCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(JavaJarCreator.class);
 
 
     public static final String DTD_PACKAGING_JAVA_JAR_1_0 = "packaging_java_jar_1_0.dtd";

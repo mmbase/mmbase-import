@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class ConfigBasicCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(ConfigBasicCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ConfigBasicCreator.class);
 
 
     public static final String DTD_PACKAGING_CONFIG_BASIC_1_0 = "packaging_config_basic_1_0.dtd";

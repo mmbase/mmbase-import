@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class ShareFileWriter  {
 
-    private static Logger log = Logging.getLoggerInstance(ShareFileWriter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ShareFileWriter.class);
 
     public static boolean write() {
         String body =

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
 public class ShareGroup {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(ShareGroup.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ShareGroup.class); 
    private String name;
 
    private Hashtable members=new Hashtable();

@@ -38,7 +38,7 @@ import org.xml.sax.*;
 public class CloudModelPackage extends BasicPackage implements PackageInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(CloudModelPackage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(CloudModelPackage.class);
 
 
     /** DTD resource filename of the cloudmodel DTD version 1.0 */

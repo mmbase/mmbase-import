@@ -36,7 +36,7 @@ import org.w3c.dom.*;
 public class JavaJarPackage extends BasicPackage implements PackageInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(JavaJarPackage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(JavaJarPackage.class);
 
     public JavaJarPackage() {
     }

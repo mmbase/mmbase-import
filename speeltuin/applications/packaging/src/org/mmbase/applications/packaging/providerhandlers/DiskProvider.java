@@ -33,7 +33,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class DiskProvider extends BasicProvider implements ProviderInterface,Runnable {
-    private static Logger log = Logging.getLoggerInstance(DiskProvider.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DiskProvider.class);
     private Thread kicker;
   
 

@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class PackageManager {
-    private static Logger log = Logging.getLoggerInstance(PackageManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(PackageManager.class);
 
     // Contains all packages key=packagename/maintainer value=reference to application
     private static Hashtable packages = new Hashtable();

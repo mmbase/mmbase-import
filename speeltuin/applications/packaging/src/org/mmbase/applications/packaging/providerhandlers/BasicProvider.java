@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class BasicProvider implements ProviderInterface {
-    private static Logger log = Logging.getLoggerInstance(BasicProvider.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicProvider.class);
 
     private long lastupdate;
     

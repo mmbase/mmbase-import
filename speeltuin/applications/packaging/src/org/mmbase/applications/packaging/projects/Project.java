@@ -31,7 +31,7 @@ import org.w3c.dom.*;
 public class Project {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(Project.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(Project.class); 
 
    String path;
    String name;
