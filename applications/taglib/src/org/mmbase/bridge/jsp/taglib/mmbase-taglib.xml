@@ -438,7 +438,8 @@ See mmexamples/taglib for more elaborated examples.
     <type>util</type>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
-      write to the page, unless the tag has a body.
+      write to the page, unless the tag has a body. All tag which
+      produce output themselves are 'writers'.
     </info>
     <see tag="write" />
     <attribute>
@@ -456,10 +457,20 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        The type of the variable to be created. Usually there is a reasonable
-        default for this attribute. This attribute can never contain context
-        variables.
+        <p>
+          The type of the variable to be created. Usually there is a reasonable
+          default for this attribute. This attribute can never contain context
+          variables.
+        </p>
+        <p>
+          The value of this is used for the 'jspvar' if you create it,
+          but it is also used for the 'context' variables. It is less
+          often essential then, but it is essential to set it right
+          e.g. when you want to use the 'isgreaterthan' tag, because
+          strings compare differently than numbers.
+        </p>
       </info>
+      <see>isgreaterthan</see>
       <possiblevalue>
         <value>Object</value>
         <info>java.lang.Object</info>
@@ -2167,6 +2178,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   <tag>
     <name>import</name>
     <type>util.context</type>
+    <!-- import does not extend writer because we don't want the 'writer' attribute of it functional -->
     <tagclass>org.mmbase.bridge.jsp.taglib.ImportTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.ImportTEI</teiclass>
     <info>
@@ -2280,22 +2292,19 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
+      <see tag="writer" attribute="jspvar" />
       <info>
-    If you specify `jspvar' a jsp-variable with this name will be
-    created too. It is available after the closing of the
-    tag. Jsp-variables can also be created with the `write'
-    tag. A write tag has preciser scoping possibilities.
-    </info>
+        If you specify `jspvar' a jsp-variable with this name will be
+        created too. It is available after the closing of the
+        tag. Jsp-variables can also be created with the `write' tag. A
+        write tag has preciser scoping possibilities.
+      </info>
     </attribute>
     <attribute>
       <name>vartype</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
-      <info>
-    If you specify `jspvar' you can also specify a type for
-    it. Default, this is a String, but you could e.g. also want an
-    Integer.
-    </info>
+      <see tag="writer" attribute="vartype" />
     </attribute>
     <example>&lt;!-- Create a variable `hoi' from the parameter `haj',
      Generate an exception if this parameter is not present --&gt;
@@ -2599,8 +2608,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       only for numbers.
     </info>
     <example>
-&lt;mm:import id="number"&gt;5&lt;/mm:import&gt;
-&lt;mm:import id="compare"&gt;6&lt;/mm:import&gt;
+&lt;mm:import id="number" vartype="integer" &gt;5&lt;/mm:import&gt;
+&lt;mm:import id="compare" vartype="integer" &gt;6&lt;/mm:import&gt;
 &lt;mm:write referid="number"&gt;
    &lt;mm:isgreaterthan value="$compare"&gt;
        &lt;mm:write /&gt; greater than &lt;mm:write referid="compare" /&gt;
