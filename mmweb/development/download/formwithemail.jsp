@@ -39,9 +39,9 @@
 			<p><strong>If the download does not start you can use this link:<br />
 			<a href="<mm:field name="urls.url" />"><mm:field name="urls.url" /></a></strong></p>
 			<iframe src="<mm:field name="urls.url" />" width="1" height="1"></iframe>
-			
 			<mm:present referid="email"><mm:compare referid="email" value="" inverse="true">
-			<mm:cloud logon="site" password="przw2lsk1" method="pagelogon">
+			<%@ include file="/includes/secretww.jsp" %>
+			<mm:cloud logon="site" password="$ww" method="pagelogon"><mm:remove referid="ww" />
 			<mm:createnode type="email">
 			  <mm:setfield name="to">jo@mmbase.org</mm:setfield>
 			  <mm:setfield name="from"><mm:write referid="email" /></mm:setfield>
