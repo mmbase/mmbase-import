@@ -2113,6 +2113,7 @@ transaction was commited, following should result anything:
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <see tag="field" />
     <see tag="fieldlist" />
     <see tag="nodeinfo" />
