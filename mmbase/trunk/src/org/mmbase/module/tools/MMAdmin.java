@@ -248,6 +248,15 @@ public class MMAdmin extends ProcessorModule {
                 return(""+(MMObjectBuilder.nodeCache.getRatio()*100));
             } else if (cmd.equals("NODECACHESIZE")) {
                 return(""+(MMObjectBuilder.nodeCache.getSize()));
+            } else if (cmd.equals("RELATIONCACHEHITS")) {
+                return(""+MMObjectNode.getRelationCacheHits());
+            } else if (cmd.equals("RELATIONCACHEMISSES")) {
+                return(""+MMObjectNode.getRelationCacheMiss());
+            } else if (cmd.equals("RELATIONCACHEREQUESTS")) {
+                return(""+(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()));
+            } else if (cmd.equals("RELATIONCACHEPERFORMANCE")) {
+
+        	return(""+(1.0*MMObjectNode.getRelationCacheHits())/(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()+0.0000000001)*100);
             }
         }
         return "No command defined";
@@ -1606,4 +1615,6 @@ public class MMAdmin extends ProcessorModule {
 	}	
 	return(results);
     }
+
+
 }
