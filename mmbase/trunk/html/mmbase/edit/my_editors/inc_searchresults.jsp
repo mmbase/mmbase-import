@@ -92,15 +92,15 @@ int list_index = 0;		// Index value of the list
 	  <td>&nbsp;</td>
 	</tr>
 <!-- results -->
-	</mm:first> <mm:field name="number" id="relnr" write="false" />
+	</mm:first>
 	<tr valign="top"<mm:odd> bgcolor="#EFEFEF"</mm:odd>> 
 	  <td align="center">
 	  <mm:present referid="nr">		<%-- if there is a nr, there is a node and thus we are trying to find another to relate to --%>
-		<mm:compare referid="dir" value="nwchild"><mm:maycreaterelation role="$rkind" source="nr" destination="relnr">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:write referid="relnr" /></mm:param></mm:url>"><img src="img/mmbase-relation-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a>
+		<mm:compare referid="dir" value="nwchild"><mm:maycreaterelation role="$rkind" source="nr" destination="node_number">
+		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a>
 		</mm:maycreaterelation></mm:compare>
-		<mm:compare referid="dir" value="nwparent"><mm:maycreaterelation role="$rkind" source="relnr" destination="nr">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:write referid="relnr" /></mm:param></mm:url>"><img src="img/mmbase-relation-left.gif" alt="-&lt;" width="21" height="20" border="0" /></a>
+		<mm:compare referid="dir" value="nwparent"><mm:maycreaterelation role="$rkind" source="node_number" destination="nr">
+		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-left.gif" alt="-&lt;" width="21" height="20" border="0" /></a>
 		</mm:maycreaterelation></mm:compare>
 	  </mm:present>
 	  </td>
