@@ -222,10 +222,12 @@ public class startMMBase extends Object {
 
 
 			// oke now set all these new setting in each of the files
-			updateConfigFile(curdir+"/orion/config/default-web-site.xml","port=\"4242\"","port=\""+port+"\"");
+			String activeport=getSetting(curdir+"/orion/config/default-web-site.xml","port=\"","\"");
+			updateConfigFile(curdir+"/orion/config/default-web-site.xml","port=\""+activeport+"\"","port=\""+port+"\"");
 			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","42420",""+mport);
 			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","mmbase1",machinename);
-			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","localhost",hostname);
+			String activehost=getSetting(curdir+"/config/modules/mmbaseroot.xml","\"host\">","<");
+			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml",activehost,hostname);
 			updateConfigFile(curdir+"/config/accounts.properties","admin2k",password);
 			updateConfigFile(curdir+"/config/modules/sendmail.xml","smtp.mmbase.org",mailhost);
     			saveFile(curdir+"/config/.timestamp","mmbase time stamp");
