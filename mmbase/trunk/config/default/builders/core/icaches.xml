@@ -90,7 +90,7 @@
           <!-- name of the field in the database -->
           <name>id</name>
           <!-- MMBase datatype and demands on it -->
-          <type state="persistent" notnull="false">INTEGER</type>
+          <type state="persistent" notnull="false">NODE</type>
         </db>
      </field>
 
