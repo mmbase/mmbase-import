@@ -12,17 +12,18 @@ package org.mmbase.bridge;
 
 import java.rmi.*;
 import java.rmi.registry.*;
+import java.lang.reflect.*;
 
-import org.mmbase.bridge.remote.*;
-import org.mmbase.bridge.remote.rmi.*;
-import org.mmbase.bridge.remote.implementation.*;
+
+
+// import org.mmbase.bridge.remote.RemoteCloudContext;
 
 import org.mmbase.bridge.*;
 
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.2 2002-01-31 10:05:08 pierre Exp $
+ * @version $Id: RemoteContext.java,v 1.3 2002-03-14 10:47:04 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {
@@ -38,10 +39,23 @@ public class RemoteContext {
      */
     public static CloudContext getCloudContext(String uri) {
         try {
-            RemoteCloudContext remoteCloudContext= (RemoteCloudContext)Naming.lookup(uri);
-            return new RemoteCloudContext_Impl(remoteCloudContext);
+
+            Object remoteCloudContext= Naming.lookup(uri);
+            try {
+                Class clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
+                Constructor constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
+                return (CloudContext) constr.newInstance(new Object[] { remoteCloudContext } );
+                //new RemoteCloudContext_Impl(remoteCloudContext);
+            } catch (ClassNotFoundException e) {
+                return null;
+            } catch (NoSuchMethodException e) {
+                return null;
+            }
         } catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
+    }
+    public static void main(String[] argv) {
+        getCloudContext(argv[0]);
     }
 }
