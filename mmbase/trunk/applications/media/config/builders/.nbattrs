@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<attributes version="1.0">
+   <fileobject name="mediafragments.xml">
+      <attr name="org.apache.tools.ant.module.loader.AntProjectDataLoader.KNOWN_ANT_FILE" boolvalue="false"/>
+   </fileobject>
+</attributes>
