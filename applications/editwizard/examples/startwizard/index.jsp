@@ -14,7 +14,7 @@
    <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
   <mm:import externid="language">en</mm:import>
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%>?language=<mm:write  referid="language" /></mm:import>
-  <mm:import id="jsps">/mmbase/edit/wizard/jsp/</mm:import>
+  <mm:import id="jsps">/mmbase/edit/wizard/jsp</mm:import>
   <mm:import id="loginmethod">loginpage</mm:import>
   <mm:import id="debug">false</mm:import>
   <h1>Editwizard Examples (startwizards)</h1>
@@ -27,7 +27,7 @@
   <table>
   <tr>
    <td>
-    <a href="<mm:url referids="language,referrer,loginmethod" page="${jsps}list.jsp">
+    <a href="<mm:url referids="language,referrer,loginmethod" page="$jsps/list.jsp">
         <mm:param name="wizard">tasks/people</mm:param>
         <mm:param name="nodepath">people</mm:param>
         <mm:param name="fields">number,firstname,lastname,owner</mm:param>
@@ -39,7 +39,7 @@
   </tr>
   <tr>
    <td>
-    <a href="<mm:url referids="language,referrer,loginmethod" page="${jsps}list.jsp">
+    <a href="<mm:url referids="language,referrer,loginmethod" page="$jsps/list.jsp">
         <mm:param name="wizard">tasks/news</mm:param>
         <mm:param name="nodepath">news</mm:param>
         <mm:param name="fields">number,title,owner</mm:param>
@@ -51,7 +51,7 @@
   </tr>
   <tr>
     <td>
-     <a href="<mm:url referids="language,referrer,loginmethod,debug" page="${jsps}wizard.jsp">
+     <a href="<mm:url referids="language,referrer,loginmethod,debug" page="$jsps/wizard.jsp">
           <mm:param name="wizard">tasks/people</mm:param>
           <mm:param name="objectnumber">new</mm:param>
         </mm:url>">New person</a>
@@ -60,7 +60,7 @@
   </tr>
   <tr>
     <td>
-     <a href="<mm:url referids="referrer,loginmethod,debug" page="${jsps}wizard.jsp">
+     <a href="<mm:url referids="referrer,loginmethod,debug" page="$jsps/wizard.jsp">
           <mm:param name="wizard">tasks/news</mm:param>
           <mm:param name="objectnumber">new</mm:param>
         </mm:url>">New article</a>

@@ -20,8 +20,9 @@
     <li><a href="<mm:url page="startwizard/" />">All kind of 'start-wizards'</a></li>
   </ul>
   <hr />
+
   <p>
-    Lots of these examples edit data from the <a href="<mm:url page="/mmexamples/mynews" />">My News example</a>. 
+    Lots of these examples edit data from the <a href="<mm:url page="/mmexamples/mynews/" />">My News example</a>. 
   </p>
   </body>
 </html>
