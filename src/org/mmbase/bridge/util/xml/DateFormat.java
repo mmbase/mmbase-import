@@ -21,32 +21,32 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Dates are stored as integer in mmbase. If you want to show these dates 
+ * Dates are stored as integer in mmbase. If you want to show these dates
  * in a nice format in the XSL transformation.
  * it is necessary to use this Xalan extension.
  * The XSLT looks like this then:
  *
- <pre>
-  &lt;xsl:stylesheet  version = "1.0"
-    xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
-    xmlns:date ="org.mmbase.bridge.util.xml.DateFormat"
-  &gt;
- * 
+ * <pre>
+ *  &lt;xsl:stylesheet  version = "1.0"
+ *    xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
+ *    xmlns:date ="org.mmbase.bridge.util.xml.DateFormat"
+ *  &gt;
+ * </pre>
+ *
  * @author Nico Klasens
- * @created 4-nov-2003
- * @version $Id: DateFormat.java,v 1.2 2003-12-30 16:00:43 nico Exp $
+ * @version $Id: DateFormat.java,v 1.3 2004-01-19 17:45:15 pierre Exp $
  */
 public class DateFormat {
 
-    /** MMbase logging system */
+    /** MMBase logging system */
     private static Logger log = Logging.getLoggerInstance(DateFormat.class.getName());
 
-    /** Formats the field value with the date pattern
-     * 
-     * @param node
-     * @param fieldname
-     * @param pattern
-     * @return
+    /**
+     * Formats a node's field value with the date pattern
+     * @param node the number or alias of the node containing the field
+     * @param fieldname the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @return the formatted string
      */
     public static String format(String node, String fieldname, String pattern) {
         if (log.isDebugEnabled()) {
@@ -55,13 +55,13 @@ public class DateFormat {
         return format("mmbase", node, fieldname, pattern);
     }
 
-    /** Formats the field value with the date pattern
-     * 
-     * @param cloudName
-     * @param number
-     * @param fieldname
-     * @param pattern
-     * @return
+    /**
+     * Formats a node's field value with the date pattern
+     * @param cloudName the name of the cloud in which to find the node
+     * @param number the number or alias of the node containing the field
+     * @param fieldname the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @return the formatted string
      */
     public static String format(String cloudName, String number, String fieldname, String pattern) {
         log.debug("calling base");
@@ -73,13 +73,13 @@ public class DateFormat {
         }
     }
 
-    /** Formats the field value with the date pattern
-     * 
-     * @param cloud
-     * @param number
-     * @param fieldname
-     * @param pattern
-     * @return
+    /**
+     * Formats a node's field value with the date pattern
+     * @param cloudName the cloud in which to find the node
+     * @param number the number or alias of the node containing the field
+     * @param fieldname the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @return the formatted string
      */
     public static String format(Cloud cloud, String number, String fieldname, String pattern) {
         log.debug("calling base");
@@ -95,12 +95,12 @@ public class DateFormat {
             return "could not find " + fieldname + " on node " + number + "(" + e.toString() + ")";
         }
     }
-    
-    /** Formats the fieldvalue to a date pattern
-     * 
-     * @param fieldvalue number of seconds
-     * @param pattern pattern to format the second
-     * @return
+
+    /**
+     * Formats a value with a date pattern
+     * @param fieldvalue A string containing the unformmatted date value (in nr of seconds since 1/1/1970)
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @return the formatted string
      */
     public static String format(String fieldvalue, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -111,18 +111,21 @@ public class DateFormat {
         return sdf.format(new Date(seconds * 1000));
     }
 
-    /** It can be handy to supply a whole node, it will search for the field 
-     * 'number' and 'name' itself.
-     * 
-     * @param cloud
-     * @param node
-     * @param fieldname
-     * @param pattern
-     * @return
-     * @throws javax.xml.transform.TransformerException
+    /**
+     * Formats a node's field value with the date pattern.
+     * This version requires you to supply a DOM node. It will search for a tag of the form
+     * &lt;field name='number' &gt; and uses it's contents to retrieve the node.
+     * @deprecated not sure where this is used?
+     * @param cloudName the cloud in which to find the node
+     * @param node A DOM node (xml) containing the node's fields as subtags
+     * @param fieldname the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @return the formatted string
+     * @throws javax.xml.transform.TransformerException if something went wrong while searching the DOM Node
      */
     public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldname, String pattern) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
+        // bit of a waste to use an xpath here?
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return format(cloud, number, fieldname, pattern);
     }
