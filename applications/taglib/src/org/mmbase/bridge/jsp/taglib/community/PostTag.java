@@ -43,7 +43,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
     public int doStartTag() throws JspTagException{
         community=getCloudContext().getModule("communityprc");
         // create a temporary message node that holds the new data
-        Node node = new MessageNode(getCloud());
+        Node node = getCloud().getNodeManager("message").createNode();
         setNodeVar(node);
         return EVAL_BODY_BUFFERED;
     }
@@ -56,15 +56,22 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
      **/
     public int doAfterBody() throws JspTagException {
         Node node=getNodeVar();
+        // node fields
+        String subject=(String)node.getValue("subject");
         String body=node.getStringValue("body").trim();
+        String thread=node.getStringValue("thread");
+        // node temporary fields
+        String user=node.getStringValue("user");
+        String channel=node.getStringValue("channel");
+        String username=(String)node.getValue("username");
+        node.cancel();
+
         if (body.length()==0) {
             throw new JspTagException("Field 'body' not specified");
         }
-        String channel=node.getStringValue("channel");
         if (channel.length()==0) {
             throw new JspTagException("Field 'channel' not specified");
         }
-        String thread=node.getStringValue("thread");
         if (thread.length()==0) { // thread not null
             thread=channel;
         }
@@ -75,11 +82,8 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         } catch (JspTagException e) {}
         params.put("MESSAGE-BODY",body);
         params.put("MESSAGE-CHANNEL",channel);
-        String user=node.getStringValue("user");
         if (user.length()!=0) params.put("MESSAGE-CHATTER",user);
-        String username=(String)node.getValue("username");
         if (username!=null) params.put("MESSAGE-CHATTERNAME",username.trim());
-        String subject=(String)node.getValue("subject");
         if (subject!=null) params.put("MESSAGE-SUBJECT",subject.trim());
         community.process("MESSAGE-POST",thread,params,
                           pageContext.getRequest(),pageContext.getResponse());
@@ -89,7 +93,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
             throw new JspTagException("Post failed : "+err);
         }
         if (jspvar!=null) {
-            pageContext.setAttribute(jspvar, resultvalue.toString());
+            pageContext.setAttribute(jspvar, ""+resultvalue);
         }
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());

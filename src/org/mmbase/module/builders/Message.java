@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.14 2002-08-15 06:52:15 mark Exp $
+ * @version $Id: Message.java,v 1.15 2002-10-14 15:41:42 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -123,6 +123,15 @@ public class Message extends MMObjectBuilder {
         tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
         chatboxMessages = new NodeBreaker(2 * expireTime, tmpNodeManager);
+
+        // Add temporary fields
+        // These are currently ment to enable the taglib posttag
+        // to pass data used for the info field or to link a message
+        // In future version, these virutal fields migth actually be used to set or get
+        // this data directly from the message node
+        checkAddTmpField("channel"); // node number of the channel object for this message
+        checkAddTmpField("user");  // node number of the user object for this message
+        checkAddTmpField("username"); // username of the person posting the message
 
         return result;
     }
