@@ -1,6 +1,6 @@
 <%@page import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content type="text/plain" postprocessor="reducespace">
+%><mm:content type="text/plain" postprocessor="reducespace" expires="10">
 
 <%--
   This 'stats' page can be used by  MRTG. 
@@ -29,9 +29,12 @@
   </mm:compare>
   <mm:compare value="cache">
     <mm:import externid="cachetype" jspvar="type" vartype="string">Nodes</mm:import>
-    <% Cache cache = Cache.getCache(type); %>
-    <%= cache.getHits() %>
-    <%= cache.getHits() + cache.getMisses() %>;
+    <% Cache cache = Cache.getCache(type); 
+       if (cache != null) {
+    %>    
+<%= cache.getHits() %>
+<%= cache.getHits() + cache.getMisses() %>
+    <% } %>
   </mm:compare>
 </mm:write>
 <%        
