@@ -11,6 +11,7 @@ package org.mmbase.module.tools.MMAppTool;
 
 import java.lang.*;
 import java.io.*;
+import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -47,6 +48,27 @@ public class Display extends Frame implements WindowListener,ActionListener {
 			can.setApplication(app);
 			can.repaint();
 		}
+
+		XMLAppToolReader con=new XMLAppToolReader("/tmp/mmapptoolconfig.xml");
+		if (con.ok) {
+			can.setBackGroundColor(con.getColor("backgroundcolor"));
+			can.setObjectColor(con.getColor("objectcolor"));
+			can.setTextColor(con.getColor("textcolor"));
+			can.setLineColor(con.getColor("linecolor"));
+			can.setActiveColor(con.getColor("activecolor"));
+
+			
+			for (Enumeration e=can.getBuilderOvals().elements();e.hasMoreElements();) {
+				BuilderOval b=(BuilderOval)e.nextElement();
+				String name=b.getName();
+				int x=con.getX(name);
+				int y=con.getY(name);
+				if (x!=-1 && y!=-1) {
+					b.setX(x);
+					b.setY(y);
+				}
+			}
+		}
 	}
 
 	public void windowDeiconified(WindowEvent event) {
@@ -79,6 +101,7 @@ public class Display extends Frame implements WindowListener,ActionListener {
 		// create filemenu
 		Menu m = new Menu("File");
 		m.add(new MenuItem("Open",new MenuShortcut('O')));
+		m.add(new MenuItem("Snapshot"));
 		m.add(new MenuItem("Exit",new MenuShortcut('E')));
 
 		m.addActionListener(this);
@@ -93,8 +116,16 @@ public class Display extends Frame implements WindowListener,ActionListener {
 			parent.doExit();
 		} else if (cmd.equals("Open")) {
 			doOpen();
+		} else if (cmd.equals("Snapshot")) {
+			doSnapshot();
 		} else {
 			System.out.println("Unknown="+cmd);
+		}
+	}
+
+	private void doSnapshot() {
+		if (can!=null) {
+			XMLAppToolWriter.writeXMLFile(can,"/tmp/apptoolcondig.xml");	
 		}
 	}
 
