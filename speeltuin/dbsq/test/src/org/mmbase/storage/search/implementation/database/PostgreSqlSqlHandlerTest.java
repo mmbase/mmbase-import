@@ -14,7 +14,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PostgreSqlSqlHandlerTest extends TestCase {
     
@@ -115,26 +115,26 @@ public class PostgreSqlSqlHandlerTest extends TestCase {
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL"));
+        + prefix + "images images WHERE m_number IS NULL"));
         
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL LIMIT 100"));
+        + prefix + "images images WHERE m_number IS NULL LIMIT 100"));
         
         query.setOffset(50);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
         + prefix 
-        + "images WHERE m_number IS NULL LIMIT 100 OFFSET 50"));
+        + "images images WHERE m_number IS NULL LIMIT 100 OFFSET 50"));
 
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL LIMIT "
+        + prefix + "images images WHERE m_number IS NULL LIMIT "
         + Integer.MAX_VALUE + " OFFSET 50"));
     }
     
