@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.34 2004-05-17 19:43:02 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.35 2004-06-03 15:58:48 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -100,7 +100,11 @@ public class MediaFragments extends MMObjectBuilder {
     static protected Map translateURLArguments(List arguments, Map info) {
         if (info == null) info = new HashMap();
         if (arguments != null) {
-            info.put("format",  arguments);
+            if (arguments instanceof Parameters) {
+                info.putAll(((Parameters) arguments).toMap());
+            } else {
+                info.put("format",  arguments);
+            }
         }
         return info;
     }
@@ -263,7 +267,7 @@ public class MediaFragments extends MMObjectBuilder {
      */
     protected  String getURL(MMObjectNode fragment, Map info) {
         log.debug("Getting url of a fragment.");
-    String key = URLCache.toKey(fragment, info);
+        String key = URLCache.toKey(fragment, info);
         if(cache.containsKey(key)) {
             String url = (String) cache.get(key);
             if (log.isDebugEnabled()) {
@@ -271,13 +275,13 @@ public class MediaFragments extends MMObjectBuilder {
                 log.debug("Resolved url = " + url);
             }
             return url;
-    } else {
+        } else {
             log.debug("No cache hit, key = " + key);
-    }
-
-    Set cacheExpireObjects = new HashSet();
+        }
+        
+        Set cacheExpireObjects = new HashSet();
         List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
-    String result = "";
+        String result = "";
         if (urls.size() > 0) {
             result = ((URLComposer) urls.get(0)).getURL();
         }
@@ -285,16 +289,16 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("Add to cache, key = " + key);
             log.debug("Resolved url = " + result);
         }
-    // put result in cache
-    cache.put(key, result, cacheExpireObjects);
-    return result;
+        // put result in cache
+        cache.put(key, result, cacheExpireObjects);
+        return result;
     }
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
         log.debug("Getting format of a fragment.");
-    // XXX also cache this ?
-    // XXX can be done in the same cache if we extend the key...
-        List urls = getFilteredURLs(fragment, info,null);
+        // XXX also cache this ?
+        // XXX can be done in the same cache if we extend the key...
+        List urls = getFilteredURLs(fragment, info, null);
         if (urls.size() > 0) {
             return ((URLComposer) urls.get(0)).getFormat().toString();
         } else {
@@ -502,8 +506,21 @@ log.info("store value in seconds: "+val);
      * Stack.contains is used, so make sure equal node are equal.
      */
 
-    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
-        return o1.getNumber() == o2.getNumber();
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {        
+        int n1 = o1.getNumber();
+        int n2 = o2.getNumber();
+        if (n1 > 0 && n2 > 0) { // both 'real' nodes.
+            return n1 == n2;
+        } else {
+            String t1 = o1.getStringValue("_number");
+            String t2 = o2.getStringValue("_number");
+            if (t1 == null) {
+                return n1 == n2 && t2 == null;
+            } else {
+                return n1 == n2 && t1.equals(t2);
+            }
+        }
+
     }
 
 }
