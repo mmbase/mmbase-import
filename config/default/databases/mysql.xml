@@ -9,7 +9,7 @@
 		Defines the database driver that handles the abstraction between
 		mmbase and the given jdbs/database we are using.
 	-->
-	<mmbasedriver>org.mmbase.module.database.support.MMSQL92Node</mmbasedriver>
+	<mmbasedriver>org.mmbase.module.database.support.MMMysql42Node</mmbasedriver>
 
 	<!-- <scheme>
 		Defines the strings for the different scheme database
@@ -20,10 +20,9 @@
 	 	<not-null>not null</not-null>
 	 	<null>null</null>
 		<primary-key>primary key</primary-key>
-        <key>unique</key>
+        	<key>unique</key>
 	</scheme>
-
-	<!-- <mapping>
+        <!-- <mapping>
 		defines how mmbase should map the different types mmbase to this
 		database.
 
@@ -37,8 +36,10 @@
      	  <type-mapping mmbase-type="FLOAT">float</type-mapping>
      	  <type-mapping mmbase-type="INTEGER">integer</type-mapping>
        	  <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>
+       	
        	  <type-mapping mmbase-type="STRING" min-size="256" max-size="65535">blob</type-mapping>
        	  <type-mapping mmbase-type="STRING" min-size="65536" max-size="16777216">mediumblob</type-mapping>
+       	
        	  <type-mapping mmbase-type="BYTE" min-size="1" max-size="65535">blob</type-mapping>
        	  <type-mapping mmbase-type="BYTE" min-size="65536" max-size="16777216">mediumblob</type-mapping>
 	</mapping>
@@ -71,5 +72,9 @@
           <field name="local" replacement="m_local" />
           <field name="group" replacement="m_group" />
           <field name="fields" replacement="m_fields" />
+          <field name="int" replacement="m_int" />
+          <field name="create" replacement="m_create" />
+          <field name="read" replacement="m_read" />
+          <field name="write" replacement="m_write" />
 	</disallowed>
 </database>
