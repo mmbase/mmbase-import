@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.63 2004-03-24 00:59:01 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.64 2004-09-14 17:59:36 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -60,6 +60,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     protected NodeListHelper listHelper = new NodeListHelper(this, nodeHelper);
 
+    private Query generatingQuery;
+
 
     protected NodeList getReturnList() {
         return listHelper.getReturnList();
@@ -80,6 +82,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     public void remove() {
         listHelper.remove();
+    }
+
+    public Query getGeneratingQuery() {
+        return generatingQuery;
     }
 
 
@@ -165,6 +171,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @return true If successful
      */
     protected NodesAndTrim getNodesAndTrim(Query query, int more) throws JspTagException {
+        generatingQuery = query;
         NodesAndTrim result = new NodesAndTrim();
         if (listHelper.getComparator().equals("")) {
             if (listHelper.getMax() != Attribute.NULL) {

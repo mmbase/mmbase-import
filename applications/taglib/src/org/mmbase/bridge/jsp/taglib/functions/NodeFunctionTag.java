@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.4 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.5 2004-09-14 17:59:38 michiel Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -57,6 +57,11 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
     protected boolean getModified() {
         return nodeHelper.getModified();
     }
+
+    public Query getGeneratingQuery() throws JspTagException {
+        return nodeHelper.getGeneratingQuery();
+    }
+
     
     public int doEndTag() throws JspTagException {
         return nodeHelper.doEndTag();
@@ -69,8 +74,12 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
             node = (Node) value;
         } else {
             // depend on 'convert' of BasicNodeList, ugly ugly
-            NodeList list = getCloudVar().getCloudContext().createNodeList();
-            list.add(value);
+            // Hackerdyhack, just te get an empty list with cloud
+            Cloud cloud = getCloudVar();
+            NodeManager object = cloud.getNodeManager("object");
+            NodeQuery query = object.createQuery();
+            query.setConstraint(query.createConstraint(query.getStepField(object.getField("number")), new Integer(-1)));
+            NodeList list = object.getList(query);
             node = list.getNode(0);
             
         }

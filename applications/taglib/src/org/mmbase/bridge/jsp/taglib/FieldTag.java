@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.44 2004-06-30 17:51:53 michiel Exp $ 
+ * @version $Id: FieldTag.java,v 1.45 2004-09-14 17:59:37 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -96,6 +96,14 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return s;
     }
 
+    
+    /**
+     * @todo  EXPERIMENTAL
+     * @since MMBase-1.8
+     */
+    protected void handleEditTag() {        
+        // Andre is busy with this.
+    }
 
     public int doStartTag() throws JspTagException {
         node = null;
@@ -163,7 +171,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
-        
+
+
+        handleEditTag();
+
         helper.setValue(value);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

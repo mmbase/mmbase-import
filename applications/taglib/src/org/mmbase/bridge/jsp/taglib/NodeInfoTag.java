@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.30 2004-07-26 20:17:59 nico Exp $ 
+ * @version $Id: NodeInfoTag.java,v 1.31 2004-09-14 17:59:37 michiel Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -34,6 +34,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     private static final int TYPE_NODENUMBER            = 3;
     private static final int TYPE_GUI                   = 4;
     private static final int TYPE_DESCRIPTION           = 5;
+    private static final int TYPE_QUERY                 = 50; // for debug
 
 
     private Attribute type = Attribute.NULL;
@@ -58,6 +59,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             return  TYPE_NODENUMBER;
         } else if ("gui".equals(t)) {
             return TYPE_GUI;
+        } else if ("query".equals(t)) {
+            return TYPE_QUERY;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -119,6 +122,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             show = getNode().getFunctionValue("gui", args).toString();
             break;
         }
+        case TYPE_QUERY: 
+            show = findNodeProvider().getGeneratingQuery().toString();
         default:
         }
 
