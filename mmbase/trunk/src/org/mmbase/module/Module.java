@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.53 2004-04-14 08:06:00 pierre Exp $
+ * @version $Id: Module.java,v 1.54 2004-05-24 14:20:14 michiel Exp $
  */
 public abstract class Module {
     private static final Logger log = Logging.getLoggerInstance(Module.class);
@@ -372,7 +372,11 @@ public abstract class Module {
             for (int i = 0; i < files.length; i++) {
                 File file = files[i];
                 String fileName = file.getName();
-                if (file.canRead() && file.isFile() && fileName.endsWith(".xml")) {
+                if (file.isFile() && fileName.endsWith(".xml")) {
+                    if (! file.canRead()) {
+                        log.warn("The file '" + file + "' exists but cannot be read!");
+                        continue;
+                    }
                     fileName = fileName.substring(0, fileName.length() - 4);
                     XMLModuleReader parser;
                     try {
@@ -410,7 +414,7 @@ public abstract class Module {
                             mod.setVersion(parser.getModuleVersion());
                         } catch (ClassNotFoundException cnfe) {
                             log.error("Could not load class with name '" + className + "', " +
-                                      "which was specified in the module:'" + file + ".xml'(" + cnfe + ")" );
+                                      "which was specified in the module:'" + file + " '(" + cnfe + ")" );
                         } catch (Exception e) {
                             log.error("Error while loading module class" + Logging.stackTrace(e));
                         }
