@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.20 2003-11-25 21:05:27 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.21 2003-12-18 09:03:49 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -122,21 +122,23 @@ public class StringHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public String useHtmlInput(Node node, Field field) throws JspTagException {
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldName.equals("owner")) {
             if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
                 node.setContext(fieldValue);
+                return true;
             }
         } else {
             fieldValue = tag.encode(fieldValue, field);
             if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
                 node.setValue(fieldName,  fieldValue);
+                return true;
             }
         }
-        return "";
+        return false;
     }
 
     /**
