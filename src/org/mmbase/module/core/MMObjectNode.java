@@ -34,11 +34,11 @@ import org.mmbase.cache.RelatedNodesCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.106 2003-08-13 08:58:16 vpro Exp $
+ * @version $Id: MMObjectNode.java,v 1.107 2003-08-27 21:35:22 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
-    private static Logger log = Logging.getLoggerInstance(MMObjectNode.class);
+    private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
     
     /**
      * Holds the name - value pairs of this node (the node's fields).
@@ -139,6 +139,27 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.error("MMObjectNode-> contructor called with parent=null");
             throw new NullPointerException("contructor called with parent=null");
         }
+    }
+
+    /**
+     * A ClusterNode can in certain case be translated in a real node.
+     * @since MMBase-1.7
+     */
+    public MMObjectNode(MMObjectBuilder parent, ClusterNode node, String stepAlias) {
+        this(parent);
+        if (stepAlias == null) {
+            values = node.values;
+        } else {
+            // remove prefixed values (which appear in clusternodes with more then one step, but in a real node, they should not appear)
+            int length = stepAlias.length() + 1; //1: the dot
+            Iterator i = node.values.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                values.put(((String) entry.getKey()).substring(length), entry.getValue());
+            }
+        }
+        
+
     }
 
     /**
@@ -254,7 +275,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     }
                 }
             }
-        } catch(Exception e) {}
+        } catch(Throwable e) {
+            return "" + values; // simpler version...
+        }
         return result.toString();
     }
 
