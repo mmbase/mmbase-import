@@ -107,7 +107,7 @@
 </tr>
 <tr>
 		<td COLSPAN="5">
-			&nbsp;&nbsp;<INPUT SIZE="70" NAME="newissue" value="<mm:field name="issue" />" >
+			&nbsp;&nbsp;<INPUT SIZE="70" NAME="newissue" value="<mm:field name="issue" escape="text/html/attribute"/>" >
 		</td>
 </tr>
 
@@ -121,7 +121,7 @@
 </tr>
 <tr>
 		<td COLSPAN="5">
-			<TEXTAREA NAME="newdescription" COLS="70" ROWS="15" WRAP><mm:field name="description" /></TEXTAREA>
+			<TEXTAREA NAME="newdescription" COLS="70" ROWS="15" WRAP><mm:field name="description" escape="text/html"/></TEXTAREA>
 		</td>
 </tr>
 
