@@ -8,7 +8,7 @@
   <!-- <status>
     what is the status of this builder options : active or inactive
   -->
-  <status>active</status>
+  <status>inactive</status>
 
   <!-- <classfile>
     main classfile that this module is defined in
