@@ -18,7 +18,9 @@ Media project build file
   <property name="deprecation" value="on"/>
   <property name="media.source.dir" location="." />
   <property name="media.build.dir"  location="./build" />
-  <property name="mmbase.jar" value="../all/build/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
+  <property name="mmbase.jar"  value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="mmmedia.jar" value="${media.build.dir}/mmmedia.jar"/>
 
   <target name="init" depends="">
@@ -76,10 +78,14 @@ Build-compiler: ${build.compiler}
 
     <javac srcdir="${media.source.dir}"
            destdir="${media.build.dir}/classes"
-           classpath="${mmbase.jar}"
            debug="$[debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
+      <classpath>
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+      </classpath>
+
     </javac>
   </target>
 
