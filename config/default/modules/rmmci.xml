@@ -4,12 +4,12 @@
   <status>inactive</status>
   <classfile>org.mmbase.module.RemoteMMCI</classfile>
   <properties>
-    <!-- port the port the rmi server should run. DEFAULT port is 1111 -->
-    <property name="port">1111</property>
-    <!-- sleeptime the amount of time to way before the module shouw be 
-         started at MMBase boot time in seconds. DEFAULT  = 30 seconds -->
-    <property name="sleeptime">30</property>
-    <!-- rmi name to be used to bind to the registry. DEFLAUT= RMMCI -->
-    <property name="bindname">remotecontext</property>
+   <!-- param port: the port the RMI server should run. DEFAULT port is 1111 -->
+   <property name="port">1111</property>
+   <!-- param sleeptime: the amount of time to wait before the module 
+   should be started at MMBase boot time in seconds. DEFAULT  = 30 seconds -->
+   <property name="sleeptime">30</property>
+   <!-- RMI name to be used to bind to the registry. DEFLAUT= remotecontext -->
+   <property name="bindname">remotecontext</property>
   </properties>
 </module>
