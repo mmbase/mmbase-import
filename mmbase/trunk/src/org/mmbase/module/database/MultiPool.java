@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.34 2003-12-10 10:02:51 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.35 2003-12-10 10:04:46 michiel Exp $
  */
 public class MultiPool {
 
@@ -80,7 +80,7 @@ public class MultiPool {
             }
             log.error("Could not get all connections (" + errors + " failures). First error: " + firstError.getMessage() + Logging.stackTrace(firstError));
             log.info("Multipools size is now " + pool.size() + " rather then " + conMax);
-            conMax = pool.size();
+            this.conMax = pool.size();
         }
 
 
