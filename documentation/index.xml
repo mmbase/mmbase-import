@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.39 2003-07-27 21:23:24 henk Exp $</edition>
+    <edition>$Id: index.xml,v 1.40 2003-08-21 09:56:30 pierre Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -171,6 +171,12 @@
 
         <para><ulink id="tcp" url="developers/TCP2_4_8.html">TCP and the
         Transaction Handler</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Storage (<ulink id="storage"
+        url="backenddevelopers/storage/index.html">HTML</ulink>, <ulink
+        id="storage.pdf" url="backenddevelopers/storage/index.pdf">PDF</ulink>)</para>
       </listitem>
 
       <listitem>
