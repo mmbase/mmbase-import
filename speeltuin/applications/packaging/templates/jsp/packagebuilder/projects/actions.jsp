@@ -2,12 +2,20 @@
 <mm:cloud>
 <mm:import externid="action" />
 
+<mm:compare value="packagtarget" referid="action">
+	<mm:import externid="createnew" vartype="list" />
+	A='<mm:write referid="createnew" />'
+</mm:compare>
+
+
 <mm:compare value="packagetarget" referid="action">
 	<mm:functioncontainer>
 	<mm:import id="project" externid="name" />
 	<mm:import id="target" externid="target" />
+	<mm:import externid="createnew" vartype="list" />
+	<mm:import externid="latest" vartype="list" />
 	<mm:import externid="newversion" />
-	 <mm:booleanfunction set="mmpb" name="packageTarget" referids="project,target,newversion">
+	 <mm:booleanfunction set="mmpb" name="packageTarget" referids="project,target,newversion,latest,createnew">
 	</mm:booleanfunction>
 	</mm:functioncontainer>
 </mm:compare>

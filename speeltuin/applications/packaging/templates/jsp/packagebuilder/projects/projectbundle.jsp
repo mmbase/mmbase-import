@@ -96,16 +96,35 @@
 
 <mm:write referid="mode">
 <mm:compare value="createview">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="40%">  
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="80%">  
 <mm:compare referid="syntaxerrors" value="false">
 <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
 <form action="<mm:url page="index.jsp" referids="main,sub,name,target,bundle"><mm:param name="mode" value="log" /></mm:url>" method="post">
 	<tr>    
-        <th colspan="2">Create a new version of this bundle </th>
-</tr><td height="25">Last created version </td><td> <mm:field name="lastversion" /> (<mm:field name="lastdate" />)</td></tr>
-<tr><td>New Version</td><td><input name="newversion" size="4" value="<mm:field name="nextversion" />"></td></tr>
+        <th colspan="4">Create a new version of this bundle </th>
+</tr><td height="25" colspan="2">Last created version </td><td colspan="2"> <mm:field name="lastversion" /> (<mm:field name="lastdate" />)</td></tr>
+<tr><td colspan="2">New Version</td><td colspan="2"><input name="newversion" size="4" value="<mm:field name="nextversion" />"></td></tr>
 	<input type="hidden" name="action" value="packagetarget" />
-<tr><td colspan="2" height="30"><center><input type="submit" value="create new version"></center></td></tr>
+        <tr><th>Included package</th><th>Included version</th><th>Use latest</th><th>Create new</th></tr>
+        <mm:nodelistfunction set="mmpb" name="getTargetIncludedPackages" referids="project,target">
+	<mm:context>
+        <tr><td><mm:field name="name" /></td><td><mm:field name="version" id="version" /></td><td><mm:field name="lastversion"><mm:compare referid2="version" inverse="true"><mm:field name="lastversion" /><input type="checkbox" name="latest" value="<mm:field name="id" />" value="<mm:field name="id" />" checked></mm:compare></mm:field></td>
+
+	<td height="20">
+		<mm:field name="target">
+		<mm:compare value="" inverse="true">
+		<mm:field name="nextversion" /><input type="checkbox" name="createnew" value="<mm:field name="target" />" /> <mm:field name="target" />
+		</mm:compare>
+		<mm:compare value="">
+		external
+		</mm:compare>
+		</mm:field>
+	</td>
+
+	</tr>
+	</mm:context>
+	</mm:nodelistfunction>
+<tr><td colspan="4" height="30"><center><input type="submit" value="create new version"></center></td></tr>
 </td>
 </form>
 </mm:nodefunction>
