@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.13 2000-05-29 13:17:26 wwwtech Exp $
+	$Id: Images.java,v 1.14 2000-05-29 19:33:52 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2000/05/29 13:17:26  wwwtech
+	Wilbert: Changed fuzzy search for image alias into exact search
+	
 	Revision 1.12  2000/05/27 16:48:29  wwwtech
 	Wilbert: moved new conversion of image alias to method to share it with VWM ImageMaster
 	
@@ -61,7 +64,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.13 2000-05-29 13:17:26 wwwtech Exp $
+ * @version $Id: Images.java,v 1.14 2000-05-29 19:33:52 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -361,7 +364,7 @@ public class Images extends MMObjectBuilder {
 		RandomAccessFile  dos=null;	
 
  		if (sp!=null)
-			debug("getAllCalc(): converting img("+cmd+") for page("+sp.req.getRequestURI()+") and user("+sp.getSessionName()+")");
+			debug("getAllCalc(): converting img("+cmd+") for page("+sp.getUrl()+") and user("+sp.getSessionName()+")");
 		else
 			debug("getAllCalc(): converting img("+cmd+") for UNKNOWN");
 
