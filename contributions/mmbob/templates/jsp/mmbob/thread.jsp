@@ -94,9 +94,12 @@
 			<mm:import id="toid"><mm:field name="posterid" /></mm:import>
 			<mm:import id="postingid"><mm:field name="id" /></mm:import>
                                 
-                           <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
-                           <mm:compare referid="threadstate" value="closed" inverse="true">
-                              <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                           <mm:compare referid="guestwritemodetype" value="open"> 
+                               <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
+
+                               <mm:compare referid="threadstate" value="closed" inverse="true">
+                                    <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                               </mm:compare>
                            </mm:compare>
 		     
 			   <mm:field name="ismoderator">
