@@ -52,7 +52,7 @@ public class BasicBundle implements BundleInterface {
     private String licensebody = "";
     private ProviderInterface provider;
     private ShareInfo shareinfo;
-    private Hashtable neededpackages = new Hashtable();
+    private HashMap neededpackages = new HashMap();
     private ArrayList initiators,supporters,contacts,developers;
     private float progressbar = 0;
     private float progressstep = 1;
@@ -63,7 +63,7 @@ public class BasicBundle implements BundleInterface {
     // only can provide log info but also possible fixed, feedback, stats
     // etc etc. Each step in itself can have steps again providing for things
     // like three style logging and feedback
-    private Vector installsteps;
+    private ArrayList installsteps;
 
     private long lastupdated;
 
@@ -98,8 +98,8 @@ public class BasicBundle implements BundleInterface {
         return name;
     }
 
-    public Enumeration getNeededPackages() {
-        return neededpackages.elements();
+    public Iterator getNeededPackages() {
+        return neededpackages.values().iterator();
     }
     
     public String getVersion() {
@@ -164,19 +164,22 @@ public class BasicBundle implements BundleInterface {
 
         int pbs = 0; 
         // figure out how many packages we have for the progressbar
-        Enumeration d = getNeededPackages();
-        while (d.hasMoreElements()) {
+	log.info("BA1");
+        Iterator d = getNeededPackages();
+        while (d.hasNext()) {
             pbs++;
-            d.nextElement();
+            d.next();
         }
         int pss = 800/pbs; // guess the progressbar per installed package
 
         boolean changed = true; // signals something was installed
         while (changed) {
-            Enumeration e = getNeededPackages();
+            Iterator e = getNeededPackages();
             changed = false;
-            while (e.hasMoreElements()) {
-                Hashtable np = (Hashtable)e.nextElement();
+		log.info("BA2");
+            while (e.hasNext()) {
+                HashMap np = (HashMap)e.next();
+		log.info("BA3");
                 pkg = PackageManager.getPackage((String)np.get("id"));
                 if (pkg != null) {
                     String state = pkg.getState();
@@ -222,9 +225,9 @@ public class BasicBundle implements BundleInterface {
             installStep step = getNextInstallStep();
             step.setUserFeedBack("bundle/basic uninstaller started");
 
-            Enumeration e = getNeededPackages();
-                while (e.hasMoreElements()) {
-                    Hashtable np = (Hashtable)e.nextElement();
+            Iterator e = getNeededPackages();
+                while (e.hasNext()) {
+                    HashMap np = (HashMap)e.next();
                     PackageInterface pkg = PackageManager.getPackage((String)np.get("id"));
                     if (pkg != null) {
                         String state = pkg.getState();
@@ -262,40 +265,40 @@ public class BasicBundle implements BundleInterface {
         // create new step
         installStep step=new installStep();
         if (installsteps==null) {
-            installsteps=new Vector();
-            installsteps.addElement(step);
+            installsteps=new ArrayList();
+            installsteps.add(step);
             return step;
         } else {
-            installsteps.addElement(step);
+            installsteps.add(step);
             return step;
         }
     }
 
     public boolean removeInstallStep(installStep step) {
         if (installsteps.contains(step)) {
-            installsteps.removeElement(step);
+            installsteps.remove(step);
             return true;
         } else {
             return false;
         }
     }
 
-    public Enumeration getInstallSteps() {
+    public Iterator getInstallSteps() {
         if (installsteps != null) {
-                return installsteps.elements();
+                return installsteps.iterator();
         } else {
                 return null;
         }
     }
 
-    public Enumeration getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         // well maybe its one of my subs ?
-        Enumeration e = getInstallSteps();
-        while (e.hasMoreElements()) {
-            installStep step = (installStep)e.nextElement();
+        Iterator e = getInstallSteps();
+        while (e.hasNext()) {
+            installStep step = (installStep)e.next();
             Object o = step.getInstallSteps(logid);
             if (o != null) {
-                return (Enumeration)o;
+                return (Iterator)o;
             } 
         }
         return null;
@@ -391,7 +394,7 @@ public class BasicBundle implements BundleInterface {
                         wid = wid.replace(' ','_');
                         wid = wid.replace('/','_');
 
-                        Hashtable h = new Hashtable();
+                        HashMap h = new HashMap();
                         h.put("name",name);
                         h.put("id",wid);
                         h.put("type",type);
