@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.25 2004-03-09 13:47:04 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.25.2.1 2004-04-23 13:38:07 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -133,7 +133,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String value = findString(field);
         if (value != null) {
             Constraint con = Queries.createConstraint(query, field.getName(), getOperator(), getSearchValue(findString(field)));
-            return Queries.addConstraint(query, con);
+            Queries.addConstraint(query, con);
+            return con;
         } else {
             return null;
         }

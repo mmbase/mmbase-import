@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.27 2004-03-22 09:07:56 pierre Exp $
+ * @version $Id: StringHandler.java,v 1.28 2004-04-23 13:37:11 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -208,10 +208,13 @@ public class StringHandler extends AbstractTypeHandler {
                return eh.whereHtmlInput(field, query);
            }
        }
+       Constraint cons =  super.whereHtmlInput(field, query);
 
-       FieldConstraint cons = (FieldConstraint) super.whereHtmlInput(field, query);
        if (cons != null) {
-           query.setCaseSensitive(cons, false);
+           if (! (cons instanceof FieldConstraint)) {
+               throw new JspTagException("Found an instance of " + cons.getClass().getName() + " while expected a field-constraint");
+           }
+           query.setCaseSensitive((FieldConstraint) cons, false);
        }
 
        return cons;
