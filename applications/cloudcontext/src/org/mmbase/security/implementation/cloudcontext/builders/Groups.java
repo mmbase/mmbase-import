@@ -11,7 +11,6 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
-import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.Cache;
@@ -27,7 +26,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.14 2004-02-25 19:39:23 michiel Exp $
+ * @version $Id: Groups.java,v 1.15 2004-07-30 17:09:20 michiel Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
