@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.57 2003-03-27 09:48:20 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.58 2003-03-28 10:39:46 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -217,7 +217,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
          * EXPERIMENTAL
          */
         CloudTag ct = null;
-        ct = (CloudTag) findParentTag(CloudTag.class.getName(), null, false);
+        ct = (CloudTag) findParentTag(CloudTag.class, null, false);
         if (ct != null) {
             sessionName = ct.getSessionName();            
         }
