@@ -42,12 +42,12 @@ import java.io.File;
 public final class Log4jImpl extends Category  implements Logger { 
     // class is final, perhaps then its methods can be inlined when compiled with -O?
 
-
     // It's enough to instantiate a factory once and for all.
     private final static LoggerFactory factory = new LoggerFactory();
 
     private final static String classname = Log4jImpl.class.getName();
 
+    private static File configurationFile = null;
 
     /** 
      * Constructor, like the constructor of {@link Category}.
@@ -83,13 +83,17 @@ public final class Log4jImpl extends Category  implements Logger {
      **/
 
     public static void configure(String s) {
-        File f = new File(s); 
-        if (! f.isAbsolute()) { // make it absolute
-            f = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
+        configurationFile = new File(s); 
+        if (! configurationFile.isAbsolute()) { // make it absolute
+            configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
         }
-        System.out.println("Parsing " + f.getAbsolutePath());
-        DOMConfigurator.configureAndWatch(f.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
+        System.out.println("Parsing " + configurationFile.getAbsolutePath());
+        DOMConfigurator.configureAndWatch(configurationFile.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
         System.setErr(new LoggerStream((Log4jImpl) getInstance("STDERR")));
+    }
+
+    public static File getConfigurationFile() {
+        return configurationFile;
     }
 
     public void setPriority(Level p) {
@@ -116,9 +120,9 @@ public final class Log4jImpl extends Category  implements Logger {
     /**
      * A new logging method that takes the TRACE priority.
      */
-    public final void trace(Object message) {
+    public final void trace(Object message) {       
         // disable is defined in Category
-        if (disable >=  Log4jPriority.TRACE_INT) {
+        if (hierarchy.isDisabled(Log4jPriority.TRACE_INT)) {
             return;
         }
         if (Log4jPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
@@ -131,7 +135,7 @@ public final class Log4jImpl extends Category  implements Logger {
      */
     public final void service(Object message) {  
         // disable is defined in Category
-        if (disable >=  Log4jPriority.SERVICE_INT) {
+        if (hierarchy.isDisabled(Log4jPriority.SERVICE_INT)) {
             return;
         }
         if (Log4jPriority.SERVICE.isGreaterOrEqual(this.getChainedPriority()))
@@ -140,7 +144,7 @@ public final class Log4jImpl extends Category  implements Logger {
     }
 
     public final boolean isServiceEnabled() {
-        return(disable < Log4jPriority.SERVICE_INT);
+        return(! hierarchy.isDisabled(Log4jPriority.SERVICE_INT));
     }
 
     // **** SUBCLASSES ****
@@ -171,6 +175,10 @@ public final class Log4jImpl extends Category  implements Logger {
 
         private Logger log;
 
+        private int checkCount = 0; 
+        // needed to avoid infinite
+        // recursion in some errorneos situations.
+
         LoggerStream (Log4jImpl l) throws IllegalArgumentException {
             super(System.out);
             if (l == null) {
@@ -188,7 +196,17 @@ public final class Log4jImpl extends Category  implements Logger {
         public void print   (String s) { log.trace("3"); log.warn(s); }  
         public void print   (Object s) { log.trace("4"); log.warn(s.toString()); }
         public void println (char[] s) { log.trace("5"); log.warn(new String(s)); }
-        public void println (String s) { log.trace("6"); log.warn(s); }  
+        public void println (String s) { 
+            // if something goes wrong log4j write to standard error
+            // we don't want to go in an infinite loop then, if LoggerStream is stderr too.            
+            if (checkCount > 0) { 
+                System.out.println(s); 
+            } else {
+                checkCount++;
+                log.trace("6"); log.warn(s); 
+                checkCount--;
+            }
+        }  
         public void println (Object s) { 
             // it seems that exception are written to log in this way, so we can check 
             // if s is an exception, in which case we want to log with FATAL.
