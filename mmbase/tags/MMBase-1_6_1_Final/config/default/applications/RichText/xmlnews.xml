@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmlnews exportsource="mmbase://localhost/mmbase/richtext" timestamp="20021109011559">
+	<node number="5673" owner="system" alias="xmltest">
+		<body>&lt;mmxf&gt;
+&lt;section title=&quot;Strange languages and so on&quot;&gt;
+&lt;p id=&quot;lang&quot;&gt;Strange languages are very interesting. As everybody knows. There are two url's and one image related to this paragraph.&lt;/p&gt;
+&lt;p&gt;Here follows the second paragraph. It has a &lt;a id=&quot;here&quot;&gt;clickable &lt;em&gt;word&lt;/em&gt;
+&lt;/a&gt; in it.&lt;/p&gt;
+&lt;/section&gt;
+&lt;section title=&quot;Unicode&quot;&gt;
+&lt;p&gt;This is the third paragraph (and the second 'section'). It only shows some unicode: перестоыка, 寛治 カタカナ, Eĥoŝanĝo ĉiuĵaŭde. And now a list:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;abracadabra&lt;/li&gt;
+&lt;li&gt;Hocus Pocus&lt;/li&gt;
+&lt;li&gt;Simsalabim&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/section&gt;
+&lt;/mmxf&gt;
+</body>
+		<title>This is a test article.</title>
+		<subtitle>And Jiři Šimek is a czech name.</subtitle>
+		<intro>&lt;mmxf&gt;
+&lt;p&gt;nederlands: Café tweeëntwintig&lt;/p&gt;
+&lt;p&gt;hebreews: דשךצ&lt;/p&gt;
+&lt;p&gt;russisch: перестоыка&lt;/p&gt;
+&lt;p&gt;esperanto: Eĥoŝanĝo ĉiuĵaŭde&lt;/p&gt;
+&lt;p&gt;tsjechisch: Jiři Šimek&lt;/p&gt;
+&lt;p&gt;japans: 寛治 カタカナ grieks: παντα ρει&lt;/p&gt;
+&lt;p&gt;koreaans: ㅐ먈갬 &lt;/p&gt;
+&lt;p&gt;ipa: hʉ xaːt ɚt met ɨ? &lt;/p&gt;
+&lt;p&gt;euro: € 2,50 &lt;/p&gt;
+&lt;/mmxf&gt;
+</intro>
+	</node>
+
+</xmlnews>

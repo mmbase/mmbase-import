@@ -1,0 +1,6 @@
+$PARAM1
+
+<IF $PARAM1==60>(each minute)</IF>
+<IF $PARAM1==3600>(each hour)</IF>
+<IF $PARAM1==86400>(each day)</IF>
+<IF $PARAM1==604800>(each week)</IF>
