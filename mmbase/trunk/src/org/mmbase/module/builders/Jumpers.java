@@ -13,6 +13,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.cache.Cache;
 
 /**
  * Maintains jumpers for redirecting urls.
@@ -38,20 +39,19 @@ import org.mmbase.util.logging.*;
 public class Jumpers extends MMObjectBuilder {
 
     /**
-     * Jump Cache Size.
-     * Should be made non-final if we want to customize, see example code in init.
+     * Default Jump Cache Size.
+	 * Customization can be done through the central caches.xml
+	 * Make an entry under the name "JumpersCache" with the size you want.
      */
-    private static final int JUMP_CACHE_SIZE = 1000;
+    private static final int DEFAULT_JUMP_CACHE_SIZE = 1000;
 
     // logger
     private static Logger log = Logging.getLoggerInstance(Jumpers.class.getName());
 
     /**
      * Cache for URL jumpers.
-     * (better to initialize in init, as it will allow for customizing
-     * cache size, see example code)
      */
-    protected LRUHashtable jumpCache = new LRUHashtable(JUMP_CACHE_SIZE);
+    protected JumpersCache jumpCache = new JumpersCache(DEFAULT_JUMP_CACHE_SIZE);
 
     /**
      * Default redirect if no jumper can be found.
@@ -75,16 +75,6 @@ public class Jumpers extends MMObjectBuilder {
         super.init();
 
         String tmp;
-/*  example code for specifying JumperCacheSize
-
-        tmp=getInitParameter("JumperCacheSize");
-        if (tmp!=null) {
-            try {
-                JUMP_CACHE_SIZE = Integer.parseInt(tmp);
-            } catch (Exception e) {}
-        }
-        jumpCache = new LRUHashtable(JUMP_CACHE_SIZE);
-*/
         jumperNotFoundURL = getInitParameter("JumperNotFoundURL");
         return true;
     }
@@ -195,7 +185,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Handles changes made to a node by a remote server.
-	 * @param machine Name of the machine that changed the node.
+     * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
      * @param builder the name of the builder of the changed node (should be 'jumpers')
      * @param ctype the type of change
@@ -207,7 +197,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Handles changes made to a node by this server.
-	 * @param machine Name of the machine that changed the node.
+     * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
      * @param builder the name of the builder of the changed node (should be 'jumpers')
      * @param ctype the type of change
@@ -219,7 +209,7 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Clears the jump cache if a jumper was added, removed, or changed.
-	 * @param machine Name of the machine that changed the node.
+     * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
      * @param builder the name of the builder of the changed node (should be 'jumpers')
      * @param ctype the type of change
@@ -228,5 +218,20 @@ public class Jumpers extends MMObjectBuilder {
         log.debug("Jumpers="+machine+" " +builder+" no="+number+" "+ctype);
         jumpCache.clear();
         return true;
+    }
+}
+
+class JumpersCache extends Cache {
+    public String getName() {
+        return "JumpersCache";
+    }
+
+    public String getDescription() {
+        return "Cache for Jumpers";
+    }
+
+    JumpersCache(int size) {
+        super(size);
+        putCache(this);
     }
 }

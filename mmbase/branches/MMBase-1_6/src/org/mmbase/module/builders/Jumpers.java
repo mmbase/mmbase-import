@@ -227,7 +227,7 @@ class JumpersCache extends Cache {
     }
 
     public String getDescription() {
-        return "Cache for Related Nodes";
+        return "Cache for Jumpers";
     }
 
     JumpersCache(int size) {
