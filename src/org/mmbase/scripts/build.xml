@@ -413,6 +413,7 @@ NetComponents can be found at:
     <copy todir="${build.dir}/classes/org/mmbase/resources/dtd">
       <fileset dir="${source-config.dir}/default/dtd">
         <include name="**/*.dtd" />
+        <exclude name="logging*.dtd" />
       </fileset>
     </copy>
 
@@ -663,7 +664,6 @@ Build-compiler: ${build.compiler}
             <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
                 <!-- the dirs/files we definitly need -->
                 <include name="databases/**"/>
-                <include name="dtd/**"/>
                 <include name="xslt/**"/>
                 <include name="log/log.xml"/>
                 <include name="log/log4j.xml"/>
@@ -691,6 +691,7 @@ Build-compiler: ${build.compiler}
     <copy todir="${config.build.dir}">
       <fileset dir="${source-config.dir}/default"  defaultexcludes="true">        
         <include name="**"/>
+        <exclude name="dtd/**" />
       </fileset>
     </copy>
   </target>
