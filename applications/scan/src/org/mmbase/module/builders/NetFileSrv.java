@@ -144,10 +144,18 @@ public class NetFileSrv extends MMObjectBuilder {
      */
     public Object getAttachedBot(String service,String subservice) {
         Enumeration e=search("WHERE service='"+service+"' AND subservice='"+subservice+"'");
+
+        if(!e.hasMoreElements()) {
+            log.error("No entry with service="+service+" and subservice="+subservice+" found in netfilesrv");
+        }
         while (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
             int number=node.getIntValue("number");
             Enumeration f=mmb.getInsRel().getRelated(""+number,"vwms");
+
+            if(!f.hasMoreElements()) {
+                log.error("No Vwms related to the service="+service+" and subservice="+subservice+" found in netfilesrv");
+            }
             while (f.hasMoreElements()) {
                 MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
                 Vwms vwms=(Vwms)mmb.getMMObject("vwms");
@@ -156,9 +164,12 @@ public class NetFileSrv extends MMObjectBuilder {
                     VwmServiceInterface vwm=(VwmServiceInterface)vwms.getVwm(name);
                     if (vwm!=null) {
                         return vwm;
+                    } else {
+                        log.error("Vwms "+name+" not loaded.");
                     }
+                } else {
+                    log.error("Builder vwms not loaded.");
                 }
-
             }
         }
         return new Object(); // needed to fill a Dummy in the cache.
