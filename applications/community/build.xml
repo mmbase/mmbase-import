@@ -15,8 +15,8 @@
 
 
   <target name="community.tld.check">
-    <uptodate property="community.tld.uptodate" targetfile="${web.dir}/mmcommunity-taglib.tld" >
-      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2tld}" />
+    <uptodate property="community.tld.uptodate" targetfile="${project.metainf.dir}/taglib.tld" >
+      <srcfiles dir="${project.source.dir}" includes="src/${source-community.xml}" />
     </uptodate>
   </target>
 
