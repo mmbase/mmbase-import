@@ -22,6 +22,7 @@ import java.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.cache.NodeListCache;
 import org.mmbase.cache.AggregatedResultCache;
+import org.mmbase.cache.QueryResultCache;
 
 import org.mmbase.module.ParseException;
 import org.mmbase.module.builders.DayMarkers;
@@ -64,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.260 2004-02-18 15:01:00 keesj Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.261 2004-02-20 18:11:22 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -485,6 +486,10 @@ public class MMObjectBuilder extends MMTable {
         try {
             int n;
             n = mmb.getDatabase().insert(this,owner,node);
+            // it is in the database now, all caches can allready be invalidated, this makes sure
+            // that imediate 'select' after 'insert' will be correct'.
+            QueryResultCache.invalidateAll(this);
+
             if (n>=0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
             if (alias != null) createAlias(n,alias);    // add alias, if provided
@@ -547,7 +552,10 @@ public class MMObjectBuilder extends MMTable {
      * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
-        return mmb.getDatabase().commit(this, node);
+        boolean result = mmb.getDatabase().commit(this, node);
+        // change is in database, caches can be invalidated immediately
+        QueryResultCache.invalidateAll(this);
+        return result;
     }
 
     /**
@@ -724,7 +732,10 @@ public class MMObjectBuilder extends MMTable {
         // seems not a very logical call, as node.parent is the node's actual builder,
         // which may - possibly - be very different from the current builder
         mmb.getDatabase().removeNode(this, node);
-    }
+
+        // change is in database, caches can be invalidated immediately
+        QueryResultCache.invalidateAll(this);
+    }      
 
     /**
      * Removes the syncnodes to this node. This is logical, but also needed to maintain database
@@ -883,14 +894,14 @@ public class MMObjectBuilder extends MMTable {
         // check the cache
         Integer numberValue = new Integer(number);
         Integer otypeValue = (Integer)typeCache.get(numberValue);
-        if (otypeValue!=null) {
+        if (otypeValue != null) {
             return otypeValue.intValue();
         }
         // check whether to use the factory
         if (mmb.getStorageManagerFactory()!=null) {
             try {
                 int otype = mmb.getStorageManager().getNodeType(number);
-                typeCache.put(numberValue,new Integer(otype));
+                typeCache.put(numberValue, new Integer(otype));
                 return otype;
             } catch(StorageException se) {
                 // throw new NotFoundException(se);
@@ -1016,7 +1027,9 @@ public class MMObjectBuilder extends MMTable {
      */
     public MMObjectNode getNode(String key, boolean usecache) {
         if( key == null ) {
-            log.error("getNode(null): ERROR: for tablename(" + tableName + "): key is null!");
+            log.error("getNode(null) for builder '" + tableName + "': key is null!");
+            // who is doing that?
+            log.info(Logging.stackTrace(6));
             return null;
         }
         int nr =-1;
@@ -1081,7 +1094,7 @@ public class MMObjectBuilder extends MMTable {
             return null;
         }
         MMObjectNode node=null;
-        Integer numberValue=new Integer(number);
+        Integer numberValue = new Integer(number);
         // try cache if indicated to do so
         if (useCache) {
             node = (MMObjectNode)nodeCache.get(numberValue);
