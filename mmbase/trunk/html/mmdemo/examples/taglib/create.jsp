@@ -1,6 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@ taglib uri="http://jakarta.apache.org/taglibs/request" prefix="req" %>
 <mm:cloud name="mmbase">
+	<mm:import externid ="nodemanager"/>
+	<mm:import externid ="fieldname" />
+	<mm:import externid ="create" />
 
 <html>
 
@@ -14,15 +16,15 @@
 
 <h1>Create</h1>
 
-<req:existsparameter name="nodemanager">
-  <req:existsparameter name="create">
-    <mm:createnode nodemanager='<%= request.getParameter("nodemanager") %>'>
-      <mm:fieldlist nodemanager='<%=request.getParameter("nodemanager")%>' type="edit">
-        <mm:setfield><%=request.getParameter(fieldname)%></mm:setfield>
+<mm:present referid="nodemanager">
+  <mm:present referid="create">
+    <mm:createnode nodemanager='${nodemanager}'>
+      <mm:fieldlist nodemanager='${nodemanager}' type="edit">
+        <mm:setfield><mm:write referid="fieldname"/></mm:setfield>
       </mm:fieldlist>
     </mm:createnode>
-  </req:existsparameter>
-</req:existsparameter>
+  </mm:present>
+</mm:present>
 
 <table>
   <tr>
@@ -32,12 +34,12 @@
       </mm:listnodes>
     </td>
     <td valign="top">
-      <req:existsparameter name="nodemanager">
+      <mm:present referid="nodemanager">
         <form>
-          <input type="hidden" name="nodemanager" value='<%=request.getParameter("nodemanager")%>'>
+          <input type="hidden" name="nodemanager" value='<mm:write referid="nodemanager"/>'>
           <input type="hidden" name="create" value="true">
           <table>
-            <mm:fieldlist nodemanager='<%=request.getParameter("nodemanager")%>' type="edit">
+            <mm:fieldlist nodemanager='${nodemanager}' type="edit">
               <tr>
                 <td valign="top">
                   <mm:fieldinfo type="name"/>
@@ -50,7 +52,7 @@
           </table>
           <input type="submit" value="create"/>
         </form>
-      </req:existsparameter>
+      </mm:present>
     </td>
   </tr>
 </table>
