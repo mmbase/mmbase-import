@@ -395,6 +395,7 @@ public class Poll extends ProcessorModule  {
 		h.put (qid, "" + times);
 
 		_sessions.setValue (info, "POLLVOTES", makeString (h, ";", "="));
+		_sessions.saveValue(info, "POLLVOTES");
 	}
 
 
