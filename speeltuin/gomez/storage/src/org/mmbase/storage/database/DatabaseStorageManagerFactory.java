@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * A storage manager factory for database storages.
- * This factory sets up a datasource for connecting to the databse.
+ * This factory sets up a datasource for connecting to the database.
  * If you specify the datasource URI in the 'dataource' property in mmbaseroot.xml configuration file,
  * the factory attempts to obtain the datasource from the appplication server. If this fails, or no datasource URI is given,
  * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a datasource.
@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.2 2003-07-21 13:21:54 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.3 2003-07-23 11:19:47 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -52,25 +52,16 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
      */
     protected DataSource datasource;
 
-    /**
-     * The class used to instantiate storage managers.
-     * The classname is retrieved from the database configuration file
-     */
-    Class storageManagerClass;
-
     public double getVersion() {
         return 0.1;
     }
 
     /**
-     * Initialize the Factory for this instance of MMBase.
+     * Opens and reads the storage configuration document.
      * Obtain a datasource to the storage, and load configuration attributes.
-     * @see load()
-     * @param mmbase the MMBase instance
+     * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
-    public void init(MMBase mmbase) throws StorageConfigurationException, StorageInaccessibleException {
-        super.init(mmbase);
-
+    protected void load() throws StorageException {
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
@@ -89,6 +80,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             datasource = new GenericDataSource(mmbase);
         }
         // test the datasource
+        // perhaps this should be tried a few times?
         try {
             Connection con = datasource.getConnection();
             con.close();
@@ -96,73 +88,49 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             throw new StorageInaccessibleException(se);
         }
         // load configuration data.
-        load();
+        super.load();
     }
 
     /**
-     * Opens and reads the storage configuration document.
-     * @throws StorageInaccessibleException if the storage could not be accessed while determining the database type
-     * @throws StorageConfigurationException if necessary configuration data is missing or invalid
-     */
-    protected void load() throws StorageConfigurationException, StorageInaccessibleException {
-        StorageReader reader = getDocumentReader();
-        // get the storage manager class
-        storageManagerClass = reader.getStorageManagerClass(this);
-        // ... more configuration
-    }
-
-    /**
-     * Locates and opens the database configuration document.
-     * The configuration document to open is dependent on the database type and version.
-     * You can explicitly set this type in mmbasreoot (using the database property), or let
+     * Locates and opens the storage configuration document.
+     * The configuration document to open is dependent on the storage type and version.
+     * You can explicitly set this type in mmbasreoot (using the storage property), or let
      * MMBase determine it using information gained from the datasource, and the lookup.xml file
      * in the database configuration directory
      * @todo configuration path should be retrieved from the MMBase instance, rather than directly from the (static)
      * MMBaseContext class.
      * Storage configuration files should become resource files, and configurable using a storageresource property.
      * The type of reader to return should be a StorageReader.
-     * @throws StorageInaccessibleException if the storage could not be accessed while determining the database type
-     * @return a XMLDatabaseReader instance
+     * @throws StorageException if the storage could not be accessed while determining the database type
+     * @return a StorageReader instance
      */
-    public StorageReader getDocumentReader() throws StorageInaccessibleException {
-        File databaseConfig = null;
-        // configuration path.
-        String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
-
-        // determine database name.
-        // use the parameter set in mmbaseroot if it is given
-        String databasename =mmbase.getInitParameter("database");
-        if (databasename == null) {
-            // otherwise, search for supported drivers using the lookup xml
-            DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
-            try {
-                databaseConfig = lookup.getDatabaseConfig(datasource.getConnection());
-            } catch (java.sql.SQLException sqle) {
-                throw new StorageInaccessibleException(sqle);
-            }
-        } else {
-            // use the correct database-xml
-            databaseConfig = new File(databaseConfigDir + databasename + ".xml");
-        }
-        // get our config...
-        return new StorageReader(databaseConfig.getPath());
-    }
-
-    /**
-     * Obtains a StorageManager that grants access to the database.
-     * The instance represents a temporary connection to the datasource -
-     * do not store the result of this call as a static or long-term member of a class.
-     * @return a StorageManager instance
-     */
-    public StorageManager getStorageManager() throws StorageException {
+    public StorageReader getDocumentReader() throws StorageException {
         try {
-            StorageManager storageManager = (StorageManager)storageManagerClass.newInstance();
-            storageManager.init(this);
-            return storageManager;
-        } catch(InstantiationException ie) {
-            throw new StorageException(ie);
-        } catch(IllegalAccessException iae) {
-            throw new StorageException(iae);
+            return super.getDocumentReader();
+        } catch (StorageException se) {
+            // old code
+            File databaseConfig = null;
+            // configuration path.
+            String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
+    
+            // determine database name.
+            // use the parameter set in mmbaseroot if it is given
+            String databasename =mmbase.getInitParameter("database");
+            if (databasename == null) {
+                // otherwise, search for supported drivers using the lookup xml
+                DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+                try {
+                    databaseConfig = lookup.getDatabaseConfig(datasource.getConnection());
+                } catch (java.sql.SQLException sqle) {
+                    throw new StorageInaccessibleException(sqle);
+                }
+            } else {
+                // use the correct database-xml
+                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+            }
+            // get our config...
+            // This won't work now, we will probably need a LegacyStorageReader...
+            return new StorageReader(databaseConfig.getPath());
         }
     }
 
