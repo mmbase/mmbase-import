@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.41 2004-04-20 13:10:10 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.42 2004-12-03 14:49:21 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -73,8 +73,11 @@ public class WizardDatabaseConnector {
     public void tagDataNode(Node node) {
         NodeList nodes = Utils.selectNodeList(node, ".|.//*");
         didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
+        // if value is a datetime or boolean value,it should be parsed and converted to an integer,
+        // as this is how the wizards currently accept datetime/boolean values.
+        convertDateTimeToInt(node);
+        convertBooleanToInt(node);
     }
-
 
     /**
      * This method loads relations from MMBase and stores the result in the given object node.
@@ -88,7 +91,7 @@ public class WizardDatabaseConnector {
 
     Collection loadRelations(Node object, String objectNumber, Node loadAction) throws WizardException {
         // loads relations using the loadaction rules
-        NodeList allRelations = Utils.selectNodeList(loadAction, ".//relation"); 
+        NodeList allRelations = Utils.selectNodeList(loadAction, ".//relation");
 
         if (log.isDebugEnabled()) {
             log.debug("All relations " + Utils.getXML(allRelations) + " adding to " + Utils.getXML(object));
@@ -128,7 +131,7 @@ public class WizardDatabaseConnector {
 
         // load initial object using object number
         log.debug("Loading: " + objectNumber);
-        
+
         // restrict fields to load
         NodeList fieldstoload = Utils.selectNodeList(schema, "action[@type='load']/field");
         Node object=null;
@@ -137,7 +140,7 @@ public class WizardDatabaseConnector {
         } else {
             object = getData(data.getDocumentElement(), objectNumber, fieldstoload);
         }
-        
+
         // load relations, if present
         Node loadAction = Utils.selectSingleNode(schema, "action[@type='load']");
         if (loadAction != null) {
@@ -213,7 +216,7 @@ public class WizardDatabaseConnector {
      */
     public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws WizardException {
         // fires getData command and places result in targetNode
-        Node objectNode=getDataNode(targetNode.getOwnerDocument(), objectnumber, restrictions);
+        Node objectNode = getDataNode(targetNode.getOwnerDocument(), objectnumber, restrictions);
         // place object in targetNode
         targetNode.appendChild(objectNode);
         return objectNode;
@@ -235,14 +238,13 @@ public class WizardDatabaseConnector {
 
         if (!cmd.hasError()) {
             // place object in targetNode
-            Node objectNode=Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
+            Node objectNode = Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
             // if no destination document is given , do not copy or tag the node, just return it
-            if (document==null ) {
-                return objectNode;
+            if (document != null ) {
+                // copy ??? not sure if all of this is really necessary?
+                objectNode = document.importNode(objectNode.cloneNode(true),true);
+                tagDataNode(objectNode);
             }
-            // cop??? not sure if all of this is really necessary?
-            objectNode = document.importNode(objectNode.cloneNode(true),true);
-            tagDataNode(objectNode);
             return objectNode;
         } else {
             throw new WizardException("Could not obtain object " + objectnumber + " : " + cmd.getError());
@@ -368,16 +370,19 @@ public class WizardDatabaseConnector {
                 String type = Utils.getAttribute(objectDef, "type");
                 throw new WizardException("field " + fieldname + " does not exist in '" + type + "'");
             }
-            String value=Utils.getText(field);
+            String value = Utils.getText(field);
+
             // if you add a list of items, the order of the list may be of import.
             // the variable $pos is used to make that distinction
             params.put("pos",createorder+"");
-            Node parent=data.getDocumentElement();
+            Node parent = data.getDocumentElement();
             if (log.isDebugEnabled()) log.debug("parent="+parent.toString());
-            value=Utils.transformAttribute(parent,value,false,params);
+            value = Utils.transformAttribute(parent,value,false,params);
             params.remove("pos");
-            if (value==null) value="";
-            if (datafield!=null) {
+            if (value == null) {
+                value = "";
+            }
+            if (datafield != null) {
                 // yep. fill-in
                 Utils.storeText(datafield, value, params); // place param values inside if needed
             } else {
@@ -640,6 +645,75 @@ public class WizardDatabaseConnector {
     }
 
     /**
+     * @javadoc
+     */
+    protected void convertIntToDateTime(Node rootNode) {
+        // convert all datetime values
+        NodeList nodes = Utils.selectNodeList(rootNode, ".//field[@type='datetime']");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            String value = Utils.getText(node);
+            if (!"".equals(value)) {
+                value = org.mmbase.util.Casting.toString(org.mmbase.util.Casting.toDate(value));
+                Utils.storeText(node, value);
+            }
+        }
+    }
+
+    /**
+     * @javadoc
+     */
+    protected void convertIntToBoolean(Node rootNode) {
+        // convert all datetime values
+        NodeList nodes = Utils.selectNodeList(rootNode, ".//field[@type='boolean']");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            String value = Utils.getText(node);
+            if (!"".equals(value)) {
+                int boolAsInt = org.mmbase.util.Casting.toInt(value);
+                value = org.mmbase.util.Casting.toString(new Boolean(boolAsInt > 0));
+                Utils.storeText(node, value);
+            }
+        }
+    }
+
+    /**
+     * @javadoc
+     */
+    protected void convertDateTimeToInt(Node rootNode) {
+        // convert all datetime values
+        NodeList nodes = Utils.selectNodeList(rootNode, ".//field[@type='datetime']");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            String value = Utils.getText(node);
+            if (!"".equals(value)) {
+                value = "" + org.mmbase.util.Casting.toDate(value).getTime() / 1000;
+                Utils.storeText(node, value);
+            }
+        }
+    }
+
+    /**
+     * @javadoc
+     */
+    protected void convertBooleanToInt(Node rootNode) {
+        // convert all datetime values
+        NodeList nodes = Utils.selectNodeList(rootNode, ".//field[@type='boolean']");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            String value = Utils.getText(node);
+            if (!"".equals(value)) {
+                if (org.mmbase.util.Casting.toBoolean(value)) {
+                    value = "1";
+                } else {
+                    value = "0";
+                }
+                Utils.storeText(node, value);
+            }
+        }
+    }
+
+    /**
      * This method constructs a update transaction ready for mmbase.
      * The differences between the original and the new data define the transaction.
      *
@@ -673,6 +747,13 @@ public class WizardDatabaseConnector {
         // serialize new data. Place objects first, relations second
         makeFlat(workRoot, reqnew, ".//object", "field");
         makeFlat(workRoot, reqnew, ".//relation", "field");
+
+        // if value is a datetime or boolean field, it should converted from integer
+        // to a date or time string value
+        convertIntToDateTime(reqorig);
+        convertIntToDateTime(reqnew);
+        convertIntToBoolean(reqorig);
+        convertIntToBoolean(reqnew);
 
         // find all changed or new relations and objects
         NodeList nodes = Utils.selectNodeList(reqnew, ".//relation|.//object[not(@disposable)]");
