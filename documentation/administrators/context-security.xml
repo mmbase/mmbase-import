@@ -22,26 +22,32 @@
 				<surname>van Rooden</surname>
 			</author>
 		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+			</para>
+		</legalnotice>
 		<revhistory>
 			<revision>
 				<revnumber>0.1</revnumber>
 				<date>Undated</date>
-				<revremark>Eduard Witteveen</revremark>
+				<authorinitials>EW</authorinitials>
 			</revision>
 			<revision>
 				<revnumber>0.2</revnumber>
 				<date>25 October 2002</date>
-				<revremark>Sjoerd de Heer, s.a.deheer@student.utwente.nl</revremark>
+				<authorinitials>SdH</authorinitials>
 			</revision>
 			<revision>
 				<revnumber>0.3</revnumber>
 				<date>30 January 2003</date>
-				<revremark>Henk Hangyi, hangyi@xs4all.nl</revremark>
+				<authorinitials>HH</authorinitials>
 			</revision>
 			<revision>
 				<revnumber>0.4</revnumber>
 				<date>07 February 2003</date>
-				<revremark>Pierre van Rooden. Placed security farmework and xml how-to in separate documents</revremark>
+				<authorinitials>PvR</authorinitials>
+				<revremark>Placed security farmework and xml how-to in separate documents</revremark>
 			</revision>
 		</revhistory>
 	</articleinfo>
