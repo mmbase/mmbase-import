@@ -27,7 +27,7 @@ public class CrontabModule extends WatchedReloadableModule {
      * Need to remember which crontab entries where 'mine', to known which must be removed if
      * configuration changes.
      */
-    private Set myEntries = new HashSet();
+    private Set myEntries = new LinkedHashSet();
 
     public CrontabModule() {
         cronDaemon = CronDaemon.getInstance();
@@ -45,7 +45,6 @@ public class CrontabModule extends WatchedReloadableModule {
       </pre>
      */
     public void init() {
-        Map params = getInitParameters();
         Iterator i = getInitParameters().entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry)i.next();
@@ -67,6 +66,7 @@ public class CrontabModule extends WatchedReloadableModule {
             }
             String description = null;
             String configString = null;
+            String type = null;
             if (tokens.length > 2) {
                 description = tokens[2].trim();
             }
@@ -77,9 +77,12 @@ public class CrontabModule extends WatchedReloadableModule {
             if (tokens.length > 3) {
                 configString = tokens[3].trim();
             }
+            if (tokens.length > 4) {
+                type = tokens[4].trim();
+            }
 
             try {
-                CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString);
+                CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type);
                 myEntries.add(job);
                 cronDaemon.add(job);
             } catch (Exception e) {
