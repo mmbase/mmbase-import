@@ -24,13 +24,13 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.17 2004-01-16 14:40:08 daniel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.18 2004-01-16 14:46:16 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static final Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
 
     VirtualNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
-        super(builder,cloud);
+        super(builder, cloud);
     }
 
     VirtualNodeManager(BasicCloud cloud) {
@@ -71,9 +71,12 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Sets nodemanager to typedef, and creates a virtual node for this manager.
      */
     protected void init() {
-	nodeManager = ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager("typedef"); 
-        //nodeManager=cloud.getNodeManager("typedef");
-        noderef= new VirtualNode(BasicCloudContext.mmb.getTypeDef());
+        if (cloud == null) {
+            nodeManager = ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager("typedef");
+        } else {
+            cloud.getNodeManager("typedef");
+        }
+        noderef = new VirtualNode(BasicCloudContext.mmb.getTypeDef());
         super.init();
     }
 
@@ -81,8 +84,8 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Initializes the NodeManager
      */
     protected void initManager() {
-        noderef.setValue("name",builder.getTableName());
-        noderef.setValue("description",builder.getDescription());
+        noderef.setValue("name", builder.getTableName());
+        noderef.setValue("description", builder.getDescription());
         super.initManager();
     }
 
