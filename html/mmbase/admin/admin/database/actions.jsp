@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Database <%=database%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -49,7 +49,7 @@
 <%  } %>
     <input type="hidden" name="config" value="databases" />
     <input type="hidden" name="target" value="<%=database%>" />
-    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
+    <input type="image" src="<mm:url page="/mmbase/style/images/search.gif" />" alt="view" border="0"  />
   </form>
  </td>
 </tr>
@@ -59,7 +59,7 @@
 <% } %>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../databases.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../databases.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Database Overview</td>
 </tr>
 </table>
