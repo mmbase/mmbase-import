@@ -24,61 +24,63 @@
 </mm:notpresent>
 <mm:notpresent referid="pageshown">
 <mm:node number="$page"><%-- width total:
-800 +/- = 150 (menu) + news (200) + whitespace (12) + articles (240) + whitespace (12) + search (190)
+800 +/- = 150 (menu) + news (200 = +/- 30%) + whitespace (12) + articles (240 = +/- 35%) + 
+  whitespace (12) + search (190 = +/- 25%)
 --%>
-<table cellspacing="0" cellpadding="0" width="100%" border="0">
+<table cellspacing="0" cellpadding="0" border="0">
 <tr valign="top">
-  <td width="200">
+  <td width="30%">
 <%-- ### news ### --%>
+    <% String nwspage = "mmbase_news"; %>
 	<mm:list nodes="$portal" 
-		path="portals,category,news,mmevents" searchdir="destination"
-		fields="category.number,category.title,news.number,news.title,mmevents.start" 
-		orderby="mmevents.start" directions="DOWN"
-		max="4"><mm:import id="nonewsyet" /><mm:import id="nwspage" />
-		<mm:first>
-			<h2>News</h2>		<!-- category : <mm:field name="category.title" /> -->
-			<mm:field name="category.number" id="cat" write="false" />
-			<%-- what is the newspage of this category --%>
-			<mm:list nodes="$cat" path="category,pages" max="1">
-			  <mm:import id="nwspage" reset="true"><mm:field name="pages.number" /></mm:import>
-			</mm:list>
-		</mm:first>
-		<p><a href="<mm:url page="index.jsp" referids="portal">
-		  <mm:param name="page"><mm:write referid="nwspage" /></mm:param>
-		  <mm:param name="newsnr"><mm:field name="news.number" /></mm:param>
-		</mm:url>"><mm:field name="news.title" /></a><br /> 
-		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field>
-		<mm:field name="news.intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p> 
-		<mm:last><p><a href="<mm:url page="index.jsp" referids="portal">
-		  <mm:param name="page"><mm:write referid="nwspage" /></mm:param>
-		</mm:url>">Newsarchive &raquo;&raquo;</a></p></mm:last>
-		<mm:remove referid="cat" />
+	  path="portals,category,news,mmevents" searchdir="destination"
+	  fields="category.number,category.title,news.number,news.title,mmevents.start" 
+	  orderby="mmevents.start" directions="DOWN"
+	  max="3">
+	  <mm:first>
+		<h2>News</h2>		<!-- category : <mm:field name="category.title" /> -->
+		<mm:field name="category.number" id="cat" write="false" />
+		<%-- what is the newspage of this category --%>
+		<mm:list nodes="$cat" path="category,pages" searchdir="destination"
+		  fields="pages.number" max="1">
+		  <mm:field name="pages.number" vartype="String" write="false" jspvar="nr"><% nwspage = nr; %></mm:field>
+		</mm:list>
+	  </mm:first>
+	  <p><a href="<mm:url page="index.jsp" referids="portal">
+		<mm:param name="page"><%= nwspage %></mm:param>
+		<mm:param name="newsnr"><mm:field name="news.number" /></mm:param>
+	  </mm:url>"><mm:field name="news.title" /></a><br /> 
+	  <mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field>
+	  <mm:field name="news.intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p> 
+	  <mm:last><p><a href="<mm:url page="index.jsp" referids="portal">
+		<mm:param name="page"><%= nwspage %></mm:param>
+	  </mm:url>">Newsarchive &raquo;&raquo;</a></p></mm:last>
+	  <mm:remove referid="cat" />
 	</mm:list>
-	
-	<mm:notpresent referid="nonewsyet">
-		<h2>News</h2>
-		<mm:listnodes type="news" max="4" orderby="number" directions="DOWN">
-			<mm:field name="number" id="newsnr" write="false" />
-			<p><a href="<mm:url page="index.jsp" referids="portal,newsnr"><mm:param name="page">mmbase_news</mm:param></mm:url>"><mm:field name="title" /></a>
-			<br /><mm:related path="mmevents"><mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field></mm:related>
-			<mm:field name="intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p>
-			<mm:remove referid="newsnr" />
-		</mm:listnodes>
-		<p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page">mmbase_news</mm:param></mm:url>">Newsarchive &raquo;&raquo;</a></p>
-	</mm:notpresent>
+	<% if (nwspage.equals("mmbase_news")) { %>
+	  <h2>News</h2>
+	  <mm:listnodes type="news" max="4" orderby="number" directions="DOWN">
+		<mm:field name="number" id="newsnr" write="false" />
+		<p><a href="<mm:url page="index.jsp" referids="portal,newsnr"><mm:param name="page">mmbase_news</mm:param></mm:url>"><mm:field name="title" /></a>
+		<br /><mm:related path="mmevents"><mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field></mm:related>
+		<mm:field name="intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p>
+		<mm:remove referid="newsnr" />
+	  </mm:listnodes>
+	  <p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page">mmbase_news</mm:param></mm:url>">Newsarchive &raquo;&raquo;</a></p>
+	<% } %>
 <%-- ### /news ### --%>
   </td>
-  <td width="12"><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
-  <td width="240">
+  <td><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
+  <td width="35%">
 <%-- ### articles ### --%>
 	<mm:related path="articles" max="1"><h2><mm:field name="articles.title"/></h2>
 		<p><mm:field name="articles.intro" /></p>
 	</mm:related>
 	<mm:related path="posrel,documentation" orderby="posrel.pos" directions="UP">
 		<mm:first>
-		<div style="margin-top:12px" z-index="2">
+		<div style="margin-top:12px; z-index:2;">
 		<form name="infoform" action="" method="post">
-		<select name="doc" style="width:200;" onchange="javascript:postInfoForm();">
+		<select name="doc" style="width:240px;" onchange="javascript:postInfoForm();">
 		</mm:first><option value="<mm:field name="documentation.number" />"><mm:field name="documentation.title" /></option>
 		<mm:last></select> | <a href="javascript:postInfoForm();">go</a>
 		</form>
@@ -98,12 +100,12 @@
 		</mm:last>
 	</mm:related>
 	
-	<div style="margin-top:12px" z-index="2">
+	<div style="margin-top:12px; z-index:2;">
 	<mm:related path="posrel,news" searchdir="destination"
 	  orderby="posrel.pos" directions="UP" max="9">
-	  <mm:first><h4>Latest websites build with MMBase</h4>
+	  <mm:first><h5>Latest websites build with MMBase</h5>
 	  <form name="sitesform" action="" method="post">
-	  <select name="news" style="width:200;" onchange="javascript:postSiteForm();">
+	  <select name="news" style="width:240px;" onchange="javascript:postSiteForm();">
 	  </mm:first>
 		<option value="<mm:field name="news.number" />"><mm:field name="news.title" /></option>
       <mm:last>
@@ -130,21 +132,15 @@
 	
 <%-- ### /articles ### --%>
   </td>
-  <td width="12"><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
-  <td valign="top" width="190">
+  <td><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
+  <td width="25%">
 <%-- ### search etc. ### --%>
-	<table cellspacing="0" cellpadding="0" width="100%" border="0">
-	<tr>
-	  <td>
-		<form name="searchform" id="searchhome" method="post" action="<mm:url page="/development/search/search.jsp" />">
-		<input type="hidden" name="exclude" value="testing" />
-		<input type="text" name="keywords" size="13" />	<input type="submit" name="search" value="Search" /><br />
-		<input class="ie" type="radio" name="restrict" value="" checked="checked" /> full site
-		<input class="ie" type="radio" name="restrict" value="mmdocs" /> documentation
-		</form>
-	  </td>
-	</tr><tr>
-	  <td>
+	<form id="searchhome" method="post" action="<mm:url page="/development/search/search.jsp" />">
+	<input type="hidden" name="exclude" value="testing" />
+	<input type="text" name="keywords" size="13" />	<input type="submit" name="search" value="Search" /><br />
+	<input class="ie" type="radio" name="restrict" value="" checked="checked" />&nbsp;full site
+	<input class="ie" type="radio" name="restrict" value="mmdocs" />&nbsp;documentation
+	</form>
 	<mm:time time="today" id="ttoday" write="false" />
 	<mm:list nodes="$portal" 
 		path="portals,category,posrel,event,mmevents"
@@ -155,7 +151,7 @@
 		  <mm:field name="category.number" id="cat" write="false" />
 		  <%-- what is the agendapage of this category --%>
 		  <mm:list nodes="$cat" path="category,pages" max="1"><mm:field name="pages.number" write="false" id="event_page" /></mm:list>
-		  <h5>Coming soon</h5>
+		  <h4>Coming soon</h4><p>
 		</mm:first>
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field><br />
 		<a href="<mm:url page="index.jsp" referids="portal">
@@ -163,41 +159,28 @@
 		  <mm:param name="item"><mm:field name="event.number" /></mm:param>
 		</mm:url>"><mm:field name="event.title" /></a>
 		<mm:last inverse="true"><br /></mm:last>
-	    <mm:last>
+	    <mm:last></p>
 	      <p><a href="<mm:url page="index.jsp" referids="portal">
 			<mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present>
 			<mm:notpresent referid="event_page"><mm:param name="page">page_agenda</mm:param></mm:notpresent>
 		  </mm:url>">Agenda &raquo;&raquo;</a></p>
 		</mm:last></mm:context>
 	</mm:list>
-	  </td>
-	</tr><tr>
-	  <td>
-	  <h5>Bugs this week</h5>
-	  <mm:time time="today" id="lastweek" offset="-604800" write="false" />
-	  <mm:listnodescontainer type="bugreports">
-	      <mm:sortorder field="time"  direction="DOWN" />
-              <mm:constraint field="time"    operator=">=" value="$lastweek" />
-              <mm:constraint field="bstatus" operator=">" value="4" />
-	      <a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=6" />">Solved : <mm:size /></a>
-	  </mm:listnodescontainer>
-	  <br />
-	  <mm:listnodescontainer type="bugreports">
-	      <mm:sortorder field="time"  direction="DOWN" />
-              <mm:constraint field="time"    operator=">=" value="$lastweek" />
-              <mm:constraint field="bstatus" operator="<" value="2" />
-	      <a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=1" />">New : <mm:size /></a>
-	  </mm:listnodescontainer>
-	  <p><a href="/bug">Bugtracker &raquo;&raquo;</a></p>
-	  </td>
-	</tr>
-<%--	<tr><td><img src="media/spacer.gif" width="140" height="4" alt="" /></td></tr><tr>
-	  <td><b>Latest issue on developers mail:</b><br />
-	  <a href="http://www.elfling.nl/projects/mmbase/layout/index.html#">Hack: Oracle support</a>
-	  </td>
-	</tr>
---%>	
-	</table>
+	<h4>Bugs this week</h4>
+	<mm:time time="today" id="lastweek" offset="-604800" write="false" />
+	<p><mm:listnodescontainer type="bugreports">
+		<mm:sortorder field="time"  direction="DOWN" />
+			<mm:constraint field="time"    operator=">=" value="$lastweek" />
+			<mm:constraint field="bstatus" operator=">" value="4" />
+		<a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=6" />">Solved : <mm:size /></a><br />
+	</mm:listnodescontainer>
+	<mm:listnodescontainer type="bugreports">
+		<mm:sortorder field="time"  direction="DOWN" />
+			<mm:constraint field="time"    operator=">=" value="$lastweek" />
+			<mm:constraint field="bstatus" operator="<" value="2" />
+		<a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=1" />">New : <mm:size /></a>
+	</mm:listnodescontainer></p>
+	<p><a href="/bug">Bugtracker &raquo;&raquo;</a></p>
 <%-- ### /search, agenda, dev mail ? ### --%>
 </td>
 </tr>
