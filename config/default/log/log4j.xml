@@ -7,7 +7,7 @@
    or somewhere on the web:
    http://web.omroep.nl/mmbase/logging/log4j.dtd
 -->
-<!DOCTYPE log4j:configuration SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd" [
+<!DOCTYPE configuration [
          <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
          <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
 		 <!ENTITY logdir   "/tmp/" >
@@ -37,7 +37,7 @@
 
 -->
 
-<log4j:configuration>
+<configuration>
 
 <appender name="logfile" class="org.apache.log4j.FileAppender" >
     <param name="File"   value="&logdir;mmlog4j.log" />
@@ -74,4 +74,4 @@
     <priority class="&priority;" value ="debug" />	
 </category>
 
-</log4j:configuration>
+</configuration>
