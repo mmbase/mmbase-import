@@ -33,9 +33,9 @@ public class CronDaemon implements Runnable {
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
-        cronEntries        = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
+        cronEntries = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
         removedCronEntries = Collections.synchronizedSet(new HashSet());
-        addedCronEntries   = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
+        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
         start();
     }
 
@@ -81,7 +81,7 @@ public class CronDaemon implements Runnable {
     protected void addEntry(CronEntry entry) {
         entry.init();
         cronEntries.add(entry);
-        log.info("Added to JCronDaemon " + entry);
+        log.info("Added entry " + entry);
     }
 
     public CronEntry getCronEntry(String id) {
@@ -106,7 +106,7 @@ public class CronDaemon implements Runnable {
     protected void removeEntry(CronEntry entry) {
         cronEntries.remove(entry);
         entry.stop();
-        log.info("Removed from JCronDaemon " + entry);
+        log.info("Removed entry " + entry);
     }
 
     /** 
