@@ -37,6 +37,7 @@ public class ImageTag extends FieldTag {
     }
 
     public int doStartTag() throws JspTagException {
+        node = null;
         Node node = getNodeVar();
         if (node.getNodeManager().getField("handle") == null) {
             throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
