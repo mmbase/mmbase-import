@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package nl.omroep.mmbase.util;
 
 import org.mmbase.bridge.*;
+import java.util.List;
 import java.util.Vector;
 import java.util.Comparator;
 
@@ -30,14 +31,14 @@ public class NodeComparator implements Comparator {
     public final static String UP = "UP";
     public final static String DOWN = "DOWN";
 
-    private Vector fields;
-    private Vector sortDirs;
+    private List fields;
+    private List sortDirs;
 
     /**
      * Simple constructor that uses the default sort order (UP).
      * @param fields the fields on which the message nodes get compared.
      */
-    public NodeComparator(Vector fields) {
+    public NodeComparator(List fields) {
         this.fields = fields;
         sortDirs = new Vector(fields.size());
     }
@@ -47,7 +48,7 @@ public class NodeComparator implements Comparator {
      * @param fields the fields on which the message nodes get compared.
      * @param sortDirs the sort directions (UP or DOWN) for each field.
      */
-    public NodeComparator(Vector fields, Vector sortDirs) {
+    public NodeComparator(List fields, List sortDirs) {
         this.fields = fields;
         this.sortDirs = sortDirs;
         for (int i = sortDirs.size(); i < fields.size(); i++) {
@@ -86,7 +87,7 @@ public class NodeComparator implements Comparator {
         int fieldnr = 0;
         String field;
         while ((result == 0) && (fieldnr < fields.size())) {
-            field =(String)fields.elementAt(fieldnr);
+            field =(String)fields.get(fieldnr);
             f1 = ((Node)o1).getValue(field);
             f2 = ((Node)o2).getValue(field);
             if (f1 == null || f2 == null) {
@@ -112,7 +113,7 @@ public class NodeComparator implements Comparator {
         }
         if ((fieldnr>0) &&
             (fieldnr<=sortDirs.size()) &&
-            ((String)sortDirs.elementAt(fieldnr-1)).equals(DOWN)) {
+            ((String)sortDirs.get(fieldnr-1)).equals(DOWN)) {
             result=-result;
         }
         return result;
