@@ -9,42 +9,34 @@
    <title><mm:field  name="title" /></title>
    <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
- <body>
-  <center>
-  <table width="90%">
-    <tr>
-     <th widht="30" />
-     <th align="center">
-      <h1><mm:field  name="title" /></h1>
-      <h2><mm:field  name="subtitle"/></h2>
-    </th>
-   </tr>
-   <tr>
-     <td width="30" />
-     <td>
-       <em><mm:field  name="intro"/></em><br />
-       <mm:field  escape="p" name="body"/>
-     </td>
-   </tr>
+ <body class="basic">
+   <h1><mm:field  name="title" /></h1>
+   <mm:field  name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+   <div class="intro">
+     <mm:field  escape="p" name="intro"/>
+   </div>
+   <mm:field  escape="p" name="body"/>
+
+   <table>
    <%-- we have to use the related tag if we want to order with pos --%>
    <mm:relatednodes id="newsid" role="posrel" type="news" orderby="posrel.pos">
      <mm:first>
-       <tr><td width="30" /><td><table width="100%"><tr><th align="left">title</th><th align="right">&nbsp;</th></tr></mm:first> 
-       <tr>
-         <td><mm:field name="title" /></td>
-         <td align="right" class="link"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link"></a></td>
-       </tr> 
-       <mm:last></table></td></tr></mm:last>
-     </mm:relatednodes>
-  </table>
-  </center>
-  <hr />
+       <table><tr><th>title</th><th class="navigate">&nbsp;</th></tr>
+     </mm:first> 
+     <tr>
+       <td><mm:field name="title" /></td>
+       <td  class="navigate link"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link"></a></td>
+     </tr> 
+     <mm:last></table></mm:last>
+   </mm:relatednodes>
+ </table>
+ <hr />
   <div class="link">
     <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /> Simple news</a><br />
   </div>
   <hr /> 
   <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
- </body>
+</body>
 </html>
 </mm:node>
 </mm:cloud>

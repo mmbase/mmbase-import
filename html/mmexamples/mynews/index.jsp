@@ -16,41 +16,31 @@
     <title><mm:field  name="title"/></title>
     <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
- <body>
-  <table>
-   <tr>
-    <th width="30" /> <%-- using table in stead of margins, why? --%>
-    <th align="center">
-      <h1><mm:field  name="title"/></h1>
-      <h2><mm:field  name="subtitle"/></h2>
-    </th>
-  </tr>
-  <tr>
-    <td width="30" />
-    <td>
-      <em><mm:field  name="intro"/></em><br />
-      <mm:field  escape="p" name="body"/>
-    </td>
-  </tr>
+ <body class="basic">
+   <h1><mm:field  name="title"/></h1>
+   <h2><mm:field  name="subtitle"/></h2>
+   <div class="intro">
+     <mm:field  escape="p" name="intro" />
+   </div>
+   <mm:field  escape="p" name="body"/>
+
   <%-- we are still in the magazine node, we can now ak for related news items  by using the relatednodes tag --%>
   <mm:relatednodes type="news" orderby="number"><%-- simply ordered on age --%>
     <mm:first><!-- a header for the news overview, only shown if there is news at all -->
-      <tr><td width="30" />
-      <td><table width="100%">
-      <tr><th align="left">title</th><th align="right">&nbsp;</th></tr>
-    </mm:first> 
-    <%-- we now ask for a node field with name title, the magazine also has a title field
-    when  there is only on nodeManager in a related or list tag the related tag acts like
-    a node, so the tag wil return the title of the news item, if we still whant to get the 
-    title of the magazine we wil need to add and id to the magazine tag (id="mag"). after that
-    we can use <mm:field node="mag" name="title" --%>
-    <tr>
-      <td><mm:field name="title"/></td>
-      <td align="right" class="link"><a href="<mm:url referids="magid" page="newsitem.jsp" ><mm:param name="newsid"><mm:field name="number"/></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link" /></a></td>
-    </tr> 
-    <mm:last></table></td></tr></mm:last>
+      <table>
+        <tr><th>title</th><th class="navigate">&nbsp;</th></tr>
+     </mm:first> 
+     <%-- we now ask for a node field with name title, the magazine also has a title field
+     when  there is only on nodeManager in a related or list tag the related tag acts like
+     a node, so the tag wil return the title of the news item, if we still whant to get the 
+     title of the magazine we wil need to add and id to the magazine tag (id="mag"). after that
+     we can use <mm:field node="mag" name="title" --%>
+     <tr>
+       <td><mm:field name="title"/></td>
+       <td class="navigate link"><a href="<mm:url referids="magid" page="newsitem.jsp" ><mm:param name="newsid"><mm:field name="number"/></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link" /></a></td>
+     </tr> 
+     <mm:last></table></td></tr></mm:last>
   </mm:relatednodes>
-  </table>
   <hr />
   <div class="link">
    <a href="<mm:url referids="magid" page="ordered.jsp" /> ">Ordered news <img src="<mm:url page="/mmbase/style/images/next.gif" />"></a><br />

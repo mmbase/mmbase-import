@@ -15,27 +15,20 @@ for the MMBase node --%>
   <title><mm:field  name="title"/></title>
   <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
-<body>
-<center>
-  <table width="90%" cellspacing=1 cellpadding=3 border=0>
-  <tr>
-  <th colspan="2">
+<body class="basic">
   <%-- use the title field again --%>
-  <h2><mm:field  name="title"/></h2>
-  <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
-
-  </th><tr>
-  <tr><td width="30" /><td>
-
-  <b><mm:field  name="intro"/></b>
-
+  <h1><mm:field  name="title"/></h1>
+  <mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+  <div class="intro">
+    <mm:field  name="intro" escape="p" />
+  </div>
   <%--
     The default escape behaviour can be changed on tags producing output.
     escape="p"  generates p-tags, to escape newlines.
  --%>
   <mm:field  escape="p" name="body"/>
 
-  </td></tr>
+  <table>
   <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
    <mm:first><tr><th colspan="2">Related images</th></tr><tr><td /><td></mm:first>
    <img src="<mm:image template="s(200)" />" alt="<mm:field name="title" />" />
@@ -55,8 +48,9 @@ for the MMBase node --%>
    <mm:last></td></tr></mm:last>
   </mm:relatednodes>
   </table>
-</center>
+
 <hr />
+
 <mm:import externid="magid">default.mags</mm:import>
 <div class="link">
  <a href="<mm:url referids="magid" page="." /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /></a><br />
