@@ -46,7 +46,7 @@
 
 
   <target name="taglib.doc.check">
-    <uptodate property="taglib.doc.uptodate" targetfile="${project.build.dir}/documentation/reference/mmbase-taglib.html">
+    <uptodate property="taglib.doc.uptodate" targetfile="${project.build.dir}/documentation/frontenddevelopers/taglib/reference.html">
       <srcfiles dir="${project.source.dir}/src" includes="${source-taglib.xml},${share.dir}/xslt/xml2html.xslt}" />
     </uptodate>
   </target>
