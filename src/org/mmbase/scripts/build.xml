@@ -693,7 +693,7 @@ Change directory to ${build.dir}/orion and run:
     <mkdir dir="${build.dir}/tomcat/webapps/ROOT"/>
     <copy todir="${build.dir}/tomcat">
       <fileset dir="${expand.dir}/${tomcat.version}">
-        <exclude name="webapps/ROOT"/>
+        <exclude name="webapps/**"/>
       </fileset>
     </copy>
     <copy todir="${build.dir}/tomcat/conf.mmbase">
@@ -736,8 +736,6 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${jai_codec.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${jai_core.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/tomcat/lib"/>
-    <move file="${build.dir}/tomcat/webapps/ROOT.war"
-          tofile="${build.dir}/tomcat/webapps/ROOT-ORIGINAL.war"/>
     <copy todir="${build.dir}/tomcat/webapps/ROOT">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
