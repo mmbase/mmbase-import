@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.14 2001-02-28 13:56:49 vpro Exp $
+$Id: EncodeCop.java,v 1.15 2001-04-10 13:01:37 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2001/02/28 13:56:49  vpro
+Davzev: Changed probeCall() sothat adding observers will be done once.
+
 Revision 1.13  2001/02/15 13:29:30  vpro
 Davzev: Renamed methods comments etc...
 
@@ -54,6 +57,9 @@ import org.mmbase.module.builders.*;
 import org.mmbase.util.media.audio.*;
 import org.mmbase.util.media.audio.audioparts.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * The EncodeCop vwm class observes changes of MMObjectnodes that are related to the
  * audio ripping encoding process. The nodes that are observed are AudioParts, 
@@ -70,15 +76,12 @@ import org.mmbase.util.media.audio.audioparts.*;
  * x: some xml notify?
  * 
  * @author Daniel Ockeloen
- * @version $Revision: 1.14 $ $Date: 2001-02-28 13:56:49 $
+ * @version $Revision: 1.15 $ $Date: 2001-04-10 13:01:37 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
 
-	private	String classname 	= getClass().getName();
-	private boolean	debug		= true;
-
-	// private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName()); 
 
 	Vector EncoderHandlers		= new Vector();
 	Vector waitingEncodeHandlers= new Vector();
@@ -86,7 +89,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	private boolean firstProbeCall = true;
 
 	public EncodeCop() {
-		debug("EncodeCop(): EncodeCop started...");
+		log.info("EncodeCop(): EncodeCop started...");
 	}
 
 	/**
@@ -96,7 +99,9 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	public boolean probeCall() {
 		if (firstProbeCall) {
 			firstProbeCall = false;	
-			if (debug) debug("probeCall(): Adding types: audioparts, rawaudios, g2encoders to observer list.");
+			if (log.isDebugEnabled()) {
+                log.debug("probeCall(): Adding types: audioparts, rawaudios, g2encoders to observer list.");
+            }
 
 			Vwms.mmb.addLocalObserver("audioparts",this);
 			Vwms.mmb.addRemoteObserver("audioparts",this);
@@ -119,7 +124,11 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return result value of nodeChanged call.
 	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling nodeChanged to evaluate change.");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeRemoteChanged(" + number + "," + 
+                      builder + "," + ctype + 
+                      "): Calling nodeChanged to evaluate change.");
+        }
 		return(nodeChanged(number,builder,ctype));
 	}
 
@@ -131,7 +140,9 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return result value of nodeChanged call.
 	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling nodeChanged to evaluate change.");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeLocalChanged(" + number + "," + builder + "," + ctype + "): Calling nodeChanged to evaluate change.");
+        }
 		return(nodeChanged(number,builder,ctype));
 	}
 
@@ -143,7 +154,9 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return true, always.
 	 */
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		if( debug ) debug("nodeChanged("+number+","+builder+","+ctype+"): Checking ctype and buildertype.");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeChanged(" + number + "," + builder + "," + ctype + "): Checking ctype and buildertype.");
+        }
 		if (ctype.equals("c") || ctype.equals("n")) {
 			if (builder.equals("audioparts")) audiopartChanged(number,ctype);	
 			if (builder.equals("rawaudios")) rawaudioChanged(number,ctype);	
@@ -161,17 +174,22 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @param number
 	 */
 	public boolean audiopartChanged(String number,String ctype) {
-		if (debug) debug("audiopartChanged("+number+","+ctype+"): Getting node and checking ctype and audiosource.");
+		if (log.isDebugEnabled()) {
+            log.debug("audiopartChanged(" + number + "," + ctype + "): Getting node and checking ctype and audiosource.");
+        }
 		if (ctype.equals("n")) {
 			AudioParts bul=(AudioParts)Vwms.mmb.getMMObject("audioparts");
 			if (bul!=null) {
 				MMObjectNode apNode=bul.getNode(number);
 				if(apNode.getIntValue("source") == AudioParts.AUDIOSOURCE_CD) {
-					if (debug) debug("audiopartChanged("+number+","+ctype+"): apNode : is 'new' and source is CD, adding a new EncodeHandler with task 'newcdtrack'.");
+					if (log.isDebugEnabled()) {
+                        log.debug("audiopartChanged(" + number + "," + ctype + "): apNode : is 'new' and source is CD, adding a new EncodeHandler with task 'newcdtrack'.");
+                    }
 					EncoderHandlers.addElement(new EncodeHandler(this,"newcdtrack",apNode));
 				}
-			} else
-				debug("audiopartChanged(): ERROR, Can't get the AudioParts builder.");
+			} else {
+				log.error("audiopartChanged(): Can't get the AudioParts builder.");
+            }
 		}
 		return true;
 	}
@@ -184,7 +202,9 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return true, always.
 	 */
 	public boolean rawaudioChanged(String number,String ctype) {
-		if (debug) debug("rawaudioChanged("+number+","+ctype+"): Getting raNode and checking state & format.");
+		if (log.isDebugEnabled()) {
+            log.debug("rawaudioChanged(" + number + "," + ctype + "): Getting raNode and checking state & format.");
+        }
 		RawAudios bul=(RawAudios)Vwms.mmb.getMMObject("rawaudios");		
 		if (bul!=null) {
 			MMObjectNode raNode=bul.getNode(number);
@@ -192,11 +212,14 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			int format=raNode.getIntValue("format");
 
 			if (status==RawAudioDef.STATUS_VERZOEK && format==RawAudioDef.FORMAT_G2) {
-				if (debug) debug("rawaudioChanged("+number+","+ctype+"): raNode state:"+RawAudioDef.STATUS_VERZOEK+" format:"+RawAudioDef.FORMAT_G2+" (G2), adding new EncodeHandler with task 'g2encode'.");
+				if (log.isDebugEnabled()) {
+                    log.debug("rawaudioChanged(" + number + "," + ctype + "): raNode state:" + RawAudioDef.STATUS_VERZOEK+" format:"+RawAudioDef.FORMAT_G2+" (G2), adding new EncodeHandler with task 'g2encode'.");
+                }
 				EncoderHandlers.addElement(new EncodeHandler(this,"g2encode",raNode));
 			}
-		} else
-			debug("rawaudioChanged(): ERROR, Can't get the RawAudios builder!");
+		} else {
+			log.error("rawaudioChanged(): Can't get the RawAudios builder!");
+        }
 		return true;
 	}
 
@@ -208,20 +231,22 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return true, always.
 	 */
 	public boolean g2encoderChanged(String number,String ctype) {
-		if (debug) debug("g2encoderChanged("+number+","+ctype+"): About to get EncodeHandler for "+number);
+		if (log.isDebugEnabled()) {
+            log.debug("g2encoderChanged(" + number + "," + ctype + "): About to get EncodeHandler for " + number);
+        }
 
 		// check whether we have a encodeHandler running.. not, than machine crashed 
 		try {
 			int num = Integer.parseInt(number);
 			if (getEncodeHandler(num) == null) {
-				debug("g2encoderChanged("+number+","+ctype+"): ERROR: No handler found, machine crashed/rebooted !?!");
-			} else {
-				debug("g2encoderChanged("+number+","+ctype+"): EncodeHandler found, everything ok, signalling free()!");
+				log.error("g2encoderChanged(" + number + "," + ctype + "): No handler found, machine crashed/rebooted !?!");
+			} else {                
+				log.info("g2encoderChanged(" + number + "," + ctype + "): EncodeHandler found, everything ok, signalling free()!");
 				signalEncoderFree(num);
 			}
 		} catch (NumberFormatException nfe) {
-			debug("g2encoderChanged("+number+","+ctype+"): ERROR: while converting String "+number+" to int");
-			nfe.printStackTrace();
+			log.error("g2encoderChanged(" + number + "," + ctype + "): while converting String " + number + " to int");
+            log.error(Logging.stackTrace(nfe));
 		}	
 		return true;
 	}
@@ -232,14 +257,18 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return EncodeHandler reference.
 	 */
 	private EncodeHandler getEncodeHandler(int number) {
-		if (debug) debug("getEncodeHandler: Getting EncodeHandler reference for g2encoder "+number+" from EncoderHandlers vector"); 
+		if (log.isDebugEnabled()) {
+            log.debug("getEncodeHandler: Getting EncodeHandler reference for g2encoder " + number + " from EncoderHandlers vector"); 
+        }
 		Enumeration 	e 		= EncoderHandlers.elements();
 		EncodeHandler	result	= null;
 		EncodeHandler 	eh 		= null;
 		while(e.hasMoreElements() && (result==null)) {
 			eh = (EncodeHandler) e.nextElement();
-			if (debug) debug("getEncodeHandler: vector element is an EncodeHandler, task="+eh.task+" node="+eh.node); 
-			if (debug) debug("getEncodeHandler: Comparing incoming g2encoders obj:"+number+" with EncHand.rawaudiog2:"+eh.node.getIntValue("number")); 
+            if (log.isDebugEnabled()) {
+                log.debug("getEncodeHandler: vector element is an EncodeHandler, task=" + eh.task + " node=" + eh.node); 
+                log.debug("getEncodeHandler: Comparing incoming g2encoders obj:" + number + " with EncHand.rawaudiog2:" + eh.node.getIntValue("number")); 
+            }
 			if(eh.node != null)
 				if(eh.node.getIntValue("+number+") == number)
 					result = eh;
@@ -279,16 +308,21 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @param number the g2encoders objectnumber used to select the EncodeHandler through which signal must occur.
 	 */
 	public void signalEncoderFree(int number) {
-		if (debug) debug("signalEncoderFree: Getting the waiting EncodeHandler for g2encoder "+number+" from waitingEncodeHandlers vector");
+		if (log.isDebugEnabled()) {
+            log.debug("signalEncoderFree: Getting the waiting EncodeHandler for g2encoder " + number + " from waitingEncodeHandlers vector");
+        }
 		Enumeration e = waitingEncodeHandlers.elements();
 		EncodeHandler eh = null;
 		if(e.hasMoreElements()) {
 			eh = (EncodeHandler)e.nextElement();
-			if (debug) debug("signalEncoderFree: vector element is an EncodeHandler, task="+eh.task+" node="+eh.node); 
-			if(eh.node.getIntValue("number") != number)	// just to be sure..
+			if (log.isDebugEnabled()) {
+                log.debug("signalEncoderFree: vector element is an EncodeHandler, task=" + eh.task + " node=" + eh.node); 
+            }
+			if(eh.node.getIntValue("number") != number)	{ // just to be sure..
 				eh.notifyG2Free();
-			else
-				debug("signalEncoderFree("+number+"): ERROR: SEVERE: this node is waiting for free encoder, but got signal that it has finished!!!");
+			} else {
+				log.error("signalEncoderFree(" + number + "): SEVERE: this node is waiting for free encoder, but got signal that it has finished!!!");
+            }
 		}		
 	}
 }
