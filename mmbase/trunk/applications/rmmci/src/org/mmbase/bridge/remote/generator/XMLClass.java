@@ -14,24 +14,26 @@ import org.w3c.dom.*;
 import java.util.*;
 
 /**
+ * @javadoc
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class XMLClass {
     Element xml;
-    Hashtable methods;
-    Vector methodsVector;
-    Vector realInput;
+    Map methods;
+    List methodsList;
+    List realInput;
     Object data;
     Document document=null;
-    boolean dataIsXMLClass= false;
-    public boolean isArray = false;
+    boolean dataIsXMLClass = false;
+    public boolean isArray  = false;
     public boolean isPrimitive = false;
+    public boolean isInterface = true;
     
     XMLClass(Document document) {
         this.document= document;
-        methods = new Hashtable();
-        methodsVector = new Vector();
-        realInput = new Vector();
+        methods = new HashMap();
+        methodsList = new ArrayList();
+        realInput = new ArrayList();
     }
     
     public Object getData(){
@@ -67,12 +69,12 @@ public class XMLClass {
     }
     
     public void addInput(XMLClass xmlClass){
-        realInput.addElement(xmlClass);
+        realInput.add(xmlClass);
     }
     
     
     public static XMLClass fromXML(Element xml){
-        Document doc=xml.getOwnerDocument();
+        Document doc = xml.getOwnerDocument();
         String elementName = xml.getTagName();
         
         if (elementName.equals("primitiveclass")){
@@ -84,12 +86,20 @@ public class XMLClass {
             XMLClass xmlClass = new XMLClass(doc);
             xmlClass.setXML(xml);
             return xmlClass;
-        } else if (elementName.equals("array") || elementName.equals("class")){
+        } else if (elementName.equals("class")) {
+            XMLClass xmlClass = new XMLClass(doc);
+            xmlClass.isInterface = false;
+            xmlClass.setXML(xml);
+            return xmlClass;
+        } else if (elementName.equals("array") || elementName.equals("interface")){
+            
             XMLClass xmlClass = new XMLClass(doc);
             if (elementName.equals("array")){
-                xmlClass.isArray= true;
+                xmlClass.isArray = true;
             }
+            xmlClass.isInterface = true;
             xmlClass.setXML(xml);
+
             NodeList nl= xml.getElementsByTagName("*");
             for(int i=0; i<nl.getLength(); i++) {
                 Element element = (Element)nl.item(i);
@@ -109,7 +119,7 @@ public class XMLClass {
                 } else if (name.equals("method")){
                     XMLMethod xmlMethod= (XMLMethod)XMLMethod.fromXML(element);
                     xmlClass.methods.put(xmlMethod.getName(), xmlMethod);
-                    xmlClass.methodsVector.addElement(xmlMethod);
+                    xmlClass.methodsList.add(xmlMethod);
                 }
             }
             return xmlClass;
@@ -129,7 +139,7 @@ public class XMLClass {
         return XMLClass.fromXML(xml);
     }
     
-    public Vector getInput(){
+    public List getInput(){
         return realInput;
     }
     public String getImplements(){
@@ -164,8 +174,8 @@ public class XMLClass {
         return xmle;
     }
     
-    public Vector getMethods(){
-        return methodsVector;
+    public List getMethods(){
+        return methodsList;
     }
     /**
      *@return an XMLMethod
@@ -188,17 +198,21 @@ public class XMLClass {
     }
     
     public List getParameterList(){
-        Vector results= new Vector();
+        List results= new ArrayList();
         NodeList nl= xml.getElementsByTagName("input");
         for(int i=0; i<nl.getLength(); i++) {
             Element element = (Element)nl.item(i);
             NodeList nl2= element.getElementsByTagName("*");
             for(int j=0; j<nl2.getLength(); j++) {
                 Element par = (Element)nl2.item(j);
-                results.addElement(XMLClass.fromXML(par));
+                results.add(XMLClass.fromXML(par));
             }
         }
         return results;
     }
     
+
+    public String toString() {
+        return getName();
+    }
 }
