@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="www.mmbase.org" version="1" extends="object">
 
@@ -17,6 +17,7 @@
   <descriptions>
     <description xml:lang="en">MMBase users, builder which contains all users from the system. Passwords will be encrypted with the encoding mentioned in properties</description>
     <description xml:lang="nl">MMBase gebruikers. In deze builder kunnen alle gebruikers van het systeem worden opgeslagen. Wachtwoorden worden gecodeert.</description>
+    <description xml:lang="eo">MMBase-uzantoj. En ĉi tiu kontruanto la uzantoj de la sistemo povas stokiĝi. Pasvortoj estas ĉifrataj.</description>
   </descriptions>
 
   <properties>
