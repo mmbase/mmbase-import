@@ -24,10 +24,10 @@ import java.util.Map;
 
 public class Sql extends ConfigurableReaderTransformer implements CharTransformer {
     private final static String ENCODING     = "ESCAPE_SINGLE_QUOTE";
-    private final static int ESCAPE_QUOTES    = 1;     
+    public final static int ESCAPE_QUOTES    = 1;     
 
     public Sql() {
-        super();
+        super(ESCAPE_QUOTES);
     }
 
     /**
