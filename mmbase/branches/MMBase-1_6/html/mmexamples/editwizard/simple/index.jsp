@@ -15,18 +15,19 @@
    data/samples/.
   </p>
 	<table>
+  <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
   <tr><td>
-	<a href="<mm:url page="/mmapps/editwizard/jsp/list.jsp?wizard=../samples/people&nodepath=people&fields=firstname,lastname,owner" />" >Person-Test</a>
+	<a href="<mm:url referids="referrer" page="/mmapps/editwizard/jsp/list.jsp?wizard=../samples/people&nodepath=people&fields=firstname,lastname,owner" />" >Person-Test</a>
   </td><td> 
   A simple one-step person editor. First-name, last-name and related articles.
   </td></tr>
   <tr><td>
-	  <a href="<mm:url page="/mmapps/editwizard/jsp/list.jsp?wizard=lib/createimage&nodepath=images&fields=title" /> " >Images</a>
+	  <a href="<mm:url referids="referrer" page="/mmapps/editwizard/jsp/list.jsp?wizard=lib/createimage&nodepath=images&fields=title" /> " >Images</a>
   </td><td> 
    You can also upload images with an editwizard. Here is shown how this can be done.
   </td></tr>
   <tr><td>
-	<a href="<mm:url page="/mmapps/editwizard/jsp/list.jsp?wizard=../samples/news&nodepath=news&fields=title,owner" />" >News</a>
+	<a href="<mm:url referids="referrer" page="/mmapps/editwizard/jsp/list.jsp?wizard=../samples/news&nodepath=news&fields=title,owner" />" >News</a>
     </td><td> 
    An editor for news articles. In the one step you can create or add a news article and relate people and images to it.
   </td></tr>
