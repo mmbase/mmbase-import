@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -25,7 +26,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.3 2003-07-01 10:37:44 keesj Exp $
+ * @version $Id: FunctionTag.java,v 1.4 2003-07-25 08:37:02 michiel Exp $
  */
 public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler, FunctionContainerReferrer {
 
@@ -34,6 +35,7 @@ public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler
     protected Attribute container = Attribute.NULL;
     protected Attribute name      = Attribute.NULL;
 
+    protected FunctionContainer functionContainer = null;
     protected List      parameters;
 
     public void setName(String n) throws JspTagException {
@@ -85,11 +87,17 @@ public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler
                 throw new JspTagException("No function name specified");
             }
         } else {        
-            // need some way to instantiate as Arguments...
-            parameters = new ArrayList();
+            functionContainer = (FunctionContainer) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
+            if (functionContainer != null) {
+                helper.overrideWrite(false);
+                parameters = functionContainer.getParameters();
+            } else {
+                // need some way to instantiate as Arguments...
+                parameters = new ArrayList();
+            }
+            
         }
         helper.setTag(this);
-        getFunctionValue();
         log.debug("end of doStartTag");
         return EVAL_BODY_BUFFERED;
     }
@@ -101,6 +109,8 @@ public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler
     }
        
     public int doEndTag() throws JspTagException {
+        Object value = getFunctionValue();
+        if (functionContainer != null) functionContainer.setResult(value);
         return helper.doEndTag();
     }
 }
