@@ -258,6 +258,75 @@ public class MMObjectNode {
 		return(true);
 	}
 
+
+	/** 
+	*  sets a key, value pair in the main values of this node where value Integer
+	*/
+	public boolean setValue(String fieldname,Double fieldvalue) {
+
+		// put the key/value in the value hashtable
+		values.put(fieldname,fieldvalue);
+
+		// obtain the type of field this is 
+		int state=getDBState(fieldname);
+
+		// add it to the changed vector so we know that we have to update it
+		// on the next commit
+		if (!changed.contains(fieldname) && state==2) {
+			changed.addElement(fieldname);
+		}
+
+		// is it a memory only field ? then send a fieldchange
+		if (state==0) sendFieldChangeSignal(fieldname);
+		return(true);
+	}
+
+
+	/** 
+	*  sets a key, value pair in the main values of this node where value Integer
+	*/
+	public boolean setValue(String fieldname,Float fieldvalue) {
+
+		// put the key/value in the value hashtable
+		values.put(fieldname,fieldvalue);
+
+		// obtain the type of field this is 
+		int state=getDBState(fieldname);
+
+		// add it to the changed vector so we know that we have to update it
+		// on the next commit
+		if (!changed.contains(fieldname) && state==2) {
+			changed.addElement(fieldname);
+		}
+
+		// is it a memory only field ? then send a fieldchange
+		if (state==0) sendFieldChangeSignal(fieldname);
+		return(true);
+	}
+
+
+	/** 
+	*  sets a key, value pair in the main values of this node where value Integer
+	*/
+	public boolean setValue(String fieldname,Long fieldvalue) {
+
+		// put the key/value in the value hashtable
+		values.put(fieldname,fieldvalue);
+
+		// obtain the type of field this is 
+		int state=getDBState(fieldname);
+
+		// add it to the changed vector so we know that we have to update it
+		// on the next commit
+		if (!changed.contains(fieldname) && state==2) {
+			changed.addElement(fieldname);
+		}
+
+		// is it a memory only field ? then send a fieldchange
+		if (state==0) sendFieldChangeSignal(fieldname);
+		return(true);
+	}
+
 	/** 
 	*  sets a key, value pair in the main values of this node for ints and strings
 	*/
