@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.2 2002-06-28 22:36:12 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.3 2002-06-29 14:26:23 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -58,43 +58,50 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     abstract protected String getDefaultPath();
 
 
+
+    private String getServletPathWithAssociation(String association, String context) {
+        String result;
+        List ls = MMBaseServlet.getServletMappingsByAssociation(association);
+        if (ls != null) {
+            result = (String) ls.get(0);
+            // remove mask
+            int pos = result.lastIndexOf("*");
+            if (pos > 0) {
+                result = result.substring(0, pos);
+            }
+            pos = result.indexOf("*");
+            if (pos == 0) {
+                result = result.substring(pos+1);
+            }
+        } else {
+            result = getDefaultPath();
+        }
+        
+        if (result.startsWith("/")) {                     
+            // if it not starts with / then no use adding context.                    
+            if (context != null) {
+                if (context.endsWith("/")) {
+                    result = context + result.substring(1);
+                } else {
+                    result = context + result;
+                }
+            }
+        }
+        return result;
+    }
+
    /**
      * Get a servlet path. Takes away the ? and the * which possibly
      * are present in the servlet-mappings. You can put the argument(s)
      * directly after this string.
      *  
-     * @param context The context. Will be ignored if determined already.
+     * @param context The context (empty string, or starting with /). Will be ignored if determined already. 
      * @param fileName Optional fileName. Will be added to the url, but it will not influence the servlet.
      */
 
     protected String getServletPath(String context, String fileName) {
         if (servletPath == null) {
-            List ls = MMBaseServlet.getServletMappingsByAssociation(getAssociation());
-            if (ls != null) {
-                servletPath = (String) ls.get(0);
-                // remove mask
-                int pos = servletPath.lastIndexOf("*");
-                if (pos > 0) {
-                    servletPath = servletPath.substring(0, pos);
-                }
-                pos = servletPath.indexOf("*");
-                if (pos == 0) {
-                    servletPath = servletPath.substring(pos+1);
-                }
-            } else {
-                servletPath = getDefaultPath();
-            }
-            
-            if (servletPath.startsWith("/")) {                     
-                // if it not starts with / then no use adding context.                    
-                if (context != null) {
-                    if (context.endsWith("/")) {
-                        servletPath = context + servletPath.substring(1);
-                    } else {
-                        servletPath = context + servletPath;
-                    }
-                }
-            }
+            servletPath = getServletPathWithAssociation(getAssociation(), context);
             log.service(getAssociation() + " are served on: " + servletPath);
         }
         String result;
@@ -126,20 +133,35 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
     /**
-     * Overrides the executeFunction of MMObjectBuilder with a
-     * function to get the servletpath associated with this
-     * builder. The field can optionally be filled in with the
-     * context.
+     * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
+     * associated with this builder. The field can optionally be the number field to obtain a full
+     * path to the served object.
      */
 
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if (function.equals("servletpath")) {
-            if (field == null || "".equals(field)){
-                return getServletPath();
-            } else {
-                return getServletPath(field, null);
+            String context = null;
+            if (field.startsWith("/")) { // hack to be able to supply the context, should be superflouous.
+                int pos = field.indexOf('/', 1);
+                context = field.substring(0, pos);
+                field = field.substring(pos + 1);
             }
-        } 
+            String servlet;
+            if (context == null) {
+                servlet = getServletPath();
+            } else {
+                servlet = getServletPath(context, null);
+            }
+
+            if ("".equals(field)) {
+                return servlet;
+            } else {
+                return servlet + node.getStringValue(field);
+            }
+        } else if (function.equals("servletpathof")) { 
+            // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
+            return getServletPathWithAssociation(field, MMBaseContext.getHtmlRootUrlPath());
+        }
         return super.executeFunction(node, function, field);
     }
     
