@@ -49,7 +49,7 @@
     <td valign="top" bgcolor="#717171">
           <mm:write referid="player">
           <mm:compare value="real">
-              <mm:field id="source" name="url(ram)"      write="false" />
+              <mm:field id="source" name="url(ram)"  write="false" />
               <embed src="<mm:write referid="source" />"
                 width="260" 
                 height="300"   
@@ -68,7 +68,7 @@
             <object              
               id="embeddedplayer" width="260" height="300" 
               classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95"
-              codebase="http://activex.microsoft.com/activex/	controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
+              codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
               standby="Loading Microsoft Windows Media Player components..."
               type="application/x-oleobject">
               <param name="fileName" value="<mm:field id="source" name="url(asf)" />">
@@ -124,14 +124,12 @@
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
-<!--
 preferred player: <mm:write referid="config.player" /><br />
 used source:      <mm:write referid="source" /> <br />
 used player:      <mm:write referid="player" /><br />
 mimetype:      <mm:field name="mimetype()" /><br />
 mimetype:      <mm:field name="contenttype()" /><br />
 format:      <mm:field name="format(ram,wmf)" /><br />
--->
 <hr />
 <form name="force">
   <select name="forceplayer" onChange="document.forms['force'].submit()">

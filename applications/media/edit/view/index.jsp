@@ -9,6 +9,7 @@
    <link href="../style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="../style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>
+
 <mm:import externid="origin">media.myfragments</mm:import>
 <mm:import externid="type">mediafragments</mm:import>
 <mm:import externid="owner"      />
@@ -34,12 +35,12 @@
       <td>      
         <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
       <mm:context>
-      <mm:relatednodes  id="fragment" type="$actualtype" role="posrel" searchdir="destination">
+      <mm:relatednodes  id="fragment" type="mediafragments" role="posrel" searchdir="destination">
           <br /><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
           <ul>
-      <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos" searchdir="destination" >
+      <mm:related  path="posrel,mediafragments2" fields="posrel.pos" orderby="posrel.pos" searchdir="destination" >
           <mm:context>
-         <mm:node id="fragment" element="${actualtype}2">
+         <mm:node id="fragment" element="mediafragments2">
              <li><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a></li>
           </mm:node>
        </mm:context>

@@ -162,7 +162,6 @@ function detach() {
 
 // init page on the right side
 function init(form) {
-    //alert("hoi");
     setLeftFrame(form);
 }
 
