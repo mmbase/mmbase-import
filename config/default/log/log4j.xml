@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- 
    Location of the log4j.dtd. 
-   In Tomcat a simple "log4j.dtd" will do, but this does not work in Orion. 
+   In Tomcat a simple "log4j.dtd" will do, but this does not work in
+   older versions of Orion (because of limitation of Xerces). 
    You can give the full path to the dtd in the jar, like:
    SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
    or somewhere on the web:
    SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
    
-   What always will work is simply not specifying the the location of
-   the dtd, since log4j does not seem to do any validating.
-
 -->
-<!DOCTYPE log4j:configuration
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
     <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
     <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
@@ -55,18 +53,7 @@
 
 <!-- categories -->
 
-<root>
-    <priority class="&priority;" value ="service" />
-    <appender-ref ref="logfile" />
-</root>
-
-<!-- base category for all MMBase classes -->
-<category name="org.mmbase" class ="&logger;">
-<!-- nothing special -->
-</category>
-
 <!-- examples: different priority for a few subtrees -->
-
 <category name="org.mmbase.bridge" class ="&logger;">
     <priority class="&priority;" value ="debug" />
 </category>
@@ -80,11 +67,16 @@
 </category>
 
 <!-- STDERR is a special Category, to wich stderr will be written
-     (always with priority 'warn' or 'fatal' (uncaught
-     exceptions))  -->
+     (always with priority 'warn' or higher)  -->
 
 <category name="STDERR" class ="&logger;">
     <priority class="&priority;" value ="debug" />	
 </category>
+
+<root>
+    <priority class="&priority;" value ="service" />
+    <appender-ref ref="logfile" />
+</root>
+
 
 </log4j:configuration>
