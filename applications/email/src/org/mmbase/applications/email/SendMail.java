@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.10 2004-10-29 10:36:38 pierre Exp $
+ * @version $Id: SendMail.java,v 1.11 2005-03-01 10:36:52 pierre Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -113,7 +113,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
                 log.info(
-                    "EMail module is configured using 'mailhost' proprerty.\n"
+                    "EMail module is configured using 'mailhost' property.\n"
                         + "Consider using J2EE compliant 'context' and 'datasource'\n"
                         + "Which means to put something like this in your web.xml:\n"
                         + "  <resource-ref>\n"
