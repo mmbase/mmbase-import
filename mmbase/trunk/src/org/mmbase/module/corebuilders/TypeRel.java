@@ -12,7 +12,6 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.cache.Cache;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.35 2003-02-28 20:49:53 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.36 2003-03-04 14:27:05 nico Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
