@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.106 $ $Date: 2001-08-24 08:10:15 $
+ * @version $Revision: 1.107 $ $Date: 2001-09-03 15:31:48 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -909,7 +909,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector searchVectorIn(String in) {
         // do the query on the database
-        if (in==null || in.equals("")) return(new Vector());
+        if (in==null || in.equals("")) return new Vector();
         String query="SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
@@ -1015,7 +1015,7 @@ public class MMObjectBuilder extends MMTable {
      * @return an <code>Enumeration</code> containing all the objects that apply.
      */
     public Enumeration search(String where,String sort,boolean direction) {
-        return(searchVector(where,sort,direction).elements());
+        return searchVector(where,sort,direction).elements();
     }
 
 
@@ -1029,7 +1029,7 @@ public class MMObjectBuilder extends MMTable {
      * @return an <code>Enumeration</code> containing all the objects that apply.
      */
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
-        return(searchVectorIn(where,sort,direction,in).elements());
+        return searchVectorIn(where,sort,direction,in).elements();
     }
 
 
@@ -1053,7 +1053,7 @@ public class MMObjectBuilder extends MMTable {
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
 
@@ -1069,9 +1069,9 @@ public class MMObjectBuilder extends MMTable {
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
-        if (in!=null && in.equals("")) return(new Vector());
+        if (in!=null && in.equals("")) return new Vector();
         String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
     /*
@@ -1083,9 +1083,9 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
-        if (in==null || in.equals("")) return(new Vector());
+        if (in==null || in.equals("")) return new Vector();
         String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
     /**
@@ -1196,10 +1196,10 @@ public class MMObjectBuilder extends MMTable {
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
-        if (in==null || in.equals("")) return(new Vector());
+        if (in==null || in.equals("")) return new Vector();
         if (direction) {
             String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
-            return(basicSearch(query));
+            return basicSearch(query);
         } else {
             String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
             return basicSearch(query);
@@ -1447,7 +1447,7 @@ public class MMObjectBuilder extends MMTable {
         if (fields==null) return FieldDefs.DBSTATE_PERSISTENT;
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         if (node==null) return FieldDefs.DBSTATE_UNKNOWN;
-        return(node.getDBState());
+        return node.getDBState();
     }
 
     /**
@@ -1467,7 +1467,7 @@ public class MMObjectBuilder extends MMTable {
             String fname=(String)sortedDBLayout.elementAt(2);
             String str = node.getStringValue( fname );
             if (str.length()>128) {
-                return(str.substring(0,128)+"...");
+                return str.substring(0,128)+"...";
             }
             return str;
         } else {
@@ -1556,7 +1556,7 @@ public class MMObjectBuilder extends MMTable {
         FieldDefs cdef=getField(currentfield);
         int pos=sortedFields.indexOf(cdef);
         if (pos!=-1  && (pos+1)<sortedFields.size()) {
-            return((FieldDefs)sortedFields.elementAt(pos+1));
+            return (FieldDefs)sortedFields.elementAt(pos+1);
         }
         return null;
     }
@@ -1574,7 +1574,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>String</code> containing the full table name
      */
     public String getFullTableName() {
-        return(mmb.baseName+"_"+tableName);
+        return mmb.baseName+"_"+tableName;
     }
 
     /**
@@ -1798,7 +1798,7 @@ public class MMObjectBuilder extends MMTable {
             log.error("getMMObject(): InsRel not yet loaded");
             return null;
         }
-        return(bul.getRelationsVector(src));
+        return bul.getRelationsVector(src);
     }
 
     /**
@@ -1937,7 +1937,7 @@ public class MMObjectBuilder extends MMTable {
      * @return the age in days, or 0 if unknown (daymarks builder not present)
      */
     public int getAge(MMObjectNode node) {
-        return(((DayMarkers)mmb.getMMObject("daymarks")).getAge(node));
+        return ((DayMarkers)mmb.getMMObject("daymarks")).getAge(node);
     }
 
     /**
@@ -2087,7 +2087,7 @@ public class MMObjectBuilder extends MMTable {
      * @param node the node to wait for
      */
     public boolean waitUntilNodeChanged(MMObjectNode node) {
-        return(mmb.mmc.waitUntilNodeChanged(node));
+        return mmb.mmc.waitUntilNodeChanged(node);
     }
 
     /**
@@ -2480,7 +2480,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>String</code> containing the contents of a field as text
      */
     public String getShortedText(String fieldname,int number) {
-        return(database.getShortedText(tableName,fieldname,number));
+        return database.getShortedText(tableName,fieldname,number);
     }
 
     /**
@@ -2490,7 +2490,7 @@ public class MMObjectBuilder extends MMTable {
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
     public byte[] getShortedByte(String fieldname,int number) {
-        return(database.getShortedByte(tableName,fieldname,number));
+        return database.getShortedByte(tableName,fieldname,number);
     }
 
     /**
@@ -2500,7 +2500,7 @@ public class MMObjectBuilder extends MMTable {
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
     public byte[] getDBByte(ResultSet rs,int idx) {
-        return(database.getDBByte(rs,idx));
+        return database.getDBByte(rs,idx);
     }
 
     /**
@@ -2510,7 +2510,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>String</code> containing the contents of a field as text
      */
     public String getDBText(ResultSet rs,int idx) {
-        return(database.getDBText(rs,idx));
+        return database.getDBText(rs,idx);
     }
 
 
@@ -2552,9 +2552,9 @@ public class MMObjectBuilder extends MMTable {
      */
     public boolean created() {
         if (database!=null) {
-            return(database.created(getFullTableName()));
+            return database.created(getFullTableName());
         } else {
-            return(super.created());
+            return super.created();
         }
     }
 
@@ -2700,7 +2700,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getShort(String str,int len) {
         if (str.length()>len) {
-            return(str.substring(0,(len-3))+"...");
+            return str.substring(0,(len-3))+"...";
         } else {
             return str;
         }
@@ -2789,6 +2789,7 @@ public class MMObjectBuilder extends MMTable {
      * @param value value of the property
      */
     public void setInitParameter(String name, String value) {
+        if (properties==null) properties=new Hashtable();
         properties.put(name,value);
     }
 
@@ -2798,7 +2799,10 @@ public class MMObjectBuilder extends MMTable {
      * @return the value of the property as a <code>String</code>
      */
     public String getInitParameter(String name) {
-        return (String)properties.get(name);
+        if (properties==null)
+            return null;
+        else
+            return (String)properties.get(name);
     }
 
     /**
@@ -2856,7 +2860,7 @@ public class MMObjectBuilder extends MMTable {
         if (pos!=-1) {
                 url=url.substring(0,pos);
         }
-        return(url);
+        return url;
     }
 
     /**
@@ -2912,16 +2916,16 @@ public class MMObjectBuilder extends MMTable {
     private String substring(String value,int len,String filler) {
         if (filler==null) {
             if (value.length()>len) {
-                return(value.substring(0,len));
+                return value.substring(0,len);
             } else {
-                return(value);
+                return value;
             }
         } else {
             int len2=filler.length();
             if ((value.length()+len2)>len) {
-                return(value.substring(0,(len-len2))+filler);
+                return value.substring(0,(len-len2))+filler;
             } else {
-                return(value);
+                return value;
             }
         }
     }
