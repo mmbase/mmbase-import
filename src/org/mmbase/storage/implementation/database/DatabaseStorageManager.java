@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.78 2004-09-29 11:21:41 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.79 2004-09-30 14:54:57 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -740,7 +740,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Executes an update query for given node and fields. It will close the connection which are no
-     * good, which it determins by trying "SELECT 1 FROM <OBJECT TABLE>" after failure. If that happens, the connection
+     * good, which it determines by trying "SELECT 1 FROM <OBJECT TABLE>" after failure. If that happens, the connection
      * is explicitely closed (in case the driver has not done that), which will render is unusable
      * and at least GenericDataSource will automaticly try to get new ones.
      *
