@@ -36,7 +36,7 @@ Applications build file
   <target name="all16" depends="init,media,bugtracker,email" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all" depends="init,all16,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,scan" />
+  <target name="all" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,scan" />
 
 
   <target name="jars" depends="all">
@@ -88,8 +88,12 @@ Applications build file
      <ant dir="cloudcontext"  target="package" />
   </target>
 
-  <target name="community" depends="mmbase">
+  <target name="community" depends="mmbase,taglib">
      <ant dir="community"  target="dependent.package" />
+  </target>
+
+  <target name="taglib" depends="mmbase">
+     <ant dir="taglib"  target="dependent.package" />
   </target>
 
   <target name="xmlimporter" depends="mmbase">
@@ -97,6 +101,7 @@ Applications build file
   </target>
 
   <target name="install">
+    <ant dir="taglib"        target="install" />
     <ant dir="editwizard"    target="dependent.install" />
     <ant dir="community"     target="dependent.install" />
     <ant dir="dove"          target="install" />
