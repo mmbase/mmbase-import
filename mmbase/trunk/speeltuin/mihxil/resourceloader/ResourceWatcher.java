@@ -23,15 +23,15 @@ import org.mmbase.module.builders.Resources;
 import org.mmbase.util.logging.*;
 
 /**
- *  Like {@link #FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
+ *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
  *  to is added or changed, it onChange will be triggered, if not a 'more important' wil was
  *  existing already. If a file is removed, and was the most important one, it will be removed from the filewatcher. 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.5 2004-10-12 21:19:58 michiel Exp $
- * @see    FileWatcher
- * @see    ResourceLoader
+ * @version $Id: ResourceWatcher.java,v 1.6 2004-10-13 17:33:11 michiel Exp $
+ * @see    org.mmbase.util.FileWatcher
+ * @see    org.mmbase.util.ResourceLoader
  */
 public abstract class ResourceWatcher implements MMBaseObserver {
     private static final Logger log = Logging.getLoggerInstance(ResourceWatcher.class);
@@ -77,7 +77,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     protected SortedSet resources = new TreeSet();
 
     /**
-     * When a resource is loaded from a Node, we must node which Nodes correspond to which
+     * When a resource is loaded from a Node, we must know which Nodes correspond to which
      * resource. You could ask the node itself, but if the node happens to be deleted, then you
      * can't know that any more. Used in {@link #nodeChanged}
      */
@@ -117,12 +117,14 @@ public abstract class ResourceWatcher implements MMBaseObserver {
 
 
     /**
+     * Wraps {@link @nodeChanged(String, String)}
      * {@inheritDoc} 
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         return nodeChanged(number, ctype);
     }
     /**
+     * Wraps {@link @nodeChanged(String, String)}
      * {@inheritDoc} 
      */
     public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
@@ -209,8 +211,8 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     }
 
     /**
-     * When a resource is added to this ResourceWatcher, this method is called to check wheter a
-     * ResourceBuilder node is assocated with this resource. If so, this methods maps the number of
+     * When a resource is added to this ResourceWatcher, this method is called to check wether a
+     * ResourceBuilder node is associated with this resource. If so, this methods maps the number of
      * the node to the resource name. This is needed in {@link #nodeChanged} in case of a
      * node-deletion.
      * @return Whether a Node as found to map.
@@ -300,17 +302,6 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         } else {
             resources.clear();
         }
-    }
-
-    /**
-     * Completely restarts this ResourceWatcher.
-     */
-    protected synchronized void restart() {
-        if (running) {
-            log.service("Restarting " + this);
-            exit();
-        }
-        start();
     }
 
     /**
