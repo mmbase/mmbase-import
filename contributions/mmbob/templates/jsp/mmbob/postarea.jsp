@@ -38,7 +38,7 @@
 <div class="bodypart">
 
 <mm:include page="path.jsp?type=postarea" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
   		  <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
 			<mm:import id="guestwritemodetype"><mm:field name="guestwritemodetype" /></mm:import>
 			<mm:compare referid="posterid" value="-1" inverse="true">
@@ -65,7 +65,7 @@
 	</tr>
 </table>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
   <tr>
     <th width="15">&nbsp;</th>
     <th width="15">&nbsp;</th>
@@ -107,14 +107,14 @@
 </table>
 
 <mm:compare referid="pagecount" value="1" inverse="true">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;" align="right">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;" align="right" align="center">
 	<tr>
 	<td>
 	<mm:write referid="mlg_Pages"/> : <mm:write referid="navline" />
 	</td></tr>
 </table>
 </mm:compare>
-<table cellpadding="0" cellspacing="0" style="margin-top : 5px; margin-left : 25px" align="left">
+<table cellpadding="0" cellspacing="0" style="margin-top : 5px; margin-left : 25px" align="left" align="center">
 	<tr><td><mm:compare referid="guestwritemodetype" value="open"><a href="<mm:url page="newpost.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="postareaid" value="$postareaid" /></mm:url>"><img src="<mm:write referid="image_newmsg" />" border="0" /></a></mm:compare> 
 	</td></tr>
 </table>

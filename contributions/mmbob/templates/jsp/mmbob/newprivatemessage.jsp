@@ -37,7 +37,7 @@
 
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
   <tr><th colspan="3"><mm:write referid="mlg_send"/> <mm:write referid="mlg_private_message" /></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
 	<tr><th><mm:write referid="mlg_To"/></th><td colspan="2">

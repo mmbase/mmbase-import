@@ -34,7 +34,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%" align="center">
   <tr><th colspan="3"><mm:write referid="mlg_Delete"/> <mm:write referid="mlg_Area" /> : <mm:node referid="postareaid"><mm:field name="name" /></mm:node> </th></tr>
    <tr><td colspan="3"><mm:write referid="mlg_Are_you_sure" /></td></tr>
   <tr><td>
