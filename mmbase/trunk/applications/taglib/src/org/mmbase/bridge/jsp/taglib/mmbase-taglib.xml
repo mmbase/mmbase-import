@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.268 2004-07-23 09:30:04 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.269 2004-07-23 14:59:19 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5805,13 +5805,58 @@ The 0 is just counter, which starts at 0 on every page.
       <since>MMBase-1.7.1</since>
     </attribute>
     <attribute>
-      <name>direction</name>
+      <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
         Search direction for the 'orderby' argument.
       </info>
       <since>MMBase-1.7.1</since>
+    </attribute>
+  </tag>
+  <tag>
+    <name>treecontainer</name>
+    <type>mmbase.tree.list</type>
+    <extends>queryreferrer</extends>
+    <extends>contextreader</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag</tagclass>
+    <info>
+      The Tree Tag makes it possible to show a piece of the MMBase cloud genericly.
+    </info>
+    <see type="tree" />
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="type" />
+    </attribute>
+    <attribute>
+      <name>path</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="type" />
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="role" />
+    </attribute>
+    <attribute>
+      <name>searchdirs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainers" attribute="searchdir" />
+    </attribute>
+    <attribute>
+      <name>maxdepth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        To avoid coming into an infinite loop (which is possible because mmbase data is not actually structured as a tree, but as
+        a 'network' of nodes), there should always be a 'maximal' depth to which relations are followed. This defaults to 5.
+      </info>
     </attribute>
   </tag>
 
