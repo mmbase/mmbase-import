@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Relations in MMBase</title>
     <date>14 may 2003</date>
-    <edition>$Id: relations.xml,v 1.3 2003-05-14 12:56:57 michiel Exp $</edition>
+    <edition>$Id: relations.xml,v 1.4 2003-06-11 14:01:06 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -12,8 +12,11 @@
       </author>
     </authorgroup>
     <legalnotice>
-      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+      <para>
+        This software is OSI Certified Open Source Software. OSI Certified is a certification mark
+      of the Open Source Initiative.</para> <para>The license (Mozilla version 1.0) can be read at
+      the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
     </legalnotice>
     <revhistory>
       <revision>
@@ -234,19 +237,35 @@
         </listitem>
         <listitem>
           <para>Parent/Child</para>
-          <para>This relation is based on the insrel.xml builder. Seen from the source the relation is called &quot;child &quot;, seen from the target the relation is called &quot;parent &quot;.</para>
+          <para>This relation is based on the insrel.xml builder. Seen
+          from the source the relation is called &quot;child &quot;, seen from the target the
+          relation is called &quot;parent &quot;.</para>
         </listitem>
         <listitem>
           <para>Body</para>
-          <para>This relation is based on the posrel.xml builder and thus contains an integer field. Seen from the source the relation is called &quot;member &quot;, seen from the target the relation is called &quot;(body) (hidden) &quot;</para>
+          <para>
+            This relation is based on the posrel.xml builder and thus contains an integer
+            field. Seen from the source the relation is called &quot;member &quot;, seen from the
+            target the relation is called &quot;(body) (hidden) &quot;</para>
         </listitem>
       </orderedlist>
-      <para>As you see, a single builder can be used to define more than one relation. In the example above, both the Related and the Parent/Child relation are based on insrel.xml. Defining relations with different names is handy when two objects are connected to eachother for different reasons. E.g. a magazine is connected to a person via an author and via a publisher relation, where both author and publisher are defined by uising the insrel.xml.</para>
+      <para>
+         As you see, a single builder can be used to define more than one relation. In the example
+         above, both the Related and the Parent/Child relation are based on insrel.xml. Defining
+         relations with different names is handy when two objects are connected to eachother for
+         different reasons. E.g. a magazine is connected to a person via an author and via a
+         publisher relation, where both author and publisher are defined by uising the
+         insrel.xml.
+      </para>
     </example>
   </section>
   <section>
     <title>Enter the source-relation-destination information into the list of relations types (typerel)</title>
-    <para>In the previous section we saw who we can define relations in MMBase. You can use these relation definitions to make relation types. A relation type states which objects can be connected by a relation and what this relation looks like. If you have a look at the typerel objects in the mmeditors, you see that you can set the following fields.</para>
+    <para>
+      In the previous section we saw who we can define relations in MMBase. You can use these
+      relation definitions to make relation types. A relation type states which objects can be
+      connected by a relation and what this relation looks like. If you have a look at the typerel
+      objects in the mmeditors, you see that you can set the following fields.</para>
     <orderedlist>
       <listitem>
         <para>snumber</para>
@@ -264,7 +283,9 @@
         <para>max</para>
         <para>The maximum number of relations between the source and its targets.</para>
         <note>
-          <para>Although you can set the number of relations, the functionality to check on this maximum and signal a warning if the maximum is reached is not yet implemented in MMBase.</para>
+          <para>Although you can set the number of relations, the functionality to check on this
+          maximum and signal a warning if the maximum is reached is not yet implemented in
+          MMBase.</para>
         </note>
       </listitem>
     </orderedlist>
@@ -273,7 +294,8 @@
       <screenshot>
         <graphic fileref="media/typerel.jpg"/>
       </screenshot>
-      <para>The image above provides the typerel objects present in an MMBase installation after the Resources and the MyNews applications are installed.</para>
+      <para>The image above provides the typerel objects present in an MMBase installation after the
+      Resources and the MyNews applications are installed.</para>
       <orderedlist>
         <listitem>
           <para>Related/Related</para>
@@ -285,34 +307,56 @@
         </listitem>
         <listitem>
           <para>Parent/Child</para>
-          <para>This relation is based on the insrel.xml builder. Seen from the source the relation is called &quot;child &quot;, seen from the target the relation is called &quot;parent &quot;.</para>
+          <para>
+            This relation is based on the insrel.xml builder. Seen from the source the relation is
+            called &quot;child &quot;, seen from the target the relation is called &quot;parent
+            &quot;.</para>
         </listitem>
         <listitem>
           <para>Body</para>
-          <para>This relation is based on the posrel.xml builder and thus contains an integer field. Seen from the source the relation is called &quot;member &quot;, seen from the target the relation is called &quot;(body) (hidden) &quot;</para>
+          <para>
+            This relation is based on the posrel.xml builder and thus contains an integer
+            field. Seen from the source the relation is called &quot;member &quot;, seen from the
+            target the relation is called &quot;(body) (hidden) &quot;</para>
         </listitem>
       </orderedlist>
-      <para>As you see, a single builder can be used to define more than one relation. In the example above, both the Related and the Parent/Child relation are based on insrel.xml. Defining relations with different names is handy when two objects are connected to eachother for different reasons. E.g. a magazine is connected to a person via an author and via a publisher relation, where both author and publisher are defined by uising the insrel.xml.</para>
+      <para>As you see, a single builder can be used to define more than one relation. In the
+      example above, both the Related and the Parent/Child relation are based on
+      insrel.xml. Defining relations with different names is handy when two objects are connected to
+      eachother for different reasons. E.g. a magazine is connected to a person via an author and
+      via a publisher relation, where both author and publisher are defined by uising the
+      insrel.xml.</para>
     </example>
     <note>
-      <para>The fieldnames for the builders and relations are called snumber, dnumber and rnumber, because the builders are specified by the object numbers from the typedef table and the relations are specified by the object numbers from the reldef table.</para>
+      <para>The fieldnames for the builders and relations are called snumber, dnumber and rnumber,
+      because the builders are specified by the object numbers from the typedef table and the
+      relations are specified by the object numbers from the reldef table.</para>
     </note>
   </section>
   <section>
-    <title>Create relations</title>
-    <para>Every interface to the MMBase cloud provides its own way for creating relations. We will have a look at how we can relate people to news in the MyNews application.</para>
-    <para>In the previous section we saw that after the Resources and the MyNews application are installed, the list of relation types contains for instance the relation from people to news. When selecting somebody from the list of people, the following screen appears. New newsitems can be added to this person by clicking on the plus-signs in the right column in the row which starts with News.</para>
+    <title>Create relations</title> <para>Every interface to the MMBase cloud provides its own way
+    for creating relations. We will have a look at how we can relate people to news in the MyNews
+    application.</para> <para>In the previous section we saw that after the Resources and the MyNews
+    application are installed, the list of relation types contains for instance the relation from
+    people to news. When selecting somebody from the list of people, the following screen
+    appears. New newsitems can be added to this person by clicking on the plus-signs in the right
+    column in the row which starts with News.</para>
     <screenshot>
       <graphic fileref="media/people.jpg"/>
     </screenshot>
     <note>
-      <para>The posrel builder is extended from the insrel builder. This means that each creation of a posrel also means a creation of an insrel.</para>
+      <para>
+        The posrel builder is extended from the insrel builder. This means that each creation of a
+        posrel also means a creation of an insrel.</para>
     </note>
-    <para>The following list provides an overview of where to look for information on how to create relations in the other interfaces.</para>
+    <para>
+      The following list provides an overview of where to look for information on how to create
+      relations in the other interfaces.</para>
     <orderedlist>
       <listitem>
-        <para>JSP-templates</para>
-        <para>See the &lt;mm:maycreaterelation /&gt; and &lt;mm:createrelation /&gt; in the MMBase taglib refernce in the Templaters and Designers section.</para>
+        <para>JSP-templates</para> <para>See the &lt;mm:maycreaterelation /&gt; and
+        &lt;mm:createrelation /&gt; in the MMBase taglib refernce in the Templaters and Designers
+        section.</para>
       </listitem>
       <listitem>
         <para>XML-templates</para>
@@ -320,18 +364,30 @@
       </listitem>
       <listitem>
         <para>Editwizards</para>
-        <para>See the &lt;action type= &quot;create &quot; /&gt; in the &lt;list /&gt; tag in the Editwizard documation under the Templaters and Designers section.</para>
+        <para>
+          See the &lt;action type= &quot;create &quot; /&gt; in the &lt;list /&gt; tag in the
+          Editwizard documation under the Templaters and Designers section.</para>
       </listitem>
     </orderedlist>
   </section>
   <section>
     <title>Use relations</title>
-    <para>Every interface also provides its own way for using relations. In the mmeditors one can use the arrow-signs to view the relation and the related objects. See for instance the image shown in the previous section. When clicking on the arrow-sign before &quot;MMBase goes Open Source &quot; one can view the relation that connects the person &quot;Rob &quot; to the &quot;MMBase goes Open Source &quot; newsitem. When clicking on the arrow-sign after &quot;MMBase goes Open Source &quot; one goes directly to the related newsitem.</para>
-    <para>Information about using relations in other interfaces to the MMBase cloud is listed below:</para>
+    <para>
+      Every interface also provides its own way for using relations. In the mmeditors one can use
+    the arrow-signs to view the relation and the related objects. See for instance the image shown
+    in the previous section. When clicking on the arrow-sign before &quot;MMBase goes Open Source
+    &quot; one can view the relation that connects the person &quot;Rob &quot; to the &quot;MMBase
+    goes Open Source &quot; newsitem. When clicking on the arrow-sign after &quot;MMBase goes Open
+    Source &quot; one goes directly to the related newsitem.</para>
+    <para>
+      Information about using
+    relations in other interfaces to the MMBase cloud is listed below:</para>
     <orderedlist>
       <listitem>
         <para>JSP-templates</para>
-        <para>See the &lt;mm:list /&gt; and &lt;mm:listrelations /&gt; in the MMBase taglib refernce in the Templaters and Designers section.</para>
+        <para>
+          See the &lt;mm:list /&gt; and &lt;mm:listrelations /&gt; in the MMBase taglib refernce in
+          the Templaters and Designers section.</para>
       </listitem>
       <listitem>
         <para>XML-templates</para>
