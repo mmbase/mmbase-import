@@ -466,7 +466,9 @@ public class BasicNode implements Node {
 					    ((BasicTransaction)cloud).add(currentObjectContext);
 					    ((BasicTransaction)cloud).delete(currentObjectContext);
 	                } else {
+	                    int number=node.getNumber();
                         node.parent.removeNode(node);
+	                    cloud.removeSecurityInfo(number);
                     }
                  }
             }
@@ -675,7 +677,9 @@ public class BasicNode implements Node {
 					    ((BasicTransaction)cloud).add(currentObjectContext);
 					    ((BasicTransaction)cloud).delete(currentObjectContext);
 	                } else {
+	                    int number=node.getNumber();
                         alias.removeNode(node);
+	                    cloud.removeSecurityInfo(number);
                     }
     	        }
     	    }
