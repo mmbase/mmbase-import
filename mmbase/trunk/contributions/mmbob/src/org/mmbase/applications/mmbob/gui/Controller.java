@@ -280,9 +280,8 @@ public class Controller {
      * @param forumid MMBase node number of the forum
      * @param postareaid MMBase node number of the postarea
      * @param postthreadid  MMBase node number of the postthread
+     * @param postingid MMBase node number of the posting
      * @param activeid MMBase node number of current Poster (on the page)
-     * @param page Page number of the threads we want
-     * @param pagesize The number of postings per page
      * @param imagecontext The context where to find the images (eg smilies)
      * @return List of (virtual) MMObjectNodes representing the postings within the given postthread
      */
