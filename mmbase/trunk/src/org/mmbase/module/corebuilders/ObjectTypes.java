@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.22 2002-10-25 08:42:37 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.23 2002-11-13 22:23:56 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -107,7 +107,7 @@ public class ObjectTypes extends TypeDef {
                     log.warn("file with name: " + file + " didnt exist, getValue will return null for builder config");
                     return null;
                 }
-                org.w3c.dom.Document doc =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(file);
+                org.w3c.dom.Document doc =  org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(file);
                 // set the value in the node fields..
                 node.setValue(field, doc);
                 return doc;
@@ -376,7 +376,7 @@ public class ObjectTypes extends TypeDef {
             if (log.isDebugEnabled()) log.debug("found file: " + file + ", only store when changed.");
             // we already had a file, look if we have to save it (only needed when was modified)
             try {
-                org.w3c.dom.Document original =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(file);
+                org.w3c.dom.Document original =  org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(file);
                 if(equals(doc,original)) {
                     // doc's were the same..
                     if (log.isDebugEnabled()) log.debug("document already there, with same data, xml will not be written to file:" + file);
