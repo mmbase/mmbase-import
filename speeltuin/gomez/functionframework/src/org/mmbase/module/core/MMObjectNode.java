@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.2 2004-11-29 12:45:07 pierre Exp $
  */
 
 public class MMObjectNode extends FunctionProvider implements org.mmbase.util.SizeMeasurable {
@@ -804,9 +804,7 @@ public class MMObjectNode extends FunctionProvider implements org.mmbase.util.Si
      * @since MMBase-1.8
      */
     public Parameters createParameters(String functionName) {
-        Parameters params = parent.createParameters(functionName);
-        params.setIfDefined("node",this);
-        return params;
+        return parent.createParameters(functionName);
     }
 
     /**
@@ -814,8 +812,7 @@ public class MMObjectNode extends FunctionProvider implements org.mmbase.util.Si
      * @since MMBase-1.8
      */
     public Function getFunction(String functionName) {
-        Function function = new NodeFunction(parent.getFunction(functionName));
-        return function;
+        return parent.getFunction(this, functionName);
     }
 
     /**
@@ -1668,24 +1665,6 @@ public class MMObjectNode extends FunctionProvider implements org.mmbase.util.Si
           }
         */
         return super.equals(n); // compare as objects.
-    }
-
-    /**
-     * @javadoc
-     */
-    public class NodeFunction extends WrappedFunction {
-
-        public NodeFunction(Function function) {
-            super(function);
-        }
-
-        /**
-         * @javadoc
-         */
-        public final Object getFunctionValue(Parameters parameters) {
-            parameters.setIfDefined("node",MMObjectNode.this);
-            return super.getFunctionValue(parameters);
-        }
     }
 
 }
