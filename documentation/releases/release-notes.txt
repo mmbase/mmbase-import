@@ -1,20 +1,20 @@
 ===================================================================
                      MMBase 1.6.0 - Release Notes
-===================================================================  
-  
+===================================================================
+
 ============
 INTRODUCTION:
 ============
-  
+
 This document describes the changes that have been made in the final
 release of MMBase 1.6.0, relative to the previous release of MMBase (1.5).
-  
+
 Bug reports should be entered at the bug reporting system for MMBase
 at:
 
 <http://www.mmbase.org/bug>
-  
-  
+
+
 ============
 NEW FEATURES:
 ============
@@ -23,61 +23,76 @@ NEW FEATURES:
 General New Features:
 --------------------
 
-
 - Introduction of `MMBaseServlet' with specialisations like ImageServlet and
   AttachmentServlet.
-   - No need for servdb anymore. Note that ImageServlet does not accept a
-     'transformation'-template like the 'servdb' servlet of previous MMBase
-     versions did. This functionality can be accessed by the imagetag or the 'cache'
-      function of an image node.
+  There's no need for servdb anymore. Note that ImageServlet does not accept a
+  'transformation'-template like the 'servdb' servlet of previous MMBase
+  versions did. This functionality can be accessed by the imagetag or the 'cache'
+  function of an image node.
 
 - Editwizards. A way to define `task oriented' editors in XML.
 
+- Improved support for Oracle
+
+- Added the 'storage' classes. The storage classes are a new (yet experimental)
+  interface for adding database support. Supported databses are mysql and postgresql.
+  The database configuration classes for tehse impleentations are relational.xml and postgresql.xml.
+  These database layers automatically add indexes, and provide database support for deep buidler
+  inheritance.
 
 ---------------------
 MMCI New Features:
 ---------------------
-[1.6.0]
-  
+
+ - Updated to MMCI 1.2.
+ - NodeManagers now extends Node, and can be retrieved by number
+ - cloud.hasNode() and hasRelation() methods
+ - New FieldValue interface
+ - Users can now create their own MMCI lists (such as NodeList)
+ - better exception handling (NotFoundException and AlreadyExistsException)
+ - more filters to retrieve relations or related nodes
+
 -------------------
 Taglib New Features:
 -------------------
 
- - 'Richtext' features, mm:formatter, mm:xslt (experimental)
- - Attachment-tag (= image tag)
- - Time-tag
- - Locale-tag
- - ?
+ - mm:formatter, mm:xslt : implement 'Richtext' features  (experimental)
+ - mm:attachment : for obtaining download links to mmbase attachment objects
+ - mm:time : for formatting mmabse time and date values
+ - mm:locale : for setting country locale and language
+ - mm:cloud tag: new loginpage attribute
 
-    
 ==========================
 BUG FIXES AND IMPROVEMENTS:
 ==========================
-  
------------------
-Taglib Bug Fixes:
------------------
-[1.6.0] 
 
 ------------------
-Generic Bug Fixes:
+General Bug Fixes:
 ------------------
-[1.6.0] 
+- Fixed a problem with memory allocation in the bridge, which could cause
+  MMBase to claim disproportional parts of memory when using the Multilevel
+  cache. (bug #4282)
+- solved a possible deadlock situation regarding the use of database
+  connections (bug #3974).
+- Calling cloud.getList() with seachdir='source' now works. (bug #3000)
+- Multilevel cacheing issues solved (bug #2971)
+- When removing a builder from MMBase,referring nodes in typerel/reldef are also removed.
 
 ------------------
 Security Bug Fixes:
------------------- 
-[1.6.0] 
+------------------
+ - Fixed a problem with checking whether relations can be added (bug #3602)
+ - You can no longer delete relations you have no right to delete (bug #1932)
 
 ----------------
 Taglib Bug Fixes:
 ----------------
-[1.6.0] 
+[1.6.0]
 
------------------ 
+-----------------
 Example Bug Fixes:
 -----------------
-[1.6.0] 
+[1.6.0]
 
 
 ========================
@@ -102,16 +117,17 @@ Know Issues and Problems:
     </filter-mapping>
 
   And replace them with:
-  
+
     <servlet>
       <servlet-name>servjumpers</servlet-name>
       <display-name>servjumpers</display-name>
       <servlet-class>org.mmbase.servlet.servjumpers</servlet-class>
     </servlet>
 
+  You also need to add:
     <servlet-filter url-pattern="/*" servlet-name="servjumpers" />
-  
-  (I'm not sure where the last line has to be: web.xml or orion-web.xml).
+
+  to orion-web.xml
 
 - MMBase doesn't compile when using J2SE 1.4, you have to change 2
   files by hand: MultiConnection.java and MultiStatement.java (both in
@@ -134,7 +150,7 @@ Know Issues and Problems:
   use it. You have to use Jai (Java Advanced Imaging API). You can do
   this by changing the properties in
   <mmbase-webapp/WEB-INF/config/builders/images.xml> into:
-  
+
   <properties>
     <property name="ImageConvertClass">
       org.mmbase.module.builders.ConvertJAI
@@ -157,7 +173,7 @@ Know Issues and Problems:
 - In Resin the mmbase-taglib is not fully working, because extensive tag-instance reuse causes the
   $-variable evalution in attributes to work always. This will be fixed in 1.6.1.
   Because Resis provides its own XSL-transformation implementation, also on this area are some known
-  problems. 
+  problems.
 
 
 ============
@@ -186,19 +202,19 @@ Java versions
 Servlet engines /
 Applicationservers
 ------------------
-- Tomcat 4.0.4 
+- Tomcat 4.0.4
 - Orion 1.5.2, 1.5.4
 - Jetty 4.0.0
 - Resin 2.1.0 (Taglib attribute problems, filed as bug in www.mmbase.org/bug)
-- Tomcat 4.1.12 
+- Tomcat 4.1.12
 
 ---------
 Databases
 ---------
 - Hsqldb 1.7.0RC2
-- Mysql Ver 11.12 Distrib 3.23.32, 
-        Ver 11.16 Distrib 3.23.49, 
-        Ver 11.15 Distrib 3.23.41 
+- Mysql Ver 11.12 Distrib 3.23.32,
+        Ver 11.16 Distrib 3.23.49,
+        Ver 11.15 Distrib 3.23.41
   for pc-linux-gnu (i686)
 - Postgresql
 
