@@ -18,8 +18,10 @@ import org.mmbase.util.logging.*;
 
 
 /**
+ * 'Basic' implementation of bridge NodeQuery. Wraps a 'NodeSearchQuery' from core.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.2 2003-07-25 14:23:18 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.3 2003-07-29 17:05:00 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -31,6 +33,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     protected NodeManager nodeManager;
 
     BasicNodeQuery(BasicNodeManager nodeManager) {
+        super(nodeManager.getCloud());
         this.nodeManager = nodeManager;
         query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());
     }
@@ -39,8 +42,11 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return nodeManager;
     }
 
-    public StepField getStepField(String fieldName) {
+    // overridden from BasicQuery (a node query does not have '.' in its field names)
+    public StepField createStepField(String fieldName) {
         return ((NodeSearchQuery) query).getField(((BasicField) nodeManager.getField(fieldName)).field);
     }
+
+
 
 }
