@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.15 2002-10-03 12:28:11 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.16 2002-10-04 14:39:43 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -119,8 +119,9 @@ public class ModuleHandler implements Module, Comparable {
                 Hashtable cmds = new Hashtable();
                 if (parameter==null) { parameter="-1"; }
                 cmds.put(command,parameter);
-            ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
-                        cmds,  new Hashtable(auxparameters));
+                Hashtable partab=new Hashtable(auxparameters);
+                ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),cmds,partab);
+                auxparameters.putAll(partab);
         } else {
             String message;
                 message = "process() is not supported by this module.";
@@ -199,7 +200,7 @@ public class ModuleHandler implements Module, Comparable {
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof Module) && 
+        return (o instanceof Module) &&
                getName().equals(((Module)o).getName()) &&
                cloudContext.equals(((Module)o).getCloudContext());
     };
