@@ -1,0 +1,189 @@
+===================================================================
+                     MMBase 1.6.0 - Release Notes
+===================================================================  
+  
+============
+INTRODUCTION:
+============
+  
+This document describes the changes that have been made in the final
+release of MMBase 1.6.0, relative to the previous release of MMBase (1.5).
+  
+Bug reports should be entered at the bug reporting system for MMBase
+at:
+
+<http://www.mmbase.org/bug>
+  
+  
+============
+NEW FEATURES:
+============
+
+--------------------
+General New Features:
+--------------------
+[1.6.0] 
+
+
+---------------------
+MMCI New Features:
+---------------------
+[1.6.0]
+  
+-------------------
+Taglib New Features:
+-------------------
+[1.6.0]
+  
+  
+==========================
+BUG FIXES AND IMPROVEMENTS:
+==========================
+  
+-----------------
+Taglib Bug Fixes:
+-----------------
+[1.6.0] 
+
+------------------
+Generic Bug Fixes:
+------------------
+[1.6.0] 
+
+------------------
+Security Bug Fixes:
+------------------ 
+[1.6.0] 
+
+----------------
+Taglib Bug Fixes:
+----------------
+[1.6.0] 
+
+----------------- 
+Example Bug Fixes:
+-----------------
+[1.6.0] 
+
+
+========================
+Know Issues and Problems:
+========================
+- Building your own MMBase doesn't work when MMBase is unpacked in
+  something like /tmp. It requires at least 3 dirs above the
+  mmbase-dir. It's probably an Ant-bug (build.properties are being
+  used, but the default one is also initialized).
+- Filewatcher dies on error in xml-file.
+- When initialising the database using mysql, the following error
+  occurs in the log:
+
+  07-03 21:44:28 ERROR   MMBase: java.sql.SQLException: General error:
+  Table 'test.mm15_object' doesn't exist
+
+  It only occurs the first run and it doesn't do any harm. You can
+  safely ignore the message.
+- Orion doesn't support the final servlet api 2.3, because of this the
+  jumpersFilter will not work. You will need to remove the following
+  lines from <WEB-INF/web.xml>:
+
+    <!-- Filter for jumpers -->
+    <filter>
+      <filter-name>Jumpers Filter</filter-name>
+      <display-name>Jumpers Filter</display-name>
+      <description>Filter used for jumpers</description>
+      <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>Jumpers Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+  And replace them with:
+  
+    <servlet>
+      <servlet-name>servjumpers</servlet-name>
+      <display-name>servjumpers</display-name>
+      <servlet-class>org.mmbase.servlet.servjumpers</servlet-class>
+    </servlet>
+
+    <servlet-filter url-pattern="/*" servlet-name="servjumpers" />
+  
+  (I'm not sure where the last line has to be: web.xml or orion-web.xml).
+
+- MMBase doesn't compile when using J2SE 1.4, you have to change 2
+  files by hand: MultiConnection.java and MultiStatement.java (both in
+  the <org/mmbase/modules/database>-dir). Uncomment the methods for
+  J2SE 1.4, more information is provided in the javadocs in these files.
+
+- Length of email field inside Users and People builder isn't
+  rfc-complient, but with 255 it stays beyond a limit some databases
+  use before switching to a bigger string-type (eg clob).
+
+- Html isn't html4 or xhtml valid
+
+- Sometimes it is needed to copy xml-apis.jar to
+  <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
+  or if you're using the editwizards (not included in this
+  release). 
+
+- Imagemagick does work with Windows 98/ME, but MMBase is not able to
+  use it. You have to use Jai (Java Advanced Imaging API). You can do
+  this by changing the properties in
+  <mmbase-webapp/WEB-INF/config/builders/images.xml> into:
+  
+  <properties>
+    <property name="ImageConvertClass">
+      org.mmbase.module.builders.ConvertJAI
+    </property>
+    <property name="MaxConcurrentRequests">20</property>
+  </properties>
+
+  Please keep in mind that the image builder is less powerfull when
+  using JAI instead of Imagemagick.
+
+- Jumpers don't jump to /index.html by default. It gives a 404 error
+  if a location can't be found, but you can changes this behaviour by
+  setting a property in jumpers.xml.
+
+- Hsqldb uses the current dir for writing the database-files. This can
+  be the bin dir from where you're starting the servlet-engine. You
+  can change this to a dir you want, by changing the database-property
+  in jdbc.xml.
+
+
+============
+Requirements:
+============
+MMBase needs an servlet engine which supports the servlet api 2.3 and
+jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
+
+=========
+Tested on:
+=========
+The applications listed here are known to be tested with MMBase, but
+the list is probably a lot bigger :-)
+
+-------------
+Java versions
+-------------
+- J2SE 1.3
+
+------------------
+Servlet engines /
+Applicationservers
+------------------
+- Tomcat 4.0.4 
+- Orion 1.5.2, 1.5.4
+- Jetty 4.0.0
+- Resin 2.1.0
+- Tomcat 4.1.x 
+
+---------
+Databases
+---------
+- Hsqldb 1.7.0RC2
+- Mysql Ver 11.12 Distrib 3.23.32, 
+        Ver 11.16 Distrib 3.23.49, 
+        Ver 11.15 Distrib 3.23.41 
+  for pc-linux-gnu (i686)
