@@ -16,7 +16,7 @@ import org.mmbase.module.core.ByteFieldContainer;
  * Defines one Image convert request.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequest.java,v 1.5 2004-02-23 19:05:00 pierre Exp $
+ * @version $Id: ImageRequest.java,v 1.6 2004-03-10 14:55:22 michiel Exp $
  */
 public class ImageRequest {
 
@@ -84,7 +84,8 @@ public class ImageRequest {
     }
 
     /**
-     * @javadoc
+     * Returns the result of the image conversion, a byte array wrapped in a ByteFieldContainer.
+     * @since MMBase-1.7
      */
     public synchronized ByteFieldContainer getContainer() {
         if (! outputSet) { // the request is in progress, wait until it is ready.
@@ -98,12 +99,13 @@ public class ImageRequest {
     }
 
     /**
-     * @javadoc
+     * Sets the result-bytes of request images conversion. It should be wrapped in a ByteFieldContainer.
+     * @since MMBase-1.7
      */
     public synchronized void setContainer(ByteFieldContainer container) {
-        outputSet = true;
         count = 0;
         this.container = container;
+        outputSet = true;
         notifyAll();
     }
 
