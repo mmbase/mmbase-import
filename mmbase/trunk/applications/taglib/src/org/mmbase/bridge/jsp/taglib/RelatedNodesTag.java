@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.31 2003-12-04 18:25:45 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.32 2003-12-18 11:53:46 michiel Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -82,7 +82,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (parentNode == null) {
                 throw new JspTagException("Could not find parent node!!");
             }
-
+            
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.addNode(step1, parentNode);
