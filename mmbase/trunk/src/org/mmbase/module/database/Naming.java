@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * this is a J2EE concept, this class provides support for usage of this.
  *
  * @author Eduard
- * @version $Id: Naming.java,v 1.1 2002-10-07 08:55:23 eduard Exp $
+ * @version $Id: Naming.java,v 1.2 2002-10-08 13:59:22 eduard Exp $
  */
 public class Naming extends ProcessorModule implements JDBCInterface {
     private static Logger log = Logging.getLoggerInstance(Naming.class.getName());
@@ -144,16 +144,20 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 
 	}
 	catch(javax.naming.NamingException ne) {
-	    String msg = "The following error occured while trying to initalise the datasource for context:'" + context + "' datasource:'" + datasource + "' :]\n" + Logging.stackTrace(ne);
+	    String msg = "The following error occured while trying to initalise the datasource for context:'" + context + "' datasource:'" + source + "' :\n" + Logging.stackTrace(ne);
 	    log.error(msg);
 	    throw new RuntimeException(msg);
 	}
 	catch(java.sql.SQLException se) {
-	    String msg = "The following error occured while trying to retrieve a connection from the datasource for context:'" + context + "' datasource:'" + datasource + "' :]\n" + Logging.stackTrace(se);
+	    String msg = "The following error occured while trying to retrieve a connection from the datasource for context:'" + context + "' datasource:'" + source + "' :\n" + Logging.stackTrace(se);
 	    log.error(msg);
 	    throw new RuntimeException(msg);
 	}
     }
+
+    /**
+     * is a reload the same as an init?
+     */
     public void reload() {
 	init();
     }
