@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- DOCTYPE mmbase SYSTEM "security.dtd" -->
 
-<!-- 
+<!--
 	tag security:
 		attribute active: if the securityManager checks the value's
-		this value can be asked from the securityManager, to provide 
+		this value can be asked from the securityManager, to provide
 		maximum performance.
 		valid values are: "true" and "false"
-		
- --> 
+
+ -->
 <security active="true">
 
 	<!--
-		tag authentication: 
-			attribute class: The class which should be used for 
-			authentication, must be an instance of 
+		tag authentication:
+			attribute class: The class which should be used for
+			authentication, must be an instance of
 			org.mmbase.security.Authentication of a class derived
 			from this class
-			
+
 			attribute url: The url of the configfile which should
-			be used for configuration of of the authentication 
+			be used for configuration of of the authentication
 			class.
-			
+
 	 -->
   	<authentication class="org.mmbase.security.Authentication" url="" />
-	
+
 	<!--
-		tag authorization: 
-			attribute class: The class which should be used for 
-			authentication, must be an instance of 
+		tag authorization:
+			attribute class: The class which should be used for
+			authentication, must be an instance of
 			org.mmbase.security.Authorization of a class derived
 			from this class
-			
+
 			attribute url: The url of the configfile which should
-			be used for configuration of of the authorization 
+			be used for configuration of of the authorization
 			class.
-	 -->	
+	 -->
   	<authorization class="org.mmbase.security.Authorization" url="" />
+
+
+	<!--
+            shared secret:
+                This is now used to check if a another system is also trustable.
+                used in remoteBuilders
+	 -->
+  	<sharedsecret>appelmoes</sharedsecret>
 </security>
