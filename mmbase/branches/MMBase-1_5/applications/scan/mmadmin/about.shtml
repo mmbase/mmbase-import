@@ -75,19 +75,20 @@ irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/server
 		<TD></TD>
 		<TD BGCOLOR="#00425A">
 			<BR>
-			Welcome to MMBase Content management system.<BR><BR>
-			This is the Distro version aimed at developers, it contains all that is needed not only to run MMBase but also to change it (it contains all the sources and build tools). To be able to run it correctly you need a j2ee application server to run it in (like apache/tomcat or orion) and a jdbc database (like mysql or oracle).
+			Welcome to MMBase Content management system.
+<br /><br />
+The Binary distro includes a database. Since we wanted a simple and 100% java solution we used Hsqldb, but MMBase itself supports many more both commercial and opensource products.
+<br /><br />
+The Source distro includes all the sources to build your own MMBase.
+
 			<BR><BR>
-			If this is the first time you are trying to setup MMBase or only want to use it not develop/change then we advice you to
-run the MMRunner version also available on the <A HREF="http://www.mmbase.org">www.mmbase.org</A> site.
-<BR><BR>
 If you run into problems you can get help from the following sources :<BR><BR>
 readme - <A HREF="/mmdocs/readme.txt" TARGET="_ext">/mmdocs/readme.txt</A><BR>
 website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
 mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
 irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
 <BR>
-			The MMbase Release Team.
+			The MMBase Release Team.
 			<BR><BR>
 		</TD>
 </TR>
