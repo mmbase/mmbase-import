@@ -1,4 +1,6 @@
-<%@page language="java" contentType="text/html; charset=UTF-8" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@page errorPage="error.jsp" session="false" language="java" contentType="text/html; charset=UTF-8" %>
+<mm:content type="text/html">
 <html>
 <head>
 <title>	MMBase time tag</title> 
@@ -83,3 +85,4 @@ A more generic demonstration of the 'Writer' and 'WriterReferrer' properties of 
 </mm:cloud>
 </body>
 </html>
+</mm:content>

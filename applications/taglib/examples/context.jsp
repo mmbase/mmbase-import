@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><%@page errorPage="error.jsp" session="false"%><html>
+<mm:content type="text/html">
 <head>
    <title>Contexts</title>
    <link href="style.css" rel="stylesheet" type="text/css"/>
@@ -83,3 +84,4 @@ for example that one of the variables 'hoi'  must be used in an url:
          </mm:url>'>next page</a>	 
 </body>
 </html>
+</mm:content>
