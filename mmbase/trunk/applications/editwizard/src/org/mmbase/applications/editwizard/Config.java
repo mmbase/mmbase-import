@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.44 2003-12-03 06:56:49 keesj Exp $
+ * @version $Id: Config.java,v 1.45 2003-12-08 12:16:24 michiel Exp $
  */
 
 public class Config {
@@ -34,7 +34,6 @@ public class Config {
      */
     public final static int DEFAULT_MAX_UPLOAD_SIZE = 4 * 1024 * 1024;
 
-    // logging
     private static final Logger log = Logging.getLoggerInstance(Config.class);
 
     // protocol string to test referrer pages
@@ -48,13 +47,24 @@ public class Config {
     public String backPage;
     public String templates;
     public String language;
-    public String context;
+
+
+    /**
+     * Contains all auxiliary attributes to the first page. Using this map, they can be found in
+     * sub pages as well.
+     *
+     * @since MMBase-1.7
+     */
+    protected Map attributes;
+
+    //   public String context; (contained in attributes now)
 
     static public class SubConfig {
         public boolean debug = false;
         public String wizard;
         public String page;
         public Map popups = new HashMap(); // all popups now in use below this (key -> Config)
+        
         public Map attributes = new HashMap();
 
         /**
@@ -63,8 +73,8 @@ public class Config {
          *
          * <ul>
          *   <li>wizard</li>
-         *   <li>origin</li>
-         *   <li>context</li>
+         //*   <li>origin</li>
+         //*   <li>context</li>
          *   <li>debug</li>
          * </ul>
          *
@@ -77,26 +87,28 @@ public class Config {
             if (wizard != null && wizard.startsWith("/")) {
                 wizard = "file://" + configurator.getRealPath(wizard);
             }
-            setAttribute("origin",configurator.getParam("origin"));
-            setAttribute("context",configurator.getContext());
+            configurator.fillAttributes(attributes);
+
+            // contained in Config#attributes now
+            // setAttribute("origin", configurator.getParam("origin"));
+            // setAttribute("context", configurator.getContext());
             // debug parameter
             debug = configurator.getParam("debug",  debug);
         }
 
+        /*
         public void setAttribute(String name, String value) {
-            if (value!=null) {
+            if (value != null) {
                 log.debug("storing "+name+" :"+value);
                 attributes.put(name,value);
             }
         }
-
+        */
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map getAttributes() {
+        public Map getAttributes() {            
             Map attributeMap = new HashMap(attributes);
-            if (wizard!=null) attributeMap.put("wizard", wizard);
-            attributeMap.put("debug", ""+debug);
             return attributeMap;
         }
 
@@ -132,6 +144,7 @@ public class Config {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
+        /*
         public Map getAttributes() {
             Map attributeMap = super.getAttributes();
             attributeMap.put("popupid", popupId);
@@ -139,6 +152,7 @@ public class Config {
 
             return attributeMap;
         }
+        */
     }
 
     static public class ListConfig extends SubConfig {
@@ -459,6 +473,7 @@ public class Config {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
+        /*
         public Map getAttributes() {
             Map attributeMap = super.getAttributes();
             // mandatory attributes
@@ -482,6 +497,7 @@ public class Config {
 
             return attributeMap;
         }
+        */
     }
 
     /**
@@ -490,7 +506,7 @@ public class Config {
      * and what are the defaults and so on.
      */
     public static class Configurator {
-        private static Logger log = Logging.getLoggerInstance(Config.class.getName());
+        private static final Logger log = Logging.getLoggerInstance(Config.class);
 
         protected PageContext page;
         protected HttpServletRequest request;
@@ -504,13 +520,22 @@ public class Config {
             config  = c;
 
             config.sessionId = response.encodeURL("test.jsp").substring(8);
-            log.debug("Sessionid : " + config.sessionId);
+            if (log.isDebugEnabled()) {
+                log.debug("Sessionid : " + config.sessionId);
+            }
 
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
             }
+            /*
+              // contained in config.attributes now
             if (config.context == null) {
                 config.context = getParam("context");
+            }
+            */
+            if (config.attributes == null) {
+                config.attributes = new HashMap();
+                fillAttributes(config.attributes);
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
@@ -654,6 +679,24 @@ public class Config {
             return new Boolean(b);
         }
 
+        /**
+         * Fills the given map with all attributes from the URI, but first all attributes from the
+         * first call are added.  No arrays supported, only single values.
+         * @since MMBase-1.7
+         */
+        protected void fillAttributes(Map map) {
+            map.putAll(config.attributes);  // start with setting in global config
+
+            Enumeration e = request.getParameterNames();
+            while (e.hasMoreElements()) {
+                String param = (String) e.nextElement();
+                map.put(param, request.getParameter(param));
+            }
+
+            // map.putAll(request.getParameterMap()); key -> String[] (not useable)
+            // log.info(map);
+        }
+
         public String getBackPage(){
             if(config.subObjects.size() == 0) {
                 return config.backPage;
@@ -662,9 +705,6 @@ public class Config {
             }
         }
 
-        public String getContext(){
-            return config.context;
-        }
 
         public  ListConfig createList(Cloud cloud) {
             ListConfig l = new ListConfig(cloud);
