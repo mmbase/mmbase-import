@@ -24,26 +24,26 @@
 <body  onload="init('search');">
   <table>
     <tr><th colspan="3">Result of type <mm:write value="$type" /></th></tr> 
-
+    <tr><th>Titel</th><th>Items en URL's</th><th>Eigenaar</th></tr>
   <mm:list nodes="$origin" path="pools,$type" max="10" orderby="${type}.number" directions="down" constraints="$ownerconstraints $textconstraints">
   <mm:context>
   <mm:node  id="fragment" element="$type">
-  <tr><td><mm:field name="gui()" /> </td>
+     <mm:nodeinfo id="actualtype" type="type" write="false" />
+  <tr><td><img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /><mm:field name="gui()" /> </td>
       <td>      
-      <mm:nodeinfo id="actualtype" type="type" write="false" />
-      <img src="<mm:url page="../media/${actualtype}.gif" />" alt="" />
         <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
 
       <mm:relatednodes  type="$actualtype" role="parent" directions="source">
           <br /><mm:field name="title" />
+          <ul>
       <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos">
           <mm:context>
          <mm:node id="fragment" element="${actualtype}2">
-          <br />
-           <mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
+             <li><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a></li>
           </mm:node>
        </mm:context>
        </mm:related>
+          </ul>
        </mm:relatednodes>
       </td>
       <td>

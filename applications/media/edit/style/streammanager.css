@@ -237,6 +237,11 @@ table.body tr.subtitle th {
  	background-color: #4A5A6D;
 }
 
+ul {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    
+}
 
 /* for searchlist */
 
