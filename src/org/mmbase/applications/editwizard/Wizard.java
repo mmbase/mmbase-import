@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.54 2002-07-19 20:14:48 michiel Exp $
+ * @version $Id: Wizard.java,v 1.55 2002-07-23 14:44:20 pierre Exp $
  *
  */
 public class Wizard {
@@ -951,12 +951,15 @@ public class Wizard {
         Utils.appendNodeList(props, newlist);
 
         // expand attribute 'startnodes' for search command
-        Node command = Utils.selectSingleNode(fieldlist,"command[@name='search']");
+        Node command = Utils.selectSingleNode(newlist,"command[@name='search']");
         if (command!=null) expandAttribute(command,"startnodes",null);
 
-        // expand attribute 'objectnumber' for editwizard command
-        command = Utils.selectSingleNode(fieldlist,"command[@name='startwizard']");
-        if (command!=null) expandAttribute(command,"objectnumber","new");
+        // expand attribute 'objectnumber' en 'origin' for editwizard command
+        command = Utils.selectSingleNode(newlist,"command[@name='startwizard']");
+        if (command!=null) {
+            expandAttribute(command,"objectnumber","new");
+            expandAttribute(command,"origin",dataId);
+        }
 
         String hiddenCommands = "|" + Utils.getAttribute(fieldlist,"hidecommand") + "|";
 
@@ -1152,6 +1155,13 @@ public class Wizard {
             }
             wizardObjectNumber = Utils.transformAttribute(datanode, wizardObjectNumber);
             Utils.setAttribute(newfield, "objectnumber", wizardObjectNumber);
+            String wizardOrigin = Utils.getAttribute(newfield, "origin", null);
+            if (wizardOrigin==null) {
+                wizardOrigin=dataId;
+            } else {
+                wizardOrigin = Utils.transformAttribute(datanode, wizardOrigin);
+            }
+            Utils.setAttribute(newfield, "origin", wizardOrigin);
         }
 
         // binary type needs special processing
