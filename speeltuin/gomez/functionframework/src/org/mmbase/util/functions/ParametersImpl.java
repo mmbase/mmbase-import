@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: ParametersImpl.java,v 1.2 2004-12-02 09:22:32 pierre Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -158,11 +158,14 @@ public class ParametersImpl extends AbstractList implements Parameters {
         }
     }
 
-    // what about indexOf and contains ???
-    // what should that check? value? or DataType/parametername?
-
     public int indexOfParameter(DataType parameter) {
-        return Arrays.binarySearch(definition, parameter);
+        int index = -1;
+        for (int i = 0; index == -1 && i < definition.length; i++) {
+            if (definition[i].equals(parameter)) {
+                index = i;
+            }
+        }
+        return index;
     }
 
     public int indexOfParameter(String parameterName) {
