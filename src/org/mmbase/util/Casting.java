@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.26 2004-09-22 14:53:03 pierre Exp $
+ * @version $Id: Casting.java,v 1.27 2004-09-24 13:06:26 pierre Exp $
  */
 
 import java.util.*;
@@ -276,9 +276,13 @@ public class Casting {
         if (b instanceof Boolean) {
             return ((Boolean)b).booleanValue();
         } else if (b instanceof Number) {
-            return ((Number)b).intValue() > 0;
+            return ((Number)b).doubleValue() > 0;
+        } else if (b instanceof Node || b instanceof MMObjectNode) {
+            return true; // return true if a NODE is filled
         } else if (b instanceof Date) {
             return ((Date)b).getTime() != -1;
+        } else if (b instanceof Document) {
+            return false; // undefined
         } else if (b instanceof String) {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
