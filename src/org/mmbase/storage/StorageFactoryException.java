@@ -14,7 +14,7 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageFactoryException.java,v 1.1 2003-08-21 09:59:28 pierre Exp $
+ * @version $Id: StorageFactoryException.java,v 1.2 2003-11-18 14:58:33 michiel Exp $
  */
 public class StorageFactoryException extends StorageException {
 
@@ -44,7 +44,7 @@ public class StorageFactoryException extends StorageException {
      * @param Throwable the cause of the error
      */
     public StorageFactoryException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     /**
@@ -56,7 +56,7 @@ public class StorageFactoryException extends StorageException {
      * @param Throwable the cause of the error
      */
     public StorageFactoryException(String message, Throwable cause) {
-        super(message,cause);
+        super(message, cause);
     }
 
 }
