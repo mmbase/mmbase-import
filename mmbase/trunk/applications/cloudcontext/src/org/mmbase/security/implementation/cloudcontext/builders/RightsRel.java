@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.7 2003-08-19 13:29:07 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.8 2003-09-10 18:53:22 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -43,7 +43,7 @@ public class RightsRel extends InsRel {
      */
     public static String OPERATION_FIELD = "operation";
 
-    private static Logger log = Logging.getLoggerInstance(RightsRel.class);
+    private static final Logger log = Logging.getLoggerInstance(RightsRel.class);
 
     /**
      * Util method to get this Builder.
@@ -97,9 +97,9 @@ public class RightsRel extends InsRel {
         if (value.equals(Operation.DELETE.toString())) return true;
         if (value.equals(Operation.CHANGECONTEXT.toString())) return true;
         String msg = 
-            "field with name operation must contain a valid opertion( value was: '" + value + "')\n" +
+            "field with name operation must contain a valid operation (value was: '" + value + "')\n" +
             "valid operations are: all, " + Operation.READ + ", " + Operation.WRITE + ", " + Operation.CREATE +
-            ", " + Operation.CHANGE_RELATION + ", " + Operation.DELETE + ", " + Operation.CHANGECONTEXT + ", ";
+            ", " + Operation.CHANGE_RELATION + ", " + Operation.DELETE + ", " + Operation.CHANGECONTEXT;
         throw new RuntimeException(msg);
     }
 }
