@@ -123,7 +123,7 @@ public class NodeHandler extends IntegerHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        if (context.getCloud().getNodeManagers().contains(field.getGUIType())) {
+        if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if (context.getContextTag().findAndRegister(id, id) == null) {
                 return null;
