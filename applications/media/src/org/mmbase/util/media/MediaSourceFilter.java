@@ -41,7 +41,7 @@ import java.lang.Integer;
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
  */
-public class MediaSourceFilter extends GroupComparator {    
+public class MediaSourceFilter extends ChainComparator {    
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
 
     public static String MAIN_TAG         = "mediasourcefilter";
@@ -56,8 +56,7 @@ public class MediaSourceFilter extends GroupComparator {
     /**
      * Construct the MediaSourceFilter
      */
-    public MediaSourceFilter() {
-        super();        
+    private MediaSourceFilter() {
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "mediasourcefilter.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
@@ -67,6 +66,14 @@ public class MediaSourceFilter extends GroupComparator {
         configWatcher.add(configFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
+    }
+
+    
+    private static MediaSourceFilter filter = null;
+
+    public static MediaSourceFilter getInstance() {
+        if (filter == null) filter = new MediaSourceFilter();
+        return filter;
     }
     
     /**
