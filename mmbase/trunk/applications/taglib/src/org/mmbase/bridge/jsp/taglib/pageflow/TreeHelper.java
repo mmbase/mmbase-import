@@ -84,20 +84,20 @@ public class TreeHelper {
         
         // Try to find the best file (so starting with the best option)
         for (int i=numberTokens; i>=0; i--) {
-            String middle = "";
+            String middle = "/";
             for (int u=0; u<numberTokens; u++) {
                 if(u<i) {
                     String smartpath = getSmartPath(objectNumbers[u],middle,session);
                     if (smartpath==null || smartpath.equals("")) {
                         // If smartpath doesn't exist use object number
-                        middle+=File.separator+objectNumbers[u];
+                        middle+=objectNumbers[u] + File.separator;
                     } else {
                         // The smartpath overrides all previous smartpaths
                         middle=smartpath;
                     }
                 } else {
                     // Use the object type name
-                    middle+=File.separator+getBuilderName(objectNumbers[u]);
+                    middle+=getBuilderName(objectNumbers[u]) + File.separator;
                 }
             }
             // make sure the middle url ends with a file separator or not
@@ -108,9 +108,15 @@ public class TreeHelper {
                 middle+=File.separator;
             }
             
+            // Make sure that during concatenation of root+path, they are seperated with a File.seperator
+            String extraSep = "";
+            if (!htmlroot.endsWith(File.separator) && !middle.startsWith(File.separator) ) {
+                extraSep = File.separator;
+            }
+
             // Check if the file exists
-            log.debug("Check file: "+htmlroot+middle+nudePage);
-            if (new File(htmlroot+middle+nudePage).exists()) {
+            log.debug("Check file: "+htmlroot+extraSep+middle+nudePage);
+            if (new File(htmlroot+extraSep+middle+nudePage).exists()) {
                 return middle+includePage;
             }
         }
@@ -143,7 +149,7 @@ public class TreeHelper {
         Stack objectPaths       = new Stack();
         
         int objectNumbers[]     = new int[numberTokens];
-        String pathNow = "";
+        String pathNow = "/";
         
         // Move all the objectnumbers into the array
         for (int i=0; i<numberTokens; i++) {
@@ -174,8 +180,15 @@ public class TreeHelper {
             if (!path.endsWith(File.separator)) {
                 path+=File.separator;
             }
-            log.debug("Check file: "+htmlroot+path+nudePage);
-            if ((new File(htmlroot + path + nudePage)).isFile()) {
+
+            // Make sure that during concatenation of root+path, they are seperated with a File.seperator
+            String extraSep = "";
+            if (!htmlroot.endsWith(File.separator) && !path.startsWith(File.separator) ) {
+                extraSep = File.separator;
+            }
+
+            log.debug("Check file: "+htmlroot+extraSep+path+nudePage);
+            if ((new File(htmlroot + extraSep + path + nudePage)).isFile()) {
                 return path + includePage;
             }
         }
