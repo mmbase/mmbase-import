@@ -23,8 +23,8 @@ public final class Operation {
     /** int value for the create Operation*/    
     public final static int CREATE_INT = 2;
     
-    /** int value for the link Operation */    
-    public final static int LINK_INT = 3;
+    /** int value for the change relation Operation */    
+    public final static int CHANGE_RELATION_INT = 3;
        
     /** int value for the remove Operation */    
     public final static int DELETE_INT = 4;
@@ -45,10 +45,10 @@ public final class Operation {
     public final static Operation CREATE = new Operation(CREATE_INT, "create");
     
     /** 
-     *	Identifier for link operation, which is used when creating a relation 
-     *	between 2 nodes.
+     * Identifier for changing the source and/or destination field of a
+     * relation.
      */                
-    public final static Operation LINK = new Operation(LINK_INT, "link");
+    public final static Operation CHANGE_RELATION = new Operation(CHANGE_RELATION_INT, "change relation");
     
     /** Identifier for remove operation, which is used when removing a node */
     public final static Operation DELETE = new Operation(DELETE_INT, "delete");

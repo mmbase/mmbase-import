@@ -123,6 +123,41 @@ public abstract class Authorization {
     public abstract void assert(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException;
 
     /** 
+     * This method could be overrided by an extending class.     
+     * This method checks if the creation of a certain relation or changing
+     * the source or destination of a certain relation done by a certain
+     * user is permitted.
+     *
+     * @param user The UserContext, containing the information about the user.
+     * @param nodeid The id of the relation which has to be checked.
+     * @param srcnodeid The id of the (new) source node of the relation.
+     * @param dstnodeid The id of the (new) destination node of the relation.
+     * @param operation The operation which will be performed (CREATE (create
+     *                  relation) or CHANGE_RELATION (source and/or destination
+     *                  are changed).
+     * @return <code>true</code> if the operation is permitted,
+     *         <code>false</code> if the operation is not permitted,     
+     */        
+    public abstract boolean check(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation);
+
+    /** 
+     * This method could be overrided by an extending class.     
+     * This method asserts that creation of a certain relation or changing
+     * the source or destination of a certain relation done by a certain
+     * user is permitted. If not, an exception is thrown
+     *
+     * @param user The UserContext, containing the information about the user.
+     * @param nodeid The id of the relation which has to be asserted.
+     * @param srcnodeid The id of the (new) source node of the relation.
+     * @param dstnodeid The id of the (new) destination node of the relation.
+     * @param operation The operation which will be performed (CREATE (create
+     *                  relation) or CHANGE_RELATION (source and/or destination
+     *                  are changed).
+     * @exception org.mmbase.SecurityException  If the assertion fails
+     */        
+    public abstract void assert(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException;
+
+    /** 
      *	This method could be overrided by an extending class.     
      *	This method returns the context of a specific node.
      *	@param  user 	The UserContext, containing the information about the user.

@@ -55,6 +55,19 @@ public class NoAuthorization extends Authorization {
      */        
     public void assert(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
     }
+
+    /** 
+     * This method does nothing
+     */        
+    public boolean check(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) {
+    	return true;
+    }
+
+    /** 
+     * This method does nothing
+     */        
+    public void assert(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    }
     
     // used to get some very basic functionality inside the security..
     private static String EVERYBODY = "everybody";

@@ -424,10 +424,12 @@ public interface Node {
     /**
      * Check link rights on this node.
      *
+     * @deprecated  As of 20020123, replaced by {@link RelationManager#mayCreateRelation(Node,Node)}
      * @return                      whether the current user may link to this node
      */
 
     public boolean mayLink();
+
 
     /**
      * Check context-change rights on this node.

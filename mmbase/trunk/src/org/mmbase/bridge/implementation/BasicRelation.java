@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -25,11 +26,14 @@ public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
 
     private RelationManager relationManager = null;
-    private int snum = 0;
-    private int dnum = 0;
+    protected int snum = 0;
+    protected int dnum = 0;
 
     private int snumtype = 0;
     private int dnumtype = 0;
+
+    protected boolean relationChanged = false; // Indicates a change in snum or dnum
+
 
     /**
      * @javadoc
@@ -80,8 +84,7 @@ public class BasicRelation extends BasicNode implements Relation {
             log.error(message);
             throw new BridgeException(message);
         }
-        edit(ACTION_EDIT);
-        ((BasicNode)node).edit(ACTION_LINK);
+        relationChanged = true;
         int source=node.getIntValue("number");
         if (source==-1) {
             // set a temporary field, transactionmanager resolves this
@@ -101,8 +104,7 @@ public class BasicRelation extends BasicNode implements Relation {
             log.error(message);
             throw new BridgeException(message);
         }
-        edit(ACTION_EDIT);
-        ((BasicNode)node).edit(ACTION_LINK);
+        relationChanged = true;
         int dest=node.getIntValue("number");
         if (dest==-1) {
             // set a temporary field, transactionmanager resolves this

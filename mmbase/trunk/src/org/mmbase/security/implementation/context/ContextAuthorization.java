@@ -370,6 +370,18 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
+    public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) {
+        return check(user, nodeNumber, operation);
+    }
+
+    public void assert(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws org.mmbase.security.SecurityException {
+        if (!check(user, nodeNumber, operation) ) {
+            String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
+            log.error(msg);
+            throw new org.mmbase.security.SecurityException(msg);
+        }
+    }
+
     private static org.mmbase.module.core.MMObjectBuilder builder = null;
 
     private MMObjectNode getMMNode(int n) {
