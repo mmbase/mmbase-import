@@ -3,7 +3,7 @@
 <builder name="audiosources" extends="mediasources">
   <status>active</status>
   
-  <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
+  <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
   
   <searchage>14</searchage>
   

@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="videofragments" maintainer="mmbase.org" version="0" extends="mediafragments">
   <status>active</status>  
-  <classfile>org.mmbase.module.builders.media.MediaFragments</classfile>  
+  <classfile>org.mmbase.applications.media.builders.MediaFragments</classfile>  
   <names>
     <singular xml:lang="nl">Videofragment</singular>
     <singular xml:lang="en">Video fragment</singular>    
