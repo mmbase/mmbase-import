@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.44.2.1 2003-05-28 12:28:43 vpro Exp $
+ * @version $Id: servdb.java,v 1.44.2.2 2003-05-28 12:31:43 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -644,8 +644,6 @@ public class servdb extends JamesServlet {
 
                     if (len!=-1)  {
                         try {
-				log.error("ROB, heb deze regel toegevoegd om te kijken waar al die nullpointerexceptinos vandaan komen.");
-				log.error("res="+res+" filesize="+filesize+" cline="+cline+"cacheReq="+cacheReq+" cache="+cache);
                             res.setContentType(mimetype);
                             //res.setContentLength(filesize);
                             cline.filesize=filesize;
