@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
-import javax.servlet.jsp.JspTagException;
-
-import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.Transaction;
 
 /**
@@ -20,17 +17,8 @@ import org.mmbase.bridge.Transaction;
 * @author Michiel Meeuwissen 
 **/
 
-public class CancelTag extends CloudReferrerTag { 
-    // perhaps it would be nicer to extend CloudReferrer to TransactionReferrer first.
-
-    void setTransaction(String t) {
-        setCloud(t);
+public class CancelTag extends CommitTag { 
+    protected void doAction(Transaction t) {
+        t.cancel();
     }
-
-    public int doStartTag() throws JspTagException{
-        // find the parent transaction:
-        Transaction trans = (Transaction) getCloudProviderVar();
-        trans.cancel();
-        return SKIP_BODY;    
-    }    
 }
