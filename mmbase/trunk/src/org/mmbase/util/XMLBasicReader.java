@@ -9,20 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.*;
 
 import java.io.FileInputStream;
+import java.io.StringReader;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.29 2003-03-11 14:55:26 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.30 2003-04-07 19:21:45 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -55,6 +51,8 @@ public class XMLBasicReader  {
     /** for the document builder of javax.xml. */
     private static DocumentBuilder documentBuilder = null;
     private static DocumentBuilder altDocumentBuilder = null;
+
+    protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
     /** set this one to true, and parser will be loaded...  */
 
@@ -83,7 +81,12 @@ public class XMLBasicReader  {
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
-            return new InputSource();
+            // try to handle more or less gracefully
+            InputSource is = new InputSource();
+            is.setSystemId(FILENOTFOUND + path);
+            is.setPublicId("-//MMBase//DTD error 1.0//EN");
+            is.setCharacterStream(new StringReader("<error>" + e.toString() + "</error>"));
+            return is;
         }
     }
 
@@ -94,8 +97,9 @@ public class XMLBasicReader  {
         this(source, VALIDATE, resolveBase);
     }
     public XMLBasicReader(String path, Class resolveBase) {
-            this(getInputSource(path), VALIDATE, resolveBase);
+        this(getInputSource(path), VALIDATE, resolveBase);
     }
+
     public XMLBasicReader(InputSource source) {
         this(source, VALIDATE);
     }
