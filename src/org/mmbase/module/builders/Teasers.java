@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.8 2000-03-31 13:27:52 wwwtech Exp $
+$Id: Teasers.java,v 1.9 2000-04-05 15:24:09 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/03/31 13:27:52  wwwtech
+Wilbert: Introduction of ParseException for method getList
+
 Revision 1.7  2000/03/30 13:11:34  wwwtech
 Rico: added license
 
@@ -45,82 +48,13 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.8 $ $Date: 2000-03-31 13:27:52 $ 
+ * @version $Revision: 1.9 $ $Date: 2000-04-05 15:24:09 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
 
-
 	public boolean debug = false;
-
-	// Temp Temp for searchhack
-	// total table holds nodes !!
-	Hashtable ts_cache_total=new Hashtable();
-	Hashtable ts_image_cache=new Hashtable();
-
-	private boolean createTeaser(String number) {
-		MMObjectNode node=getNode(number);
-		if (node!=null) {
-			fillTeaserSearchTable(node.getIntValue("number"));
-			fillTeaserUrl(node.getIntValue("number"));
-		}
-		return(true);
-	}
-
-	/**
-	* Return a vector of teasers with the realtions flattened into the result
-	*/
-	public Vector insertRelations(Vector nodes) {
-		// do the query on the database
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt = con.createStatement();
-			ResultSet rs;
-			Vector results = new Vector();
-			String numberSet = buildSet(nodes,"number");
-			Enumeration enum;
-			MMObjectNode node;
-			int currentNumber;
-
-			// Get all the images linked to the requested Teasers
-			rs = stmt.executeQuery("SELECT a.snumber, b.number FROM "
-								   +mmb.baseName+"_"+mmb.getMMObject("insrel").tableName+" a, "
-								   +mmb.baseName+"_"+mmb.getMMObject("images").tableName+" b"								   
-								   +" WHERE a.snumber in "+numberSet+" AND a.dnumber = b.number ORDER BY a.snumber");
-
-			enum = nodes.elements();
-			while (rs.next()) {
-				boolean found = false;
-				
-				while(!found) {
-					if(enum.hasMoreElements()) {
-						node = (MMObjectNode)enum.nextElement();
-						currentNumber = node.getIntValue("number");
-						if (currentNumber == rs.getInt(1)) {
-							node.setValue("handle",rs.getString(2));
-							found = true;
-						}
-					}
-					else found = true;
-				}
-			}
-			stmt.close();
-			con.close();
-
-			enum = nodes.elements();
-			while (enum.hasMoreElements()) {
-				node = (MMObjectNode)enum.nextElement();
-				node.setValue("url",node.getValue("number"));
-			}
-
-			return (results);
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			e.printStackTrace();
-			return(null);
-		}
-	}
-
+	
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("state")) {
 			int val=node.getIntValue("state");
@@ -163,18 +97,15 @@ public class Teasers extends MMObjectBuilder {
 	}
 
 	public Object getValue(MMObjectNode node,String field) {
-		Object result = null;
-
 		if (field.equals("image")) {
 			Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),6);
 			if (e.hasMoreElements()) {
 				MMObjectNode node2=(MMObjectNode)e.nextElement();
-				result = ("<IMG SRC=\"/img.db?"+node2.getIntValue("number")+"+s(118x3000)\" ALIGN=\"BOTTOM\">");
+				return "<IMG SRC=\"/img.db?"+node2.getIntValue("number")+"+s(118x3000)\" ALIGN=\"BOTTOM\">";
 			}
-        } else 
-			result = super.getValue( node, field ); 
-
-		return(result);
+			return null;
+		}
+        return super.getValue( node, field ); 
 	}
 
 	public String getDefaultUrl(int src) {
@@ -217,62 +148,32 @@ public class Teasers extends MMObjectBuilder {
 		return(null);
 	}
 
-	/* Currently dead code II
-	public boolean createTeaserSearchTable() {
-		// create the main object table
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("create table "+mmb.baseName+"_tsearchcache  ( number integer not null "
-										+", tnumber integer not null"
-										+", totype integer not null"
-										+", value integer not null"
-										+", image integer not null"
-										+", title varchar(255) not null"
-										+", teaserbody char(512) not null"
-										//+", body large_text not null"
-										+", body char(29000) not null"
-										+", primary key(number))");
-			stmt.close();
-			con.close();
-			return(true);
-		} catch (SQLException e) {
-			debug("createTeaserSearchTable(): ERROR: can't create teaser search table ");
-			//e.printStackTrace();
+	/** @return the url related to this teaser or null if none
+	 */
+	private String getUrl(int src) {
+		Enumeration e=mmb.getInsRel().getRelated(src,8); // 8 = objectNr URL
+		if (e.hasMoreElements()) {
+			MMObjectNode node=(MMObjectNode)e.nextElement();
+			return(node.getStringValue("url"));
 		}
-		return(false);
+		return(null);
 	}
-	*/
 
-	/* Currently dead code II
-	public boolean createTeaserUrlTable() {
-		// create the main object table
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("create table "+mmb.baseName+"_turlcache  ( number integer not null "
-										+", url varchar(255) not null"
-										+", primary key(number))");
-			stmt.close();
-			con.close();
-			return(true);
-		} catch (SQLException e) {
-			debug("createTeaserUrlTable(): can't create teaser url table ");
-		}
-		return(false);
-	}
-	*/
-
-	/** Currently dead code II
-	public boolean fillTeaserSearchTable() {
-		return(fillTeaserSearchTable(-1));
-	}
-	*/
-	
 	/**
-	* 
+	* Create or update an entry in the TeaserSearchTable for teaser with objectnr where
+	* or for all if where = -1
+	* Layout tsearchcache:
+	* number		integer			btree index	primary key equals teaser number
+	* tnumber		integer			object related to teaser
+	* totype		integer			1: gids artikel 2: cds, 3: video tape, 4: publicaties 5: tv program
+									6: radio program, 7: web program
+	* value			integer         value field from teaser
+	* image			integer			related image
+	* title			varchar(255)	title from teaser
+	* teaserbody	char(512)		body from teaser
+	* body			char(29000)		eetx index composed of lowercase title and body
 	*/
-	private boolean fillTeaserSearchTable(int where) {
+	public boolean fillTeaserSearchTable(int where) {
 		MMObjectNode node2,other;
 		int image;
 		int i=0;
@@ -393,8 +294,8 @@ public class Teasers extends MMObjectBuilder {
 		PreparedStatement statement;
 		System.out.println("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
 
-			if (body!=null && body.length()>32000) {
-				body=body.substring(0,31999);
+			if (body!=null && body.length()>29000) {
+				body=body.substring(0,28999);
 			}
 
 			try {
@@ -418,10 +319,10 @@ public class Teasers extends MMObjectBuilder {
 		return(true);
 	}
 
-	/**
+	/** Remove teaser number from tsearchcache
 	* 
 	*/
-	private boolean delTeaserSearchElement(int number) {
+	public boolean delTeaserSearchElement(int number) {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -434,9 +335,152 @@ public class Teasers extends MMObjectBuilder {
 		return(true);	
 	}
 
-	/**
-	* 
+	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+        super.nodeLocalChanged(number,builder,ctype);
+		if (builder.equals(tableName)) {
+			System.out.println("Teasers -> change detected in "+number+" "+builder+" "+ctype);
+			int nr = Integer.parseInt(number);
+			if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
+				MMObjectNode node=getNode(number);
+				if (node!=null) {
+					fillTeaserSearchTable(nr);
+					// fillTeaserUrl(nr);
+				}
+			}
+			else if (ctype.equals("d")) {
+				delTeaserSearchElement(nr);
+				//delUrlSearchElement(nr);
+			}
+		}
+		return(true);
+	}
+
+	// Temp Temp for searchhack
+	// total table holds nodes !!
+	// Hashtable ts_cache_total=new Hashtable();
+	// Hashtable ts_image_cache=new Hashtable();
+
+	/* Currently dead code
+	private boolean createTeaser(String number) {
+		MMObjectNode node=getNode(number);
+		if (node!=null) {
+			fillTeaserSearchTable(node.getIntValue("number"));
+			fillTeaserUrl(node.getIntValue("number"));
+		}
+		return(true);
+	}
 	*/
+
+	/**
+	* Return a vector of teasers with the realtions flattened into the result
+	* Called by Pool builder
+	*/
+	public Vector insertRelations(Vector nodes) {
+		// do the query on the database
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs;
+			Vector results = new Vector();
+			String numberSet = buildSet(nodes,"number");
+			Enumeration enum;
+			MMObjectNode node;
+			int currentNumber;
+
+			// Get all the images linked to the requested Teasers
+			rs = stmt.executeQuery("SELECT a.snumber, b.number FROM "
+								   +mmb.baseName+"_"+mmb.getMMObject("insrel").tableName+" a, "
+								   +mmb.baseName+"_"+mmb.getMMObject("images").tableName+" b"								   
+								   +" WHERE a.snumber in "+numberSet+" AND a.dnumber = b.number ORDER BY a.snumber");
+
+			enum = nodes.elements();
+			while (rs.next()) {
+				boolean found = false;
+				
+				while(!found) {
+					if(enum.hasMoreElements()) {
+						node = (MMObjectNode)enum.nextElement();
+						currentNumber = node.getIntValue("number");
+						if (currentNumber == rs.getInt(1)) {
+							node.setValue("handle",rs.getString(2));
+							found = true;
+						}
+					}
+					else found = true;
+				}
+			}
+			stmt.close();
+			con.close();
+
+			enum = nodes.elements();
+			while (enum.hasMoreElements()) {
+				node = (MMObjectNode)enum.nextElement();
+				node.setValue("url",node.getValue("number"));
+			}
+
+			return (results);
+		} catch (SQLException e) {
+			// something went wrong print it to the logs
+			e.printStackTrace();
+			return(null);
+		}
+	}
+
+	/* Currently dead code II
+	public boolean createTeaserSearchTable() {
+		// create the main object table
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("create table "+mmb.baseName+"_tsearchcache  ( number integer not null "
+										+", tnumber integer not null"
+										+", totype integer not null"
+										+", value integer not null"
+										+", image integer not null"
+										+", title varchar(255) not null"
+										+", teaserbody char(512) not null"
+										//+", body large_text not null"
+										+", body char(29000) not null"
+										+", primary key(number))");
+			stmt.close();
+			con.close();
+			return(true);
+		} catch (SQLException e) {
+			debug("createTeaserSearchTable(): ERROR: can't create teaser search table ");
+			//e.printStackTrace();
+		}
+		return(false);
+	}
+	*/
+
+	/* Currently dead code II
+	public boolean createTeaserUrlTable() {
+		// create the main object table
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("create table "+mmb.baseName+"_turlcache  ( number integer not null "
+										+", url varchar(255) not null"
+										+", primary key(number))");
+			stmt.close();
+			con.close();
+			return(true);
+		} catch (SQLException e) {
+			debug("createTeaserUrlTable(): can't create teaser url table ");
+		}
+		return(false);
+	}
+	*/
+
+	/** Currently dead code II
+	public boolean fillTeaserSearchTable() {
+		return(fillTeaserSearchTable(-1));
+	}
+	*/
+	
+	/**
+	* Currently dead code
+	*
 	private boolean delUrlSearchElement(int number) {
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -451,10 +495,11 @@ public class Teasers extends MMObjectBuilder {
 		bul.delJumpCache(""+number);
 		return(true);	
 	}
-
-	/**
-	* 
 	*/
+
+	/** Currently dead code
+	* 
+	*
 	private Vector globalsearch(String key) {
 		key=key.toLowerCase();
 		Vector results=new Vector();
@@ -474,18 +519,7 @@ public class Teasers extends MMObjectBuilder {
 			return(results);
 		}
 	}
-
-	/** @return the url related to this teaser or null if none
-	 */
-	private String getUrl(int src) {
-		Enumeration e=mmb.getInsRel().getRelated(src,8); // 8 = objectNr URL
-		if (e.hasMoreElements()) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			return(node.getStringValue("url"));
-		}
-		return(null);
-	}
-
+	*/
 
 	/* Currently dead code II
 	public boolean fillTeaserUrlTable() {
@@ -541,8 +575,8 @@ public class Teasers extends MMObjectBuilder {
 	*/
 
 	/**
-	* 
-	*/
+	* Currently dead code
+	*
 	private boolean fillTeaserUrl(int number) {
 		MMObjectNode node2,other;
 		int i=0;
@@ -564,6 +598,7 @@ public class Teasers extends MMObjectBuilder {
 		}
 		return(false);
 	}
+	*/
 
 	/* Currently dead code II
 	public boolean hasRelatedTeaser(String number) {
@@ -620,29 +655,9 @@ public class Teasers extends MMObjectBuilder {
 	}
 	*/
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
-		if (builder.equals(tableName) || builder.equals("urls")) {
-			System.out.println("Teasers -> change detected in "+number+" "+builder+" "+ctype);
-			int nr = Integer.parseInt(number);
-			if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
-				MMObjectNode node=getNode(number);
-				if (node!=null) {
-					fillTeaserSearchTable(nr);
-					fillTeaserUrl(nr);
-				}
-			}
-			if (ctype.equals("d")) {
-				delTeaserSearchElement(nr);
-				delUrlSearchElement(nr);
-			}
-		}
-		return(true);
-	}
-
-	/**
+	/** Currently dead code
 	 * temp search 
-	 */
+	 *
 	public Vector doTSearch(scanpage sp, StringTagger tagger) {
 		Object tmp;
 		int wantedlist;
@@ -709,11 +724,12 @@ public class Teasers extends MMObjectBuilder {
 		tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
 		return(results);
 	}
+	*/
 
 
-	/**
+	/** Currently dead code
 	 * temp search 
-	 */
+	 *
 	public int doTSearchSize(scanpage sp, StringTokenizer tok) {
 			// this is a hack^2
 			String type=null,key=null;
@@ -735,4 +751,5 @@ public class Teasers extends MMObjectBuilder {
 				return(0);
 			}
 	}
+	*/
 }
