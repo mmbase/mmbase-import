@@ -398,6 +398,7 @@ public class MMAdmin extends ProcessorModule {
 					String query="exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'";
 					Enumeration b=syncbul.search(query);
 					if (b.hasMoreElements()) {
+					    // XXX To do : we may want to load the node and check/change the fields
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
 						//System.out.println("node allready installed : "+exportnumber);
 					} else {
@@ -480,11 +481,20 @@ public class MMAdmin extends ProcessorModule {
 					int exportnumber=newnode.getIntValue("number");
 					Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
 					if (b.hasMoreElements()) {
+					    // XXX To do : we may want to load the relation node and check/change the fields
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
 						//System.out.println("node allready installed : "+exportnumber);
 					} else {
 						newnode.setValue("number",-1);
-						
+
+						// The following code determines the 'actual' (synced) numbers for the destination and source nodes
+						// This will normally work well, however:
+						// It is _theoretically_ possible that one or both nodes are _themselves_ relation nodes.
+						// (since relations are nodes).
+						// Due to the order in which syncing takles place, it is possible that such strcutures will fail
+						// to get imported.
+						// ye be warned.
+												
 						// find snumber
 
 						int snumber=newnode.getIntValue("snumber");
@@ -510,14 +520,18 @@ public class MMAdmin extends ProcessorModule {
 						newnode.setValue("snumber",snumber);
 						newnode.setValue("dnumber",dnumber);
 						int localnumber=-1;	
-						if (snumber!=-1 && dnumber!=-1) localnumber=newnode.insert("import");
-						if (localnumber!=-1) {
-							MMObjectNode syncnode=syncbul.getNewNode("import");
-							syncnode.setValue("exportsource",exportsource);
-							syncnode.setValue("exportnumber",exportnumber);
-							syncnode.setValue("timestamp",timestamp);
-							syncnode.setValue("localnumber",localnumber);
-							syncnode.insert("import");
+						if (snumber!=-1 && dnumber!=-1) {
+						    localnumber=newnode.insert("import");
+						    if (localnumber!=-1) {
+							    MMObjectNode syncnode=syncbul.getNewNode("import");
+							    syncnode.setValue("exportsource",exportsource);
+							    syncnode.setValue("exportnumber",exportnumber);
+							    syncnode.setValue("timestamp",timestamp);
+							    syncnode.setValue("localnumber",localnumber);
+							    syncnode.insert("import");
+						    }
+						} else {
+						    System.out.println("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+snumber+")");
 						}
 					}
 				}
@@ -529,6 +543,13 @@ public class MMAdmin extends ProcessorModule {
 		return(true);
 	}
 
+	/**
+	 * Checks needed relation definitions.
+	 * Retrieves, for each reldef entry, the attributes, and passe sthese on to {@link #checkRelDef}
+	 * @param reldefs a list of hashtables. Each hashtable represents a reldef entry, and contains a list of name-value
+	 *      pairs (the reldef attributes).
+	 * @return Always <code>true</code> (?)
+	 */
 	boolean checkRelDefs(Vector reldefs) {
 		for (Enumeration h = reldefs.elements();h.hasMoreElements();) {
 			Hashtable bh=(Hashtable)h.nextElement();	
@@ -537,13 +558,24 @@ public class MMAdmin extends ProcessorModule {
 			String direction=(String)bh.get("direction");
 			String guisourcename=(String)bh.get("guisourcename");
 			String guitargetname=(String)bh.get("guitargetname");
-			if (direction.equals("bidirectional")) {
-				checkRelDef(source,target,2,guisourcename,guitargetname);
+			// retrieve builder info
+			int builder=-1;
+			if (mmb.getRelDef().usesbuilder) {
+			    String buildername=(String)bh.get("builder");
+			    // if no 'builder' attribute is present (old format), use source name as builder name
+			    if (buildername==null) {
+			        buildername=(String)bh.get("source");
+			    }
+			    builder=mmb.getTypeDef().getIntValue(buildername);
+			}
+			// is not explicitly set to uni-directional, direction is assumed to be bi-directional
+			if (direction.equals("unidirectional")) {
+				checkRelDef(source,target,1,guisourcename,guitargetname,builder);
 			} else {
-				checkRelDef(source,target,1,guisourcename,guitargetname);
+				checkRelDef(source,target,2,guisourcename,guitargetname,builder);
 			}
 		}
-		return(true);
+		return true;
 	}
 
 	boolean checkAllowedRelations(Vector relations) {
@@ -571,20 +603,36 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 
-	private void checkRelDef(String sname, String dname, int dir,String sguiname, String dguiname) {
-		MMObjectBuilder bul=mmb.getMMObject("reldef");
-		if (bul!=null) {
-			Vector res=bul.searchVector("sname=='"+sname+"'+dname=='"+dname+"'");
+	/**
+	 * Checks whether a given relation definition exists, and if not, creates that definition.
+	 * @param sname source name of the relation definition
+	 * @param dname destination name of the relation definition
+	 * @param dir directionality (uni or bi)
+	 * @param sguiname source GUI name of the relation definition
+	 * @param dguiname destination GUI name of the relation definition
+	 * @param builder references the builder to use (only in new format)
+	 */
+	private void checkRelDef(String sname, String dname, int dir,String sguiname, String dguiname, int builder) {
+		RelDef reldef=mmb.getRelDef();
+		if (reldef!=null) {
+			Vector res=reldef.searchVector("sname=='"+sname+"'+dname=='"+dname+"'");
 			if (res!=null && res.size()>0) {
 				//System.out.println("RefDef ("+sname+","+dname+") allready installed");
 			} else {
-				MMObjectNode node=bul.getNewNode("system");
+				MMObjectNode node=reldef.getNewNode("system");
 				node.setValue("sname",sname);
 				node.setValue("dname",dname);
 				node.setValue("dir",dir);
 				node.setValue("sguiname",sguiname);
 				node.setValue("dguiname",dguiname);
-				int id=bul.insert("system",node);	
+				if (reldef.usesbuilder) {
+				    // if builder is unknown (falsely specified), use the InsRel builder
+				    if (builder<=0) {
+				        builder=mmb.getInsRel().oType;
+				    }
+				    node.setValue("builder",builder);
+				}
+				int id=reldef.insert("system",node);	
 				if (id!=-1) {
 					// System.out.println("RefDef ("+sname+","+dname+") installed");
 				} 
@@ -596,14 +644,14 @@ public class MMAdmin extends ProcessorModule {
 
 
 	private void checkTypeRel(String sname, String dname, String rname, int count) {
-		MMObjectBuilder bul=mmb.getMMObject("typerel");
-		if (bul!=null) {
-			TypeDef typedef=(TypeDef)mmb.getMMObject("typedef");
+		TypeRel typerel=mmb.getTypeRel();
+		if (typerel!=null) {
+			TypeDef typedef=mmb.getTypeDef();
 			if (typedef==null) {
 				System.out.println("MMAdmin -> can't get typedef builder");
 				return;
 			} 
-			RelDef reldef=(RelDef)mmb.getMMObject("reldef");
+			RelDef reldef=mmb.getRelDef();
 			if (reldef==null) {
 				System.out.println("MMAdmin -> can't get reldef builder");
 				return;
@@ -614,8 +662,7 @@ public class MMAdmin extends ProcessorModule {
 			if (rnumber==-1) {
 				System.out.println("MMAdmin -> no reldef : "+rname+" defined");
 				return;
-			} 
-
+			}
 
 			// figure out snumber
 			int snumber=typedef.getIntValue(sname);
@@ -631,18 +678,13 @@ public class MMAdmin extends ProcessorModule {
 				return;
 			} 
 
-
-			
-			Vector res=bul.searchVector("snumber=="+snumber+"+dnumber=="+dnumber+"+rnumber=="+rnumber);
-			if (res!=null && res.size()>0) {
-				//System.out.println("TypeRel ("+sname+","+dname+","+rname+") allready installed");
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
+            if (!typerel.reldefCorrect(snumber,dnumber,rnumber) ) {
+				MMObjectNode node=typerel.getNewNode("system");
 				node.setValue("snumber",snumber);
 				node.setValue("dnumber",dnumber);
 				node.setValue("rnumber",rnumber);
 				node.setValue("max",count);
-				int id=bul.insert("system",node);	
+				int id=typerel.insert("system",node);	
 				if (id!=-1) {
 					//System.out.println("TypeRel ("+sname+","+dname+","+rname+") installed");
 				} 
@@ -652,10 +694,12 @@ public class MMAdmin extends ProcessorModule {
 		}
 	}
 
-	private void checkRelation(int snumber, int dnumber, String rname) {
-		MMObjectBuilder bul=mmb.getMMObject("insrel");
-		if (bul!=null) {
-			RelDef reldef=(RelDef)mmb.getMMObject("reldef");
+	// not used ?
+	// should be dropped ?
+	private void checkRelation(int snumber, int dnumber, String rname, int dir) {
+		InsRel insrel=mmb.getInsRel();
+		if (insrel!=null) {
+			RelDef reldef=mmb.getRelDef();
 			if (reldef==null) {
 				System.out.println("MMAdmin -> can't get reldef builder");
 			}
@@ -664,23 +708,28 @@ public class MMAdmin extends ProcessorModule {
 			if (rnumber==-1) {
 				System.out.println("MMAdmin -> no reldef : "+rname+" defined");
 				return;
-			} 
-			Vector res=bul.searchVector("snumber=="+snumber+"+dnumber=="+dnumber);
-			if (res==null) {
-				res=bul.searchVector("dnumber=="+dnumber+"+snumber=="+snumber);
 			}
-			if (res!=null && res.size()>0) {
-				//System.out.println("Relation allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
+			
+			MMObjectNode node=insrel.getRelation(snumber,dnumber,rnumber);
+			if (node==null) {
+				node=insrel.getNewNode("system");
 				node.setValue("snumber",snumber);
 				node.setValue("dnumber",dnumber);
 				node.setValue("rnumber",rnumber);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					//System.out.println("Relation installed");
-				} 
+				if (insrel.usesdir) {
+				    if (dir<=0) {
+				        // have to get dir value form reldef
+				        MMObjectNode relnode = reldef.getNode(rnumber);
+				        dir = relnode.getIntValue("dir");
+				    }
+			        // correct if value is invalid
+				    if (dir<=0) dir=2;
+				    node.setValue("dir",dir);
+				}
+				int id=insrel.insert("system",node);	
+				// if (id!=-1) {
+				//  System.out.println("Relation installed");
+				// }
 			}
 		} else {
 			System.out.println("MMAdmin -> can't get insrel builder");

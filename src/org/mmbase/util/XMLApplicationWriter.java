@@ -100,7 +100,11 @@ public class XMLApplicationWriter  {
 		String dir=(String)bset.get("direction");
 		String guisourcename=(String)bset.get("guisourcename");
 		String guitargetname=(String)bset.get("guitargetname");
-		body+="\t\t<reldef source=\""+source+"\" target=\""+target+"\" direction=\""+dir+"\" guisourcename=\""+guisourcename+"\" guitargetname=\""+guitargetname+"\" />\n";
+		body+="\t\t<reldef source=\""+source+"\" target=\""+target+"\" direction=\""+dir+"\" guisourcename=\""+guisourcename+"\" guitargetname=\""+guitargetname+"\"";		
+		String builder=(String)bset.get("builder");
+		if (builder!=null)
+		    body+=" builder=\""+builder+"\"";		
+		body+=" />\n";		
 	}
 	body+="\t</neededreldeflist>\n\n";
 	return(body);	
@@ -210,7 +214,7 @@ public class XMLApplicationWriter  {
 
 			if (type.equals("depth")) {
 				XMLContextDepthReader capp=new XMLContextDepthReader(path);
-				XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb,resultmsgs);
+				XMLContextDepthWriterII.writeContext(app,capp,targetpath,mmb,resultmsgs);
 			}
 		}
 	}
@@ -230,7 +234,7 @@ public class XMLApplicationWriter  {
 			System.out.println("READ="+path+" type="+type);
 			if (type.equals("depth")) {
 				XMLContextDepthReader capp=new XMLContextDepthReader(path);
-				XMLContextDepthWriter.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
+				XMLContextDepthWriterII.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
 			}
 		}
 	}
