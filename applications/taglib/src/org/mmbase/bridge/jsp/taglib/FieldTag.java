@@ -20,28 +20,70 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* The FieldTag can be used as a child of a 'NodeProvider' tag.   
-* 
-* @author Michiel Meeuwissen
-*/
-public class FieldTag extends NodeReferrerTag {
+ * The FieldTag can be used as a child of a 'NodeProvider' tag.   
+ * 
+ * @author Michiel Meeuwissen
+ */
+public class FieldTag extends FieldReferrerTag implements FieldProvider {
     
     private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName()); 
     
-    protected Node node;
-    private String name;   
-    private String head;
+    protected Node   node;
+    protected NodeProvider nodeProvider;
+    protected Field  field;
+    protected String fieldName;
+    private   String name;   
+    private   String head;
        
     public void setName(String n) throws JspTagException {
         name = getAttributeValue(n);
     }
-    
+
+    /**
+     * @deprecated Use FieldInfo under FieldTag
+     */
     public void setHead(String h) throws JspTagException {
         head = getAttributeValue(h);
     }
-    
-    public int doStartTag() throws JspTagException{
-        return EVAL_BODY_TAG;
+
+    /**
+     * A fieldprovider also provides a node.
+     */
+
+    public Node getNodeVar() throws JspTagException {
+        if (node == null) {
+            nodeProvider = findNodeProvider();
+            node = nodeProvider.getNodeVar();
+        }
+        if (node == null) {
+            throw new JspTagException ("Did not find node in the parent node provider");
+        }
+        return node;
+    }
+    public void setModified() {
+        nodeProvider.setModified();
+    }
+
+    public Field getFieldVar() {
+        return field;
+    }
+
+    private void setFieldVar(String n) throws JspTagException {
+        if (n != null) {             
+            field = getNodeVar().getNodeManager().getField(n);
+            fieldName = n;
+            if (getReferid() != null) {
+                throw new JspTagException ("Could not indicate both  'referid' and 'name/head' attribute");  
+            }
+        } else { 
+            if (getReferid() == null) {
+                field = getField(); // get from parent.
+                fieldName = field.getName();
+            }
+        }       
+    }
+    protected void setFieldVar() throws JspTagException {
+        setFieldVar(name);
     }
 
     /**
@@ -54,54 +96,63 @@ public class FieldTag extends NodeReferrerTag {
         return s;
     }
 
-    /**
-    * write the value of the field.
-    **/
-    public int doAfterBody() throws JspTagException {
-        
-        // firstly, search the node:
-        node = getNode();
-        
-        if (node == null) {
-            throw new JspTagException ("Did not find node in the parent node provider");
+    public int doStartTag() throws JspTagException {
+        node= null;
+        fieldName = name;
+        if (head != null) { // should be deprecated.
+            if (name != null) {
+                throw new JspTagException ("Could not indicate both  'name' and 'head' attribute");  
+            }
+            fieldName = head;
         }
+        setFieldVar(fieldName);               
+        return EVAL_BODY_TAG;
+    }
+
+    /**
+     * write the value of the field.
+     **/
+    public int doAfterBody() throws JspTagException {               
         // found the node now. Now we can decide what must be shown:
         String show;
-        
-        if (name != null) { // name not null, head perhaps.
-            log.trace("using name " + name );
-            Field f = node.getNodeManager().getField(name);
-            if (f == null) {
-                show = node.getStringValue(name);
-            } else {
-                if (f.getType() == Field.TYPE_BYTE) {
+        // now also 'node' is availabe;
+        if (head == null) { 
+            if (field == null) { // some function, or 'referid' was used.
+                if (getReferid() != null) { // referid
+                    show = getString(getReferid());
+                } else {                    // function
+                    show = getNodeVar().getStringValue(fieldName);
+                }
+            } else { // a field was found!
+                if (field.getType() == Field.TYPE_BYTE) {
                     show = "" + org.mmbase.util.Encode.encode("BASE64", node.getByteValue(name));
                 } else {    
-                    show = node.getStringValue(name);
+                    show = getNodeVar().getStringValue(fieldName);
                     show = convert(show);
                 }
             }
-            if (head != null) {
-                throw new JspTagException ("Could not indicate both  'name' and 'head' attribute");  
-            }
-        } else if (head !=null) { // name null, head isn't.
-            log.trace("using head " + head);
-            Field f = node.getNodeManager().getField(head);
-            if (f == null) {
+        } else { // should be deprecated
+            if (field == null) {
                 throw new JspTagException ("Could not find field " + head);  
             }
-            show = "" + f.getGUIName();
-        } else { // both null
-            throw new JspTagException ("Should use  'name' or 'head' attribute");  
+            show = "" + field.getGUIName();
         }
-        
-        if (show == null) {
-            throw new JspTagException ("Could not find field " + name + " /"  +  head);  
+
+        if (getId() != null) {
+            getContextTag().register(getId(), show);
         }
         
         try {         
-            // bodyContent.clearBody();
-            bodyContent.print(show);
+            if ("".equals(bodyContent.getString())) { // only write out if no body.
+                // bodyContent.clearBody();
+                bodyContent.print(show);
+            } else {
+                if (getReferid() != null) {
+                    throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
+                    // there is of course Field, but that does not contain the value of a field.
+                    // in fact Field == FieldManager
+                }
+            }
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            

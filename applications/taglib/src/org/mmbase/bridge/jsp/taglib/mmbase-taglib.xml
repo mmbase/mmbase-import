@@ -934,6 +934,20 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         </info>
     </attribute>
     <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    	<info>
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    	<info>
+        </info>
+    </attribute>
+    <attribute>
         <name>name</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
@@ -1079,10 +1093,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.ContextTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      <p>
-      Groups tags, and facilitates communication to the outside
-      world.
-      </p>
       <p>
       Tags inside a context tag supplying the `id' attribute
       register themselves in the context.  Other tags can refer to
