@@ -1,39 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
-	<node number="549" owner="michiel" snumber="550" dnumber="543" rtype="parent" dir="bidirectional">
+<insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+	<node number="251" owner="michiel" snumber="253" dnumber="248" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="571" owner="michiel" snumber="168" dnumber="566" rtype="related" dir="bidirectional">
+	<node number="247" owner="michiel" snumber="249" dnumber="164" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="180" owner="admin" snumber="157" dnumber="162" rtype="related" dir="bidirectional">
+	<node number="246" owner="michiel" snumber="248" dnumber="249" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="570" owner="admin" snumber="544" dnumber="567" rtype="related" dir="bidirectional">
+	<node number="245" owner="michiel" snumber="143" dnumber="248" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="546" owner="michiel" snumber="548" dnumber="547" rtype="related" dir="bidirectional">
+	<node number="240" owner="admin" snumber="239" dnumber="237" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="545" owner="michiel" snumber="548" dnumber="543" rtype="parent" dir="bidirectional">
+	<node number="236" owner="admin" snumber="238" dnumber="166" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="542" owner="michiel" snumber="543" dnumber="544" rtype="related" dir="bidirectional">
+	<node number="235" owner="admin" snumber="237" dnumber="238" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="174" owner="admin" snumber="162" dnumber="168" rtype="related" dir="bidirectional">
-	</node>
-
-	<node number="541" owner="michiel" snumber="157" dnumber="543" rtype="related" dir="bidirectional">
-	</node>
-
-	<node number="471" owner="michiel" snumber="162" dnumber="472" rtype="related" dir="bidirectional">
-	</node>
-
-	<node number="538" owner="michiel" snumber="540" dnumber="162" rtype="parent" dir="bidirectional">
-	</node>
-
-	<node number="537" owner="michiel" snumber="540" dnumber="539" rtype="related" dir="bidirectional">
+	<node number="234" owner="admin" snumber="143" dnumber="237" rtype="related" dir="bidirectional">
 	</node>
 
 </insrel>

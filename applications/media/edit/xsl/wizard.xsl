@@ -14,7 +14,7 @@
 
   <xsl:template name="realposition">
   <span class="realpositionitem">
-    <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
+    <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onChange="validate_validator(event);">
     <xsl:apply-templates select="@*" />
     </input> ms
     <input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = parent.frames['player'].document.embeddedplayer.GetPosition();" />

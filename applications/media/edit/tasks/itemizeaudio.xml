@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+ [
+   <!ENTITY itemize      SYSTEM "parts/itemize.xml">
+   <!ENTITY itemizebase  SYSTEM "itemize.xml">
+   <!ENTITY publishtimes SYSTEM "parts/publishtimes.xml">
+   <!ENTITY fragments    "audiofragments">
+  ]
+>
+
+<wizard-schema id="media">
+  <title>Audio clip editor</title>
+  <title xml:lang="nl">Audio knipper</title>
+  &itemizebase;
+</wizard-schema>

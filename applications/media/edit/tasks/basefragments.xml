@@ -1,17 +1,6 @@
-<?xml version="1.0"?>
-<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
- [
-    <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp"> 
-    <!ENTITY sources SYSTEM "parts/sources.xml" >
-
-
-  ]
->
-<wizard-schema id="media">
-	<title>Basis clips editor</title>
 
 	<action type="create">
-		<object type="mediafragments">
+		<object type="&fragments;">
 			<field name="title">Don't forget to add a title</field>
        <relation role="related" destination="{$origin}" />
 		</object>
@@ -20,27 +9,25 @@
 	<action type="delete" />
 	
 	<action type="load">
-    <relation destination="mediasources"   role="related">
+    <relation destination="&sources;"   role="related">
       <object>
         <relation destination="mediaproviders"   role="related">
           <object />
         </relation>
       </object>
     </relation>
-		<relation destination="mediafragments" role="parent" />
+		<relation destination="&fragments;" role="parent" />
 		<relation destination="publishtimes"   role="related" />
 	</action>
 
   &formats;
 
 	<form-schema id="basics">
-		<title>Media Editor</title>
+		<title>Source Editor</title>
 		<field name="title" />
 		<field name="subtitle" />
 		<field name="intro" />
 
-		&sources;
+		&addsources;
 
   </form-schema>
-
-</wizard-schema>
