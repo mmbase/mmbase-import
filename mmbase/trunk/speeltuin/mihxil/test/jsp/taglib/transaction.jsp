@@ -6,6 +6,7 @@
 <mm:import id="curtime"><%= System.currentTimeMillis()%></mm:import>
 <mm:cloud method="http" jspvar="cloud">
 
+This number must increase on reload: <mm:write referid="curtime" />
 <h3>Canceling transaction</h3>
 <mm:transaction name="mytrans" commitonclose="false">
   <mm:createnode type="news">

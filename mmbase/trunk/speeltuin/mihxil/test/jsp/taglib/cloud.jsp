@@ -6,8 +6,7 @@
   <body>
     <h1>Cloud logout/login</h1>
   <p>
-    Testing logout:
-    <mm:cloud method="logout" />
+    Testing logout <mm:cloud method="logout" />.
   </p>
   <p>
     Testing method="http"
@@ -16,10 +15,15 @@
     </mm:cloud>
   </p>
   <p>
+    Do a shift-reload on this page. Again a login-box must popup
+    (because logout was done). Try also what happens if you press
+    'cancel' of try a wrong password. Results must be sensible.
+  </p>
+  <p>
     This page does not work in MMBase 1.5 (will cause a loop).
   </p>
   <hr />
-  <a href="cloud2.jsp">Next</a>    
+  <a href="cloud1.jsp">Next</a><br />
    <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <hr />
 
