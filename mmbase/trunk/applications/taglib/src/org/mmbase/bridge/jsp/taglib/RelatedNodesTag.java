@@ -11,10 +11,9 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,11 +25,11 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.23 2003-08-11 15:27:19 michiel Exp $ 
+ * @version $Id: RelatedNodesTag.java,v 1.24 2003-08-27 21:32:41 michiel Exp $ 
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
+    private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
     protected Attribute type      = Attribute.NULL;
     protected Attribute role      = Attribute.NULL;
     protected Attribute searchDir = Attribute.NULL;
@@ -72,55 +71,61 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if (parentNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
-
         
-        NodeList nodes;
-        if ( (!constraints.getString(this).equals("")) || (!orderby.getString(this).equals("")) ) { 
-            log.debug("given orderby or constraints"); // start hacking:
-            
-            if (type == Attribute.NULL) {
-                throw new JspTagException("Constraints attribute can only be given in combination with type attribute");
-            }
-            NodeManager manager = getCloud().getNodeManager(type.getString(this));
-            NodeList initialnodes;
-
-            initialnodes = parentNode.getRelatedNodes(type.getString(this), (String) role.getValue(this), (String) searchDir.getValue(this));
-
-            StringBuffer where = null;
-            for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
-                Node n = i.nextNode();
-                if (where == null) {
-                    where = new StringBuffer("" +  n.getNumber());
-                } else {
-                    where.append(",").append( n.getNumber());
-                }
-            }
-            if (where == null) { // empty list, so use that one.
-                nodes = initialnodes;
-            } else {
-                where.insert(0, "[number] in (").append(")");
-                if (! constraints.getString(this).equals("")) where.insert(0, "(" + constraints.getString(this) + ") AND ");
-                nodes = manager.getList(where.toString(), orderby.getString(this), directions.getString(this));
-            }
+        Cloud cloud = getCloud();
+        NodeQuery query = cloud.createNodeQuery();
+        Step step1 = query.addStep(parentNode.getNodeManager());
+        query.addNode(step1, parentNode);
+        
+        NodeManager otherManager;
+        if (type == Attribute.NULL) {
+            otherManager = cloud.getNodeManager("object");
         } else {
-            log.debug("no orderby or constraints attributes");
-            if (type == Attribute.NULL) {
-                if (role != Attribute.NULL) {
-                    throw new JspTagException("Must specify type attribute when using 'role'");
-                }
-                log.debug("no nodetype given");
-                nodes = parentNode.getRelatedNodes();
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Getting relatednodes type: " + type.getString(this) + " role: " + role.getValue(this) + " searchDir: " + searchDir.getValue(this));
-                }
-                nodes = parentNode.getRelatedNodes(type.getString(this), 
-                                                   (String) role.getValue(this), 
-                                                   (String) searchDir.getValue(this));
-            }
+            otherManager = cloud.getNodeManager(type.getString(this));
         }
+
+        RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
+        Step step3 = step2.getNext();
+
+        query.setNodeStep(step3);  // define it as NodeQuery
+
+        List orderbys    = orderby.getList(this);
+        List directionss = directions.getList(this);
+        for (int i = 0; i < orderbys.size(); i ++) {
+            String fieldName = (String) orderbys.get(i);
+            int dot = fieldName.indexOf('.');
+            
+            StepField sf;
+            if (dot == -1) {
+                sf = query.getStepField(otherManager.getField(fieldName));
+            } else {
+                String alias = fieldName.substring(0, dot);
+                String field2Name = fieldName.substring(dot + 1);
+                if (! alias.equals(step2.getAlias())) throw new  JspTagException("'" + alias + "' not equal '" + step2.getAlias());
+                sf = query.createStepField(step2, field2Name);
+            }
+
+            int order = SortOrder.ORDER_ASCENDING;
+            if (directionss.size() > i) {
+                String dir = ((String) directionss.get(i)).toUpperCase();
+                if (dir.equals("DOWN")) {
+                    order = SortOrder.ORDER_DESCENDING;
+                }
+            }
+            query.addSortOrder(sf, order);
+        }
+
+        if (constraints != Attribute.NULL) {
+            String s = constraints.getString(this);
+            if (! s.equals("")) {
+                LegacyConstraint con = query.createConstraint(constraints.getString(this));
+                query.setConstraint(con);
+            }
+        }       
+                                           
+        NodeList nodes = cloud.getList(query);
+
         return setReturnValues(nodes, true);
     }
-
 }
 
