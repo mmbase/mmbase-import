@@ -23,7 +23,7 @@
           the same name as the example.
         </p>
         <p>
-          <a href="<mm:url page="install.jsp" />">Demo-application installation page</a>
+          <a href="<mm:url page="install.jsp" />">Demo-application installation page</a> (default name/password is admin/admin2k)
         </p>
         <br />
       </td>
@@ -79,9 +79,9 @@
     </tr>
     
     <tr>
-      <td>Community (requires 'community' module from mmbase-community.jar)</td>
+      <td>Community (requires 'community' module and 'community' taglib from mmbase-community.jar)</td>
       <td>
-        Example of the community-features of MMBase (forum &amp; chat)
+        Example of the community-features of MMBase (forum<!-- &amp; chat-->)
       </td>
       <td class="link" >
         <a href="<mm:url page="community.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
