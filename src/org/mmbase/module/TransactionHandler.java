@@ -36,7 +36,7 @@ import org.xml.sax.*;
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-	private static boolean _debug = false;
+	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static String version="2.3.4";
@@ -250,7 +250,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 			try {			
 				// CREATE TRANSACTION
-				if (tName.equals("createTransaction") || tName.equals("create")) {
+				if (tName.equals("create")) {
 					// Check if the transaction already exists.
 					if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
 						throw new TransactionHandlerException(tName + " transaction already exists id = " + id);
@@ -264,7 +264,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					}
 				} else {
 
-				if (tName.equals("openTransaction") || tName.equals("open")) { 
+				if (tName.equals("open")) { 
 					// TIMEOUT ADJUSTMENT IS NOT ACCORDING TO THE MANUAL
 					// Check if the transaction exists.
 					if (userTransactionInfo.knownTransactionContexts.get(id) == null) {
@@ -275,7 +275,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					currentTransactionContext = transactionInfo.transactionContext;
 				} else {
 
-				if (tName.equals("commitTransaction") || tName.equals("commit")) { 
+				if (tName.equals("commit")) { 
 					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 					// destroy transaction information
 					transactionInfo.stop();	
@@ -283,7 +283,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					continue;
 				} else {
 
-				if (tName.equals("deleteTransaction") || tName.equals("delete")) {
+				if (tName.equals("delete")) {
 					// cancel real transaction
 					transactionManager.cancel(userTransactionInfo.user, id);
 					// get transaction information object
@@ -293,7 +293,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					// continue with next transaction command.
 					continue;
  				} else {
-                    throw new TransactionHandlerException("tag "+ tName + " doesn't exist");
+                    throw new TransactionHandlerException("transaction operator "+ tName + " doesn't exist");
                 } } } }
 
 	
@@ -308,12 +308,19 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				// ENDING TRANSACTION		
 				//if (tName.equals("deleteTransaction")) // this is done above
 				//if (tName.equals("commitTransaction")) // this is done above
-				if (tName.equals("createTransaction") || tName.equals("openTransaction") ||
-						 tName.equals("create") || tName.equals("open")) {
+				if (tName.equals("create") || tName.equals("open")) {
 					if(commit.equals("true")) {
 						transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 						transactionInfo.stop();	
+						if (!anonymousTransaction) {
+							userTransactionInfo.knownTransactionContexts.remove(id);
+						}
 					}
+				} 
+				if (tName.equals("delete") || tName.equals("commit")) {
+						if (!anonymousTransaction) {
+							userTransactionInfo.knownTransactionContexts.remove(id);
+						}
 				} 
 				if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 				// End execution of XML
@@ -426,11 +433,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						throw new TransactionHandlerException(oName + " no MMbase id: ");
 					}
 					// actually get presistent object
-					if (_debug) {
-						debug("#### "+userTransactionInfo.user.getName(),0);
-						debug("#### "+id,0);
-						debug("#### "+oMmbaseId,0);
-					}
+					debug("#### "+userTransactionInfo.user.getName(),0);
+					debug("#### "+id,0);
+					debug("#### "+oMmbaseId,0);
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
@@ -472,7 +477,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					}
 					continue;
 				} else {
-					throw new TransactionHandlerException("tag "+ oName + " doesn't exist");
+					throw new TransactionHandlerException("object operator "+ oName + " doesn't exist");
 				} } } } } } 
 			
 
@@ -488,7 +493,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				}
 				if (oName.equals("openObject")) {
 				}
-				if (oName.equals("copyObject")) {
+				if (oName.equals("accessObject")) {
 				} 
 				
 				if (_debug) {
@@ -603,24 +608,6 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	}
 
 
-	/**
-	 * transactionHandler exception
-	 */
-	class TransactionHandlerException extends Exception {
-		String code = "";
-		String fieldId = "";
-		String fieldOperator = "";
-		String objectOperator = "";
-		String objectId = "";
-		String transactionOperator = "";
-		String transactionId = "";
-		String exceptionPage = "";
-
-		TransactionHandlerException(String s) { 
-			super(s); 
-		}
-	}
-	
 	/** 
 	 * container class for transactions per user
 	 */
