@@ -62,6 +62,16 @@ public class URLComposer  {
     public Format       getFormat()   {
         return Format.get(source.getIntValue("format"));
     }
+
+    /**
+     * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
+     * (Though it normally would be)
+     */
+    public String       getMimeType() {
+        return getFormat().getMimeType();
+    }
+
+    
     
     public String getGUIIndicator(Map options) {
         Locale locale = (Locale) options.get("locale");
