@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.8 2002-09-17 12:06:47 eduard Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.9 2003-02-03 18:18:31 pierre Exp $
  */
 class MultilevelSubscribeNode implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(MultilevelSubscribeNode.class.getName());
@@ -38,16 +38,16 @@ class MultilevelSubscribeNode implements MMBaseObserver {
      * @javadoc
      */
     MultilevelSubscribeNode(MMBase mmb,String type) {
-	// when the type is a role, we need to subscribe
-	// the builder it belongs to..
-	if(mmb.getMMObject(type) == null) {
-	    int builderNumber  = mmb.getRelDef().getNumberByName(type);
-	    String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
-	    log.info("replaced the type: "+type+" with type:" + newType);
-	    type = newType;
-	}
-	mmb.addLocalObserver(type,this);
-	mmb.addRemoteObserver(type,this);
+        // when the type is a role, we need to subscribe
+        // the builder it belongs to..
+        if(mmb.getMMObject(type) == null) {
+            int builderNumber  = mmb.getRelDef().getNumberByName(type);
+            String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
+            log.debug("replaced the type: "+type+" with type:" + newType);
+            type = newType;
+        }
+        mmb.addLocalObserver(type,this);
+        mmb.addRemoteObserver(type,this);
     }
 
     /**
@@ -62,7 +62,7 @@ class MultilevelSubscribeNode implements MMBaseObserver {
      * @javadoc
      */
     public synchronized void clearEntrys() {
-	Vector myqueue=(Vector)queue.clone();
+        Vector myqueue=(Vector)queue.clone();
         for (Enumeration e=myqueue.elements(); e.hasMoreElements(); ) {
             MultilevelCacheEntry n=(MultilevelCacheEntry)e.nextElement();
             // call the entry's clear that will remove all observers
