@@ -86,6 +86,7 @@
 <!ELEMENT search-filter ( name+, search-fields, default? ) >
 
 <!ELEMENT subtitle ( #PCDATA ) >
+<!ATTLIST subtitle xml:lang NMTOKEN #IMPLIED >
 
 <!ELEMENT title ( #PCDATA ) >
 <!ATTLIST title xml:lang NMTOKEN #IMPLIED >
