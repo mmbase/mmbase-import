@@ -92,10 +92,11 @@ public class BasicCloud implements Cloud {
 
  	/**
      * Retrieves all node types (aka builders) available in this cloud
-     * @return an <code>Iterator</code> containing all node types
+     * @return an <code>List</code> containing all node types
      */
-    public Iterator getNodeTypes() {
-       return nodeTypes.values().iterator();
+    public List getNodeTypes() {
+       Vector v = new Vector(nodeTypes.values());
+       return v;
     }
 
 	/**

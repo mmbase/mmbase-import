@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import org.mmbase.module.core.*;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Describes an object in the cloud.
@@ -161,16 +161,16 @@ public interface Node {
 
 	/**
 	 * Retrieve all relations of this node
-	 * @return all relations of Node
+	 * @return a <code>List</code> of all relations of Node
 	 */
-	public Iterator getRelations();
+	public List getRelations();
 
 	/**
 	 *gets all relations of a certain type
 	 * @param type of relation
-	 * @return all relations of the Node of a certain type
+	 * @return a <code>List</code> of all relations of the Node of a certain type
 	 */
-	public Iterator getRelations(String type);
+	public List getRelations(String type);
 	
 	/**
 	 * Count the relations attached to the Node
@@ -186,21 +186,21 @@ public interface Node {
 
 	/**
 	 * Retrieve all related Nodes
-	 * @return all related Nodes
+	 * @return a <code>List</code> of all related Nodes
 	 */
-	public Iterator getRelatedNodes();
+	public List getRelatedNodes();
 
 	/**
 	 * Retrieve all related nodes of a certain type
-	 * @return all related nodes of a certain type
+	 * @return a <code>List</code> of all related nodes of a certain type
 	 */
-	public Iterator getRelatedNodes(String type);
+	public List getRelatedNodes(String type);
 
 	/**
      * Retrieves the aliases of this node
-     * @return an Iterator with the alias anmes
+     * @return a <code>List</code> with the alias anmes
      */
-    public Iterator getAliases();
+    public List getAliases();
 
 	/**
      * Add an alias for this node

@@ -253,9 +253,9 @@ public class BasicNode implements Node {
 
 	/**
 	 * Retrieve all relations of this node
-	 * @return all relations of Node
+	 * @return a code>List</code> of all relations of Node
 	 */
-	public Iterator getRelations() {	
+	public List getRelations() {	
 	    Vector relvector=new Vector();
 	    Enumeration e=node.getRelations() ;
 	    if (e!=null) {
@@ -265,15 +265,15 @@ public class BasicNode implements Node {
 	            relvector.add(node);
 	        }
         }
-        return relvector.iterator();
+        return relvector;
 	};
 
 	/**
 	 *gets all relations of a certain type
 	 * @param type of relation
-	 * @return all relations of the Node of a certain type
+	 * @return a code>List</code> of all relations of the Node of a certain type
 	 */
-	public Iterator getRelations(String type) {
+	public List getRelations(String type) {
 	    Vector relvector=new Vector();
 	    int rType=mmb.getRelDef().getGuessedNumber(type);
 	    Enumeration e=node.getRelations() ;
@@ -286,7 +286,7 @@ public class BasicNode implements Node {
 	            }
 	        }
 	    }
-        return relvector.iterator();
+        return relvector;
 	};
 
 	/**
@@ -294,7 +294,7 @@ public class BasicNode implements Node {
 	 * @return number of relations
 	 */
 	public int countRelations() {
-	    return node.getRelationCount();
+	    return getRelations().size();
 	};
 
 	/**
@@ -302,26 +302,14 @@ public class BasicNode implements Node {
 	 * @return number of relations of a specific type
 	 */
 	public int countRelations(String type) {
-	    // this doesn't work, obviously...
-	    int count=0;
-	    int rType=mmb.getRelDef().getGuessedNumber(type);
-	    Enumeration e=node.getRelations() ;
-	    if (e!=null) {
-	        while (e.hasMoreElements()) {
-	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            if (mmnode.getIntValue("rnumber")==rType) {
-	                count++;
-	            }
-	        }
-	    }
-        return count;
+        return getRelations(type).size();
 	};
 
 	/**
 	 * Retrieve all related Nodes
-	 * @return all related Nodes
+	 * @return a code>List</code> of all related Nodes
 	 */
-	public Iterator getRelatedNodes() {
+	public List getRelatedNodes() {
 	    Vector relvector=new Vector();
 	    Enumeration e=node.getRelatedNodes().elements();
 	    if (e!=null) {
@@ -331,14 +319,14 @@ public class BasicNode implements Node {
 	            relvector.add(node);
 	        }
 	    }
-        return relvector.iterator();
+        return relvector;
 	};
 
 	/**
 	 * Retrieve all related nodes of a certain type
-	 * @return all related nodes of a certain type
+	 * @return a code>List</code> of all related nodes of a certain type
 	 */
-	public Iterator getRelatedNodes(String type) {
+	public List getRelatedNodes(String type) {
 	    Vector relvector=new Vector();
 	    Enumeration e=node.getRelatedNodes(type).elements();
 	    if (e!=null) {
@@ -348,23 +336,23 @@ public class BasicNode implements Node {
 	            relvector.add(node);
 	        }
 	    }
-        return relvector.iterator();
+        return relvector;
     }
 
 	/**
      * Retrieves the aliases of this node
-     * @return an Iterator with the alias names
+     * @return a code>List</code> with the alias names
      */
-    public Iterator getAliases() {
-	    Vector relvector=new Vector();
+    public List getAliases() {
+	    Vector aliasvector=new Vector();
 	    OAlias alias=mmb.OAlias;
 	    if (alias!=null) {
 	        for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNodeID()); e.hasMoreElements();) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            relvector.add(node.getStringValue("name"));
+	            aliasvector.add(node.getStringValue("name"));
 	        }
 	    }
-        return relvector.iterator();
+        return aliasvector;
     };
 
 	/**

@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import org.mmbase.module.core.*;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * This interface represents a node's type information object - what used to be the 'builder'.
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * some information on deribed and deriving types.
  * Since node types are normally maintained through use of config files (and not in the database),
  * as wel as for security issues, the data of a nodetype cannot be changed except through
- * the use of an administration module (whcih is why we do not include setXXX methods here).
+ * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
@@ -57,18 +57,20 @@ public interface NodeType {
 	public String getDescription(String language);
 
 	/** 
-	 * Retireve the description of the nodetype
+	 * Retrieve the description of the nodetype
 	 */
 	public String getDescription();
 
 	/**
 	 * Retrieve all field of this nodetype
 	 * @param language the language in which you want the fields
+	 * @return a <code>List</code> of field names as <code>String</code>
 	 */
-	public Iterator getFields(String language);
+	public List getFields(String language);
 
 	/** 
 	 * Retrieve all fields of this nodetype (in the default language defined in mmbaseroot.xml)
+	 * @return a <code>List</code> of field names as <code>String</code>
 	 */
-	public Iterator getFields();
+	public List getFields();
 }

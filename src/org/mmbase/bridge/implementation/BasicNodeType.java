@@ -111,22 +111,24 @@ public class BasicNodeType implements NodeType {
 
 	/**
 	 * Retrieve all field of this nodetype
-	 * @param language the language in which you want the fields
+	 * @param the language in which you want the fields
+	 * @return a <code>List</code> of field names
 	 */
-	public Iterator getFields(String language) {
+	public List getFields(String language) {
 	    Vector res= new Vector();
 	    for(Iterator i=builder.getFields().iterator(); i.hasNext();){
 	        FieldDefs f=(FieldDefs)i.next();
 	        String tmp=f.getGUIName(language);	
 	        res.add(tmp);
 	    }
-	    return res.iterator();
+	    return res;
 	}
 
 	/** 
 	 * Retrieve all fields of this nodetype (in the default language defined in mmbaseroot.xml)
+	 * @return a <code>List</code> of field names
 	 */
-	public Iterator getFields() {
+	public List getFields() {
 	    return getFields(((BasicCloudContext)cloud.getCloudContext()).mmb.getLanguage());
 	}
 }

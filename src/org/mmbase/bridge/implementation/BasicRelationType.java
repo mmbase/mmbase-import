@@ -48,7 +48,8 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
   	}
 
     /**
-     * Gets a new (initialized) node
+     * Creates a new initialized relation node
+     * @return a node of type <code>Relation</code>
      */
     public Node createNode() {
         MMObjectNode node= builder.getNewNode("system");
@@ -60,16 +61,16 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
     }
 	
 	/**
-	 * gets the role of the source to the destination
-	 * @return the role
+	 * Retrieves the role of the source to the destination
+	 * @return the role as a <code>String</code>
 	 */
 	public String getForwardRole() {
 	    return relDefNode.getStringValue("sname");
 	}
 
 	/**
-	 * gets the role of the destination to the source
-	 * @return the role
+	 * Retrieves the role of the destination to the source
+	 * @return the role as a <code>String</code>
 	 */
 	public String getReciprocalRole() {
 	    return relDefNode.getStringValue("dname");

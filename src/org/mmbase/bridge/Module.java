@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Iterator;
 
 /**
  * Modules are pieces of functionality that are not MMBase objects.
