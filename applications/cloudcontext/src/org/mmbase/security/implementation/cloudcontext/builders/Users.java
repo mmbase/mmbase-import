@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.34 2005-03-16 23:46:17 michiel Exp $
+ * @version $Id: Users.java,v 1.35 2005-03-22 09:33:53 pierre Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -302,12 +302,9 @@ public class Users extends MMObjectBuilder {
         return res;
     }
 
-
-
     /**
      * @see org.mmbase.security.implementation.cloudcontext.User#getOwnerField
      */
-
     public String getDefaultContext(MMObjectNode node)  {
         return node.getNodeValue(FIELD_DEFAULTCONTEXT).getStringValue("name");
     }
@@ -476,7 +473,18 @@ public class Users extends MMObjectBuilder {
         if (ctype.equals("d")) {
             int nodeNumber = Integer.parseInt(number);
             invalidateCaches(nodeNumber);
-        } else if (ctype.equals("c")) {
+        } else if (ctype.equals("r")) {
+            MMObjectNode node = getNode(number);
+            Map ranks = new HashMap();
+            Iterator i = rankCache.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
+                if (cacheNode.getNumber() == node.getNumber()) {
+                    i.remove();
+                }
+            }
+        } else if (ctype.equals("c") || ctype.equals("r")) {
             MMObjectNode node = getNode(number);
 
             Map ranks = new HashMap();
@@ -489,24 +497,26 @@ public class Users extends MMObjectBuilder {
                     i.remove();
                 }
             }
-            rankCache.putAll(ranks);
 
-            Map users = new HashMap();
-            i = userCache.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                Object value = entry.getValue();
-                if (value == null) {
-                    i.remove();
-                } else {
-                    MMObjectNode cacheNode = (MMObjectNode) value;
-                    if (cacheNode.getNumber() == node.getNumber()) {
-                        users.put(entry.getKey(), node);
+            if (ctype.equals("c")) {
+                rankCache.putAll(ranks);
+                Map users = new HashMap();
+                i = userCache.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    Object value = entry.getValue();
+                    if (value == null) {
                         i.remove();
+                    } else {
+                        MMObjectNode cacheNode = (MMObjectNode) value;
+                        if (cacheNode.getNumber() == node.getNumber()) {
+                            users.put(entry.getKey(), node);
+                            i.remove();
+                        }
                     }
                 }
+                userCache.putAll(users);
             }
-            userCache.putAll(users);
         }
         return true;
 
