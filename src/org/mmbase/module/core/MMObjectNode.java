@@ -19,8 +19,6 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.gui.html.*;
 import org.mmbase.util.logging.*;
 
-
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
@@ -33,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.59 $ $Date: 2002-02-26 16:21:25 $
+ * @version $Revision: 1.60 $ $Date: 2002-02-27 09:33:32 $
  */
 
 public class MMObjectNode {
@@ -232,7 +230,7 @@ public class MMObjectNode {
      * @param fieldValue the value to assign
      */
     protected void storeValue(String fieldName,Object fieldValue) {
-        values.put(fieldName,fieldValue);
+        values.put(fieldName, fieldValue);
     }
 
     /**
@@ -268,11 +266,13 @@ public class MMObjectNode {
 	Object originalValue = values.get(fieldName);
         
         // if we have an XML-dbtype field, we always have to store it inside an Element.
-        if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Element)) {
+        if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
+            log.debug("im called far too often");
             fieldValue = convertStringToXml(fieldName, (String) fieldValue);
         }
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
+        
         // process the changed value (?)
         if (parent != null) {
 	    if(!parent.setValue(this,fieldName, originalValue)) {
@@ -456,9 +456,9 @@ public class MMObjectNode {
             if (o instanceof byte[]) {
                 tmp = new String((byte[])o);
             } 
-            else if(o instanceof Element) {
+            else if(o instanceof Document) {
                 // 
-                tmp = convertXmlToString(fieldName, (Element) o );
+                tmp = convertXmlToString(fieldName, (Document) o );
             }
             else {
                 tmp=""+o;
@@ -530,88 +530,15 @@ public class MMObjectNode {
     /**
      * @see getXMLValue
      */
-    public Element getXMLValue(String fieldName, Document tree) {
+    public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
 
-        Element field; // the DOM field to be returned.
-
-        org.mmbase.module.corebuilders.FieldDefs mmfield = parent.getField(fieldName);
-
-        // create the field
-        field = tree.createElement("field");    	
-
-        org.w3c.dom.Attr attr;
-        // the name...
-        attr = tree.createAttribute("name");
-        attr.setValue(fieldName);
-        field.setAttributeNode(attr);
-
-        // guilist, necessary to make generic presenter of the node:
-        attr = tree.createAttribute("guilist");
-        attr.setValue("" + mmfield.getGUIList());
-        field.setAttributeNode(attr);
-        
-        // the format
-        attr = tree.createAttribute("format");
-        attr.setValue(mmfield.getDBTypeDescription());
-        field.setAttributeNode(attr);            
-
-        org.w3c.dom.Node subField;
-
-        if (!(o instanceof Element)) {
-            // do conversion from string to Element thing...
+        if (!(o instanceof Document)) {
+            // do conversion from string to Document thing...
+            log.debug("Strange, i expected that the field would contain an xml object");
             o = convertStringToXml(fieldName, (String) o);
-            if(!(o instanceof Element)) {
-                throw new RuntimeException("conversion failed...");
-            }
         }
-        subField = (Element) o;
-        if (subField.getOwnerDocument() != tree) { // it is not in this tree, copy it in:
-            subField = tree.importNode(subField, true);
-        }
-        field.appendChild(subField);        
-        return field;
-    }
-
-    /**
-     * Get a value of a field.
-     * The value is returned as a DOM element 'field'. Non-XML values are automatically converted to DOM Element.
-     *
-     * The format is rather basic. All non XML fields will be converted to 'field's. 
-     *
-     * @param fieldName the name of the field who's data to return
-     * @return          the field's value as a DOM <code>Element</code> or <code>null</code>
-     * @throws          
-     */
-    public Element getXMLValue(String fieldName) {
-        // try to get the value from the values table
-        Object o = getValue(fieldName);
-        if(o == null) {
-            if(log.isDebugEnabled()) {
-                log.debug("object was null");
-            }
-            return null;
-        } 
-        if (o instanceof Element) {
-            if(log.isDebugEnabled()) {
-                log.debug("object was instance of Element");
-            }
-            return (Element) o;
-        } 
-        try {
-            if(log.isDebugEnabled()) {
-                log.debug("calling the getXML with an new document");
-            }
-            // validateXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
-            // or ask it from BasicReader ?
-            javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();    	    
-            javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-            Document tree = documentBuilder.newDocument();
-            return getXMLValue(fieldName, tree);
-        } catch(javax.xml.parsers.ParserConfigurationException pce) {
-            log.error(pce);
-            return null;
-        }
+        return (Document) o;
     }
 
     /**
@@ -1319,7 +1246,8 @@ public class MMObjectNode {
         return relation_cache_miss;
     }
     
-    private Element convertStringToXml(String fieldName, String value) {
+    private Document convertStringToXml(String fieldName, String value) {
+        log.debug("converting from string to xml");
         // Depending on the gui type choose conversion....    
         if (value.indexOf("<") != 0) { // not XML, make it XML
             // for the moment only mmxf is supported.
@@ -1334,16 +1262,12 @@ public class MMObjectNode {
         // TODO: RE-USE THE PARSER EVERY TIME !    //
         if(parent.getField(fieldName).getGUIType().equals("mmxf")) {
             // when the doc-type wasnt there... set it...
-            
-            // if no header,... attach it...
-            if(value.indexOf("<?xml") != 0) {
-                if(log.isDebugEnabled()) {
-                    log.debug("adding doctype and header, for mmxf thing");
-                }
-                String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
-                String xmlDocType = "<!DOCTYPE mmxf PUBLIC \"//MMBase - mmxf//\" \"http://www.mmbase.org/dtd/mmxf.dtd\">";
-                value = xmlHeader + "\n" + xmlDocType + "\n" + value;
+            if(value.indexOf("<?xml") == 0) {
+                log.warn("incorrect xml?");
             }
+            String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
+            String xmlDocType = "<!DOCTYPE mmxf PUBLIC \"//MMBase - mmxf//\" \"http://www.mmbase.org/dtd/mmxf.dtd\">";
+            value = xmlHeader + "\n" + xmlDocType + "\n" + value;
         }
         else {
             // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
@@ -1364,7 +1288,7 @@ public class MMObjectNode {
             if (log.isDebugEnabled()) { 
                 log.debug("string -> xml:\n" + value);
             }                                                
-            return documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding()))).getDocumentElement();
+            return documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding())));
         }
         catch(javax.xml.parsers.ParserConfigurationException pce) {
 	    String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
@@ -1379,11 +1303,27 @@ public class MMObjectNode {
         catch(java.io.IOException ioe) {
 	    String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(ioe);
             log.error(msg);
-	    throw new RuntimeException(msg);					
+	    throw new RuntimeException(msg);
         }
     }
     
-    private String convertXmlToString(String fieldName, Element xml) {
+    private String convertXmlToString(String fieldName, Document xml) {
+        log.debug("converting from xml to string");
+        // check if we are using the right DOC-type for this field....
+        org.w3c.dom.DocumentType docType =  xml.getDoctype();
+        if(parent.getField(fieldName).getGUIType().equals("mmxf")) {
+            if(!docType.getName().equals("mmxf")) {
+	        throw new RuntimeException("invalid xml name in doctype('"+docType.getName()+"')");
+            }
+            if(!docType.getSystemId().equals("http://www.mmbase.org/dtd/mmxf.dtd")) {
+	        throw new RuntimeException("invalid system id in the doctype('"+docType.getSystemId()+"')");
+            }
+        }
+        else {
+            // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
+            // till that time, we only accept as guitype 'mmxf', when not, we will put an message in the log
+            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + ")");            
+        }
         try {
             //make a string from the XML
             javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
