@@ -13,6 +13,7 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
 import java.net.URL;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
 import org.mmbase.util.media.*;
 import org.mmbase.util.logging.Logger;
@@ -29,7 +30,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.12 2003-03-19 16:03:23 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.13 2003-04-03 13:13:31 michiel Exp $
 * @since MMBase-1.7
  */
 
@@ -273,7 +274,7 @@ public class MediaFragments extends MMObjectBuilder {
     protected boolean addParentFragment(Stack fragments) {
         MMObjectNode fragment = (MMObjectNode) fragments.peek();
         int role = mmb.getRelDef().getNumberByName("posrel");
-        org.mmbase.module.corebuilders.InsRel insrel =  mmb.getRelDef().getBuilder(role);
+        InsRel insrel =  mmb.getRelDef().getBuilder(role);
         Enumeration e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
         while (e.hasMoreElements()) {
             MMObjectNode relation = (MMObjectNode) e.nextElement();
@@ -288,14 +289,12 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return false;
     }
-
+    
     /**
      * Returns a Stack with all parent fragments. Starts stacking from
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
      */
-
-
     public Stack getParentFragments(MMObjectNode fragment) {
         Stack result = new Stack();
         result.push(fragment);
@@ -308,7 +307,9 @@ public class MediaFragments extends MMObjectBuilder {
 
 
     /**
-     * Find the mediafragment of which the given mediafragment is a part. This fragment is not a subfragment.
+     * Find the mediafragment of which the given mediafragment is a
+     * part. This fragment is not a subfragment itself, and should be
+     * linked to the actual sources.
      * 
      * @param mediafragment sub media fragment
      * @return The parent media fragment or null if it has not.

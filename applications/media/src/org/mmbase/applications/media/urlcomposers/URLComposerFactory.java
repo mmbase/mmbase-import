@@ -31,7 +31,7 @@ import java.lang.reflect.*;
  * format/protocol combination to a URLComposer class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.12 2003-03-21 13:31:36 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.13 2003-04-03 13:13:31 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -44,6 +44,8 @@ public class URLComposerFactory  {
     private static final String COMPOSER_TAG = "urlcomposer";
     private static final String FORMAT_ATT   = "format";
     private static final String PROTOCOL_ATT   = "protocol";
+
+    public static final  String CONFIG_FILE = "media" + File.separator + "urlcomposers.xml";
 
     private static final Class defaultComposerClass = URLComposer.class;
 
@@ -111,8 +113,7 @@ public class URLComposerFactory  {
      * Construct the factory, which is a Singleton.
      */
     private URLComposerFactory() {
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), 
-                                   "media" + File.separator + "urlcomposers.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), CONFIG_FILE);
         if (! configFile.exists()) {
             log.error("Configuration file for URLComposerFactory " + configFile + " does not exist");
             return;
