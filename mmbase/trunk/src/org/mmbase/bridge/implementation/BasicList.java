@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.10 2003-02-26 10:50:13 pierre Exp $
+ * @version $Id: BasicList.java,v 1.11 2003-02-26 11:17:17 pierre Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
@@ -90,61 +90,50 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public abstract class BasicIterator implements ListIterator {
-        protected BasicList list;
-        protected int index=-1;
+        protected ListIterator iterator;
 
-        BasicIterator(BasicList list) {
-            this.list = list;
+        BasicIterator(List list) {
+            this.iterator = list.listIterator();
         }
 
         public boolean hasNext() {
-            return  index < (list.size()-1);
+            return  iterator.hasNext();
         }
 
         public boolean hasPrevious() {
-            return index > 0;
+            return  iterator.hasPrevious();
         }
 
         public int nextIndex() {
-            return index + 1;
+            return iterator.nextIndex();
         }
+
         public int previousIndex() {
-            return index - 1;
+            return iterator.previousIndex();
         }
 
         public void remove() {
-            list.remove(index);
-            index=index-1;
+            iterator.remove();
         }
 
         // These have to be implemented with a check if o is of the right type.
         public void set(Object o) {
-            list.set(index, o);
+            iterator.set(o);
         }
 
         public void add(Object o) {
-            list.add(index, o);
+            iterator.add(o);
         }
 
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
         public Object next() {
-            index++;
-            if (index>=list.size()) {
-                index = list.size()+1;
-                throw new NoSuchElementException("Object does not exist in this list");
-            } else {
-                return list.get(index);
-            }
+            return iterator.next();
         }
 
         public Object previous() {
-            index--;
-            if (index < 0) {
-                throw new NoSuchElementException("Object does not exist in this list");
-            }
-            return list.get(index);
+            return iterator.previous();
         }
 
     }
