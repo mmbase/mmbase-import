@@ -5,12 +5,13 @@
 <%@ page import="java.io.Writer" %>
 <%@ page import="org.w3c.dom.Document" %>
 <%@ page import="org.w3c.dom.Node" %>
+<mm:content type="text/html" expires="0" language="en">
 <%
     /**
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.9 2003-12-11 10:41:34 vpro Exp $
+     * @version  $Id: debug.jsp,v 1.10 2004-05-24 14:02:41 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -48,4 +49,4 @@
     }
 
 %>
-
+</mm:content>

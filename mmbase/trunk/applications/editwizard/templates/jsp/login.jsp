@@ -3,7 +3,8 @@
 <title>Login</title>
 <link href="../style/login.css" type="text/css" rel="stylesheet"/>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%></head>
+%></head
+<mm:content type="text/html" expires="0">
 <body>
   <mm:import externid="reason">please</mm:import>
   <mm:import externid="referrer" required="true" />
@@ -22,5 +23,6 @@
     </table>
       </form>
 </body>
+</mm:content>
 </html>
 
