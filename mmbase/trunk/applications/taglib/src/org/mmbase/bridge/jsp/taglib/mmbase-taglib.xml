@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.211 2003-11-05 15:42:28 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.212 2003-11-08 16:55:42 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4090,13 +4090,45 @@ Of course, the default behavior of getSmartPath can still be overridden.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
+        <p>
 				The format attribute specifies how to display the time. If the
 				format attribute is not used the time will be displayed in
 				seconds from EPOC. The syntax of the format attribute is
 				identical to the syntax of the inputformat attribute. Instead
 				of using the format attribute you can also use the MMBase
 				formatter taglib.
-			</info>
+        </p>
+        <p>
+          Alternatively, you can also symbolicly indicate how verbosely the date and or time must be
+          presented. You do this by starting this string with a semicolon (:) followed by one or two
+          constants separated by a dot. The first constant is for the date part, the second for the
+          time part. Both these constants can take the following values 'FULL', 'LONG', 'MEDIUM' and 'SHORT'.
+       </p>
+      </info>
+			<possiblevalue>
+				<value>%y</value>
+				<info>
+          Only the year part of the speficied time
+				</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>:FULL.FULL</value>
+				<info>
+          Fully specified date and time formatted according to the present Locale.
+				</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>:MEDIUM</value>
+				<info>
+          Mediumly verbosely specified localized date.
+				</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>%MM/%dd/%yyyy</value>
+				<info>
+          Gives e.g. 11/20/2003.
+				</info>
+			</possiblevalue>
 		</attribute>
 		<attribute>
 			<name>precision</name>
