@@ -24,11 +24,11 @@
       <table width="100%" cellpadding="5">
         <tr>
           <td width="30"></td>
-          <td>
+	    <td>
             <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
           </td>
           <td width="30"></td>
-        </tr>
+          </tr>
         <tr>
           <td></td>
           <td><xsl:apply-templates select="info"/></td>
@@ -104,6 +104,18 @@
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
 
+<xsl:template match="tag|taginterface" mode="tocext">
+  <xsl:param name="testlast">false</xsl:param>
+  <xsl:variable name="n"><xsl:value-of select="name" /></xsl:variable>
+  <xsl:apply-templates select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" mode="tocext" />
+   <xsl:if test="name()='tag'">
+     <a href="#{name}">
+     <xsl:value-of select="name" />  
+     </a>
+     <xsl:if test="(position() != last()) or ($testlast='false')"> | </xsl:if>     
+   </xsl:if>
+</xsl:template>
+
 <xsl:template match="see">
   <a href="#{.}">
       <xsl:value-of select="." />
@@ -159,8 +171,13 @@
 	<xsl:if test="name()='taginterface'">
 	<tr>
     <td>tags of this type</td><td>
-      <xsl:variable name="n" select="name" />
-      <xsl:apply-templates select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" mode="toc" ><xsl:sort select="name" /></xsl:apply-templates>
+            <xsl:variable name="n" select="name" />
+            <xsl:apply-templates
+              select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" 
+              mode="tocext" >
+              <xsl:with-param name="testlast">true</xsl:with-param>
+              <xsl:sort select="name" />
+            </xsl:apply-templates>
      </td>
     </tr>  
     </xsl:if>
