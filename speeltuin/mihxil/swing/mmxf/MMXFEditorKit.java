@@ -14,9 +14,13 @@ import java.util.*;
 
 public class MMXFEditorKit extends StyledEditorKit {
 
+    private void debug(String s) {
+        System.out.println("LOG MMXFEDITORKIT " + s);
+    }
+
     public MMXFEditorKit() {
         super();
-        // System.out.println("MMXF EditorKit constructor");
+        // debug("MMXF EditorKit constructor");
     }
 
     public String getContentType() {
@@ -33,16 +37,32 @@ public class MMXFEditorKit extends StyledEditorKit {
 	return new MMXFDocument();
     }
 
+
+    /**
+     *  The view factory used for this thing.
+     *
+     */
+
     private static final XMLViewFactory defaultFactory = new XMLViewFactory();
+
+    /**
+     *
+     */
     public ViewFactory getViewFactory() {
 	return defaultFactory;
     }
 
+    /**
+     * 
+     */
     public void read(Reader in, Document doc, int pos) throws IOException, BadLocationException {
-        System.out.println("reading mmxfe");
+        debug("reading mmxf");
         ((MMXFDocument) doc).read(in, pos);        
     }
 
+    /**
+     * Write the content of this editor to a Writer.
+     */
 
     public void write(Writer out, Document doc, int pos, int len) throws IOException, BadLocationException {
         MMXFWriter w = new MMXFWriter(out, (MMXFDocument) doc, pos, len);
