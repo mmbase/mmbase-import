@@ -38,7 +38,7 @@ public class CDs extends MMObjectBuilder {
 	*/
 	public MMObjectNode getNewNode(String owner) {
 		MMObjectNode node=super.getNewNode(owner);
-		readCDInfo();
+		// readCDInfo();
 		if (diskid!=null) node.setValue("discId",diskid);
 		if (nrtracks!=-1) node.setValue("nrTracks",nrtracks);
 		if (playtime!=-1) node.setValue("playtime",playtime);
