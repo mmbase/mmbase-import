@@ -13,16 +13,10 @@
 <mm:import id="nodetype">mmbasegroups</mm:import>
 <mm:import id="fields">name,description,owner</mm:import>
 <body>
- <h1>Administrate groups</h1>
-
  <%@include file="you.div.jsp" %>
-
- <div id="navigate">
-   <p><a href="<mm:url page="index.jsp" />">Users</a></p>
-   <p class="current"><a href="<mm:url />">Groups</a></p>
-   <p><a href="<mm:url page="index_contexts.jsp" />">Contexts</a></p>
-   <p><a target="_new" href="<mm:url page="help.jsp" />">Help</a></p>
- </div>
+ <mm:import id="current">groups</mm:import>
+ <%@include file="navigate.div.jsp" %>
+ <%@include file="you.div.jsp" %>
  
   <p class="action">
     <mm:maycreate type="mmbasegroups">

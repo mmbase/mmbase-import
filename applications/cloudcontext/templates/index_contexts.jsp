@@ -13,17 +13,10 @@
 <mm:import id="nodetype">mmbasecontexts</mm:import>
 <mm:import id="fields">name,description,owner</mm:import>
 <body>
- <h1>Administrate contexts</h1>
-
  <%@include file="you.div.jsp" %>
+ <mm:import id="current">contexts</mm:import>
+ <%@include file="navigate.div.jsp" %>
 
- <div id="navigate">
-   <p><a href="<mm:url page="index.jsp" />">Users</a></p>
-   <p><a href="<mm:url page="index_groups.jsp" />">Groups</a></p>
-   <p class="current"><a href="<mm:url page="index_contexts.jsp" />">Contexts</a></p>
-   <p><a target="_new" href="<mm:url page="help.jsp" />">Help</a></p>
- </div>
- 
   <p class="action">
    <mm:maycreate type="mmbasecontexts">
     <a href="<mm:url page="create_context.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create context"  /></a>
