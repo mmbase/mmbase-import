@@ -43,7 +43,7 @@ public class JCrontabModule extends ReloadableModule {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             String value = (String) entry.getValue();
-            String[] tokens = value.trim().split("[\t\n|]");
+            String[] tokens = value.trim().split("[\n|]");
             String times;
             if (tokens.length > 0) {
                 times = tokens[0].trim();
