@@ -166,7 +166,7 @@ public class MMBase extends ProcessorModule  {
 			while (t.hasMoreElements()) {
 				MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
 				String name=fbul.getTableName();
-				System.out.println("WRITING BUILDER FILE ="+writerpath+"/"+name);
+				if (debug) debug("WRITING BUILDER FILE ="+writerpath+"/"+name);
 				if (!name.equals("multirelations")) {
 					XMLBuilderWriter.writeXMLFile(writerpath+"/"+fbul.getTableName()+".xml",fbul);
 				}
@@ -192,7 +192,7 @@ public class MMBase extends ProcessorModule  {
 	 * general info like dates, times, browser info etc etc
 	 */
 	public MMBase() {
-		debug("MMBase constructed");
+		if (debug) debug("MMBase constructed");
 	}
 
 	/**
@@ -273,7 +273,6 @@ public class MMBase extends ProcessorModule  {
 	 * interface calls. Use very sparingly
 	 */
 	public Connection getDirectConnection() {
-		debug(" getDirectConnection()");
 		try {
 			Connection con=jdbc.getDirectConnection(jdbc.makeUrl());
 			return(con);
@@ -348,7 +347,6 @@ public class MMBase extends ProcessorModule  {
         Date lastmod;
         String rtn=null;
 
-		//debug("MMBase -> Opening file:"+file); 
         scanfile = new File(file);
         filesize = (int)scanfile.length();
         lastmod=new Date(scanfile.lastModified());
@@ -548,7 +546,7 @@ public class MMBase extends ProcessorModule  {
 
 		String status=parser.getStatus();
 		if (status.equals("active")) {
-			debug(" Starting builder XML : "+objectname);
+			debug(" Starting builder : "+objectname);
 			try {
 				// is it a full name or inside the org.mmase.* path
 				int pos=classname.indexOf('.');
