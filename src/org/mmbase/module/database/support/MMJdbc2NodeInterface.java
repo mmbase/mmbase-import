@@ -53,4 +53,7 @@ public interface MMJdbc2NodeInterface {
 	public String getOTypeString();
 	public boolean drop(MMObjectBuilder bul);
 	public boolean updateTable(MMObjectBuilder bul);
+	public boolean addField(MMObjectBuilder bul,String dbname);
+	public boolean removeField(MMObjectBuilder bul,String dbname);
+	public boolean changeField(MMObjectBuilder bul,String dbname);
 }
