@@ -12,7 +12,8 @@
  
 <mm:node number="$student">
   <tr>
-    <td><mm:field name="firstname"/> <mm:field name="lastname"/></td>
+    <td>
+    <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="$referids,student"/>"><mm:field name="firstname"/> <mm:field name="lastname"/></a></td>
     <td>
         <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="student"><mm:write referid="student"/></mm:param>
@@ -76,24 +77,24 @@
             	   <td class="td_test_tbs"><a href="<mm:treefile page="/education/tests/rateopen.jsp" objectlist="$includePath" referids="$referids">
                         <mm:param name="studentNo"><mm:write referid="student"/></mm:param>
                         <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
-                   </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?"></a></td>
+                   </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?" border="0"></a></td>
                  </di:hasrole>
                  <di:hasrole role="teacher" inverse="true">
-                     <td class="td_test_tbs"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?"></td>
+                     <td class="td_test_tbs"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?" border="0"></td>
                  </di:hasrole>
              </mm:compare>
             
              <mm:compare referid="teststatus" value="passed">
-       	             <td class="td_test_tbs"><img src="<mm:treefile page="/progress/gfx/checked.gif" objectlist="$includePath" referids="$referids"/>" alt="Ok"></td>
+       	             <td class="td_test_tbs"><img src="<mm:treefile page="/progress/gfx/checked.gif" objectlist="$includePath" referids="$referids"/>" alt="Ok" border="0"></td>
              </mm:compare>
              
              <mm:compare referid="teststatus" value="failed">
-       	             <td class="td_test_failed"><img src="<mm:treefile page="/progress/gfx/box.gif" objectlist="$includePath" referids="$referids"/>" alt=""></td>
+       	             <td class="td_test_failed"><img src="<mm:treefile page="/progress/gfx/box.gif" objectlist="$includePath" referids="$referids"/>" alt="" border="0"></td>
        	     </mm:compare>
             
         </mm:compare>
          <mm:compare referid="teststatus" value="incomplete" >
-           <td class="td_test_not_done"><img src="<mm:treefile page="/progress/gfx/box.gif" objectlist="$includePath" referids="$referids"/>" alt=""></td>
+           <td class="td_test_not_done"><img src="<mm:treefile page="/progress/gfx/box.gif" objectlist="$includePath" referids="$referids"/>" alt="" border="0"></td>
          </mm:compare>
         <mm:remove referid="madetestscore"/>
          <mm:remove referid="save_madetestscore"/>
