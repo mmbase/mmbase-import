@@ -23,7 +23,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.3 2003-12-23 19:58:19 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.4 2003-12-29 16:36:57 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -284,7 +284,7 @@ public class ValueIntercepter {
 
         int type = field.getType();
 
-        log.info("processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+        //log.info("processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
 
         Processor processor;
         Map map = setProcessor[type][setType];
