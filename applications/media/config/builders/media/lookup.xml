@@ -2,31 +2,10 @@
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
 
-<!-- <status>
-    what is the status of this builder options : active or inactive
--->
 <status>active</status>
-
-<!-- <classfile>
-    This is a optional tag, it names the classfile that allows you to add
-    support routines or changes them on a per builder base. For example
-    images has routines to image support etc etc.
-
-    possible values : Dummy or disabled tag makes mmbase use the default setup
-
-        short name : Urls will start class : org.mmbase.module.builders.Urls.class
-
-        long name : nl.vpro.mmbase.module.builders.Urls will start that class
--->
-<classfile>Dummy</classfile>
 
 <searchage>200</searchage>
 
-<!-- <names>
-    names defines the different names used in user visible parts, singular for
-    for talking about 1 object (Url,Person) and plurar for talking about multiple
-    <Urls, people).
->-->
 <names>
     <!-- singles per language  as defined by RFC xxx -->
     <singular xml:lang="en">Lookup</singular>
@@ -36,20 +15,11 @@
     <plural xml:lang="nl">Lookup</plural>
 </names>
 
-<!-- <descriptions>
-    small description of the builder for human reading
--->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
     <description xml:lang="en">The lookup builder resolves a word by a given number</description>
     <description xml:lang="nl">De lookup builder vind een woord bij een nummertje</description>
 </descriptions>
 
-<!-- <fieldlist>
-     defines the different fields in this object, be carefull the order is important
-    once defined keep them in the same order.
-    If you use number and owner (the 2 default fields, please check the docs for this)
--->
 <fieldlist>
     <!-- POS 4 : <field> 'key'  -->
     <field>
