@@ -105,6 +105,29 @@ public class XMLContextDepthReader  {
 
     /**
     */
+    public String getStartAlias() {
+	Hashtable table=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("startnode")) {
+				NamedNodeMap nm=n2.getAttributes();
+				if (nm!=null) {
+					Node n4=nm.getNamedItem("alias");
+					if (n4!=null) return(n4.getNodeValue());
+				}
+
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(null);
+    }
+
+
+    /**
+    */
     public String getStartWhere() {
 	Hashtable table=new Hashtable();
 	Node n1=document.getFirstChild();
