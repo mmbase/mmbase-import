@@ -16,6 +16,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -33,6 +34,7 @@ import org.mmbase.util.logging.Logging;
 public class WriteTag extends ContextReferrerTag implements Writer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
+    public static String COOKIE_PATH    = "/";
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
 
     protected WriterHelper helper = new WriterHelper();
@@ -139,13 +141,13 @@ public class WriteTag extends ContextReferrerTag implements Writer {
 
 
             {  // on root (keep things simple)
-                Cookie c = new Cookie(cookie, cookievalue);
+                Cookie c = new Cookie(cookie.getString(this), cookievalue);
                 c.setPath(COOKIE_PATH);               
                 c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
             }
             if (cookiecount > 1) { //also in current dir (in case it was there already)
-                Cookie c = new Cookie(cookie, cookievalue);
+                Cookie c = new Cookie(cookie.getString(this), cookievalue);
                 c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
             }
