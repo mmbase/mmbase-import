@@ -46,7 +46,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="test.arg"     value="" />
   <property name="compile.excludes" value="" />
 
-  <property name="project.jar" value="${project.build.dir}/${project.name}.jar"/>
+  <property name="project.jar.dir" value="${project.build.dir}" />
+  <property name="project.jar" value="${project.jar.dir}/${project.name}.jar"/>
 
   <target name="init" depends="">
     <tstamp/>
@@ -57,12 +58,27 @@ Create a build.xml with a DOCTYPE like this:
   </target>
 
 
-  <!-- =================================================================== -->
-  <!-- Create the MMBase jar file                                          -->
-  <!-- =================================================================== -->
-  <target name="jar" description="Create the MMBase project jar file"
-    depends="init,compile">
 
+
+
+  <!-- =================================================================== -->
+  <!-- Create the project's jar file                                       -->
+  <!-- =================================================================== -->
+
+  <target name="jar.uptodatecheck">
+    <uptodate property="jar.uptodate" targetfile="${project.jar}" >
+      <srcfiles dir="${project.source.dir}" includes="**/*" excludes="build/**,work/**" />
+    </uptodate>
+  </target>
+
+  <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
+    <echo message="${project.jar} is up-to-date" />
+  </target>
+
+  <target name="jar" description="Create the MMBase project jar file"
+    depends="jar.check" unless="jar.uptodate">
+
+   <antcall target="compile" />
   <echo message="Copying ${mmbase.classes}" />
   <copy todir="${project.build.dir}/classes">
     <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
@@ -122,7 +138,7 @@ Build-compiler: ${build.compiler}
         <pathelement path="${servlet.jar}" />
         <pathelement path="${project.build.dir}/classes" />
       </classpath>
-         <include name="**/*.java"/>
+      <include name="**/*.java"/>
     </javac>
   </target>
 
