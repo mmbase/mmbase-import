@@ -4,8 +4,8 @@
 <article class="specification">
   <articleinfo>
     <title>Email application</title>
-    <date>2 july 2003</date>
-    <edition>$Id: email.xml,v 1.1 2003-07-07 13:49:52 daniel Exp $</edition>
+    <date>2003-07-02</date>
+    <edition>$Id: email.xml,v 1.2 2003-07-27 21:01:39 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
