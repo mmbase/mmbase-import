@@ -42,8 +42,7 @@
       You are running <mm:include page="/version" /><br />
 <p>This software is OSI Certified Open Source Software.<br />
 OSI Certified is a certification mark of the Open Source Initiative.</p>
-<p>The license (Mozilla version 1.0) can be read at the MMBase site.<br />
-See <a href="http://www.mmbase.org/license">http://www.mmbase.org/license</a></p>
+<p>MMBase has been build under the <a href="mpl-1.0.html">Mozilla Public License, Version 1.0</a></p>
 &nbsp;
 </td>
 </tr>
@@ -56,7 +55,7 @@ See <a href="http://www.mmbase.org/license">http://www.mmbase.org/license</a></p
 <tr>
 	<td>MMBase Demos</td>
 	<td>
-	   Examples of mmbase functionality. Includes among other things a news application, an alternate editor,
+	   Examples of MMBase functionality. Includes among other things a news application, an alternate editor,
            and the MMBase editwizards.
 	</td>
 	<td class="link" >
