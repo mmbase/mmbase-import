@@ -21,6 +21,8 @@ for the MMBase node --%>
   <th colspan="2">  
   <%-- use the title field again --%>
   <h2><mm:field  name="title"/></h2>
+  <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
+  
   </th><tr>
   <tr><td width="30" /><td>
 
