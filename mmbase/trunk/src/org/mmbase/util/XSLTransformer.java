@@ -12,11 +12,18 @@ package org.mmbase.util;
 import java.io.File;
 import java.io.StringWriter;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import java.util.*;
+
+import javax.xml.transform.*;
+import javax.xml.parsers.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
 
+
+import org.mmbase.cache.xslt.*;
+
+import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +31,8 @@ import org.mmbase.util.logging.Logging;
  * Make XSL Transformations
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.8 2002-06-14 19:45:26 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: XSLTransformer.java,v 1.9 2002-09-18 18:04:15 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -47,7 +55,10 @@ public class XSLTransformer {
     }
 
     /**
-     * Transform an XML document using a certain XSL document.
+     * Transform an XML document using a certain XSL document, on
+     * MMBase specic way (error handling, entitity resolving, uri
+     * resolving, logging), and write it to string, which optionally can be
+     * 'cut'.
      *
      * @param xmlPath Path to XML file
      * @param xslPath Path to XSL file
@@ -55,27 +66,12 @@ public class XSLTransformer {
      *               xml document
      * @return String with converted XML document
      *
-     * TODO: There are caches implemented in org.mmbase.cache.xslt. Perhaps they should be used here.
      *
      */
     public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
-            // xalan 2.0 implementation (xalan 1 implementation is in cvs history)
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-	
-            // Use the TransformerFactory to instantiate a Transformer that will work with  
-            // the stylesheet you specify. This method call also processes the stylesheet
-            // into a compiled Templates object.
-            Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xslPath)));
-
             StringWriter res = new StringWriter();
-           
-            // Use the Transformer to apply the associated Templates object to an XML document
-            // (foo.xml) and write the output to a file (foo.out).
-            transformer.transform(new StreamSource(new File(xmlPath)),
-                                  new StreamResult(res));
-	        
-            //return res.toString();
+            transform(new File(xmlPath), new File(xslPath), new StreamResult(res), null);
 	    String s = res.toString();
 	    int n = s.indexOf("\n");
 	    if (cutXML && s.length() > n) {
@@ -90,11 +86,150 @@ public class XSLTransformer {
     }
 
     /**
-     * Invocation of the class from the commandline for testing.
+     * This is the base function which calls the actual XSL
+     * transformations. Performs XSL transformation on MMBase specific
+     * way (using MMBase cache, and URIResolver).
+     *
+     * @since MMBase-1.6
+     **/
+
+    public void transform(DOMSource xml, File xslFile, StreamResult result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+        TemplateCache cache= TemplateCache.getCache();
+        Source xsl = new StreamSource(xslFile);
+        URIResolver uri = new URIResolver(xslFile.getParentFile());
+        Templates cachedXslt = cache.getTemplates(xsl, uri);
+        if (cachedXslt == null) {
+            cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
+            cache.put(xsl, cachedXslt, uri);
+        } else {
+            if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
+        }
+        Transformer transformer = cachedXslt.newTransformer();
+        if (params != null) {
+            Iterator i = params.entrySet().iterator();
+            while (i.hasNext()){
+                Map.Entry entry = (Map.Entry) i.next();
+                if (log.isDebugEnabled()) log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
+                transformer.setParameter((String) entry.getKey(), entry.getValue());
+            }
+        }
+        transformer.transform(xml, result);
+    }
+
+    /**
+     * Perfoms XSL Transformation on XML-file which is parsed MMBase
+     * specificly (useing MMBasse EntityResolver and Errorhandler).
+     *
+     * @since MMBase-1.6
+     */
+    public void transform(File xmlFile, File xslFile, StreamResult result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+        // create the input xml.
+        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        
+        // turn validating on
+        XMLEntityResolver resolver = new XMLEntityResolver(true);
+        boolean validate =  resolver.canResolve();
+        dfactory.setValidating(validate);
+        dfactory.setValidating(validate);
+        DocumentBuilder db = dfactory.newDocumentBuilder();
+        
+        XMLErrorHandler handler = new XMLErrorHandler();
+        db.setErrorHandler(handler);
+        db.setEntityResolver(resolver);
+        org.w3c.dom.Document xmlDoc = db.parse(xmlFile);
+
+        transform(new DOMSource(xmlDoc), xslFile, result, params);
+    }
+
+
+    /**
+     * Can be used to transform a directory of XML-files. Of course the result must be written to files too.
+     *
+     * The transformations will be called with a paramter "root" which
+     * points back to the root directory relatively. You need this
+     * when all your transformations results (probably html's) need to
+     * refer to the same file which is relative to the root of the transformation.
+     *
+     * @since MMBase-1.6
+     */
+
+    public void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+        if (! xmlDir.isDirectory()) {
+            throw  new TransformerException("" + xmlDir + " is not a directory");            
+        }
+        if (! resultDir.exists()) {
+            resultDir.mkdir();
+        }
+        if (! resultDir.isDirectory()) {            
+            throw  new TransformerException("" + resultDir + " is not a directory");            
+        }
+        
+        File[] files = xmlDir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (recurse && files[i].isDirectory()) {
+                if ("CVS".equals(files[i].getName())) continue;
+                File resultSubDir = new File(resultDir, files[i].getName());
+                Map myParams;
+                if (params == null) {
+                    myParams = new HashMap();
+                } else {
+                    myParams = new HashMap(params);
+                }
+
+                if (myParams.get("root") == null) {
+                    myParams.put("root", "../");
+                } else {
+                    if ("./".equals(myParams.get("root"))) { 
+                        myParams.put("root", "../");
+                    } else {
+                        myParams.put("root", myParams.get("root") + "../");
+                    }
+                }
+                log.info("Transforming directory " + files[i] + " (root is " + myParams.get("root") + ")");
+                transform(files[i], xslFile, resultSubDir, recurse, myParams);
+            } else {
+                if (! files[i].getName().endsWith(".xml")) continue;
+                String fileName = files[i].getName();
+                fileName = fileName.substring(0, fileName.length() - 4);
+                File resultFile = new File(resultDir, fileName  + ".html");
+                if (resultFile.lastModified() > files[i].lastModified()) {
+                    log.info("Not transforming " + files[1] + " because " + resultFile + " is up to date");
+                } else {
+                    log.info("Transforming file " + files[i] + " to " + resultFile);
+                    try {
+                        transform(files[i], xslFile, new StreamResult(resultFile), params); 
+                    } catch (Exception e) {
+                        log.error(e.toString());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Invocation of the class from the commandline for testing/building
      */
     public static void main(String[] argv) {
         XSLTransformer t = new XSLTransformer();
-        log.info(t.transform("/bigdisk/dev/config/mmbase/test/applications/MyYahoo.xml",
-                             "/bigdisk/dev/config/mmbase/test/xslt/appview.xsl"));
+        // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
+        if (argv.length < 2) {
+            log.info("Use with two arguments: xslt-file xml-inputfile");
+            log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir");
+        } else {
+            File in = new File(argv[1]);
+            if (in.isDirectory()) {
+                log.info("Transforming directory " + in);
+                long start = System.currentTimeMillis();
+                try {                    
+                    t.transform(in, new File(argv[0]), new File(argv[2]), true, null);
+                } catch (Exception e) {
+                    log.error("Error: " + e.toString());
+                }
+                log.info("Transforming took " + (System.currentTimeMillis() - start) / 1000.0 + " seconds");
+            } else {            
+                log.info("Transforming file " + argv[1]);
+                log.info(t.transform(argv[1], argv[0], false));
+            }
+        }         
     }
 }
