@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.22 2004-05-12 19:12:52 michiel Exp $
+ * @version $Id: XmlField.java,v 1.23 2004-05-24 16:19:19 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -171,12 +171,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             int posEmphClose = obj.indexOf("_", posEmphOpen + 1);
             if (posEmphClose == -1) break;
             char previousChar = obj.charAt(posEmphClose -1);
-            while(posEmphClose < obj.length() &&
-                  (Character.isLetterOrDigit(obj.charAt(posEmphClose + 1)) ||
-                   (!(Character.isLetterOrDigit(previousChar) || previousChar == '!' || previousChar == '?')))) { // ! and ? you might want to emphasize too
+            while((posEmphClose + 1) < obj.length() &&
+                  (Character.isLetterOrDigit(obj.charAt(posEmphClose + 1)))
+                  ) {
                 posEmphClose = obj.indexOf("_", posEmphClose + 1);   
-                previousChar = obj.charAt(posEmphClose - 1);
                 if (posEmphClose == -1) break OUTER;
+                previousChar = obj.charAt(posEmphClose - 1);
             }
 
             if (posTagOpen > 0 
