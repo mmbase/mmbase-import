@@ -18,10 +18,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
+ * Implementation of UserContext (the security presentation of a User). 
+ * Most implementation is delegated to the Users builder.
+ *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: User.java,v 1.2 2003-06-17 09:32:18 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: User.java,v 1.3 2003-06-18 14:15:38 michiel Exp $
+ * @see    org.mmbase.security.implementation.cloudcontext.builders.Users; 
  */
 public class User extends UserContext implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(User.class.getName());
@@ -79,7 +83,7 @@ public class User extends UserContext implements MMBaseObserver {
      * @javadoc
      */
     boolean isValid() {
-        return (node!=null) && Users.getBuilder().isValid(node);
+        return (node != null) && Users.getBuilder().isValid(node);
     }
 
     /**
@@ -97,7 +101,7 @@ public class User extends UserContext implements MMBaseObserver {
      * This function returns it.
      */
     public MMObjectNode getNode() {
-        if (node==null) throw new SecurityException("Account has been removed.");
+        if (node == null) throw new SecurityException("Account has been removed.");
         return node;
     }
 

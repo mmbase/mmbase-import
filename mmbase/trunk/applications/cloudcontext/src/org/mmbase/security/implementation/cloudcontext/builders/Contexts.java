@@ -20,15 +20,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Representation of a 'context', which can be read as a valid value
- * of the 'owner' field of any object in MMBase. Rights are
- * distributed using this thing. This is part of cloud context
+ * Representation of a 'context', which can be read as a valid value of the 'owner' field of any
+ * object in MMBase. Rights are distributed using this thing. This is part of cloud context
  * security, so the 'context' values need to be present in the cloud.
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.5 2003-06-17 09:32:18 michiel Exp $
+ * @version $Id: Contexts.java,v 1.6 2003-06-18 14:15:39 michiel Exp $
+ * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
+ * @see    org.mmbase.security.Authorization; 
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class.getName());
@@ -212,12 +213,12 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * Returns this Context node as a String (so the name field)
      */
-    public String getContext(User user, int i)  throws SecurityException {
-        MMObjectNode node = getNode(i);
+    public String getContext(User user, int nodeId)  throws SecurityException {
+        MMObjectNode node = getNode(nodeId);
         if (node == null) {
-            throw new SecurityException("node #" + i + " not found");
+            throw new SecurityException("node #" + nodeId + " not found");
         }
         if (node.getBuilder() instanceof Groups) {
             return "unused";
@@ -226,7 +227,11 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * Sets the context of a node to a certain String Value
+     * @param user The user doing this.
+     * @param nodeId The number of the node which' context must be changed
+     * @param context The String describing the desired new context
+     * @return The MMObjectNode
      */
     public MMObjectNode setContext(User user, int nodeId, String context) throws SecurityException {
         MMObjectNode node = getNode(nodeId);
@@ -254,8 +259,9 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * Wraps getPossibleContexts of Authorisation implementaiton Verify.
+     * Wraps getPossibleContexts of Authorisation implementation Verify.
      * @see Verify#getPossibleContexts
+     * @todo Perhaps we need a possibleContextCache.
      */
     public Set getPossibleContexts(User user, int nodeId) throws SecurityException {
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
