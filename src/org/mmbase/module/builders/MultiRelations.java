@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.33 2003-06-18 15:20:40 kees Exp $
+ * @version $Id: MultiRelations.java,v 1.34 2003-11-24 12:35:26 robmaris Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -314,8 +314,7 @@ public class MultiRelations extends MMObjectBuilder {
             if (log.isServiceEnabled()) {
                 log.service(
                     "Failed to create SearchQuery for multilevel search, "
-                    + "exception:\n"
-                    + Logging.stackTrace(e)
+                    + "exception:\n" + e + Logging.stackTrace(e)
                     + "\nFalling back to legacy code in MultiRelations...");
             }
         }
@@ -453,7 +452,7 @@ public class MultiRelations extends MMObjectBuilder {
         } catch (Exception e) {
             // something went wrong print it to the logs
             log.error("searchMultiLevelVector(): ERROR: ");
-            log.error(Logging.stackTrace(e));
+            log.error(e + Logging.stackTrace(e));
             return null;
         }
     }
@@ -948,7 +947,7 @@ public class MultiRelations extends MMObjectBuilder {
             return result;
         } catch (Exception e) {
             log.error("getShortedText(): Error while trying to load text");
-            log.error(Logging.stackTrace(e));
+            log.error(e + Logging.stackTrace(e));
         }
         return null;
     }
@@ -984,7 +983,7 @@ public class MultiRelations extends MMObjectBuilder {
             return result;
         } catch (Exception e) {
             log.error("getShortedByte(): Error while trying to load bytes");
-            log.error(Logging.stackTrace(e));
+            log.error(e + Logging.stackTrace(e));
         }
         return null;
     }
