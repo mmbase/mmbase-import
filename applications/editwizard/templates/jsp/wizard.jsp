@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.4 2002-05-17 10:52:03 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.5 2002-05-22 13:50:36 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -22,6 +22,25 @@ if (ewconfig.subObjects.size() > 0) {
             log.debug("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
             wizardConfig = null;
         } else {
+            if (closedObject instanceof Config.WizardConfig) {
+                // we move from a inline sub-wizard to a parent wizard...
+                Config.WizardConfig inlineWiz=(Config.WizardConfig)closedObject;
+                // with an inline popupwizard we should like to pass the newly created or updated
+                // item to the 'lower' wizard.
+                String parentFid = inlineWiz.parentFid;
+                String parentDid = inlineWiz.parentDid;
+                String objnr=inlineWiz.objectNumber;
+                if ("new".equals(objnr)) {
+                    // obtain new object number
+                    objnr=inlineWiz.wiz.getObjectNumber();
+                    WizardCommand wc = new WizardCommand("cmd/add-item/"+parentFid+"/"+parentDid+"//", objnr);
+                    wizardConfig.wiz.processCommand(wc);
+                } else {
+log.info("send cmd/update-item/"+parentFid+"/"+objnr+"//");
+                    WizardCommand wc = new WizardCommand("cmd/update-item/"+parentFid+"///",objnr);
+                    wizardConfig.wiz.processCommand(wc);
+                }
+            }
             log.debug("processing request");
             wizardConfig.wiz.processRequest(request);
         }
@@ -31,6 +50,8 @@ if (ewconfig.subObjects.size() > 0) {
 if (wizardConfig == null) {
     log.trace("creating new wizard");
     wizardConfig =  configurator.createWizard(cloud);
+    wizardConfig.parentFid=request.getParameter("fid");
+    wizardConfig.parentDid=request.getParameter("did");
     log.trace("putting new wizard on the stack for object " + wizardConfig.objectNumber);
     ewconfig.subObjects.push(wizardConfig);
 }
