@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.18 2003-11-20 11:11:06 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.19 2004-02-17 17:47:54 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -289,19 +289,19 @@ public class ContextContainer extends HashMap {
     /**
      * @since MMBase-1.7 (here)
      */
-    public void register(String newid, Object n, boolean check) throws JspTagException {
-        register(newid, n, check, true);
+    public void register(String newId, Object n, boolean check) throws JspTagException {
+        register(newId, n, check, true);
     }
 
     /**
      * @since MMBase-1.7
      */
-    protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
+    protected void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + id);
+            log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newId + " with context " + id);
         }
         // first check if current context is specified
-        Pair pair = getPair(newid, checkParent);
+        Pair pair = getPair(newId, checkParent);
 
         if (pair != null) {
 
@@ -313,13 +313,13 @@ public class ContextContainer extends HashMap {
             // A valid id must begin with a letter or underscore, followed
             // by letters, underscores and digits.
             boolean valid = true;
-            char chars[] = newid.toCharArray();
+            char chars[] = newId.toCharArray();
             if (chars.length < 1) {
                 log.debug("Id must be longer then 0");
                 valid = false;
             } else {
                 if (Character.isLetter(chars[0]) || chars[0] == '_') {
-                    if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + newid);
+                    if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + newId);
                     for (int i = 1; i < chars.length; ++i) {
                         if (! isContextVarNameChar(chars[i])) {
                             valid = false;
@@ -332,19 +332,19 @@ public class ContextContainer extends HashMap {
                 }
             }
             if (! valid) {
-                JspTagException exception = new TaglibException ("'" + newid + "' is not a valid Context identifier", new Throwable());
+                JspTagException exception = new TaglibException ("'" + newId + "' is not a valid Context identifier", new Throwable());
                 log.info(Logging.stackTrace(exception));
                 throw exception;
             }
             
             log.debug("Valid");
             //pageContext.setAttribute(id, n);
-            if (check && isRegistered(newid)) {
+            if (check && isRegistered(newId)) {
                 JspTagException e;
                 if(id == null) {
-                    e = new JspTagException("Object with id " + newid + " was already registered in the context without id (root?).");
+                    e = new JspTagException("Object with id " + newId + " was already registered in the context without id (root?).");
                 } else {
-                    e = new JspTagException("Object with id " + newid + " was already registered in Context '" + id  + "'.");
+                    e = new JspTagException("Object with id " + newId + " was already registered in Context '" + id  + "'.");
                 }
                 if (log.isDebugEnabled()) {
                     log.debug(Logging.stackTrace(e));
@@ -352,17 +352,17 @@ public class ContextContainer extends HashMap {
                 throw e;
             }
             if (log.isDebugEnabled()) {
-                log.debug("putting '" + newid + "'/'" + n + "' in " + this);
+                log.debug("putting '" + newId + "'/'" + n + "' in " + this);
             }
-            put(newid, n);
+            put(newId, n);
         }
     }
 
     /**
      * @since MMBase-1.7 (here)
      */
-    public void register(String newid, Object n) throws JspTagException {
-        register(newid, n, true);
+    public void register(String newId, Object n) throws JspTagException {
+        register(newId, n, true);
     }
 
     /**
@@ -393,8 +393,8 @@ public class ContextContainer extends HashMap {
     /**
      * @since MMBase-1.7 (here)
      */
-    public void registerNode(String newid,  org.mmbase.bridge.Node n) throws JspTagException {
-        register(newid, n);
+    public void registerNode(String newId,  org.mmbase.bridge.Node n) throws JspTagException {
+        register(newId, n);
     }
     /**
      * @since MMBase-1.7 (here)
@@ -437,7 +437,7 @@ public class ContextContainer extends HashMap {
      * @since MMBase-1.7
      */
 
-    public Object find(PageContext pageContext, int from, String referid) throws JspTagException {
+    public Object find(PageContext pageContext, int from, String referId) throws JspTagException {
         Object result = null;
         switch (from) {
         case LOCATION_COOKIE:
@@ -450,7 +450,7 @@ public class ContextContainer extends HashMap {
                     if (log.isDebugEnabled()) {
                         log.debug(cookies[i].getName() + "/" + cookies[i].getValue());
                     }
-                    if (cookies[i].getName().equals(referid)) {
+                    if (cookies[i].getName().equals(referId)) {
                         // simply return the first value found.
                         // this is probably a little to simple...
                         // since a cookie can e.g. also have another path.
@@ -464,24 +464,24 @@ public class ContextContainer extends HashMap {
             if (((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                 throw new JspTagException("Cannot use session if session is disabled");
             }
-            result = ((HttpServletRequest) pageContext.getRequest()).getSession(false).getAttribute(referid);
+            result = ((HttpServletRequest) pageContext.getRequest()).getSession(false).getAttribute(referId);
             break;
         case LOCATION_MULTIPART:
             if (MultiPart.isMultipart(pageContext)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("searching " + referid + " in multipart post");
+                    log.debug("searching " + referId + " in multipart post");
                 }
-                result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referid);
+                result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
             break;
         case LOCATION_PARAMETERS: {
             if (log.isDebugEnabled()) {
-                log.debug("searching parameter " + referid);
+                log.debug("searching parameter " + referId);
             }
             HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
-            String[] resultvec = req.getParameterValues(referid);
+            String[] resultvec = req.getParameterValues(referId);
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
@@ -513,8 +513,8 @@ public class ContextContainer extends HashMap {
         break;
         case LOCATION_PARENT:
             if (parent != null) {
-                if (parent.isRegistered(referid)) {
-                    result = parent.get(referid);
+                if (parent.containsKey(referId, true)) {
+                    result = parent.get(referId);
                     if (result == this) { // don't find this tag itself...
                         result = null;
                     }
@@ -522,13 +522,13 @@ public class ContextContainer extends HashMap {
             }
             break;
         case LOCATION_PAGE:
-            result = pageContext.getAttribute(referid);
+            result = pageContext.getAttribute(referId);
             break;
         case LOCATION_ATTRIBUTES:
-            result = ((HttpServletRequest) pageContext.getRequest()).getAttribute(referid);
+            result = ((HttpServletRequest) pageContext.getRequest()).getAttribute(referId);
             break;
         case LOCATION_THIS:
-            result = simpleGet(referid, false);
+            result = simpleGet(referId, false);
             break;
         default:
             result = null;
@@ -570,47 +570,47 @@ public class ContextContainer extends HashMap {
      *
      * Returns null if it could not be found.
      */
-    public Object findAndRegister(PageContext pageContext, int from, String referid, String newid) throws JspTagException {
-        return findAndRegister(pageContext, from, referid, newid, true);
+    public Object findAndRegister(PageContext pageContext, int from, String referId, String newId) throws JspTagException {
+        return findAndRegister(pageContext, from, referId, newId, true);
     }
 
-    public Object findAndRegister(PageContext pageContext, int from, String referid, String newid, boolean check) throws JspTagException {
-        if (newid == null) {
+    public Object findAndRegister(PageContext pageContext, int from, String referId, String newId, boolean check) throws JspTagException {
+        if (newId == null) {
             throw new JspTagException("Cannot register with id is null");
         }
-        if (referid == null) {
+        if (referId == null) {
             throw new JspTagException("Cannot refer with id is null");
         }
-        Object result = find(pageContext, from, referid);
+        Object result = find(pageContext, from, referId);
         // if it cannot be found, then 'null' will be put in the hashmap ('not present')
   
-        register(newid, result, check);
+        register(newId, result, check);
         if (log.isDebugEnabled()) {
-            log.debug("found " + newid + " (" + result + ")");
+            log.debug("found " + newId + " (" + result + ")");
         }
         return result;
     }
 
-    public Object findAndRegister(PageContext pageContext, String externid, String newid) throws JspTagException {
-        return findAndRegister(pageContext, externid, newid, true);
+    public Object findAndRegister(PageContext pageContext, String externid, String newId) throws JspTagException {
+        return findAndRegister(pageContext, externid, newId, true);
     }
-    public Object findAndRegister(PageContext pageContext, String externid, String newid, boolean check) throws JspTagException {
+    public Object findAndRegister(PageContext pageContext, String externid, String newId, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("searching to register object " + externid + " in context " + getId() + " check: " + check);
         }
-        if (check && isRegistered(newid)) {
+        if (check && isRegistered(newId)) {
 	    String mes;
 	    if(getId() == null) {
-		mes = "Object with id " + newid + " was already registered in the root context.";
+		mes = "Object with id " + newId + " was already registered in the root context.";
 	    } else {
-		mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
+		mes = "Object with id " + newId + " was already registered in Context '" + getId()  + "'.";
 	    }
             log.debug(mes);
             throw new JspTagException(mes);
         }
-        // if (findAndRegister(LOCATION_PAGE, referid, id)) return true;
+        // if (findAndRegister(LOCATION_PAGE, referId, id)) return true;
         Object result = find(pageContext, externid);
-        register(newid, result, check);
+        register(newId, result, check);
         return result;
     }
 
