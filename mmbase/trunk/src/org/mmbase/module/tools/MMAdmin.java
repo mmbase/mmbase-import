@@ -57,6 +57,7 @@ public class MMAdmin extends ProcessorModule {
 			String cmd=tok.nextToken();	
 			if (cmd.equals("APPLICATIONS")) return(getApplicationsList());
 			if (cmd.equals("BUILDERS")) return(getBuildersList());
+			if (cmd.equals("FIELDS")) return(getFields(tok.nextToken()));
 			if (cmd.equals("MODULES")) return(getModulesList());
 			if (cmd.equals("DATABASES")) return(getDatabasesList());
 		}
@@ -707,6 +708,50 @@ public class MMAdmin extends ProcessorModule {
 					results.addElement(app.getBuilderMaintainer());
 				}
 			}
+		}
+		return(results);
+	}
+
+	Vector getFields(String buildername) {
+		Vector results=new Vector();
+		String path=MMBaseContext.getConfigPath()+("/builders/");
+		XMLBuilderReader bul=new XMLBuilderReader(path+buildername+".xml");
+		if (bul!=null) {
+			Vector defs=bul.getFieldDefs();
+			for (Enumeration h = defs.elements();h.hasMoreElements();) {
+				FieldDefs def=(FieldDefs)h.nextElement();	
+				//System.out.println("DEFS="+def);
+				results.addElement(""+def.DBPos);
+				results.addElement(""+def.DBName);
+				int type=def.DBType;
+				switch (type) {
+					case FieldDefs.TYPE_STRING:
+						results.addElement("STRING");
+					break;
+					case FieldDefs.TYPE_INTEGER:
+						results.addElement("INTEGER");
+						break;
+					case FieldDefs.TYPE_LONG:
+						results.addElement("LONG");
+						break;
+					case FieldDefs.TYPE_FLOAT:
+						results.addElement("FLOAT");
+						break;
+					case FieldDefs.TYPE_DOUBLE:
+						results.addElement("DOUBLE");
+						break;
+					case FieldDefs.TYPE_BYTE:
+						results.addElement("BYTE");
+						break;
+				}
+				int size=def.DBSize;
+				if (size==-1) {
+					results.addElement("fixed");
+				} else {
+					results.addElement(""+def.DBSize);
+				}
+			}
+			
 		}
 		return(results);
 	}
