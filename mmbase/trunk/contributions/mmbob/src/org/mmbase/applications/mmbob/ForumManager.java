@@ -62,9 +62,7 @@ public class ForumManager {
 
     // is the install manager active (for dependencies reasons)
     private static boolean running = false;
-
     private static NodeManager forumnodemanager;
-
     private static Cloud cloud;
 
     /**
@@ -110,7 +108,7 @@ public class ForumManager {
     /**
      * Get an enumeration of all the forums in the cloud
      *
-     * @return
+     * @return all the forums
      */
     public static Enumeration getForums() {
         return forums.elements();
@@ -120,7 +118,7 @@ public class ForumManager {
      * Get a forum by it's MMBase node number
      *
      * @param id MMBase node number of the forum
-     * @return
+     * @return forum
      */
     public static Forum getForum(int id) {
         Forum f = (Forum) forums.get(new Integer(id));
