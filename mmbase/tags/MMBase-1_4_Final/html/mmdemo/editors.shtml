@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+<TITLE>MMDemo intro page</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#FFFFFF" ALINK="#FFFFFF" VLINK="#FFFFFF">
+
+<TABLE width=97% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>The Editors </B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			MMBase is based on the single idea of creating a object cloud that represent what you want to share with people. This means we create objects like images, newsitems, urls and store them as objects in MMBase and then create relations between them. The result of this that its possible for MMBase to generate the editors on the fly since they all have the same basic idea of the object and relations to other objects. In the url given below we setup a admin account so you can edit/change the objects within the installed demo's of mmdemo. The account name is 'admin' and the password is 'admin2k'.
+			<BR><BR>
+		</TD>
+</TR>
+<TR>
+	<TD>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>Url</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			<CENTER><A HREF="/edit" TARGET="edits">http://yourhost:port/edit</A></CENTRER>
+			<BR>
+			<BR> *** account = admin , password = admin2k *** <BR>
+		</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

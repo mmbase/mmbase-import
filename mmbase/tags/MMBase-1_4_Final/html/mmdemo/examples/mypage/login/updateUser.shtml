@@ -1,0 +1,15 @@
+<IF $MOD-MMBASE-BUILDER-cookies-number^=N>
+<transactions>
+	<create>
+		<accessObject mmbaseId="$MOD-MMBASE-BUILDER-cookies-number">
+			<setField name="lastlogin">$MOD-INFO-TIME-CURTIME^</setField>
+		</accessObject>
+	</create>
+</transactions>
+</IF>
+	<DO SESSION-BGCOLOR=#FFFFFF>
+	<DO SESSION-BODY=#00425A>
+	<DO SESSION-TEXT=#44BDAD>
+	<DO SESSION-TEXT2=#000000>
+<IF $SESSION-BGCOLOR^==>
+</IF>

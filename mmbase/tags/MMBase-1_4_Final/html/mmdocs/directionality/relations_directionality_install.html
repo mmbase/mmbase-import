@@ -1,0 +1,365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Linux)">
+	<META NAME="AUTHOR" CONTENT="Pierre van Rooden">
+	<META NAME="CREATED" CONTENT="20001211;8560000">
+	<META NAME="CHANGEDBY" CONTENT="Pierre van Rooden">
+	<META NAME="CHANGED" CONTENT="20010420;9490300">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>Directionality</H1>
+<P ALIGN=CENTER>Relations Installation Document 
+</P>
+<P ALIGN=CENTER>18-4-2001, <A HREF="mailto:Pierre.van.Rooden@omroep.nl">Pierre
+van Rooden</A></P>
+<P>When defining relations, a property is available known as
+'direction'. It is an integer value, which determines whether a
+relation is 'unidirectional' (1) or 'bidirectional' (2). <BR>A
+bidirectional relation is 'visible' to both the source and the
+target, while a unidirectional relation is only visible to the
+source. 
+</P>
+<P>This document explains how to add functionality to the system such
+that directionality can be used. <BR>Care should be taken, as some
+changes involve manipulations of the database and running a
+conversion program that may make quite a few changes. 
+</P>
+<P><STRONG>You need the latest CVS version of MMBase for this
+conversion to work.</STRONG></P>
+<H2>Data Model</H2>
+<P>To enable fast search for relations filtered on direcionality, we
+have opted to include the directionality information in the relation
+objects. <BR>The value of this field will depend on the value of the
+relations 'relation defintion' object. 
+</P>
+<P>The resulting model looks like this: 
+</P>
+<P><IMG SRC="art/insreldiagram.gif" NAME="Graphic1" ALIGN=LEFT WIDTH=527 HEIGHT=335 BORDER=0>This
+model only shows <CODE>InsRel</CODE>, not the derived relation
+builders, who work in much the same way. 
+</P>
+<H2>Installation</H2>
+<P>The following are the steps needed to add support for
+directionality to MMBase. 
+</P>
+<P>As the model above implies, changes have to be made to existing
+systems, in that an addiitonal field will need to be added to the
+<CODE>InsRel</CODE> builder, as well as all <CODE>InsRel</CODE>
+derived builders. <BR>STEP 1 helps you to determine which builders
+have to be altered. <BR>STEP 2 explains how to add the required field
+in the database. <BR>STEP 3 explains how to fix your configuration
+files <BR>STEP 4 explains how to initialize the new field using a
+conversion program <BR>STEP 5 explains how to test the new
+configuration 
+</P>
+<H3><BR><BR>
+</H3>
+<H3>STEP 1 : Determine the relation builders</H3>
+<H4>Explanation</H4>
+<P>It will be necessary to determine the builders that are in use as
+relation builders, before you can convert. <BR>You need this to know
+which database tables to change and which builder configuration files
+to convert.</P>
+<P>You can use the builder configuration files to determine these
+builders. The configuration files are in the 'builder' sub directory
+of your configuration directory. <BR>This will not only reveal
+currently active builders, but also those builders which are inactive
+(i.e. for future use). Search for relationbuilder files that contain
+the <CODE>dnumber</CODE> or <CODE>snumber</CODE> field.</P>
+<P>i.e. In UNIX like systems, you can run:</P>
+<P><CODE>grep &quot;&lt;name&gt;rnumber&lt;/name&gt;&quot; *</CODE></P>
+<P>which may return as a result :</P>
+<P><CODE>authrel.xml: &lt;name&gt;rnumber&lt;/name&gt;<BR>posrel.xml:
+&lt;name&gt;rnumber&lt;/name&gt;<BR>typerel.xml:
+&lt;name&gt;rnumber&lt;/name&gt;<BR>insrel.xml:
+&lt;name&gt;rnumber&lt;/name&gt;<BR>nrrel.xml: &lt;name&gt;rnumber&lt;/name&gt;</CODE></P>
+<P>Ignore <CODE>typerel</CODE> (not a relation builder, but a core
+builder). The other builders are the relation builders you will have
+to change.</P>
+<H3>STEP 2 : Add the <CODE>dir</CODE> field to the relation tables.</H3>
+<H4>Explanation</H4>
+<P>Each <CODE>active</CODE> builder (<CODE>active</CODE> is a
+property set in the configuration file) determined through STEP 1 has
+a corresponding database table.<BR>Builders that are <CODE>inactive</CODE>
+will most likely not have a table, but it may be useful to check for
+its existence anyway.<BR>It is necessary to add a new field to these
+tables. This works differently for various databases, which means
+that the action must be done manually. 
+</P>
+<P>The new system performs a check on each active relation builder.
+Only if all builders have a <CODE>dir</CODE> field will
+directionality become active. As long as that is NOT the case,
+directionality will be ignored. In addition, as long as the <CODE>dir</CODE>
+field is not properly initalized (has a value of <CODE>1</CODE>,
+meaning <CODE>unidirectional</CODE>, or <CODE>2</CODE>, meaning
+<CODE>bidirectional</CODE>), the system will treat the field as
+indicating <CODE>bidirectional</CODE> . This ensures backward
+compatibility with an older system. 
+</P>
+<P>The <CODE>dir</CODE> field in <CODE>InsRel</CODE> is a copy of the
+value of the <CODE>dir</CODE> field in the <CODE>RelDef</CODE>
+definition that is used to create the relation (identified by the
+<CODE>rnumber</CODE> in <CODE>InsRel</CODE>). <BR>The resulting
+<CODE>InsRel</CODE> table should look like this: 
+</P>
+<TABLE WIDTH=551 BORDER=1 CELLPADDING=4 CELLSPACING=3>
+	<THEAD>
+		<TR VALIGN=TOP>
+			<TH WIDTH=226>
+				<P>Field</P>
+			</TH>
+			<TH WIDTH=85>
+				<P>Type</P>
+			</TH>
+			<TH WIDTH=46>
+				<P>Null</P>
+			</TH>
+			<TH WIDTH=65>
+				<P>Key</P>
+			</TH>
+			<TH WIDTH=69>
+				<P>Default</P>
+			</TH>
+		</TR>
+	</THEAD>
+	<TBODY>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>number</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP>
+				<P>Unique</P>
+			</TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=RIGHT>0</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>otype</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP></TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=RIGHT>0</P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=226>
+				<P>owner</P>
+			</TD>
+			<TD WIDTH=85>
+				<P>string(12)</P>
+			</TD>
+			<TD WIDTH=46>
+				<P>Yes</P>
+			</TD>
+			<TD WIDTH=65></TD>
+			<TD WIDTH=69>
+				<P>Null</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>dnumber</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP></TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=RIGHT>0</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>snumber</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP></TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=RIGHT>0</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>rnumber</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP></TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=RIGHT>0</P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=226>
+				<P>dir</P>
+			</TD>
+			<TD WIDTH=85>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46>
+				<P>No(*)</P>
+			</TD>
+			<TD WIDTH=65></TD>
+			<TD WIDTH=69>
+				<P>-1</P>
+			</TD>
+		</TR>
+	</TBODY>
+</TABLE>
+<P>*) We cannot make his field nullable, as MMbase does not support null vallues for a field in MMObjectNode.
+To allow new config files to work with older code, we cans pecify 0 or -1 a s adefault value, which  is interpreted as
+<CODE>bidirectional</CODE>, as noted above. 
+</P>
+<H4>Execution</H4>
+<P>The execution is dependent on the database. <BR>You will need to
+add a <CODE>dir</CODE> field to each table that represents a relation
+builder. Which builders these are is dependent on the system. <BR>In
+object-oriented databases such as Informix, only the top builder
+(InsRel) need be changed, though additional configuration may be
+necessary to notify this change to derived tables (see your manual).
+<BR>Below we will give you the necessary steps for a number of often
+used databases. 
+</P>
+<P>Before you start, it will be wise to shut down all MMBase servers.
+<BR>You will be changing the database tables, which may cause
+problems if other people try to use those tables. 
+</P>
+<P><B>MySQL:</B> 
+</P>
+<P>For each table to be changed, run the following statement: 
+</P>
+<P>ALTER TABLE <EM>&lt;basename&gt;</EM>_<EM>&lt;tablename&gt;</EM>
+ADD COLUMN dir int(11) DEFAULT -1; 
+</P>
+<P><EM><EM>&lt;basename&gt;</EM></EM> is the 'base' name of the
+database as defined in the mmbaseroot.xml configuration
+file.<BR><EM>&lt;tablename&gt;</EM> is the name of the builder to
+change..</P>
+<P>If you have verified that ALL relations are bi-directional, you
+can instead run the statement: 
+</P>
+<P>ALTER TABLE <EM>&lt;basename&gt;</EM>_<EM>&lt;tablename&gt;</EM>
+ADD COLUMN dir int(11) DEFAULT 2; 
+</P>
+<P>and skip the conversion step (Step 4) later on. 
+</P>
+<P><B>Informix:</B> 
+</P>
+<P>Forthcoming (?)</P>
+<P><BR><BR>
+</P>
+<P>Take care that you add the new 'dir' field <STRONG>to the end </STRONG>of
+the table's field list.</P>
+<P>The field is now added,. If it is initialized to <CODE>null</CODE>
+or <CODE>0,</CODE> MMBase will recognize that the object concerned is
+not initialized, which causes it to default to the old behavior. This
+ensures backward compatibility.</P>
+<P>STEP 4 will allow you to initialize this field, using the original
+rules. Once initialized, the field will be used for all future
+builder references from <CODE>reldef</CODE>.</P>
+<H3>Step 3 : Add the dir field to the builder configuration files</H3>
+<P STYLE="margin-bottom: 0in">We now have to add the <CODE>dir</CODE>
+field to the configuration files, so MMBase knows it is there and how
+to handle it.<BR>Change all relation builder configration files
+(obtained in STEP1) - also those that are currently <CODE>inactive</CODE>.
+This will prevent problems later on.<BR>The configuration files are
+in the <CODE>builder</CODE> sub directory of your configuration
+directory, and are called <CODE>&lt;buildername&gt;.xml</CODE>.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P>You need to add the following text (copy and paste) to each
+relation builder file, <STRONG>at the end</STRONG> of the fields
+list, in every file :</P>
+<P><CODE> &lt;!-- &lt;field&gt; 'dir' --&gt;<BR> &lt;field&gt;<BR> 
+&lt;!-- gui related --&gt;<BR>  &lt;gui&gt;<BR>   &lt;guiname
+xml:lang=&quot;fr&quot;&gt;Direction&lt;/guiname&gt;<BR>   &lt;guiname
+xml:lang=&quot;nl&quot;&gt;Richting&lt;/guiname&gt;<BR>   &lt;guiname
+xml:lang=&quot;en&quot;&gt;Direction&lt;/guiname&gt;<BR>   &lt;guiname
+xml:lang=&quot;us&quot;&gt;Direction&lt;/guiname&gt;<BR>  
+&lt;guitype&gt;dirs&lt;/guitype&gt;<BR>  &lt;/gui&gt;<BR>  &lt;!--
+editor related --&gt;<BR>  &lt;editor&gt;<BR>   &lt;positions&gt;<BR>
+   &lt;!-- position in the input area of the editor --&gt;<BR>   
+&lt;input&gt;-1&lt;/input&gt;<BR>    &lt;!-- position in list area of
+the editor --&gt;<BR>    &lt;list&gt;4&lt;/list&gt;<BR>    &lt;!--
+position in search area of the editor --&gt;<BR>   
+&lt;search&gt;4&lt;/search&gt;<BR>   &lt;/positions&gt;<BR> 
+&lt;/editor&gt;<BR>  &lt;!-- database related --&gt;<BR>  &lt;db&gt;<BR>
+  &lt;!-- name of the field in the database --&gt;<BR>  
+&lt;name&gt;dir&lt;/name&gt;<BR>   &lt;!-- MMBase datatype and
+demands on it --&gt;<BR>   &lt;type state=&quot;persistent&quot;
+notnull=&quot;false&quot; key=&quot;false&quot;&gt;INTEGER&lt;/type&gt;<BR>
+ &lt;/db&gt;<BR> &lt;/field&gt; </CODE>
+</P>
+<P>After this step, if you start the system, directionality weill
+have been turned on.<BR>You will still have to initialize the new
+relation builder fields if you have not yet done so (see STEP 4).</P>
+<H3>STEP 4: intialize the new fields using the conversion program</H3>
+<P>The old system treated every relation as being <CODE>bidirectional</CODE>.<BR>This
+means that you CAN initialize the system by running a SQL query on
+your database that sets all <CODE>dir</CODE> fields to <CODE>bidirectional</CODE>
+(the value <CODE>2</CODE>).</P>
+<P>If you have relations that were specified (in the <CODE>reldef</CODE>
+builder) as <CODE>unidirectional</CODE>,  you need to run the
+converter program. This program runs through all relations, setting
+the <CODE>dir</CODE> property to the value of the associated <CODE>reldef</CODE>
+object.</P>
+<P>The conversion program class can be located in the
+<CODE>org/mmbase/module/tools</CODE> directory in your MMBase class
+path (or in the <CODE>mmbase.jar</CODE> file), and is called
+<CODE>InsRelConvert</CODE>.<BR>When starting the program, you need to
+specify the config parameter as you do when starting MMBase:</P>
+<P><CODE>java \Dmmbase.config=<EM>&lt;configdir&gt;</EM>
+org.mmbase.module.tools.InsRelConvert </CODE>
+</P>
+<P>The program starts MMBase startup log, runs the conversion, and
+ends with a notification of the conversion results.<BR>For each
+builder handled, the system outputs the line::</P>
+<P><CODE>INFO Checked <EM>&lt;x&gt;</EM> nodes in <EM>&lt;builder&gt;</EM>,
+changed <EM>&lt;y&gt;</EM> nodes.</CODE><BR><BR>Where <EM>&lt;x&gt;</EM>
+is the number of relations that the builder contained, and <EM>&lt;y&gt;</EM>
+the number of relations of which the <CODE>dir</CODE> field was
+initialized.<BR><EM>&lt;y&gt;</EM> can be smaller than <EM>&lt;x&gt;</EM>
+as some nodes in the system may already have been initialized during
+STEP 2 or during test runs.<BR>To check whether the conversion
+succeeded, you can run the program a second time. <BR>It should then
+indicate that no fields have been changed (<EM>&lt;y&gt;</EM> is
+shown to be <CODE>0</CODE>).<BR>It is advisable to shut down MMBase
+during the conversion run, as the MMBase internal cache will not be
+updated, and thus may later override any changes made by the
+conversion tool.</P>
+<H3>STEP 5 : Testing whether directionality works</H3>
+<P>Forthcoming. 
+</P>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

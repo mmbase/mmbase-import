@@ -1,0 +1,15 @@
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-0.8" prefix="mm"%>
+<html>
+<body>
+<!-- some examples: -->
+<%-- <mm:cloud method="anonymous"> --%>
+<%-- <mm:cloud method="http"> --%>
+<%-- <mm:cloud logon="foo" method="http"> --%>
+<%-- <mm:cloud logon="foo" pwd="bar"> --%>
+<%-- <mm:cloud method="http" rank="basic user"> --%>
+<mm:cloud name="mmbase" method="http" rank="administrator">
+logged on as: <%= cloud.getUser().getIdentifier() %><br />
+</mm:cloud>
+<a href="logout.jsp">logout</a>
+</body>
+</html>

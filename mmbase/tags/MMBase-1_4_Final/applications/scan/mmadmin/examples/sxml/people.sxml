@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="$PARAM1.xsl" type="text/xsl"?>
+<doc>
+	<LIST OBJECTS PROCESSOR="MMBASE" TYPE="people FIELDS="firstname,lastname">
+        <person>
+                <name>$ITEM1 $ITEM2</name>
+        </person>
+	</LIST>
+</doc>
