@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
+import java.util.Iterator;
 import java.io.File;
 import java.lang.reflect.Method;
 
@@ -57,6 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
+ * @version $Id: Logging.java,v 1.22 2003-07-18 14:54:42 michiel Exp $
  */
 
 
@@ -64,6 +66,8 @@ public class Logging {
 
     private static Class  logClass          = SimpleImpl.class; // default Logger Implementation
     private static File   configurationFile = null;             // Logging is configured with a configuration file. The path of this file can be requested later.
+    private static boolean configured = false;
+    private static Logger log = getLoggerInstance(Logging.class); // logger for this class itself
 
     private Logging() {
         // this class has no instances.
@@ -81,9 +85,12 @@ public class Logging {
     public  static void configure (String configfile) {
         
         if (configfile == null) {
-            System.out.println("No configfile given, default configuration will be used.");
+            log.info("No configfile given, default configuration will be used.");
             return;
         }  
+        if (configured == true) {
+            log.warn("Reconfiguring logging. This is not really possible (most static instances are unreachable");
+        }
 
        // There is a problem when dtd's for the various modules are on a remote
         // machine and this machine is down. Log4j will hang without an error and if
@@ -91,7 +98,7 @@ public class Logging {
         // machine for the dtd's without giving an error! This line might give a hint 
         // where to search for these kinds of problems..
         
-        System.out.println("Configuring logging with " + configfile);
+        log.info("Configuring logging with " + configfile);
         ///System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
 
 
@@ -102,7 +109,7 @@ public class Logging {
         if (! configurationFile.exists() || 
             ! configurationFile.isFile() ||
             ! configurationFile.canRead() ) { // not a readable file, return and warn that logging cannot be configured.
-            System.out.println("Log configuration file is not accessible, default logging implementation will be used.");
+            log.warn("Log configuration file is not accessible, default logging implementation will be used.");
             return;
         }
    
@@ -110,13 +117,8 @@ public class Logging {
         try {
             URL logURL = configurationFile.toURL();
             configfile = logURL.toString();
-        }
-        catch (Exception e)
-        {
-            System.out.println("Cannot get URL from file " + 
-                               configfile + 
-                               " : " +
-                               e.toString());
+        } catch (Exception e) {
+            log.error("Cannot get URL from file " + configfile + " : " + e.toString());
             // that doesn't work, so let's try to do it ourselves
             configfile = "file:///" + configurationFile.getAbsolutePath();
         }                               
@@ -132,12 +134,12 @@ public class Logging {
             String config = reader.getElementValue("logging.configuration");
             if (config != null) configuration = config;
         } catch (Exception e) {
-            System.err.println("Exception during parsing: " + e);
-            e.printStackTrace(System.err);
+            log.error("Exception during parsing: " + e);
+            log.error(stackTrace(e));
         }
 
        
-        System.out.println("Class to use for logging " + classToUse);
+        log.info("Class to use for logging " + classToUse);
         // System.out.println("(Depending on your selected logging system no more logging");
         // System.out.println("might be written to this file. See the configuration of the");
         // System.out.println("selected logging system for more hints where logging will appear)");
@@ -145,26 +147,31 @@ public class Logging {
         try { // to find the configured class
             logClass = Class.forName(classToUse);
         } catch (ClassNotFoundException e) {
-            System.err.println("Could not find class " + classToUse);
-            System.err.println(e.toString());
+            log.error("Could not find class " + classToUse);
+            log.error(e.toString());
             logClass = logClassCopy;
         } catch (Throwable e) {
-            System.err.println("Exception to find class " + classToUse + ": " +  e);
-            System.err.println("Falling back to " + logClassCopy.getName());
+            log.error("Exception to find class " + classToUse + ": " +  e);
+            log.info("Falling back to " + logClassCopy.getName());
             logClass = logClassCopy;
         }
         // System.out.println("logging to " + getLocations());
         configureClass(configuration);
-        // some classes used logging already.
-        XMLBasicReader.reinitLogger();
-        org.mmbase.util.FileWatcher.reinitLogger();
+        configured = true;
+        log.service("Logging configured");
+        log.debug("Replacing wrappers " + LoggerWrapper.getWrappers());
+        Iterator wrappers = LoggerWrapper.getWrappers().iterator();
+        while (wrappers.hasNext()) {
+            LoggerWrapper wrapper = (LoggerWrapper) wrappers.next();
+            wrapper.setLogger(getLoggerInstance(wrapper.getName()));
+            log.debug("Replaced logger " + wrapper.getName());
+        }
     }
 
     /** 
      * Calls the 'configure' static method of the used logging class,
      * or does nothing if it doesn't exist. You could call this method
      * if you want to avoid using 'configure', which parses an XML file.
-     *
      **/
 
     public static void configureClass(String configuration) {
@@ -199,7 +206,12 @@ public class Logging {
         // call the getLoggerInstance static method of the logclass:
         try {
             Method getIns = logClass.getMethod("getLoggerInstance", new Class[] { String.class } );
-            return  (Logger) getIns.invoke(null, new String[] {s}); 
+            Logger logger =  (Logger) getIns.invoke(null, new String[] {s}); 
+            if (configured) {
+                return logger;
+            } else {
+                return new LoggerWrapper(logger, s);
+            }
         } catch (Exception e) {
             System.err.println(e);
         }
