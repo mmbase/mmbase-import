@@ -99,8 +99,8 @@
 				 <field>
 				<descriptions>
 					<!-- descriptions per language as defined by ISO 639  -->
-					<description xml:lang="en">The actual url to redirect to when teh jumper called</description>
-					<description xml:lang="nl">De link waarnaar wordt gsprongen als de jumper wordt aangeroepen</description>
+					<description xml:lang="en">The actual url to redirect to when the jumper is called</description>
+					<description xml:lang="nl">De link waarnaar wordt gesprongen als de jumper wordt aangeroepen</description>
 				</descriptions>
 			<!-- gui related -->
 			<gui>
