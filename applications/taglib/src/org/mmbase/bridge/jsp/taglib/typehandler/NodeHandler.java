@@ -11,10 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.Encode;
+import java.util.*;
 
 /**
  * @author Gerard van de Looi
@@ -31,6 +31,14 @@ public class NodeHandler extends IntegerHandler {
         super(context);
     }
 
+    protected class IgnoreCaseComparator implements Comparator {
+        public int  compare(Object o1, Object o2) {
+            String s1 = (String)o1;
+            String s2 = (String)o2;
+            return s1.toUpperCase().compareTo(s2.toUpperCase());
+        }                                    
+    }
+
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
@@ -42,28 +50,37 @@ public class NodeHandler extends IntegerHandler {
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\">\n");
             // list all our nodes of the specified builder here...
-            int value = 0;
-            if (node != null) value = node.getIntValue(field.getName());
-            org.mmbase.bridge.NodeIterator nodes = context.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
+            String value = "0";
+            if (node != null) value = node.getStringValue(field.getName());
+
+
+            // args for gui function
+            List args = new Vector();
+            args.add("");
+            args.add(context.getCloud().getLocale().getLanguage());
+            // should actually be added
+            //args.add(sessionName);
+            //args.add(context.pageContext.getResponse());
+            
+
+            NodeIterator nodes = context.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
+            SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
             while(nodes.hasNext()) {
-                org.mmbase.bridge.Node tmp = nodes.nextNode();
+                Node n = nodes.nextNode();
+                sortedGUIs.put(n.getFunctionValue("gui", args).toString(), "" + n.getNumber());
+            }
+            Iterator i = sortedGUIs.entrySet().iterator();
+            while(i.hasNext()) {
+                Map.Entry gui = (Map.Entry) i.next();
+
                 // we have a match on the number!
                 buffer.append("  <option ");
-                if(tmp.getNumber() == value) {
+                if(gui.getValue().equals(value)) {
                     // this is the selected one!
                     buffer.append("selected=\"selected\"");
                 }
-                buffer.append("value=\""+tmp.getNumber()+"\">");
-
-                java.util.List args = new java.util.Vector();
-                args.add("");
-                args.add(context.getCloud().getLocale().getLanguage());
-
-                // should actually be added
-                //args.add(sessionName);
-                //args.add(context.pageContext.getResponse());
-
-                buffer.append(Encode.encode("ESCAPE_XML", tmp.getFunctionValue("gui", args).toString()));
+                buffer.append("value=\""+gui.getValue()+"\">");
+                buffer.append(Encode.encode("ESCAPE_XML", (String)  gui.getKey()));
                 buffer.append("</option>\n");
             }
             buffer.append("</select>");
