@@ -16,7 +16,7 @@ package org.mmbase.storage.search;
  * This corresponds to a prefixed fieldname in a SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface StepField {
@@ -66,7 +66,9 @@ public interface StepField {
      * where 
      * <ul>
      * <li><em>&lt;step&gt;</em> is the step alias returned by 
-     *     <code>getStep().getAlias()</code>
+     *     <code>getStep().getAlias()</code> or, 
+     *     when the step alias is <code>null</code>, the step tablename 
+     *     returned by <code>getStep().getTableName()</code>.
      * <li><em>&lt;fieldname&gt;</em> is the fieldname returned by
      *     {@link #getFieldName getFieldName()}
      * <li><em>&lt;alias&gt;</em> is the alias returned by {@link #getAlias getAlias()}

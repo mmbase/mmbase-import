@@ -29,7 +29,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -171,6 +171,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         prefix = fields[i].getStep().getAlias() + ".";
                     } else if (builder instanceof ResultBuilder) {
                         fieldName = fields[i].getAlias();
+                        if (fieldName == null) {
+                            fieldName = fields[i].getFieldName();
+                        }
                         prefix = "";
                     } else {
                         fieldName = fields[i].getFieldName();

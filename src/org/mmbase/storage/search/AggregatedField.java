@@ -18,7 +18,7 @@ package org.mmbase.storage.search;
  * This corresponds to an aggregated field in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface AggregatedField extends StepField {
@@ -72,7 +72,9 @@ public interface AggregatedField extends StepField {
      * where 
      * <ul>
      * <li><em>&lt;step&gt;</em> is the step alias returned by 
-     *     {@link #getStep getStep()}.getAlias()</code>
+     *     <code>getStep().getAlias()</code> or, 
+     *     when the step alias is <code>null</code>, the step tablename 
+     *     returned by <code>getStep().getTableName()</code>.
      * <li><em>&lt;fieldname&gt;</em> is the fieldname returned by
      *     {@link #getFieldName getFieldName()}
      * <li><em>&lt;alias&gt;</em> is the alias returned by 

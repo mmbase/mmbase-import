@@ -165,11 +165,9 @@ class DBQuery  extends ParseItem {
             item = new DBConditionItem(parser.nextToken());
             items.addElement(item);
 
-            //log.debug("Item :" + item);
             if (parser.hasMoreTokens()) {
                 item = new DBLogicalOperator(parser.nextToken());
                 items.addElement(item);
-                // log.debug("Logical :" + item);
             }
         }
     }
@@ -252,8 +250,12 @@ class DBQuery  extends ParseItem {
             Iterator iFields = query.getFields().iterator();
             while (iFields.hasNext()) {
                 BasicStepField field2 = (BasicStepField) iFields.next();
+                String alias2 = field2.getStep().getAlias();
+                if (alias2 == null) {
+                    alias2 = field2.getStep().getTableName();
+                }
                 if ((condition.prefix == null 
-                        || field2.getStep().getAlias().equals(condition.prefix))
+                        || alias2.equals(condition.prefix))
                     && field2.getFieldName().equals(condition.fieldName)) {
                     field = field2;
                     break;
