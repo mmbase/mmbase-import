@@ -8,24 +8,24 @@
 <style>
 <!--
  body {  background-color: #00425A;
-         color:42BDAD; 
+         color:42BDAD;
  	   font-size:medium;}
  a:link { color: black; }
  a:visited { color: #555555; }
  a:active { color: #555555; }
 
  th {  background-color: #44BDAD;
-       color:#00425A; 
+       color:#00425A;
 	 font-size:medium;
 	 font-weight:bold; }
  th.main {  background-color: #44BDAD;
-       color:#00425A; 
+       color:#00425A;
 	 font-size:large;
 	 font-weight:bold; }
  td.link {  background-color: #44BDAD;
-       color:#00425A; 
+       color:#00425A;
 	 font-size:medium;
-	 font-weight:normal; 
+	 font-weight:normal;
 	 width:14; }
 -->
 </style>
@@ -49,7 +49,7 @@ the same name as the example.<br />
 <tr><td colspan="3">&nbsp;</td></tr>
 
 <tr>
-	<th class="main" colspan="3">Jsp/Taglib Demo's</td>
+	<th class="main" colspan="3">Jsp/Taglib Demo's</th>
 </tr>
 <tr>
 	<th>Name demo</th>
@@ -82,7 +82,7 @@ the same name as the example.<br />
 		A lot of different examples for the MMBase taglib.
 	</td>
 	<td class="link" >
-		<a href="<mm:url page="taglib/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left"></a>
+		<a href="<mm:url page="taglib/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
 
@@ -118,16 +118,14 @@ the same name as the example.<br />
               <li>scanparser (essential parser)</li>
               <li>session (maintain user info)</li>
             </ul>
-
-		Optionally, you can activate the modules: <br />
+            Optionally, you can activate the modules: <br />
             <ul>
               <li>mmlanguage (internationalization for SCAN)</li>
               <li>scancache (caching of SCAN pages)</li>
               <li>transactionhandler (transactions through xml)</li>
             </ul>
-
-            To make a module active, find the <modulename>.xml file in the modules directory of the MMBase configuration. In the file, change the 'status' from inactive to active, and save the file.
-        </li>
+            To make a module active, find the modulename.xml file in the modules directory of the MMBase configuration. In the file, change the 'status' from inactive to active, and save the file.
+          </li>
 	  <li>In the web.xml, add the SCAN servlet (scanserv). Also add the mapping for SCAN pages (*.shtml).<br />
             The default web.xml of MMBase contains example code which you can uncomment.
 	  </li>
@@ -195,7 +193,7 @@ the same name as the example.<br />
 </tr>
 
 <tr>
-	<th>Name demo</td>
+	<th>Name demo</th>
 	<th colspan="2">Description</th>
 </tr>
 
