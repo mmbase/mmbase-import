@@ -49,9 +49,12 @@
 			</command>
 
       <item>
-        <field ftype="data" name="firstname" />
-        <field ftype="data" name="middle" />
-        <field ftype="data" name="lastname" />
+        <fieldset>
+          <field ftype="data" name="firstname" />
+          <field ftype="data" name="middle" />
+          <field ftype="data" name="lastname" />
+          <prompt>Name</prompt>
+        </fieldset>
       </item>
 			
 			<action type="create">
@@ -85,7 +88,7 @@
 			</command>
 			
       <!-- a not-inline startwizard will pop-up a window to create the new object -->
-      <command name="startwizard" inline="false" wizardname="samples/urls" objectnumber="new" />
+      <command name="startwizard" inline="false" wizardname="samples/myurls" objectnumber="new" />
 
       <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
       <command name="startwizard" inline="true" wizardname="samples/urls" objectnumber="new" />
