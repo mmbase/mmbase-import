@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.18 2004-02-24 12:23:37 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.19 2004-07-29 17:16:12 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -164,6 +164,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     public Query cloneWithoutFields() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
+        if (queryCheck != null) {
+            removeSecurityConstraintFromClone(bsq);
+        }
         BasicNodeQuery clone = new BasicNodeQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = false;

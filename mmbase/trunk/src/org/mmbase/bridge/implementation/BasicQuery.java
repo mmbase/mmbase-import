@@ -25,28 +25,47 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.42 2004-07-23 14:39:23 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.43 2004-07-29 17:16:12 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
 public class BasicQuery implements Query  {
 
-
     private static final Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
+    /**
+     * Wether this Query was used already. If it is used, it may not be changed any more.
+     */
     protected boolean used = false;
+
     protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).
 
+    /**
+     * The QueryCheck object associated with this Query, or null if no such object was determined yet.
+     */
+    protected Authorization.QueryCheck queryCheck = null;
 
-    protected Authorization.QueryCheck secureConstraint = null;
+    /**
+     * If a the contraint was made 'secure', in insecureConstraint the original Constraint is
+     * stored. This object is null if either the queryCheck object is not yet determined, or the
+     * orignal query did not have constraints.
+     */
+    protected Constraint insecureConstraint = null;
+
 
     private   HashMap  aliasSequences = new HashMap(); // must be HashMap because cloneable
     // to make unique table aliases. This is similar impl. as  in core. Why should it be at all....
 
+
+    /**
+     * The core query which is 'wrapped'
+     */
     protected BasicSearchQuery query;
 
-    protected Cloud cloud; // reference to the cloud.
-
+    /**
+     * reference to the cloud.
+     */
+    protected Cloud cloud;
 
 
     /**
@@ -99,6 +118,17 @@ public class BasicQuery implements Query  {
     public Constraint getConstraint() {
         return query.getConstraint();
     }
+
+    // bridge.Query impl
+    public Constraint getCleanConstraint() {
+        if (queryCheck != null) {
+            return insecureConstraint;
+        } else {
+            return query.getConstraint();
+        }
+    }
+
+    // more SearchQuery impl
     public int getMaxNumber() {
         return query.getMaxNumber();
     }
@@ -119,11 +149,45 @@ public class BasicQuery implements Query  {
         return aggregating;
     }
 
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    protected void removeSecurityConstraintFromClone(BasicSearchQuery clone) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing " + queryCheck + " FROM " + clone);
+        }
+        if (queryCheck != null) {
+            Constraint secureConstraint = queryCheck.getConstraint();
+            if (secureConstraint != null) { 
+                Constraint constraint = clone.getConstraint();
+                // remove it from clone (by modifying the 'cloned' constraint)
+                if (secureConstraint.equals(constraint)) {
+                    clone.setConstraint(null);
+                } else { // must be part of the composite constraint
+                    BasicCompositeConstraint compConstraint = (BasicCompositeConstraint) constraint;
+                    compConstraint.removeChild(secureConstraint); // remove it
+                    if (compConstraint.getChilds().size() == 0) { // no need to let it  then
+                        clone.setConstraint(null);
+                    }
+                    if (compConstraint.getChilds().size() == 1) { // no need to let it composite then
+                        Constraint newConstraint = (Constraint) compConstraint.getChilds().get(0);
+                        clone.setConstraint(newConstraint);
+                    }
+                }
+            }
+        }
+
+    }
+
     public Object clone() { // also works for descendants (NodeQuery)
         try {
             BasicQuery clone = (BasicQuery) super.clone();
             clone.query = (BasicSearchQuery) query.clone();
             clone.aliasSequences = (HashMap) aliasSequences.clone();
+            removeSecurityConstraintFromClone(clone.query);
+            clone.insecureConstraint = null;
+            clone.queryCheck = null;
             clone.used = false;
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -133,6 +197,7 @@ public class BasicQuery implements Query  {
     }
     public Query aggregatingClone() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_AGGREGATING);
+        removeSecurityConstraintFromClone(bsq);
         BasicQuery clone     = new BasicQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = true;
@@ -141,6 +206,7 @@ public class BasicQuery implements Query  {
 
     public Query cloneWithoutFields() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
+        removeSecurityConstraintFromClone(bsq);
         BasicQuery clone     = new BasicQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = false;
@@ -448,8 +514,7 @@ public class BasicQuery implements Query  {
 
     }
     public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
-        if (c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
-            if (used) throw new BridgeException("Query was used already (so cannot modify composite constraints)");
+        if ((!used) && c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
             ((BasicCompositeConstraint) c1).addChild(c2);
             return (CompositeConstraint) c1;
         } else {
@@ -495,13 +560,17 @@ public class BasicQuery implements Query  {
     }
     public boolean markUsed() {
         boolean wasUsed = used;
+        if (queryCheck == null) {  // if called manually 
+            // apply security constraints first, if not yet done, because the query gets unmodifiable from now on.
+            ((BasicCloud) cloud).setSecurityConstraint(this);
+        }
         used = true;
         return wasUsed;
     }
 
 
     boolean isSecure() {
-        return secureConstraint != null && secureConstraint.isChecked();
+        return queryCheck != null && queryCheck.isChecked();
     }
 
     /**
@@ -510,10 +579,32 @@ public class BasicQuery implements Query  {
      * @see #removeSecurityConstraint
      */
     void setSecurityConstraint(Authorization.QueryCheck c) {
-        if (c != null && c.getConstraint() != null) {
-            Queries.addConstraint(this, c.getConstraint());
+        if (queryCheck != null) {
+            throw new BridgeException("Already a security constraints set");
         }
-        secureConstraint = c;
+        if (insecureConstraint != null) {
+            throw new BridgeException("Already a insecure constraint defined");
+        }
+        if (c == null) {
+            throw new BridgeException("QueryCheck may not be null");
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Setting security check " + c + " TO " + this);
+        }
+        queryCheck = c;
+            
+        insecureConstraint = query.getConstraint(); // current constraint
+        Constraint secureConstraint = queryCheck.getConstraint();
+        if (secureConstraint != null) {
+            if (insecureConstraint != null) {
+                BasicCompositeConstraint compConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+                compConstraint.addChild(insecureConstraint);
+                compConstraint.addChild(secureConstraint);
+                query.setConstraint(compConstraint);
+            } else {
+                query.setConstraint(secureConstraint);
+            }
+        }
     }
 
     /**
@@ -521,20 +612,15 @@ public class BasicQuery implements Query  {
      * @see #setSecurityConstraint
      */
     void removeSecurityConstraint() {
-        if (secureConstraint != null && secureConstraint.getConstraint() != null) {
-            Constraint constraint = query.getConstraint();
-            if (secureConstraint.equals(constraint)) {
-                query.setConstraint(null);
-            } else { // must be part of the composite constraint
-                BasicCompositeConstraint compConstraint = (BasicCompositeConstraint) constraint;
-                compConstraint.removeChild(secureConstraint.getConstraint()); // remove it
-                if (compConstraint.getChilds().size() == 1) { // no need to let it composite then
-                    Constraint newConstraint = (Constraint) compConstraint.getChilds().get(0);
-                    query.setConstraint(newConstraint);
-                }
-            }
-            secureConstraint = null;
+        if (log.isDebugEnabled()) {
+            log.debug("Removing " + queryCheck + " FROM " + this);
         }
+        if (queryCheck != null) {
+            query.setConstraint(insecureConstraint);
+            insecureConstraint = null;
+        }
+        queryCheck = null;
+
     }
 
     public Cloud getCloud() {
@@ -552,7 +638,7 @@ public class BasicQuery implements Query  {
 
 
     public String toString() {
-        return query.toString() + (used ? "(used)" : "");
+        return query.toString() + (used ? "(used)" : "") + "INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
 
     }
 
