@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: HSqlStorage.java,v 1.3 2003-05-02 20:29:03 michiel Exp $
+ * @version $Id: HSqlStorage.java,v 1.4 2003-05-05 13:30:59 michiel Exp $
  */
 public class HSqlStorage extends RelationalDatabaseStorage {
     /**
@@ -40,6 +40,11 @@ public class HSqlStorage extends RelationalDatabaseStorage {
     // javadoc inherited from DatabaseStorage
     public String mapToMMBaseFieldName(String fieldName) {
         return super.mapToMMBaseFieldName(fieldName).toLowerCase();
+    }
+
+    // javadoc inherited
+    protected String getTableName(String tableName) {
+        return tableName.toUpperCase();
     }
 
     // hsql wanst the table constraint after the column definiation, here are they spared up.
