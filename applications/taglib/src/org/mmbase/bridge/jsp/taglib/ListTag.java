@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 public class ListTag extends NodeLikeTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(ListTag.class.getName());
-    
+
     private String nodesString=null;
     private String typeString=null;
     private String whereString=null;
@@ -145,7 +145,7 @@ public class ListTag extends NodeLikeTag implements BodyTag {
      **/
     public void setSorted(String sorted){
 	this.sortedString = sorted;
-        
+
     }
 
     /**
@@ -183,6 +183,7 @@ public class ListTag extends NodeLikeTag implements BodyTag {
     public int doStartTag() throws JspException{
 	//this is where we do the seach
 
+        currentItemIndex= -1;  // reset index
 	NodeList nodes = null;
         //we hope at the end of this funtion
 	//this Vector is filled with nodes after that we create an enumeration of it
@@ -199,14 +200,14 @@ public class ListTag extends NodeLikeTag implements BodyTag {
 
 	String action= "none";
         log.debug("where " + whereString);
-	try {    
+	try {
 
             if (commandString != null) {
                 if (stringSplitter(typeString,",").size() != 1) { // cannot be done on multilevel
                     throw new JspException ("Cannot do a multilevel with a command");
                 }
                 action = "command " + commandString + " on NodeManager " + typeString;
-                log.debug(action);             
+                log.debug(action);
                 nodes = getDefaultCloud().getNodeManager(typeString).getList(commandString, null);
                 if (searchSorted != null) {
                     throw new JspException ("Cannot do a sort on a command");
@@ -214,8 +215,8 @@ public class ListTag extends NodeLikeTag implements BodyTag {
                 if (searchWhere != null) {
                     throw new JspException ("Cannot do a where on a command");
                 }
-                
-            } 
+
+            }
             else if (stringSplitter(typeString,",").size() > 1){ // multilevel
 		action = "multilevel search";
 		nodes = getDefaultCloud().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchSearch,searchDistinct);
@@ -312,10 +313,10 @@ public class ListTag extends NodeLikeTag implements BodyTag {
         }
 
     }
-    
-    
+
+
     private String previousValue = null; // static voor doInitBody
-    public void doInitBody() throws JspException { 
+    public void doInitBody() throws JspException {
         if (returnValues.hasNext()){
             currentItemIndex ++;
             Node next = returnValues.nextNode();
@@ -330,13 +331,13 @@ public class ListTag extends NodeLikeTag implements BodyTag {
                         changed = true;
                     }
                 }
-                previousValue = value;                
+                previousValue = value;
             }
             setNodeVar(next);
             fillVars();
         }
     }
-     
+
 
     private String parseNodes(String nodes) {
 	// should be a StringTokenizer have to check mmci how
@@ -367,8 +368,8 @@ public class ListTag extends NodeLikeTag implements BodyTag {
 
     private void showListError( Exception npe,       String nodesSearchString,
                                 String nodeManagers, String searchNodes,
-                                String searchFields, String searchWhere, 
-                                String searchSorted, String searchDirection, 
+                                String searchFields, String searchWhere,
+                                String searchSorted, String searchDirection,
                                 String searchSearch, boolean searchDistinct,
                                 String maxString,    String action             ) throws JspException {
 	StringBuffer sb = new StringBuffer();
