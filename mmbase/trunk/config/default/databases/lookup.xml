@@ -5,9 +5,8 @@
     The database-config is the name referencing the database-config-xml. 
     The first filter where all the rules apply, will be selected.
   -->
-      
-  <filter database-config="postgresql71">
-  
+        
+  <filter database-config="postgresql71">  
     <!-- driver name, must match driver-name-string from jdbc driver -->
     <driver-name>PostgreSQL Native Driver</driver-name>
     
@@ -36,6 +35,26 @@
     <database-product-version>7.2.1</database-product-version>    
   </filter>
 
+  <!-- match for postgresql-jdbc-driver verion 71 (generic) -->
+  <filter database-config="postgresql71">
+    <driver-class>org.postgresql.</driver-class>
+    <driver-major-version condition="equals">7</driver-major-version>
+    <driver-minor-version condition="equals">1</driver-minor-version>
+  </filter>
+
+  <!-- match for postgresql-jdbc-driver verion 72 -->
+  <filter database-config="postgresql72">
+    <driver-class>org.postgresql.</driver-class>
+    <driver-major-version condition="equals">7</driver-major-version>
+    <driver-minor-version condition="equals">2</driver-minor-version>
+  </filter>
+
+  <!-- matches all left over postgresql -->
+  <filter database-config="postgresql">
+    <driver-class>org.postgresql.</driver-class>   
+  </filter>
+
+  <!-- mysql with jdbc version 2.0 works with relational -->
   <filter database-config="relational">
      <database-product-name>MySQL</database-product-name>
      <driver-class>org.gjt.mm.mysql.</driver-class>
@@ -43,27 +62,24 @@
      <driver-minor-version condition="equals">0</driver-minor-version>
   </filter>  
 
-  <!-- matches for mysql -->      
+  <!-- left over jdbc-drivers for mysql -->      
   <filter database-config="mysql">
     <driver-class>org.gjt.mm.mysql.</driver-class>
-  </filter>  
+  </filter>
   <filter database-config="mysql">
     <driver-class>org.mysql.</driver-class>
   </filter>
   
-  <!-- matches for postgresql (postgresql71 has already been catched) -->
-  <filter database-config="postgresql">
-    <driver-class>org.postgresql.</driver-class>   
-  </filter>
-  
+  <!-- hsql -->
   <filter database-config="hypersonic">
     <driver-class>org.hsql.</driver-class>
   </filter>
   
+  <!-- hsqldb -->
   <filter database-config="hsqldb">
     <driver-class>org.hsqldb.</driver-class>
   </filter>
 
-  <!-- when no rules, then it will always be used when no previous rules apply-->      
+  <!-- when no rules, then it will always be used when no previous rules apply -->
   <filter database-config="relational" />
 </database-filters>
