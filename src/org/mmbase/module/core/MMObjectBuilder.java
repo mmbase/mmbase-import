@@ -55,7 +55,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.293 2005-03-07 08:42:18 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.294 2005-03-16 19:20:11 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -702,7 +702,8 @@ public class MMObjectBuilder extends MMTable {
             // prevent from making storage inconsistent(say remove nodes from inactive builder)
             // the builder we are in is not the actual builder!!
             // ? why not an node.remove()
-            throw new RuntimeException("Builder with name:" + getTableName() + "(" + oType + ") is not the actual builder.");
+            throw new RuntimeException("Builder with name: " + getTableName() + "(otype " + oType + ") is not the actual builder of the node that is to be deleted: " + 
+                                       node.getNumber() + " (otype: " + node.getOType() + ")");
         }
 
         removeSyncNodes(node);
@@ -738,10 +739,9 @@ public class MMObjectBuilder extends MMTable {
                 log.service("Removed syncnode " + syncnode);
             }
         } catch (SearchQueryException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
-
 
     /**
      * Remove the relations of a node.
@@ -2351,13 +2351,14 @@ public class MMObjectBuilder extends MMTable {
             } else {
                 return info.get(arguments.get(0));
             }
-       } else if (function.equals("wrap")) {
+        } else if (function.equals("wrap")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
             try {
                 String val  = node.getStringValue((String)arguments.get(0));
                 int wrappos = Integer.parseInt((String)arguments.get(1));
                 return wrap(val, wrappos);
             } catch(Exception e) {}
+
         } else if (function.equals("substring")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("substring function needs 2 or 3 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
             try {
@@ -2559,7 +2560,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         File dir = new File(documentRoot+path);
-        if (version!=null) nodeNumber+="."+version;
+        if (version != null) nodeNumber += "." + version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
         if ((matches == null) || (matches.length == 0)) {
             return null;
