@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.14 2002-07-03 16:18:44 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.15 2002-07-25 14:47:40 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -474,5 +474,26 @@ public class ObjectTypes extends TypeDef {
             if (log.isDebugEnabled()) log.debug("file: "+file+" has been deleted");
         }
         return true;
-    }    
+    }
+    
+    /**
+     * What should a GUI display for this node.
+     * This method returns the gui name (singular name) of the builder that goes with this node.
+     * @param node The node to display
+     * @return the display of the node as a <code>String</code>
+     */
+    public String getGUIIndicator(MMObjectNode node) {
+        return getSingularName(node.getStringValue("name"),null);
+    }
+
+    /**
+     * What should a GUI display for this node/field combo.
+     * @param field the name field of the field to display
+     * @param node The node to display
+     * @return the display of the node's field as a <code>String</code>, null if not specified
+     */
+    public String getGUIIndicator(String field,MMObjectNode node) {
+        return null;
+    }
+    
 }
