@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.storage.search;
 
 /**
@@ -7,6 +16,7 @@ package org.mmbase.storage.search;
  * the values listed below.
  * </ul>
  * This corresponds to an aggregated field in SQL SELECT-syntax.
+ * @since MMBase-1.7
  */
 public interface AggregatedField extends StepField {
     

@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.storage.search.sample;
 
 import org.mmbase.module.core.*;
@@ -14,7 +23,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {

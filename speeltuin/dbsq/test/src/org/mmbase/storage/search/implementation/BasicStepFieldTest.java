@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -87,7 +87,7 @@ public class BasicStepFieldTest extends TestCase {
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testSetAlias() {
         // Default is field name.
-        assert(instance.getAlias().equals(FIELD_NAME1));
+        assertTrue(instance.getAlias().equals(FIELD_NAME1));
         
         // Null value, should throw IllegalArgumentException.
         try {
@@ -103,15 +103,15 @@ public class BasicStepFieldTest extends TestCase {
         
         instance.setAlias(TEST_ALIAS);
         String alias = instance.getAlias();
-        assert(alias != null);
-        assert(alias.equals(TEST_ALIAS));
+        assertTrue(alias != null);
+        assertTrue(alias.equals(TEST_ALIAS));
     }
     
     /** Test of getFieldName method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testGetFieldName() {
         String fieldName = instance.getFieldName();
-        assert(fieldName != null);
-        assert(fieldName.equals(FIELD_NAME1));
+        assertTrue(fieldName != null);
+        assertTrue(fieldName.equals(FIELD_NAME1));
     }
     
     /** Test of getAlias method, of class org.mmbase.storage.search.implementation.BasicStepField. */
@@ -122,7 +122,7 @@ public class BasicStepFieldTest extends TestCase {
     
     /** Test of getStep method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testGetStep() {
-        assert(instance.getStep() == step);
+        assertTrue(instance.getStep() == step);
     }
     
     /** Test of getType method, of class org.mmbase.storage.search.implementation.BasicStepField. 
@@ -140,22 +140,22 @@ public class BasicStepFieldTest extends TestCase {
         
         Step step = new BasicStep(images);
         instance = new BasicStepField(step, imagesNumber);
-        assert(instance.getType() == FieldDefs.TYPE_NODE);
+        assertTrue(instance.getType() == FieldDefs.TYPE_NODE);
         
         instance = new BasicStepField(step, imagesOwner);
-        assert(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesTitle);
-        assert(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesDescription);
-        assert(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
         
         instance = new BasicStepField(step, imagesHandle);
-        assert(instance.getType() == FieldDefs.TYPE_BYTE);
+        assertTrue(instance.getType() == FieldDefs.TYPE_BYTE);
         
         instance = new BasicStepField(step, imagesItype);
-        assert(instance.getType() == FieldDefs.TYPE_STRING);
+        assertTrue(instance.getType() == FieldDefs.TYPE_STRING);
     }
     
     /** Test of testValue method, of class org.mmbase.storage.search.implementation.BasicStepField. */
@@ -236,21 +236,21 @@ public class BasicStepFieldTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicStepField. */
     public void testToString() {
         // Default aliases.
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("StepField(step:" + step.getAlias() 
         + ", fieldname:" + instance.getFieldName() + ", alias:" 
         + instance.getAlias() + ")"));
         
         // Set step alias.
         step.setAlias("abdef");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("StepField(step:" + step.getAlias() 
         + ", fieldname:" + instance.getFieldName() + ", alias:" 
         + instance.getAlias() + ")"));
         
         // Set field alias.
         instance.setAlias("fedbac");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("StepField(step:" + step.getAlias() 
         + ", fieldname:" + instance.getFieldName() + ", alias:" 
         + instance.getAlias() + ")"));

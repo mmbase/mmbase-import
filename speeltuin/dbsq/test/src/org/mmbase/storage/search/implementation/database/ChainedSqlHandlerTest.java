@@ -10,7 +10,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ChainedSqlHandlerTest extends TestCase {
     private final static int TEST_SUPPORT_LEVEL = 123;
@@ -50,8 +50,8 @@ public class ChainedSqlHandlerTest extends TestCase {
     /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testToSql() throws Exception {
         String sql = instance.toSql(query, instance); 
-        assert(sql != null);
-        assert(sql.equals(testSuccessor.toSql(query, instance)));
+        assertTrue(sql != null);
+        assertTrue(sql.equals(testSuccessor.toSql(query, instance)));
     }
     
     /** Test of appendQueryBodyToSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
@@ -62,8 +62,8 @@ public class ChainedSqlHandlerTest extends TestCase {
         sb.setLength(0);
         testSuccessor.appendQueryBodyToSql(sb, query, instance);
         String queryBody2 = sb.toString();
-        assert(queryBody.length() > 0);
-        assert(queryBody.equals(queryBody2));
+        assertTrue(queryBody.length() > 0);
+        assertTrue(queryBody.equals(queryBody2));
     }
     
     /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
@@ -76,34 +76,34 @@ public class ChainedSqlHandlerTest extends TestCase {
         sb.setLength(0);
         testSuccessor.appendConstraintToSql(sb, constraint, query, false, false);
         String queryBody2 = sb.toString();
-        assert(strConstraint.length() > 0);
-        assert(strConstraint.equals(queryBody2));
+        assertTrue(strConstraint.length() > 0);
+        assertTrue(strConstraint.equals(queryBody2));
     }
     
     /** Test of both getSupportLevel methods, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         // test method getSupport(int,SearchQuery)
-        assert(instance.getSupportLevel(
+        assertTrue(instance.getSupportLevel(
         SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == TEST_SUPPORT_LEVEL);
         
         // test method getSupport(Constraint,SearchQuery)
         Constraint constraint 
         = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        assert(instance.getSupportLevel(constraint, query)
+        assertTrue(instance.getSupportLevel(constraint, query)
         == TEST_SUPPORT_LEVEL);
     }
     
     /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testGetAllowedValue() {
         String result = instance.getAllowedValue(TEST);
-        assert(result.length() > 0);
-        assert(result.equals(testSuccessor.getAllowedValue(TEST)));
+        assertTrue(result.length() > 0);
+        assertTrue(result.equals(testSuccessor.getAllowedValue(TEST)));
     }
     
     /** Test of getSuccessor method, of class org.mmbase.storage.search.implementation.database.ChainedSqlHandler. */
     public void testGetSuccessor() {
-        assert(instance.getSuccessor() == testSuccessor);
+        assertTrue(instance.getSuccessor() == testSuccessor);
     }
     
     public static Test suite() {

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicCompositeConstraintTest extends TestCase {
     
@@ -58,19 +58,19 @@ public class BasicCompositeConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         List childs = instance.getChilds();
-        assert(childs.size() == 0);
+        assertTrue(childs.size() == 0);
         
         Constraint constraint1 = new BasicConstraint();
         instance.addChild(constraint1);
         childs = instance.getChilds();
-        assert(childs.size() == 1);
-        assert(childs.get(0).equals(constraint1));
+        assertTrue(childs.size() == 1);
+        assertTrue(childs.get(0).equals(constraint1));
         Constraint constraint2 = new BasicConstraint();
         instance.addChild(constraint2);
         childs = instance.getChilds();
-        assert(childs.size() == 2);
-        assert(childs.get(0).equals(constraint1));
-        assert(childs.get(1).equals(constraint2));        
+        assertTrue(childs.size() == 2);
+        assertTrue(childs.get(0).equals(constraint1));
+        assertTrue(childs.get(1).equals(constraint2));        
     }
     
     /** Test of BasicCompositeConstraint(int) */
@@ -103,7 +103,7 @@ public class BasicCompositeConstraintTest extends TestCase {
     
     /** Test of getLogicalOperator method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testGetLogicalOperator() {
-        assert(instance.getLogicalOperator() == TEST_OPERATOR);
+        assertTrue(instance.getLogicalOperator() == TEST_OPERATOR);
     }
     
     
@@ -120,27 +120,27 @@ public class BasicCompositeConstraintTest extends TestCase {
     /** Test of getBasicSupportLevel method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testGetBasicSupportLevel() {
         // No childs: optimal support.
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL));
         // Lowest support among childs.
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_NORMAL));
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NORMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NORMAL);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL));
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NORMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NORMAL);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_WEAK));
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_WEAK);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_WEAK);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL));
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_WEAK);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_WEAK);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_NONE));
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NONE);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NONE);
         instance.addChild(new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL));
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NONE);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NONE);
     }
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testToString() {
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompositeConstraint(inverse:"
         + instance.isInverse() + ", operator:"
         + instance.getLogicalOperator() + ", childs:"
@@ -148,7 +148,7 @@ public class BasicCompositeConstraintTest extends TestCase {
 
         // Reverse inverse flag.
         instance.setInverse(!instance.isInverse());
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompositeConstraint(inverse:"
         + instance.isInverse() + ", operator:"
         + instance.getLogicalOperator() + ", childs:"

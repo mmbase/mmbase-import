@@ -21,7 +21,7 @@ import org.xml.sax.*;
  * on images.title and pools.name.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VtsSqlHandlerTest extends TestCase {
     
@@ -94,19 +94,19 @@ public class VtsSqlHandlerTest extends TestCase {
     /** Test of getSupportLevel(int,query) method, of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         // Max number is supported if only constraint is StringSearchConstraint.
-        assert(
+        assertTrue(
         instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
         // Offset not supported. 
-        assert(
+        assertTrue(
         instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_NONE);
         
         // Max number not supported for composite constraints.
         composite.addChild(constraint1);
         query.setConstraint(composite);
-        assert(
+        assertTrue(
         instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_NONE);
     }
@@ -114,52 +114,52 @@ public class VtsSqlHandlerTest extends TestCase {
     /** Test of getSupportLevel(constraint,query) of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testGetSupportLevel2() throws Exception {
         // StringSearchConstraint is supported for VTS field.
-        assert(instance.getSupportLevel(constraint1, query) 
+        assertTrue(instance.getSupportLevel(constraint1, query) 
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
         // Composite constraint.
         // Supported if it contains exactly one supported StringSearchConstraint.
-        assert(instance.getSupportLevel(composite, query) 
+        assertTrue(instance.getSupportLevel(composite, query) 
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
         composite.addChild(constraint2);
-        assert(instance.getSupportLevel(composite, query)
+        assertTrue(instance.getSupportLevel(composite, query)
         == SearchQueryHandler.SUPPORT_NONE);
     }
     
     /** Test of hasVtsIndex method, of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testHasVtsIndex() {
-        assert(!instance.hasVtsIndex(imagesDescriptionField));
-        assert(instance.hasVtsIndex(imagesTitleField));
+        assertTrue(!instance.hasVtsIndex(imagesDescriptionField));
+        assertTrue(instance.hasVtsIndex(imagesTitleField));
     }
     
     /** Test of hasAdditionalConstraints method, of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testHasAdditionalConstraints() {
-        assert(!instance.hasAdditionalConstraints(query));
+        assertTrue(!instance.hasAdditionalConstraints(query));
         
         imagesStep.addNode(1);
-        assert(instance.hasAdditionalConstraints(query));
+        assertTrue(instance.hasAdditionalConstraints(query));
         
         query = new BasicSearchQuery();
         imagesStep= query.addStep(images);
-        assert(!instance.hasAdditionalConstraints(query));
+        assertTrue(!instance.hasAdditionalConstraints(query));
         
         query.addRelationStep(insrel, pools);
-        assert(instance.hasAdditionalConstraints(query));
+        assertTrue(instance.hasAdditionalConstraints(query));
     }
     
     /** Test of containsOtherStringSearchConstraints method, of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testContainsOtherStringSearchConstraints() {
-        assert(!instance.containsOtherStringSearchConstraints(composite, constraint1));
-        assert(!instance.containsOtherStringSearchConstraints(composite, constraint2));
+        assertTrue(!instance.containsOtherStringSearchConstraints(composite, constraint1));
+        assertTrue(!instance.containsOtherStringSearchConstraints(composite, constraint2));
         
         composite.addChild(constraint1);
-        assert(!instance.containsOtherStringSearchConstraints(composite, constraint1));
-        assert(instance.containsOtherStringSearchConstraints(composite, constraint2));
+        assertTrue(!instance.containsOtherStringSearchConstraints(composite, constraint1));
+        assertTrue(instance.containsOtherStringSearchConstraints(composite, constraint2));
         
         composite.addChild(constraint2);
-        assert(instance.containsOtherStringSearchConstraints(composite, constraint1));
-        assert(instance.containsOtherStringSearchConstraints(composite, constraint2));
+        assertTrue(instance.containsOtherStringSearchConstraints(composite, constraint1));
+        assertTrue(instance.containsOtherStringSearchConstraints(composite, constraint2));
     }
     
     /** Test of toBuilderField method, of class org.mmbase.storage.search.implementation.database.vts.VtsSqlHandler. */
@@ -184,8 +184,13 @@ public class VtsSqlHandlerTest extends TestCase {
             fail("Unknown field name, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        assert(VtsSqlHandler.toBuilderField(prefix + "images", "title").
+        assertTrue(VtsSqlHandler.toBuilderField(prefix + "images", "title").
             equals("images.title"));
+    }
+    
+    /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.vts.VtsSqlHandler. */
+    public void testAppendConstraintToSql() {
+        // TODO: implement
     }
     
     public static Test suite() {

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicCompareFieldsConstraintTest extends TestCase {
     
@@ -113,13 +113,13 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     
     /** Test of getField2 method, of class org.mmbase.storage.search.implementation.BasicCompareFieldsConstraint. */
     public void testGetField2() {
-        assert(instance.getField2() == stringField2);
+        assertTrue(instance.getField2() == stringField2);
     }
     
     /** Test of getBasicSupportLevel method. */
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicCompareFieldsConstraint. */
@@ -134,7 +134,7 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicCompareFieldsConstraint. */
     public void testToString() {
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompareFieldsConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -144,7 +144,7 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
         
          // Reverse inverse flag.
         instance.setInverse(!instance.isInverse());
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompareFieldsConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -154,7 +154,7 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
         
         // Set field alias.
         stringField.setAlias("yyuiwe");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompareFieldsConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -164,7 +164,7 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
        
         // Reverse case sensitive.
         instance.setCaseSensitive(!instance.isCaseSensitive());
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompareFieldsConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -174,7 +174,7 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
 
         // Set second field alias.
         stringField2.setAlias("jwjidl");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("CompareFieldsConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"

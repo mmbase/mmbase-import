@@ -11,7 +11,7 @@ import org.xml.sax.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class XmlVtsIndicesReaderTest extends TestCase {
     
@@ -57,41 +57,41 @@ public class XmlVtsIndicesReaderTest extends TestCase {
     
     /** Test of getNolog method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
     public void testGetNolog() {
-        assert(instance.getNolog());
+        assertTrue(instance.getNolog());
     }
     
     /** Test of getSbspaceElements method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
     public void testGetSbspaceElements() {
         Enumeration eSbspaces = instance.getSbspaceElements();
-        assert(eSbspaces.hasMoreElements());
+        assertTrue(eSbspaces.hasMoreElements());
         Element sbspace = (Element) eSbspaces.nextElement();
-        assert(sbspace.getAttribute("name").equals("sbspace0"));
-        assert(eSbspaces.hasMoreElements());
+        assertTrue(sbspace.getAttribute("name").equals("sbspace0"));
+        assertTrue(eSbspaces.hasMoreElements());
         sbspace = (Element) eSbspaces.nextElement();
-        assert(sbspace.getAttribute("name").equals("sbspace1"));
-        assert(!eSbspaces.hasMoreElements());
+        assertTrue(sbspace.getAttribute("name").equals("sbspace1"));
+        assertTrue(!eSbspaces.hasMoreElements());
     }
     
     /** Test of getSbspaceName method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
     public void testGetSbspaceName() {
         Enumeration eSbspaces = instance.getSbspaceElements();
         Element sbspace = (Element) eSbspaces.nextElement();
-        assert(instance.getSbspaceName(sbspace).equals("sbspace0"));
+        assertTrue(instance.getSbspaceName(sbspace).equals("sbspace0"));
         sbspace = (Element) eSbspaces.nextElement();
-        assert(instance.getSbspaceName(sbspace).equals("sbspace1"));
+        assertTrue(instance.getSbspaceName(sbspace).equals("sbspace1"));
     }
     
     /** Test of getVtsindexElements method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
     public void testGetVtsindexElements() {
         Element sbspace0 = instance.getElementByPath("vtsindices.sbspace");
         Enumeration eIndices = instance.getVtsindexElements(sbspace0);
-        assert(eIndices.hasMoreElements());
+        assertTrue(eIndices.hasMoreElements());
         Element index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexValue(index).equals("movies_title_vts"));
-        assert(eIndices.hasMoreElements());
+        assertTrue(instance.getVtsindexValue(index).equals("movies_title_vts"));
+        assertTrue(eIndices.hasMoreElements());
         index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexValue(index).equals("news_body_testidx2_"));
-        assert(!eIndices.hasMoreElements());
+        assertTrue(instance.getVtsindexValue(index).equals("news_body_testidx2_"));
+        assertTrue(!eIndices.hasMoreElements());
     }
     
     /** Test of getVtsindexTable method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
@@ -99,9 +99,9 @@ public class XmlVtsIndicesReaderTest extends TestCase {
         Element sbspace0 = instance.getElementByPath("vtsindices.sbspace");
         Enumeration eIndices = instance.getVtsindexElements(sbspace0);
         Element index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexTable(index).equals("test_movies"));
+        assertTrue(instance.getVtsindexTable(index).equals("test_movies"));
         index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexTable(index).equals("test_news"));
+        assertTrue(instance.getVtsindexTable(index).equals("test_news"));
     }
     
     /** Test of getVtsindexField method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
@@ -109,9 +109,9 @@ public class XmlVtsIndicesReaderTest extends TestCase {
         Element sbspace0 = instance.getElementByPath("vtsindices.sbspace");
         Enumeration eIndices = instance.getVtsindexElements(sbspace0);
         Element index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexField(index).equals("title"));
+        assertTrue(instance.getVtsindexField(index).equals("title"));
         index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexField(index).equals("body"));
+        assertTrue(instance.getVtsindexField(index).equals("body"));
     }
     
     /** Test of getVtsindexValue method, of class org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReader. */
@@ -119,9 +119,9 @@ public class XmlVtsIndicesReaderTest extends TestCase {
         Element sbspace0 = instance.getElementByPath("vtsindices.sbspace");
         Enumeration eIndices = instance.getVtsindexElements(sbspace0);
         Element index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexValue(index).equals("movies_title_vts"));
+        assertTrue(instance.getVtsindexValue(index).equals("movies_title_vts"));
         index = (Element) eIndices.nextElement();
-        assert(instance.getVtsindexValue(index).equals("news_body_testidx2_"));
+        assertTrue(instance.getVtsindexValue(index).equals("news_body_testidx2_"));
     }
     
     public static Test suite() {

@@ -1,9 +1,12 @@
 /*
- * VtsQueryHandler.java
- *
- * Created on October 17, 2002, 4:46 PM
- */
 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.storage.search.implementation.database.vts;
 
 import java.io.*;
@@ -21,7 +24,8 @@ import org.xml.sax.*;
  * The Vts query handler adds support for Verity Text Search constraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
+ * @since MMBase-1.7
  */
 // TODO: (later) add javadoc, elaborate on overwritten methods.
 public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
@@ -42,19 +46,76 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
         init();
     }
     
-    //    // javadoc is inherited
-    //    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
-    //    SearchQuery query, boolean inverse, boolean inComposite)
-    //    throws SearchQueryException {
-    //        if (constraint instanceof StringSearchConstraint) {
-    //            // TODO: support maxNumber for query with vts constraint.
-    //            // TODO: implement.
-    //            sb.append("vts search not implemented yet!");
-    //        } else {
-    //            successor.appendConstraintToSql(sb, constraint, query,
-    //            inverse, inComposite);
-    //        }
-    //    }
+    // javadoc is inherited
+    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
+    SearchQuery query, boolean inverse, boolean inComposite)
+    throws SearchQueryException {
+        // Net effect of inverse setting with constraint inverse property.
+        boolean overallInverse = inverse ^ constraint.isInverse();
+
+        if (constraint instanceof StringSearchConstraint) {
+            // TODO: test for support, else throw exception
+            // TODO: support maxNumber for query with vts constraint.
+            StringSearchConstraint stringSearchConstraint 
+                = (StringSearchConstraint) constraint;
+            StepField field = stringSearchConstraint.getField();
+            Map parameters = stringSearchConstraint.getParameters();
+            
+            // TODO: how to implement inverse, 
+            // it is actually more complicated than this:
+            if (overallInverse) {
+                sb.append("NOT ");
+            }
+            sb.append("vts_contains(").
+            append(getAllowedValue(field.getStep().getAlias())).
+            append(".").
+            append(getAllowedValue(field.getFieldName())).
+            append(", ROW('");
+
+            switch (stringSearchConstraint.getSearchType()) {
+                case StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED:
+                    sb.append("<ACCRUE>(");
+                    break;
+                    
+                case StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED:
+                    sb.append("<MANY><PHRASE>(");
+                    break;
+                    
+                case StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED:
+                    Integer proximityLimit 
+                        = (Integer) parameters.
+                            get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT);
+                    if (proximityLimit == null) {
+                        throw new IllegalStateException(
+                        "Parameter PARAM_PROXIMITY_LIMIT not set " +
+                        "while trying to perform proximity oriented search.");
+                    }
+                    sb.append("<NEAR/").append(proximityLimit).append(">(");
+                    break;
+                    
+                default:
+                    throw new IllegalStateException("valid searchtype must be selected");
+            }
+            
+            int matchType = stringSearchConstraint.getMatchType();
+            Float fuzziness = 
+                (Float) parameters.get(StringSearchConstraint.PARAM_FUZZINESS);
+            Iterator iSearchTerms 
+                = stringSearchConstraint.getSearchTerms().iterator();
+            while (iSearchTerms.hasNext()) {
+                String searchTerm = (String) iSearchTerms.next();
+                appendSearchTerm(sb, searchTerm, matchType, fuzziness);
+                if (iSearchTerms.hasNext()) {
+                    sb.append(",");
+                }
+            }
+            sb.append(")', 'CUTOFFSCORE=00'))");
+            
+        } else {
+            getSuccessor().appendConstraintToSql(sb, constraint, query,
+            inverse, inComposite);
+        }
+    }
     
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
@@ -189,6 +250,8 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
             new InputSource(
             new BufferedReader(
             new FileReader("C:/projects/konijn/testindices.xml"))));
+//            new FileReader("C:/projects/konijn/vtsindices.xml"))));
+        
         Enumeration eSbspaces = configReader.getSbspaceElements();
         while (eSbspaces.hasMoreElements()) {
             Element sbspace = (Element) eSbspaces.nextElement();
@@ -250,6 +313,64 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
         throw new IllegalArgumentException(
         "No field corresponding to database field \"" + dbField 
         + "\" found in builder \"" + builderName + "\".");
+    }
+    
+    /**
+     * Adds part to query representing one searchterm.
+     *
+     * @param sb The stringbuffer.
+     * @param searchTerm The searchterm.
+     * @param matchType The match type.
+     * @param fuzziness The value of the fuzziness parameter supplied with 
+     *        the string search constraint (may be null).
+     */
+    private void appendSearchTerm(StringBuffer sb, String searchTerm, 
+        int matchType, Float fuzziness) {
+            
+        // Replace wildcards
+        searchTerm = searchTerm.replace('%', '*');
+        searchTerm = searchTerm.replace('_', '?');
+        
+        switch (matchType) {
+            case StringSearchConstraint.MATCH_TYPE_FUZZY:
+                if (fuzziness == null) {
+                    throw new IllegalStateException(
+                    "Parameter PARAM_FUZZINESS not set " +
+                    "while trying to perform fuzzy matching.");
+                }
+                int margin = (int) (searchTerm.length()*fuzziness.floatValue());
+                if (margin > 0) {
+                    // typo, can not be combined with <MANY>
+                    sb.append("<TYPO/" + margin + ">").append(searchTerm);
+                } else if (searchTerm.indexOf('*') > -1 
+                || searchTerm.indexOf('?') > -1) {
+                    // wildcard
+                    sb.append("<MANY><WILDCARD>").append(searchTerm);
+                } else {
+                    // margin too small, literal
+                    sb.append("<MANY><WORD>").append(searchTerm);
+                }
+                break;
+                
+            case StringSearchConstraint.MATCH_TYPE_LITERAL:
+                if (searchTerm.indexOf('*') > -1 
+                || searchTerm.indexOf('?') > -1) {
+                    // wildcard
+                    sb.append("<MANY><WILDCARD>").append(searchTerm);
+                } else {
+                    sb.append("<MANY><WORD>").append(searchTerm);
+                }
+                break;
+                
+            case StringSearchConstraint.MATCH_TYPE_SYNONYM:
+                // niet te combineren met <MANY>
+                sb.append("<THESAURUS>").append(searchTerm);
+                break;
+                
+            default:
+                throw new IllegalStateException(
+                "valid matchtype must be selected");
+        }
     }
     
 }

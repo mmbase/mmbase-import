@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.storage.search;
 
 import java.util.List;
@@ -7,7 +16,8 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Defines methods for an object that handles search query requests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
+ * @since MMBase-1.7
  */
 public interface SearchQueryHandler {
     /**

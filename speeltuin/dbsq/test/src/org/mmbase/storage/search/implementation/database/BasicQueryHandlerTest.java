@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -132,20 +132,20 @@ public class BasicQueryHandlerTest extends TestCase {
             Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
                 MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
-                assert(iResultNodes.hasNext());
+                assertTrue(iResultNodes.hasNext());
                 MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
-                assert(resultNode.getBuilder() == mmbase.getBuilder("pools"));
-                assert(resultNode.getStringValue("name") != null
+                assertTrue(resultNode.getBuilder() == mmbase.getBuilder("pools"));
+                assertTrue(resultNode.getStringValue("name") != null
                 && resultNode.getStringValue("name").length() > 0);
-                assert(resultNode.getStringValue("name").equals(testNode.getStringValue("name")));
-                assert(resultNode.getStringValue("description") != null
+                assertTrue(resultNode.getStringValue("name").equals(testNode.getStringValue("name")));
+                assertTrue(resultNode.getStringValue("description") != null
                 && resultNode.getStringValue("description").length() > 0);
-                assert(resultNode.getStringValue("description").equals(testNode.getStringValue("description")));
-                assert(resultNode.getStringValue("owner") != null
+                assertTrue(resultNode.getStringValue("description").equals(testNode.getStringValue("description")));
+                assertTrue(resultNode.getStringValue("owner") != null
                 && resultNode.getStringValue("owner").length() > 0);
-                assert(resultNode.getStringValue("owner").equals(testNode.getStringValue("owner")));
+                assertTrue(resultNode.getStringValue("owner").equals(testNode.getStringValue("owner")));
             }
-            assert(!iResultNodes.hasNext());
+            assertTrue(!iResultNodes.hasNext());
         }
         
         // Test for clusternodes.
@@ -170,21 +170,21 @@ public class BasicQueryHandlerTest extends TestCase {
             Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
                 MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
-                assert(iResultNodes.hasNext());
+                assertTrue(iResultNodes.hasNext());
                 MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
-                assert(resultNode instanceof ClusterNode);
-                assert(resultNode.getBuilder() == mmbase.getClusterBuilder());
-                assert(resultNode.getStringValue("pools1.name") != null
+                assertTrue(resultNode instanceof ClusterNode);
+                assertTrue(resultNode.getBuilder() == mmbase.getClusterBuilder());
+                assertTrue(resultNode.getStringValue("pools1.name") != null
                 && resultNode.getStringValue("pools1.name").length() > 0);
-                assert(resultNode.getStringValue("pools1.name").equals(testNode.getStringValue("name")));
-                assert(resultNode.getStringValue("pools1.description") != null
+                assertTrue(resultNode.getStringValue("pools1.name").equals(testNode.getStringValue("name")));
+                assertTrue(resultNode.getStringValue("pools1.description") != null
                 && resultNode.getStringValue("pools1.description").length() > 0);
-                assert(resultNode.getStringValue("pools1.description").equals(testNode.getStringValue("description")));
-                assert(resultNode.getStringValue("pools1.owner") != null
+                assertTrue(resultNode.getStringValue("pools1.description").equals(testNode.getStringValue("description")));
+                assertTrue(resultNode.getStringValue("pools1.owner") != null
                 && resultNode.getStringValue("pools1.owner").length() > 0);
-                assert(resultNode.getStringValue("pools1.owner").equals(testNode.getStringValue("owner")));
+                assertTrue(resultNode.getStringValue("pools1.owner").equals(testNode.getStringValue("owner")));
             }
-            assert(!iResultNodes.hasNext());
+            assertTrue(!iResultNodes.hasNext());
         }
         
         // Test for result nodes.
@@ -209,21 +209,21 @@ public class BasicQueryHandlerTest extends TestCase {
             Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
                 MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
-                assert(iResultNodes.hasNext());
+                assertTrue(iResultNodes.hasNext());
                 MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
-                assert(resultNode instanceof ResultNode);
-                assert(resultNode.getBuilder() instanceof ResultBuilder);
-                assert(resultNode.getStringValue("a_name") != null
+                assertTrue(resultNode instanceof ResultNode);
+                assertTrue(resultNode.getBuilder() instanceof ResultBuilder);
+                assertTrue(resultNode.getStringValue("a_name") != null
                 && resultNode.getStringValue("a_name").length() > 0);
-                assert(resultNode.getStringValue("a_name").equals(testNode.getStringValue("name")));
-                assert(resultNode.getStringValue("description") != null
+                assertTrue(resultNode.getStringValue("a_name").equals(testNode.getStringValue("name")));
+                assertTrue(resultNode.getStringValue("description") != null
                 && resultNode.getStringValue("description").length() > 0);
-                assert(resultNode.getStringValue("description").equals(testNode.getStringValue("description")));
-                assert(resultNode.getStringValue("owner") != null
+                assertTrue(resultNode.getStringValue("description").equals(testNode.getStringValue("description")));
+                assertTrue(resultNode.getStringValue("owner") != null
                 && resultNode.getStringValue("owner").length() > 0);
-                assert(resultNode.getStringValue("owner").equals(testNode.getStringValue("owner")));
+                assertTrue(resultNode.getStringValue("owner").equals(testNode.getStringValue("owner")));
             }
-            assert(!iResultNodes.hasNext());
+            assertTrue(!iResultNodes.hasNext());
         }
         
         // Test for result nodes with aggregated fields.
@@ -245,7 +245,7 @@ public class BasicQueryHandlerTest extends TestCase {
                 = new BasicFieldValueConstraint(poolsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
             List resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
-            assert(resultNodes.size() == 1);
+            assertTrue(resultNodes.size() == 1);
             
             // Determine min/max name from testnodes.
             Iterator iTestNodes = testNodes.iterator();
@@ -265,8 +265,8 @@ public class BasicQueryHandlerTest extends TestCase {
             
             // Compare with resultnodes.
             ResultNode result = (ResultNode) resultNodes.get(0);
-            assert(result.getStringValue("minName").equals(minName));
-            assert(result.getStringValue("maxName").equals(maxName));
+            assertTrue(result.getStringValue("minName").equals(minName));
+            assertTrue(result.getStringValue("maxName").equals(maxName));
         }
         
         query.setMaxNumber(100);
@@ -293,24 +293,24 @@ public class BasicQueryHandlerTest extends TestCase {
         
         // Support for max number optimal only when set to default (= -1),
         // weak otherwise.
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_WEAK);
         query.setMaxNumber(-1);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
         // Support for offset optimal only when set to default (= 0),
         // weak otherwise.
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_WEAK);
         query.setOffset(0);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
 
         // TODO: (later) test whith partial/full support for offset/maxNumber
@@ -321,13 +321,13 @@ public class BasicQueryHandlerTest extends TestCase {
         // Should return basic support level of constraint.
         SearchQuery query = new BasicSearchQuery();
         Constraint constraint = new TestConstraint(SearchQueryHandler.SUPPORT_NONE);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NONE);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NONE);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_WEAK);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_WEAK);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_WEAK);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_NORMAL);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NORMAL);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NORMAL);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     public static Test suite() {

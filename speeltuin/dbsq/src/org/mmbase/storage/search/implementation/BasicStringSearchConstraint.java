@@ -4,6 +4,15 @@
  * Created on October 30, 2002, 10:34 AM
  */
 
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
@@ -67,7 +76,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     
     /** 
      * Creates a new instance of BasicStringSearchConstraint.
-     * Private, is be called from all other creators. 
+     * Private, is to be called from all other creators. 
      *
      * @param field The associated field.
      * @param searchType The search type.

@@ -4,6 +4,15 @@
  * Created on October 18, 2002, 5:36 PM
  */
 
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.storage.search.*;
@@ -19,8 +28,9 @@ import org.mmbase.storage.search.*;
  * its <em>successor</em>, i.e. the next handler in the chain.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @see org.mmbase.storage.search.implementation.database.SqlHandler 
+ * @since MMBase-1.7
  */
 public class ChainedSqlHandler implements SqlHandler {
     

@@ -11,7 +11,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicStringSearchConstraintTest extends TestCase {
     
@@ -110,7 +110,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     /** Test of getBasicSupportLevel method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
     public void testGetBasicSupportLevel() {
         // Not supported.
-        assert(
+        assertTrue(
         instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_NONE);
     }
     
@@ -129,13 +129,13 @@ public class BasicStringSearchConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_LITERAL);
-        assert(
+        assertTrue(
         instance.getMatchType() == StringSearchConstraint.MATCH_TYPE_LITERAL);
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_FUZZY);
-        assert(
+        assertTrue(
         instance.getMatchType() == StringSearchConstraint.MATCH_TYPE_FUZZY);
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_SYNONYM);
-        assert(
+        assertTrue(
         instance.getMatchType() == StringSearchConstraint.MATCH_TYPE_SYNONYM);
     }
     
@@ -154,13 +154,13 @@ public class BasicStringSearchConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
-        assert( instance.getSearchType()
+        assertTrue( instance.getSearchType()
         == StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED);
-        assert( instance.getSearchType()
+        assertTrue( instance.getSearchType()
         == StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED);
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
-        assert( instance.getSearchType()
+        assertTrue( instance.getSearchType()
         == StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
     }
     
@@ -215,18 +215,18 @@ public class BasicStringSearchConstraintTest extends TestCase {
             instance.setParameter(StringSearchConstraint.PARAM_FUZZINESS, fuzziness);
             fail("Invalid matchtype, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
-        assert(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS)
+        assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS)
         == null);
         
         // due to matchtype fuzziness parameter should be set
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_FUZZY);
         instance.setParameter(StringSearchConstraint.PARAM_FUZZINESS, fuzziness);
-        assert(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS).
+        assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS).
         equals(fuzziness));
         
         // changing matchtype should clear fuzziness parameter
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_LITERAL);
-        assert(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS)
+        assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS)
         == null);
         
         Integer proximityLimit = new Integer(2);
@@ -239,19 +239,19 @@ public class BasicStringSearchConstraintTest extends TestCase {
             StringSearchConstraint.PARAM_PROXIMITY_LIMIT, proximityLimit);
             fail("Invalid matchtype, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
-        assert(instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
+        assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
         == null);
         
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
         instance.setParameter(
         StringSearchConstraint.PARAM_PROXIMITY_LIMIT, proximityLimit);
-        assert(
+        assertTrue(
         instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT).
         equals(proximityLimit));
         
         // changing searchtype should clear proximity limit parameter
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
-        assert(instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
+        assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
         == null);
     }
     
@@ -273,8 +273,8 @@ public class BasicStringSearchConstraintTest extends TestCase {
         int nrTerms = instance.getSearchTerms().size();
         instance.addSearchTerm(newTerm);
         List searchTerms = instance.getSearchTerms();
-        assert(searchTerms.size() == (nrTerms + 1));
-        assert(searchTerms.get(nrTerms).equals(newTerm));
+        assertTrue(searchTerms.size() == (nrTerms + 1));
+        assertTrue(searchTerms.get(nrTerms).equals(newTerm));
         
         try {
             // Empty searchterm, should throw IllegalArgumentException.
@@ -295,7 +295,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         searchTerms.add("uerui");
         searchTerms.add("zcvvc");
         instance.setSearchTerms(searchTerms);
-        assert(instance.getSearchTerms().equals(searchTerms));
+        assertTrue(instance.getSearchTerms().equals(searchTerms));
         
         try {
             // Empty list of searchterms, should throw IllegalArgumentException.
@@ -318,10 +318,10 @@ public class BasicStringSearchConstraintTest extends TestCase {
         String searchTerm3 = "i3wn";
         instance.setSearchTerms("\n\t\r " + searchTerm1
         + "\r" + searchTerm2 + "  " + searchTerm3 + " \n ");
-        assert(instance.getSearchTerms().size() == 3);
-        assert(instance.getSearchTerms().get(0).equals(searchTerm1));
-        assert(instance.getSearchTerms().get(1).equals(searchTerm2));
-        assert(instance.getSearchTerms().get(2).equals(searchTerm3));
+        assertTrue(instance.getSearchTerms().size() == 3);
+        assertTrue(instance.getSearchTerms().get(0).equals(searchTerm1));
+        assertTrue(instance.getSearchTerms().get(1).equals(searchTerm2));
+        assertTrue(instance.getSearchTerms().get(2).equals(searchTerm3));
         
         try {
             // Empty searchterm string, should throw IllegalArgumentException.
@@ -364,7 +364,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
     public void testToString() {
         instance.setCaseSensitive(true);
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()
@@ -375,7 +375,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
 
          // Reverse inverse flag.
         instance.setInverse(!instance.isInverse());
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()
@@ -385,7 +385,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         + ", searchterms:" + instance.getSearchTerms() + ")"));
         
         instance.setCaseSensitive(false);
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()
@@ -395,7 +395,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         + ", searchterms:" + instance.getSearchTerms() + ")"));
         
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()
@@ -405,7 +405,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         + ", searchterms:" + instance.getSearchTerms() + ")"));
         
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_FUZZY);
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()
@@ -416,7 +416,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         
         instance.setParameter(
         StringSearchConstraint.PARAM_FUZZINESS, new Float(0.5));
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()
@@ -426,7 +426,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         + ", searchterms:" + instance.getSearchTerms() + ")"));
         
         instance.addSearchTerm("kdkdkdk");
-        assert(instance.toString(), instance.toString().equals(
+        assertTrue(instance.toString(), instance.toString().equals(
         "StringSearchConstraint(inverse:"
         + instance.isInverse() + ", field:" + instance.getField()
         + ", casesensitive:" + instance.isCaseSensitive()

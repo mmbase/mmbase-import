@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -79,14 +79,14 @@ public class BasicSqlHandlerTest extends TestCase {
     
     /** Test of toSqlString method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testToSqlString() throws Exception {
-        assert(BasicSqlHandler.toSqlString(null) == null);
-        assert(BasicSqlHandler.toSqlString("'").equals("''"));
-        assert(BasicSqlHandler.toSqlString("'''''").equals("''''''''''"));
-        assert(BasicSqlHandler.toSqlString("AsDf'").equals("AsDf''"));
-        assert(BasicSqlHandler.toSqlString("AsDf'jkl").equals("AsDf''jkl"));
-        assert(BasicSqlHandler.toSqlString("AsDf'jkl'").equals("AsDf''jkl''"));
-        assert(BasicSqlHandler.toSqlString("'AsDf'jkl").equals("''AsDf''jkl"));
-        assert(BasicSqlHandler.toSqlString("qwerty").equals("qwerty"));
+        assertTrue(BasicSqlHandler.toSqlString(null) == null);
+        assertTrue(BasicSqlHandler.toSqlString("'").equals("''"));
+        assertTrue(BasicSqlHandler.toSqlString("'''''").equals("''''''''''"));
+        assertTrue(BasicSqlHandler.toSqlString("AsDf'").equals("AsDf''"));
+        assertTrue(BasicSqlHandler.toSqlString("AsDf'jkl").equals("AsDf''jkl"));
+        assertTrue(BasicSqlHandler.toSqlString("AsDf'jkl'").equals("AsDf''jkl''"));
+        assertTrue(BasicSqlHandler.toSqlString("'AsDf'jkl").equals("''AsDf''jkl"));
+        assertTrue(BasicSqlHandler.toSqlString("qwerty").equals("qwerty"));
     }
     
     /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
@@ -114,21 +114,21 @@ public class BasicSqlHandlerTest extends TestCase {
         // Query with one step (default alias) and one field (default alias).
         BasicStepField field1a = query.addField(step1, imagesTitle);
         String strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_images.m_title AS m_title "
         + "FROM " + prefix + "images m_images"));
         
         // Set step alias.
         step1.setAlias("i");
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_title "
         + "FROM " + prefix + "images m_i"));
         
         // Set field alias.
         field1a.setAlias("imageTitle");
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle "
         + "FROM " + prefix + "images m_i"));
         
@@ -136,7 +136,7 @@ public class BasicSqlHandlerTest extends TestCase {
         FieldDefs imagesNumber = images.getField("number");
         BasicStepField field1b = query.addField(step1, imagesNumber);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS m_number "
         + "FROM " + prefix + "images m_i"));
@@ -144,7 +144,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set alias for second field.
         field1b.setAlias("imageNumber");
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
@@ -152,7 +152,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set distinct true.
         query.setDistinct(true);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
@@ -160,7 +160,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add sortorder (default direction).
         BasicSortOrder sortOrder1a = query.addSortOrder(field1a);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -170,7 +170,7 @@ public class BasicSqlHandlerTest extends TestCase {
         Constraint constraint1 = new BasicFieldValueConstraint(field1a, "abd");
         query.setConstraint(constraint1);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -186,7 +186,7 @@ public class BasicSqlHandlerTest extends TestCase {
         constraint3.addChild(constraint2);
         query.setConstraint(constraint3);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -196,7 +196,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_DESCENDING);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -206,7 +206,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_ASCENDING);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -216,7 +216,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set distinct false.
         query.setDistinct(false);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -226,7 +226,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add node constraint for first step (one node).
         step1.addNode(123);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -237,7 +237,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add second node to node constraint.
         step1.addNode(456);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -249,7 +249,7 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicRelationStep step2 = query.addRelationStep(insrel,pools);
         BasicStep step3 = (BasicStep) step2.getNext();
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -262,7 +262,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set directionality for relationstep to DESTINATION.
         step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -274,7 +274,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set directionality for relationstep to SOURCE.
         step2.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -286,7 +286,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Set directionality for relationstep to BOTH.
         step2.setDirectionality(RelationStep.DIRECTIONS_BOTH);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -299,7 +299,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add field for relationstep.
         StepField field2a = query.addField(step2, insrelRNumber);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber "
@@ -313,7 +313,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add field for third step.
         StepField field3a = query.addField(step3, poolsName);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -328,7 +328,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add second sortorder
         BasicSortOrder sortOrder3a = query.addSortOrder(field3a);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -343,7 +343,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add third sortorder.
         BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -358,7 +358,7 @@ public class BasicSqlHandlerTest extends TestCase {
         // Add node constraint for second step (relation step).
         step2.addNode(789);
         strSql = instance.toSql(query, instance);
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -386,7 +386,7 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicStepField field1a = query.addField(step1, imagesTitle);
         instance.appendQueryBodyToSql(sb, query, instance);
         String strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_images.m_title AS m_title "
         + "FROM " + prefix + "images m_images"));
         
@@ -395,7 +395,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_title "
         + "FROM " + prefix + "images m_i"));
         
@@ -404,7 +404,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle "
         + "FROM " + prefix + "images m_i"));
         
@@ -414,7 +414,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS m_number "
         + "FROM " + prefix + "images m_i"));
@@ -424,7 +424,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
@@ -434,7 +434,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i"));
@@ -444,7 +444,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -456,7 +456,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -474,7 +474,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -486,7 +486,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -498,7 +498,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -510,7 +510,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -522,7 +522,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -535,7 +535,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
@@ -549,7 +549,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -564,7 +564,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -578,7 +578,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -592,7 +592,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
@@ -607,7 +607,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber "
@@ -623,7 +623,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -640,7 +640,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -657,7 +657,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -674,7 +674,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
@@ -694,7 +694,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "COUNT(m_images.m_title) AS m_title "
         + "FROM " + prefix + "images m_images"));
         
@@ -703,7 +703,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "COUNT(DISTINCT m_images.m_title) AS m_title "
         + "FROM " + prefix + "images m_images"));
         
@@ -711,7 +711,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "MIN(m_images.m_title) AS m_title "
         + "FROM " + prefix + "images m_images"));
         
@@ -719,7 +719,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "MAX(m_images.m_title) AS m_title "
         + "FROM " + prefix + "images m_images"));
         
@@ -727,7 +727,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle "
         + "FROM " + prefix + "images m_images"));
         
@@ -736,7 +736,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle,"
         + "COUNT(m_images.m_number) AS m_number "
         + "FROM " + prefix + "images m_images"));
@@ -745,7 +745,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle,"
         + "m_images.m_number AS m_number "
         + "FROM " + prefix + "images m_images "
@@ -755,7 +755,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assert(strSql, strSql.equals(
+        assertTrue(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle,"
         + "m_images.m_number AS imageNumber "
         + "FROM " + prefix + "images m_images "
@@ -784,28 +784,28 @@ public class BasicSqlHandlerTest extends TestCase {
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint1, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IS NULL"));
         
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint1, query, false, true);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IS NULL"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint1, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IS NOT NULL"));
         
         sb.setLength(0);
         constraint1.setInverse(true); // Set inverse.
         instance.appendConstraintToSql(sb, constraint1, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IS NULL"));
         
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint1, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IS NOT NULL"));
         
         // Test for BasicFieldValueInConstraint (String).
@@ -822,46 +822,46 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         constraint2.addValue("AsDf");   // Add first value.
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IN ('AsDf')"));
 
         sb.setLength(0);
         constraint2.setCaseSensitive(false);   // Case insensiteve
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "LOWER(m_images.m_title) IN ('asdf')"));
 
         sb.setLength(0);
         constraint2.addValue("qWeR");   // Add second value.
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "LOWER(m_images.m_title) IN ('asdf','qwer')"));
 
         sb.setLength(0);
         constraint2.setCaseSensitive(true);   // Case sensiteve
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IN ('AsDf','qWeR')"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint2, query, false, true);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IN ('AsDf','qWeR')"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint2, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title NOT IN ('AsDf','qWeR')"));
 
         sb.setLength(0);
         constraint2.setInverse(true);   // Set inverse.
         instance.appendConstraintToSql(sb, constraint2, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title IN ('AsDf','qWeR')"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title NOT IN ('AsDf','qWeR')"));
 
         // Test for BasicFieldValueInConstraint (integer).
@@ -878,40 +878,40 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         constraint3.addValue(new Integer(1234));   // Add first value.
         instance.appendConstraintToSql(sb, constraint3, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number IN (1234)"));
 
         sb.setLength(0);
         constraint3.addValue(new Integer(5678));   // Add second value.
         instance.appendConstraintToSql(sb, constraint3, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number IN (1234,5678)"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint3, query, false, true);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number IN (1234,5678)"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint3, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number NOT IN (1234,5678)"));
 
         sb.setLength(0);
         constraint3.setInverse(true);   // Set inverse.
         instance.appendConstraintToSql(sb, constraint3, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number IN (1234,5678)"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint3, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number NOT IN (1234,5678)"));
         
         sb.setLength(0);
         constraint3.setCaseSensitive(false); // case insensitive, ignored
         instance.appendConstraintToSql(sb, constraint3, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number NOT IN (1234,5678)"));
         
         // Test for BasicFieldValueConstraint (string).
@@ -920,42 +920,42 @@ public class BasicSqlHandlerTest extends TestCase {
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title='qWeRtY'"));
 
         sb.setLength(0);
         constraint6.setOperator(FieldCompareConstraint.LESS);
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title<'qWeRtY'"));
 
         sb.setLength(0);
         constraint6.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title>'qWeRtY'"));
 
         sb.setLength(0);
         constraint6.setOperator(FieldCompareConstraint.LIKE);
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title LIKE 'qWeRtY'"));
 
         sb.setLength(0);
         constraint6.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_title LIKE 'qWeRtY'"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint6, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title LIKE 'qWeRtY'"));
 
         sb.setLength(0);
         constraint6.setCaseSensitive(false); // case insensitive
         instance.appendConstraintToSql(sb, constraint6, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "LOWER(m_images.m_title) LIKE 'qwerty'"));
 
         // Test for BasicFieldValueConstraint (integer).
@@ -964,36 +964,36 @@ public class BasicSqlHandlerTest extends TestCase {
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number=9876"));
 
         sb.setLength(0);
         constraint7.setOperator(FieldCompareConstraint.LESS);
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number<9876"));
 
         sb.setLength(0);
         constraint7.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>9876"));
 
         sb.setLength(0);
         constraint7.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_number>9876"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint7, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>9876"));
         
         sb.setLength(0);
         constraint7.setCaseSensitive(false); // case insensitive, ignored
         instance.appendConstraintToSql(sb, constraint7, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>9876"));
         
         // Test for BasicCompareFieldsConstraint (integer)
@@ -1002,36 +1002,36 @@ public class BasicSqlHandlerTest extends TestCase {
         
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number=pools.m_number"));
 
         sb.setLength(0);
         constraint8.setOperator(FieldCompareConstraint.LESS);
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number<pools.m_number"));
 
         sb.setLength(0);
         constraint8.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number"));
 
         sb.setLength(0);
         constraint8.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_number>pools.m_number"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint8, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number"));
         
         sb.setLength(0);
         constraint8.setCaseSensitive(false); // case insensitive, ignored
         instance.appendConstraintToSql(sb, constraint8, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number"));
 
         // Test for BasicCompareFieldsConstraint (string)
@@ -1040,36 +1040,36 @@ public class BasicSqlHandlerTest extends TestCase {
         
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint9, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title=pools.name"));
         
         sb.setLength(0);
         constraint9.setOperator(FieldCompareConstraint.LESS);
         instance.appendConstraintToSql(sb, constraint9, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title<pools.name"));
 
         sb.setLength(0);
         constraint9.setOperator(FieldCompareConstraint.GREATER);
         instance.appendConstraintToSql(sb, constraint9, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title>pools.name"));
 
         sb.setLength(0);
         constraint9.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint9, query, false, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_title>pools.name"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint9, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title>pools.name"));
         
         sb.setLength(0);
         constraint9.setCaseSensitive(false); // case insensitive
         instance.appendConstraintToSql(sb, constraint9, query, true, false);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "LOWER(m_images.m_title)>LOWER(pools.name)"));
 
         // Test for composite constraint.
@@ -1089,23 +1089,23 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicSearchQuery query = new BasicSearchQuery();
         
         // Support max number only when set to default (= -1).
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_NONE);
         query.setMaxNumber(-1);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
         // Support offset only when set to default (= 0).
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_NONE);
         query.setOffset(0);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
@@ -1114,13 +1114,13 @@ public class BasicSqlHandlerTest extends TestCase {
         // Should return basic support level of constraint.
         SearchQuery query = new BasicSearchQuery();
         Constraint constraint = new TestConstraint(SearchQueryHandler.SUPPORT_NONE);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NONE);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NONE);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_WEAK);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_WEAK);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_WEAK);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_NORMAL);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NORMAL);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NORMAL);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     /** Test of getAllowedValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
@@ -1133,12 +1133,12 @@ public class BasicSqlHandlerTest extends TestCase {
             String allowedValue = (String) entry.getValue();
             
             // Disallowed value.
-            assert(instance.getAllowedValue(disallowedValue).equals(allowedValue));
+            assertTrue(instance.getAllowedValue(disallowedValue).equals(allowedValue));
             
             // Allowed values.
-            assert(instance.getAllowedValue(allowedValue).equals(allowedValue));
+            assertTrue(instance.getAllowedValue(allowedValue).equals(allowedValue));
             allowedValue += "_must_be_allowed_as_well";
-            assert(instance.getAllowedValue(allowedValue).equals(allowedValue));
+            assertTrue(instance.getAllowedValue(allowedValue).equals(allowedValue));
         }
         
         try {
@@ -1185,57 +1185,57 @@ public class BasicSqlHandlerTest extends TestCase {
         compositeConstraint.addChild(constraint2); // Add first child constraint.
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_number>pools.m_number"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, true, false, instance);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, true, true, instance);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number"));
         
         sb.setLength(0);
         compositeConstraint.addChild(constraint1); // Add second child constraint.
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_number>pools.m_number AND NOT m_images.m_number>9876"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, true, false, instance);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number OR m_images.m_number>9876"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, true, true, instance);
-        assert(sb.toString(), sb.toString().equals(
+        assertTrue(sb.toString(), sb.toString().equals(
         "(m_images.m_number>pools.m_number OR m_images.m_number>9876)"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, true, instance);
-         assert(sb.toString(), sb.toString().equals(
+         assertTrue(sb.toString(), sb.toString().equals(
         "(NOT m_images.m_number>pools.m_number AND NOT m_images.m_number>9876)"));
         
         sb.setLength(0);
         constraint1.setInverse(false); // Set second child not inverse.
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
-         assert(sb.toString(), sb.toString().equals(
+         assertTrue(sb.toString(), sb.toString().equals(
         "NOT m_images.m_number>pools.m_number AND m_images.m_number>9876"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, true, false, instance);
-         assert(sb.toString(), sb.toString().equals(
+         assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number>pools.m_number OR NOT m_images.m_number>9876"));
     }
     
