@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.16 2004-01-19 17:22:09 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.17 2004-02-17 18:07:03 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -69,8 +69,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         Enumeration e = bundle.getKeys();
         while (e.hasMoreElements()) {
             String propertyKey = (String) e.nextElement();
-            Integer key = new Integer(propertyKey);
-            enumValues.put(key, bundle.getString(propertyKey));
+            enumValues.put(propertyKey, bundle.getString(propertyKey));
         }
 
         buffer.append("<select name=\"");
@@ -78,26 +77,22 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         buffer.append("\" ");
         addExtraAttributes(buffer);
         buffer.append(">\n");
-        int value = 0;
+        String value = "";
         if (node != null) {
-            value = node.getIntValue(field.getName());
+            value = node.getStringValue(field.getName());
         }
 
         for(Iterator i = enumValues.keySet().iterator(); i.hasNext(); ) { 
-            Integer key = (Integer) i.next();
+            String key = (String) i.next();
             buffer.append("<option value=\"");
             buffer.append(key);
             buffer.append("\"");
-            if ((node != null) && (key.intValue() == value)) {
+            if ((node != null) && (key.equals(value))) {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
-                try {
-                    int searchi = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName())));
-                    if (searchi == key.intValue()) {
-                        buffer.append(" selected=\"selected\"");
-                    }
-                } catch (NumberFormatException nfe) {
-                    // never mind. perhaps was not yet present in post --> java.lang.NumberFormatException: null
+                String searchs = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+                if (key.equals(searchs)) {
+                    buffer.append(" selected=\"selected\"");
                 }
             }
             buffer.append(">");
