@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[]>
+<article>
+   <articleinfo>
+    <date>$Id: documentation.xml,v 1.1 2002-10-21 20:53:05 michiel Exp $</date>
+    <title>MMBase documentation documentation</title>
+  </articleinfo>
+  <section>
+    <title>Introduction</title>
+    <para>
+      This document will describe in what way MMBase is documented, and how you can contribute to
+      updating or adding to the MMBase documentation.
+    </para>
+    <para>
+      There are several sources of documentation and information available. There are a few
+      web-sites of the MMBase project (www.mmbase.org, foundation.mmbase.org, design.mmbase.org),
+      which do supply knowledge and examples. The examples and HTML documentation which are shipped
+      with an MMBase distro are available in the MMBase CVS source repository. The examples pages
+      are in the html/mmexamples module, so new examples must be added there.
+    </para>
+    <para>
+      Formal documentation is availabe in the `docbook' XML format in the `documentation' modules of
+      the CVS repository.
+    </para>
+    <para>
+      Some older documentation, which was not yet converted or rewritten to the docbook format is
+      available in html/mmdocs of CVS.
+    </para>
+  </section>
+  <section id="docbook">
+   <title>Docbook</title>
+    <para>
+      bla bla TODO
+    </para>
+  </section>
+</article>
