@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.48 $ $Date: 2001-11-25 16:20:30 $
+ * @$Revision: 1.49 $ $Date: 2001-11-25 16:41:55 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1952,7 +1952,7 @@ public class scanparser extends ProcessorModule {
 	public void maintainance() {
 	}
 
-	public synchronized String calcPage(String part2,scanpage sp,int cachetype) {
+	public String calcPage(String part2,scanpage sp,int cachetype) {
 
 		if (log.isDebugEnabled()) log.debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+")");
 
@@ -2094,9 +2094,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.48 2001-11-25 16:20:30 vpro Exp $
+$Id: scanparser.java,v 1.49 2001-11-25 16:41:55 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.48  2001/11/25 16:20:30  vpro
+Rico: scanparser sequencer
+
 Revision 1.47  2001/07/16 10:08:09  jaco
 jaco: Moved all configuration stuff to MMBaseContext.
 If needed params not found or incorrect a ServletException with a description isthrown.
