@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.37 2004-02-23 19:05:00 pierre Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.1 2004-08-25 14:36:58 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -167,12 +167,13 @@ public class ImageCaches extends AbstractImages {
             log.error(msg);
             throw new RuntimeException(msg);
         }
+        ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
         // is this not configurable?
         // only cache small images.
         if (data.length< (100*1024))  {
-            handleCache.put(ckey, node);
+            handleCache.put(ckey, result);
         }
-        return new ByteFieldContainer(node.getNumber(),data);
+        return result;        
     }
 
     /**

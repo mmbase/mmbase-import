@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.94 2004-03-10 18:19:58 michiel Exp $
+ * @version $Id: Images.java,v 1.94.2.1 2004-08-25 14:36:57 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -761,6 +761,13 @@ public class Images extends AbstractImages {
             icache.invalidate(node);
         }
     }
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        //log.info("Changed " + machine + " number " + builder + " "+ ctype); 
+        MMObjectNode image = getNode(number);        
+        invalidateTemplateCacheNumberCache(image.getNumber());
+        return super.nodeLocalChanged(machine, number, builder, ctype);        
+    }
+
 
     /**
      * @javadoc
