@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.25 2002-05-23 12:47:56 michiel Exp $
+ * @version $Id: Wizard.java,v 1.26 2002-05-29 09:45:46 pierre Exp $
  *
  */
 public class Wizard {
@@ -1300,14 +1300,16 @@ public class Wizard {
             String value = cmd.getValue();
 
             if (value != null && !value.equals("")){
+                int createorder=1;
                 StringTokenizer ids = new StringTokenizer(value,"|");
                 while (ids.hasMoreElements()){
-                    Node newObject = addListItem(fid, did, ids.nextToken(),false);
+                    Node newObject = addListItem(fid, did, ids.nextToken(),false,createorder);
+                    createorder++;
                 }
             } else {
                 String otherdid = cmd.getParameter(2);
                 if (otherdid.equals("")) otherdid=null;
-                Node newObject = addListItem(fid, did, otherdid, true);
+                Node newObject = addListItem(fid, did, otherdid, true,1);
             }
             break;
         }
@@ -1348,11 +1350,13 @@ public class Wizard {
      * Note: this method can only add new relations and their destinations!.
      * For creating new objects, use WizardDatabaseConnector.createObject.
      *
-     * @param       listId  the id of the proper list definition node, the list that issued the add command
-     * @param       dataId  The did (dataid) of the anchor (parent) where the new node should be created
-     * @param       destinationId   The new destination
+     * @param listId  the id of the proper list definition node, the list that issued the add command
+     * @param dataId  The did (dataid) of the anchor (parent) where the new node should be created
+     * @param destinationId   The new destination
+     * @param createorder ordernr under which this item is added ()i.e. when adding more than one item to a
+     *                    list using one add-item command). The first ordernr in a list is 1
      */
-    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate) throws WizardException{
+    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate, int createorder) throws WizardException{
         // Determine which list issued the add-item command, so we can get the create code from there.
         Node listnode = Utils.selectSingleNode(schema, ".//list[@fid='" + listId + "']");
         Node objectdef=null;
@@ -1380,7 +1384,7 @@ public class Wizard {
         // We have to add the object to the data, so first determine to which parent it belongs.
         Node parent = Utils.selectSingleNode(data, ".//*[@did='" + dataId + "']");
         // Ask the database to create that object.
-        Node newObject = dbconn.createObject(data,parent, objectdef, variables);
+        Node newObject = dbconn.createObject(data,parent, objectdef, variables, createorder);
 
         // Temporary hack: only images can be shown as summarized.
         if (Utils.getAttribute(newObject,"type").equals("images")){
