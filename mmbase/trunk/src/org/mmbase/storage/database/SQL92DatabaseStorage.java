@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.9 2003-05-02 14:24:55 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.10 2003-05-02 20:21:28 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -48,14 +48,15 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
 
     // map with tables that are known to exist
     // should logically be a Set, not a List.
-    private List existingTables=null;
+    private List existingTables = null;
     // has this layer support for rollback?
-    private boolean supportsRollback=false;
+    private boolean supportsRollback = false;
 
     /**
      * Constructs the AbstractDatabaseSupport database layer support class
      */
     protected SQL92DatabaseStorage() {
+        super();
     }
 
     /**
@@ -107,14 +108,6 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Override this method if you need to make preparations for your database.
      */
     protected void prepare() {
-    }
-
-    /**
-     * Returns whether this storage layer supports extended tables.
-     * @return boolean true if extended tables are supported
-     */
-    public boolean supportsExtendedTables() {
-        return true;
     }
 
     /**
@@ -225,26 +218,27 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @param offset offset from where to select records. Note: if you specify an offset larger than 0, you have to specify max
      * @param max maximum number of records, can be -1 (no max)
      * @return the sql query
+     * @todo Should use SQLHANDLER!
      */
     protected String selectSQL(String tableName, String fieldNames, String where, String orderby,
                                int offset, int max) {
-        if (fieldNames==null) {
-            fieldNames="*";
+        if (fieldNames == null) {
+            fieldNames = "*";
         }
-        String result="SELECT "+fieldNames+" FROM "+tableName;
+        StringBuffer result = new StringBuffer("SELECT " + fieldNames + " FROM " + tableName);
         if ((where!=null) && !where.equals("")) {
-            result+=" WHERE "+where;
+            result.append(" WHERE " + where);
         }
         if ((orderby!=null) && !orderby.equals("")) {
-            result+=" ORDER BY "+orderby;
+            result.append(" ORDER BY " + orderby);
         }
         if (offset>0) {
-            result+=" LIMIT "+offset+","+max;
+            result.append(" LIMIT ").append(offset).append(',').append(max);
         } else if (max>0) {
-            result+=" LIMIT "+max;
+            result.append(" LIMIT ").append(max);
         }
-        result+=";";
-        return result;
+        result.append(';');
+        return result.toString();
     }
 
     /**
@@ -266,55 +260,57 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Set a prepared statement field i with value of key from the given node.
      * @throws SQLException if an error occurred while filling in the fields
      */
-    public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String fieldname, int i) throws SQLException {
-        switch (node.getDBType(fieldname)) {
+    public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String fieldName, int i) throws SQLException {
+        switch (node.getDBType(fieldName)) {
             // string-type fields, use mmbase encoding
             case FieldDefs.TYPE_INTEGER:
-                stmt.setInt(i, node.getIntValue(fieldname));
+                stmt.setInt(i, node.getIntValue(fieldName));
                 break;
             case FieldDefs.TYPE_NODE:
                 // retrieve node as a numeric value
-                int nodeRef=node.getIntValue(fieldname);
+                int nodeRef=node.getIntValue(fieldName);
                 stmt.setInt(i, nodeRef);
                 break;
             case FieldDefs.TYPE_FLOAT:
-                stmt.setFloat(i, node.getFloatValue(fieldname));
+                stmt.setFloat(i, node.getFloatValue(fieldName));
                 break;
             case FieldDefs.TYPE_DOUBLE:
-                stmt.setDouble(i, node.getDoubleValue(fieldname));
+                stmt.setDouble(i, node.getDoubleValue(fieldName));
                 break;
             case FieldDefs.TYPE_LONG:
-                stmt.setLong(i, node.getLongValue(fieldname));
+                stmt.setLong(i, node.getLongValue(fieldName));
                 break;
             case FieldDefs.TYPE_STRING:;
             case FieldDefs.TYPE_XML:
-                String stringvalue=node.getStringValue(fieldname);
-                if (stringvalue!=null) {
-                    setDBText(i, stmt,stringvalue);
+                String stringvalue = node.getStringValue(fieldName);
+                if (stringvalue != null) {
+                    setDBText(i, stmt, stringvalue);
                 } else {
-                    setDBText(i, stmt,"");
+                    setDBText(i, stmt," ");
                 }
                 break;
             case FieldDefs.TYPE_BYTE:
                 if (getStoreBinaryAsFile()) {
-                    String stype=node.getBuilder().getTableName();
-                    File file = new File(getBinaryFilePath()+stype);
+                    String stype = node.getBuilder().getTableName();
+                    File file = new File(getBinaryFilePath() + stype);
                     try {
                         file.mkdirs();
                     } catch(Exception e) {
-                        log.error("Can't create dir : "+getBinaryFilePath()+stype);
+                        log.error("Can't create dir : " + getBinaryFilePath() + stype);
                         return false;
                     }
-                    byte[] value=node.getByteValue(fieldname);
-                    writeBytesToFile(getBinaryFilePath()+stype+File.separator+node.getNumber()+"."+fieldname,value);
+                    byte[] value = node.getByteValue(fieldName);
+                    writeBytesToFile(getBinaryFilePath() + stype + File.separator + node.getNumber() + "." + fieldName,
+                                     value);
                     return false;
                 } else {
-                    setDBByte(i, stmt, node.getByteValue(fieldname));
+                    log.debug("Setting byte field");
+                    setDBByte(i, stmt, node.getByteValue(fieldName));
                 }
                 break;
             default:
-                String value=node.getStringValue(fieldname);
-                if (value!=null) {
+                String value = node.getStringValue(fieldName);
+                if (value != null) {
                     stmt.setString(i, value);
                 } else {
                     stmt.setString(i, "");
@@ -323,26 +319,22 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         return true;
     }
 
-    /**
-     * Stores a field in a table ResultSet in a MMObjectNode.
-     * @param node the node to store the field in
-     * @param fieldname the name of the field as it is known to MMBase
-     * @param rs the ResultSet containing the table row
-     * @param i the index of the field in the ResultSet
-     */
-    public void loadFieldFromTable(MMObjectNode node,String fieldname, ResultSet rs,int i) {
+
+    //javadoc inherited from DatabaseStorage
+    public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i) {
         try {
-            switch (node.getDBType(fieldname)) {
+            switch (node.getDBType(fieldName)) {
                 // string-type fields, use mmbase encoding
                 case FieldDefs.TYPE_XML:
                 case FieldDefs.TYPE_STRING: {
-                    String tmp = "";
+                    String tmp;
                     try {
-                        tmp = new String(rs.getBytes(i), mmb.getEncoding());
+                        tmp = getDBText(rs, i);
                     } catch (Exception e) {
                         log.error(e.toString());
+                        tmp = "";
                     }
-                    node.setValue(fieldname,tmp);
+                    node.setValue(fieldName, tmp);
                     break;
                 }
                 // Numeric fields (can be passed as-is: node evaluates it)
@@ -351,17 +343,20 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                 case FieldDefs.TYPE_LONG:;
                 case FieldDefs.TYPE_FLOAT:;
                 case FieldDefs.TYPE_DOUBLE: {
-                    node.setValue(fieldname,rs.getObject(i));
+                    node.setValue(fieldName, rs.getObject(i));
                     break;
                 }
                 // binary fields: mark as $shorted, retrieve later
                 case FieldDefs.TYPE_BYTE: {
-                    node.setValue(fieldname,"$SHORTED");
+                    node.setValue(fieldName, "$SHORTED");
                     break;
                 }
             }
+            if (log.isDebugEnabled()) {
+                log.debug("got field " + fieldName + " '" + node.getValue(fieldName) + "'");
+            }
         } catch(SQLException e) {
-            log.error("Cannot decode field "+fieldname+" node="+node.getNumber());
+            log.error("Cannot decode field " + fieldName + " node=" + node.getNumber());
             log.error(Logging.stackTrace(e));
         }
     }
@@ -370,7 +365,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Get text from blob
      * @javadoc
      */
-    abstract protected String getText(String tableName,String fieldname,int number);
+    abstract protected String getText(String tableName, String fieldname, int number);
 
     /**
      * Get text from blob
@@ -379,12 +374,6 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     public String getText(MMObjectNode node,String fieldname) {
         return getText(node.getBuilder().getFullTableName(),fieldname,node.getNumber());
     }
-
-    /**
-     * Get bytes from blob
-     * @javadoc
-     */
-    abstract protected byte[] getBytes(String tableName,String fieldname,int number);
 
     /**
      * Get bytes from blob
@@ -409,18 +398,18 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      */
     public int insert(MMObjectNode node, Transaction trans) throws StorageException {
         // determine parent
-        MMObjectBuilder builder=node.getBuilder();
-        int number=node.getNumber();
-        // did the user supply a number allready?
+        MMObjectBuilder builder = node.getBuilder();
+        int number = node.getNumber();
+        // did the user supply a number already?
         // if not, try to obtain one and assign it
-        if (number==-1) {
-            number=createKey(trans);
+        if (number == -1) {
+            number = createKey(trans);
             // did it fail ? if so return -1
             if (number == -1) return -1;
-            node.setValue("number",number);
+            node.setValue("number", number);
         }
 
-        if (insertIntoTable(builder,node,(DatabaseTransaction)trans)!=-1) {
+        if (insertIntoTable(builder, node, (DatabaseTransaction )trans) != -1) {
             ((DatabaseTransaction)trans).registerChanged(node,"n");
         };
 
@@ -439,40 +428,43 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return The (new) number for this node, or -1 if an error occurs.
      * @throws StorageException if an error occurred during insert
      */
-    protected int insertIntoTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException {
+    protected int insertIntoTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException {
         // Create a String that represents the DB fields to be used in the insert.
-        String fieldnames=null;
-        String fieldvalues=null;
+        StringBuffer fieldNames = null;
+        StringBuffer fieldValues = null;
 
         // obtain the builder's table fields
-        List fields =builder.getFields();
-        for (Iterator f=fields.iterator(); f.hasNext();) {
-            FieldDefs field=(FieldDefs)f.next();
-            if ((field.getDBState()!=FieldDefs.DBSTATE_PERSISTENT) &&
-                (field.getDBState()!=FieldDefs.DBSTATE_SYSTEM)) {
+        List fields = builder.getFields();
+        for (Iterator f = fields.iterator(); f.hasNext();) {
+            FieldDefs field = (FieldDefs) f.next();
+            if ((field.getDBState() != FieldDefs.DBSTATE_PERSISTENT) &&
+                (field.getDBState() != FieldDefs.DBSTATE_SYSTEM)) {
                 // do not handle this field
                 // remove it from the field list so we need not check on it later
                 f.remove();
             } else {
                 // skip bytevalues that are written to file
-                if (getStoreBinaryAsFile() && (field.getDBType()==FieldDefs.TYPE_BYTE)) {
+                if (getStoreBinaryAsFile() && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
                     continue;
                 }
                 // store the fieldname and the value parameter
-                String fieldname= mapToTableFieldName(field.getDBName());
-                if (fieldnames==null) {
-                    fieldnames=fieldname;
-                    fieldvalues="?";
+                String fieldName= mapToTableFieldName(field.getDBName());
+                if (fieldNames == null) {
+                    fieldNames = new StringBuffer(fieldName);
+                    fieldValues = new StringBuffer("?");
                 } else {
-                    fieldnames+=","+fieldname;
-                    fieldvalues+=",?";
+                    fieldNames.append(',').append(fieldName);
+                    fieldValues.append(",?");
                 }
             }
         }
         // Prepare the statement using the amount of fields found.
-        String sqlinsert=insertSQL(builder.getFullTableName(),fieldnames,fieldvalues);
-
-        if (!trans.executeUpdate(sqlinsert,fields,node)) {
+        String sqlinsert = insertSQL(builder.getFullTableName(), 
+                                     fieldNames.toString(), fieldValues.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("Executing insert with " + sqlinsert);
+        }
+        if (!trans.executeUpdate(sqlinsert, fields, node)) {
             return -1;
         } else {
             return node.getNumber();
@@ -513,12 +505,12 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     protected boolean commitToTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException {
         String tableName=builder.getTableName();
         // Create a String that represents the DB fields to be used in the insert.
-        String setFields=null;
+        StringBuffer setFields=null;
         // obtain the node's changed fields
-        List fieldnames =node.getChanged();
-        List fields = new Vector();
-        for (Iterator f=fieldnames.iterator(); f.hasNext();) {
-            String key=(String)f.next();
+        List fieldNames = node.getChanged();
+        List fields = new ArrayList();
+        for (Iterator f= fieldNames.iterator(); f.hasNext();) {
+            String key = (String) f.next();
 
             // changing number is not allowed
             if(key.equals("number") || key.equals("otype")) {
@@ -534,18 +526,18 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                 // skip bytevalues that are written to file
                 if (getStoreBinaryAsFile() && (field.getDBType()==FieldDefs.TYPE_BYTE)) continue;
                 // store the fieldname and the value parameter
-                String fieldname= mapToTableFieldName(field.getDBName());
-                if (setFields==null) {
-                    setFields=fieldname+"=?";
+                String fieldName= mapToTableFieldName(field.getDBName());
+                if (setFields == null) {
+                    setFields = new StringBuffer(fieldName + "=?");
                 } else {
-                    setFields+=","+fieldname+"=?";
+                    setFields.append(',').append(fieldName).append("=?");
                 }
             }
         }
         if (fields.size()>0) {
             String sqlupdate=
-                updateSQL(builder.getFullTableName(), setFields,node.getNumber());
-            return trans.executeUpdate(sqlupdate,fields,node);
+                updateSQL(builder.getFullTableName(), setFields.toString(), node.getNumber());
+            return trans.executeUpdate(sqlupdate, fields, node);
         }
         return true;
     }
