@@ -1,11 +1,11 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <mm:cloud name="mmbase" method="http" logon="admin">
-<% String application = request.getParameter("application"); %>
+<% String app = request.getParameter("application"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
-<title>Administrate Application <%=application%></title>
+<title>Administrate Application <%=app%></title>
 <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
@@ -16,11 +16,11 @@
     Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
 <tr align="left">
- <th class="header" colspan="4">Description of <%=application%></th>
+ <th class="header" colspan="4">Description of <%=app%></th>
 </tr>
 <tr>
  <td class="multidata" colspan="4">
-        <p><%=mmAdmin.getInfo("DESCRIPTION-"+application,request,response)%></p>
+        <p><%=mmAdmin.getInfo("DESCRIPTION-"+app,request,response)%></p>
  </td>
 </tr>
 
@@ -33,10 +33,10 @@
   <th class="header">Confirm</th>
 </tr>
 <tr>
- <td class="data" colspan="2">Install <%=application%></td>
- <td class="data" >Version: <%=mmAdmin.getInfo("VERSION-"+application,request,response)%> </td>
+ <td class="data" colspan="2">Install <%=app%></td>
+ <td class="data" >Version: <%=mmAdmin.getInfo("VERSION-"+app,request,response)%> </td>
  <td class="linkdata" >
-   <input type="hidden" name="application" value="<%=application%>" />
+   <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="LOAD" />
    <input type="submit" value="YES" />
  </td>
@@ -53,14 +53,14 @@
   <th class="header">Confirm</th>
 </tr>
 <tr>
- <td class="data" >Save <%=application%></td>
+ <td class="data" >Save <%=app%></td>
  <td class="data" ><input type="text" name="path" value="/tmp"/></td>
  <td class="data" ><select name="goal">
         <option selected="selected">backup</option>
     </select>
  </td>
  <td class="linkdata" >
-   <input type="hidden" name="application" value="<%=application%>" />
+   <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="SAVE" />
    <input type="submit" value="YES" />
  </td>
@@ -78,7 +78,7 @@
 <%
     Module config=LocalContext.getCloudContext().getModule("config");
     if (config!=null) {
-        String check=config.getInfo("CHECK-applications-"+application);
+        String check=config.getInfo("CHECK-applications-"+app);
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
  <td class="data">XML-check</td>
@@ -90,7 +90,7 @@
         <input type="hidden" name="todo" value="annotate" />
 <%  } %>
     <input type="hidden" name="config" value="applications" />
-    <input type="hidden" name="target" value="<%=application%>" />
+    <input type="hidden" name="target" value="<%=app%>" />
     <input type="submit" value="YES" />
  </td>
 </tr>
@@ -108,8 +108,8 @@
  </td>
  <td class="linkdata">
     <input type="hidden" name="cmd" value="APPTOOL" />
-    <input type="hidden" name="application" value="<%=application%>" />
-    <input type="hidden" name="APPTOOL" value="<%=application%>" />
+    <input type="hidden" name="application" value="<%=app%>" />
+    <input type="hidden" name="APPTOOL" value="<%=app%>" />
     <input type="submit" value="YES" />
  </td>
 </tr>
