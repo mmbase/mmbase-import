@@ -20,8 +20,30 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 	private Hashtable number2question = new Hashtable();
 	private Hashtable number2answer = new Hashtable();
 	private int number=0;
+	
+	private String nickname = "";
+	private String channel = "";
+	private String refreshUrl = "";
+	private String refreshTime = "";
+	private String ircServer = "";
 
-	public IrcModule() {}
+	public IrcModule() {
+	}
+
+	public void init() {
+		super.init();
+  		mmbase=(MMBase)getModule("MMBASEROOT");
+		answers=(MMObjectBuilder)mmbase.getMMObject("answers");
+		questions=(MMObjectBuilder)mmbase.getMMObject("questions");
+
+		nickname = getInitParameter("nickname");
+		channel = getInitParameter("channel");
+		refreshUrl = getInitParameter("refreshUrl");
+		refreshTime = getInitParameter("refreshTime");
+		ircServer = getInitParameter("ircServer");
+
+		start();
+	}
 
 	public void receive( String msg ) {
 		debug("#"+msg);
@@ -37,14 +59,31 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 				String secondToken=st.nextToken();
 
 				if(secondToken.equals("say")) {
-					String antwoord = "";
+					String say = "";
 					while (st.hasMoreTokens()) {
-						antwoord+=st.nextToken()+" ";
+						say+=st.nextToken()+" ";
 					}
-					com.sendPublic(antwoord);
+					com.sendPublic(say);
+				}
+
+				if(secondToken.equals("question")) {
+					String question = "";
+					while (st.hasMoreTokens()) {
+						question+=st.nextToken()+" ";
+					}
+					addQuestion(im.getFromNick(),question);
+				}
+
+				if(secondToken.equals("help")) {
+					com.sendPublic(	"Syntax of MMBase commands are:\n"+
+									"mmbase say [text]\n"+
+									"mmbase question [text]\n"+
+									"mmbase answer to question [number] is [text]\n"+
+									"mmbase tell [person] about [subject] (not implemented yet)\n");
 				}
 
 				if(secondToken.equals("tell")) {
+					com.sendPrivate(im.getFromNick(),"the tell command isn't implemented yet");
 				}
 
 				if(secondToken.equals("answer")) {
@@ -97,14 +136,6 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 		System.out.println( classname +":"+ msg );
 	}
 
-	public void init() {
-		super.init();
-  		mmbase=(MMBase)getModule("MMBASEROOT");
-		answers=(MMObjectBuilder)mmbase.getMMObject("answers");
-		questions=(MMObjectBuilder)mmbase.getMMObject("questions");
-		start();
-	}
-
 	public void onload() {
 	}
 
@@ -123,17 +154,22 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 		System.out.println("VARS="+vars);
 	
 		if(cmds.containsKey("QUESTION")) {
-			System.out.println("vraag="+vars.get("vraag"));
-			MMObjectNode vraag = questions.getNewNode("irc");
-			vraag.setValue("body",vars.get("vraag"));
-			vraag.insert("irc");
+			String vraag = ""+vars.get("vraag");
 			String koekie = sp.session.getCookie();
-			String n = ""+new Integer(number++);
-			user2number.put(koekie,n);
-			number2question.put(n,vraag);
-			com.sendPublic(n+": " +vars.get("vraag"));
+			addQuestion(koekie,vraag);
 		}
 		return(false);
+	}
+
+	private void addQuestion(String user, String question) {
+		MMObjectNode vraag = questions.getNewNode("irc");
+		vraag.setValue("title",question);
+		vraag.setValue("body",question);
+		vraag.insert("irc");
+		String n = ""+new Integer(number++);
+		user2number.put(user,n);
+		number2question.put(n,vraag);
+		com.sendPublic(n+": "+question);
 	}
 
 	public String replace(scanpage sp, String cmds) {
@@ -165,7 +201,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 					if(number2answer.containsKey(number)) {
 						return "";
 					}
-					return "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"4; URL=http://www.mmbase.org:8080/from.shtml\">";
+					return "<META HTTP-EQUIV=\"Refresh\" CONTENT=\""+refreshTime+"; URL=http://"+refreshUrl+"\">";
 				}
 				return "";
 			} catch (Exception e) {
@@ -190,46 +226,46 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
         kicker = null;
     }
 
-    public void run () {
-		com = (CommunicationInterface) new IrcUser( this );
+ 	public void run () {
+        com = (CommunicationInterface) new IrcUser( this );
 
-		if( com.connect( "irc.xs4all.nl", "mmbase2", "#mmbase2", "#mmbase2") )
-		{
-			String l = "test";
-			DataInputStream dis = new DataInputStream( System.in );
+        if( com.connect(ircServer, nickname, channel, channel))
+        {
+            String l = "test";
+            DataInputStream dis = new DataInputStream( System.in );
 
-			try
-			{
-				while( !l.equals("STOP") )
-				{
-					if( com.isconnected() )
-					{
-						if( (l=dis.readLine()) != null && !l.equals("STOP"))
-						{
-							com.sendPublic( l );
-							if( l.equals("STOP") )
-								com.stopit();
-						}
-					}
-					else
-					{
-						debug("calling reconned()!");
-						//com.reconnect();
-					}
-				}
-			}
-			catch( IOException e )
-			{
-				debug( e.toString() );
-				com.stopit();
-			}
-		}
-		else
-		{
-			debug("Could not connect!");
-			com.stopit();
-		}
-	}
+            try
+            {
+                while( !l.equals("STOP") )
+                {
+                    if( com.isconnected() )
+                    {
+                        if( (l=dis.readLine()) != null && !l.equals("STOP"))
+                        {
+                            com.sendPublic( l );
+                            if( l.equals("STOP") )
+                                com.stopit();
+                        }
+                    }
+                    else
+                    {
+                        debug("calling reconned()!");
+                        //com.reconnect();
+                    }
+                }
+            }
+            catch( IOException e )
+            {
+                debug( e.toString() );
+                com.stopit();
+            }
+        }
+        else
+        {
+            debug("Could not connect!");
+            com.stopit();
+        }
+    }
 
 	class IrcMessage {
 		private String server = null;
