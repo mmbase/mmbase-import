@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.132 2004-12-14 13:54:51 michiel Exp $
+ * @version $Id: Wizard.java,v 1.133 2004-12-15 09:34:31 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1426,6 +1426,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (command!=null) {
                     expandAttribute(command,"objectnumber","new");
                     expandAttribute(command,"origin",dataId);
+                    expandAttribute(command,"wizardname",null);
                 }
             }
         }
@@ -1703,6 +1704,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
 
             Utils.setAttribute(newField, "objectnumber", wizardObjectNumber);
+
+            String wizardPath = Utils.getAttribute(newField, "wizardname", null);
+            if (wizardPath != null) {
+                wizardPath = Utils.transformAttribute(dataNode, wizardPath);
+                Utils.setAttribute(newField, "wizardname", wizardPath);
+            }
 
             String wizardOrigin = Utils.getAttribute(newField, "origin", null);
 
