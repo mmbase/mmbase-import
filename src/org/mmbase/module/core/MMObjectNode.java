@@ -29,8 +29,8 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @author Eduard Witteveen 
- * @version $Revision: 1.52 $ $Date: 2001-11-27 10:27:00 $
+ * @author Eduard Witteveen
+ * @version $Revision: 1.53 $ $Date: 2002-01-25 10:57:59 $
  */
 
 public class MMObjectNode {
@@ -44,24 +44,27 @@ public class MMObjectNode {
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
      * This collection should not be directly queried or changed -
      * use the SetValue and getXXXValue methods instead.
-     * (question: so why is this public?)
+     * @scope private
      */
     public Hashtable values=new Hashtable();
 
     /**
      * Holds the 'extra' name-value pairs (the node's properties)
      * which are retrieved from the 'properties' table.
+     * @scope private
      */
     public Hashtable properties;
 
     /**
      * Vector whcih stores the key's of the fields that were changed
      * since the last commit.
+     * @scope private
      */
     public Vector changed=new Vector();
 
     /**
      * Pointer to the parent builder that is responsible for this node.
+     * @scope private
      */
     public MMObjectBuilder parent;
 
@@ -70,6 +73,7 @@ public class MMObjectNode {
      * possible.
      * This is a 'default' value.
      * XXX: specifying the prefix in the fieldname SHOULD override this field.
+     * @scope private
      */
     public String prefix="";
 
@@ -77,8 +81,9 @@ public class MMObjectNode {
     Vector relations=null; // possibly filled with insRels
 
     /**
-     * Deternmines whether this node is virtual.
+     * Determines whether this node is virtual.
      * A virtual node is not persistent (that is, not stored in a table).
+     * @scope private
      */
     protected boolean virtual=false;
 
@@ -88,6 +93,7 @@ public class MMObjectNode {
     /**
      * Alias name of this node.
      * XXX: nodes can have multiple aliases.
+     * @scope private
      */
     protected String alias;
 
@@ -254,17 +260,17 @@ public class MMObjectNode {
      *  @return <code>true</code> When the field was changed, false otherwise.
      */
     public boolean setValue(String fieldname,Object fieldvalue) {
-		// retrieve the original value
-		Object originalValue = values.get(fieldname);                
+        // retrieve the original value
+        Object originalValue = values.get(fieldname);
         // put the key/value in the value hashtable
         storeValue(fieldname,fieldvalue);
         // process the changed value (?)
         if (parent!=null) {
-			if(!parent.setValue(this,fieldname, originalValue)) {
-				// setValue of parent returned false, no update needed...
-				return false;
+            if(!parent.setValue(this,fieldname, originalValue)) {
+                // setValue of parent returned false, no update needed...
+                return false;
             }
-		}
+        }
         setUpdate(fieldname);
         return true;
     }
@@ -379,7 +385,7 @@ public class MMObjectNode {
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (!changed.contains(fieldname) && !fieldname.equals("CacheCount") && state==2) {
+        if (!changed.contains(fieldname) && state==FieldDefs.DBSTATE_PERSISTENT) {
             changed.addElement(fieldname);
         }
 
@@ -1005,11 +1011,11 @@ public class MMObjectNode {
     public Enumeration getRelations() {
         if (relations==null) {
             relations=parent.getRelations_main(getNumber());
-	    relation_cache_miss++;
+            relation_cache_miss++;
 
         } else {
-   	    relation_cache_hits++;
-	}
+            relation_cache_hits++;
+        }
         if (relations!=null) {
             return relations.elements();
         } else {
@@ -1031,10 +1037,10 @@ public class MMObjectNode {
     public int getRelationCount() {
         if (relations==null) {
             relations=parent.getRelations_main(getNumber());
-	    relation_cache_miss++;
+        relation_cache_miss++;
         } else {
-	    relation_cache_hits++;
-	}
+        relation_cache_hits++;
+    }
 
         if (relations!=null) {
             return relations.size();
@@ -1089,10 +1095,10 @@ public class MMObjectNode {
         if (otype!=-1) {
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
-	    	relation_cache_miss++;
+            relation_cache_miss++;
             } else {
-	    	relation_cache_hits++;
-	    }
+            relation_cache_hits++;
+        }
             if (relations!=null) {
                 for(Enumeration e=relations.elements();e.hasMoreElements();) {
                     MMObjectNode tnode=(MMObjectNode)e.nextElement();
@@ -1205,10 +1211,10 @@ public class MMObjectNode {
     }
 
     public static int getRelationCacheHits() {
-	return(relation_cache_hits);
+        return relation_cache_hits;
     }
 
     public static int getRelationCacheMiss() {
-	return(relation_cache_miss);
+        return relation_cache_miss;
     }
 }
