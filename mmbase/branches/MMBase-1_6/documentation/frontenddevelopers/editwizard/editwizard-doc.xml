@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.3.2.9 2003-12-10 10:51:09 vpro Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.3.2.10 2004-01-19 10:49:02 vpro Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -406,14 +406,14 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 		<para>This reference describes the syntax of the wizards and how to access them using a browser.</para>
 		<section>
 			<title>General - wizard definition schemas</title>
-			<para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (whichd efine layout) elsewhere.</para>
+			<para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (which define layout) elsewhere.</para>
 			<para>When the wizards search for a requested file (a wizard xsl stylesheet or a wizard xml schema), they look for the referenced file in the following order:
 			</para>
 			<variablelist>
 				<varlistentry>
-					<term>The referer page directory</term>
+					<term>The referrer page directory</term>
 					<listitem>
-						<para>You call the editwizard scripts (list.jsp and wizxard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referer page.</para>
+						<para>You call the editwizard scripts (list.jsp and wizard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referrer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referrer page.</para>
 						<para>Example: if the file requested is data/my_wizard.xml, and the referencing page is /myeditors/index.jsp, the system first checks for the file /myeditors/data/my_wizard.xml.
 						</para>
 					</listitem>
@@ -421,7 +421,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 				<varlistentry>
 					<term>The editwizard home directory</term>
 					<listitem>
-						<para>The editwizard home is the directory that contains the ditwizard basic stylesheets, data library, and jsp pages. It is one directory lower than the location of the list.jsp and  wizard.jsp files. In the standard distribution, this location is /mmapps/editwizard/ (the list.jsp and wizard.jsp are located in /mmapps/editwizard/jsp/), but you can place the wizards wherever you like.
+						<para>The editwizard home is the directory that contains the editwizard basic stylesheets, data library, and jsp pages. It is one directory lower than the location of the list.jsp and  wizard.jsp files. In the standard distribution, this location is /mmapps/editwizard/ (the list.jsp and wizard.jsp are located in /mmapps/editwizard/jsp/), but you can place the wizards wherever you like.
 						</para>
 						<para>Example: if the file requested is data/my_wizard.xml, and the editwizard home is in mmapps/ediwtizard/, the system checks for the file /mmapps/editwizard/data/my_wizard.xml.
 						</para>
