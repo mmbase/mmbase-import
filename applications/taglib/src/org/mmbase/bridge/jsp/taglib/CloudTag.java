@@ -83,7 +83,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private String authenticate = "name/password";
 
-    private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
+    private String loginpage =  null;
+    private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.    
     private String logonatt =  "";
     private String pwd = null;
     private Rank   rank = null;
@@ -94,7 +95,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private HttpSession session;
     private HttpServletRequest  request;
     private HttpServletResponse response;
-
     private Locale locale;
 
     /**
@@ -171,7 +171,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         sessionName = getAttributeValue(s);
     }
 
-
+    public void setLoginpage(String loginpage) throws JspTagException {
+        this.loginpage = loginpage;
+    }
 
     private Cookie searchCookie() {
         String cookie = REALM + getSessionName();
@@ -325,12 +327,18 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      *  Check name and retrieve cloud
      */
     public int doStartTag() throws JspTagException {
+        request  = (HttpServletRequest) pageContext.getRequest();
+        response = (HttpServletResponse)pageContext.getResponse();
 
         locale = null;
+
         LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
         if (localeTag != null) {
             locale = localeTag.getLocale();
         }
+        
+        if(loginpage != null) return doLoginpage(request, response, (HttpSession)pageContext.getSession());
+        
         List logon = logonatt != null ? StringSplitter.split(logonatt) : null;
         if (logon != null && logon.size() == 0) logon = null;
 
@@ -353,10 +361,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             setAnonymousCloud();
             return evalBody();
         }
-
-
-        request  = (HttpServletRequest) pageContext.getRequest();
-        response = (HttpServletResponse)pageContext.getResponse();
 
         cookies = request.getCookies();
         if (cookies == null) {
@@ -558,5 +562,87 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
 
-}
+    private int doLoginpage(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws JspTagException {
+        String COMMAND_PARAMETER = "command";
+        String LOGIN_VALUE = "login";
+        String LOGOUT_VALUE = "logout";
+        String AUTHENTICATE_PARAMETER = "authenticate";    
+        String CLOUD_PARAMETER = "cloud";
+        
+        if (session != null) { // some people like to disable their session
+            cloud = (Cloud)session.getAttribute(getSessionName());
+        }
+        if (cloud != null && (! cloud.getUser().isValid())) {
+            // cloud expired (security changed)
+            log.debug("found a cloud in the session, but is was expired, throwing it away");
+            cloud = null;
+        }
+        if(cloud != null) {
+            if(request.getParameter(COMMAND_PARAMETER) != null && request.getParameter(COMMAND_PARAMETER).equals(LOGOUT_VALUE)) {
+                cloud = null;
+            }
+            else {
+                log.debug("processing the body of cloud tag");
+                return evalBody();
+            }
+        }
 
+        log.warn("login page required to acces this cloud data!");            
+
+        // look if we need to login(param command='login') with methods and with the params...
+        // otherwise redirect!
+        if(request.getParameter(COMMAND_PARAMETER) != null && request.getParameter(COMMAND_PARAMETER).equals(LOGIN_VALUE)) {
+            log.debug(COMMAND_PARAMETER + " == '" + request.getParameter(COMMAND_PARAMETER) + "' was entered, trying to perform an login");
+            // now pass all the attributes to the cloud-login method of the cloudcontext!
+
+            String authenticate = request.getParameter(AUTHENTICATE_PARAMETER);
+            if(authenticate == null) {
+                throw new JspTagException ("no parameter '"+AUTHENTICATE_PARAMETER+"' was specified for login on the cloud!");
+            }
+            String cloudname = request.getParameter(CLOUD_PARAMETER);
+            if(cloudname == null) {
+                throw new JspTagException ("no parameter '"+CLOUD_PARAMETER+"' was specified for login on the cloud!");            
+            }
+            Enumeration enum = request.getParameterNames();                 
+            HashMap map = new HashMap();
+            while(enum.hasMoreElements()) {
+                String key = (String) enum.nextElement();
+                String value = request.getParameter(key);
+                log.debug("security info --> key:" + key + " value:" + value);
+                map.put(key, value);
+            }
+            // now try to retrieve the actual cloud...                
+            try {
+                log.debug("trying to login on cloud:" + cloud + " authenticate:" + authenticate);
+                cloud = getDefaultCloudContext().getCloud(cloudname, authenticate, map);
+                if (session != null) {
+                    session.setAttribute(getSessionName(), cloud);
+                }
+                return evalBody();
+            } catch (BridgeException e) {
+                log.info("login failed:" +  e);
+            }
+
+        } else {
+            log.debug("parameter 'command' with value 'login' was not specified");
+        }
+        // we need to do a login on the page specified by the loginpage attribute
+        // TODO: does this one need to be absolute?
+        String from = request.getRequestURI();
+        String reference = from;
+        if(request.getQueryString() != null) {
+            reference += request.getQueryString();
+        }
+        reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
+        from = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", from);
+        String url = response.encodeRedirectURL(loginpage + "?from="+from+"&reference=" + reference);
+        try {
+            log.warn("redirecting to:" + url);
+            response.sendRedirect(url);
+            return SKIP_BODY;
+        }
+        catch(java.io.IOException ioe) {
+            throw new JspTagException ("error sending redirect:" + ioe);
+        }
+    }
+}
