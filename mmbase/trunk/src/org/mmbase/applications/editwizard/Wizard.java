@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.71 2002-10-24 12:56:06 pierre Exp $
+ * @version $Id: Wizard.java,v 1.72 2002-10-25 12:57:24 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -733,7 +733,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         //set number attribute in field
                         Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
                         createFormField(form, field, fieldDataNode);
-
+                    } else {
+                        throw new WizardException("The field identified with " + xpath + " does not exist.");
                     }
                 }
 

@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.21 2002-10-04 22:20:35 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.22 2002-10-25 12:57:24 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -316,7 +316,7 @@ public class WizardDatabaseConnector {
             targetNode.appendChild(objectNode);
             return objectNode;
         } else {
-            throw new WizardException("getNew command returned an error. Objecttype=" + objecttype);
+            throw new WizardException("getNew command returned an error. Objecttype=" + cmd.getError());
         }
     }
 
@@ -355,7 +355,7 @@ public class WizardDatabaseConnector {
      *                     The first ordernr in a list is 1
      */
     private void fillObjectFields(Document data, Node targetParentNode, Node objectDef,
-                                  Node objectNode, Map params, int createorder) {
+                                  Node objectNode, Map params, int createorder)  throws WizardException {
         // fill-in (or place) defined fields and their values.
         NodeList fields = Utils.selectNodeList(objectDef, "field");
         for (int i=0; i<fields.getLength(); i++) {
@@ -363,6 +363,10 @@ public class WizardDatabaseConnector {
             String fieldname = Utils.getAttribute(field, "name");
             // does this field already exist?
             Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
+            if (datafield==null) {
+                // None-existing field (getNew/getNewRelationa always return all fields)
+                throw new WizardException("field "+fieldname+" does not exist!");
+            }
             String value=Utils.getText(field);
             // if you add a list of items, the order of the list may be of import.
             // the variable $pos is used to make that distinction
@@ -477,7 +481,7 @@ public class WizardDatabaseConnector {
             // dnumber can be null
             relationNode = getNewRelation(objectNode, role, snumber, dnumber);
             fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
-            
+
             tagDataNode(relationNode);
             lastCreatedRelation = relationNode;
 
