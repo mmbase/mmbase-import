@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.28 2002-09-03 16:28:39 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.29 2003-01-15 16:12:34 kees Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -21,7 +21,7 @@
 
         Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
             super(req, res, c);
-            c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 1 MByte max uploadsize
+            c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 4 MByte max uploadsize
         }
 
 
