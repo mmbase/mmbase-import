@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>2002-12-05</date>
-		<edition>$Id: documentation.xml,v 1.13 2003-07-27 17:47:49 henk Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.14 2003-07-27 21:45:04 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -58,8 +58,8 @@
 					</para>
 				</listitem>
 				<listitem>
-					<para>A date. Lets use one format for dates. The current format in most
-						documentation is of the type 'December 5, 2002'.
+					<para>A date. The International Standard ISO 8601 specifies numeric representations of date and times is used.
+						So a date is written as 2003-07-28.If only the month or even only the year is of interest: 2003-02 or 2003.
 					</para>
 				</listitem>
 				<listitem>
@@ -100,7 +100,7 @@
 			</itemizedlist>
 		</para>
 		<para>
-			Use section, &dollar;not sect1, sect2...
+			Use section, do not use sect1, sect2...
 			And, if possible, use CDATA sections in your &lt;programlisting&gt;. This
 			makes it easier to read when editing. CDATA sections look like this:
 		 <programlisting>
@@ -110,6 +110,8 @@
 
 ]]&gt;&lt;/programlisting&gt;
 			</programlisting>
+		</para>
+		<para>Although it is only a minor issue: the documentation preferably is written in U.S. English.
 		</para>
 	</section>
 	<section id="docbookeditors">
