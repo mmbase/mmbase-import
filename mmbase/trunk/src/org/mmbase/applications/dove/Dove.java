@@ -1,4 +1,4 @@
-/*
+lo/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.17 2002-07-05 10:09:37 pierre Exp $
+ * @version $Id: Dove.java,v 1.18 2002-07-09 13:58:14 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -851,7 +851,7 @@ public class Dove extends AbstractDove {
                     (!(value instanceof byte[]))) {    // XXX: currently, we do not validate on byte fields
                     String orgvalue=(String)orgvalues.get(key);
                     String mmbasevalue=node.getStringValue(key);
-                    if (!orgvalue.equals(mmbasevalue)) {
+                    if ((orgvalue!=null) && !orgvalue.equals(mmbasevalue)) {
                         // give error node was changed in cloud
                         Element err=addContentElement(ERROR,"Node was changed in the cloud, node number : "+alias+" field name "+key,out);
                         err.setAttribute(ELM_TYPE,IS_SERVER);
@@ -1087,6 +1087,7 @@ public class Dove extends AbstractDove {
 
             } catch(RuntimeException e) {
                 // give error node not found
+                log.error(Logging.stackTrace(e));
                 Element err=addContentElement(ERROR,"Node not in the cloud (any more), node number : "+alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE,IS_SERVER);
             }
