@@ -25,9 +25,11 @@
   <mm:compare referid="flap" value="search">
     <%@ include file="mainparts/search.jsp" %>
   </mm:compare>
+  <%--
   <mm:compare referid="flap" value="lastchanges">
     <%@ include file="mainparts/lastchanges.jsp" %>
   </mm:compare>
+  --%>
   <mm:compare referid="flap" value="stats">
     <%@ include file="mainparts/statistics.jsp" %>
   </mm:compare>

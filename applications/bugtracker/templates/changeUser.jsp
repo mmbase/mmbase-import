@@ -30,11 +30,11 @@
         <input type="submit" value="login" />
         <p>
           I forgot my password mail me the info 
-          <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="sendAccountInfo.jsp" /></mm:url>">resend info</a>
+          <a href="<mm:url referids="parameters,$parameters"><mm:param name="btemplate" value="sendAccountInfo.jsp" /></mm:url>">resend info</a>
         </p>
         <p>
           I don't have a password yet
-          <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="newUser.jsp" /></mm:url>">get account</a>
+          <a href="<mm:url referids="parameters,$parameters"><mm:param name="btemplate" value="newUser.jsp" /></mm:url>">get account</a>
         </p>
       </td>
     </tr>

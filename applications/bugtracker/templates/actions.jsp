@@ -60,7 +60,7 @@ password : <mm:write referid="password" />
         </mm:present>
       <mm:notpresent referid="usernumber">
         <mm:import id="message">failedlogin</mm:import>
-        <% request.setAttribute("template","changeUser.jsp"); %>
+        <% request.setAttribute("btemplate","changeUser.jsp"); %>
     	    <%-- response.sendRedirect("/development/bugtracker/changeUser.jsp?error=login&portal="+portal+"&page="+page2); --%>
       </mm:notpresent>
 </mm:compare>
@@ -264,7 +264,7 @@ http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:fi
 	<mm:node id="areanode" number="$newarea" />
   <mm:createrelation role="related" source="bugreportnode" destination="areanode" />
   <mm:import id="message">newbug</mm:import>
-  <% request.setAttribute("template","fullview.jsp"); %>
+  <% request.setAttribute("btemplate","fullview.jsp"); %>
   <mm:node referid="bugreportnode">
     <mm:field name="number" jspvar="bugreportNumber">
     <% request.setAttribute("bugreport",bugreportNumber); %>
@@ -464,7 +464,7 @@ http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:fi
 <mm:createrelation role="rolerel" source="bugnode" destination="usernode">
 	<mm:setfield name="role">maintainer</mm:setfield>
 </mm:createrelation>
-     <% request.setAttribute("template","fullview.jsp"); %>
+     <% request.setAttribute("btemplate","fullview.jsp"); %>
      <% request.setAttribute("flap","change"); %>
 	   <mm:import id="message">maintaineradded</mm:import>
 </mm:compare>
@@ -487,7 +487,7 @@ http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:fi
     </mm:list>
  </mm:context>
 	  <mm:import id="message">removedmyselfinterested</mm:import>
-     <% request.setAttribute("template","fullview.jsp"); %>
+     <% request.setAttribute("btemplate","fullview.jsp"); %>
      <% request.setAttribute("flap","change"); %>
 </mm:compare>
 
@@ -500,7 +500,7 @@ http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:fi
     <mm:createrelation role="rolerel" source="bugnode" destination="usernode">
 		<mm:setfield name="role">interested</mm:setfield>
     </mm:createrelation>
-     <% request.setAttribute("template","fullview.jsp"); %>
+     <% request.setAttribute("btemplate","fullview.jsp"); %>
      <% request.setAttribute("flap","change"); %>
   </mm:context>
 	<mm:import id="message">myselfinterestedadded</mm:import>

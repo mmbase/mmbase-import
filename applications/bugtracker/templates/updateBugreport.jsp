@@ -6,7 +6,7 @@
 
 
 
-<form action="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">fullview.jsp</mm:param><mm:param name="flap">change</mm:param></mm:url>" method="POST">
+<form action="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="btemplate">fullview.jsp</mm:param><mm:param name="flap">change</mm:param></mm:url>" method="POST">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
 
 <mm:node number="$bugreport">

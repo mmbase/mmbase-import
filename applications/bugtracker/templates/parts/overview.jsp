@@ -69,7 +69,7 @@
         <mm:maxnumber value="1" />
         <mm:constraint field="rolerel.role" value="submitter" />
         <mm:relatednodes id="usernode">
-          <a href="<mm:url referids="parameters,$parameters,usernode@showuser"><mm:param name="template" value="showUser.jsp" /></mm:url>"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
+          <a href="<mm:url referids="parameters,$parameters,usernode@showuser"><mm:param name="btemplate" value="showUser.jsp" /></mm:url>"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
         </mm:relatednodes>
       </mm:relatednodescontainer>
       </mm:context>
@@ -101,7 +101,7 @@
       <mm:relatednodescontainer path="rolerel,users">
         <mm:constraint field="rolerel.role" value="maintainer" />
         <mm:relatednodes id="usernode">
-          <a href="<mm:url referids="parameters,$parameters,usernode@showuser"><mm:param name="template" value="showUser.jsp" /></mm:url>"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
+          <a href="<mm:url referids="parameters,$parameters,usernode@showuser"><mm:param name="btemplate" value="showUser.jsp" /></mm:url>"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
           <mm:last inverse="true"><br /></mm:last>
 				</mm:relatednodes>
         <mm:size>

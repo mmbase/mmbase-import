@@ -3,7 +3,7 @@
   <%@include file="parameters.jsp" %>
   <mm:import externid="error">none</mm:import>
   <body class="basic">
-    <form action="<mm:url referids="parameters,$parameters"><mm:param name="template" value="newAccount.jsp" /></mm:url>" method="post">
+    <form action="<mm:url referids="parameters,$parameters"><mm:param name="btemplate" value="newAccount.jsp" /></mm:url>" method="post">
       <table>
         <tr>
           <td colspan="2">

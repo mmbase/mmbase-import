@@ -225,7 +225,7 @@
 			 <mm:field name="bugreports.issue" escape="inline"/>&nbsp;
 		</td>
 		<td>
-		    <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="images/arrow-right.png" />" border="0" align="right"></a>
+		    <a href="<mm:url referids="parameters,$parameters"><mm:param name="btemplate" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="images/arrow-right.png" />" border="0" align="right"></a>
 		</td>
 </tr>
  <mm:last><mm:index id="lastindex" write="false" /></mm:last>
