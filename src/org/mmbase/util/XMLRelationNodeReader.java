@@ -20,10 +20,16 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.*;
+import org.mmbase.util.logging.*;
 
 /**
 */
 public class XMLRelationNodeReader  {
+
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
 
     Document document;
     DOMParser parser;
@@ -41,15 +47,16 @@ public class XMLRelationNodeReader  {
             document = parser.getDocument();
 
 		/*
-	    System.out.println("*** START XML RELATION READER FOR : "+filename);	
-	    System.out.println("ExportSource="+getExportSource());	
-	    System.out.println("TimeStamp="+getTimeStamp());	
-	    System.out.println("Nodes nodes="+getNodes(mmbase));	
-	    System.out.println("*** END XML RELATION READER FOR : "+filename);	
+	    log.debug("*** START XML RELATION READER FOR : "+filename);	
+	    log.debug("ExportSource="+getExportSource());	
+	    log.debug("TimeStamp="+getTimeStamp());	
+	    log.debug("Nodes nodes="+getNodes(mmbase));	
+	    log.debug("*** END XML RELATION READER FOR : "+filename);	
 		*/
 	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+	    log.error(e);
+	    log.error(Logging.stackTrace(e));
+    }
     }
 
 
@@ -116,9 +123,10 @@ public class XMLRelationNodeReader  {
 							newnode.setValue("dnumber",dnum);
 							n4=nm.getNamedItem("rtype");
 							String rname=n4.getNodeValue();
-							RelDef reldef=(RelDef)mmbase.getMMObject("reldef");
+							RelDef reldef=mmbase.getRelDef();
 							if (reldef==null) {
-								System.out.println("XMLRelationReader -> can't get reldef builder");
+								log.error("XMLRelationReader -> can't get reldef builder");
+								return null;
 							}
 							// figure out rnumber
 							int rnumber=reldef.getGuessedNumber(rname);
@@ -130,19 +138,28 @@ public class XMLRelationNodeReader  {
 							    n4=nm.getNamedItem("dir");
 							    int dir=0;
 							    if (n4!=null) {
-							        dir=Integer.parseInt(n4.getNodeValue());
-							    } else {
+							        String dirs=n4.getNodeValue();
+							        if ("unidirectional".equals(dirs)) {
+							            dir=1;
+							        } else if ("bidirectional".equals(dirs)) {
+							            dir=2;
+							        } else {
+    							        log.error("invalid 'dir' attribute encountered in "+bul.getTableName()+" value="+dirs);
+							        }
+							    }
+							    if (dir==0) {
 				                    MMObjectNode relnode = reldef.getNode(rnumber);
 				                    if (relnode!=null) {
 				                        dir = relnode.getIntValue("dir");
 				                    }
 							    }
-							    if (dir<=0) dir=2;
+							    if (dir!=1) dir=2;
 				                newnode.setValue("dir",dir);
 							}
 							
 						} catch(Exception e) {
-							e.printStackTrace();
+						    log.error(e);
+						    log.error(Logging.stackTrace(e));
 						}
 						Node n5=n2.getFirstChild();
 						while (n5!=null) {
@@ -162,7 +179,7 @@ public class XMLRelationNodeReader  {
 											newnode.setValue(key,-1);
 										}
 									} else { 
-										System.out.println("XMLRelationNodeReader node error : "+key+" "+value+" "+type);
+										log.error("XMLRelationNodeReader node error : "+key+" "+value+" "+type);
 									}
 								}
 							}
@@ -174,7 +191,7 @@ public class XMLRelationNodeReader  {
 				n2=n2.getNextSibling();
 			}
 		} else {
-			System.out.println("XMLRelationNodeReader can't access builder : "+bul);
+			log.error("XMLRelationNodeReader can't access builder : "+bul);
 		}
 		n1=n1.getNextSibling();
 	}

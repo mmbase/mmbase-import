@@ -383,7 +383,8 @@ public class XMLContextDepthWriterII  {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+		    log.error(e);
+		    log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);
@@ -402,7 +403,8 @@ public class XMLContextDepthWriterII  {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+		    log.error(e);
+		    log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);
