@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.9 2000-03-30 14:15:04 wwwtech Exp $
+	$Id: Images.java,v 1.10 2000-04-05 11:52:16 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.9  2000/03/30 14:15:04  wwwtech
+	Rico: added static string to reference the Path to the converter as per suggestion of Arjen de Vries, NOTE that this has to be configurable instead of static like this
+	
 	Revision 1.8  2000/03/30 13:11:32  wwwtech
 	Rico: added license
 	
@@ -49,7 +52,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.9 2000-03-30 14:15:04 wwwtech Exp $
+ * @version $Id: Images.java,v 1.10 2000-04-05 11:52:16 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -98,235 +101,240 @@ public class Images extends MMObjectBuilder {
 		String ckey="";
 
 		try {
-		MMObjectBuilder bul=mmb.getMMObject("images");
-		if (params==null || params.size()==0) {
-			MMObjectNode node=bul.getNode(7452);
-			return(node.getByteValue("handle"));
-		}
-		String num=(String)params.elementAt(0);
-		
-		// check if its a number if not check for name and even oalias
-		try {
-			int numint=Integer.parseInt(num);
-		} catch(Exception e) {
-			Enumeration g=search("MMNODE images.title==*"+num+"*");
-			while (g.hasMoreElements()) {
-				MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-				num=""+imgnode.getIntValue("number");
+			MMObjectBuilder bul=mmb.getMMObject("images");
+			if (params==null || params.size()==0) {
+				MMObjectNode node=bul.getNode(7452);
+				return(node.getByteValue("handle"));
 			}
-		}	
-
-		// is it a alias ? check in database and unmap
-		if (params.size()>1 && ((String)params.elementAt(1)).indexOf('(')==-1) {
-		} else if (params.size()==1) {
-		}
-
-		ckey=num;
-		for (Enumeration t=params.elements();t.hasMoreElements();) {
-			key=(String)t.nextElement();
-			pos=key.indexOf('(');
-			pos2=key.lastIndexOf(')');
-			if (pos!=-1 && pos2!=-1) {
-				type=key.substring(0,pos);
-				cmd=key.substring(pos+1,pos2);
-				debug("getImageBytes5(): type="+type+" cmd="+cmd);
-				if (type.equals("f")) {
-					format=cmd;
-					ckey+=key;
-				} else if (type.equals("s")) {
-					cmds.addElement("-geometry "+cmd);
-					ckey+=key;
-				} else if (type.equals("r")) {
-					cmds.addElement("-rotate "+cmd);
-					ckey+=key;
-				} else if (type.equals("c")) {
-					cmds.addElement("-colors "+cmd);
-					ckey+=key;
-				} else if (type.equals("colorize")) {
-					// not supported ?
-					cmds.addElement("-colorize "+cmd);
-					ckey+=key;
-				} else if (type.equals("bordercolor")) {
-					// not supported ?
-					cmds.addElement("-bordercolor #"+cmd);
-					ckey+=key;
-				} else if (type.equals("blur")) {
-					cmds.addElement("-blur "+cmd);
-					ckey+=key;
-				} else if (type.equals("edge")) {
-					cmds.addElement("-edge "+cmd);
-					ckey+=key;
-				} else if (type.equals("implode")) {
-					cmds.addElement("-implode "+cmd);
-					ckey+=key;
-				} else if (type.equals("gamma")) {
-					// cmds.addElement("-gamma "+cmd);
-					StringTokenizer tok = new StringTokenizer(cmd,",");
-					String r=tok.nextToken();
-					String g=tok.nextToken();
-					String b=tok.nextToken();
-					cmds.addElement("-gamma "+r+"/"+g+"/"+b);
-					ckey+=key;
-				} else if (type.equals("border")) {
-					cmds.addElement("-border "+cmd);
-					ckey+=key;
-				} else if (type.equals("pen")) {
-					cmds.addElement("-pen #"+cmd+"");
-					ckey+=key;
-				} else if (type.equals("font")) {
-					cmds.addElement("font "+cmd);
-					ckey+=key;
-				} else if (type.equals("circle")) {
-					cmds.addElement("draw 'circle "+cmd+"'");
-					ckey+=key;
-				} else if (type.equals("text")) {
-					StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-					try {
-						String x=tok.nextToken();
-						String y=tok.nextToken();
-						String te=tok.nextToken();
-						cmds.addElement("-draw \"text +"+x+"+"+y+" "+te+"\"");
-						ckey+=key;
-					} catch (Exception e) {}
-				} else if (type.equals("raise")) {
-					cmds.addElement("-raise "+cmd);
-					ckey+=key;
-				} else if (type.equals("shade")) {
-					cmds.addElement("-shade "+cmd);
-					ckey+=key;
-				} else if (type.equals("modulate")) {
-					cmds.addElement("-modulate "+cmd);
-					ckey+=key;
-				} else if (type.equals("colorspace")) {
-					cmds.addElement("-colorspace "+cmd);
-					ckey+=key;
-				} else if (type.equals("shear")) {
-					cmds.addElement("-shear "+cmd);
-					ckey+=key;
-				} else if (type.equals("swirl")) {
-					cmds.addElement("-swirl "+cmd);
-					ckey+=key;
-				} else if (type.equals("wave")) {
-					cmds.addElement("-wave "+cmd);
-					ckey+=key;
-				} else if (type.equals("t")) {
-					cmds.addElement("-transparency #"+cmd+"");
-					ckey+=key;
-				} else if (type.equals("part")) {
-					StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-					try {
-						int x1=Integer.parseInt(tok.nextToken());
-						int y1=Integer.parseInt(tok.nextToken());
-						int x2=Integer.parseInt(tok.nextToken());
-						int y2=Integer.parseInt(tok.nextToken());
-						cmds.addElement("-crop "+(x2-x1)+"x"+(y2-y1)+"+"+x1+"+"+y1);
-						ckey+=key;
-					} catch (Exception e) {}
-				} else if (type.equals("roll")) {
-					StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-					String str;
-					int x=Integer.parseInt(tok.nextToken());
-					int y=Integer.parseInt(tok.nextToken());
-					if (x>=0) str="+"+x;
-					else str=""+x;
-					if (y>=0) str+="+"+y;
-					else str+=""+y;
-					cmds.addElement("-roll "+str);
-					ckey+=key;
-				} else if (type.equals("i")) {
-                    cmds.addElement("-interlace "+cmd);
-                    ckey+=key;
-                }
-			} else {
-				if (key.equals("mono")) {
-					cmds.addElement("-monochrome");
-					ckey+=key;
-				} else if (key.equals("contrast")) {
-					cmds.addElement("-contrast");
-					ckey+=key;
-				} else if (key.equals("lowcontrast")) {
-					cmds.addElement("+contrast");
-					ckey+=key;
-				} else if (key.equals("highcontrast")) {
-					cmds.addElement("-contrast");
-					ckey+=key;
-				} else if (key.equals("noise")) {
-					cmds.addElement("-noise");
-					ckey+=key;
-				} else if (key.equals("emboss")) {
-					cmds.addElement("-emboss");
-					ckey+=key;
-				} else if (key.equals("flipx")) {
-					cmds.addElement("-flop");
-					ckey+=key;
-				} else if (key.equals("flipx")) {
-					cmds.addElement("-flop");
-					ckey+=key;
-				} else if (key.equals("flipy")) {
-					cmds.addElement("-flip");
-					ckey+=key;
-				} else if (key.equals("dia")) {
-					cmds.addElement("-negate");
-					ckey+=key;
-				} else if (key.equals("neg")) {
-					cmds.addElement("+negate");
-					ckey+=key;
+			String num=(String)params.elementAt(0);
+			
+			// check if its a number if not check for name and even oalias
+			try {
+				int numint=Integer.parseInt(num);
+			} catch(Exception e) {
+				Enumeration g=search("MMNODE images.title==*"+num+"*");
+				while (g.hasMoreElements()) {
+					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
+					num=""+imgnode.getIntValue("number");
 				}
-			}
-		}
-
-
-		ImageCaches bul2=(ImageCaches)mmb.getMMObject("icaches");
-		synchronized(ckey) {
-			byte[] ibytes=bul2.getCkeyNode(ckey);
+			}	
 	
-			if (ibytes!=null) {
-				return(ibytes);
-			} else {
-				// aaa
-				byte[] pict=null;
-				if (num.indexOf('(')==-1 && !num.equals("-1")) {
-					MMObjectNode node=bul.getNode(num);
-					 pict=node.getByteValue("handle");
-				}
-				if (pict!=null) {
-					byte[] pict2=null;
-					if (cmds.size()==0) {
-						// pict2=getConverted(pict,format);
-						pict2=getAllCalc(sp,pict,"",format);
-					} else {
-						cmd="";
-						for (Enumeration t=cmds.elements();t.hasMoreElements();) {
-							key=(String)t.nextElement();
-							cmd+=key+" ";
-						}
-						pict2=getAllCalc(sp,pict,cmd,format);
-					}
-					if (pict2!=null) {
-						bul=mmb.getMMObject("icaches");
+			// is it a alias ? check in database and unmap
+			if (params.size()>1 && ((String)params.elementAt(1)).indexOf('(')==-1) {
+			} else if (params.size()==1) {
+			}
+	
+			ckey=num;
+			for (Enumeration t=params.elements();t.hasMoreElements();) {
+				key=(String)t.nextElement();
+				pos=key.indexOf('(');
+				pos2=key.lastIndexOf(')');
+				if (pos!=-1 && pos2!=-1) {
+					type=key.substring(0,pos);
+					cmd=key.substring(pos+1,pos2);
+					debug("getImageBytes5(): type="+type+" cmd="+cmd);
+					if (type.equals("f")) {
+						format=cmd;
+						ckey+=key;
+					} else if (type.equals("s")) {
+						cmds.addElement("-geometry "+cmd);
+						ckey+=key;
+					} else if (type.equals("r")) {
+						cmds.addElement("-rotate "+cmd);
+						ckey+=key;
+					} else if (type.equals("c")) {
+						cmds.addElement("-colors "+cmd);
+						ckey+=key;
+					} else if (type.equals("colorize")) {
+						// not supported ?
+						cmds.addElement("-colorize "+cmd);
+						ckey+=key;
+					} else if (type.equals("bordercolor")) {
+						// not supported ?
+						cmds.addElement("-bordercolor #"+cmd);
+						ckey+=key;
+					} else if (type.equals("blur")) {
+						cmds.addElement("-blur "+cmd);
+						ckey+=key;
+					} else if (type.equals("edge")) {
+						cmds.addElement("-edge "+cmd);
+						ckey+=key;
+					} else if (type.equals("implode")) {
+						cmds.addElement("-implode "+cmd);
+						ckey+=key;
+					} else if (type.equals("gamma")) {
+						// cmds.addElement("-gamma "+cmd);
+						StringTokenizer tok = new StringTokenizer(cmd,",");
+						String r=tok.nextToken();
+						String g=tok.nextToken();
+						String b=tok.nextToken();
+						cmds.addElement("-gamma "+r+"/"+g+"/"+b);
+						ckey+=key;
+					} else if (type.equals("border")) {
+						cmds.addElement("-border "+cmd);
+						ckey+=key;
+					} else if (type.equals("pen")) {
+						cmds.addElement("-pen #"+cmd+"");
+						ckey+=key;
+					} else if (type.equals("font")) {
+						cmds.addElement("font "+cmd);
+						ckey+=key;
+					} else if (type.equals("circle")) {
+						cmds.addElement("draw 'circle "+cmd+"'");
+						ckey+=key;
+					} else if (type.equals("text")) {
+						StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
 						try {
-							MMObjectNode newnode=bul.getNewNode("system");
-							newnode.setValue("ckey",ckey);
-							newnode.setValue("id",Integer.parseInt(num));
-							newnode.setValue("handle",pict2);
-							newnode.setValue("filesize",pict2.length);
-							newnode.insert("imagesmodule");
+							String x=tok.nextToken();
+							String y=tok.nextToken();
+							String te=tok.nextToken();
+							cmds.addElement("-draw \"text +"+x+"+"+y+" "+te+"\"");
+							ckey+=key;
 						} catch (Exception e) {}
-						return(pict2);
-					} else {
-						debug("getImageBytes5(): Convert problem params : "+params);
-						return(null);
-					}
+					} else if (type.equals("raise")) {
+						cmds.addElement("-raise "+cmd);
+						ckey+=key;
+					} else if (type.equals("shade")) {
+						cmds.addElement("-shade "+cmd);
+						ckey+=key;
+					} else if (type.equals("modulate")) {
+						cmds.addElement("-modulate "+cmd);
+						ckey+=key;
+					} else if (type.equals("colorspace")) {
+						cmds.addElement("-colorspace "+cmd);
+						ckey+=key;
+					} else if (type.equals("shear")) {
+						cmds.addElement("-shear "+cmd);
+						ckey+=key;
+					} else if (type.equals("swirl")) {
+						cmds.addElement("-swirl "+cmd);
+						ckey+=key;
+					} else if (type.equals("wave")) {
+						cmds.addElement("-wave "+cmd);
+						ckey+=key;
+					} else if (type.equals("t")) {
+						cmds.addElement("-transparency #"+cmd+"");
+						ckey+=key;
+					} else if (type.equals("part")) {
+						StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
+						try {
+							int x1=Integer.parseInt(tok.nextToken());
+							int y1=Integer.parseInt(tok.nextToken());
+							int x2=Integer.parseInt(tok.nextToken());
+							int y2=Integer.parseInt(tok.nextToken());
+							cmds.addElement("-crop "+(x2-x1)+"x"+(y2-y1)+"+"+x1+"+"+y1);
+							ckey+=key;
+						} catch (Exception e) {}
+					} else if (type.equals("roll")) {
+						StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
+						String str;
+						int x=Integer.parseInt(tok.nextToken());
+						int y=Integer.parseInt(tok.nextToken());
+						if (x>=0) str="+"+x;
+						else str=""+x;
+						if (y>=0) str+="+"+y;
+						else str+=""+y;
+						cmds.addElement("-roll "+str);
+						ckey+=key;
+					} else if (type.equals("i")) {
+	                    cmds.addElement("-interlace "+cmd);
+	                    ckey+=key;
+	                }
 				} else {
-					bul=mmb.getMMObject("images");
-					MMObjectNode node=bul.getNode(7452);
-					return(node.getByteValue("handle"));
+					if (key.equals("mono")) {
+						cmds.addElement("-monochrome");
+						ckey+=key;
+					} else if (key.equals("contrast")) {
+						cmds.addElement("-contrast");
+						ckey+=key;
+					} else if (key.equals("lowcontrast")) {
+						cmds.addElement("+contrast");
+						ckey+=key;
+					} else if (key.equals("highcontrast")) {
+						cmds.addElement("-contrast");
+						ckey+=key;
+					} else if (key.equals("noise")) {
+						cmds.addElement("-noise");
+						ckey+=key;
+					} else if (key.equals("emboss")) {
+						cmds.addElement("-emboss");
+						ckey+=key;
+					} else if (key.equals("flipx")) {
+						cmds.addElement("-flop");
+						ckey+=key;
+					} else if (key.equals("flipx")) {
+						cmds.addElement("-flop");
+						ckey+=key;
+					} else if (key.equals("flipy")) {
+						cmds.addElement("-flip");
+						ckey+=key;
+					} else if (key.equals("dia")) {
+						cmds.addElement("-negate");
+						ckey+=key;
+					} else if (key.equals("neg")) {
+						cmds.addElement("+negate");
+						ckey+=key;
+					}
 				}
 			}
-		}
-
+	
+	
+			ImageCaches bul2=(ImageCaches)mmb.getMMObject("icaches");
+			if (bul2==null) {
+				debug("getImageBytes5(): ERROR builder icaches not loaded, load it by putting it in objects.def");
+				return(null);
+			} else {
+				synchronized(ckey) {
+					byte[] ibytes=bul2.getCkeyNode(ckey);
+			
+					if (ibytes!=null) {
+						return(ibytes);
+					} else {
+						// aaa
+						byte[] pict=null;
+						if (num.indexOf('(')==-1 && !num.equals("-1")) {
+							MMObjectNode node=bul.getNode(num);
+							 pict=node.getByteValue("handle");
+						}
+						if (pict!=null) {
+							byte[] pict2=null;
+							if (cmds.size()==0) {
+								// pict2=getConverted(pict,format);
+								pict2=getAllCalc(sp,pict,"",format);
+							} else {
+								cmd="";
+								for (Enumeration t=cmds.elements();t.hasMoreElements();) {
+									key=(String)t.nextElement();
+									cmd+=key+" ";
+								}
+								pict2=getAllCalc(sp,pict,cmd,format);
+							}
+							if (pict2!=null) {
+								bul=mmb.getMMObject("icaches");
+								try {
+									MMObjectNode newnode=bul.getNewNode("system");
+									newnode.setValue("ckey",ckey);
+									newnode.setValue("id",Integer.parseInt(num));
+									newnode.setValue("handle",pict2);
+									newnode.setValue("filesize",pict2.length);
+									newnode.insert("imagesmodule");
+								} catch (Exception e) {}
+								return(pict2);
+							} else {
+								debug("getImageBytes5(): Convert problem params : "+params);
+								return(null);
+							}
+						} else {
+							bul=mmb.getMMObject("images");
+							MMObjectNode node=bul.getNode(7452);
+							return(node.getByteValue("handle"));
+						}
+					}
+				}
+			}
 		} catch(Exception h) {
-			debug("getImageBytes5(): IMAGE PROBLEM ON : "+params);
+			debug("getImageBytes5(): Image problem on : "+params+" : "+h);
+			h.printStackTrace();
 			return(null);
 		}
 	}
