@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.5 2003-02-23 15:20:52 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.6 2003-02-24 15:10:51 vpro Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -59,19 +59,17 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                         i2 = n2.getIntValue("rnumber");
                         if (i1 != i2) return i1 - i2;
                         
-                        
                         return 0;
                     }
-                });
+                }
+            );
         }
-        
 
         // make sure only MMObjectNode's are added
         public boolean add(Object object) {
             return super.add((MMObjectNode) object);
         }
 
-        
         // find some subsets:
         SortedSet getBySource(MMObjectBuilder source) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.oType),
@@ -83,11 +81,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                           new VirtualTypeRelNode(sourceOType +1)));
         }
 
-
         SortedSet getByDestination(MMObjectBuilder destination) {
             return getByDestination(destination.oType);
         }
-
 
         SortedSet getByDestination(int destinationOType) {
             SortedSet result = new TypeRelSet();
@@ -101,11 +97,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             return result;
             
         }
+
         SortedSet getBySourceDestination(int source, int destination) {
             return Collections.unmodifiableSortedSet(
                                    subSet(new VirtualTypeRelNode(source, destination),
                                           new VirtualTypeRelNode(source, destination + 1)));
         }
+
         SortedSet getBySourceDestination(MMObjectBuilder source, MMObjectBuilder destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.oType, destination.oType),
                           new VirtualTypeRelNode(source.oType, destination.oType + 1)));
@@ -115,8 +113,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, role),
                           new VirtualTypeRelNode(source, destination, role + 1)));
         }
-            
-
     }
 
     /**
@@ -126,7 +122,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * 
      * @since MMBase-1.6.2
      */    
-
     protected class VirtualTypeRelNode extends VirtualNode {
         
         VirtualTypeRelNode(int snumber, int dnumber) { // only for use in lookups
@@ -143,7 +138,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
     }
    
-
     /**
      * Of course, virtual typerel nodes need a virtual typerel
      * builder. Well 'of course', the reason is not quite obvious to
@@ -167,14 +161,11 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
     }
 
-
     /**
      * TypeRel should contain only a limited amount of nodes, so we
      * can simply cache them all, and avoid all further querying.
      */
-
     private TypeRelSet typeRelNodes;
-
 
     public boolean init() {
         if (oType != -1) return true;
@@ -186,13 +177,11 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         return true;
     }
 
-
     /**
      * The TypeRel cache contains all TypeRels MMObjectNodes.
      * Called after init by MMBase, and when something changes.
      * @since MMBase-1.6.2
      */
-    
     public void readCache() {
         readCache(true);
     }
@@ -200,7 +189,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @since MMBase-1.6.2
      */
-
     private void readCache(boolean buildersInitialized) {
         log.debug("Reading in typerels");
         typeRelNodes = new TypeRelSet();
@@ -220,14 +208,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * Addes one typerel cache entries, plus inherited relations (if builder are initialized)
      * @returns A Set with the added entries, which can be used for logging or so, or can be disregarded
      */
-
     protected TypeRelSet addCacheEntry(MMObjectNode typerel, boolean buildersInitialized) {
         TypeDef typeDef = mmb.getTypeDef();
         TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
 
         // Start to add the actual definition, this is then afterwards again, except if one of the builders could not be found
         added.add(typerel); 
-
 
         inheritance:
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
@@ -270,7 +256,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         log.debug("Added to typerelcache: " + added);
         return added;
     }
-
 
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
@@ -332,7 +317,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * destination.
      *
      */
-
     public Enumeration getAllowedRelations(int builder1, int builder2) {
         Set res = new HashSet(typeRelNodes.getBySourceDestination(builder1, builder2)); 
         res.addAll(typeRelNodes.getBySourceDestination(builder2, builder1));
@@ -344,7 +328,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.6.2
      */
-    
     public Set getAllowedRelations(int builder1, int builder2, int role) {
         Set res = new HashSet(typeRelNodes.getBySourceDestinationRole(builder1, builder2, role)); 
         res.addAll(typeRelNodes.getBySourceDestinationRole(builder2, builder1, role));
@@ -367,6 +350,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         return results;
     }
+
     /**
      *  Retrieves the identifying number of the relation definition that is 'allowed' between two specified node types.
      *  The results are dependent on there being only one type of relation between two node types (not enforced, thus unpredictable).
@@ -385,8 +369,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }        
     }
 
-
-
     /**
      *  Returns the display string for this node
      *  It returns a commbination of objecttypes and rolename : "source->destination (role)".
@@ -404,7 +386,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         return null;
     }
-
 
     /**
      *  Returns the display string for a specified field.
@@ -497,12 +478,10 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         return true;
     }
 
-
     /**
      * Implements equals for MMObjectNode
      * @since MMBase-1.6.2
      */
-
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         if (o2.parent instanceof TypeRel) {            
             return o1.getIntValue("snumber") == o2.getIntValue("snumber") &&
@@ -516,7 +495,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * Implements for MMObjectNode
      * @since MMBase-1.6.2
      */
-
     public int hashCode(MMObjectNode o) {
         return 127 * o.getIntValue("snumber");
     }
@@ -524,6 +502,5 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     public String toString(MMObjectNode n) {
         return getGUIIndicator(n);
     }
-
 }
 
