@@ -166,6 +166,14 @@ public interface Cloud {
     public String getDescription();
 
     /**
+     * Who is using this cloud.
+     *
+     * @return the User object describing who is using this cloud now.
+     */
+
+    public User getUser();
+	
+    /**     
      * Returns a list of virtual nodes that are composed by fields of other
      * nodes. Searches by default for all valid relations in path (searchDir="both").
      *
