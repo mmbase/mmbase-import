@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.31 2003-10-02 11:58:26 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.32 2003-11-12 13:57:52 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -401,6 +401,8 @@ function setButtonsInactive() {
    var savebut = document.getElementById("bottombutton-save");
    // savebut.className = "invalid";
    savebut.style.visibility = "hidden";
+   var saveonlybut = document.getElementById("bottombutton-saveonly");
+   saveonlybut.style.visibility = "hidden";
 }
 
 
@@ -419,7 +421,6 @@ function doSave() {
     document.body.scrollTop = 0;
 }
 
-/*
 function doSaveOnly() {
     var allvalid = doValidateAndUpdateButtons();
     if (allvalid) {
@@ -427,7 +428,6 @@ function doSaveOnly() {
         doSendCommand("cmd/save////");
     }
 }
-*/
 
 function setParam(name, value) {
     if (value!="" && value!=null) return "&"+name+"="+value;

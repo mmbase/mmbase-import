@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.40 2003-10-02 11:58:25 pierre Exp $
+ * @version $Id: Config.java,v 1.41 2003-11-12 13:53:59 michiel Exp $
  */
 
 public class Config {
@@ -35,7 +35,7 @@ public class Config {
     public final static int DEFAULT_MAX_UPLOAD_SIZE = 4 * 1024 * 1024;
 
     // logging
-    private static Logger log = Logging.getLoggerInstance(Config.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Config.class);
 
     // protocol string to test referrer pages
     private final static String PROTOCOL = "http://";
