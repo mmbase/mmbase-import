@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.59 2002-05-28 16:35:08 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.60 2002-07-04 09:45:58 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -106,7 +106,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
     /**
      */
-    BasicCloud(String name, String application, HashMap loginInfo, CloudContext cloudContext) {
+    BasicCloud(String name, String application, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext=(BasicCloudContext)cloudContext;
         MMBase mmb = this.cloudContext.mmb;
