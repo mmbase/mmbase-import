@@ -16,9 +16,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * The absic implementation for a Transaction cLoud.
+ * A Transaction cloud is a cloud which buffers allc hanegs made to nodes -
+ * which means that chanegs are committed only if you commit the transaction itself.
+ * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.13 2003-03-06 13:53:58 pierre Exp $
+ * @version $Id: BasicTransaction.java,v 1.14 2003-03-07 09:31:00 pierre Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());
@@ -34,7 +37,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     /*
      * Constructor to call from the CloudContext class.
-     * (package only, so cannot be reached from a script)
+     * Package only, so cannot be reached from a script.
      * @param transactionName name of the transaction (assigned by the user)
      * @param cloud The cloud this transaction is working on
      */
@@ -170,9 +173,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
     /**
-     * If this Transaction is scheduled to be garbage collected,
-     * the transaction is canceled and cleaned up (unless it has already been committed/canceled, ofcourse, and
-     * unless the parentcloud of a transaction is a transaction itself... in that case, the parent transaction should cancel!).
+     * If this Transaction is scheduled to be garbage collected, the transaction is canceled and cleaned up.
+     * Unless it has already been committed/canceled, ofcourse, and
+     * unless the parentcloud of a transaction is a transaction itself.
+     * In that case, the parent transaction should cancel!
      * This means that a transaction is always cleared - if it 'times out', or is not properly removed, it will
      * eventually be removed from the MMBase cache.
      */

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.2 2002-11-08 10:20:17 pierre Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.3 2003-03-07 09:31:11 pierre Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -132,7 +132,7 @@ public class DatabaseTransaction implements Transaction {
     }
 
     /**
-     * Closes and commits the transaction (i.e. the connection).
+     * Closes and commits the transaction.
      * This method catches any exceptions that occur.
      * If closing or committing fails, the function returns false, rather than throwing an exception
      * (though the error is logged).

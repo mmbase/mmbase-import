@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author 	Marcel Maatkamp, marmaa@vpro.nl
- * @version $Id: MediaUtils.java,v 1.11 2002-02-20 10:43:26 pierre Exp $
+ * @version $Id: MediaUtils.java,v 1.12 2003-03-07 09:31:18 pierre Exp $
  */
 
 public class MediaUtils {
@@ -262,6 +262,7 @@ public class MediaUtils {
 
     /**
      * Removes RealPlayer incompatible characters from the string.
+     * <br />
      * '#' characters are replaced by space characters.
      * Characters that are allowed are every letter or digit and ' ', '.', '-' and '_' chars.
      * @param s the String that needs to be fixed.

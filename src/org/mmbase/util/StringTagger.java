@@ -401,8 +401,8 @@ public class StringTagger implements Map {
     }
 
     /**
-     * Returns the values as a Vector that contains
-     * the separated values.<br>
+     * Returns the values as a Vector that contains the separated values.
+     * <br>
      * Use {@link #get} to get the list of values as a <code>String</code><br>
      * Use {@link #Value} to get the first value as a String
      * @param token the key of the value to retrieve

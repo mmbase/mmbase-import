@@ -16,7 +16,7 @@ package org.mmbase.util;
  * @see XFile
  *
  * @author David V van Zeventer
- * @version 16 November 1998
+ * @version $Id: XFileCompare.java,v 1.5 2003-03-07 09:31:16 pierre Exp $
  */
 public class XFileCompare implements CompareInterface {
 

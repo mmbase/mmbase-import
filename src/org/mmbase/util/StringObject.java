@@ -29,8 +29,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 /**
- * This Class is a growable buffer for characters. It is mainly used
- * to create Strings. The compiler uses it to implement the "+" operator.
+ * This Class is a growable buffer for characters.
+ * It is mainly used to create Strings. The compiler uses it to implement the "+" operator.
  * For example:
  * <pre>
  *        "a" + 4 + "c"
@@ -47,7 +47,7 @@ package org.mmbase.util;
  * @see     String
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.5 2002-03-01 14:00:43 pierre Exp $
+ * @version $Id: StringObject.java,v 1.6 2003-03-07 09:31:15 pierre Exp $
  */
 
 public final class StringObject {
@@ -529,7 +529,8 @@ public final class StringObject {
 
 
     /**
-     * replace, does a replace/insert. like make bold:bla into <B>bla</B>
+     * Does a replace/insert.
+     * Like make bold:bla into &lt:b&gt:bla&lt:/b&gt:
      */
     public synchronized StringObject replace(String oldstart,String oldend,String newstart, String newend) {
         int pos2;

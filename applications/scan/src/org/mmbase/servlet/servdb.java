@@ -30,8 +30,8 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated use {@link ImageServlet} or {@linbk AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.45 2003-03-07 08:50:28 pierre Exp $
+ * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
+ * @version $Id: servdb.java,v 1.46 2003-03-07 09:31:10 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
