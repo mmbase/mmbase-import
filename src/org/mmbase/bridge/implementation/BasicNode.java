@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.77 2002-10-23 22:23:16 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.78 2002-11-18 11:40:34 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -621,16 +621,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * with specified role and otype
      * @param role the role (reldef) number, can be -1
      * @param otype the destination object type number, can be -1
+     * @param usedirectionality if <code>true</code> teh result si filtered on unidirectional relations.
+     *                          specify <code>false</code> if you want to show unidoerctional relations
+     *                          from destination to source.
      * @return an Enumeration with the relations
      */
-    private Enumeration getRelationEnumeration(int role, int otype) {
+    private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
         InsRel relbuilder=mmb.getInsRel();
         Enumeration e=null;
         if ((role!=1) || (otype!=-1)) {
             if (role!=-1) {
                 relbuilder=mmb.getRelDef().getBuilder(role);
             }
-            return relbuilder.getRelations(getNumber(),otype, role);
+            return relbuilder.getRelations(getNumber(),otype, role, usedirectionality);
         } else {
             return getNode().getRelations();
         }
@@ -644,7 +647,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return a RelationList with the relations
      */
     private RelationList getRelations(int role, int otype) {
-        Enumeration e=getRelationEnumeration(role, otype);
+        Enumeration e=getRelationEnumeration(role, otype, true);
         Vector relvector=new Vector();
         if (e!=null) {
             while (e.hasMoreElements()) {
@@ -744,7 +747,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         int dir  = ClusterBuilder.getSearchDir(direction);
 
-        Enumeration e = getRelationEnumeration(requestedRole, otype);
+        Enumeration e = getRelationEnumeration(requestedRole, otype, dir!=ClusterBuilder.SEARCH_ALL);
         List result = new Vector();
         if (e != null) {
             while(e.hasMoreElements()) {
