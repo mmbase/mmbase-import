@@ -3,17 +3,34 @@
 
 <html>
 
+<head>
+  <title>Taglib examples</title>
+</head>
+
+<body>
+
+<p>
+Click <a href="../../../mmdocs/mmbase-taglib.html">here</a> to read the MMBase taglib documentation.
+</p>
+
+<p>
 Here's a simple list of jumpers to see if it's working:
+</p>
 
 <mm:list type="jumpers" fields="name,url">
-
-<mm:head><ul></mm:head>
- <li><%=name%> redirects to <%=url%></il>
-<mm:tail></ul></mm:tail>
-
+ <mm:first><ul></mm:first>
+ <li>
+   <%=name%><mm:field name="name"/> redirects to <%=url%> <mm:field name="url"/>
+   <mm:first>(first)</mm:first>
+   <mm:last>(last)</mm:last>
+   <mm:odd>(odd)</mm:odd>
+   <mm:even>(even)</mm:even>
+   <mm:changed>(changed)</mm:changed>
+ </il>
+ <mm:last></ul></mm:last>
 </mm:list>
 
-<a href="../../../mmdocs/mmbase-taglib.html">More info about the MMBase tag library ...</a>
+</body>
 
 </html>
 
