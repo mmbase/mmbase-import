@@ -74,9 +74,7 @@
     <mm:node referid="mailboxNumber" id="mailboxNode"/>
   </mm:list>
 
-
-
-  
+ 
   <%-- edit existing email (not yet sent) --%>
   <mm:import externid="id"/>
   <mm:isnotempty referid="id">
@@ -87,7 +85,9 @@
 	<mm:import id="body" reset="true"><mm:field name="body" escape="none"/></mm:import>
     </mm:node>
   </mm:isnotempty>
-   
+
+
+  
   <%--
     default: read data from request
   --%>
@@ -108,6 +108,15 @@
     <mm:import id="body" reset="true"><mm:write referid="inputbody" escape="none"/></mm:import>
   </mm:present>
 
+
+  <mm:import jspvar="to"><mm:write referid="to" escape="none"/></mm:import>
+  <%
+        to = to.replaceAll("^\\s*<(\\S+)>\\s*$","$1");
+  %>
+  <mm:import id="to" reset="true"><%= to %></mm:import>
+ 
+
+  
     <mm:import externid="field"/>
     <mm:present referid="field"><%-- extra mail addresses from addressbook --%>
 	<mm:import externid="ids" vartype="List"/>
@@ -160,10 +169,10 @@
 <mm:present referid="emailNode">
   <mm:node referid="emailNode">
 	<mm:setfield name="from"><mm:write referid="from" escape="none"/></mm:setfield>
-        <mm:setfield name="to"><mm:write referid="to"/></mm:setfield>
-	<mm:setfield name="cc"><mm:write referid="cc"/></mm:setfield>
-        <mm:setfield name="subject"><mm:write referid="subject"/></mm:setfield>
-	<mm:setfield name="body"><mm:write referid="body"/></mm:setfield>
+        <mm:setfield name="to"><mm:write referid="to" escape="none"/></mm:setfield>
+	<mm:setfield name="cc"><mm:write referid="cc" escape="none"/></mm:setfield>
+        <mm:setfield name="subject"><mm:write referid="subject" escape="none"/></mm:setfield>
+	<mm:setfield name="body"><mm:write referid="body" escape="none"/></mm:setfield>
         <mm:setfield name="type">0</mm:setfield>
         <mm:setfield name="date"><%=System.currentTimeMillis()/1000%></mm:setfield>
   </mm:node>
