@@ -458,7 +458,6 @@ public class MMObjectNode {
 	{
 		String result = null;
 		String dbType = getDBType(fieldName);
-		System.out.println("TYPE="+dbType+" NAME="+fieldName);
 		if (dbType==null) result = "" + getValue(fieldName);
 		//else if ( dbType.equals("varchar") || dbType.equals("varchar_ex") || dbType.equals("clob") || dbType.equals("text") || dbType.equals("blob") )
 		else if ( dbType.equals("varchar") || dbType.equals("varchar_ex") || dbType.equals("clob") || dbType.equals("text") || dbType.equals("blab") )
