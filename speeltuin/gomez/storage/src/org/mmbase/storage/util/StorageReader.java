@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.6 2003-07-28 10:19:21 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.7 2003-08-01 14:16:13 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -195,7 +195,7 @@ public class StorageReader extends DocumentReader  {
         NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
         if (disallowedFieldsList.getLength()>0) {
             Element disallowedFieldsTag = (Element)disallowedFieldsList.item(0);
-            attributes.put("option-disallowed-fields-case-sensitive", Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")));
+            attributes.put(Attributes.DISALLOWED_FIELD_CASE_SENSITIVE, Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")));
         }
         return attributes;
     }
@@ -220,7 +220,7 @@ public class StorageReader extends DocumentReader  {
                 // require a field name. 
                 // if not given, skip the option.
                 if (fieldName != null) {
-                    if (casesensitive) fieldName = fieldName.toLowerCase(); 
+                    if (!casesensitive) fieldName = fieldName.toUpperCase(); 
                     String replacement = fieldTag.getAttribute("replacement");
                     disallowedFields.put(fieldName,replacement);
                 }

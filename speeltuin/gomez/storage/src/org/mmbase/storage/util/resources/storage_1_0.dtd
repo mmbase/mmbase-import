@@ -75,10 +75,10 @@
 
 <!--
 	Contains a list of disallowed fieldnames, and possible replacements for these names.
-	The case-sensistive attribute determines whether the fieldnames given are case-sensitive (default true).
+	The case-sensitive attribute determines whether the fieldnames given are case-sensitive (default false).
 -->
 <!ELEMENT disallowed-fields (disallowed-field*)>
-<!ATTLIST disallowed-fields case-sensistive (true|false) #IMPLIED>
+<!ATTLIST disallowed-fields case-sensitive (true|false) #IMPLIED>
 
 <!-- 
 	Describe a disallowed fieldname. the name attribute contains the fieldname to disallow.

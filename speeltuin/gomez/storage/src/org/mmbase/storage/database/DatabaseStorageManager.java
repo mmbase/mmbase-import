@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.14 2003-08-01 11:56:21 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.15 2003-08-01 14:16:12 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -1134,13 +1134,48 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    abstract public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
+    public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+        // test if you can make changes 
+        // test if this is a field to add (persistent/nobinary)
+        // if the field is a key, remove the composite key : Scheme: DROP_INDEX
+        // get the field,
+        // get the field index
+        // add the field and its index  Scheme: ADD_FIELD
+        // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
+        throw new StorageException("Operation not supported");
+    }
 
-    abstract public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
+    public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+        // test if you can make changes 
+        // test if this is a field to remove (persistent/nobinary)
+        // if the field is a key, remove the composite key Scheme: DROP_INDEX
+        // get the field,
+        // get the field index
+        // remove the field and its index  Scheme: DROP_FIELD
+        // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
+        throw new StorageException("Operation not supported");
+    }
 
-    abstract public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
+    public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+        // test if you can make changes 
+        // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
+        // get the field
+        // get the field index
+        // change the field and its index  Scheme: CHANGE_FIELD
+        // select all key fields and add the composite key  Scheme: ADD_INDEX
+        throw new StorageException("Operation not supported");
+    }
 
-    abstract public void updateStorage(MMObjectBuilder builder) throws StorageException;
+    public void updateStorage(MMObjectBuilder builder) throws StorageException {
+        // test if you can make changes 
+        // iterate through the fields,
+        // use metadata.getColumns(...)  to select fields  
+        //      (incl. name, datatype, size, null) 
+        // use metadata.getImportedKeys(...) to get foreign keys
+        // use metadata.getIndexInfo(...) to get composite and other indexes
+        // determine changes and run them
+        throw new StorageException("Operation not supported");
+    }
 
 }
 
