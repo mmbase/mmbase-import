@@ -20,6 +20,8 @@ import org.mmbase.cache.xslt.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.applications.mmbob.util.transformers.Smilies;
+import org.mmbase.applications.thememanager.ThemeManager;
+import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -43,6 +45,8 @@ public class Posting {
     private int threadpos;
     private PostThread parent;
     private Node node;
+
+    private PostingBody postingBody = new PostingBody();
 
     /**
      * Construct the posting
@@ -82,10 +86,12 @@ public class Posting {
      * set the body of the posting
      *
      * @param body
+     * @param imagecontext The context where to find the images (eg smilies)
      */
-    public void setBody(String body) {
-        node.setStringValue("body", body);
+    public void setBody(String body,String imagecontext) {
+        node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
         String parsed = node.getStringValue("body");
+        parsed = translateBody(node.getStringValue("body"),imagecontext);
         node.setStringValue("c_body", parsed);
     }
 
@@ -141,12 +147,13 @@ public class Posting {
     /**
      * get the body of this posting
      *
+     * @param imagecontext The context where to find the images (eg smilies)
      * @return body of this posting
      */
-    public String getBody() {
+    public String getBody(String imagecontext) {
         String parsed = node.getStringValue("c_body");
 	if (parsed.equals("")) {
-		parsed = translateBody(node.getStringValue("body"));
+		parsed = translateBody(node.getStringValue("body"),imagecontext);
 		node.setValue("c_body",parsed);
 		node.commit();
 		return parsed;
@@ -211,7 +218,8 @@ public class Posting {
         return true;
     }
 
-    private String translateBody(String body) {
+    private String translateBody(String body, String imagecontext) {
+        log.debug("going to translate the BODY");
 	String xsl = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator;
 	if (threadpos%2 == 0) {
 		xsl += parent.getParent().getParent().getXSLTPostingsEven();
@@ -227,8 +235,13 @@ public class Posting {
     	} catch (Exception e) { 
 		e.printStackTrace( );
     	}
-	String themeid = "MMBob";
-	String imagecontext = "/mmbase/thememanager/images";
+
+        int forumid = parent.getParent().getParent().getId();
+        String themeid = ThemeManager.getAssign("MMBob."+forumid);
+        if (themeid == null) {
+            themeid = "MMBob";
+        } 
+	//String imagecontext = "/mmbase/thememanager/images";
         body = smilies.transform(body, themeid, imagecontext);
 	 return body;
     }
