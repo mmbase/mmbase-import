@@ -17,7 +17,7 @@ package org.mmbase.storage.search;
  * Note that tables can also be joined using FieldCompareConstraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface RelationStep extends Step {
@@ -52,13 +52,17 @@ public interface RelationStep extends Step {
 
     /**
      * Gets the directionality mode used with this relation. This is one of 
-     * <ul>
-     * <li>DIRECTIONS_SOURCE
-     * <li>DIRECTIONS_DESTINATION
-     * <li>DIRECTIONS_BOTH
-     * </ul> 
+     * values defined in this class.
      */
     int getDirectionality();
+    
+    /**
+     * Gets the role for this relation, if specified. 
+     * I.e. the nodenumber of the corresponding 
+     * {@link org.mmbase.module.corebuilders.RelDef RelDef} node, or 
+     * <code>null</code>.
+     */
+    Integer getRole();
 
     /**
      * Gets the previous step. 
@@ -73,7 +77,7 @@ public interface RelationStep extends Step {
     /**
      * Compares this relationstep to the specified object. The result is 
      * <code>true</code> if and only if the argument is a non-null 
-     * RelationStep object with the same directionality,
+     * RelationStep object with the same directionality and role,
      * associated with the same tablename, 
      * using the same alias and including the same nodes.
      * 
@@ -91,7 +95,7 @@ public interface RelationStep extends Step {
      * Returns a string representation of this RelationStep. 
      * The string representation has the form 
      * "RelationStep(tablename:&lt;tablename&gt;, alias:&lt;alias&gt;, 
-     *  nodes:&lt;nodes&gt;, dir:&lt;dir&gt;)"
+     *  nodes:&lt;nodes&gt;, dir:&lt;dir&gt;, role:&lt;role&gt;)"
      * where 
      * <ul>
      * <li><em>&lt;tablename&gt;</em> is the tablename returnedby 
@@ -102,6 +106,8 @@ public interface RelationStep extends Step {
      * <li><em>&lt;dir&gt;</em> is the name of 
      *     the directionality returned by 
      *     {@link #getDirectionality getDirectionality()}
+     * <li><em>&lt;role&gt;</em> is the role returned by 
+     *     {@link #getRole getRole()}
      * </ul>
      *
      * @return A string representation of this RelationStep.

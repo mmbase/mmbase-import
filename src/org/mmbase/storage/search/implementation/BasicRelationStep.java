@@ -17,13 +17,16 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
     
     /** Directionality property. */
     private int directionality = RelationStep.DIRECTIONS_BOTH;
+    
+    /** Role property. */
+    private Integer role = null;
     
     /** Previous step. */
     private Step previous = null;
@@ -75,11 +78,27 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         return this;
     }
     
+    /**
+     * Sets role property.
+     *
+     * @param role The role.
+     * @return This <code>BasicRelationStep</code> instance.
+     */
+    public BasicRelationStep setRole(Integer role) {
+        this.role = role;
+        return this;
+    }
+    
     // javadoc is inherited
     public int getDirectionality() {
         return directionality;
     }
 
+    // javadoc is inherited
+    public Integer getRole() {
+        return role;
+    }
+    
     // javadoc is inherited
     public Step getPrevious() {
         return previous;
@@ -100,7 +119,8 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
             return getTableName().equals(step.getTableName())
                 && getAlias().equals(step.getAlias())
                 && getNodes().equals(step.getNodes())
-                && step.getDirectionality() == directionality;
+                && step.getDirectionality() == directionality
+                && (role == null? step.getRole() == null: role.equals(step.getRole()));
         } else {
             return false;
         }
@@ -108,10 +128,11 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
     
     // javadoc is inherited
     public int hashCode() {
-        return 41 * getTableName().hashCode()
-        + 43 * getAlias().hashCode() 
-        + 47 * getNodes().hashCode()
-        + 113 * directionality;
+        return 41 * (getTableName().hashCode()
+        + 43 * (getAlias().hashCode() 
+        + 47 * (getNodes().hashCode()
+        + 113 * (directionality
+        + 31 * role.intValue()))));
     }
     
     // javadoc is inherited
@@ -124,6 +145,8 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         append(getNodes()).
         append(", dir:").
         append(RelationStep.DIRECTIONALITY_NAMES[getDirectionality()]).
+        append(", role:").
+        append(getRole()).
         append(")");
         return sb.toString();
     }
