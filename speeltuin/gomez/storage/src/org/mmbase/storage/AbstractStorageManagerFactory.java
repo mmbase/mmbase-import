@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.6 2003-07-24 10:11:03 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.7 2003-07-24 12:29:04 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -46,15 +46,20 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
 
     /**
      * Stores the MMBase reference, and initializes the attribute map.
-     * Opens and reads the STorageReader for this factory.
+     * Opens and reads the StorageReader for this factory.
      * @see load()
      */
-    public final void init(MMBase mmbase) throws StorageException {
+    public final void init(MMBase mmbase) throws StorageError {
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = Collections.synchronizedMap(new HashMap());
         typeMappings = Collections.synchronizedList(new ArrayList());
-        load();
+        try {
+            load();
+        } catch (StorageException se) {
+            // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
+            throw new StorageError(se);
+        }
     }
 
     /**
