@@ -17,21 +17,22 @@ import javax.sql.DataSource;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBCInterface;
 import org.mmbase.util.DatabaseLookup;
-import org.mmbase.util.XMLBasicReader;
+mport org.mmbase.util.XMLBasicReader;
 
 /**
- * ...
- *
- * basename
- * database
- * datasource
- * storagemanagerfactory
- *
- *
+ * A storage manager factory for database storages.
+ * This factory sets up a datasource for connecting to the databse.
+ * If you specify the datasource URI in the 'dataource' property in mmbaseroot.xml configuration file,  
+ * the factory attempts to obtain the datasource from the appplication server. If this fails, or no datasource URI is given,
+ * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a datasource.
+ * Note that if you provide a datasource you should make the JDBC Module inactive to prevent the module from 
+ * interfering with the storage layer.
+ * @todo backward compatibility with the old supportclasses should be done by creating a separate Factory
+ * (LegacyStorageManagerFactory ?).
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.1 2003-07-17 13:05:56 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.2 2003-07-18 12:09:05 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -49,13 +50,15 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
 
     /**
      * Initialize the Factory for this instance of MMBase.
+     * Obtain a datasource to the storage, and load configuration attributes.
+     * @see load()
      * @param mmbase the MMBase instance
      */
-	public void init(MMBase mmbase) {
+	public void init(MMBase mmbase) throws StorageConfigurationException, StorageInaccessibleException {
         super.init(mmbase);
 
         // get the Datasource for the database to use
-        // the datasource uri (i.e. 'jdbc/xa/PostgresqlXADS' )
+        // the datasource uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
         String datasourceURI = mmbase.getInitParameter("datasource");
         if (datasourceURI != null) {
@@ -71,62 +74,69 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             // This datasource should only be needed in cases were MMBase runs without application server.
             datasource = new GenericDataSource(mmbase);
         }
-        
+        // test the datasource
+        try {
+            Connection con = datasource.getConnection();
+            con.close();
+        } catch (SQLException se) {
+            throw new StorageInaccessibleException(se);
+        }
         // load configuration data.
         load();
-
         // print information about our storage..
         log.info("Using class: '" + storageManagerClass.getName() + "' with config: '" + databaseConfig + "'.");
     }
     
     /**
-     *
+     * Opens and reads the database configuration document.
+     * @todo The type of reader used should be a StorageReader.
+     * @throws StorageInaccessibleException if the storage could not be accessed while determining the database type
+     * @throws StorageConfigurationException if necessary configuration data is missing or invalid 
      */
-    protected load() {
-        XMLBasicReader reader = getDocumentReader();
-        // determine the storagemanager class
-        Class storageManagerClass = Class.forName(reader.getMMBaseDatabaseDriver());
-        // ... more
+    protected void load() throws StorageConfigurationException, StorageInaccessibleException {
+        XMLDatabaseReader reader = getDocumentReader();
+        // determine the storagemanager classname and load the class
+        String storageManagerClassName = Class.forName(reader.getMMBaseDatabaseDriver());
+        if (storageManagerClassName==null) {
+            throw new StorageConfigurationException("StorageManager class name missing in storage configuration");
+        }
+        try {
+            Class storageManagerClass = Class.forName(storageManagerClassName);
+        } catch (ClassNotFoundException cnfe) {
+            throw new StorageConfigurationException(cnfe);
+        }
+        // ... more configuration
+        
     }
 
     /**
-     *
+     * Locates and opens the database configuration document.
+     * The configuration document to open is dependent on the database type and version.
+     * You can explicitly set this type in mmbasreoot (using the database property), or let
+     * MMBase determine it using information gained from the datasource, and the lookup.xml file 
+     * in the database configuration directory
+     * @todo configuration path should be retrieved from the MMBase instance, rather than directly from the (static)
+     * MMBaseContext class.
+     * Storage configuration files should become resource files, and configurable using a storageresource property.
+     * The type of reader to return should be a StorageReader.
+     * @throws StorageInaccessibleException if the storage could not be accessed while determining the database type
+     * @return a XMLDatabaseReader instance
      */
-    public DataSource getDataSource() {
-        return datasource;
-    }
-    
-    /**
-     *
-     */
-	public StorageManager getStorageManager() {
-        storageManager = (StorageManager)storageManagerClass.newInstance();
-        storageManager.setStorageManagerFactory(this);
-        return storageManager;
-    }
-
-    /**
-     *
-     */
-    public XMLBasicReader getDocumentReader() {
+    public XMLDatabaseReader getDocumentReader() throws StorageInaccessibleException {
         File databaseConfig = null;
-        // configuration path
+        // configuration path. 
         String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
 
         // determine database name.
         // use the parameter set in mmbaseroot if it is given
-        String databasename = MMBase.getInitParameter("database");
+        String databasename =mmbase.getInitParameter("database");
         if (databasename == null) {
             // otherwise, search for supported drivers using the lookup xml
-            //
-            DatabaseLookup lookup =
-                new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+            DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
             try {
                 databaseConfig = lookup.getDatabaseConfig(datasource.getConnection());
             } catch (java.sql.SQLException sqle) {
-                log.error(sqle);
-                log.error(Logging.stackTrace(sqle));
-                throw new RuntimeException("Error retrieving an connection to the database:" + sqle);
+                throw new StorageInaccessibleException(sqle);
             }
         } else {
             // use the correct database-xml
@@ -137,6 +147,27 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
         return new XMLDatabaseReader(databaseConfig.getPath());
     }
 
+    /**
+     * Obtains a StorageManager that grants access to teh databse.
+     .
+     * The instance represents a temporary connection to the datasource - 
+     * do not store the result of this call as a static or long-term member of a class.
+     * @return a StorageManager instance
+      */
+	public StorageManager getStorageManager() {
+        storageManager = storageManagerClass.newInstance();
+        storageManager.setStorageManagerFactory(this);
+        return storageManager;
+    }
+
+    /**
+     * Returns the datasource that provides access to the storage.
+     * @return a DataSource instance, or <code>null</code> if none is (yet) available
+     */
+    public DataSource getDataSource() {
+        return datasource;
+    }
+    
 }
 
 

@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 import org.mmbase.module.core.MMBase;
 
@@ -18,13 +20,20 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.1 2003-07-17 13:05:55 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.2 2003-07-18 12:09:05 pierre Exp $
  */
 public class AbstractStorageManagerFactory implements StorageManagerFactory {
 
+    /**
+     * A reference to the MMBase module
+     */
     protected MMBase mmbase;
-    protected Map attributes; 
+    // the map with configuration data
+    private Map attributes; 
 
+    /**
+     * Stores the MMBase reference, and initializes the attribute map.  
+     */
 	public init(MMBase mmbase) {
         this.mmbase = mmbase;
         attributes = Collections.SynchronisedMap(new HashMap());
