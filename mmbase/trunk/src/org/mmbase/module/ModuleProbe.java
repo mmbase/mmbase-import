@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
- * @version $Id: ModuleProbe.java,v 1.9 2004-04-14 08:06:00 pierre Exp $
+ * @version $Id: ModuleProbe.java,v 1.10 2005-03-16 13:09:19 pierre Exp $
  */
 public class ModuleProbe extends Thread {
 
@@ -34,7 +34,6 @@ public class ModuleProbe extends Thread {
         super("ModuleProbe");
         setDaemon(true);
         log.service("Starting ModuleProbe");
-        start();
     }
 
     /**
