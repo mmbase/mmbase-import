@@ -14,6 +14,12 @@ import java.util.Iterator;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
+/**
+ * Basic test class to test <code>Node</code> from the bridge package.
+ *
+ * @author Michiel Meeuwissen
+ * @author Jaco de Groot
+ */
 public abstract class NodeTest extends TestCase {
     Node node;
     String[] fieldTypes = {"byte", "double", "float", "int", "long", "string"};
@@ -40,7 +46,6 @@ public abstract class NodeTest extends TestCase {
     }
 
     abstract public void testGetByteValue();
-
 
     public void testGetByteValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.

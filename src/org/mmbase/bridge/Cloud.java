@@ -182,18 +182,7 @@ public interface Cloud {
      *
      * @return the User object describing who is using this cloud now.
      */
-
     public User getUser();
-
-    /**
-     * Returns a list of virtual nodes that are composed by fields of other
-     * nodes. Searches by default for all valid relations in path (searchDir="both").
-     *
-     * @see getList(String,String,String,String,String,String,String,boolean)
-     */
-    public NodeList getList(String startNodes, String nodePath, String fields,
-            String constraints, String orderby, String directions,
-            boolean distinct);
 
     /**
      * Returns a list of virtual nodes that are composed by fields of other

@@ -14,6 +14,13 @@ import java.util.Iterator;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
+/**
+ * Test class <code>Node</code> from the bridge package. The tests are done on
+ * a filled node.
+ *
+ * @author Jaco de Groot
+ * @author Michiel Meeuwissen
+ */
 public class FilledNodeTest extends NodeTest {
 
     public FilledNodeTest(String name) {

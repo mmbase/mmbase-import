@@ -13,6 +13,11 @@ package org.mmbase.test.bridge;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
+/**
+ * Test class <code>Cloud</code> from the bridge package.
+ *
+ * @author Jaco de Groot
+ */
 public class CloudTest extends TestCase {
     Cloud cloud;
     Node aaNode1;
@@ -75,13 +80,13 @@ public class CloudTest extends TestCase {
     public void testGetList() {
         NodeList nodeList;
         nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "bytefield",
-                                 "", "", "", false);
+                                 "", "", "", "", false);
         assert(nodeList.size() == nrOfBBNodes);
     }
 
     public void testGetListWithNullParameters() {
         try {
-            cloud.getList(null, null, null, null, null, null, false);
+            cloud.getList(null, null, null, null, null, null, null, false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -89,7 +94,7 @@ public class CloudTest extends TestCase {
 
     public void testGetListWithEmptyParameters() {
         try {
-            cloud.getList("", "", "", "", "", "", false);
+            cloud.getList("", "", "", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -97,13 +102,15 @@ public class CloudTest extends TestCase {
 
     public void testGetListWithNullParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList(null, "aa,bb", "bytefield", "", "", "", false);
+        nodeList = cloud.getList(null, "aa,bb", "bytefield", "", "", "", "",
+                                 false);
         assert(nodeList.size() == nrOfBBNodes + 1);
     }
 
     public void testGetListWithEmptyParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList("", "aa,bb", "bytefield", "", "", "", false);
+        nodeList = cloud.getList("", "aa,bb", "bytefield", "", "", "", "",
+                                 false);
         assert(nodeList.size() == nrOfBBNodes + 1);
     }
 
@@ -111,7 +118,7 @@ public class CloudTest extends TestCase {
         try {
             NodeList nodeList;
             nodeList = cloud.getList("" + bbNode.getNumber(), "aa,bb",
-                                     "bytefield", "", "", "", false);
+                                     "bytefield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -120,7 +127,7 @@ public class CloudTest extends TestCase {
     public void testGetListWithNullParameterNodePath() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList(null, null, "bytefield", "", "", "",
+            nodeList = cloud.getList(null, null, "bytefield", "", "", "", "",
                                      false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
@@ -130,7 +137,8 @@ public class CloudTest extends TestCase {
     public void testGetListWithEmptyParameterNodePath() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList(null, "", "bytefield", "", "", "", false);
+            nodeList = cloud.getList(null, "", "bytefield", "", "", "", "",
+                                     false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -139,7 +147,8 @@ public class CloudTest extends TestCase {
     public void testGetListWithInvalidParameterNodePath() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList(null, "x", "bytefield", "", "", "", false);
+            nodeList = cloud.getList(null, "x", "bytefield", "", "", "", "",
+                                     false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -148,7 +157,8 @@ public class CloudTest extends TestCase {
     public void testGetListWithNullParameterFields() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList(null, "aa,bb", null, "", "", "", false);
+            nodeList = cloud.getList(null, "aa,bb", null, "", "", "", "",
+                                     false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -157,7 +167,7 @@ public class CloudTest extends TestCase {
     public void testGetListWithEmptyParameterFields() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList(null, "aa,bb", "", "", "", "", false);
+            nodeList = cloud.getList(null, "aa,bb", "", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -166,7 +176,7 @@ public class CloudTest extends TestCase {
     public void testGetListWithInvalidParameterFields() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList(null, "aa,bb", "x", "", "", "", false);
+            nodeList = cloud.getList(null, "aa,bb", "x", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
