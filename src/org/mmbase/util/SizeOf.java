@@ -65,7 +65,7 @@ public class SizeOf {
         } else {
             log.debug("an object " + obj);
             try {
-                if (Sizeable.class.isAssignableFrom(c)) return sizeof((Sizeable) obj);
+                if (SizeMeasurable.class.isAssignableFrom(c)) return sizeof((SizeMeasurable) obj);
                 if (javax.servlet.http.HttpSession.class.isAssignableFrom(c))   return sizeof((javax.servlet.http.HttpSession) obj);
                 if (org.w3c.dom.Node.class.isAssignableFrom(c))   return sizeof((org.w3c.dom.Node) obj);
                 if (Map.class.isAssignableFrom(c))      return sizeof((Map) obj);
@@ -127,8 +127,8 @@ public class SizeOf {
         return len + m.getBytes().length;
     }
 
-    private int sizeof(Sizeable m) {
-        log.debug("sizeof Sizeable " + m);
+    private int sizeof(SizeMeasurable m) {
+        log.debug("sizeof SizeMeasureable " + m);
         int len = size_inst(m, m.getClass());            
         return len + m.getByteSize(this);
     }
