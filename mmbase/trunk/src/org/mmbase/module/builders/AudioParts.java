@@ -8,11 +8,6 @@ See http://www.MMBase.org/license
 
 */
 
-/*************************************************************************
- * NOTE This Builder needs significant changes to operate on NON-VPRO
- * machines. Do NOT use before that, also ignore all errors stemming from
- * this builder
- *************************************************************************/
 package org.mmbase.module.builders;
 
 import java.util.StringTokenizer;
@@ -28,12 +23,15 @@ import org.mmbase.util.media.audio.AudioUtils;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * NOTE This Builder needs significant changes to operate on NON-VPRO
+ * machines. Do NOT use before that, also ignore all errors stemming from
+ * this builder
  *
+ * @javadoc
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.25 2002-01-25 14:03:56 pierre Exp $
+ * @version $Id: AudioParts.java,v 1.26 2002-01-25 15:46:39 pierre Exp $
  */
 public class AudioParts extends MediaParts {
     private static Logger log = Logging.getLoggerInstance(AudioParts.class.getName());
