@@ -1012,6 +1012,12 @@ public class MMObjectBuilder extends MMTable {
 		} else if (function.equals("time_hhmm")) {
 			int v=node.getIntValue(field);
 			rtn=maketime_hhmm(v);
+		} else if (function.equals("wap")) {
+			String val=node.getStringValue(field);
+			rtn=getWAP(val);
+		} else if (function.equals("html")) {
+			String val=node.getStringValue(field);
+			rtn=getHTML(val);
 		} else {
 			System.out.println("Builder ("+tableName+") unknown function '"+function+"'");
 		}
@@ -1034,35 +1040,6 @@ public class MMObjectBuilder extends MMTable {
 	}	
 
 
-	/**
-	* support routine to return shorter strings (will be removed)
-	*/
-	public String getHTML(String body) {
-		String rtn="";
-		if (body!=null) {
-			StringObject obj=new StringObject(body);
-			obj.replace("\r\n\r\n","<P>");
-			obj.replace("\n\n","<P>");
-			obj.replace("\r\n","<BR>");
-			obj.replace("\n","<BR>");
-			rtn=obj.toString();
-		}
-		return(rtn);
-	}
-
-	public String getWAP( String body ) {
-		String result = "";
-		if( body != null ) {
-			StringObject obj=new StringObject(body);
-			obj.replace("\"","&#34;");
-			obj.replace("&","&#38;#38;");
-			obj.replace("'","&#39;");
-			obj.replace("<","&#38;#60;");
-			obj.replace(">","&#62;");
-			result = obj.toString();
-		}
-		return result;
-	}
 	
 
 	/**
@@ -1653,6 +1630,8 @@ public class MMObjectBuilder extends MMTable {
 		return(true);
 	}
 
+	//************************************************************ 
+
 	/**
 	 * Global functions for getValue
 	 */
@@ -1707,4 +1686,39 @@ public class MMObjectBuilder extends MMTable {
 		else rtn+=""+m;
 		return(rtn);
 	}
+
+	protected String getHTML(String body) {
+		String rtn="";
+		if (body!=null) {
+			StringObject obj=new StringObject(body);
+			obj.replace("\r\n\r\n","<P>");
+			obj.replace("\n\n","<P>");
+			obj.replace("\r\n","<BR>");
+			obj.replace("\n","<BR>");
+			obj.replace("<","&lt;");
+			obj.replace(">","&gt;");
+			rtn=obj.toString();
+		}
+		return(rtn);
+	}
+
+	protected String getWAP( String body ) {
+		String result = "";
+		if( body != null ) {
+			StringObject obj=new StringObject(body);
+			obj.replace("\"","&#34;");
+			obj.replace("&","&#38;#38;");
+			obj.replace("'","&#39;");
+			obj.replace("<","&#38;#60;");
+			obj.replace(">","&#62;");
+			result = obj.toString();
+		}
+		return result;
+	}
+
+	/**
+	 * End functions
+	 */
+
+	//************************************************************ 
 }
