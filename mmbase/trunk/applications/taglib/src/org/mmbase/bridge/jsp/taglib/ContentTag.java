@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.26 2004-08-02 15:17:18 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.27 2004-08-02 15:24:24 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -293,11 +293,8 @@ public class ContentTag extends LocaleTag  {
                 
                 // perhaps default cache behaviour should be no-cache if there is a session?
                 long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
-                if (exp == 0) { // means : cannot be cached!
-                    
-                    
-                    response.setHeader("Pragma", "no-cache"); // not really defined what should do this on response. Cache-Control should actually do the work.
-                    
+                if (exp <= 0) { // means : cannot be cached!                    
+                    response.setHeader("Pragma", "no-cache"); // not really defined what should do this on response. Cache-Control should actually do the work.                    
                     response.setHeader("Cache-Control", "no-store");
                     // according to rfc2616 sec 14 also 'no-cache' should have worked, but apache 2 seems to ignore it.
                     
@@ -329,12 +326,15 @@ public class ContentTag extends LocaleTag  {
      * the moment it is only checked for 'null'.
      */
 
-    void setUser(User newUser) {
+    void setUser(User newUser) throws JspTagException {
         //user = newUser;
         if (newUser != null) {
-            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            // This page is using the non-anonymous cloud. Cache control must be private.
-            response.setHeader("Cache-Control", "private");
+            long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
+            if (exp > 0) { 
+                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                // This page is using the non-anonymous cloud. Cache control must be private.
+                response.setHeader("Cache-Control", "private");
+            }
         }
     }
 
