@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.11 2001-04-11 15:31:22 michiel Exp $
+$Id: cdplayers.java,v 1.12 2001-04-19 14:02:21 vpro Exp $
 
 $Log: not supported by cvs2svn $
 Revision 1.10  2001/03/15 16:15:58  vpro
@@ -40,18 +40,18 @@ import java.util.*;
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Revision: 1.11 $ $Date: 2001-04-11 15:31:22 $
+ * @version $Revision: 1.12 $ $Date: 2001-04-19 14:02:21 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(cdplayers.class.getName()); 
-
 	private cdplayerInterface impl;
+ 	private boolean debug = true;
+
+	// Destination path where ripped files will be filed under.
+	public final static String DST_PATH = "/data/audio/wav";
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
@@ -59,7 +59,7 @@ public class cdplayers extends RemoteBuilder {
 		// and put us in ready/waiting state
 		String state=getStringValue("state");
 		getConfig();
-		log.info("init(): state("+state+")");
+		debug("init(): state("+state+")");
 		if (!state.equals("waiting")) {
 
 			// maybe add 'what' happened code ? but for now
@@ -78,9 +78,7 @@ public class cdplayers extends RemoteBuilder {
 	 * @param ctype a String with the node change type.
 	 */
 	public void nodeRemoteChanged(String serviceRef,String builderName,String ctype) {		
-		if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged("+serviceRef+","+builderName+","+ctype+"): Calling nodeChanged");
-        }
+		if( debug ) debug("nodeRemoteChanged("+serviceRef+","+builderName+","+ctype+"): Calling nodeChanged");
 		nodeChanged(serviceRef,builderName,ctype);
 	}
 
@@ -93,9 +91,7 @@ public class cdplayers extends RemoteBuilder {
 	 */
 	public void nodeLocalChanged(String serviceRef,String builderName,String ctype) {		
 		// I don't think this method is used though? says davzev
-		if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged("+serviceRef+","+builderName+","+ctype+"): Calling nodeChanged");
-        }
+		if (debug) debug("nodeLocalChanged("+serviceRef+","+builderName+","+ctype+"): Calling nodeChanged");
 		nodeChanged(serviceRef,builderName,ctype);
 	}
 
@@ -106,34 +102,34 @@ public class cdplayers extends RemoteBuilder {
 	 * @param ctype a String with the node change type.
 	 */
 	public void nodeChanged(String nodenr,String buildername,String ctype) {		
-		log.info("nodeChanged("+nodenr+","+buildername+","+ctype+") Getting "+buildername+" node "+nodenr+" to find out what to do.");
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+") Getting "+buildername+" node "+nodenr+" to find out what to do.");
 		// gets the node using a request.
 		getNode();
 				
 		String state=getStringValue("state");
-		log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): Node state is: "+state);
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): Node state is: "+state);
 		if (state.equals("version")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("record")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): doRecord()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doRecord()");
 			doRecord();
 		} else if (state.equals("getdir")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): doGetDir()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doGetDir()");
 			doGetDir();
 		} else if (state.equals("restart")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): doRestart()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doRestart()");
 			doRestart();
 		} else if (state.equals("version")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("claimed")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): setClaimed()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): setClaimed()");
 			setClaimed();
-		} else if (state.equals("busy")) {
-			log.info("nodeChanged("+nodenr+","+buildername+","+ctype+"): "+buildername+" RemoteBuilder named "+getStringValue("name")+" is "+state);
+		} else if (state.equals("busy") || state.equals("waiting")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): "+buildername+" RemoteBuilder named "+getStringValue("name")+" is "+state);
 		} else {
-			log.error("nodeChanged("+nodenr+","+buildername+","+ctype+"): unknown state: "+state+", ignoring it");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): ERROR unknown state: "+state+", ignoring it");
 		}
 	}
 
@@ -150,7 +146,7 @@ public class cdplayers extends RemoteBuilder {
 			setValue("info",impl.getVersion());	
 		} else {
 			String error = "doVersion(): ERROR: no implementation-code for cdplayers installed, look in ./mmbase/service for it!";
-			log.error(error);
+			debug( error );
 			setValue("info",error);	
 		}
 
@@ -167,7 +163,7 @@ public class cdplayers extends RemoteBuilder {
 		if (impl!=null) {
 			setValue("info",impl.getInfoCDtoString());	
 		} else {
-            log.error("doGetDir(): no implementation!");
+			debug("doGetDir(): ERROR: no implementation!");
 			setValue("info","result=err reason=nocode");	
 		}
 
@@ -176,46 +172,47 @@ public class cdplayers extends RemoteBuilder {
 		commit();
 	}
 
+        /**
+         * Sets the remotebuilder node to 'busy' and starts the Ripping process,
+         * when ripping finishes, the process exitvalue and related audiopartnr is
+	 * saved in the cdplayers.info field as result=exitvalue id=#audiopartnr
+	 * After that the cdplayres state is set to 'waiting'.
+	 * If the implementation cannot be found "result=err reason=nocode" is saved in info field,
+	 * however this is an old error message which is ignored by the new error handling.
+         */
 	private void doRecord() {
+		 if (debug) debug("doEncode: Setting state to busy and start ripping.");
 		setValue("state","busy");
 		commit();
 	
-		// set the version we got from the encoder	
-
+		// Do the cdrip and set encode exit value together with audiopartnr encoded in info field.
 		if (impl!=null) {
 			String cmds=getStringValue("info");
-			if (log.isDebugEnabled()) {
-                log.debug ("doRecord(): cmds("+cmds+")");
-            }
-			StringTagger tagger=new StringTagger(cmds);
-
-			try {
-				String tmp=tagger.Value("tracknr");
-				if (log.isDebugEnabled()) {
-                    log.debug ("doRecord(): track("+tmp+")");
-                }
-				int tracknr=Integer.parseInt(tmp);
-
-				tmp=tagger.Value("id");
-				if (log.isDebugEnabled()) {
-                    log.debug ("doRecord(): id("+tmp+")");
-                }
-				int cdid=Integer.parseInt(tmp);
-
-		    	log.info("doRecord(): getTrack("+tracknr+" /data/audio/wav/"+cdid+".wav");	
-		    	boolean result=impl.getTrack(tracknr,"/data/audio/wav/"+cdid+".wav");	
-				if (result) {
-		   		 	setValue("info","result=ok");	
-				} else {
-					log.error("doRecord(): result("+result+")");
-					setValue("info","result=err reason=recordfailed");	
+			if (debug) debug("doRecord(): Getting tracknr & id from info field:"+cmds);
+			int tracknr=-1;
+			StringTagger infoTagger=new StringTagger(cmds);
+			if (infoTagger.containsKey("tracknr")) {
+				try {
+					tracknr = Integer.parseInt((String)infoTagger.Value("tracknr"));
+				} catch (NumberFormatException nfe)  {
+					debug("doRecord(): ERROR: tracknr is not an int.");
+					nfe.printStackTrace();
 				}
-			} catch(Exception e){
-				log.error("doRecord(): Got exception: " + e);
-				log.error(Logging.stackTrace(e));
-			}
+				if (debug) debug ("doRecord(): Found 'tracknr' tag, value:"+tracknr);
+			} else
+				debug("doRecord: ERROR no 'tracknr' key in info field.");
+			String id=null;	
+			if (infoTagger.containsKey("id")) {
+				id=(String)infoTagger.Value("id");
+				if (debug) debug ("doRecord(): Found 'id' tag, value:"+id);
+			} else
+				debug("doRecord: ERROR no 'id' key in info field.");
+
+			debug("doRecord(): Calling impl.getTrack("+tracknr+","+DST_PATH+"/"+id+".wav");	
+			int exit=impl.getTrack(tracknr,DST_PATH+"/"+id+".wav");	
+			setValue("info","result="+exit+" id="+id);
 		} else {
-			log.error("doRecord(): no implementation!");
+			debug("doRecord(): ERROR: no implementation!");
 			setValue("info","result=err reason=nocode");	
 		}
 
@@ -229,13 +226,13 @@ public class cdplayers extends RemoteBuilder {
 	 */
 	void getConfig() {
 		String implClassName=(String)props.get("implementation");
-		log.info("getConfig(): loading("+implClassName+")");
+		debug("getConfig(): loading("+implClassName+")");
 		try {
 			Class newclass=Class.forName(implClassName);
 			impl = (cdplayerInterface)newclass.newInstance();
 		} catch (Exception f) {
-			log.error("getConfig(): Can't load class("+implClassName+")");
-			log.error(Logging.stackTrace(f));
+			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
+			f.printStackTrace();
 		}
 	}
 }
