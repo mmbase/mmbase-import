@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.50 2003-09-08 15:11:46 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.51 2003-09-08 15:59:14 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -88,13 +88,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
      * @since MMBase-1.7
      */
     protected StringBuffer makeRelative(StringBuffer show) {
+        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.charAt(1) == '/') {
                 log.debug("'absolute' url, not making relative");
                 show.deleteCharAt(0);
+                show.insert(0, req.getContextPath());
             } else {
                 log.debug("'absolute' url");
-                javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                 String thisDir = new java.io.File(req.getServletPath()).getParent();
                 show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
             }
