@@ -36,7 +36,8 @@ import org.mmbase.util.logging.*;
  * it provides the communication between the clients browser and the mmbase space.
  *
  * @rename Servdb
-  * @version 23 Oct 1997, current: $Id: servdb.java,v 1.36 2001-12-19 17:28:49 vpro Exp $
+ * @deprecation-used
+ * @version 23 Oct 1997, current: $Id: servdb.java,v 1.37 2002-01-07 08:53:41 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -765,7 +766,7 @@ public class servdb extends JamesServlet {
 	    log.debug("getAttachment(): param="+params);
         String result="";
         if (params.size()==1) {
-            MMObjectBuilder bul=mmbase.getMMObject("attachments");
+            MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
             try {
                 node=bul.getNode((String)params.elementAt(0));
@@ -794,12 +795,12 @@ public class servdb extends JamesServlet {
 	    log.debug("getAttachment(): param="+params);
         String result="";
         if (params.size()==1) {
-            MMObjectBuilder bul=mmbase.getMMObject("attachments");
+            MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
             try {
                 node=bul.getNode((String)params.elementAt(0));
             } catch(Exception e) {
-                log.error("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
+                log.error("Failed to get attachment node for objectnumber "+(String)params.elementAt(0)+" :"+e);
                 return null;
             }
 
@@ -827,7 +828,7 @@ public class servdb extends JamesServlet {
      */
     public String getAttachmentMimeType(Vector params) {
         if (params.size()==1) {
-            MMObjectBuilder bul=mmbase.getMMObject("attachments");
+            MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
             try {
                 node=bul.getNode((String)params.elementAt(0));
