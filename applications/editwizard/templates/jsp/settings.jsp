@@ -1,14 +1,14 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
-%><%@ page import="org.mmbase.applications.editwizard.Config"
+%><%@page import="org.mmbase.applications.editwizard.Config"
 %><%
 /**
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.37 2003-09-03 09:47:00 pierre Exp $
+ * @version  $Id: settings.jsp,v 1.38 2003-09-19 14:34:18 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -35,9 +35,9 @@ response.addHeader("Pragma","no-cache");
 session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
 
 // and make every page expired ASAP.
-String now = org.mmbase.util.RFC1123.makeDate(new Date());
-response.addHeader("Expires",       now);
-response.addHeader("Last-modified", now);
+long now = System.currentTimeMillis();
+response.setDateHeader("Expires",       now);
+response.setDateHeader("Last-Modified", now);
 
 //response.addHeader("Date",          now); // Jetty doesn't like if you set this.
 log.trace("done setting headers");
