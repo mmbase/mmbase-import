@@ -42,7 +42,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.21 2003-07-28 14:42:05 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.22 2003-11-27 12:46:24 robmaris Exp $
  */
 public class QueryConvertor {
 
@@ -94,15 +94,22 @@ public class QueryConvertor {
      * BasicSearchQuery} object.
      * <p>
      * The constraint may be specified as either one of these formats:
-     * <ul>
+     * <ol>
      * <li><code>null</code> or empty.
-     * <li>A SQL search condition, starting with "WHERE ".
+     * <li>A SQL search condition, starting with "WHERE " (ignoring case).
+     * <li>A SQL search condition, of the form "WHERE(......)" (ignoring case).
      * <li>Altavista format.
-     * </ul>
+     * </ol>
      * If the query contains more than one step, the fields must be of the form
-     * <em>stepalias.fiels</em>.
+     * <em>stepalias.field</em>.
      * <p>See {@link org.mmbase.storage.search.legacy.ConstraintParser} for
      * more on how SQL search conditions are supported.
+     * <p><b>Note:</b>
+     * This method is provided to support different constraint formats for 
+     * backward compatibility (1, 3 and 4 above).
+     * Do not call this method directly from new code, but rather use 
+     * {@link org.mmbase.storage.search.legacy.ConstraintParser} to parse
+     * search constraints.
      *
      * @param query The query.
      * @param where The constraint.
@@ -119,6 +126,13 @@ public class QueryConvertor {
             // Strip leading "where ".
             constraint =
                 new ConstraintParser(query).toConstraint(where.substring(6));
+
+        } else if (where.substring(0, 6).equalsIgnoreCase("WHERE(")) {
+            // "where"-clause, without space following "where".
+            // Supported for backward compatibility.
+            // Strip leading "where".
+            constraint =
+                new ConstraintParser(query).toConstraint(where.substring(5));
 
         } else {
             // AltaVista format.
