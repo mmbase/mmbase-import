@@ -37,22 +37,6 @@ import org.mmbase.util.logging.Logging;
 public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
 
     private static Logger log = Logging.getLoggerInstance(UrlTag.class.getName()); 
-    protected WriterHelper helper = new WriterHelper();
-    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-
-    public void setVartype(String t) throws JspTagException {
-        throw new JspTagException("Url tag can only produces Strings");
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() throws JspTagException {
-        return getUrl();
-    }
-    public void haveBody() { helper.haveBody(); }
 
     private   Attribute referids = Attribute.NULL;
     protected Map extraParameters = null;

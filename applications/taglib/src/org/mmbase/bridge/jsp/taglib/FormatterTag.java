@@ -46,26 +46,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(FormatterTag.class.getName());
 
-    // standard Writer properties:
-    protected WriterHelper helper = new WriterHelper();
-    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-
-    public void setVartype(String t) throws JspTagException {
-        throw new JspTagException("Url tag can only produces Strings");
-    }
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
-    public Object getWriterValue() throws JspTagException {
-        return helper.getValue();
-    }
-    public void haveBody() {
-        helper.haveBody();
-    }
-
     protected Attribute xslt    = Attribute.NULL;
     protected Attribute format  = Attribute.NULL; 
     protected Attribute options = Attribute.NULL;

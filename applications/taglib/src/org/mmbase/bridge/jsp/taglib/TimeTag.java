@@ -23,12 +23,11 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.24 2003-04-07 19:25:14 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.25 2003-04-16 08:12:54 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
     private static Logger log = Logging.getLoggerInstance(TimeTag.class.getName());
-    protected WriterHelper helper = new WriterHelper();
     
     private static final int DAY = 1000 * 60 * 60 * 24;
     
@@ -61,22 +60,6 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         setMonths(dfs);
     }
 
-
-    // Writer functionality
-    public void haveBody() { helper.haveBody(); }
-
-       
-    public void setVartype(String t) throws JspTagException {
-        helper.setVartype(t);
-    }
-    
-    public void setJspvar(String j) {
-        helper.setJspvar(j);
-    }
-    
-    public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttribute(w));
-    }
     
     // Attributes
     public void setTime(String time) throws JspTagException {
@@ -129,12 +112,6 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         this.offset = getAttribute(offset);
     }
         
-    public Object getWriterValue() throws JspTagException {
-        return evaluateTime();
-    }
-    
-
-    
     public int doStartTag() throws JspTagException {
         helper.setTag(this);
         helper.setValue(evaluateTime());
