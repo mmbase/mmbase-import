@@ -41,8 +41,14 @@ public class LogTag extends ContextReferrerTag {
     public void setPageContext(PageContext pc) {
         /* Determin only once per page if it can log */
         super.setPageContext(pc);        
-        log = Logging.getLoggerInstance(LOGTAG_CATEGORY + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
-        doLog = log.isServiceEnabled();        
+        log = (Logger) pageContext.getAttribute("__logtag_logger");
+        if(log == null) {
+            log = Logging.getLoggerInstance(LOGTAG_CATEGORY + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
+            doLog = log.isServiceEnabled();
+            counter = 0;
+            pageContext.setAttribute("__logtag_logger", log);
+        }
+
     }
 
     public int doStartTag() throws JspTagException {
