@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.41.2.1 2004-06-02 14:43:09 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.41.2.2 2004-07-05 17:19:58 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -120,15 +120,16 @@ public class ImportTag extends ContextReferrerTag {
             }
 
             if (! found && required.getBoolean(this, false)) {
-                if (from.getString(this).equalsIgnoreCase("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
+                String fromString = from.getString(this).toLowerCase();
+                if (fromString.equals("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                     throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
                 }
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + from.getString(this));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : fromString));
             }
             if (found) {
                 value = getObject(useId);
                 if (log.isDebugEnabled()) {
-                    log.debug("found value for " + useId + " " + value);
+                    log.debug("found value for " + useId + " '" + value + "'");
                 }
             }
         }
@@ -200,6 +201,7 @@ public class ImportTag extends ContextReferrerTag {
         bodyContent = null;
         helper.release();
         log.debug("end of importag");
+        super.doEndTag();
         return EVAL_PAGE;
     }
 
