@@ -16,13 +16,13 @@
         <a href="http://www.mmbase.org/license" target="_blank">Mozilla License 1.0</a>
       </p>
       <p>
-        version of the editors: 2003-12
+        version of the editors: 2004-02
       </p>
       <p>
-        These editors were tested with application servers orion 1.6.0 and tomcat 4.1 and 5.
+        These editors were tested with application servers orion 1.6.0 and tomcat 4.1 and 5.0
       </p>
       <p>
-        The tested browsers are Mozilla 1.0, Netscape 4.7, Opera 5 (all ok)
+        The tested browsers are Mozilla 1.0 and higher, Netscape 4.7, Opera 5 (all ok)
         and lynx 2.8.4 (not ok because of HttpPost), in Linux. Internet
         Explorer 5.5 was tested on a Windows NT computer. You are using <%=
         request.getHeader("user-agent") %> 
@@ -38,6 +38,8 @@
         <li>Searching with search fields, on alias and on age.</li>
         <li>Configurable (a.o. language and the aspect).</li>
         <li>Can follow relations to 'navigate' through cloud.</li>
+        <li>'Tree-view' of an object.</li>
+        <li>Advanced paging mechanism.</li>
       </ul>
       <p>
         Known bugs:
