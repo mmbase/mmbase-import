@@ -88,7 +88,21 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
         }
         System.out.println("Parsing " + configurationFile.getAbsolutePath());
-        DOMConfigurator.configureAndWatch(configurationFile.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
+        try {
+            DOMConfigurator.configureAndWatch(configurationFile.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
+        }
+        catch(java.lang.ClassCastException cce) {
+            // Tomcat 4.1.x and log4j2 have some strange problems together...
+            // give output of this error...
+            System.out.println("ERROR: COULD NOT CONFIGURE LOGGING!(are you using tomcat 4.1.x ?)");
+            System.out.println(Logging.stackTrace(cce));
+            // output of the javax.xml parser stuff!
+            javax.xml.parsers.DocumentBuilder docbuilder = org.mmbase.util.XMLBasicReader.getDocumentBuilder(false);                        
+            org.w3c.dom.DOMImplementation implementation = docbuilder.getDOMImplementation();
+            System.out.println("DocBuilder: " + docbuilder.getClass().getName() + " DOMImplementation: " +  implementation.getClass().getName());
+            // on my working Orion: docbuilder:class org.apache.crimson.jaxp.DocumentBuilderImpl implementation:class org.apache.crimson.tree.DOMImplementationImpl
+            return;
+        }
         Log4jImpl err = (Log4jImpl) getInstance("STDERR");
         // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
         if(err.getLevel() != Log4jLevel.FATAL) {
