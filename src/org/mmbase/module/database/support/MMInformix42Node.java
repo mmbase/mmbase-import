@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.10 2000-04-15 20:40:03 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.11 2000-04-17 09:58:07 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/04/15 20:40:03  wwwtech
+fixes for informix and split in sql92
+
 Revision 1.9  2000/04/12 14:20:34  wwwtech
 Rico: fixed insert of initial root Node
 
@@ -51,7 +54,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.10 $ $Date: 2000-04-15 20:40:03 $
+* @$Revision: 1.11 $ $Date: 2000-04-17 09:58:07 $
 */
 public class MMInformix42Node extends MMOORel2Node implements MMJdbc2NodeInterface {
 
@@ -721,23 +724,6 @@ public class MMInformix42Node extends MMOORel2Node implements MMJdbc2NodeInterfa
 		currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
 		if (debug) debug("getDBKey(): got key("+currentdbkey+")");
 		return(number);
-	}
-
-	public boolean created(String tableName) {
-		if (nameCache==null) {
-			nameCache=getAllNames();
-		}
-		if (nameCache.contains(tableName)) {
-			return(true);
-		} else {
-			if (tableName.length()>0) {
-				debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
-				return(false);
-			} else {
-				debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
-				return(true);
-			}
-		}
 	}
 
 

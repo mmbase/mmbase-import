@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.1 2000-04-15 20:42:43 wwwtech Exp $
+$Id: MMOORel2Node.java,v 1.2 2000-04-17 09:58:07 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2000/04/15 20:42:43  wwwtech
+fixes for informix and split in sql92 poging 2
+
 Revision 1.9  2000/04/12 14:20:34  wwwtech
 Rico: fixed insert of initial root Node
 
@@ -51,7 +54,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.1 $ $Date: 2000-04-15 20:42:43 $
+* @$Revision: 1.2 $ $Date: 2000-04-17 09:58:07 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -731,10 +734,10 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			return(true);
 		} else {
 			if (tableName.length()>0) {
-				debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
+				if (debug) debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
 				return(false);
 			} else {
-				debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
+				if (debug) debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
 				return(true);
 			}
 		}
