@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.14 2000-06-23 09:52:29 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.15 2000-06-24 18:42:46 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2000/06/23 09:52:29  wwwtech
+Daniel. fix for handle BYTE
+
 Revision 1.13  2000/06/22 22:32:44  wwwtech
 Daniel : added byte support
 
@@ -92,7 +95,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.14 $ $Date: 2000-06-23 09:52:29 $
+* @$Revision: 1.15 $ $Date: 2000-06-24 18:42:46 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -104,6 +107,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	Hashtable typesmap = new Hashtable();
 	XMLDatabaseReader parser;
 	Hashtable typeMapping = new Hashtable();
+	Hashtable disallowed2allowed;
+	Hashtable allowed2disallowed;
 
 	MMBase mmb;
 
@@ -133,6 +138,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		if ((new File(path+name+".xml")).exists()) {
 			parser=new XMLDatabaseReader(path+name+".xml");
 			typeMapping=parser.getTypeMapping();
+			disallowed2allowed=parser.getDisallowedFields();
+			allowed2disallowed=getReverseHash(disallowed2allowed);
 		} else {
 			System.out.println("MMSQL92 -> Missing xml driver for database : "+name);
 
@@ -145,7 +152,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
 		try {
-		
+	
+		// is this fieldname disallowed ? ifso map it back
+		if (allowed2disallowed.containsKey(fieldname)) {
+			fieldname=(String)allowed2disallowed.get(fieldname);
+		}
 		int type=((Integer)typesmap.get(fieldtype)).intValue();
 		switch (type) {
 			case TYPE_STRING:
@@ -623,6 +634,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				key=(String)e.nextElement();
 				// a extra check should be added to filter temp values
 				// like properties
+				
+				// is this key disallowed ? ifso map it back
+				if (disallowed2allowed.containsKey(key)) {
+					key=(String)disallowed2allowed.get(key);
+				}
 
 				// check if its the first time for the ',';
 				if (values.equals("")) {
@@ -962,6 +978,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			//type="INTEGER";
 			return("otype integer "+parser.getNotNullScheme());
 		} else {
+			System.out.println("NAME="+name+" "+parser.getDisallowedFields());
+			if (disallowed2allowed.containsKey(name)) {
+				name=(String)disallowed2allowed.get(name);
+			}
 			String result=name+" "+matchType(type,size,notnull);
 			if (notnull) result+=" "+parser.getNotNullScheme();
 			return(result);
@@ -1016,4 +1036,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(parser.getCreateScheme()+" "+mmb.baseName+"_"+tableName+" ");
 	}
 
+	public Hashtable getReverseHash(Hashtable in) {
+		Hashtable out=new Hashtable();
+		for (Enumeration e=in.keys();e.hasMoreElements();) {
+			Object key = e.nextElement();
+			Object value = in.get(key);
+			out.put(value,key);
+		}
+		return(out);	
+	}
 }
