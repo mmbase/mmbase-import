@@ -15,19 +15,27 @@ import org.mmbase.util.xml.URIResolver;
 import javax.xml.transform.TransformerFactory;
 
 import java.io.File;
+import java.util.List;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
- * A cache for XSL Transformer Factories (there is one needed for every directory). 
+ * A cache for XSL Transformer Factories.  There is one needed for
+ * every directory, or more precisely, for every instance of
+ * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.2 2002-03-30 16:32:43 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.3 2002-04-11 07:56:43 michiel Exp $
  */
 public class FactoryCache extends Cache {
 
+    private static Logger log = Logging.getLoggerInstance(FactoryCache.class.getName());
+
     private static int cacheSize = 50;
     private static FactoryCache cache;
-    private static File defaultDir = new File("/");
+    private static File defaultDir = new File("");
 
     public static FactoryCache getCache() {
         return cache;
@@ -59,6 +67,20 @@ public class FactoryCache extends Cache {
     public TransformerFactory getDefaultFactory() {
         return getFactory(defaultDir);
     }
+
+    /**
+     * Make a factory for a certain URIResolver.
+     */
+    public TransformerFactory getFactory(URIResolver uri) {
+        TransformerFactory tf =  (TransformerFactory) get(uri);
+        if (tf == null) {
+            tf = TransformerFactory.newInstance();
+            tf.setURIResolver(uri);
+            // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
+            put(uri, tf);
+        }
+        return tf;        
+    }
     /**
      * Gets a Factory from the cache. This cache is 'intelligent', you
      * can also get from it when it is not in the cache, in which case
@@ -66,15 +88,13 @@ public class FactoryCache extends Cache {
      */
 
     public TransformerFactory getFactory(File cwd) {
-        TransformerFactory tf =  (TransformerFactory) get(cwd);
+        TransformerFactory tf =  (TransformerFactory) get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
         if (tf == null) {
-            URIResolver uriResolver = new URIResolver(cwd);
-            tf = TransformerFactory.newInstance();
-            tf.setURIResolver(uriResolver);
-            // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
-            put(cwd, tf);
+            // try again, but now construct URIResolver first.
+            return getFactory(new URIResolver(cwd));
+        } else {
+            return tf;
         }
-        return tf;
     }
 
 
