@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint 

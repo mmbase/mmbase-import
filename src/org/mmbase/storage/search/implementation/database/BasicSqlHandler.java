@@ -11,11 +11,8 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.module.database.MultiConnection;
-import java.sql.*;
 import java.util.*;
 
 
@@ -23,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?

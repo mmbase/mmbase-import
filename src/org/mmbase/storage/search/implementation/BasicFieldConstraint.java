@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -17,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {

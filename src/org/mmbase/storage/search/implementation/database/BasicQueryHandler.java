@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
@@ -29,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
