@@ -15,7 +15,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.SortOrder;
 import java.util.List;
 import org.mmbase.util.logging.*;
 
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.16 2003-11-05 15:50:59 pierre Exp $
+ * @version $Id: ListNodesTag.java,v 1.17 2003-11-06 09:07:24 pierre Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -59,7 +58,7 @@ public class ListNodesTag extends AbstractNodeListTag {
     /**
      * @since MMBase-1.7
      */
-    protected NodeList getNodes() throws JspTagException {
+    protected int getNodes() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
 
@@ -69,22 +68,20 @@ public class ListNodesTag extends AbstractNodeListTag {
             }
             nodeManager = getCloud().getNodeManager(type.getString(this));
             NodeList nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
-            return nodes;
+
+            return setReturnValues(nodes, true);
+
         } else {
             NodeQuery query = (NodeQuery) c.getQuery();
-            // following code will also be necessary in list-tag, so need perhaps be available in AbstractNodeListTag
-
-            Queries.addConstraints(query, (String) constraints.getValue(this));
-            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            if (constraints != Attribute.NULL) {
+                Queries.addConstraints(query, (String) constraints.getValue(this));
+            }
+            if (orderby != Attribute.NULL) {
+                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            }
             NodeList nodes = getCloud().getList(query);
 
-            // get orderby value fro mm:changed tag
-            List ls = query.getSortOrders();
-            if (ls.size()>0) {
-                orderby = getAttribute(((SortOrder)ls.get(0)).getField().getFieldName());
-            }
-
-            return nodes;
+            return setReturnValues(nodes, true, query);
         }
     }
 
@@ -96,9 +93,7 @@ public class ListNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        NodeList list = getNodes();
-        return setReturnValues(list, true);
-
+        return getNodes();
     }
 
 }
