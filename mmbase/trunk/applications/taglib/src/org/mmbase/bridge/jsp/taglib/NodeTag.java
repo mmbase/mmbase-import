@@ -22,7 +22,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
-* MMNode provides the fields of a node 
+* NodeTag provides the fields of a node 
+*
 * @author Rob Vermeulen
 */
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -48,7 +49,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             // explicity indicated which node (by number or alias)
             node = getDefaultCloud().getNode(number);
         } else { 
-            // michiel: class must be of 'BodyTagSupport' type for this. I don't know yet how to do that.
             // get the node from a parent element.           
             try {
                 NodeProvider nodeProvider = 
@@ -58,15 +58,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             } catch (ClassNotFoundException e){
                 throw new JspException("Could not find NodeProvider class");
             }
-            // keesj like this?
-            //node = findNodeProvider(this,null).getNodeVar();
-            // michiel... eh, yes, perhaps, but I cut it from BaseTag
-            // again...
-            // I understand now why you put it there. 
-            // But I still think that NodeTag must be a BodyTagSupport
-            // and we'd define a NodeTEI for the TagExtraInfo stuff.
         }
-        
         //keesj
         //FIXME does not make sence
         if(node == null) {
@@ -90,43 +82,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     **/
     public int doAfterBody() throws JspException {
         
-        /*                                   f
-        if(field!=null) {
-        String value = "";
-        value = node.getStringValue(field);
-        if(value == null) {
-        value = "mm:node number="+number+" hasn't got field "+field;
-        }
-        
-        }
-        
-        
-        if(action!=null) {
-        if(action.toLowerCase().equals("countrelations")) {
-        if(type==null) {
-        value = ""+node.countRelations();
-        } else {
-        value = ""+node.countRelations(type);
-        }
-        }
-        if(action.toLowerCase().equals("countrelatednodes")) {
-        if(type==null) {
-        value = ""+node.getRelatedNodes().size();
-        } else {
-        //keesj:should there be a specific call in the MMCI
-        value = ""+node.countRelatedNodes(type);
-        }
-        }
-        }
-        
-        //pageContext.getOut().print(retval);
-        try {
-        bodyOut.clearBody();
-        bodyOut.print(value);
-        bodyOut.writeOut(bodyOut.getEnclosingWriter());
-        } catch (java.io.IOException e) {
-        }
-        */
         try {
             BodyContent bodyOut = getBodyContent();
             bodyOut.writeOut(bodyOut.getEnclosingWriter());
