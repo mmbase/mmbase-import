@@ -8,6 +8,7 @@
   <!-- Default values for properties that can be customized -->
   <property name="mmbase.source.dir" value=".." />
   <property name="source.dir"   location="${mmbase.source.dir}" />
+
   <property file="${source.dir}/build.properties" />
 
   <property name="build.dir"    value="${source.dir}/build" />
@@ -260,6 +261,7 @@ Build-compiler: ${build.compiler}
       classpathref="run.classpath"      
       >
       <arg value="org.mmbase.module.builders.ConvertTest" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
     </java>
   </target>
@@ -277,12 +279,25 @@ Build-compiler: ${build.compiler}
   </target>
 
 
+  <!-- ================================================================== -->
+
+  <target name="standalone" depends="jar,init">
+    <java 
+      classname="org.mmbase.tests.MMBaseTest"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+    </java>
+  </target>
+
+
 
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge,run.convertimage">
+          depends="run.dbsq,run.typerel,run.bridge">
 
   </target>
 
