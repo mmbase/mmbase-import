@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.util.Map;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.security.SecurityException;
 
 /**
  *  This class is a abstract implementation of the Authentication.
@@ -21,12 +19,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.21 2004-03-08 17:42:30 michiel Exp $
+ * @version $Id: Authentication.java,v 1.22 2004-03-26 15:48:26 michiel Exp $
  */
 public abstract class Authentication extends Configurable {
-
-
-    private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
     /**
      *  This method will verify the login, and give a UserContext back if the login procedure was successful.
@@ -41,15 +36,15 @@ public abstract class Authentication extends Configurable {
      *
      *	@return <code>null</code if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
      *
-     *	@exception org.mmbase.security.SecurityException When something strang happened
+     *	@exception SecurityException When something strang happened
      */
-    public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
+    public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException;
 
     /**
      *	The method returns wether the UserContext has become invalid for some reason (change in security config?)
-     *	@param usercontext The UserContext of which we want to know the rights
+     *	@param userContext The UserContext of which we want to know the rights
      *	@return <code>true</code> when valid, otherwise <code>false</code>
-     *	@exception org.mmbase.security.SecurityException When something strang happend
+     *	@exception SecurityException When something strang happend
      */
-    public abstract boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException;
+    public abstract boolean isValid(UserContext userContext) throws SecurityException;
 }
