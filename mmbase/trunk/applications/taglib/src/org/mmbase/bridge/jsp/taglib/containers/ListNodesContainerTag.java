@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.12 2004-07-10 12:16:44 nico Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.13 2004-07-26 20:18:00 nico Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
     // nodereferrer because RelatedNodesContainer extension
@@ -73,13 +73,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
 
     public int doStartTag() throws JspTagException {
         if (nodeManager != Attribute.NULL) {
-            query = getProviderCloudVar().getNodeManager(nodeManager.getString(this)).createQuery();
+            query = getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery();
             if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
             if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
         } else {
             if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
 
-            query = getProviderCloudVar().createNodeQuery();
+            query = getCloudVar().createNodeQuery();
             Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
             
             if (element != Attribute.NULL) {

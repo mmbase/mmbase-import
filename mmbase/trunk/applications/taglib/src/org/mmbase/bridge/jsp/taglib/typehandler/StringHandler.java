@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.30 2004-07-12 13:47:17 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.31 2004-07-26 20:18:01 nico Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -55,7 +55,7 @@ public class StringHandler extends AbstractTypeHandler {
         StringBuffer buffer = new StringBuffer();
         if(! search) {
             if (field.getName().equals("owner")) {
-                Cloud cloud = tag.getProviderCloudVar();
+                Cloud cloud = tag.getCloudVar();
                 if (node == null) {
                     buffer.append(cloud.getUser().getOwnerField());
                 } else if (! node.mayChangeContext()) {

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.19 2004-07-10 12:16:46 nico Exp $
+ * @version $Id: CreateNodeTag.java,v 1.20 2004-07-26 20:18:02 nico Exp $
  */
 
 public class CreateNodeTag extends NodeTag {
@@ -41,7 +41,7 @@ public class CreateNodeTag extends NodeTag {
 
 
     public int doStartTag() throws JspTagException{
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
         NodeManager nm = cloud.getNodeManager(nodeManager.getString(this));
         if (nm == null) {
             throw new JspTagException("Could not find nodemanager " + nodeManager.getString(this));

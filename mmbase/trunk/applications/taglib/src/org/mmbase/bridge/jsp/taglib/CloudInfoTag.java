@@ -23,7 +23,7 @@ import org.mmbase.bridge.Cloud;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.1 2004-07-15 16:56:02 michiel Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.2 2004-07-26 20:17:58 nico Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -57,7 +57,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
 
     public int doStartTag() throws JspTagException{
 
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
 
         String show;
 

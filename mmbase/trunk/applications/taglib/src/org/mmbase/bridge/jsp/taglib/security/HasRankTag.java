@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check for the rank of the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRankTag.java,v 1.1 2004-07-15 16:56:03 michiel Exp $
+ * @version $Id: HasRankTag.java,v 1.2 2004-07-26 20:18:02 nico Exp $
  * @since MMBase-1.8
  */
 
@@ -57,9 +57,9 @@ public class HasRankTag extends CloudReferrerTag implements Condition {
             if (minValueString.length() > 0 || maxValueString.length() > 0) {
                 throw new TaglibException("Cannot specify 'value' attribute with one 'minvalue' or 'maxvalue' attributes.");
             }
-            result = getProviderCloudVar().getUser().getRank().equals(valueString);
+            result = getCloudVar().getUser().getRank().equals(valueString);
         } else {
-            int rank = Rank.getRank(getProviderCloudVar().getUser().getRank()).getInt();
+            int rank = Rank.getRank(getCloudVar().getUser().getRank()).getInt();
             result = true;
             if (minValueString.length() > 0) {
                 Rank minRank = Rank.getRank(minValueString);

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.24 2004-07-10 12:16:43 nico Exp $
+ * @version $Id: ListNodesTag.java,v 1.25 2004-07-26 20:17:59 nico Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -89,10 +89,10 @@ public class ListNodesTag extends AbstractNodeListTag {
             }
             if (type != Attribute.NULL) {
                 if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodes");
-                NodeManager nodeManager = getProviderCloudVar().getNodeManager(type.getString(this));
+                NodeManager nodeManager = getCloudVar().getNodeManager(type.getString(this));
                 query = nodeManager.createQuery();            
             } else {
-                query = getProviderCloudVar().createNodeQuery();
+                query = getCloudVar().createNodeQuery();
                 Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
             
                 if (element != Attribute.NULL) {
