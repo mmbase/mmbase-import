@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.93 2004-03-10 18:13:47 michiel Exp $
+ * @version $Id: Images.java,v 1.94 2004-03-10 18:19:58 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -98,8 +98,7 @@ public class Images extends AbstractImages {
         if (tmp != null) {
             try {
                 itmp = Integer.parseInt(tmp);
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 itmp = 2;
             }
             maxConcurrentRequests = itmp;
@@ -210,7 +209,7 @@ public class Images extends AbstractImages {
      */
     private void getImageConvertParams(Hashtable params) {
         String key;
-        for (Iterator e=params.keySet().iterator();e.hasNext();) {
+        for (Iterator e = params.keySet().iterator(); e.hasNext();) {
             key = (String)e.next();
             if (key.startsWith("ImageConvert.")) {
                 imageConvertParams.put(key, params.get(key));
@@ -221,26 +220,22 @@ public class Images extends AbstractImages {
 
     private ImageConvertInterface loadImageConverter(String classname) {
         Class cl;
-        ImageConvertInterface ici=null;
+        ImageConvertInterface ici = null;
 
         try {
             cl = Class.forName(classname);
-            ici=(ImageConvertInterface)cl.newInstance();
+            ici = (ImageConvertInterface)cl.newInstance();
             log.info("loaded '"+classname+"' for builder '" + getTableName() + "'");
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             log.error("is classname in " + getTableName() + ".xml correct? ('not found class "+classname+"')");
             log.error(Logging.stackTrace(e));
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             log.error("something wend wrong ('could not instantiate class "+classname+"')");
             log.error(Logging.stackTrace(e));
-        }
-        catch (java.lang.IllegalAccessException e) {
+        } catch (java.lang.IllegalAccessException e) {
             log.error("something wend wrong ('illegal access class "+classname+"')");
             log.error(Logging.stackTrace(e));
-        }
-        catch (NoClassDefFoundError e) {
+        } catch (NoClassDefFoundError e) {
             log.error("are all lib's available? ('missing class used by class"+classname+"')");
             log.error(Logging.stackTrace(e));
         }
@@ -255,29 +250,31 @@ public class Images extends AbstractImages {
      *
      */
     public String getImageMimeType(List params) {
-        String format=null;
+        String format = null;
         String key;
 
         // WHY the itype colomn isn't used?
 
-        for (Iterator e=params.iterator();e.hasNext();) {
-            key=(String)e.next();
+        for (Iterator e = params.iterator() ;e.hasNext();) {
+            key = (String)e.next();
 
             // look if our string is long enough...
             if(key != null && key.length() > 2) {
                 // first look if we start with an "f("... format is f(gif)
                 if(key.startsWith("f(")) {
                     // one search function remaining...
-                    int pos=key.lastIndexOf(')');
+                    int pos = key.lastIndexOf(')');
                     // we know for sure that our "(" is at pos 1, so we can define this hard...
                     format = key.substring(2, pos);
                     break;
                 }
             }
         }
-        if (format==null) format=defaultImageType;
-        String mimetype=mmb.getMimeType(format);
-        log.debug("getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
+        if (format == null) format = defaultImageType;
+        String mimetype = mmb.getMimeType(format);
+        if (log.isDebugEnabled()) {
+            log.debug("getImageMimeType: mmb.getMimeType(" + format + ") = " + mimetype);
+        }
         return mimetype;
     }
 
@@ -470,7 +467,7 @@ public class Images extends AbstractImages {
      * @return a string containing the key for this List, or <code>null</code>,....
      */
     private String flattenParameters(List params) {
-        if (params==null || params.size() == 0) {
+        if (params == null || params.size() == 0) {
             log.debug("flattenParameters: no parameters");
             return null;
         }
@@ -572,7 +569,7 @@ public class Images extends AbstractImages {
 
         // get the Object...
         if(node == null) {
-            log.warn("ConvertImage: Image node not found "+objectId);
+            log.warn("ConvertImage: Image node not found " + objectId);
             return null;
         }
 
@@ -588,10 +585,10 @@ public class Images extends AbstractImages {
         synchronized(imageRequestTable) {
             req = (ImageRequest) imageRequestTable.get(ckey);
             if (req != null) {
-                log.info("ConvertImage: a conversion is already in progress (" + ckey + ")...  (requests="+ ( req.count() + 1) + ")");
+                log.info("ConvertImage: a conversion is already in progress (" + ckey + ")...  (requests=" + ( req.count() + 1) + ")");
             } else {
                 req = new ImageRequest(objectId, ckey, params, inputPicture);
-                imageRequestTable.put(ckey,req);
+                imageRequestTable.put(ckey, req);
                 imageRequestQueue.append(req);
             }
         }
@@ -612,11 +609,11 @@ public class Images extends AbstractImages {
         try {
             number = Integer.parseInt(num);
         } catch(NumberFormatException e) {
-            if (num!=null && !num.equals("")) {
-                Enumeration g=search("WHERE title='"+num+"'");
+            if (num != null && !num.equals("")) {
+                Enumeration g = search("WHERE title='" + num + "'");
                 while (g.hasMoreElements()) {
-                    MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-                    number=imgnode.getIntValue("number");
+                    MMObjectNode imgnode = (MMObjectNode)g.nextElement();
+                    number = imgnode.getIntValue("number");
                 }
             }
         }
@@ -630,19 +627,19 @@ public class Images extends AbstractImages {
         Vector devices = new Vector();
 
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
+            String cmd = tok.nextToken();
 
             if (cmd.equals("devices")) {
-                if(mmb.getMMObject("scanners")!=null) {
-                    getDevices("scanners",devices);
+                if(mmb.getMMObject("scanners") != null) {
+                    getDevices("scanners", devices);
                 }
-                if(mmb.getMMObject("cameras")!=null) {
-                    getDevices("cameras",devices);
+                if(mmb.getMMObject("cameras") != null) {
+                    getDevices("cameras", devices);
                 }
-                if(mmb.getMMObject("pccards")!=null) {
-                    getDevices("pccards",devices);
+                if(mmb.getMMObject("pccards") != null) {
+                    getDevices("pccards" ,devices);
                 }
-                tagger.setValue("ITEMS","2");
+                tagger.setValue("ITEMS", "2");
                 return devices;
             }
         }
@@ -686,15 +683,15 @@ public class Images extends AbstractImages {
                         itype = mimetype.substring(6);
                         log.debug("set itype to " + itype);
                     } else {
-                        log.warn("Mimetype "+mimetype+" is not an image type");
+                        log.warn("Mimetype " + mimetype + " is not an image type");
                     }
                 } else {
                     log.warn(MagicFile.FAILED);
                 }
             } catch (Exception e) {
-                log.warn("Error while determining image mimetype : "+Logging.stackTrace(e));
+                log.warn("Error while determining image mimetype : " + Logging.stackTrace(e));
             }
-            node.setValue("itype",itype);
+            node.setValue("itype", itype);
         }
     }
 
