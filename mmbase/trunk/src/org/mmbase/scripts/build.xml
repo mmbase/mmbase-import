@@ -614,7 +614,8 @@ Change directory to ${build.dir}/orion and run:
     <!-- Create the MMBase html build dir                                    -->
     <!-- =================================================================== -->
     <!--    <target name="war.webroot" depends="init.compile, javadocs">  -->
-    <target name="war.webroot" depends="init.compile">
+    <target name="war.webroot" depends="init.compile,taglib.doc">
+
         <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${webroot.build.dir}/mmbase/edit">
             <fileset dir="${source-html.dir}/mmeditors/jsp"/>
@@ -622,6 +623,10 @@ Change directory to ${build.dir}/orion and run:
                 
         <!-- taglib docs -->
         <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${build.dir}/mmbase/web/mmbase-taglib.html" />
+        <copy todir="${webroot.build.dir}/mmbase/taglib">
+             <fileset dir="${build.dir}/mmbase/web/taglib"/>
+        </copy>        
+ 
         
         <!-- javadocs -->
         <!-- skipping javadocs (also depend on target 'javadocs', when uncommenting.... ) 
@@ -1449,8 +1454,8 @@ Change directory to ${build.dir}/orion and run:
     <property name="log4j.version" value="1.1.3" /> 
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
-    <!--property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar" /-->
-    <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j.jar"/>
+    <!-- property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar" /-->
+    <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j.jar" />
     <available property="log4j.present"
                file="${download.dir}/${log4j.fullversion}.tgz"/>
     <available property="log4j.expanded"
