@@ -603,7 +603,6 @@ Change directory to ${build.dir}/orion and run:
                 
                 <!-- the builders we definitly need -->
                 <include name="builders/core/**"/>
-                <include name="builders/mmbaseusers.xml"/>
             </fileset>
         </copy>            
     </target>
