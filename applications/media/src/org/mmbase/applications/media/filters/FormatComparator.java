@@ -19,36 +19,42 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * This can sort a list with the requested formats on top.
+ * This is a ComparatorFilter wich knows about a list of source
+ * formats. This internal List can be filled by its constructors in
+ * several ways. Sometimes e.g. the list would have only one entry and
+ * therefore there are constructors with just one Format (or String)
+ * argument.
+ *
+ *
  * @author  Michiel Meeuwissen
- * @version $Id: FormatComparator.java,v 1.1 2003-02-03 17:50:23 michiel Exp $
+ * @version $Id: FormatComparator.java,v 1.2 2003-02-05 14:43:05 michiel Exp $
  */
 public class FormatComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(FormatComparator.class.getName());
 
-    protected List preferredSources;
+    protected List preferredFormats;
 
     public FormatComparator() {
-        preferredSources= new ArrayList();
+        preferredFormats= new ArrayList();
     }
     
     public  FormatComparator(Format f) {
         this();
-        preferredSources.addAll(f.getSimilar());
+        preferredFormats.addAll(f.getSimilar());
     }
     public  FormatComparator(String f) {
         this(Format.get(f));
     }
     public  FormatComparator(List s) {
-        preferredSources = s;
+        preferredFormats = s;
     }
     
     protected int getPreference(URLComposer ri) {
         Format format = ri.getFormat();
-        int index =  preferredSources.indexOf(format);
+        int index =  preferredFormats.indexOf(format);
         if (index == -1) { 
-            if (log.isDebugEnabled()) log.debug("Not found format: '" + format + "' in" + preferredSources);
-            index = preferredSources.size() + 1;
+            if (log.isDebugEnabled()) log.debug("Not found format: '" + format + "' in" + preferredFormats);
+            index = preferredFormats.size() + 1;
         }
         index = -index;   // low index =  high preference
         if (log.isDebugEnabled()) log.debug("preference of format '" + format + "': " + index);

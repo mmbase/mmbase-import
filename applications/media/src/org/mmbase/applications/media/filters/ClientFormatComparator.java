@@ -19,9 +19,11 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * This can sort a list with the requested formats on top for a client, so the 'URLComposer' is used.
+ * Client's format can be different for every request. So this does
+ * not extend FormatComparator, but is does something similar.
+ *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatComparator.java,v 1.2 2003-02-05 11:41:25 michiel Exp $
+ * @version $Id: ClientFormatComparator.java,v 1.3 2003-02-05 14:43:05 michiel Exp $
  */
 public class ClientFormatComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(ClientFormatComparator.class.getName());

@@ -19,9 +19,12 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * This can sort a list with the requested formats on top.
+ * A FormatComparator which can be configured with eht filters.xml.
+ *
+ * @todo this implementation can be merged with FormatComparator itself, i think.
+ *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatComparator.java,v 1.3 2003-02-03 22:50:51 michiel Exp $
+ * @version $Id: ServerFormatComparator.java,v 1.4 2003-02-05 14:43:05 michiel Exp $
  */
 public class ServerFormatComparator extends  FormatComparator {
     private static Logger log = Logging.getLoggerInstance(ServerFormatComparator.class.getName());
