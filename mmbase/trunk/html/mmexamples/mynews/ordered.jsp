@@ -32,15 +32,18 @@
        <tr><td width="30" /><td><table width="100%"><tr><th align="left">title</th><th align="right">&nbsp;</th></tr></mm:first> 
        <tr>
          <td><mm:field name="title" /></td>
-         <td align="right"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />">link</a></td>
+         <td align="right" class="link"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="link"></a></td>
        </tr> 
        <mm:last></table></td></tr></mm:last>
      </mm:relatednodes>
   </table>
   </center>
   <hr />
-    <a href="<mm:url referids="magid" page="index.jsp" /> "> &lt;--  Simple news</a><br />
-    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+  <div class="link">
+    <a href="<mm:url referids="magid" page="index.jsp" /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /> Simple news</a><br />
+  </div>
+  <hr /> 
+  <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
 </mm:node>
