@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.13 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.14 2004-01-15 10:28:24 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -124,6 +124,8 @@ public class TreeTag extends AbstractNodeListTag {
             log.debug(e.toString());
         }
 
+        Attribute max    = listHelper.getMax();
+        Attribute offset = listHelper.getOffset();
         if (orderby    != Attribute.NULL)  params.put("SORTFIELDS", orderby.getString(this));
         if (directions != Attribute.NULL)  params.put("SORTDIRS", directions.getString(this));
         if (maxdepth   != Attribute.NULL)  params.put("MAXDEPTH", maxdepth.getString(this));

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Who tag, provides functionality for listing users of a channel.
  *
  * @author Pierre van Rooden
- * @version $Id: WhoTag.java,v 1.8 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id: WhoTag.java,v 1.9 2004-01-15 10:28:24 michiel Exp $
  */
  
 public class WhoTag extends AbstractNodeListTag {
@@ -61,6 +61,8 @@ public class WhoTag extends AbstractNodeListTag {
 
         if (orderby != null)   params.put("SORTFIELDS",orderby);
         if (directions !=null) params.put("SORTDIRS",  directions);
+        Attribute max    = listHelper.getMax();
+        Attribute offset = listHelper.getOffset();
         if (offset != Attribute.NULL)        params.put("FROMCOUNT", "" + offset.getInt(this, 0));
         if (max    != Attribute.NULL)        params.put("MAX", max.getString(this));
         NodeList nodes = community.getList("WHO", params, pageContext.getRequest(), pageContext.getResponse());
