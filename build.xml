@@ -1692,6 +1692,7 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target name="clean.documentation" description="Clean the generated documenation">
     <delete dir="${mmdocs.dir}"/>
+    <delete file="${build.dir}/docbook2xhtml.xslt"/>
   </target>
 
   <!-- =================================================================== -->
@@ -1699,10 +1700,15 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target
     name="clean.build"
-    depends="clean.compile,clean.remote,clean.junit,clean.apptool,clean.lib"
+    depends="clean.compile,clean.remote,clean.generatedsource,clean.junit,clean.apptool,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
     <!-- junit,apptool? -->
+  </target>
+
+  <!-- this doesn't get clean anywhere else -->
+  <target name="clean.generatedsource">
+    <delete dir="${generated-source-src.dir}" />
   </target>
 
   <target
