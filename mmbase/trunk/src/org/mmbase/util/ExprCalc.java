@@ -7,32 +7,26 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
-/*
-	EXCEPTION This code has been taken from the web and
-	does not fall under our own copyright. We must retrieve
-	the correct license for this code or replace it.
-*/
+
 package org.mmbase.util;
-
-/******************************************************************
-  Class to calculate expressions. It implements a simple LL(1)
-  grammar to calculate simple expressions with the basic 
-  operators +,-,*,/ and brackets.
-
-  the grammar in EBNF notation:
-
-  <expr>   -> <term> { '+' <term> } | <term> { '-' <term> } .
-  <term>   -> <fact> { '*' <fact> } | <fact> { '/' <fact> } .
-  <fact>   -> <nmeral> | '(' <expr> ')' .
-
-  Autor:  Arnold Beck
-
-  email:  beck@informatik.htw-dresden.de 
-******************************************************************/
-
 import java.lang.*;
 import java.util.*;
 
+/**
+ * Class to calculate expressions. It implements a simple LL(1)
+ * grammar to calculate simple expressions with the basic 
+ * operators +,-,*,/ and brackets.
+ *
+ * the grammar in EBNF notation:
+ *
+ * <expr>   -> <term> { '+' <term> } | <term> { '-' <term> } .
+ * <term>   -> <fact> { '*' <fact> } | <fact> { '/' <fact> } .
+ * <fact>   -> <nmeral> | '(' <expr> ')' .
+ *
+ * @author Arnold Beck
+ *
+ * email:  beck@informatik.htw-dresden.de 
+ */
 public class ExprCalc
 {
   private StringTokenizer T;
