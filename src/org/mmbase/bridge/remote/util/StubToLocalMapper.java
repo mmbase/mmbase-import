@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.bridge.remote.util;
 
@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logger;
  * StubToLocalMapper is a utitity class that helps
  * a Stub to find it's Local implementation
  * @author Kees Jongenburger
- * @version $Id: StubToLocalMapper.java,v 1.8 2002-07-01 19:25:42 kees Exp $
+ * @version $Id: StubToLocalMapper.java,v 1.9 2002-10-03 12:34:41 pierre Exp $
  **/
 public class StubToLocalMapper{
     static private Logger log = Logging.getLoggerInstance(StubToLocalMapper.class.getName());
@@ -28,7 +28,7 @@ public class StubToLocalMapper{
      **/
     private static Hashtable hash = new Hashtable();
     private static Hashtable refcount = new Hashtable();
-    
+
     /**
      * add an object to the mapper
      * @param object the object to add to the mapper
@@ -50,10 +50,10 @@ public class StubToLocalMapper{
 		mapperCode = "relation:" + rel.getNodeManager().getName() + "->" + rel.getNumber();
 	    } else if (object instanceof RelationManager){
 		RelationManager relationManager = (RelationManager)object;
-		mapperCode = "relationmanager:" + relationManager.getName() + "->" + relationManager.hashCode();
+		mapperCode = "relationmanager:" + relationManager.getName() + "->" + relationManager.getNumber();
 	    } else if (object instanceof NodeManager){
 		NodeManager nodeManager = (NodeManager)object;
-		mapperCode = "nodemanager:" + nodeManager.getName() + "->" + nodeManager.hashCode();
+		mapperCode = "nodemanager:" + nodeManager.getName() + "->" + nodeManager.getNumber();
 	    } else {
 		mapperCode = "" + object;
 	    }
@@ -77,8 +77,8 @@ public class StubToLocalMapper{
 		    }
 		}
             }
-	    
-	    
+
+
 	    log.debug("add=("+ mapperCode +")");
 	    int rcount = increaseRefCount(mapperCode);
 	    if (rcount ==1){
@@ -130,7 +130,7 @@ public class StubToLocalMapper{
 	    return c -1;
 	}
     }
-    
+
     /**
      * get an object based on its MapperCode
      * @param mapperCode the Mappercode of the object
@@ -145,7 +145,7 @@ public class StubToLocalMapper{
 	}
 	return o;
     }
-    
+
     /**
      * remove an entry in the StubToLocal mapper the entry is only removed if there
      * are no other referances to the entry (ref counting)
