@@ -10,43 +10,52 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.StringTokenizer;
+import org.mmbase.util.logging.*;
 
+/**
+ * Class for matching two strings and returning an indicator (threshold) on how these compare.
+ * The returned value of {@link #match} is 0 when no maytch is found, 1 if it is a perfect match.
+ * Values in between indicate the level of partial matchings.
+ */
 public class Matcher {
-	public static void main(String args[]) {
-		
-		System.out.println("Threshold = "+Matcher.match("Wat is MMBase in helemsnaam?","Wat is MMBase?"));
-		System.out.println("Threshold = "+Matcher.match("Wat is Xalan?","Wat is MMBase?"));
-	}
 
+    // logger
+    private static Logger log = Logging.getLoggerInstance(Matcher.class.getName());
 
-	/**
-	 * This method will match two string. It will return a treshold,
-	 * 0 indicates absolutely no match, 1 means perfect match.
-	 */
-	static public float match(String firstString, String secondString) {
-		StringTokenizer st1 = new StringTokenizer(firstString,"\".,:!? \n\t");
-		StringTokenizer st2 = new StringTokenizer(secondString,"\".,:!? \n\t");
-		int numberOffWordsFirstString=st1.countTokens();
-		int numberOffWordsSecondString=st2.countTokens();
-		int matchedWords=0;
- 
-		while (st1.hasMoreElements()) {
-			String wordFirstString = (String)st1.nextToken();
-			st2 = new StringTokenizer(secondString,"\".,:!? \n\t");
+    public static void main(String args[]) {
+        log.info("Threshold = "+Matcher.match("Wat is MMBase in helemsnaam?","Wat is MMBase?"));
+        log.info("Threshold = "+Matcher.match("Wat is Xalan?","Wat is MMBase?"));
+    }
 
-			while (st2.hasMoreTokens()) {
-				String wordSecondString = (String)st2.nextToken();
-				//System.out.println("matching "+wordFirstString+" ?= "+wordSecondString);
-				if (wordFirstString.equals(wordSecondString)) {
-					matchedWords++;
-					break;
-				}
-				
-			}
-		}	
-		System.out.println("firstString = "+firstString);
-		System.out.println("secondString = "+secondString);
-		System.out.println("matchedWords = "+matchedWords);
-		return (float)matchedWords/(((float)numberOffWordsFirstString+(float)numberOffWordsSecondString)/2);
-	}
+    /**
+     * This method will match two string. It will return a treshold,
+     * 0 indicates absolutely no match, 1 means perfect match.
+     */
+    static public float match(String firstString, String secondString) {
+        StringTokenizer st1 = new StringTokenizer(firstString,"\".,:!? \n\t");
+        StringTokenizer st2 = new StringTokenizer(secondString,"\".,:!? \n\t");
+        int numberOffWordsFirstString=st1.countTokens();
+        int numberOffWordsSecondString=st2.countTokens();
+        int matchedWords=0;
+
+        while (st1.hasMoreElements()) {
+            String wordFirstString = (String)st1.nextToken();
+            st2 = new StringTokenizer(secondString,"\".,:!? \n\t");
+
+            while (st2.hasMoreTokens()) {
+                String wordSecondString = (String)st2.nextToken();
+                //log.debug("matching "+wordFirstString+" ?= "+wordSecondString);
+                if (wordFirstString.equals(wordSecondString)) {
+                    matchedWords++;
+                    break;
+                }
+            }
+        }
+        if (log.isDebugEnabled()) {
+          log.debug("firstString = "+firstString+"\n"+
+                    "secondString = "+secondString+"\n"+
+                    "matchedWords = "+matchedWords);
+        }
+        return (float)matchedWords/(((float)numberOffWordsFirstString+(float)numberOffWordsSecondString)/2);
+    }
 }
