@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.6 2003-12-18 09:05:48 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.7 2004-02-17 09:45:47 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -31,6 +31,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
     private Query     query      = null;
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
+    private Attribute fields     = Attribute.NULL;
 
 
     public void setPath(String t) throws JspTagException {
@@ -39,6 +40,11 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
     public void setSearchdirs(String s) throws JspTagException {
         searchDirs = getAttribute(s);
+    }
+
+
+    public void setFields(String f) throws JspTagException {
+        fields = getAttribute(f);
     }
 
     public Query getQuery() {
@@ -59,6 +65,8 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         query.addNode(step, node);
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+
+        Queries.addFields(query, (String) fields.getValue(this));
 
         return EVAL_BODY_BUFFERED;
     }

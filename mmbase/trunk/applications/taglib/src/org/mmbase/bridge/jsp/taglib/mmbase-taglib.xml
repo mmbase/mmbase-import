@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.238 2004-02-16 16:06:08 keesj Exp $
+version: $Id: mmbase-taglib.xml,v 1.239 2004-02-17 09:45:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3986,7 +3986,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <see tag="include" />
 		<see tag="functioncontainer" />
     <see tag="url" attribute="referids" />
-		<see tag="functioncontainer" attribute="referids" />
+		<see tag="functioncontainer" attribute="referids"/>
 		<attribute>
 			<name>name</name>
 			<required>true</required>
@@ -4739,6 +4739,12 @@ The 0 is just counter, which starts at 0 on every page.
 				 Id for reference by subtags and reuse.
 			</info>
 		</attribute>
+		<attribute>
+			<name>fields</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="fields" />
+		</attribute>
 	</tag>
 	<tag>
 		<name>relatedcontainer</name>
@@ -4774,6 +4780,12 @@ The 0 is just counter, which starts at 0 on every page.
 			<info>
 				 Id for reference by subtags and reuse.
 			</info>
+		</attribute>
+		<attribute>
+			<name>fields</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="fields" />
 		</attribute>
 	</tag>
 
