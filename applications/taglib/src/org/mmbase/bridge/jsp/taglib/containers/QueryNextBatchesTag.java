@@ -25,15 +25,20 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.2 2004-01-06 18:10:15 michiel Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
 
 
     protected Attribute container  = Attribute.NULL;
+    protected Attribute indexOffsetOffset = Attribute.NULL;
 
     protected int indexOffSet = 0;
+
+    public void setIndexoffset(String i ) throws JspTagException {
+        indexOffsetOffset = getAttribute(i);
+    }
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -64,7 +69,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
         Node result = (Node) cloud.getList(count).get(0);
         int totalSize = result.getIntValue("number");
 
-        indexOffSet = offset / maxNumber + 1;
+        indexOffSet = offset / maxNumber + 1 + indexOffsetOffset.getInt(this, 0);
         List resultList = new ArrayList();
         int maxSize = getMaxNumber();
 
