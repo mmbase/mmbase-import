@@ -97,7 +97,7 @@ public class MultiPool
 					System.out.println("JDBC -> KILLED SQL "+con.lastSql+" time "+diff);
 					try {
 						Connection realcon=DriverManager.getConnection(url,name,password);
-						initConnection(newcon);
+						initConnection(realcon);
 						newcon=new MultiConnection(this,realcon);
 						System.out.println("JDBC -> WOW added JDBC connection now ("+pool.size()+")");
 					} catch(Exception re) {
@@ -185,11 +185,11 @@ public class MultiPool
 						try {
 							if (name.equals("url") && password.equals("url")) {
 								Connection realcon=DriverManager.getConnection(url);
-								initConnection(con);
+								initConnection(realcon);
 								con=new MultiConnection(this,realcon);
 							} else {
 								Connection realcon=DriverManager.getConnection(url,name,password);
-								initConnection(con);
+								initConnection(realcon);
 								con=new MultiConnection(this,realcon);
 							}
 						} catch(Exception re) {
