@@ -15,7 +15,7 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<% Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+<% Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    String cmd=request.getParameter("cmd");
    String country=request.getParameter("country");
    String value=null;

@@ -46,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.6 2002-11-12 16:57:46 pierre Exp $
+ * @version $Id: NodeFunction.java,v 1.7 2003-02-24 20:41:57 kees Exp $
  * @since   MMBase-1.6
  */
 
@@ -74,7 +74,7 @@ public  class NodeFunction {
     public static String function(String cloudName, String number, String function) {
         log.debug("calling base");
         try {
-            Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);
+            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName);
             return function(cloud, number, function);
         } catch (BridgeException e) {
             return "could not execute '" + function + "' on node '" + number + "' (" + e.toString() + ")";

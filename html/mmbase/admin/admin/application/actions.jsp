@@ -13,7 +13,7 @@
 <body class="basic" >
 <table summary="application actions">
 <%
-    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 %>
 <tr>
  <th class="header" colspan="4">Description of <%=app%></th>
@@ -75,7 +75,7 @@
   <th class="navigate">View</th>
 </tr>
 <%
-    Module mmconfig=LocalContext.getCloudContext().getModule("config");
+    Module mmconfig=ContextProvider.getDefaultCloudContext().getModule("config");
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-applications-"+app);
 %>

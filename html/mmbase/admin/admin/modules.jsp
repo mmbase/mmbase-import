@@ -32,7 +32,7 @@
 <%
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    NodeList modules=mmAdmin.getList("MODULES",params,request,response);
    for (int i=0; i<modules.size(); i++) {
     Node module=modules.getNode(i);

@@ -31,7 +31,7 @@
   <th class="navigate">View</th>
 </tr>
 <%
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
 
@@ -59,7 +59,7 @@
   <th class="navigate">View</th>
 </tr>
 <%
-   Module jdbc=LocalContext.getCloudContext().getModule("jdbc");
+   Module jdbc=ContextProvider.getDefaultCloudContext().getModule("jdbc");
    NodeList pools=jdbc.getList("POOLS",params,request,response);
    for (int i=0; i<pools.size(); i++) {
     Node pool=pools.getNode(i);

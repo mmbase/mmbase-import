@@ -25,7 +25,7 @@ public class CloudContextTest extends TestCase {
     }
 
     public void testListClouds() {
-        CloudContext cloudContext = LocalContext.getCloudContext(); 
+        CloudContext cloudContext = ContextProvider.getDefaultCloudContext(); 
         boolean defaultCloudFound = false;
         StringList stringList = cloudContext.getCloudNames();
         for (int i = 0; i < stringList.size(); i++) {

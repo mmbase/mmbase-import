@@ -70,7 +70,7 @@ You can return to this installation script any time.<br />
            boolean first=true;
            boolean installed=false;
            NodeManager versions=cloud.getNodeManager("versions");
-           Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+           Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
            for (int step=0; step<steps.length; step++) {
              String app=steps[step];

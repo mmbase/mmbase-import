@@ -29,7 +29,7 @@ public class NodeManagerTest extends TestCase {
 
     public void setUp() {
         // Create a test node.
-        cloud = LocalContext.getCloudContext().getCloud("mmbase");
+        cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         node = cloud.getNodeManager("aa").createNode();
         byte[] bytes = {72,101,108,108,111,32,119,111,114,108,100,33};
         node.setByteValue("bytefield", "100".getBytes());

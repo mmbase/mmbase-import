@@ -32,7 +32,7 @@ public class CloudTest extends TestCase {
 
     public void setUp() {
         // Create a test node.
-        cloud = LocalContext.getCloudContext().getCloud("mmbase");
+        cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         aaNode1 = cloud.getNodeManager("aa").createNode();
         aaNode1.setStringValue("stringfield", "startnode1");
         aaNode1.commit();

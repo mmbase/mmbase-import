@@ -14,7 +14,7 @@ import java.util.*;
 import java.io.*;
 import org.mmbase.applications.dove.Dove;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.LocalContext;
+import org.mmbase.bridge.ContextProvider;
 import org.w3c.dom.*;
 
 
@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.24 2002-11-01 15:01:37 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.25 2003-02-24 20:41:46 kees Exp $
  *
  */
 public class WizardDatabaseConnector {
