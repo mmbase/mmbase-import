@@ -135,7 +135,7 @@
 		<!-- gui related -->
 		<gui>
 			<name xml:lang="us">Body</name>
-			<type>string</type>
+			<type>field</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
