@@ -7,7 +7,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.util.logging.log4j2;
+package org.mmbase.util.logging.log4j;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Level;
