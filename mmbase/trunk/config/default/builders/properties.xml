@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder>
+<builder maintainer="mmbase.org" version="0" extends="object">
 
 <!-- <status>
     what is the status of this builder options : active or inactive
@@ -29,10 +29,10 @@
 >-->
 <names>
     <!-- singles per language  as defined by RFC xxx -->
-    <singular xml:lang="us">Property</singular>
+    <singular xml:lang="en">Property</singular>
     <singular xml:lang="nl">Eigenschap</singular>
     <!-- multiple per language  as defined by RFC xxx -->
-    <plural xml:lang="us">Properties</plural>
+    <plural xml:lang="en">Properties</plural>
     <plural xml:lang="nl">Eigenschap</plural>
 </names>
 
@@ -41,7 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language  as defined by RFC xxx -->
-    <description xml:lang="us">Flexible properties to be added to any object</description>
+    <description xml:lang="en">Flexible properties to be added to any object</description>
+    <description xml:lang="nl">Eigenschappen die aan een objekt kunnen worden gekoppeld</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -50,67 +51,11 @@
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 1 : <field> 'number' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Object</guiname>
-            <guiname xml:lang="nl">Object</guiname>
-            <guitype>integer</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>10</list>
-                <!-- position in search area of the editor -->
-                <search>10</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>number</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true">INTEGER</type>
-        </db>
-    </field>
-
-    <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Owner</guiname>
-            <guiname xml:lang="nl">Eigenaar</guiname>
-            <guitype>string</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>11</list>
-                <!-- position in search area of the editor -->
-                <search>11</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>owner</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="12" notnull="true">STRING</type>
-        </db>
-    </field>
-
     <!-- POS 3 : <field> 'parent'  -->
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Parent</guiname>
+            <guiname xml:lang="en">Parent</guiname>
             <guiname xml:lang="nl">Ouder</guiname>
             <guitype>integer</guitype>
         </gui>
@@ -138,7 +83,7 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Key</guiname>
+            <guiname xml:lang="en">Key</guiname>
             <guiname xml:lang="nl">Sleutel</guiname>
             <guitype>string</guitype>
         </gui>
@@ -166,8 +111,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Ptype</guiname>
-            <guiname xml:lang="nl">P-type</guiname>
+            <guiname xml:lang="en">Property Type</guiname>
+            <guiname xml:lang="nl">Soort Eigenschap</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -194,7 +139,7 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Value</guiname>
+            <guiname xml:lang="en">Value</guiname>
             <guiname xml:lang="nl">Waarde</guiname>
             <guitype>field</guitype>
         </gui>

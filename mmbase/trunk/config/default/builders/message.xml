@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder>
+<builder maintainer="mmbase.org" version="0" extends="object">
 
 <!-- <status>
     what is the status of this builder options : active or inactive
@@ -18,7 +18,7 @@
 
         long name : nl.vpro.mmbase.module.builders.Urls will start that class
 -->
-<classfile>org.mmbase.module.builders.Message</classfile>
+<classfile>Message</classfile>
 
 <searchage>7</searchage>
 
@@ -29,9 +29,11 @@
 >-->
 <names>
     <!-- singles per language  as defined by RFC xxx -->
-    <singular xml:lang="us">Message</singular>
+    <singular xml:lang="en">Message</singular>
+    <singular xml:lang="nl">Bericht</singular>
     <!-- multiple per language  as defined by RFC xxx -->
-    <plural xml:lang="us">Messages</plural>
+    <plural xml:lang="en">Messages</plural>
+    <plural xml:lang="nl">Berichten</plural>
 </names>
 
 <!-- <descriptions>
@@ -39,7 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language  as defined by RFC xxx -->
-    <description xml:lang="us">A message posted in a Community</description>
+    <description xml:lang="en">A message posted in a Community</description>
+    <description xml:lang="nl">Een bericht in een gemeenschapskanaal</description>
 </descriptions>
 
 <properties>
@@ -55,66 +58,12 @@
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 1 : <field> 'number' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Object</guiname>
-            <guitype>integer</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>10</list>
-                <!-- position in search area of the editor -->
-                <search>10</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>number</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true" key="true">INTEGER</type>
-        </db>
-    </field>
-
-    <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Owner</guiname>
-            <guiname xml:lang="nl">Eigenaar</guiname>
-            <guitype>string</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>11</list>
-                <!-- position in search area of the editor -->
-                <search>11</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>owner</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="12" notnull="true">STRING</type>
-        </db>
-    </field>
-
     <!-- POS 3 : <field> 'subject'  -->
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Subject</guiname>
+            <guiname xml:lang="en">Subject</guiname>
+            <guiname xml:lang="nl">Onderwerp</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -142,7 +91,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Body</guiname>
+            <guiname xml:lang="en">Body</guiname>
+            <guiname xml:lang="en">Tekst</guiname>
             <guitype>field</guitype>
         </gui>
         <!-- editor related  -->
@@ -174,7 +124,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Timestamp</guiname>
+            <guiname xml:lang="en">Timestamp</guiname>
+            <guiname xml:lang="nl">Tijd</guiname>
             <guitype>long</guitype>
         </gui>
         <!-- editor related  -->
@@ -201,7 +152,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Thread</guiname>
+            <guiname xml:lang="en">Thread</guiname>
+            <guiname xml:lang="nl">Hoofdbericht</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -228,7 +180,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Volgordenr</guiname>
+            <guiname xml:lang="en">Volgordenr</guiname>
+            <guiname xml:lang="nl">Ordernr</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -255,7 +208,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Info</guiname>
+            <guiname xml:lang="en">Information</guiname>
+            <guiname xml:lang="nl">Informatie</guiname>
             <guitype>field</guitype>
         </gui>
         <!-- editor related  -->
