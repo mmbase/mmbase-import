@@ -8,113 +8,6 @@ See http://www.MMBase.org/license
 
 */
 
-/* 
-	$Id: HtmlBase.java,v 1.37.2.1 2001-02-19 13:47:32 install Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.37  2000/12/10 16:00:55  daniel
-	moved a error msg
-	
-	Revision 1.36  2000/11/29 12:05:22  vpro
-	Rico: Probably fixed getReload problem
-	
-	Revision 1.35  2000/11/19 00:24:48  daniel
-	turned cachedebug off
-	
-	Revision 1.34  2000/11/08 16:48:12  pierre
-	pierre: removeFunctions now recognizes underscores in tablenames
-	
-	Revision 1.33  2000/11/07 12:37:56  vpro
-	Rico: fixed reload bug
-	
-	Revision 1.32  2000/11/07 10:48:19  vpro
-	Rico: added seperate cachedebug switch
-	
-	Revision 1.31  2000/11/06 12:47:01  vpro
-	Rico: fixed speling error
-	
-	Revision 1.30  2000/08/29 15:04:37  wwwtech
-	Rob: Added TYPENAME tag. usage $MOD-MMBASE-TYPENAME-400 gives person
-	
-	Revision 1.29  2000/08/07 22:25:14  daniel
-	changed LIST RELATIONS to support aliases
-	
-	Revision 1.28  2000/07/22 10:48:45  daniel
-	Removed some debug
-	
-	Revision 1.27  2000/07/15 23:58:32  daniel
-	added option to turn html caching off
-	
-	Revision 1.26  2000/07/15 14:10:13  daniel
-	Removed from debug
-	
-	Revision 1.25  2000/07/15 10:11:19  daniel
-	Changed getDBType to int
-	
-	Revision 1.24  2000/07/14 05:41:07  daniel
-	removed fieldDef dep. for getField
-	
-	Revision 1.23  2000/06/28 10:48:07  daniel
-	Daniel.. removed ref to FieldDef
-	
-	Revision 1.22  2000/06/20 14:24:52  install
-	Rob: turned debug off
-	
-	Revision 1.21  2000/06/20 14:20:02  install
-	Rob: turned debug off
-	
-	Revision 1.20  2000/06/06 20:54:08  wwwtech
-	small updates
-	
-	Revision 1.19  2000/04/14 12:12:15  wwwtech
-	- (marcel) Made nicer output when LIST RELATIONS fails in logfile
-	
-	Revision 1.18  2000/04/03 09:03:38  wwwtech
-	Rico: added tag for multilevel "MEMCACHE=NO" to bypass memory cache
-	
-	Revision 1.17  2000/03/31 13:21:28  wwwtech
-	Wilbert: Introduction of ParseException for method getList
-	
-	Revision 1.16  2000/03/31 13:18:19  wwwtech
-	Wilbert: Introduction of ParseException for method getList
-	
-	Revision 1.15  2000/03/30 13:11:27  wwwtech
-	Rico: added license
-	
-	Revision 1.14  2000/03/29 11:06:00  wwwtech
-	Wilbert Removed TSEARCH from replace
-	
-	Revision 1.13  2000/03/29 10:42:19  wwwtech
-	Rob: Licenses changed
-	
-	Revision 1.12  2000/03/29 10:07:49  wwwtech
-	Wilbert Removed TSEARCH from getList
-	
-	Revision 1.11  2000/03/21 15:42:55  wwwtech
-	Wilbert changed use of teaser builder to use of typedef builder where possible to get nodes
-	
-	Revision 1.10  2000/03/20 10:40:59  wwwtech
-	Rico: added GETVALUE replace command
-	
-	Revision 1.9  2000/03/17 12:19:45  wwwtech
-	Rico: added better support for functions in getValue
-	
-	Revision 1.8  2000/03/15 10:18:42  wwwtech
-	Rico added which url caused the exception to doRelations
-	
-	Revision 1.7  2000/03/10 12:09:57  wwwtech
-	Rico: added circular part detection to scanparser, it is also now possilbe to subclass ParseException and throw that in scanparser for those unholdable situations.
-	
-	Revision 1.6  2000/03/09 15:57:47  wwwtech
-	Rico: fixed bugs in the detection of the reload state, also detects CACHE PAGE pages as a reload situation now
-	
-	Revision 1.5  2000/03/09 13:10:40  wwwtech
-	Rico: added cache passthrough for multilevel
-	
-	Revision 1.4  2000/03/08 14:53:30  wwwtech
-	Rico: added caching for Multilevel (128 entries) this should increase performance for HTML pages a bit
-	
-*/
 package org.mmbase.module.gui.html;
 
 import java.lang.*;
@@ -143,43 +36,121 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.37.2.1 2001-02-19 13:47:32 install Exp $
+ * @version $Id: HtmlBase.java,v 1.37.2.2 2001-02-19 15:02:02 install Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
 	private String classname = getClass().getName();
 	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
-	private int multilevel_cachesize=300;
-	private LRUHashtable multilevel_cache;
 	private boolean cachedebug=false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 
+	/**
+	 * number of multilevels that can be cached
+	 */ 
+	private int multilevel_cachesize=300;
+
+	/**
+	 * A cache for multilevels
+	 */
+	private LRUHashtable multilevel_cache;
+
+	/**
+	 * the MMBase module 
+	 */
 	MMBase mmb=null;
 
-	private SendMailInterface sendmail;
-	public MMBaseMultiCast mmc;
-	boolean	nodecachesdone=false;
-	MMBaseProbe probe;
+	/* Not used (Rob)
+	 * private SendMailInterface sendmail;
+	 */
 
-	JDBCInterface jdbc;
-	public String baseName="def1";
-	RelDef RelDef;
-	MMObjectBuilder MMObjectBuilder;
+	/**
+	 * not used (Rob)
+	 * public MMBaseMultiCast mmc;
+	 */
+
+	/** 
+     * not used (Rob)
+	 * boolean	nodecachesdone=false;
+	 */
+
+	/**
+	 * not used (Rob)
+	 * MMBaseProbe probe;
+	 */
+
+	/**
+	 * not used (Rob)
+	 * JDBCInterface jdbc;
+	 */
+
+	/** 
+	 * not used (Rob)
+	 * public String baseName="def1";
+	 */
+
+	/**
+	 * not used (Rob)
+	 * RelDef RelDef;
+	 */
+	
+	/**
+	 * not used (Rob)
+	 * MMObjectBuilder MMObjectBuilder;
+	 */
+
+	/**
+	 * The oalias builder, I think mmb.Oalias can be used instead
+	 */
 	OAlias OAlias;
+
+	/** 
+	 * The insrel builder, I think mmb.InsRel van be used instead
+	 */
 	InsRel InsRel;
-	TypeRel TypeRel;
-	private String dtdbase="http://www.mmbase.org";
-	MMJdbc2NodeInterface database;
-	String databasename;
+
+	/**
+	 * not used (Rob)
+	 * TypeRel TypeRel;
+	 */
+	
+	/**
+	 * not used (Rob)
+	 * private String dtdbase="http://www.mmbase.org";
+	 */
+
+	/**
+	 * not used (Rob) 
+	 * MMJdbc2NodeInterface database;
+	 */
+
+	/**
+	 * not used (Rob)
+	 * String databasename;
+	 */
 
 	public Hashtable mmobjs=new Hashtable();
-	String machineName="unknown";
+	/**
+	 * not used (Rob)
+	 * String machineName="unknown";
+	 */
+
 	sessionsInterface sessions;
 
-	Vector onlineVector=null;
+	/**
+	 * not used (Rob)
+	 * Vector onlineVector=null;
+	 */
 
-	String SyncNodes="NO";
-	boolean scancache=false;
+	/**
+	 * not used (Rob)
+	 * String SyncNodes="NO";
+	 */
+
+	/**
+	 * A caching module
+	 */ 
+	private boolean scancache=false;
 
 	public void init() {
 		scancache tmp=(scancache)getModule("SCANCACHE");		
@@ -612,9 +583,13 @@ public class HtmlBase extends ProcessorModule {
 			token = tok.nextToken();
 			if (token.equals("CACHEDELETE")) {
 				if (debug) debug("process(): DELETE ON CACHES");
+
+				/**
+	 			 * as far as I can see is InRel==null
+	 			 */
+				debug("process(): DELETE ON CACHES -> I think this code is broken, Rob Vermeulen");
 				InsRel.deleteNodeCache();
 				InsRel.deleteRelationCache();
-
 			}
 		}
 		return(false);
@@ -784,10 +759,12 @@ public class HtmlBase extends ProcessorModule {
 		return("no command defined");
 	}
 
-
-	public String getBaseName() {
-		return(baseName);
-	}
+	/** 
+	 * this method is not used, its replaced to MMBase 
+	 * public String getBaseName() {
+	 *	return(baseName);
+	 *}
+	 */
 
 	public void maintainance() {
 	}
@@ -871,13 +848,17 @@ public class HtmlBase extends ProcessorModule {
         return(null);
 	}
 
+	/* Not used (Rob)
 	public SendMailInterface getSendMail() {
 		return(sendmail);
 	}
-
+	*/
+	
+	/* Not used (Rob)
 	public String getMachineName() {
 		return(machineName);
 	}
+	*/
 
 	public Vector doMultiLevel(scanpage sp, StringTagger tagger) throws MultiLevelParseException {
 		String result=null,fieldname;
@@ -1051,10 +1032,10 @@ public class HtmlBase extends ProcessorModule {
 		return(null);
 	}
 
-	public void stop()
-	{
-
+	/**
+	public void stop() {
 	}
+	*/
 
 	String getObjectField(StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
