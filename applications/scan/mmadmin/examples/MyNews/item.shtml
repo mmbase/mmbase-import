@@ -29,7 +29,7 @@ url attached to news item :
 <TABLE WIDTH="90%" BORDER="2">
 <LIST RELATIONS NODE="$PARAM1" TYPE="urls" FIELDS="url,description">
 <TR>
-        <TD>$ITEM1</TD>$ITEM2</TD>
+        <TD><A HREF="$ITEM1">$ITEM1</A></TD><TD>$ITEM2</TD>
 </TR>
 </LIST>
 </TABLE>
