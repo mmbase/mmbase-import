@@ -283,7 +283,7 @@ public class scancache extends Module implements scancacheInterface {
 
 	public void init() {
 		String statmode=getInitParameter("statmode");	
-		cachepath=getInitParameter("CachePath");	
+		cachepath=getInitParameter("CacheRoot");	
 		if (cachepath==null) {
 			debug("SCANCACHE -> No CacheRoot set in SCANCACHE.properties");
 		}
