@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.http.Cookie;
 
 
 import org.mmbase.util.logging.Logger;
@@ -46,32 +47,49 @@ public class IncludeTag extends UrlTag {
             String urlString;
 
             // Do some things to make the URL absolute.            
-            String nudeUrl;
-            if (gotUrl.indexOf('?') != -1) {
-                nudeUrl = gotUrl.substring(0, gotUrl.indexOf('?'));
+            String nudeUrl; // url withouth the params
+            String params;  // only the params.
+            int paramsIndex = gotUrl.indexOf('?');
+            if (paramsIndex != -1) {
+                nudeUrl = gotUrl.substring(0, paramsIndex);
+                params  = gotUrl.substring(paramsIndex);
             } else {
                 nudeUrl = gotUrl;
+                params  = "";
             }
 
-            if (nudeUrl.indexOf('/') == 0) { // absolute on server
-                javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+            javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+
+            if (nudeUrl.indexOf('/') == 0) { // absolute on server                             
                 urlString = 
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    +  request.getContextPath() + gotUrl;                
+                    +  request.getContextPath() + nudeUrl + params;
             } else if (nudeUrl.indexOf(':') == -1) { // relative
-                javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                 urlString = 
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + new java.io.File(new java.io.File(request.getRequestURI()).getParent().toString() + "/" + gotUrl).getCanonicalPath();
+                    + new java.io.File(new java.io.File(request.getRequestURI()).getParent().toString() + "/" + nudeUrl + params).getCanonicalPath();
             } else { // really absolute
                 urlString = gotUrl;
-            }                
-                
+            }
+                           
             if (log.isDebugEnabled()) log.debug("found url: >" + urlString + "<");
     	    URL includeURL = new URL(urlString); 
             
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-    	    //connection.connect();
+
+            // Also propagate the cookies (like the jsession...)
+            // Then these, and the session,  also can be used in the include-d page
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                String koekjes = "";
+                for (int i=0; i < cookies.length; i++) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("setting cookie " + i + ":" + cookies[i].getName() + "=" + cookies[i].getValue());
+                    }
+                    koekjes += (i > 0 ? ";" : "") + cookies[i].getName() + "=" + cookies[i].getValue(); 
+                }                     
+                connection.setRequestProperty("Cookie", koekjes); 
+            }
             
             BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
             
