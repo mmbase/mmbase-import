@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.71 2003-05-23 15:45:32 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.72 2003-05-25 12:07:11 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -787,7 +787,6 @@ public class MMAdmin extends ProcessorModule {
             Iterator i = nodeFieldNodes.iterator();
             while (i.hasNext()) {
                 MMObjectNode importedNode = (MMObjectNode) i.next();           
-                log.info(importedNode);
                 String exportsource = (String) importedNode.values.get("__exportsource");
                 // clean it up
                 importedNode.values.remove("__exportsource");
@@ -809,7 +808,6 @@ public class MMAdmin extends ProcessorModule {
                                                                       
                         int localNumber = -1;
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
-                        log.info(query);
                         Enumeration b = syncbul.search(query);
                         if (b.hasMoreElements()) {
                             MMObjectNode n2 = (MMObjectNode) b.nextElement();
