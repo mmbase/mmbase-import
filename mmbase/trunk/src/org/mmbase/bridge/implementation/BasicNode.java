@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.83 2003-03-07 11:49:11 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.84 2003-03-21 17:41:57 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -535,7 +535,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (noderef == null) {
             return "*deleted node*";
         }
-        Object value=noderef.getFunctionValue("gui",null);
+        Object value = noderef.getFunctionValue("gui", null);
         if (value==null) {
             return "*unknown*";
         } else {
@@ -949,14 +949,22 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
+     * @since MMBase-1.6.2
+     */
+    public int hashCode() {
+        return noderef.hashCode();
+    }
+
+    /**
      * Compares two nodes, and returns true if they are equal.
      * This effectively means that both objects are nodes, and they both have the same number and cloud
      * @param o the object to compare it with
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object o) {        
         return (o instanceof Node) &&
-               getNumber()==((Node)o).getNumber() &&
-               cloud.equals(((Node)o).getCloud());
+            getNumber()==((Node)o).getNumber() &&
+            cloud.equals(((Node)o).getCloud());
+        
     }
 
 }
