@@ -13,7 +13,7 @@
 <mm:import externid="maylink"    from="parameters" />
 
 <%-- you can configure 'hide_search' to hide the search functionality --%>
-<mm:compare referid="config.hide_search" value="false">
+<%-- mm:compare referid="config.hide_search" value="false" --%>
 <mm:context>
   <form name="search" method="post" action='<mm:url referids="node,node_type,role_name,direction" />'>
       <table class="search" align="center" width="100%" border="0" cellspacing="1">
@@ -38,7 +38,7 @@
       </table>
   </form>
 </mm:context>
-</mm:compare>
+<%-- /mm:compare --%>
 
 <%-- ordered to search with form button 'search'. Following are some tricks to get the where right.--%>    
 <mm:present referid="search">
