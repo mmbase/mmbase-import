@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 import java.sql.*;
 
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.3 2003-08-05 14:28:48 pierre Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.1 2003-08-20 13:25:44 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {  
 

@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 /**
  * This class defines the scheme names and defaults used by the default database storage manager classes.
@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.8 2003-08-19 14:18:32 pierre Exp $
+ * @version $Id: Schemes.java,v 1.1 2003-08-20 13:25:45 pierre Exp $
  */
 public final class Schemes {
 

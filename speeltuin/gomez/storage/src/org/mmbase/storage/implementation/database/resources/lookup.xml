@@ -7,7 +7,7 @@
 	-->
 
 	<!-- the new oracle implementation -->
-	<filter resource="/org/mmbase/storage/database/resources/oracle-with-views.xml">
+	<filter resource="/org/mmbase/storage/implementation/database/resources/oracle-with-views.xml">
 		<database-product-name>Oracle</database-product-name>
 		<driver-class>oracle.jdbc.driver.OracleConnection</driver-class>
 		<driver-major-version>9</driver-major-version>
@@ -15,22 +15,22 @@
 	</filter>
 
 	<!-- left over jdbc-drivers for mysql -->
-	<filter resource="/org/mmbase/storage/database/resources/mysql.xml">
+	<filter resource="/org/mmbase/storage/implementation/database/resources/mysql.xml">
 		<driver-class>org.gjt.mm.mysql.</driver-class>
 	</filter>
 
 	<!-- newer version of mysql uses relational? -->
-	<filter resource="/org/mmbase/storage/database/resources/mysql.xml">
+	<filter resource="/org/mmbase/storage/implementation/database/resources/mysql.xml">
 		<driver-class>com.mysql.</driver-class>
 	</filter>
 
 	<!-- hsql -->
-	<filter resource="/org/mmbase/storage/database/resources/hypersonic.xml">
+	<filter resource="/org/mmbase/storage/implementation/database/resources/hypersonic.xml">
 		<driver-class>org.hsql.</driver-class>
 	</filter>
 
 	<!-- hsqldb -->
-	<filter resource="/org/mmbase/storage/database/resources/hsqldb-storage.xml">
+	<filter resource="/org/mmbase/storage/implementation/database/resources/hsqldbii.xml">
 		<driver-class>org.hsqldb.</driver-class>
 	</filter>
 
