@@ -64,6 +64,24 @@
 		</db>
 	</field>
 
+
+	<field>
+		<gui>
+			<guiname xml:lang="nl">Mime-type</guiname>
+			<guiname xml:lang="en">Mime-type</guiname>
+			<guitype>field</guitype>
+		</gui>
+		<editor>
+			<positions>
+				<input>3</input><list>2</list><search>3</search>
+			</positions>
+		</editor>
+		<db>
+			<name>mimetype</name>
+			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
+		</db>
+	</field>
+
 </fieldlist>
 
 </builder>
