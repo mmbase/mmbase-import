@@ -75,15 +75,19 @@
 <TR>
 		<TD WIDTH="30"></TD>
 		<TD BGCOLOR="#00425A" COLSPAN="1">
+		<mm:import id="noareas" />
+		<mm:node number="BugTracker.Start">
 		<SELECT NAME="newarea">
-			<mm:listnodes type="areas">
+			<mm:relatednodes type="areas">
+			<mm:first><mm:remove referid="noareas" /></mm:first>
 			<OPTION VALUE="<mm:field name="number" />"
 			<mm:field name="name">
 			<mm:compare value="Misc">SELECTED</mm:compare>
 			</mm:field>
 			><mm:field name="substring(name,15,.)" />
-			</mm:listnodes>
+			</mm:relatednodes>
 		</SELECT>
+		</mm:node>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="1">
 		&nbsp;
@@ -161,7 +165,13 @@
 			
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="1">
-			<CENTER><INPUT TYPE="submit" VALUE="SUBMIT REPORT">
+			<CENTER>
+			<mm:present referid="noareas" inverse="true">
+				<INPUT TYPE="submit" VALUE="SUBMIT REPORT">
+			</mm:present>
+			<mm:present referid="noareas">
+				No areas defined, admin needs to add areas !
+			</mm:present>
 		</TD>
 </TR>
 

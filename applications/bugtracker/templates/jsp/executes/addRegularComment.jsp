@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud logon="wwwuser" pwd="buggie90">
+<mm:cloud logon="admin" pwd="admin2k">
         <mm:import externid="bugreport" jspvar="bugreport" />
         <mm:import externid="newtitle" />
         <mm:import externid="newtext" />
@@ -21,5 +21,5 @@
 
    	<mm:createrelation role="related" source="usernode" destination="commentnode" />
 
-	<%response.sendRedirect("/bugtracker/jsp/fullview.jsp?flap=comments&bugreport="+bugreport);%>
+	<%response.sendRedirect("../fullview.jsp?flap=comments&bugreport="+bugreport);%>
 </mm:cloud>
