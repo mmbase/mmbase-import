@@ -13,10 +13,10 @@
   (class needs to be ResponseInfoComparator).
 		-->
 	<chain>
-		<filter>org.mmbase.util.media.AvailableComparator</filter>
-		<filter id="clienformat">org.mmbase.util.media.ClientFormatComparator</filter>
-		<filter id="format">org.mmbase.util.media.ServerFormatComparator</filter>
-		<filter id="real">org.mmbase.util.media.RealComparator</filter>
+		<filter>org.mmbase.applications.media.filters.AvailableComparator</filter>
+		<filter id="clienformat">org.mmbase.applications.media.filters.ClientFormatComparator</filter>
+		<filter id="format">org.mmbase.applications.media.filters.ServerFormatComparator</filter>
+		<filter id="real">org.mmbase.applications.media.filters.RealComparator</filter>
 	</chain>
 
   <filterConfigs>
