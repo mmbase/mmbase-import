@@ -18,6 +18,7 @@ package org.mmbase.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
 import org.mmbase.util.logging.*;
 
@@ -52,6 +53,10 @@ import org.mmbase.util.logging.*;
 	watcher.exit();
     </code>
  *
+ * @author Ceki G&uuml;lc&uuml;    
+ * @author Eduard Witteveen
+ * @author Michiel Meeuwissen
+ * @since  MMBase-1.4
  */
 public abstract class FileWatcher extends Thread {
     static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
@@ -91,11 +96,14 @@ public abstract class FileWatcher extends Thread {
     	public File getFile() {
 	    return file;
 	}	
+        public String toString() {
+            return file.toString() + ":" + lastModified;
+        }
         
     }
 
-    private ArrayList files       = new ArrayList();
-    private ArrayList removeFiles = new ArrayList();
+    private List files       = new ArrayList();
+    private List removeFiles = new ArrayList();
 
     /**
      *	The default delay between every file modification check, set to 60
@@ -146,6 +154,18 @@ public abstract class FileWatcher extends Thread {
 	}
     }
 
+    /**
+     * Wether the file is being watched or not.
+     * @param the file to be checked.
+     * @since MMBase-1.6
+     */
+    public boolean contains(File file) {
+        return files.contains(new FileEntry(file));
+    }
+
+    /**
+     * Remove file from the watch-list
+     */
     public void remove(File file) {
         synchronized(this) {
             removeFiles.add(file);
@@ -161,9 +181,20 @@ public abstract class FileWatcher extends Thread {
     	    stop = true;
 	}
     }
+
+    /**
+     * Shows the 'contents' of the filewatcher. It shows a list of files/last modified timestamps.
+     */
+    public String toString() {
+        return files.toString();
+    }
     
     /**
-     * looks if a file has changed...
+     * Looks if a file has changed. If it is, the 'onChance' for this file is called.
+     *
+     * Before doing so, it removes the files which were requested for
+     * removal from the watchlist.
+     *
      */
     private boolean changed() {
     	synchronized(this) {
@@ -192,7 +223,12 @@ public abstract class FileWatcher extends Thread {
 	    	FileEntry fe = (FileEntry) i.next();       
 		if(fe.changed()) {
 		    log.service("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
-		    onChange(fe.getFile());
+                    try {
+                        onChange(fe.getFile());
+                    } catch (Throwable e) {
+                        log.warn("onChange of " + fe.getFile().getName() + " lead to exception:");
+                        log.warn(Logging.stackTrace(e));
+                    }
                     if (continueAfterChange) {                        
                         fe.updated(); // onChange was called now, it can be marked up-to-date again
                     } else { // 
@@ -205,7 +241,7 @@ public abstract class FileWatcher extends Thread {
     }
     
     /**
-     * looks if we have to stop
+     * Looks if we have to stop
      */
     private boolean mustStop(){
     	synchronized(this) {
@@ -220,13 +256,15 @@ public abstract class FileWatcher extends Thread {
     public void run() {
     	do {
     	    try {
-    	    	if(log.isDebugEnabled()) log.trace("gonna sleep this filewatcher for : " + delay / 1000 + " seconds");	    
+    	    	if(log.isDebugEnabled()) { 
+                    log.trace("Filewatcher will sleep for : " + delay / 1000 + " s. " + 
+                              "Currently watching: " + toString());
+                }
 	    	Thread.currentThread().sleep(delay);
-      	    }    
-	    catch(InterruptedException e) {
+      	    } catch(InterruptedException e) {
 	    	// no interruption expected
       	    }
 	// when we found a change, we exit..
-	} while(!mustStop() && !changed());
+	} while (!mustStop() && !changed());
     }
 }
