@@ -7,6 +7,7 @@
   <classfile>org.mmbase.module.lucene.Lucene</classfile>
 
   <properties>
+    <property name="fullindexatstartup">true</property>
   </properties>
 
 </module>
