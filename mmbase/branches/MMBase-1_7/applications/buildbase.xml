@@ -290,6 +290,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            optimize="${optimize}"
            deprecation="${deprecation}"
            nowarn="${nowarn}"
+           source="1.4"
            excludes="${compile.excludes}"
 
       >
