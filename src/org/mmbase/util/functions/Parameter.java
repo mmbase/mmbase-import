@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.4 2004-02-02 10:41:36 michiel Exp $
+ * @version $Id: Parameter.java,v 1.5 2004-02-02 14:25:22 michiel Exp $
  * @see Parameters
  */
 
@@ -140,6 +140,17 @@ public class Parameter {
      * @throws IllegalArgumentException if the type is not compatible
      */
     public void checkType(Object value) {
+        if (type.isPrimitive()) {
+            // sigh
+            if (type.equals(Boolean.TYPE) && value instanceof Boolean) return;
+            if (type.equals(Byte.TYPE)   && value instanceof Byte) return;
+            if (type.equals(Character.TYPE) && value instanceof Character) return;
+            if (type.equals(Short.TYPE) && value instanceof Short) return;
+            if (type.equals(Integer.TYPE) && value instanceof Integer) return;
+            if (type.equals(Long.TYPE) && value instanceof Long) return;
+            if (type.equals(Float.TYPE) && value instanceof Float) return;
+            if (type.equals(Double.TYPE) && value instanceof Double) return;
+        }
         if (! type.isInstance(value)) {
             throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
