@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.1 2003-04-09 13:53:54 michiel Exp $
+ * @version $Id: Wizard.java,v 1.74.2.2 2003-07-14 10:48:46 johannes Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1021,10 +1021,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         if (command!=null) expandAttribute(command,"startnodes",null);
 
         // expand attribute 'objectnumber' en 'origin' for editwizard command
-        command = Utils.selectSingleNode(newlist,"command[@name='startwizard']");
-        if (command!=null) {
-            expandAttribute(command,"objectnumber","new");
-            expandAttribute(command,"origin",dataId);
+        // command = Utils.selectSingleNode(newlist,"command[@name='startwizard']");
+        NodeList commands = Utils.selectNodeList(newlist, "command[@name='startwizard']");
+        if (commands != null) {
+            for (int i=0; i<commands.getLength(); i++) {
+                command = commands.item(i);
+                if (command!=null) {
+                    expandAttribute(command,"objectnumber","new");
+                    expandAttribute(command,"origin",dataId);
+                }
+            }
         }
 
         String hiddenCommands = "|" + Utils.getAttribute(fieldlist,"hidecommand") + "|";
