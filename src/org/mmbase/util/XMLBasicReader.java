@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.StringTokenizer;
-import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Enumeration;
 
@@ -32,32 +31,10 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * @author cjr@dds.nl
- *
- * @version $Id: XMLBasicReader.java,v 1.10 2001-07-11 13:22:40 pierre Exp $
- *
- * $Log: not supported by cvs2svn $
- * Revision 1.9  2001/07/09 19:24:07  eduard
- * eduard: added a static function, which provides a DocumentBuilder object, so that there is a handle, to get all xml documents in the same way.
- * Also some code, to enable it for old stuff, but i commented it out, since i didnt dare to change the original code.
- *
- * Revision 1.8  2001/05/18 11:46:14  daniel
- * Added printout of filename on error
- *
- * Revision 1.7  2001/03/23 11:07:16  vpro
- * Enhanced error message
- * CV: ----------------------------------------------------------------------
- *
- * Revision 1.6  2000/12/20 00:24:53  daniel
- * changed xml parser to file:/// for new xerces/win98/win2000
- *
- * Revision 1.5  2000/08/18 19:43:45  case
- * cjr: Added getChildElements(element,tag) method to get obtain all child
- *      elements with a certain tag.
- *
- * Revision 1.4  2000/08/17 21:16:00  case
- * cjr: returned value for non-set attributes now is "" (should it be null?)
- *
+ * @author Case Roule
+ * @author Rico Jansen
+ * @author Pierre van Rooden
+ * @version $Id: XMLBasicReader.java,v 1.11 2001-10-18 11:58:02 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -65,67 +42,56 @@ public class XMLBasicReader  {
     /** for the document builder of javax.xml. */
     private static DocumentBuilder documentBuilder = null;
     /** set this one to true, and parser will be loaded...  */
-    private static boolean useJavaxXML = false;
+    private static boolean useJavaxXML = true;
     /** set this one to true, when all document pars */
     private static boolean validateJavaxXML = true;
 
-    Document document;
-    Hashtable 	languageList; // Hashtable from languagecode to Hashtables with dictionaries
+    protected Document document;
 
-    String  	languagecode;  // code for language, e.g. 'nl'
-    Hashtable 	dictionary; // dictionary of mmbase term identifiers to translations in language
-    String  	loadedfile;
+    private String xmlFilePath;
 
     public XMLBasicReader(String path) {
         try {
-    	    if(useJavaxXML) {
-            	document = getDocumentBuilder().parse(path);
-	    } else {
-            	DOMParser parser = new DOMParser();
-            	parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-            	parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-            	EntityResolver resolver = new XMLEntityResolver();
-            	parser.setEntityResolver(resolver);
-	    	path="file:///"+path;
-	    	loadedfile=path; // save for debug
-            	parser.parse(path);
-            	document = parser.getDocument();
-	    }
-        }
-	catch(Exception e) {
+            if(useJavaxXML) {
+                xmlFilePath=path; // save for debug
+                document = getDocumentBuilder().parse(path);
+            } else {
+                DOMParser parser = new DOMParser();
+                parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
+                parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+                EntityResolver resolver = new XMLEntityResolver();
+                parser.setEntityResolver(resolver);
+                path="file:///"+path;
+                xmlFilePath=path; // save for debug
+                parser.parse(path);
+                document = parser.getDocument();
+            }
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     public static javax.xml.parsers.DocumentBuilder getDocumentBuilder() {
-    	// if we already had one, return this one...
-    	if(documentBuilder!=null) return documentBuilder;
-	log.debug("gonna retrieve a new documentBuilder");
-    	try {
-	    // get a new one...
-    	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-    	    // turn validating on..
-    	    dfactory.setValidating(validateJavaxXML);
-
-	    documentBuilder = dfactory.newDocumentBuilder();
-
-            EntityResolver resolver = new XMLEntityResolver();
+        // if we already had one, return this one...
+        if(documentBuilder!=null) return documentBuilder;
+        try {
+            // get a new documentbuilder...
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            // turn validating on..
+            //  && MMBaseContext.isInitialized());
+            documentBuilder = dfactory.newDocumentBuilder();
+            XMLEntityResolver resolver = new XMLEntityResolver();
             documentBuilder.setEntityResolver(resolver);
-	    ErrorHandler handler = new XMLErrorHandler();
+            dfactory.setValidating(validateJavaxXML && resolver.canResolve());
+            ErrorHandler handler = new XMLErrorHandler();
             documentBuilder.setErrorHandler(handler);
-	    String msg = "The dtd's will ";
-	    if(!documentBuilder.isValidating()) msg += "NOT ";
-	    msg += " validated";
-	    log.debug(msg);
-    	}
-	catch(ParserConfigurationException pce) {
-	    log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
-	    log.error(Logging.stackTrace(pce));
-	    return null;
-	}
-	return documentBuilder;
+        } catch(ParserConfigurationException pce) {
+            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
+            log.error(Logging.stackTrace(pce));
+            return null;
+        }
+        return documentBuilder;
     }
-
 
     /**
      * @param path Dot-separated list of tags describing path from root element to requested element.
@@ -147,30 +113,35 @@ public class XMLBasicReader  {
         if (!st.hasMoreTokens()) {
             // faulty path
             log.error("No tokens in path");
+            return null;
         } else {
             String root = st.nextToken();
             if (!e.getNodeName().equals(root)) {
                 // path should start with document root element
-                log.error("path ["+path+"] doesn't start with root element: incorrect xml file" +
-                          "(Did you use new way to configure modules?)");
-		log.error("XML file with problem ="+loadedfile);
-            } else {
-                while (st.hasMoreTokens()) {
-                    String tag = st.nextToken();
-                    NodeList nl = e.getElementsByTagName(tag);
-                    if (nl.getLength()>0) {
-                        e = (Element)nl.item(0);
-                    } else {
-                        // Handle error!
-                        //System.err.println("No subelements found in "+e.getTagName());
-                        return null;
-                    }
+                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getNodeName()+"): incorrect xml file" +
+                          "("+xmlFilePath+")");
+                return null;
+            }
+            while (st.hasMoreTokens()) {
+                String tag = st.nextToken();
+                NodeList nl = e.getElementsByTagName(tag);
+                if (nl.getLength()>0) {
+                    e = (Element)nl.item(0);
+                } else {
+                    // Handle error!
+                    return null;
                 }
             }
             return e;
         }
-        System.err.println("failed miserably");
-        return null;
+    }
+
+    /**
+     * @param path Path to the element
+     * @return Text value of element
+     */
+    public String getElementValue(String path) {
+        return getElementValue(getElementByPath(path));
     }
 
     /**
@@ -201,18 +172,33 @@ public class XMLBasicReader  {
     }
 
     /**
+     * @param path Path to the element
+     * @param attr Attribute name
+     * @return Value of attribute
+     */
+    public String getElementAttributeValue(String path, String attr) {
+        return getElementAttributeValue(getElementByPath(path),attr);
+    }
+
+
+    /**
      * @param e Element
      * @param attr Attribute name
      * @return Value of attribute
      */
     public String getElementAttributeValue(Element e, String attr) {
-        Node n = e.getAttributes().getNamedItem(attr);
-        // XXX Add errorchecking
-        if (n==null) {
+        if (e==null)
             return "";
-        } else {
-            return n.getNodeValue();
-        }
+        else
+            return e.getAttribute(attr);
+    }
+
+    /**
+     * @param path Path to the element
+     * @return Enumeration of child elements
+     */
+    public Enumeration getChildElements(String path) {
+        return getChildElements(getElementByPath(path));
     }
 
     /**
@@ -220,44 +206,41 @@ public class XMLBasicReader  {
      * @return Enumeration of child elements
      */
     public Enumeration getChildElements(Element e) {
-        Vector v = new Vector();
-        NodeList nl = e.getChildNodes();
-        for (int i=0;i<nl.getLength();i++) {
-            Node n = nl.item(i);
-            if (n.getNodeType() == n.ELEMENT_NODE) {
-                v.addElement(n);
-            }
-        }
-        return v.elements();
+        return getChildElements(e,"*");
+    }
+
+    /**
+     * @param path Path to the element
+     * @param tag tag to match ("*" means all tags")
+     * @return Enumeration of child elements with the given tag
+     */
+    public Enumeration getChildElements(String path,String tag) {
+        return getChildElements(getElementByPath(path),tag);
     }
 
     /**
      * @param e Element
+     * @param tag tag to match ("*" means all tags")
      * @return Enumeration of child elements with the given tag
      */
     public Enumeration getChildElements(Element e,String tag) {
         Vector v = new Vector();
-        NodeList nl = e.getChildNodes();
-        for (int i=0;i<nl.getLength();i++) {
-            Node n = nl.item(i);
-            if (n.getNodeType() == n.ELEMENT_NODE && ((Element)n).getTagName().equalsIgnoreCase(tag)) {
-                v.addElement(n);
+        boolean ignoretag=tag.equals("*");
+        if (e!=null) {
+            NodeList nl = e.getChildNodes();
+            for (int i=0;i<nl.getLength();i++) {
+                Node n = nl.item(i);
+                if (n.getNodeType() == n.ELEMENT_NODE &&
+                    (ignoretag ||
+                     ((Element)n).getTagName().equalsIgnoreCase(tag))) {
+                    v.addElement(n);
+                }
             }
         }
         return v.elements();
     }
 
+    public String getFileName() {
+        return xmlFilePath;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
