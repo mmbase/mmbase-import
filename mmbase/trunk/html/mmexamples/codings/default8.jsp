@@ -109,7 +109,7 @@
 <pre>
 <mm:import id="ai1"><%@include file="included1.xml" %></mm:import><mm:write referid="ai1" escape="text/xml" />
 </pre>
-      <p><em>With jsp:include (UTF-8 xml):</em></p>
+      <p><em>With &lt;@include (UTF-8 xml):</em></p>
 <pre>
 <mm:import id="ai8"><%@include file="included8.xml" %></mm:import><mm:write referid="ai8" escape="text/xml" />
 </pre>
