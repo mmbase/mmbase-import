@@ -1,12 +1,12 @@
-/* 
-
+/*
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
-*/
+ 
+ */
 package org.mmbase.module.database;
 
 import java.sql.*;
@@ -22,13 +22,13 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.17 2002-10-11 12:19:49 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.18 2002-11-07 07:17:10 kees Exp $
  */
 public class MultiPool {
-
+    
     private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
-
-    private List   pool     = new Vector();    
+    
+    private List   pool     = new Vector();
     private List   busyPool = new Vector();
     private int      conPos   = 0;
     private int      conMax   = 4;
@@ -42,46 +42,46 @@ public class MultiPool {
     //private Object   synobj          = new Object();
     // private Object   synobj_getfree  = new Object();
     private DatabaseSupport databasesupport;
-
+    
     private static final boolean DORECONNECT  = true;
-
+    
     /**
      * @javadoc
      */
     MultiPool(DatabaseSupport databasesupport, String url, String name, String password,int conMax) throws SQLException {
-        this(databasesupport,url,name,password,conMax,500);        
-
+        this(databasesupport,url,name,password,conMax,500);
+        
     }
     /**
      * Establish connection to the JDBC Pool(s)
      */
     MultiPool(DatabaseSupport databasesupport,String url, String name, String password, int conMax,int maxQueries) throws SQLException {
-
-        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries"); 
+        
+        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries");
         this.conMax=conMax;
         this.url=url;
         this.name=name;
         this.password=password;
         this.maxQuerys=maxQuerys;
         this.databasesupport=databasesupport;
-
+        
         // put connections on the pool
         for (int i = 0; i < conMax ; i++) {
             Connection con;
             if (name.equals("url") && password.equals("url")) {
                 con = DriverManager.getConnection(url);
             } else {
-                con = DriverManager.getConnection(url,name,password);                
+                con = DriverManager.getConnection(url,name,password);
             }
             initConnection(con);
             pool.add(new MultiConnection(this,con));
         }
-
+        
         semaphore = new DijkstraSemaphore(pool.size());
-
+        
         dbm = getDBMfromURL(url);
-   }
-
+    }
+    
     /**
      * Check the connections
      * @bad-constant  Max life-time of a query must be configurable
@@ -90,23 +90,25 @@ public class MultiPool {
         if (log.isDebugEnabled()) {
             log.debug("JDBC -> Starting the pool check (" + this + ") : busy=" + busyPool.size() + " free=" + pool.size());
         }
-
+        
         int nowTime = (int) (System.currentTimeMillis() / 1000);
         
         List putBacks = new Vector();
         int releases = 0;
-        synchronized (semaphore) { 
+        synchronized (semaphore) {
             //lock semaphore, so during the checks, no connections can be acquired or put back
             // (because the methods of semaphore are synchronized)
             
             for (Iterator i = busyPool.iterator(); i.hasNext();) {
                 MultiConnection con = (MultiConnection) i.next();
                 int diff = nowTime - con.getStartTime();
+                
                 if (diff > 5) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Checking a busy connection "+con);
+                        log.debug("Checking a busy connection "+con +" time = "+ diff);
                     }
-                } 
+                }
+                
                 if (diff < 30) {
                     // below 30 we still wait
                 } else if (diff < 120) {
@@ -117,8 +119,8 @@ public class MultiPool {
                     }
                 } else {
                     // above 120 we close the connection and open a new one
-                    MultiConnection newcon = null;                           
-                    log.service("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
+                    MultiConnection newcon = null;
+                    log.debug("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
                     try {
                         Connection realcon = DriverManager.getConnection(url,name,password);
                         initConnection(realcon);
@@ -129,7 +131,7 @@ public class MultiPool {
                     } catch(Exception re) {
                         log.error("ERROR Can't add connection to pool");
                     }
-                    if (newcon != null) { 
+                    if (newcon != null) {
                         pool.add(newcon);
                         busyPool.remove(con);
                         releases++;
@@ -141,9 +143,9 @@ public class MultiPool {
                     }
                 }
             }
-
-
-            if ((busyPool.size() + pool.size()) != conMax) { 
+            
+            
+            if ((busyPool.size() + pool.size()) != conMax) {
                 // cannot happen, I hope...
                 log.error("Number of connections is not correct: "+ (busyPool.size()+pool.size()) + " != " + conMax);
                 // Check if there are dups in the pools
@@ -157,7 +159,7 @@ public class MultiPool {
                         pool.remove(j);
                     }
                 }
-            
+                
                 while(((busyPool.size() + pool.size()) > conMax) && pool.size()>2) {
                     // Remove too much ones.
                     MultiConnection con = (MultiConnection) pool.remove(0);
@@ -165,17 +167,20 @@ public class MultiPool {
                         log.debug("removing connection "+con);
                     }
                 }
+                
+            }
             
+            semaphore.release(releases);
+            for (Iterator i = putBacks.iterator(); i.hasNext();) {
+                MultiConnection pb = (MultiConnection) i.next();
+                putBack(pb);
             }
         } // synchronized(semaphore)
-        semaphore.release(releases);        
-        for (Iterator i = putBacks.iterator(); i.hasNext();) {
-            MultiConnection pb = (MultiConnection) i.next();
-            putBack(pb);
-        } 
-        
+        if (log.isDebugEnabled()){
+            log.debug("finished  checkTime()");
+        }
     }
-
+    
     /**
      * get a free connection from the pool
      */
@@ -192,7 +197,7 @@ public class MultiPool {
             return null;
         }
     }
-
+    
     /**
      * putback the used connection in the pool
      */
@@ -201,7 +206,7 @@ public class MultiPool {
         if (! busyPool.contains(con)) {
             log.warn("Put back connection was not in busyPool!!");
         }
-
+        
         if (DORECONNECT && (con.getUsage() > maxQuerys)) {
             MultiConnection oldcon = con;
             if (log.isDebugEnabled()) {
@@ -212,7 +217,7 @@ public class MultiPool {
             } catch(Exception re) {
                 log.error("Can't close a connection !!!");
             }
-
+            
             try {
                 if (name.equals("url") && password.equals("url")) {
                     Connection realcon = DriverManager.getConnection(url);
@@ -227,57 +232,57 @@ public class MultiPool {
                 log.error("Can't add connection to pool");
             }
             busyPool.remove(oldcon);
-        } 
+        }
         pool.add(con);
         busyPool.remove(con);
         semaphore.release();
     }
-
+    
     /**
      * get the pool size
      */
     public int getSize() {
         return pool.size();
     }
-
+    
     /**
      * get the number of statements performed
      */
     public int getTotalConnectionsCreated() {
         return totalConnections;
     }
-
+    
     /**
      * @javadoc
      */
     public Iterator getPool() {
         return pool.iterator();
     }
-   
-
+    
+    
     /**
      * @javadoc
      */
-   
+    
     public Iterator getBusyPool() {
         return busyPool.iterator();
     }
     
-
+    
     /**
      * @javadoc
      */
     public String toString() {
         return "dbm=" + dbm + ",name=" + name + ",conmax=" + conMax;
     }
-
+    
     /**
      * @javadoc
      */
     private String getDBMfromURL(String url) {
         return url;
     }
-
+    
     /**
      * @javadoc
      */
@@ -296,7 +301,7 @@ public class MultiPool {
         }
         return(rtn);
     }
-
+    
     /**
      * @javadoc
      */
