@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.25 2004-06-30 11:07:51 michiel Exp $
+ * @version $Id: Query.java,v 1.26 2004-07-29 17:12:40 michiel Exp $
  * @since MMBase-1.7
  * @see    org.mmbase.bridge.util.Queries
  */
@@ -134,6 +134,18 @@ public interface Query extends SearchQuery, Cloneable {
      */
     Query setOffset(int offset);
 
+
+    /**
+     * Gets the 'clean' constraint on this query. I.e. the constraint which were automaticly added
+     * because of security are stripped away, and it is garanteed that you get back what you put in.
+     *
+     * It is adviced that you use this in stead of SearchQuery#getConstraint, because that function
+     * is used by the Query handlers, which <em>do</em> need the security constraints. But otherwise
+     * you don't want to see those.
+     *
+     * @since MMBase-1.7.1
+     */
+    Constraint getCleanConstraint();
 
     // Constraints and so on..
 
