@@ -57,10 +57,11 @@ public interface Cloud {
     public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
 
 	/**
-     * Creates a node using a specified NodeManager
-     * @param nodeManagerName name of the NodeManager defining the node structure
-     * @return the newly created (but not yet committed) node
-     */
+    * Creates a node using a specified NodeManager
+    * The returned node will not be visible in the cloud until the commit() method is called on this node.
+    * @param nodeManagerName name of the NodeManager defining the node structure
+    * @return the newly created (but not yet committed) node
+    */
     public Node createNode(String nodeManagerName);
 	
 	/**
