@@ -50,10 +50,10 @@ public class Authorization {
      *	logging information.
      *	@param user The UserContext, containing the information 
      *	    about the user.
-     *	@param node The MMObjectNode, which has just been added to
+     *	@param nodeid The id of the MMObjectNode, which has just been added to
      *	    the MMBase cloud.
      */        
-    public void create(UserContext user, MMObjectNode node) {
+    public void create(UserContext user, int nodeid) {
     }
     
     /** 
@@ -63,10 +63,10 @@ public class Authorization {
      *	for this object, which can be used for accountability
      *	@param user The UserContext, containing the information 
      *	    about the user.
-     *	@param node The MMObjectNode, which has just been changed
+     *	@param nodeid The id of the MMObjectNode, which has just been changed
      *	    in the cloud.
      */        
-    public void update(UserContext user, MMObjectNode node) {
+    public void update(UserContext user, int nodeid) {
     }
     
     /** 
@@ -78,10 +78,10 @@ public class Authorization {
      *	belongs to this node.
      *	@param user The UserContext, containing the information 
      *	    about the user.
-     *	@param node The MMObjectNode, which has just been removed
+     *	@param nodeid The id of the MMObjectNode, which has just been removed
      *	    in the cloud.
      */        
-    public void remove(UserContext user, MMObjectNode node) {
+    public void remove(UserContext user, int nodeid) {
     }
     
     /** 
@@ -90,12 +90,12 @@ public class Authorization {
      *	by a certain user.
      *	@param user The UserContext, containing the information 
      *	    about the user.
-     *	@param node The MMObjectNode, which has to be checked.
+     *	@param nodeid The id of the MMObjectNode, which has to be checked.
      *	@param operation The operation which will be performed.
      *	@return <code>true</code> if the operation is permitted,
      *	    	<code>false</code> if the operation is not permitted,     
      */        
-    public boolean check(UserContext user, MMObjectNode node, Operation operation) {
+    public boolean check(UserContext user, int nodeid, Operation operation) {
     	return true;
     }
     
@@ -105,12 +105,12 @@ public class Authorization {
      *	certain node done by a certain user. If not, a exception is thrown
      *	@param user The UserContext, containing the information 
      *	    about the user.
-     *	@param node The MMObjectNode, which has to be asserted.
+     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
      *	@param operation The operation which will be performed.
      *	@exception org.mmbase.SecurityException 
      *	    If the assertion fails
      */        
-    public void assert(UserContext user, MMObjectNode node, Operation operation) 
+    public void assert(UserContext user, int nodeid, Operation operation)
     	throws org.mmbase.security.SecurityException 
     {
     }
