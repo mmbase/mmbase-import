@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.1 2003-12-17 20:41:24 michiel Exp $
+ * @version $Id: Parameters.java,v 1.2 2004-01-24 21:17:31 daniel Exp $
  * @see Parameter
  */
 
@@ -193,8 +193,27 @@ public class Parameters extends AbstractList implements List  {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
             if (a.key.equals(arg)) {
-                a.checkType(value);
-                backing.put(arg, value);
+                if (a.checkType(value)) {
+                	backing.put(arg, value);
+		} else {
+			if (value instanceof String) {
+				if (a.getType().equals(Integer.class)) {
+					try {			
+                				backing.put(arg, new Integer(Integer.parseInt((String)value)));
+					} catch(Exception e) {
+            					throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to Integer");
+					}
+				} else if (a.getType().equals(int.class)) {
+					try {			
+                				backing.put(arg, new Integer(Integer.parseInt((String)value)));
+					} catch(Exception e) {
+            					throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to int");
+					}
+				}
+			} else {
+            			throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + a.getType() + " (but is " + (value == null ? value : value.getClass()) + ")");
+			}
+		}
                 return this;
             }
         }
