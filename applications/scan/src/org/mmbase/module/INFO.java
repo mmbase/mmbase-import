@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.29 2001-02-07 10:23:03 daniel Exp $
+$Id: INFO.java,v 1.30 2001-02-07 16:22:49 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.29  2001/02/07 10:23:03  daniel
+yet more time methods (yes they should be moved one of these days)
+
 Revision 1.28  2001/02/05 17:01:55  daniel
 added first of many time methods
 
@@ -41,7 +44,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.29 $ $Date: 2001-02-07 10:23:03 $
+ * @$Revision: 1.30 $ $Date: 2001-02-07 16:22:49 $
  */
 public class INFO extends ProcessorModule {
 
@@ -1420,7 +1423,8 @@ public class INFO extends ProcessorModule {
 
 	
 	private String nextCurTime(StringTokenizer tok) {
-		int curtime=(int)(System.currentTimeMillis()/1000);
+		int curtime=(int)(DateSupport.currentTimeMillis()/1000);
+		//int curtime=(int)(System.currentTimeMillis()/1000);
 		String cmd=tok.nextToken();
 		if (cmd.equals("NEXTHOUR")) {
 			// gives us the next full hour based on realtime
@@ -1431,7 +1435,7 @@ public class INFO extends ProcessorModule {
 			// gives us the next full day based on realtime (00:00)
 			int days=curtime/(3600*24);
 			days++;
-			return(""+(days*(3600*24)));
+			return(""+((days*(3600*24))-3600));
 		} else if (cmd.equals("NEXTTIME")) {
 			// gives us the next full day at time definedd based on realtime 
 			int days=curtime/(3600*24);
@@ -1446,7 +1450,7 @@ public class INFO extends ProcessorModule {
 						int hours=Integer.parseInt(hourstring)*3600;
 						int min=Integer.parseInt(minstring)*60;
 						int total=(days*3600*24)+hours+min;
-						return(""+total);
+						return(""+(total-3600));
 					} catch (Exception e) {
 						System.out.println("Error in NEXTTIME time part make sure its 00:00 format");	
 					}	
