@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.19 2004-02-17 17:47:54 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.20 2004-03-16 17:30:16 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -90,7 +90,8 @@ public class ContextContainer extends HashMap {
         return Character.isLetter(c) || Character.isDigit(c) || c == '_';
     }
     static boolean isContextIdentifierChar(char c) {
-        return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility?
+        return isContextVarNameChar(c) || c == '.'; 
+        // || c =='/'; // / for forward compatibility?
     }
 
 
