@@ -42,17 +42,12 @@ import org.mmbase.util.logging.*;
  * is still busy or just finished.
  *
  * @author Rico Jansen?, Daniel?, David van Zeventer
- * @version $Revision: 1.18 $ $Date: 2001-04-20 14:39:35 $
+ * @version $Revision: 1.19 $ $Date: 2001-04-23 09:33:09 $
  */
 public class EncodeHandler implements Runnable {
 	private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
 	
-	private String 	classname = getClass().getName();
-	private boolean debug = true;
-	private void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
-
 	public boolean waitingForFreeG2Node = false;
-
 	Thread kicker = null;
 	EncodeCop parent;
 	public  MMObjectNode node;
@@ -131,7 +126,7 @@ public class EncodeHandler implements Runnable {
 					// Recover taskname syntax = 'recoverfinishedcdrip:cdplayersnumber'
 					doRecoverFinishedCDRip(Integer.parseInt(task.substring(task.indexOf(":")+1)));
 				} else {
-					debug("run: ERROR, unknown task :"+task);
+					log.error("Unknown task:"+task);
 				}
             } catch (NumberFormatException nfe) {
                 nfe.printStackTrace();
@@ -151,31 +146,31 @@ public class EncodeHandler implements Runnable {
 	public void doCDRip() {
 		// node is a reference to the audiopart node needed to be ripped.
 		int id = node.getIntValue("number");	
-		if (debug) debug("doCDRip: started for audiopart: "+id+", node is a reference to the audiopart to be ripped.");
+		log.info("Started for audiopart: "+id+", node is a reference to the audiopart to be ripped.");
 
 		// Get the cdplayer node through the owner value of the current audiopart.
 		String owner=node.getStringValue("owner");	
-		if (debug) debug("doCDRip: Getting cdplayer that is claimed by owner: "+owner);
+		log.info("Getting cdplayer that is claimed by owner: "+owner);
 		cdplayers cdpbul=(cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");	
 		MMObjectNode cdpnode=cdpbul.getClaimedBy(owner);
 		if (cdpnode!=null) {
-			debug("doCDRip: Found cdplayer "+cdpnode.getStringValue("name"));
+			log.info("Found cdplayer "+cdpnode.getStringValue("name"));
 			// create a new rawaudio for the wav that's will be ripped
 			int STEREO = 2; // mmm... no constant for stereo
 			MMObjectNode wavnode=addRawAudio(id,RawAudioDef.STATUS_ONDERWEG,RawAudioDef.FORMAT_WAV,RawAudioDef.WAV_MAXSPEED,STEREO); 
 
 			// Adding the audiopart objectnumber to the cdplayer.info field (which already contains tracknr.)
-			debug("doCDRip: Adding id (audiopartobjnr) to the cdplayer.info");
+			log.info("Adding id (audiopartobjnr) to the cdplayer.info");
 			String info=cdpnode.getStringValue("info");
 			StringTagger tagger=new StringTagger(info);
 			String tracknr=tagger.Value("tracknr");
 			if (tracknr!=null) {
 				// Set cdplayer state to 'record', the node change will eventually signal remotebuilder to start ripping
-				debug("doCDRip: Setting state to 'record' to rip tracknr "+tracknr+" for id "+id);
+				log.info("Setting state to 'record' to rip tracknr "+tracknr+" for id "+id);
 				cdpnode.setValue("state","record");
 				cdpnode.setValue("info","tracknr="+tracknr+" id="+id);
 			} else {
-				debug("doCDRip: ERROR: Can't get selected tracknr from cdplayers.info field value="+tracknr);
+				log.info("Can't get selected tracknr from cdplayers.info field value="+tracknr);
 				cdpnode.setValue("state","error");
 				cdpnode.setValue("info","ERROR: Can't get selected tracknr from cdplayers.info field value="+tracknr);
 			}
@@ -184,29 +179,29 @@ public class EncodeHandler implements Runnable {
 			// wait for cdplayer to finish
 			boolean serviceFinished = waitForServiceToFinish(cdpbul,cdpnode.getIntValue("number"));
 			if (serviceFinished) {
-				if (debug) debug("doCDRip: cdplayer is 'waiting' again, checking exitvalue");
 				// check the cdplayer exitvalue before recovering.
 				cdpnode = cdpbul.getNode(cdpnode.getIntValue("number"));	
+				log.info("cdplayer "+cdpnode.getStringValue("name")+" is 'waiting' again, checking exitvalue");
 				if (checkExitValue(cdpnode)) {
-					debug("doCDRip: exit ok, resetting cdplayer, and finishing rawaudio state.");
+					log.info("exit ok, resetting cdplayer, and finishing rawaudio state.");
 					finishRawAudio(); // Recover by finshing the rawaudio node state.
 					resetService(cdpnode); // Reset the current service.
 
 					// create the needed g2 RawAudio node
 					int rastate = RawAudioDef.STATUS_VERZOEK;
-					if (debug) debug("doCDRipRecover: Creating new rawaudio of type G2 with state: "+rastate+" id:"+id);
+					log.info("Creating new rawaudio of type G2 with state: "+rastate+" id:"+id);
 					addRawAudio(id,rastate,RawAudioDef.FORMAT_G2,RawAudioDef.G2_MAXSPEED,STEREO);
 					parent.removeEncodeHandler(this); // Finally remove this encodehandler.
 				} else {
-					debug("doCDRip: ERROR: can't recover for "+id+", removing encodehandler");
+					log.error("Can't recover for "+id+", removing encodehandler");
 					parent.removeEncodeHandler(this); // cant recover so remove handler.
 				}
 			} else {
-				debug("doCDRip: ERROR: cdplayer did not finish correctly, node:"+cdpnode+", removing encodehandler");
+				log.error("cdplayer "+cdpnode.getStringValue("name")+" didn't finish correctly, node:"+cdpnode+", removing encodehandler");
 				parent.removeEncodeHandler(this); // cant recover so remove handler.
 			}
 		} else {
-			debug("doCDRip: ERROR: Can't find a cdplayer claimed by owner: "+owner+", removing encodehandler");
+			log.error("Can't find a cdplayer claimed by owner: "+owner+", removing encodehandler");
 			parent.removeEncodeHandler(this); // cant recover so remove handler.
 		}
 	}
@@ -222,19 +217,19 @@ public class EncodeHandler implements Runnable {
 	 */
 	public void doG2Encode() {
 		int id=node.getIntValue("id");	
-		if (debug) debug("doG2Encode(): Started for audiopart:"+id+", node is reference to a rawaudio for the encoded audio");
+		log.info("Started for audiopart:"+id+", node is reference to a rawaudio for the encoded audio");
 
 		// Waits until a free g2encoder is available.
 		g2encoders g2bul =(g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");	
 		MMObjectNode g2encnode = getFreeG2Node(g2bul);
-		if (debug) debug("doG2Encode: Got free g2encoder, setting rawaudio state from "+node.getIntValue("status")+" to "+RawAudioDef.STATUS_ONDERWEG);
+		log.info("Got free g2encoder, setting rawaudio state from "+node.getIntValue("status")+" to "+RawAudioDef.STATUS_ONDERWEG);
 		node.setValue("status",RawAudioDef.STATUS_ONDERWEG);
 		node.commit();
 
 		// Encoded files will be stored in subdir, where name is the id nr. (mkdir is done remotely).	
 		// Id is used during a busy situation recovery
 		String params="id="+id+" subdir="+id+" inputname=/data/audio/wav/"+id+".wav outputname=/data/audio/ra/"+id+"/surestream.rm sureStream=true encodeAudio=true forceOverwrite=true audioFormat=\"stereo music\"";
-		if (debug) debug("doG2Encode: Setting g2encoder state to 'encode' and filling info with '"+params+"'");
+		log.info("Setting g2encoder state to 'encode' and filling info with '"+params+"'");
 		g2encnode.setValue("info",params);
 		g2encnode.setValue("state","encode");
 		g2encnode.commit();	
@@ -242,20 +237,20 @@ public class EncodeHandler implements Runnable {
 		// wait for encoder to finish
 		boolean serviceFinished = waitForServiceToFinish(g2bul,g2encnode.getIntValue("number"));
 		if (serviceFinished) {
-			if (debug) debug("doG2Encoder: g2encoder is 'waiting' again, checking exitvalue");
 			// check the encoder exitvalue before recovering.
 			g2encnode = g2bul.getNode(g2encnode.getIntValue("number"));	
+			log.info("g2encoder is "+g2encnode.getStringValue("name")+" 'waiting' again, checking exitvalue");
 			if (checkExitValue(g2encnode)) {
-				debug("doG2Encode: exit ok, resetting g2encoder, and finishing rawaudio state.");
+				log.info("exit ok, resetting g2encoder, and finishing rawaudio state.");
 				finishRawAudio(); // Recover by finshing the rawaudio node state.
 				resetService(g2encnode); // Reset the current service.
 				parent.removeEncodeHandler(this); // Finally remove this encodehandler.
 			} else {
-				debug("doG2EncodeRecover: ERROR: can't recover for "+id+", removing encodehandler");
+				log.error("Can't recover for "+id+", removing encodehandler");
 				parent.removeEncodeHandler(this); // cant recover so remove handler.
 			}
 		} else {
-			debug("doG2Encode: ERROR: g2encoder did not finish correctly, node:"+g2encnode+", removing encodehandler");
+			log.error("g2encoder "+g2encnode.getStringValue("name")+" did not finish correctly, node:"+g2encnode+", removing encodehandler");
 			parent.removeEncodeHandler(this); // cant recover so remove handler.
 		}
 	}
@@ -290,7 +285,7 @@ public class EncodeHandler implements Runnable {
 	 * @return a free g2encoders node.
 	 */
 	private synchronized MMObjectNode getFreeG2Node(g2encoders builder) {
-		if (debug) debug("getFreeG2Node: Searching for the first g2encodersnode having a 'waiting' state."); 
+		log.info("Searching for the first g2encodersnode having a 'waiting' state."); 
 		MMObjectNode result = null;
 		int i = 1;
 		try {
@@ -299,19 +294,18 @@ public class EncodeHandler implements Runnable {
 				if(e.hasMoreElements()) {
 					result = (MMObjectNode)e.nextElement();
 				} else {
-					debug("getFreeG2Node(): no free node found.. waiting 60 secs.. goodbye!");
+					log.info("No free node found.. waiting 60 secs.. goodbye!");
 					parent.addWaitingEncodeHandler(this);
 					wait( (60*1000) ); 
 					parent.removeWaitingEncodeHandler(this);
 					i++;
-					debug("getFreeG2Node(): checking for "+i+" time for free enoder..");
+					log.info("Checking for "+i+" time for free enoder..");
 				}	
 			}
 		} catch(InterruptedException ie) {
-			debug("getFreeG2Node(): ERROR: " + ie);		
 			ie.printStackTrace();
 		}
-		if (debug) debug("getFreeG2Node: Found free node "+result);
+		log.info("Found free node "+result);
 		return result;
 	}
 
@@ -332,27 +326,27 @@ public class EncodeHandler implements Runnable {
 	 * @param g2encnumber object number of the g2encoder we're recovering for.
 	 */
 	public void doRecoverBusyG2Encoder(int g2encnumber) {
-		if (debug) debug("doRecoverBusyG2Encoder: Recovery started for rawaudio.id:"+node.getIntValue("id"));
+		log.info("Recovery started for rawaudio.id:"+node.getIntValue("id"));
 
 		// wait for encoder to finish
 		g2encoders g2bul= (g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");
 		MMObjectNode g2encnode = g2bul.getNode(g2encnumber);
 		boolean serviceFinished = waitForServiceToFinish(g2bul,g2encnumber);
 		if (serviceFinished) {
-			if (debug) debug("doRecoverBusyG2Encoder: g2encoder is 'waiting' again, checking exitvalue");
 			// check the encoder exitvalue before recovering.
 			g2encnode = g2bul.getNode(g2encnumber);	
+			log.info("g2encoder "+g2encnode.getStringValue("name")+" is 'waiting' again, checking exitvalue");
 			if (checkExitValue(g2encnode)) {
-				debug("doRecoverBusyG2Encoder: exit ok, resetting g2encoder, and finishing rawaudio state.");
+				log.info("exit ok, resetting g2encoder, and finishing rawaudio state.");
 				finishRawAudio(); // Recover by finshing the rawaudio node state.
 				resetService(g2encnode); // Reset the current service.
 				parent.removeEncodeHandler(this); // Finally remove this encodehandler.
 			} else {
-				debug("doRecoverBusyG2Encoder: ERROR: can't recover for "+node.getIntValue("id")+", removing encodehandler");
+				log.error("Can't recover for "+node.getIntValue("id")+", removing encodehandler");
 				parent.removeEncodeHandler(this); // cant recover so remove handler.
 			}
 		} else {
-			debug("doRecoverBusyG2Encoder: ERROR: g2encoder did not finish correctly, node:"+g2encnode+", removing encodehandler");
+			log.error("g2encoder "+g2encnode.getStringValue("name")+" did not finish correctly, node:"+g2encnode+", removing encodehandler");
 			parent.removeEncodeHandler(this); // cant recover so remove handler.
 		}
 	}
@@ -369,7 +363,7 @@ public class EncodeHandler implements Runnable {
 	 * @param cdplayernumber object number of the cdplayer we're recovering for.
 	 */
 	public void doRecoverBusyCDRip(int cdplayernumber) {
-		if (debug) debug("doRecoverBusyCDRip: Recovery started for rawaudio.id:"+node.getIntValue("id"));
+		log.info("Recovery started for rawaudio.id:"+node.getIntValue("id"));
 
 		// wait for cdplayer to finish
 		cdplayers cdpbul= (cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");
@@ -378,24 +372,25 @@ public class EncodeHandler implements Runnable {
 		if (serviceFinished) {
 			// check the cdplayer exitvalue before recovering.
 			cdpnode = cdpbul.getNode(cdplayernumber);
+			log.info("cdplayer "+cdpnode.getStringValue("name")+" is 'waiting' again, checking exitvalue");
 			if (checkExitValue(cdpnode)) {
-				debug("doRecoverBusyCDRip: exit ok, finishing rawaudio state, add new ra g2 and resetting cdplayer.");
+				log.info("exit ok, finishing rawaudio state, add new ra g2 and resetting cdplayer.");
 				finishRawAudio(); // Recover by finishing the rawaudio node state.
 				resetService(cdpnode); // Reset the current service.
 
 				// create the needed g2 RawAudio node
 				int state = RawAudioDef.STATUS_VERZOEK;
 				int id = node.getIntValue("id");
-				if (debug) debug("doRecoverBusyCDRip: Creating new rawaudio of type G2 with state: "+state+" id:"+id);
+				log.info("Creating new rawaudio of type G2 with state: "+state+" id:"+id);
 				addRawAudio(id,state,RawAudioDef.FORMAT_G2,RawAudioDef.G2_MAXSPEED,2);
-				if (debug) debug("doRecoverBusyCDRip: Removing this EncodeHandler now.");
+				log.info("Removing this EncodeHandler now.");
 				parent.removeEncodeHandler(this); // Finally remove this encodehandler.
 			} else {
-				debug("doRecoverBusyCDRip: ERROR: can't recover for "+node.getIntValue("id")+", removing encodehandler");
+				log.error("Can't recover for "+node.getIntValue("id")+", removing encodehandler");
 				parent.removeEncodeHandler(this); // cant recover so remove handler.
 			}
 		} else {
-			debug("doRecoverBusyCDRip: ERROR: g2encoder did not finish correctly, node:"+cdpnode+", removing encodehandler");
+			log.error("cdplayer "+cdpnode.getStringValue("name")+"  did not finish correctly, node:"+cdpnode+", removing encodehandler");
 			parent.removeEncodeHandler(this); // cant recover so remove handler.
 		}
 	}
@@ -412,18 +407,19 @@ public class EncodeHandler implements Runnable {
 	 * @param g2encnumber object number of the g2encoder we're recovering for.
 	 */
 	public void doRecoverFinishedG2Encoder(int g2encnumber) {
-		if (debug) debug("doRecoverFinishedG2Encoder: Recovery started for rawaudio.id:"+node.getIntValue("id"));
+		log.info("Recovery started for rawaudio.id:"+node.getIntValue("id"));
 
 		g2encoders g2bul= (g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");
 		MMObjectNode g2encnode = g2bul.getNode(g2encnumber);
 		// check the encoder exitvalue before recovering.
+		log.info("g2encoder "+g2encnode.getStringValue("name")+" is 'waiting' again, checking exitvalue");
 		if (checkExitValue(g2encnode)) {
-			debug("doRecoverFinishedG2Encoder: exit ok, finishing rawaudio state and resetting g2encoder.");
+			log.info("exit ok, finishing rawaudio state and resetting g2encoder.");
 			finishRawAudio(); // Recover by finishing the rawaudio node state.
 			resetService(g2encnode); // Reset the current service.
 			parent.removeEncodeHandler(this); // Finally remove this encodehandler.
 		} else {
-			debug("doRecoverFinishedG2Encoder: ERROR: can't recover for "+node.getIntValue("id")+", removing encodehandler");
+			log.error("Can't recover for "+node.getIntValue("id")+", removing encodehandler");
 			parent.removeEncodeHandler(this); // cant recover so remove handler.
 		}
 	}
@@ -442,25 +438,26 @@ public class EncodeHandler implements Runnable {
 	 * @param cdplayernumber object number of the cdplayer we're recovering for.
 	 */
 	public void doRecoverFinishedCDRip(int cdplayernumber) {
-		if (debug) debug("doRecoverFinishedCDRip: Recovery started for rawaudio.id:"+node.getIntValue("id"));
+		log.info("Recovery started for rawaudio.id:"+node.getIntValue("id"));
 
 		cdplayers cdpbul= (cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");
 		MMObjectNode cdpnode = cdpbul.getNode(cdplayernumber);
 		// check the cdplayer exitvalue before recovering.
+		log.info("cdplayer "+cdpnode.getStringValue("name")+" is 'waiting' again, checking exitvalue");
 		if (checkExitValue(cdpnode)) {
-			debug("doRecoverFinishedCDRip: exit ok, finishing rawaudio state, add new ra g2 and resetting cdplayer.");
+			log.info("exit ok, finishing rawaudio state, add new ra g2 and resetting cdplayer.");
 			finishRawAudio(); // Recover by finishing the rawaudio node state.
 			resetService(cdpnode); // Reset the current service.
 
 			// create the needed g2 RawAudio node
 			int state = RawAudioDef.STATUS_VERZOEK;
 			int id = node.getIntValue("id");
-			if (debug) debug("doRecoverFinishedCDRip: Creating new rawaudio of type G2 with state: "+state+" id:"+id);
+			log.info("Creating new rawaudio of type G2 with state: "+state+" id:"+id);
 			addRawAudio(id,state,RawAudioDef.FORMAT_G2,RawAudioDef.G2_MAXSPEED,2);
-			if (debug) debug("doRecoverFinishedCDRip: Removing this EncodeHandler now.");
+			log.info("Removing this EncodeHandler now.");
 			parent.removeEncodeHandler(this); // Finally remove this encodehandler.
 		} else {
-			debug("doRecoverFinishedCDRip: ERROR: can't recover for "+node.getIntValue("id")+", removing encodehandler");
+			log.error("Can't recover for "+node.getIntValue("id")+", removing encodehandler");
 			parent.removeEncodeHandler(this); // cant recover so remove handler.
 		}
 	}
@@ -482,19 +479,19 @@ public class EncodeHandler implements Runnable {
 				parent.Vwms.mmb.mmc.waitUntilNodeChanged(servicenode);
 
 				newservicenode=servicebul.getNode(servicenode.getIntValue("number"));
-				if (debug) debug("waitForServiceToFinish: waitUntilNodeChanged done, gettingNode: "+newservicenode);
+				log.info("waitUntilNodeChanged done, gettingNode: "+newservicenode);
 				state = newservicenode.getStringValue("state");
 				if (state.equals("waiting")) {
 					changed=true;
 				} else if (state.equals("error")) {
-					debug("waitForServiceToFinish: ERROR: Service state is error!");
+					log.error("State of service "+newservicenode.getStringValue("name")+" is 'error'!");
 					return false;
 				}
 			}
-			if (debug) debug("waitForServiceToFinish: Service has state:"+state);
+			log.info("State of service "+newservicenode.getStringValue("name")+" is '"+state+"'");
 			return true;
 		} else {
-			debug("waitForServiceToFinish: ERROR: Can't get servicenode:"+servicenumber+", getNode returns null");
+			log.error("Can't get servicenode:"+servicenumber+", getNode returns null");
 			return false;
 		}
 	}
@@ -505,7 +502,7 @@ public class EncodeHandler implements Runnable {
 	 * @return true if the exitvalue=0, false otherwise.
 	 */	
 	private boolean checkExitValue(MMObjectNode servicenode) {
-		if (debug) debug("checkExitValue: Checking for service: "+servicenode.getStringValue("name"));
+		log.info("Checking for service: "+servicenode.getStringValue("name"));
 		// check exitvalue and recover rawaudio node.
 		StringTagger infoTagger = new StringTagger(servicenode.getStringValue("info"));
 		if (infoTagger.containsKey("result")) {
@@ -515,16 +512,16 @@ public class EncodeHandler implements Runnable {
 				if (exit==0) {
 					return true;
 				} else {
-					debug("checkExitValue: ERROR: exit !=0 (exit="+exit+")");
+					log.error("exit !=0 (exit="+exit+")");
 					return false;
 				}
 			} catch (NumberFormatException nfe) {
-				debug("checkExitValue: ERROR: exit is no int (exit="+exit+")");
+				log.error("exit is no int (exit="+exit+")");
 				nfe.printStackTrace();
 				return false;
 			}
 		} else {
-			debug("checkExitValue: ERROR: no result tag in info field");
+			log.error("No result tag in info field");
 			return false;
 		}
 	}
