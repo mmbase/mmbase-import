@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.22 2003-01-07 14:28:25 michiel Exp $
+#  $Id: cvsmail,v 1.23 2003-01-07 15:15:37 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -68,7 +68,7 @@ if ($child = fork()) {
     
 
     # do the mailing
-    if (0) {
+    if (1) {
 	my $mail = new FileHandle("|mail -s \"$subject\" $toaddress");
 	
 	print $mail $message."\n";
