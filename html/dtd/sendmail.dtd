@@ -1,6 +1,0 @@
-<!--
-      sendmail.dtd
-        - DTD for MMBase sendmail module
--->
-<!ELEMENT sendmail (mailhost)>
-<!ELEMENT mailhost (#PCDATA)>

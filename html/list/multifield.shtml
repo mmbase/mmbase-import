@@ -1,5 +1,0 @@
-<PROCESSOR MMBASE>
-
-<LIST OBJECTS TYPE="typedef" FIELDS="number,name" WHERE="number==$PARAM1">
-    <OPTION VALUE="$ITEM1"> $ITEM2
-</LIST>

@@ -13,12 +13,11 @@ import java.io.*;
 
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.Module;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.apache.tomcat.core.*;
+// rmeoved temp, daniel. import org.apache.tomcat.core.*;
 
 
 /**
@@ -30,7 +29,9 @@ import org.apache.tomcat.core.*;
 
  */
 
-public class jumpersInterceptor extends BaseInterceptor { 
+// changed for compile. public class jumpersInterceptor extends JamesServlet implements RequestInterceptor { 
+  /* removed to allow full compile, daniel
+public class jumpersInterceptor extends JamesServlet { 
 
 
     static MMBase mmbase = null;
@@ -40,37 +41,29 @@ public class jumpersInterceptor extends BaseInterceptor {
 
                
     public jumpersInterceptor() {
-        mmbase=(MMBase)getModule("MMBASEROOT");
+	mmbase=(MMBase)getModule("MMBASEROOT");
     }
  
     public void setContextManager( ContextManager cm ) {
-        this.cm=cm;
+	this.cm=cm;
     }
    
-	/*
-	* get the needed module so we can return it
-	*/
-	protected final Object getModule(String name) {
-		return(Module.getModule(name));
-	}
 
-
-    /* 
-     * Doesn't work with Tomcat 3.2, but keep it here for backwards comp.
-     */
     public int preService(Request req, Response res) {
-        if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
-        try {
-            String url=null;
-            String tmpr=req.getRequestURI().substring(1);
-            if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
-            if (url!=null) {
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                res.setContentType("text/html");
-                res.setHeader("Location",url);
-                return OK;
-            }
+	if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
+	incRefCount(req.getFacade());
+            try {
+	        String url=null;
+		String tmpr=req.getRequestURI().substring(1);
+		if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
+		if (url!=null) {
+		    res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+		    res.setContentType("text/html");
+		    res.setHeader("Location",url);
+		    return OK;
+		}
 	    } finally { 
+		decRefCount(req.getFacade()); 
 	    }
 	    return OK;
     }
@@ -78,76 +71,58 @@ public class jumpersInterceptor extends BaseInterceptor {
 
     private String getUrl(String key) {
         String url=null;
-		Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
-		if (bul!=null) {
-			if (key.endsWith("/")) {
-                url=bul.getJump(key.substring(0,key.length()-1));
-            } else {
-                url=bul.getJump(key);
-            }
-			if (url!=null) return(url);
+	Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
+	if (bul!=null) {
+	    if (key.indexOf('-')==-1) {
+	        if (key.endsWith("/")) { 
+		    url=bul.getJump(key.substring(0,key.length()-1));
 		} else {
-			System.out.println("servjumpers -> can't access mmbase/jumpers");
+		    url=bul.getJump(key);
 		}
-		return(null);
+	    }
+	    if (url!=null) return(url);
+	} else {
+	    System.out.println("servjumpers -> can't access mmbase/jumpers");
 	}
+	return(null);
+    }
 
 
     public int requestMap(Request request ) {
-		return 0;
+	return 0;
     }
 
-    public int contextMap( Request req ) {
-        return 0;
+    public int contextMap( Request rrequest ) {
+	return 0;
     }
 
     public int authenticate(Request request, Response response) {
-		return 0;
+	return 0;
     }
 
     public int authorize(Request request, Response response) {
-		return 0;
+	return 0;
     }
 
-    public int authorize(Request request, Response response, String reqRoles[]) {
-		return 0;
-	}
-    
-	public int newSessionRequest( Request request, Response response) {
-		return 0;
-	}
-
-    public int beforeBody( Request req, Response res ) {
-        if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
-        try {
-            String url=null;
-            String tmpr=req.getRequestURI().substring(1);
-            if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
-            if (url!=null) {
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                res.setContentType("text/html");
-                res.setHeader("Location",url);
-                return OK;
-            }
-	    } finally {
-	    }
-	    return OK;
+    public int beforeBody( Request rrequest, Response response ) {
+	return 0;
     }
 
     public int beforeCommit( Request request, Response response) {
-		return 0;
+	return 0;
     }
 
 
     public int afterBody( Request request, Response response) {
-		return 0;
+	return 0;
     }
 
     public int postService(Request request, Response response) {
-		return 0;
+	return 0;
     }
 
     public String []getMethods()  {
-		return methods;
+	return methods;
     }
 }
+ */

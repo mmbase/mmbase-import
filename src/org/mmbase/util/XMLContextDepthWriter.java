@@ -218,28 +218,18 @@ public class XMLContextDepthWriter  {
 
 
     static int getStartNode(XMLContextDepthReader capp, MMBase mmb) {
-	// check if it has a alias
-	String alias=capp.getStartAlias();
-	if (alias!=null) {
-		OAlias bul=(OAlias)mmb.getMMObject("oalias");
-		int number=bul.getNumber(alias);
-		if (number==-1) System.out.println("Invalid Start Node Alias please make sure its valid");
-		return(number);
-	} else {
-		String builder=capp.getStartBuilder();
-		String where=capp.getStartWhere();
-		MMObjectBuilder bul=mmb.getMMObject(builder);
-		if (bul!=null) {
-			Enumeration results=bul.search(where);	
-			if (results.hasMoreElements()) {
-				MMObjectNode node=(MMObjectNode)results.nextElement();
-				return(node.getIntValue("number"));
-			}
-		} else {
-			System.out.println("ContextDepthWriter-> can't find builder ("+builder+")");
+	String builder=capp.getStartBuilder();
+	String where=capp.getStartWhere();
+	MMObjectBuilder bul=mmb.getMMObject(builder);
+	if (bul!=null) {
+		Enumeration results=bul.search(where);	
+		if (results.hasMoreElements()) {
+			MMObjectNode node=(MMObjectNode)results.nextElement();
+			return(node.getIntValue("number"));
 		}
+	} else {
+		System.out.println("ContextDepthWriter-> can't find builder ("+builder+")");
 	}
-	System.out.println("Invalid Start Node please fix your where settings or use a alias");
 	return(-1);
     }
 
@@ -271,15 +261,10 @@ public class XMLContextDepthWriter  {
 
     public static boolean writeContextXML(XMLContextDepthReader capp,String filename) {
 	String body="<contextdepth>\n";
-	String alias=capp.getStartAlias();
-	if (alias!=null) {
-		body+="\t<startnode alias=\""+alias+"\" />\n";
-	} else {
-		body+="\t<startnode>\n";
-		body+="\t\t<builder>"+capp.getStartBuilder()+"</builder>\n";
-		body+="\t\t<where>"+capp.getStartWhere()+"</where>\n";
-		body+="\t</startnode>\n\n";
-	}
+	body+="\t<startnode>\n";
+	body+="\t\t<builder>"+capp.getStartBuilder()+"</builder>\n";
+	body+="\t\t<where>"+capp.getStartWhere()+"</where>\n";
+	body+="\t</startnode>\n\n";
 	body+="\t<depth>"+capp.getDepth()+"</depth>\n";
 	body+="</contextdepth>\n";
 	saveFile(filename,body);
