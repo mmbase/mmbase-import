@@ -7,7 +7,7 @@
 <mm:write referid="language" jspvar="lang" vartype="string">
 <%
   locale  =  new java.util.Locale(lang, "");
-  m = java.util.ResourceBundle.getBundle("org.mmbase.util.media.resources.mediaedit", locale);
+  m = java.util.ResourceBundle.getBundle("org.mmbase.applications.media.resources.mediaedit", locale);
 %>
 </mm:write>
 
@@ -16,7 +16,7 @@
    <!--
 
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.15 2003-01-21 17:41:11 michiel Exp $ 
+    @version  $Id: entrancepage.jsp,v 1.16 2003-02-04 14:06:54 michiel Exp $ 
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <head>
