@@ -269,7 +269,7 @@ public class ListTag extends NodeLikeTag implements BodyTag {
 
                 listSize = nodes.size();
                 if (to >= listSize) {
-                    to = listSize - 1;
+                    to = listSize;
                 }
                 if (offset >= listSize) {
                     offset = listSize - 1;
