@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.9 2003-06-06 10:03:15 pierre Exp $
+ * @version $Id: TreeTag.java,v 1.10 2003-06-18 11:49:27 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -34,13 +34,13 @@ public class TreeTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(TreeTag.class.getName());
 
     private Attribute thread   = Attribute.NULL;
-    private Attribute fieldlist= Attribute.NULL;
+    private Attribute fieldList= Attribute.NULL;
     private Attribute  maxdepth= Attribute.NULL;
     private Attribute  startafternode = Attribute.NULL;
     private Attribute  startaftersequence = Attribute.NULL;
     private Attribute  type = Attribute.NULL;
-    private Attribute  opentag = Attribute.NULL;
-    private Attribute  closetag = Attribute.NULL;
+    private Attribute  openTag = Attribute.NULL;
+    private Attribute  closeTag = Attribute.NULL;
 
     protected Module community = null;
 
@@ -57,19 +57,19 @@ public class TreeTag extends AbstractNodeListTag {
     }
 
     public void setFields(String fields) throws JspTagException {
-        fieldlist = getAttribute(fields);
+        fieldList = getAttribute(fields);
     }
-    protected List getFields() throws JspTagException {
-        List res = new Vector();
-        StringTokenizer st = new StringTokenizer(fieldlist.getString(this), ",");
+    protected List getFields(String fields) throws JspTagException {
+        List res = new ArrayList();
+        StringTokenizer st = new StringTokenizer(fields, ",");
         while(st.hasMoreTokens()){
             res.add(st.nextToken().trim());
         }
         return res;
     }
 
-    private void setDefaultFields() throws JspTagException {
-        setFields("number,listhead,depth,listtail,subject,timestamp,replycount,info");
+    private List getDefaultFields() throws JspTagException {
+        return getFields("number,listhead,depth,listtail,subject,timestamp,replycount,info");
     }
 
     public void setMaxdepth(String maxdepth) throws JspTagException {
@@ -81,51 +81,63 @@ public class TreeTag extends AbstractNodeListTag {
     }
 
     public void setStartaftersequence(String startaftersequence) throws JspTagException {
-        this.startaftersequence=getAttribute(startaftersequence);
+        this.startaftersequence = getAttribute(startaftersequence);
     }
 
-    public void setOpentag(String tag) throws JspTagException {
-        this.opentag=getAttribute(tag);
+    public void setOpenTag(String tag) throws JspTagException {
+        this.openTag = getAttribute(tag);
     }
 
-    public void setClosetag(String tag) throws JspTagException {
-        this.closetag=getAttribute(tag);
+    public void setCloseTag(String tag) throws JspTagException {
+        this.closeTag = getAttribute(tag);
     }
 
     /**
      *
      */
     public int doStartTag() throws JspTagException {
+        if (thread == Attribute.NULL) throw new JspTagException("Attribute thread has not been specified");
+
         //this is where we do the seach
-        community=getCloudContext().getModule("communityprc");
-        if (thread==null) throw new JspTagException("Attribute thread has not been specified");
-        Hashtable params=new Hashtable();
-        params.put("NODE",thread);
-        if (fieldlist==null) {
-            setDefaultFields();
+        community = getCloudContext().getModule("communityprc");
+        Hashtable params = new Hashtable();
+        params.put("NODE", thread.getString(this));
+
+        List fields;
+        if (fieldList == Attribute.NULL) {
+            fields = getDefaultFields();
+        } else {
+            fields = getFields(fieldList.getString(this));
         }
-        params.put("FIELDS",fieldlist);
+        params.put("FIELDS", fields);
+
         try {
-            Cloud cloud=getCloud();
-            params.put("CLOUD",cloud);
-        } catch (JspTagException e) {}
+            Cloud cloud = getCloud();
+            params.put("CLOUD", cloud);
+        } catch (JspTagException e) {
+            log.debug(e.toString());
+        }
 
-
-        if (orderby != Attribute.NULL)     params.put("SORTFIELDS", orderby.getString(this));
+        if (orderby    != Attribute.NULL)  params.put("SORTFIELDS", orderby.getString(this));
         if (directions != Attribute.NULL)  params.put("SORTDIRS", directions.getString(this));
-        if (maxdepth   != Attribute.NULL)  params.put("MAXDEPTH", "" + maxdepth.getString(this));
-        if (offset != Attribute.NULL)     params.put("FROMCOUNT", "" + offset.getInt(this, 0));
-        if (max     != Attribute.NULL)     params.put("MAXCOUNT", max.getString(this));
+        if (maxdepth   != Attribute.NULL)  params.put("MAXDEPTH", maxdepth.getString(this));
+        if (offset     != Attribute.NULL)  params.put("FROMCOUNT", "" + offset.getInt(this, 0));
+        if (max        != Attribute.NULL)  params.put("MAXCOUNT", max.getString(this));
         if (startafternode != Attribute.NULL) {
             params.put("STARTAFTERNODE", startafternode.getString(this));
         } else if (startaftersequence != Attribute.NULL) {
             params.put("STARTAFTERSEQUENCE",startaftersequence.getString(this));
         }
-        if (opentag!= Attribute.NULL) params.put("OPENTAG",opentag.getString(this));
-        if (closetag!= Attribute.NULL) params.put("CLOSETAG",closetag.getString(this));
-        NodeList nodes = community.getList("TREE",params,pageContext.getRequest(),pageContext.getResponse());
-        
-        return setReturnValues(nodes,false);
+        if (openTag  != Attribute.NULL) params.put("OPENTAG", openTag.getString(this));
+        if (closeTag != Attribute.NULL) params.put("CLOSETAG", closeTag.getString(this));
+
+        NodeList nodes = community.getList("TREE", params, 
+                                           pageContext.getRequest(), 
+                                           pageContext.getResponse());
+        if (log.isDebugEnabled()) {
+            log.debug("Found " + nodes + " with " + params);
+        }
+        return setReturnValues(nodes, false);
     }
 
 }
