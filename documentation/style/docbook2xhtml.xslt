@@ -44,6 +44,8 @@
 
   <!-- specify meta-tags for utf-8 'cause IE is too dumb -->
   <xsl:template name="user.head.content">
+    <link rel="icon" href="{$root}style/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="{$root}style/favicon.ico" type="image/x-icon" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   </xsl:template>
 
