@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
-<application name="Basics" maintainer="mmbase.org" version="1" auto-deploy="false">
+<application name="Basics" maintainer="mmbase.org" version="1" auto-deploy="true">
 
 	<neededbuilderlist>
-	  <builder maintainer="mmbase.org" version="2">jumpers</builder>
-	</neededbuilderlist>	
+           <builder maintainer="mmbase.org" version="0">typedef</builder>
+           <builder maintainer="mmbase.org" version="0">reldef</builder>
+           <builder maintainer="mmbase.org" version="0">typerel</builder>
+           <builder maintainer="mmbase.org" version="0">insrel</builder>
+           <builder maintainer="mmbase.org" version="0">oalias</builder>
+           <builder maintainer="mmbase.org" version="0">syncnodes</builder>
+           <builder maintainer="mmbase.org" version="0">versions</builder>
+           <builder maintainer="mmbase.org" version="0">daymarks</builder>
+           <builder maintainer="mmbase.org" version="0">mmservers</builder>
+        </neededbuilderlist>
 
 	<neededreldeflist>
-	  <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+	  <reldef source="related" target="related" direction="bidirectional" builder="insrel" guisourcename="Related" guitargetname="Related" />
 	</neededreldeflist>
 
-	<allowedrelationlist>
-	</allowedrelationlist>
+	<allowedrelationlist />
 
-	<datasourcelist>
-	  <datasource builder="jumpers" path="Basics/jumpers.xml" />
-	</datasourcelist>
+	<datasourcelist />
 
-	<relationsourcelist>
-	</relationsourcelist>
+	<relationsourcelist />
 
-    <contextsourcelist>
-    </contextsourcelist>
+        <contextsourcelist/>
 
 	<description>
-		Install the basic things like /admin and /edit
+		Installs a basic relation definition ('related'), and checks the presence of the core builders.
 	</description>
 
 	<install-notice>
-		Basics objects installed use /admin or /edit to test
+		Basic relation definition installed
 	</install-notice>
 </application>
