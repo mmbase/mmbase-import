@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.17 2002-07-18 11:37:40 michiel Exp $
+  @version $Id: list.xsl,v 1.18 2002-07-18 13:52:10 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -78,7 +78,7 @@
 
       <tr class="itemrow" >
         <td class="left" />
-        <td align="center" >
+        <td >
         <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}"><xsl:call-template name="prompt_index"/></a>
         -
         <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}"><xsl:call-template name="prompt_logout"/></a>
@@ -178,27 +178,30 @@
          <xsl:if test="$deletable='true'">
            <td class="deletebutton">
            <xsl:if test="@maydelete='true'">
-            <a href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}" title="{$deletedescription}" onmousedown="cancelClick=true;" onclick="return doDelete('{$deleteprompt}');" ><xsl:call-template name="prompt_delete" /></a><img src="{$mediadir}nix.gif" width="10" height="1" />
+            <a href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}" title="{$deletedescription}" onmousedown="cancelClick=true;" onclick="return doDelete('{$deleteprompt}');" ><xsl:call-template name="prompt_delete" /></a>
            </xsl:if>
            </td>
          </xsl:if>
-         <td valign="top"><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+         <td><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
          </td>
          <xsl:apply-templates select="field" />
      </tr>
-     <tr><td><img src="{$mediadir}nix.gif" width="1" height="3" /></td></tr>
   </xsl:template>
 
 
   <xsl:template name="dolist"><!-- returns the actual list as a table -->
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table>
       <xsl:if test="object[@number&gt;0]">
         <tr>
-          <xsl:if test="$deletable='true'"><td></td></xsl:if>
+          <xsl:if test="$deletable='true'">
+            <td></td>
+          </xsl:if>
           <td class="tableheader">#</td>
           <xsl:for-each select="object[1]/field">
-            <td class="tableheader"><xsl:value-of select="@name" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-            </td><td><img src="{$mediadir}nix.gif" width="4" height="1" /></td>
+            <td class="tableheader">
+              <xsl:value-of select="@name" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+            </td><td>
+          </td>
           </xsl:for-each>
         </tr>
       </xsl:if>
@@ -218,10 +221,25 @@
     </html>
   </xsl:template>
 
+  <xsl:template name="lastfield">
+    <xsl:if test="position()=last()">
+      <xsl:attribute name="width">100%</xsl:attribute>
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template match="field">
-    <xsl:if test="position()>1"><td valign="top"><nobr><xsl:value-of disable-output-escaping="yes" select="." /></nobr></td></xsl:if>
-    <xsl:if test="position()=1"><td valign="top" width="99%"><xsl:value-of select="." /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td></xsl:if>
-    <td><img src="{$mediadir}nix.gif" width="4" height="1" /></td>
+    <xsl:if test="position()>1">
+      <td>
+        <xsl:call-template name="lastfield" />
+        <nobr><xsl:value-of disable-output-escaping="yes" select="." /></nobr>
+      </td>
+    </xsl:if>
+    <xsl:if test="position()=1">
+      <td>
+        <xsl:call-template name="lastfield" />
+        <xsl:value-of select="." /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+      </td>
+      </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>
