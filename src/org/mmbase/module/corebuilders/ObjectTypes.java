@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.6 2002-05-06 15:05:45 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.7 2002-05-07 18:37:36 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -331,21 +331,23 @@ public class ObjectTypes extends TypeDef {
     protected  java.io.File storeBuilderFile(MMObjectNode node) {
         log.debug("[store builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")]");
         
-        java.io.File file = null;
+        org.w3c.dom.Document doc = node.getXMLValue("config");
+        if(doc==null) {
+            throw new RuntimeException("Field config was null! Could not save the file");
+        }
+        java.io.File file = new java.io.File(getBuilderFilePath(node));
+        if(file == null) {
+            throw new RuntimeException("file was null, could not continue");
+        }
+        // TODO: only write to disk if document really is different from our document....
+        // otherwise return just file,.. when this has been done, the  TransformerException should
+        // be catched and throw an runtime exception!
         try {
             javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.ENCODING, mmb.getEncoding());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
-            org.w3c.dom.Document doc = node.getXMLValue("config");
-            if(doc==null) {
-                throw new RuntimeException("Field config was null! Could not save the file");
-            }
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
-            file = new java.io.File(getBuilderFilePath(node));
-            if(file == null) {
-                throw new RuntimeException("file was null, could not continue");
-            }
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
         }
         catch(javax.xml.transform.TransformerException te) {
