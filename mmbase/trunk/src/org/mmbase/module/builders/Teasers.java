@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.11 2000-04-07 11:49:33 wwwtech Exp $
+$Id: Teasers.java,v 1.12 2000-04-11 14:20:30 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/04/07 11:49:33  wwwtech
+Wilbert: Added remove teaser from jumpercache regardless of type of change
+
 Revision 1.10  2000/04/07 09:57:48  wwwtech
 Wilbert: aaded remove from jumpercache when relations changed
 
@@ -54,7 +57,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.11 $ $Date: 2000-04-07 11:49:33 $ 
+ * @version $Revision: 1.12 $ $Date: 2000-04-11 14:20:30 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -358,8 +361,9 @@ public class Teasers extends MMObjectBuilder {
 				//delUrlSearchElement(nr);
 			}
 			debug("Removing "+number+" from jumper cache");
-			Jumpers jumpers = (Jumpers)mmb.getMMObject("Jumpers");
-			if (jumpers!=null) jumpers.delJumpCache(number);
+			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
+			if (jumpers==null) debug("ERROR: Could not get Jumper builder");
+			else jumpers.delJumpCache(number);
 		}
 		return true;
 	}
