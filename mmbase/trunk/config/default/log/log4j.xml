@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.21 2002-10-25 13:03:08 michiel Exp $
+   @version $Id: log4j.xml,v 1.22 2002-11-07 10:50:48 kees Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -88,7 +88,7 @@
   </logger>
 
   <logger name="org.mmbase.security" >
-    <level class="&mmlevel;" value ="info" />
+    <level class="&mmlevel;" value ="warn" />
   </logger>
 
 
