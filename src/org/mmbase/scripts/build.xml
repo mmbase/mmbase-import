@@ -441,8 +441,8 @@ NetComponents can be found at:
       <exclude name="org/mmbase/bridge/remote/**"/>
       <exclude name="org/mmbase/util/logging/log4j/**"     if="log4j2.in.classpath" />
       <exclude name="org/mmbase/module/JMSendMail.java"    unless="naming.in.classpath" />
-      <exclude name="org/mmbase/module/database/naming/**" unless="naming.in.classpath" />
-      <exclude name="org/mmbase/module/database/naming/**" unless="sqlconnection.in.classpath" />
+      <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
+      <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
       <exclude name="org/mmbase/util/logging/log4j2/**" unless="log4j2.in.classpath" />
       <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
