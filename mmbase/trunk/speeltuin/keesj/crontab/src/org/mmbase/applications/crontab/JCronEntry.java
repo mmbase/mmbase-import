@@ -9,7 +9,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronEntry.java,v 1.5 2004-04-01 22:16:47 michiel Exp $
+ * @version $Id: JCronEntry.java,v 1.6 2004-04-02 09:50:54 michiel Exp $
  */
 
 public class JCronEntry {
@@ -23,6 +23,7 @@ public class JCronEntry {
     private String name;
     private String className;
     private String cronTime;
+    private String configuration = null;
 
     private int count = 0;
 
@@ -43,9 +44,7 @@ public class JCronEntry {
         this.className = className;
         this.cronTime = cronTime;
         jCronJob = (Runnable) Class.forName(className).newInstance();
-        if (jCronJob instanceof JCronJob) {
-            ((JCronJob) jCronJob).init(this);
-        }
+
         second     = new JCronEntryField();
         minute     = new JCronEntryField();
         hour       = new JCronEntryField();
@@ -53,6 +52,17 @@ public class JCronEntry {
         month      = new JCronEntryField();
         dayOfWeek  = new JCronEntryField();
         setTimeVal(cronTime);
+    }
+
+    public void init() {
+        if (jCronJob instanceof JCronJob) {
+            ((JCronJob) jCronJob).init(this);
+        }
+    }
+    public void stop() {
+        if (jCronJob instanceof JCronJob) {
+            ((JCronJob) jCronJob).stop();
+        }
     }
     
     protected boolean kick() {
@@ -93,6 +103,13 @@ public class JCronEntry {
     public String getName(){
         return name;
     }
+
+    public void setConfiguration(String conf) {
+        configuration = conf;
+    }
+    public String getConfiguration() {
+        return configuration;
+    }
     
     boolean mustRun(Date date){
         Calendar cal = Calendar.getInstance();
@@ -127,7 +144,7 @@ public class JCronEntry {
     }
 
     public String toString() {
-        return id + ":" + cronTime + ":" + name + ": " + className + ":" + count;
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": " +  count;
     }
 
 

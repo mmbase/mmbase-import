@@ -32,12 +32,14 @@ public class JCronDaemon implements Runnable {
         if (jCronEntries.contains(entry)) {
             throw new RuntimeException("There is an entry  " + entry + " already");
         }
+        entry.init();
         jCronEntries.add(entry);
         log.info("Added to JCronDaemon " + entry);
     }
 
     public void remove(JCronEntry entry){
         jCronEntries.remove(entry);
+        entry.stop();
         log.info("Removed from JCronDaemon " + entry);
     }
     
@@ -60,6 +62,11 @@ public class JCronDaemon implements Runnable {
         log.info("Stopping JCronDaemon");
         cronThread.interrupt();
         cronThread=  null;
+        Iterator i = jCronEntries.iterator();
+        while(i.hasNext()) {
+            JCronEntry entry = (JCronEntry) i.next();
+            entry.stop();
+        }
     }
 
     /**
