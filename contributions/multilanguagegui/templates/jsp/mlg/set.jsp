@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud logon="admin" method="http">
+<%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
-   <link rel="stylesheet" type="text/css" href="css/mmbase-dev.css" />
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBase forums</title>
-   <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </head>
-<mm:cloud logon="admin" method="http">
 <mm:import externid="setname" />
 <mm:import externid="wantedkeyword"></mm:import>
 <!-- action check -->
@@ -21,9 +22,7 @@
 	  <th colspan="3">Multilanguage GUI editor 0.2</th>
 	</tr>
 	<mm:include page="path.jsp?type=set&setname=$setname" />
-	<mm:function set="mlg" name="getKeywords">
-          <mm:setparam name="setname" value="$setname" />
-	  <mm:resultnodes>
+	<mm:nodelistfunction set="mlg" name="getKeywords" referids="setname">
 	<tr>
 	    <th align="middle">
 		<mm:field name="name" />
@@ -44,8 +43,7 @@
 	</td>
 	</form>
 	</tr>
-	  </mm:resultnodes>
-	</mm:function>
+	</mm:nodelistfunction>
 
 	<tr>
 	<form action="keyword.jsp">
