@@ -1,15 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page language="java" contentType="text/html; charset=UTF-8"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><mm:content postprocessor="reducespace"><html>
-<%@include file="settings.jsp" %>
-<head>
-    <title>Cloud Context Administration HELPn</title>
-    <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
-</head>
-
-
-<body>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
+%><%@page language="java" contentType="text/html; charset=UTF-8"
+%><mm:content postprocessor="reducespace">
+<%@include file="import.jsp" %><%@include file="settings.jsp" %>
+<mm:import id="url">help.jsp</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
  <%@include file="you.div.jsp" %>
  <mm:import id="current">help</mm:import>
@@ -56,8 +49,4 @@
 
 </div>
 </mm:cloud>
-
- </body>
-</mm:cloud>
-</html>
 </mm:content>
