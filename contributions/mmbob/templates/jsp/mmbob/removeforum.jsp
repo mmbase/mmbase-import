@@ -23,13 +23,11 @@
 <body>
 
 <div class="header">
-  <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
-  <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%" align="center">
   <form action="<mm:url page="removeforum_confirm.jsp"></mm:url>" method="post">
   <tr><th colspan="3">Selecteer forum dat je wilt verwijderen</th></tr>
   <tr><td colspan="3" align="middle">
@@ -61,8 +59,6 @@
 </div>
 
 <div class="footer">
-  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
-  <jsp:include page="<%=footerpath%>"/>
 </div>
                                                                                               
 </body>

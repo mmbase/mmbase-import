@@ -33,8 +33,6 @@
 <body>
 
 <div class="header">
- <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
-  <jsp:include page="<%=headerpath%>"/>
 </div>
 
 <div class="bodypart">
@@ -122,9 +120,6 @@
 
 </div>
 <div class="footer">
-  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
-  <jsp:include page="<%=footerpath%>"/>
-
 </div>
 
 </mm:locale>
