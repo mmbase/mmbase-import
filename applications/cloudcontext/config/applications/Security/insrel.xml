@@ -14,7 +14,7 @@
 
   <!-- everybody -->
 
-	<node number="1016" owner="admin" snumber="470" dnumber="1002" rtype="contains" dir="bidirectional"> <!-- anonymous -->
+	<node number="1016" owner="admin" snumber="470" dnumber="2002" rtype="contains" dir="bidirectional"> <!-- anonymous -->
 	</node>
   <node number="1017" owner="admin" snumber="470" dnumber="600" rtype="contains" dir="bidirectional"> <!-- users -->
 	</node>
@@ -26,7 +26,7 @@
 	</node>
 	<node number="1012" owner="admin" snumber="777"  dnumber="3001"  rtype="rank" dir="bidirectional">
 	</node>
-	<node number="1013" owner="admin" snumber="1002" dnumber="3000" rtype="rank" dir="bidirectional">
+	<node number="1013" owner="admin" snumber="2002" dnumber="3000" rtype="rank" dir="bidirectional">
 	</node>
 
   <!-- possible contexts -->

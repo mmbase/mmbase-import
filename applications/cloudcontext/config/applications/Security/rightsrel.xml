@@ -59,4 +59,9 @@
 		<operation>read</operation>
 	</node>
 
+  <!-- security object may only be read-->
+	<node number="740" owner="security" snumber="1002" dnumber="600" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
 </rightsrel>
