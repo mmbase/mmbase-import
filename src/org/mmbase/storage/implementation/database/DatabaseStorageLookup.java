@@ -22,19 +22,19 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Represents a xml document that can be used to determine the database configuration resource,
- * based on a database's metadata. 
+ * based on a database's metadata.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.1 2003-08-21 09:59:29 pierre Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.2 2003-09-05 10:49:02 pierre Exp $
  */
-public class DatabaseStorageLookup extends DocumentReader {  
+public class DatabaseStorageLookup extends DocumentReader {
 
     // the logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageLookup.class);
 
     // the logger
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH = "/org/mmbase/storage/database/lookup.xml";
+    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0 = "-//MMBase//DTD storage config 1.0//EN";
@@ -53,7 +53,7 @@ public class DatabaseStorageLookup extends DocumentReader {
     public static void registerPublicIDs() {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0, DTD_DATABASE_STORAGE_LOOKUP_1_0, DatabaseStorageLookup.class);
     }
-    
+
     /**
      * Constructor, accesses the storage lookup xml resource
      */
@@ -81,10 +81,10 @@ public class DatabaseStorageLookup extends DocumentReader {
         // not found, return null
         return null;
     }
-    
+
     /**
      * Tests if an given filterset applies
-     * @param filterNode The element containing all filters 
+     * @param filterNode The element containing all filters
      * @param dmd the database meta data
      * @return <code>true</code> when true, otherwise <code>false</code>
      */
@@ -100,7 +100,7 @@ public class DatabaseStorageLookup extends DocumentReader {
                 match = match(condition, dmd.getDriverName());
             } else if(conditionName.equals("driver-version")) {
                 match = match(condition, dmd.getDriverVersion());
-            } else if(conditionName.equals("database-product-name")) { 
+            } else if(conditionName.equals("database-product-name")) {
                 match = match(condition, dmd.getDatabaseProductName());
             } else if(conditionName.equals("database-product-version")) {
                 match = match(condition, dmd.getDatabaseProductVersion());
@@ -114,7 +114,7 @@ public class DatabaseStorageLookup extends DocumentReader {
         }
         return match;
     }
-    
+
     /**
      * Tests if an element value matches a value specified
      * @param node the Element of which the body value has to be checked
@@ -124,7 +124,7 @@ public class DatabaseStorageLookup extends DocumentReader {
     private boolean match(Element node, String value) {
         return value.equals(getNodeTextValue(node));
     }
-    
+
     /**
      * Tests if an string starts with the value of the node
      * @param node the Element of which the body value has to be checked
@@ -134,7 +134,7 @@ public class DatabaseStorageLookup extends DocumentReader {
     private boolean startMatch(Element node, String value) {
         return value.startsWith(getNodeTextValue(node));
     }
-    
+
     /**
      * Tests a condition from an attibute of the Element applies to the
      * value of the element with the given int value
