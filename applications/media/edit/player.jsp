@@ -1,10 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!&#68;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" %><?xml version="1.0" encoding="UTF-8"?>
 <html>
 <head>
 <mm:import externid="fragment" required="true" />
+<mm:import externid="forceplayer" />
 <mm:locale language="$config.lang">
 
 <title>[ STREAM ]</title>
@@ -30,7 +31,10 @@
     <%@ include file="config/qtplayer.jsp" %>
   </mm:compare>
 </mm:write>
-
+<mm:present referid="forceplayer">
+ <mm:remove referid="player" />
+ <mm:import id="player"><mm:write referid="forceplayer" /></mm:import>
+</mm:present>
 
 <body id="<mm:write referid="player" />">
 
@@ -51,7 +55,8 @@
                 height="300"   
                 type="audio/x-pn-realaudio-plugin"
                 nojava="false" 
-                controls="ImageWindow,PositionSlider,TACCtrl"
+                 <%--  controls="ImageWindow,PositionSlider,TACCtrl" --%>
+                controls="ImageWindow,All"
                 console="Clip1" 
                 autostart="true" 
                 nologo="true"
@@ -84,13 +89,13 @@
          <object id="embeddedplayer"
                  classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="260" height="300" 
                  codebase="http://www.apple.com/qtactivex/qtplugin.cab">
-                 <param name="SRC" VALUE="<mm:field id="source" name="url(mov)" />" > 
+                 <param name="SRC" VALUE="<mm:field id="source" name="url(mov,ram,wmp)" />" > 
                  <param name="AUTOPLAY" VALUE="true">
                  <param name="CONTROLLER" VALUE="true">
-                 <embed src="<mm:field name="url(mov)" />" width="260" height="300" autoplay="true"
-                        controller="true"
-                        name="embeddedplayer"
-                        pluginspage="http://www.apple.com/quicktime/download/"> </embed> </object>
+                 <embed src="<mm:field name="url(mov,ram,wmp)" />" width="260" height="300" autoplay="true"
+                    controller="true"
+                    name="embeddedplayer"
+                    pluginspage="http://www.apple.com/quicktime/download/"> </embed> </object>
      </mm:compare>
          </mm:write>
        </td>
@@ -99,7 +104,7 @@
 <tr>
     <td valign="top" width="32" height="43"><img src="images/movie_down_left.gif" alt="" width="32" height="43" border="0"></td>
 <mm:write referid="player">
-<mm:compare value="real"><!-- use own controls for real -->
+<mm:compare value="extrabuttsreal"><!-- use own controls for real -->
     <td height="43" align="center" valign="bottom" background="images/movie_down.gif"><img src="images/movie_knoppen.gif" alt="" width="160" height="38" border="0" usemap="#nav">
 				<map name="nav">
 				<area alt="terug" shape="circle" coords="16,25,10"  href="javascript:setPosition(0);" />
@@ -110,17 +115,31 @@
 				</map>
 </td>
 </mm:compare>
-<mm:compare value="real" inverse="true">
+<mm:compare value="extrabuttsreal" inverse="true">
     <td valign="top" background="images/movie_down.gif" height="27">&nbsp;</td>
 </mm:compare>
 </mm:write>
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
-preferred player: <mm:write referid="config.player"><mm:write /><mm:isempty>No preference</mm:isempty></mm:write><br />
+<!--
+preferred player: <mm:write referid="config.player" /><br />
 used source:      <mm:write referid="source" /> <br />
 used player:      <mm:write referid="player" /><br />
 mimetype:      <mm:field name="mimetype()" /><br />
+mimetype:      <mm:field name="contenttype()" /><br />
+format:      <mm:field name="format(ram,wmf)" /><br />
+-->
+<hr />
+<form name="force">
+  <select name="forceplayer" onChange="document.forms['force'].submit()">
+     <option value="">---</option>
+     <option value="wm">window media player</option>
+     <option value="real">real player</option>
+     <option value="qt">quick time player</option>
+  </select>
+  <input type="hidden" name="fragment" value="<mm:field name="number" />" />
+</form>
 </mm:node>
 </mm:cloud>
 </body>

@@ -10,22 +10,42 @@ function ExplorerFix()  {
 
 if(document.all) document.onmousedown = ExplorerFix;
 
+var player = null;
 
 function getPlayer() {
-  player = parent.frames['left'].document.body.id;
-  //alert("Setting player to '" + player);
+  // autodetection on what kind of javascript to use
+  if (player == null) {
+     try {
+        parent.frames['left'].document.embeddedplayer.GetPosition();
+        player = "real";
+     } catch (e) {
+        try {
+           parent.frames['left'].document.embeddedplayer.GetTime();
+           player = "qt";
+        } catch (e) {
+            player="wm";
+        }
+     }
+     //    alert("Setting player to '" + player + "'");
+   }
+   //     player = parent.frames['left'].document.body.id;
+   //  alert("Getting player to '" + player);
   return player;
 }
 
 function getPosition() {
+  var pos;
   // real player
   if (getPlayer() == "real") {
-     return parent.frames['left'].document.embeddedplayer.GetPosition();
+     pos =  parent.frames['left'].document.embeddedplayer.GetPosition();
   } else if (getPlayer() == "qt") {
-    return parent.frames['left'].document.embeddedplayer.GetTime();
+     pos = parent.frames['left'].document.embeddedplayer.GetTime();
   } else {
-     return parseInt(parent.frames['left'].document.embeddedplayer.CurrentPosition * 1000);
+     pos =  parseInt(parent.frames['left'].document.embeddedplayer.CurrentPosition * 1000);
   }
+  if (pos < 0) pos = 0; // more uniform behaviour
+  return pos; // setTime(pos);
+
 }
 
 function setPosition(pos) {
@@ -83,7 +103,16 @@ function getRightURL(form) {
 }
 
 function setTime(millistime) {
-    return "bla";
+    var time = new Date(millistime);
+    var format = time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds() + ".";
+    var ms = time.getMilliseconds();
+    if (ms < 10) {
+        return format + "00" + ms;
+    } else if (ms < 100) {
+       return format + "0" + ms;
+    } else {
+       return format + ms;
+    }    
 }
 
 function getTime(formattedtime) {
@@ -110,6 +139,8 @@ function setRightFrame(form) {
         }
     }
 }
+
+
 
 function setContentFrame(url) {
     // alert("Setting content to '" + url);
