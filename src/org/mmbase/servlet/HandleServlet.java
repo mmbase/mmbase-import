@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.12 2003-11-12 10:15:30 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.13 2003-11-12 13:23:30 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -67,7 +67,7 @@ public class HandleServlet extends BridgeServlet {
      * Sets the content disposition header.
      * @return true on success
      */
-    protected boolean setContent(HttpServletResponse res, Node node, String mimeType) throws IOException {
+    protected boolean setContent(HttpServletRequest req, HttpServletResponse res, Node node, String mimeType) throws IOException {
         // Try to find a sensible filename to use in the content-disposition header.
         String fileName = node.getStringValue("filename");
         if (fileName == null || fileName.equals("")) {
@@ -168,7 +168,7 @@ public class HandleServlet extends BridgeServlet {
             // res.setHeader("X-MMBase-2", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
         }
 
-        if (!setContent(res, node, mimeType)) {
+        if (!setContent(req, res, node, mimeType)) {
             return;
         }
         setExpires(res, node);
