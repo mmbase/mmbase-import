@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.5 2000-03-09 13:10:40 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.6 2000-03-09 15:57:47 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/03/09 13:10:40  wwwtech
+	Rico: added cache passthrough for multilevel
+	
 	Revision 1.4  2000/03/08 14:53:30  wwwtech
 	Rico: added caching for Multilevel (128 entries) this should increase performance for HTML pages a bit
 	
@@ -44,7 +47,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.5 2000-03-09 13:10:40 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.6 2000-03-09 15:57:47 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -902,12 +905,14 @@ public class HtmlBase extends ProcessorModule {
 				sp.sname = "james/1234";
 			}
 			sessionInfo session=sessions.getSession(sp,sp.sname);
-			String cachetype=session.getValue("CACHE");
-			if (cachetype!=null && cachetype.equals("PAGE")) {
-				rtn=true;
+			if (session!=null) {
+				String reloadtype=session.getValue("RELOAD");
+				if (reloadtype!=null && reloadtype.equals("R")) {
+					rtn=true;
+				}
 			}
-			String reloadtype=session.getValue("RELOAD");
-			if (reloadtype!=null && reloadtype.equals("R")) {
+			// When pagemaster calls set the reload on true
+			if (sp.wantCache!=null && sp.wantCache.equals("PAGE")) {
 				rtn=true;
 			}
 		} else {
