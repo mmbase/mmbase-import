@@ -66,11 +66,11 @@ public class Controller {
         List list = new ArrayList();
         Project p = ProjectManager.getProject(name);
         if (p != null) {
-            Enumeration targets = p.getBundleTargets();
+            Iterator targets = p.getBundleTargets();
 
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-            while (targets.hasMoreElements()) {
-                Target t = (Target) targets.nextElement();
+            while (targets.hasNext()) {
+                Target t = (Target) targets.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", t.getName());
                 virtual.setValue("type", t.getType());
@@ -93,11 +93,11 @@ public class Controller {
         List list = new ArrayList();
         Project p = ProjectManager.getProject(name);
         if (p != null) {
-            Enumeration targets = p.getPackageTargets();
+            Iterator targets = p.getPackageTargets();
 
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-            while (targets.hasMoreElements()) {
-                Target t = (Target) targets.nextElement();
+            while (targets.hasNext()) {
+                Target t = (Target) targets.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", t.getName());
                 virtual.setValue("type", t.getType());
@@ -120,11 +120,11 @@ public class Controller {
         List list = new ArrayList();
         Project p = ProjectManager.getProject(name);
         if (p != null) {
-            Enumeration targets = p.getTargets();
+            Iterator targets = p.getTargets();
 
             VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-            while (targets.hasMoreElements()) {
-                Target t = (Target) targets.nextElement();
+            while (targets.hasNext()) {
+                Target t = (Target) targets.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("name", t.getName());
                 virtual.setValue("depends", t.getDepends());
@@ -150,15 +150,15 @@ public class Controller {
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                Enumeration steps = null;
+                Iterator steps = null;
                 if (logid == -1) {
                     steps = t.getPackageSteps();
                 } else {
                     steps = t.getPackageSteps(logid);
                 }
                 if (steps != null) {
-                    while (steps.hasMoreElements()) {
-                        packageStep step = (packageStep) steps.nextElement();
+                    while (steps.hasNext()) {
+                        packageStep step = (packageStep) steps.next();
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("userfeedback", step.getUserFeedBack());
                         virtual.setValue("timestamp", step.getTimeStamp());
@@ -195,7 +195,7 @@ public class Controller {
         if (p != null) {
             Target t = p.getTarget(target);
             if (t != null) {
-                Enumeration steps = t.getPackageSteps();
+                Iterator steps = t.getPackageSteps();
 
                 if (steps != null) {
                     virtual.setValue("log", "true");
@@ -1016,13 +1016,13 @@ public class Controller {
      */
     public List getProjects() {
         // get the current best packages
-        Enumeration projects = ProjectManager.getProjects();
+        Iterator projects = ProjectManager.getProjects();
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (projects.hasMoreElements()) {
-            Project p = (Project) projects.nextElement();
+        while (projects.hasNext()) {
+            Project p = (Project) projects.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name", p.getName());
             virtual.setValue("path", p.getPath());
@@ -1040,13 +1040,13 @@ public class Controller {
      */
     public List getCreators() {
         // get the current creators we have installed
-        Hashtable creators = ProjectManager.getCreators();
+        HashMap creators = ProjectManager.getCreators();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Enumeration e = creators.keys();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
+        Iterator e = creators.keySet().iterator();
+        while (e.hasNext()) {
+            String key = (String) e.next();
             CreatorInterface cr = (CreatorInterface) creators.get(key);
 
             MMObjectNode virtual = builder.getNewNode("admin");

@@ -58,23 +58,23 @@ public class ShareFileWriter {
      */
     private static String writeSharedPackages() {
         String result = "\t<packages>\n";
-        Enumeration e = ShareManager.getSharedPackages();
-        while (e.hasMoreElements()) {
-            PackageContainer p = (PackageContainer) e.nextElement();
+        Iterator e = ShareManager.getSharedPackages();
+        while (e.hasNext()) {
+            PackageContainer p = (PackageContainer) e.next();
             ShareInfo shareinfo = p.getShareInfo();
             result += "\t\t<package name=\"" + p.getName() + "\" maintainer=\"" + p.getMaintainer() + "\" ";
             result += "type=\"" + p.getType() + "\" ";
             result += "versions=\"best\" ";
             result += "active=\"" + shareinfo.isActive() + "\" ";
             result += ">\n";
-            Enumeration e2 = shareinfo.getShareUsers();
-            while (e2.hasMoreElements()) {
-                ShareUser su = (ShareUser) e2.nextElement();
+            Iterator e2 = shareinfo.getShareUsers();
+            while (e2.hasNext()) {
+                ShareUser su = (ShareUser) e2.next();
                 result += "\t\t\t<login user=\"" + su.getName() + "\" />\n";
             }
             e2 = shareinfo.getShareGroups();
-            while (e2.hasMoreElements()) {
-                ShareGroup sg = (ShareGroup) e2.nextElement();
+            while (e2.hasNext()) {
+                ShareGroup sg = (ShareGroup) e2.next();
                 result += "\t\t\t<login group=\"" + sg.getName() + "\" />\n";
             }
             result += "\t\t</package>\n";
@@ -91,23 +91,23 @@ public class ShareFileWriter {
      */
     private static String writeSharedBundles() {
         String result = "\t<bundles>\n";
-        Enumeration e = ShareManager.getSharedBundles();
-        while (e.hasMoreElements()) {
-            BundleContainer b = (BundleContainer) e.nextElement();
+        Iterator e = ShareManager.getSharedBundles();
+        while (e.hasNext()) {
+            BundleContainer b = (BundleContainer) e.next();
             ShareInfo shareinfo = b.getShareInfo();
             result += "\t\t<bundle name=\"" + b.getName() + "\" maintainer=\"" + b.getMaintainer() + "\" ";
             result += "type=\"" + b.getType() + "\" ";
             result += "versions=\"best\" ";
             result += "active=\"" + shareinfo.isActive() + "\" ";
             result += ">\n";
-            Enumeration e2 = shareinfo.getShareUsers();
-            while (e2.hasMoreElements()) {
-                ShareUser su = (ShareUser) e2.nextElement();
+            Iterator e2 = shareinfo.getShareUsers();
+            while (e2.hasNext()) {
+                ShareUser su = (ShareUser) e2.next();
                 result += "\t\t\t<login user=\"" + su.getName() + "\" />\n";
             }
             e2 = shareinfo.getShareGroups();
-            while (e2.hasMoreElements()) {
-                ShareGroup sg = (ShareGroup) e2.nextElement();
+            while (e2.hasNext()) {
+                ShareGroup sg = (ShareGroup) e2.next();
                 result += "\t\t\t<login group=\"" + sg.getName() + "\" />\n";
             }
             result += "\t\t</bundle>\n";
@@ -124,9 +124,9 @@ public class ShareFileWriter {
      */
     private static String writeUsers() {
         String result = "\t<users>\n";
-        Enumeration e = ShareManager.getShareUsers();
-        while (e.hasMoreElements()) {
-            ShareUser su = (ShareUser) e.nextElement();
+        Iterator e = ShareManager.getShareUsers();
+        while (e.hasNext()) {
+            ShareUser su = (ShareUser) e.next();
             result += "\t\t<user name=\"" + su.getName() + "\" password=\"" + su.getPassword() + "\" ";
             if (su.getMethod() != null) {
                 result += "method=\"" + su.getMethod() + "\" ";
@@ -148,10 +148,10 @@ public class ShareFileWriter {
      */
     private static String writeProvidingPaths() {
         String result = "\t<providingpaths>\n";
-        Hashtable has = ShareManager.getProvidingPaths();
-        Enumeration e = has.keys();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
+        HashMap has = ShareManager.getProvidingPaths();
+        Iterator e = has.keySet().iterator();
+        while (e.hasNext()) {
+            String key = (String) e.next();
             String path = (String) has.get(key);
             result += "\t\t<providingpath method=\"" + key + "\" path=\"" + path + "\" />\n";
         }
@@ -167,13 +167,13 @@ public class ShareFileWriter {
      */
     private static String writeGroups() {
         String result = "\t<groups>\n";
-        Enumeration e = ShareManager.getShareGroups();
-        while (e.hasMoreElements()) {
-            ShareGroup sg = (ShareGroup) e.nextElement();
+        Iterator e = ShareManager.getShareGroups();
+        while (e.hasNext()) {
+            ShareGroup sg = (ShareGroup) e.next();
             result += "\t\t<group name=\"" + sg.getName() + "\">\n";
-            Enumeration e2 = sg.getMembers();
-            while (e2.hasMoreElements()) {
-                ShareUser su = (ShareUser) e2.nextElement();
+            Iterator e2 = sg.getMembers();
+            while (e2.hasNext()) {
+                ShareUser su = (ShareUser) e2.next();
                 result += "\t\t\t<member user=\"" + su.getName() + "\" />\n";
             }
             result += "\t\t</group>\n";

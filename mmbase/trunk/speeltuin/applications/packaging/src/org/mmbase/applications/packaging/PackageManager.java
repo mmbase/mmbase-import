@@ -34,11 +34,11 @@ public class PackageManager {
     private static Logger log = Logging.getLoggerInstance(PackageManager.class);
 
     // Contains all packages key=packagename/maintainer value=reference to application
-    private static Hashtable packages = new Hashtable();
+    private static HashMap packages = new HashMap();
 
     // state of this manager
     private static boolean state = false;
-    private static Hashtable packagehandlers;
+    private static HashMap packagehandlers;
 
     public static final String DTD_PACKAGEHANDLERS_1_0 = "packagehandlers_1_0.dtd";
     public static final String PUBLIC_ID_PACKAGEHANDLERS_1_0 = "-//MMBase//DTD packagehandlers config 1.0//EN"; 
@@ -67,15 +67,15 @@ public class PackageManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Enumeration getPackages() {
-        return packages.elements();
+    public static Iterator getPackages() {
+        return packages.values().iterator();
     }
     
     /**
      * return all packages based 
      * @return all packages
      */
-    public static Enumeration getPackageVersions(String id) {
+    public static Iterator getPackageVersions(String id) {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
@@ -88,7 +88,7 @@ public class PackageManager {
     /**
      * return a list of version numbers of this package
      */
-    public static Enumeration getPackageVersionNumbers(String id) {
+    public static Iterator getPackageVersionNumbers(String id) {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
@@ -271,15 +271,15 @@ public class PackageManager {
         // this checks all the packages if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last package update
-        Enumeration e = packages.elements();
-        while (e.hasMoreElements()) {
-            PackageContainer pc = (PackageContainer)e.nextElement();
-            Enumeration e2 = pc.getVersions();
-            while (e2.hasMoreElements()) {
-                PackageVersionContainer pvc = (PackageVersionContainer)e2.nextElement();
-                Enumeration e3 = pvc.getPackages();
-                while (e3.hasMoreElements()) {
-                    BasicPackage p = (BasicPackage)e3.nextElement();
+        Iterator e = packages.values().iterator();
+        while (e.hasNext()) {
+            PackageContainer pc = (PackageContainer)e.next();
+            Iterator e2 = pc.getVersions();
+            while (e2.hasNext()) {
+                PackageVersionContainer pvc = (PackageVersionContainer)e2.next();
+                Iterator e3 = pvc.getPackages();
+                while (e3.hasNext()) {
+                    BasicPackage p = (BasicPackage)e3.next();
                     ProviderInterface prov = p.getProvider();
                     if (wantedprov == prov) {
                         long providertime = p.getProvider().lastSeen();
@@ -301,7 +301,7 @@ public class PackageManager {
     }
 
     public static void readPackageHandlers() {
-        packagehandlers = new Hashtable();
+        packagehandlers = new HashMap();
         String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"packagehandlers.xml";
 
         File file = new File(filename);
@@ -335,7 +335,7 @@ public class PackageManager {
         }
     }
 
-    public static Hashtable getPackageHandlers() { 
+    public static HashMap getPackageHandlers() { 
         return packagehandlers;
     }
 }

@@ -35,10 +35,10 @@ public class ProviderManager {
     private static boolean state=false;
     
     // Contains all providers key=provider value=reference to provider
-    private static Hashtable providers = null;
+    private static HashMap providers = null;
 
     // Contains all providerhandlers
-    private static Hashtable providerhandlers = null;
+    private static HashMap providerhandlers = null;
 
 
     /** DTD resource filename of the providerhandlers DTD version 1.0 */
@@ -77,9 +77,9 @@ public class ProviderManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Enumeration getProviders() {
+    public static Iterator getProviders() {
         if (providers == null) init();
-        return providers.elements();
+        return providers.values().iterator();
     }
 
 
@@ -127,7 +127,7 @@ public class ProviderManager {
     }
 
     public static void readProviders() {
-        providers = new Hashtable();
+        providers = new HashMap();
         String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"providers.xml";
 
         File file = new File(filename);
@@ -264,7 +264,7 @@ public class ProviderManager {
 
 
     public static void readProviderHandlers() {
-       providerhandlers = new Hashtable();
+       providerhandlers = new HashMap();
        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"providerhandlers.xml";
 
         File file = new File(filename);
@@ -312,7 +312,7 @@ public class ProviderManager {
         }
     }
 
-    public static Hashtable getProviderHandlers() {
+    public static HashMap getProviderHandlers() {
         return providerhandlers;
     }
     

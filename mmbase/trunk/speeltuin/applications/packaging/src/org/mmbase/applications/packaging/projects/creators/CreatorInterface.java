@@ -78,7 +78,7 @@ public interface CreatorInterface {
      *
      * @return    The packageSteps value
      */
-    public Enumeration getPackageSteps();
+    public Iterator getPackageSteps();
 
 
     /**
@@ -87,7 +87,7 @@ public interface CreatorInterface {
      * @param  logid  Description of the Parameter
      * @return        The packageSteps value
      */
-    public Enumeration getPackageSteps(int logid);
+    public Iterator getPackageSteps(int logid);
 
 
     /**

@@ -27,7 +27,7 @@ public class ShareGroup {
     private static Logger log = Logging.getLoggerInstance(ShareGroup.class);
     private String name;
 
-    private Hashtable members = new Hashtable();
+    private HashMap members = new HashMap();
 
 
     /**
@@ -92,8 +92,8 @@ public class ShareGroup {
      *
      * @return    The members value
      */
-    public Enumeration getMembers() {
-        return members.elements();
+    public Iterator getMembers() {
+        return members.values().iterator();
     }
 }
 

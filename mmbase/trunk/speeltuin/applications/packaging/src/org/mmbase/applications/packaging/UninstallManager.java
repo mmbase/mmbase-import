@@ -146,7 +146,7 @@ public class UninstallManager {
         return bnd;
     }
 
-    public static Enumeration getUninstallSteps() {
+    public static Iterator getUninstallSteps() {
         return pkg.getInstallSteps();
     }
 }

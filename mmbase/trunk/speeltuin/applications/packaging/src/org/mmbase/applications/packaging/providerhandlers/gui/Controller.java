@@ -63,15 +63,15 @@ public class Controller {
      */
     public List getProviderHandlers() {
         // get the current provider handlers we have installed
-        Hashtable providerhandlers = ProviderManager.getProviderHandlers();
+        HashMap providerhandlers = ProviderManager.getProviderHandlers();
 
         // create a result list
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Enumeration e = providerhandlers.keys();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
+        Iterator e = providerhandlers.keySet().iterator();
+        while (e.hasNext()) {
+            String key = (String) e.next();
             String value = (String) providerhandlers.get(key);
 
             MMObjectNode virtual = builder.getNewNode("admin");
@@ -179,13 +179,13 @@ public class Controller {
      */
     public List getProviders() {
         // get the current providers
-        Enumeration providers = ProviderManager.getProviders();
+        Iterator providers = ProviderManager.getProviders();
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (providers.hasMoreElements()) {
-            ProviderInterface provider = (ProviderInterface) providers.nextElement();
+        while (providers.hasNext()) {
+            ProviderInterface provider = (ProviderInterface) providers.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("method", provider.getMethod());
             virtual.setValue("name", provider.getName());
