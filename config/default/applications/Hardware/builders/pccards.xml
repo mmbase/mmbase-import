@@ -55,8 +55,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Name of the pc-card</description>
+          <description xml:lang="nl">Naam van de PC kaart</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -88,8 +88,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Location of the pc-card</description>
+          <description xml:lang="nl">Lokatie van de PC kaart</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -121,8 +121,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Directory where the pc-card stores its images</description>
+          <description xml:lang="nl">Folder waar de PC kaart zijn afbeeldingen bewaard</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -154,8 +154,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Class used to control the pc-card</description>
+          <description xml:lang="nl">Klasse voor het aansturen van de PC kaart</description>
         </descriptions>
         <!-- gui related -->
         <gui>
