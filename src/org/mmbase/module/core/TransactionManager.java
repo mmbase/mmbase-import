@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.12 2000-12-30 14:05:11 daniel Exp $
+	$Id: TransactionManager.java,v 1.13 2001-01-08 13:14:17 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2000/12/30 14:05:11  daniel
+	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
+	
 	Revision 1.11  2000/12/14 10:54:52  rico
 	Rico: added John Balder's changes for exception handling
 	
@@ -55,7 +58,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.12 2000-12-30 14:05:11 daniel Exp $
+ * @version $Id: TransactionManager.java,v 1.13 2001-01-08 13:14:17 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -162,22 +165,20 @@ public class TransactionManager implements TransactionManagerInterface {
 		v=(Vector)transactions.get(transactionname);
 		node=tmpNodeManager.getNode(owner,tmpnumber);
 		if (node!=null) {
-			if (v==null) {
-				v=new Vector();
-				v.addElement(node);
-				transactions.put(transactionname,v);
-			} else {
+			if (v!=null) {
 				int n;
 				n=v.indexOf(node);
-				if (n==-1) {
-					v.addElement(node);
-				} else {
+				if (n>=0) {
+					// Mark it as to delete
+					node.setValue("_exists",EXISTS_NOLONGER);
+		 		} else {
 					throw new TransactionManagerException(
-						"node already in transaction "+tmpnumber);
+						"node is not in transaction "+transactionname+" ,node "+tmpnumber);
 				}
+			} else {
+				throw new TransactionManagerException(
+						"transaction doesn't exist "+transactionname);
 			}
-			// Mark it as to delete
-			node.setValue("_exists",EXISTS_NOLONGER);
 		} else {
 			throw new TransactionManagerException(
 						"node doesn't exist "+tmpnumber);
