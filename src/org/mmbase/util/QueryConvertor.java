@@ -24,7 +24,6 @@ public class QueryConvertor {
   }
   public static String altaVista2SQL(String query) {
 	if (query.indexOf("where")!=-1 || query.indexOf("WHERE")!=-1) {
-		System.out.println("DIRECT="+query);
 		return(query);
 	}
 	StringBuffer buffer = new StringBuffer(64);
