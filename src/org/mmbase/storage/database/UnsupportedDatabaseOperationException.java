@@ -18,12 +18,29 @@ import org.mmbase.storage.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: UnsupportedDatabaseOperationException.java,v 1.1 2002-09-16 15:07:38 pierre Exp $
+ * @version $Id: UnsupportedDatabaseOperationException.java,v 1.2 2003-08-29 09:36:54 pierre Exp $
  */
 public class UnsupportedDatabaseOperationException extends StorageException {
 
-    public UnsupportedDatabaseOperationException(String s) {
-        super(s);
+    //javadoc is inherited
+    public UnsupportedDatabaseOperationException() {
+        super();
     }
+
+    //javadoc is inherited
+    public UnsupportedDatabaseOperationException(String message) {
+        super(message);
+    }
+
+    //javadoc is inherited
+    public UnsupportedDatabaseOperationException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public UnsupportedDatabaseOperationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
 

@@ -16,50 +16,26 @@ package org.mmbase.module.core;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: CircularReferenceException.java,v 1.3 2003-08-28 16:00:24 pierre Exp $
+ * @version $Id: CircularReferenceException.java,v 1.4 2003-08-29 09:36:53 pierre Exp $
  */
 public class CircularReferenceException extends BuilderConfigurationException {
 
-    /**
-     * Constructs a <code>CircularReferenceException</code> with <code>null</code> as its
-     * message.
-     * @since  MMBase-1.7
-     */
+    //javadoc is inherited
     public CircularReferenceException() {
         super();
     }
     
-    /**
-     * Constructs a <code>CircularReferenceException</code> with the specified detail
-     * message.
-     *
-     * @param message a description of the error
-     */
+    //javadoc is inherited
     public CircularReferenceException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a <code>CircularReferenceException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the error
-     * @since  MMBase-1.7
-     */
+    //javadoc is inherited
     public CircularReferenceException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a <code>CircularReferenceException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param message a description of the error
-     * @param Throwable the cause of the error
-     * @since  MMBase-1.7
-     */
+    //javadoc is inherited
     public CircularReferenceException(String message, Throwable cause) {
         super(message,cause);
     }

@@ -10,28 +10,41 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.xmlimporter;
 
 /**
- * Creates a new transactionHandler exception.
+ * This exception is thrown when something goes wrong while parsing ot handling a Transacion by the xml importer.
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandlerException.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
+ * @version $Id: TransactionHandlerException.java,v 1.4 2003-08-29 09:36:50 pierre Exp $
  */
 public class TransactionHandlerException extends Exception {
-        String code = "";
-        String fieldId = "";
-        String fieldOperator = "";
-        String objectOperator = "";
-        String objectId = "";
-        String transactionOperator = "";
-        String transactionId = "";
-        String exceptionPage = "";
+    String code = "";
+    String fieldId = "";
+    String fieldOperator = "";
+    String objectOperator = "";
+    String objectId = "";
+    String transactionOperator = "";
+    String transactionId = "";
+    String exceptionPage = "";
 
-        /**
-         * Creates a new transactionHandler exception.
-         * @param s -  Text to serve as message in the exception.
-         */
-        public TransactionHandlerException(String s) {
-                super(s);
-        }
+    //javadoc is inherited
+    public TransactionHandlerException() {
+        super();
+    }
+
+    //javadoc is inherited
+    public TransactionHandlerException(String message) {
+        super(message);
+    }
+
+    //javadoc is inherited
+    public TransactionHandlerException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public TransactionHandlerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
 
