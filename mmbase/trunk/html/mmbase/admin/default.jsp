@@ -21,7 +21,7 @@
    		<% if (subcategory==null) { %>
 	  	  <frame src="<mm:url page="<%=category+"/main.jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else if (category.equals("demos")) { %>
-		  <frame src="<mm:url page="/mmexamples/index.html" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+		  <frame src="<mm:url page="/mmexamples/index.jsp" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
 		  <frame src="<mm:url page="<%=category+"/"+subcategory+".jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } %>
@@ -54,7 +54,7 @@
   <th class="header">Demos</td>
 </tr>
 <tr>
-  <td class="data"><a href="<mm:url page="/mmexamples/index.html" />">Demos</a></td>
+  <td class="data"><a href="<mm:url page="/mmexamples/index.jsp" />">Demos</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
