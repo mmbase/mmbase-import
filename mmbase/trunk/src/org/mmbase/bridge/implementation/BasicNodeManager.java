@@ -131,8 +131,8 @@ public class BasicNodeManager implements NodeManager {
 	 * Retrieve all field types of this NodeManager.
 	 * @return a <code>List</code> of <code>FieldType</code> objects
 	 */
-	public FieldTypeList getFieldTypes() {
-	    return new BasicFieldTypeList(fieldTypes.values(),cloud,this);
+	public FieldList getFields() {
+	    return new BasicFieldList(fieldTypes.values(),cloud,this);
 	}
 
 	/**
@@ -140,9 +140,9 @@ public class BasicNodeManager implements NodeManager {
 	 * @param fieldName name of the field to retrieve
 	 * @return the requested <code>FieldType</code>
 	 */
-	public FieldType getFieldType(String fieldName) {
-	    FieldType ft= (FieldType)fieldTypes.get(fieldName);
-	    return ft;
+	public Field getField(String fieldName) {
+	    Field f= (Field)fieldTypes.get(fieldName);
+	    return f;
 	}
 	
 	/**
@@ -154,7 +154,13 @@ public class BasicNodeManager implements NodeManager {
      * @param direction indicates whether the sort is ascending (true) or descending (false).
      * @return a <code>List</code> of found nodes
      */
-    public NodeList getList(String where, String sorted, boolean direction) {
+    public NodeList getList(String constraints, String orderby,
+                            String directions) {
+        // "String directions" isn't used yet!!
+        String where = constraints;
+        String sorted = orderby;
+        boolean direction = true;
+
   		Vector v;
   		if ((where!=null) && (!where.trim().equals(""))) {
 		    where="WHERE "+where;
