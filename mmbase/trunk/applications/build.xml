@@ -42,6 +42,10 @@ Applications build file
      <ant dir="media"      target="jar" />
   </target>
 
+  <target name="rmmci" depends="mmbase">
+     <ant dir="rmmci"  />
+  </target>
+
   <target name="editwizard" depends="mmbase">
      <ant dir="editwizard" target="jar" />
      <ant dir="editwizard" target="jspsmartupload" />
@@ -50,7 +54,8 @@ Applications build file
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
-      <delete dir="${applications.build.dir}" />
+     <ant dir="rmmci" target="clean" />
+    <delete dir="${applications.build.dir}" />
   </target>
 
 </project>
