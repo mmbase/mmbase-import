@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.47.2.8 2004-09-08 18:07:00 robmaris Exp $
+ * @version  $Id: editwizard.jsp,v 1.47.2.9 2004-09-16 10:44:39 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -120,6 +120,9 @@ function doSearch(el, cmd, sessionkey) {
     var searchterm = document.forms[0].elements["searchterm_" + cmd].value+"";
 
     if (searchtype=="like") searchterm = searchterm.toLowerCase();
+    if (searchtype=="string" || searchtype=="like") {
+        searchterm = searchterm.replace("'","''");
+    }
 
     var filterrequired = el.getAttribute("filterrequired");
     if (filterrequired=="true" && searchterm=="") {
