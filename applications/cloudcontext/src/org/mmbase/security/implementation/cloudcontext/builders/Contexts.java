@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.26 2003-11-19 16:41:00 michiel Exp $
+ * @version $Id: Contexts.java,v 1.27 2003-11-27 08:32:22 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -145,7 +145,6 @@ public class Contexts extends MMObjectBuilder {
     public boolean mayDo(User user, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) throws SecurityException {
         // admin bypasses security system
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
-            log.debug("admin may do everything");
             return true;
         }
 
@@ -172,7 +171,6 @@ public class Contexts extends MMObjectBuilder {
 
         // admin bypasses security system
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
-            log.debug("admin may do everything, besides deleting itself");
             if (user.getNode() != null && user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false;
             return true;
         }
@@ -184,7 +182,6 @@ public class Contexts extends MMObjectBuilder {
         }
 
         if (readAll && operation == Operation.READ) {
-            log.debug("Allowing all read operiations, so read on " + nodeId + " is permitted");
             return true;
         }
 
@@ -327,7 +324,7 @@ public class Contexts extends MMObjectBuilder {
                     MMObjectNode context = (MMObjectNode) i.next();
                     all.add(context.getStringValue("name"));
                 }
-                
+
                 invalidableObjects.put("ALL", all);
             } catch (SearchQueryException sqe) {
                 log.error(sqe + Logging.stackTrace(sqe));
@@ -487,9 +484,6 @@ public class Contexts extends MMObjectBuilder {
      */
     protected  Set getGroupsAndUsers(MMObjectNode contextNode, Operation operation) {
         Set found = operationsCache.get(contextNode, operation);
-        if (log.isDebugEnabled()) {
-            log.debug("found " + found  + " for " + contextNode + "/" + operation);
-        }
         if (found == null) {
             found = new HashSet();
             for(Enumeration enumeration = contextNode.getRelations(); enumeration.hasMoreElements();) {
@@ -504,9 +498,6 @@ public class Contexts extends MMObjectBuilder {
                             int source      = relation.getIntValue("snumber");
                             MMObjectNode destination = relation.getNodeValue("dnumber");
                             if (source == contextNode.getNumber()) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("found group # " + destination.getNumber() + " for operation" + operation + "(because " + nodeOperation + ")");
-                                }
                                 found.add(destination);
                             } else {
                                 log.warn("source of " + relation + " was not the same as contextNode " + contextNode + " but " + relation.getNodeValue("snumber"));
@@ -518,9 +509,6 @@ public class Contexts extends MMObjectBuilder {
                     // ignore the cited excedption
                     log.warn("Error with " + originalRelation +  Logging.stackTrace(rte, 5));
                 }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("found groups for operation " + operation + " " + found);
             }
             operationsCache.put(contextNode, operation, found);
         }
@@ -621,7 +609,7 @@ public class Contexts extends MMObjectBuilder {
      */
     public Set getPossibleContexts(User user, int nodeId) throws SecurityException {
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
-            log.debug("admin may do everything");
+            // admin may do everything
             return getAllContexts();
         }
 
@@ -680,9 +668,6 @@ public class Contexts extends MMObjectBuilder {
      * @return boolean
      */
     protected boolean parentsAllow(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
-        if (log.isDebugEnabled()) {
-            log.debug("parents allow for " + contextNode + " " + groupOrUserNode + " " + operation);
-        }
         try {
             Groups groups = Groups.getBuilder();
 
@@ -838,7 +823,6 @@ public class Contexts extends MMObjectBuilder {
 
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        log.debug("executefunction of abstractservletbuilder");
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, function, empty);
