@@ -22,13 +22,13 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.18 2003-07-04 12:59:03 keesj Exp $
+ * @version $Id: Generator.java,v 1.19 2004-02-26 22:09:29 michiel Exp $
  */
 public class Generator {
 
-    private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Generator.class);
 
-    private final static String DOCUMENTTYPE_PUBLIC = "-//MMBase/DTD objects config 1.0//EN";
+    private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
     private Document document = null;
     private Cloud cloud = null;
@@ -105,16 +105,7 @@ public class Generator {
             field = (Element)field.getNextSibling();
         }
         // when not found, we are in a strange situation..
-        if (field == null)
-            throw new BridgeException(
-                "field with name: "
-                    + fieldDefinition.getName()
-                    + " of node "
-                    + node.getNumber()
-                    + " with  nodetype: "
-                    + fieldDefinition.getNodeManager().getName()
-                    + " not found, while it should be in the node skeleton.. xml:\n"
-                    + toString(true));
+        if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));        
         // when it is filled (allready), we can return
         if (field.getTagName().equals("field"))
             return;

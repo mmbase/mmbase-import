@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.6 2004-02-20 13:44:07 keesj Exp $
+ * @version $Id: TreeList.java,v 1.7 2004-02-26 22:09:28 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -57,32 +57,10 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         queries.add(q);
         results.add(null); // determin when needed
 
-        fixSortOrders(q);
+        Queries.sortUniquely(q);
 
         size = Queries.count(q);
         numberOfSteps = q.getSteps().size();
-
-    }
-
-    /**
-     * Used in constructor to check the given query, every step must be sorted on number (at least)
-     */
-    protected void fixSortOrders(Query q) {
-        List steps = new ArrayList(q.getSteps());
-        Iterator i = q.getSortOrders().iterator();
-        while (i.hasNext()) {
-            SortOrder sortOrder = (SortOrder)i.next();
-            if (sortOrder.getField().getFieldName().equals("number")) {
-                Step step = sortOrder.getField().getStep();
-                steps.remove(step);
-            }
-        }
-        // add sort order on the remaining ones:
-        i = steps.iterator();
-        while (i.hasNext()) {
-            Step step = (Step)i.next();
-            q.addSortOrder(q.createStepField(step, "number"), SortOrder.ORDER_DESCENDING);
-        }
 
     }
 

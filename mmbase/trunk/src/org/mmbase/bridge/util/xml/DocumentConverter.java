@@ -20,10 +20,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: DocumentConverter.java,v 1.2 2002-04-09 12:39:37 eduard Exp $
+ * @version $Id: DocumentConverter.java,v 1.3 2004-02-26 22:09:28 michiel Exp $
  */
 public  class DocumentConverter {
-    private static Logger log = Logging.getLoggerInstance(DocumentConverter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DocumentConverter.class);
     
     public static DocumentConverter getDocumentConverter(String requiredDocType) {
         return new DocumentConverter();
