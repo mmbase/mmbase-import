@@ -30,11 +30,14 @@
       <prompt>Nieuw leerblok: </prompt>
     </command>
 
+
     <command name="search" nodepath="learnobjects" fields="name" age="7" orderby="number" directions="down" >
         <prompt>Zoeken naar Leerobjecten</prompt>
         <search-filter>
             <name>Naam bevat</name>
             <search-fields>name</search-fields>
         </search-filter>
-    </command>
+    </command> 
+
+   
 </list>
