@@ -121,13 +121,15 @@ public class URLCache extends Cache {
 		 */	
 		private void put(MMObjectNode node, String key) {
 			Vector keyList = null;
-            String objectNumber = ""+node.getNumber();
-			if(objectNumber2Keys.contains(objectNumber)) {
+            		String objectNumber = ""+node.getNumber();
+			if(objectNumber2Keys.containsKey(objectNumber)) {
 				keyList = (Vector)objectNumber2Keys.get(objectNumber);
 			} else {
-				keyList = (Vector)objectNumber2Keys.put(objectNumber,new Vector(20));
+				keyList = new Vector(20);
+				objectNumber2Keys.put(objectNumber,new Vector(20));
 			}
 			keyList.add(key);
+			observer.put(node);
 		}
 
 		/**
@@ -153,6 +155,7 @@ public class URLCache extends Cache {
         }
         
         private void addToObservingBuilder(MMObjectBuilder bul) {
+	    log.debug("Adding observer for builder = "+bul.getTableName());
             bul.addLocalObserver(this);
             bul.addRemoteObserver(this);
             observingBuilders.add(bul.getTableName());
@@ -173,6 +176,7 @@ public class URLCache extends Cache {
         protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
             // d=delete, c=create
             if (ctype.equals("d") || ctype.equals("c")) {
+		log.debug("Recieved a change, object number = "+number);
                 nodeChange(number);
             }
             return true;
