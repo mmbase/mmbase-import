@@ -20,6 +20,7 @@ about the Ant build tool.
     <property name="optimize"       value="on"/>
     <property name="deprecation"    value="off"/>
 
+    <!-- Toplevel-dir -->
     <property name="top.dir" value="../../../../"/>
 
     <!-- Location of MMBase's config, needed for config-test -->
@@ -44,7 +45,7 @@ about the Ant build tool.
         ${top.dir}/lib/jai_codec.jar:
         ${jdbc.classpath}"/>
 
-    <!-- Source directory -->     
+    <!-- Source directory -->
     <property name="src.dir"     value="${top.dir}/src"/>
     <!-- Packages, needed for javadocs -->
     <property name="packages"    value="org.mmbase.*"/>
@@ -56,7 +57,7 @@ about the Ant build tool.
 
     <!-- distribution dirs -->
     <property name="dist.root" value="${top.dir}/dist"/>
-    <property name="dist.version" value="${dist.root}/${name}-${version}"/> 
+    <property name="dist.version" value="${dist.root}/${name}-${version}"/>
     <property name="dist.dir" value="${dist.version}/mmbase"/>
     <property name="dist.lib" value="${dist.dir}/lib"/>
     <property name="dist.src" value="${dist.dir}/src"/>
@@ -101,12 +102,14 @@ about the Ant build tool.
     <echo message=""/>
     <echo message=" available targets are:"/>
     <echo message=""/>
+    <echo message="   compile-check --> checks the config needed for building MMBase"/>
     <echo message="   jar          --> generates the mmbase.jar file"/>
-    <echo message="   compile      --> compiles the source code (default)"/>
+    <echo message="   compile      --> compiles the source code"/>
     <echo message="   javadocs     --> generates the API documentation"/>
     <echo message="   dist         --> generates the MMBase-distribution"/>
-    <echo message="   config-test  --> test the MMBase configuration"/>
-    <echo message="   clean        --> cleans up the directory after building"/>
+    <echo message="   config-test  --> tests the MMBase configuration"/>
+    <echo message="   clean        --> cleans up the build-directory"/>
+    <echo message="   clean-dist   --> cleans up the dist-directory"/>
     <echo message=""/>
     <echo message="*************************************************************"/>
     <echo message=""/>
@@ -151,7 +154,7 @@ about the Ant build tool.
     <echo message="Warning: Missing optional package javax.jai."/>
     <echo message="You can't use the java based Image-Converter without this package,"/> 
     <echo message="you've got to use ImageMagick."/>
-    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/."/>
+    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
 	<echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
   </target>
@@ -208,9 +211,20 @@ about the Ant build tool.
   </target>
 
   <!-- =================================================================== -->
+  <!-- Checks needed before compiling                                      -->
+  <!-- =================================================================== -->
+  <target name="compile-check" depends="init,check.dir.all,check.package.all">
+    <echo message=""/>
+    <echo message="Config-check finished."/>
+    <echo message="If there are any problems displayed above, please correct"/>
+    <echo message="them and try again."/>
+    <echo message=""/> 
+  </target>
+
+  <!-- =================================================================== -->
   <!-- Prepares the build directory                                        -->
   <!-- =================================================================== -->
-  <target name="prepare" depends="init,check.dir.all">
+  <target name="prepare" depends="init,compile-check">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.dest}"/>
   </target>
@@ -218,7 +232,7 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Compiles the source directory                                       -->
   <!-- =================================================================== -->
-  <target name="compile" depends="check.package.all,prepare"> 
+  <target name="compile" depends="prepare"> 
 
     <copydir src="${src.dir}" dest="${build.dest}">
       <include name="**/scripts/**" />
@@ -246,10 +260,11 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Creates the jar file                                                -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile">
+  <target name="jar" depends="clean,compile">
     <jar jarfile="${build.dir}/${name}.jar"
          basedir="${build.dest}"
          includes="org/**"/>
+    <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
   </target>
 
   <!-- =================================================================== -->
@@ -273,9 +288,7 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-    
-  <target name="dist" depends="compile,jar,javadocs">
-
+  <target name="dist" depends="clean-dist,compile,jar,javadocs">
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.version}"/>
     <mkdir dir="${dist.dir}"/>
@@ -290,7 +303,7 @@ about the Ant build tool.
     <!-- copy the java-sources -->
     <copydir src="${src.dir}" dest="${dist.src}">
       <exclude name="**/scripts/**" />
-    </copydir>     
+    </copydir>
 
     <!-- copy the scripts -->
     <copydir src="${src.dir}/org/mmbase/scripts/**" dest="${dist.scripts}">
@@ -300,18 +313,16 @@ about the Ant build tool.
       <exclude name="compile2"/>
       <exclude name="createjar"/>
       <exclude name="oriondoc"/>
-
     </copydir>
     <copyfile src="${src.dir}/org/mmbase/scripts/build-in-distro.xml" dest="${dist.scripts}/build.xml"/>
 
     <!-- make scripts executable -->
-    <chmod perm="ugo+x" file="${dist.scripts}/startorion"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/tomcat_mmbase.sh"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/startup_tomcat_mmbase.sh"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/shutdown_tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/orion/startorion"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/tomcat/tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/tomcat/startup_tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/tomcat/shutdown_tomcat_mmbase.sh"/>
     <chmod perm="ugo+x" file="${dist.scripts}/ant"/>
     <chmod perm="ugo+x" file="${dist.scripts}/antRun"/>
-
 
     <!-- copy the javadocs -->
     <copydir src="${build.javadocs}" dest="${dist.docs}/api"/>
@@ -355,9 +366,12 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <target name="clean" depends="init">
     <deltree dir="${build.dir}"/>
-    <deltree dir="${dist.root}"/>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Clean dist target                                                   -->
+  <!-- =================================================================== -->
+  <target name="clean-dist" depends="init">
+    <deltree dir="${dist.root}"/>
+  </target>
 </project>
-
-
