@@ -4,7 +4,7 @@
    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
   </head>
   <body>
-    <mm:import externid="reference">cloud2.jsp</mm:import>
+    <mm:import externid="referrer">cloud2.jsp</mm:import>
     <mm:import externid="reason">please</mm:import>
     <h1>Login</h1>
     <mm:write referid="reason">
@@ -15,7 +15,7 @@
       </mm:compare>
     </mm:write>
     <table>
-      <form method="post" action="<mm:write referid="reference" />" >
+      <form method="post" action="<mm:write referid="referrer" />" >
         <input type="hidden" name="authenticate" value="name/password" />
         <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
         <tr><td>Password</td><td><input type="password" name="password"></td></tr>
