@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.14 2003-12-02 16:31:24 michiel Exp $
+ * @version $Id: Queries.java,v 1.15 2003-12-09 20:10:55 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -260,8 +260,9 @@ public class Queries {
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
-        if (constraints == null || constraints.equals(""))
+        if (constraints == null || constraints.equals("")) {
             return null;
+        }
         constraints = convertClauseToDBS(constraints);
         if (!validConstraints(constraints)) {
             throw new BridgeException("invalid constraints:" + constraints);
@@ -281,6 +282,177 @@ public class Queries {
             query.setConstraint(newConstraint);
         }
         return newConstraint;
+    }
+
+    /**
+     * Adds a Constraint to the already present constraint (with AND)
+     */
+    public static Constraint addConstraint(Query query, Constraint newConstraint) {
+        if (newConstraint == null) return null;
+        Constraint constraint = query.getConstraint();
+
+
+        if (constraint != null) {
+            log.debug("compositing constraint");
+            Constraint compConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            query.setConstraint(compConstraint);
+            return compConstraint;
+        } else {
+            query.setConstraint(newConstraint);
+            return newConstraint;
+        }
+    }
+
+
+    public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
+    public static final int OPERATOR_IN      = 10000; // not a FieldCompareConstraint (non numeric)
+
+    /**
+     * Creates a operator constant for use by createConstraint
+     * @see #createConstraint
+     */
+    public static int getOperator(String s) {
+        String op = s.toUpperCase();
+        // first: determin operator:
+        if (op.equals("<") || op.equals("LESS")) {
+            return FieldCompareConstraint.LESS;
+        } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
+            return FieldCompareConstraint.LESS_EQUAL;
+        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("")) {
+            return FieldCompareConstraint.EQUAL;
+        } else if (op.equals(">") || op.equals("GREATER")) {
+            return FieldCompareConstraint.GREATER;
+        } else if (op.equals(">=") || op.equals("GREATER_EQUAL")) {
+            return FieldCompareConstraint.GREATER_EQUAL;
+        } else if (op.equals("LIKE")) {
+            return FieldCompareConstraint.LIKE;
+        } else if (op.equals("BETWEEN")) {
+            return OPERATOR_BETWEEN;
+        } else if (op.equals("IN")) {
+            return OPERATOR_IN;
+        //} else if (op.equals("~") || op.equals("REGEXP")) {
+        //  return FieldCompareConstraint.REGEXP;
+        } else {
+            throw new BridgeException("Unknown Field Compare Operator '" + op + "'");
+        }
+
+    }
+    /**
+     * Used in implmentation of createConstraint
+     */
+    protected static Number getNumberValue(String stringValue) throws BridgeException {
+        try {
+            return  new Integer(stringValue);
+        } catch (NumberFormatException e) {
+            try {
+               return new Double(stringValue);
+            } catch (NumberFormatException e2) {
+                throw new  BridgeException("Operator requires number value ('" + stringValue + "' is not)");
+            }
+        }
+    }
+
+    /**
+     * Used in implmentation of createConstraint
+     */
+    protected static Object getCompareValue(int fieldType, int operator, Object value) {
+        
+        if (fieldType != Field.TYPE_STRING && 
+            fieldType != Field.TYPE_XML && 
+            operator < FieldCompareConstraint.LIKE) {  // numeric compare
+            if (value instanceof Number) {
+                return value;
+            } else {
+                return  getNumberValue(Casting.toString(value));
+            }
+        } else {
+            if (operator == OPERATOR_IN) {
+                SortedSet set;
+                if (value instanceof SortedSet) {
+                    set = (SortedSet) value;
+                } else if (value instanceof NodeList) {
+                    set = new TreeSet();
+                    NodeIterator i = ((NodeList) value).nodeIterator();
+                    while (i.hasNext()) {
+                        Node node = i.nextNode();
+                        set.add(new Integer(node.getNumber()));
+                    }
+                } else if (value instanceof Collection) {                    
+                    set = new TreeSet();
+                    Iterator i = ((Collection) value).iterator();
+                    while (i.hasNext()) {
+                        Object o = i.next();
+                        set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
+                    }
+                } else {
+                    set = new TreeSet();
+                    if (! (value == null || value.equals(""))) {
+                        set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
+                    }
+                }
+                value = set;
+            }
+            return value;
+        }
+    }
+
+    /**
+     * Defaulting version of {@link #createConstraing(Query, String, int, Object, Object, boolean)}.
+     * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used).
+     */
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value) {
+        return createConstraint(query, fieldName, operator, value, null, false);
+    }
+    /**
+     * Creates a constraint smartly, depending on the type of the field, the value is casted to the
+     * right type, and the right type of constraint is created.
+     * This is used in taglib implementation, but could be useful more generally.
+     *
+     * @param query      The query to create the constraint for
+     * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
+     * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
+     * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
+     * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
+     * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
+     */ 
+
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive) {
+
+
+        StepField stepField = query.createStepField(fieldName);
+        if (stepField == null) throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
+
+
+        Cloud cloud = query.getCloud();
+        FieldConstraint newConstraint;
+        
+        if (value instanceof StepField) {
+            newConstraint = query.createConstraint(stepField, operator, (StepField) value);
+        } else {
+            int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
+            
+            Object compareValue = getCompareValue(fieldType, operator, value);
+
+            if (operator > 0 && operator < OPERATOR_IN) {
+                newConstraint = query.createConstraint(stepField, operator, compareValue);
+             } else {
+                switch(operator) {
+                case OPERATOR_BETWEEN:
+                    Object compareValue2 = getCompareValue(fieldType, operator, value2);
+                    newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
+                    break;
+                case OPERATOR_IN:
+                    newConstraint = query.createConstraint(stepField, (SortedSet) compareValue);
+                    break;
+                default:
+                    throw new RuntimeException("Unknown value for operation " + operator);
+                }
+            }
+        }
+        query.setCaseSensitive(newConstraint, caseSensitive);
+        return newConstraint;
+
+        
     }
 
     /**
@@ -334,8 +506,9 @@ public class Queries {
      */
     protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
-        while (Character.isDigit(complete.charAt(end)))
+        while (Character.isDigit(complete.charAt(end))) {
             --end;
+        }
         return complete.substring(0, end + 1);
     }
 
@@ -345,8 +518,9 @@ public class Queries {
      * @return The new steps.
      */
     public static List addPath(Query query, String path, String searchDirs) {
-        if (path == null || path.equals(""))
+        if (path == null || path.equals("")) {
             return query.getSteps().subList(0, 0);
+        }
         if (searchDirs == null) {
             searchDirs = "";
         }
@@ -382,8 +556,9 @@ public class Queries {
             }
 
             if (cloud.hasRole(token)) {
-                if (!pathTokenizer.hasMoreTokens())
+                if (!pathTokenizer.hasMoreTokens()) {
                     throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")");
+                }
                 String nodeManagerAlias = pathTokenizer.nextToken().trim();
                 String nodeManagerName = removeDigits(nodeManagerAlias);
                 NodeManager nodeManager = cloud.getNodeManager(nodeManagerName);
