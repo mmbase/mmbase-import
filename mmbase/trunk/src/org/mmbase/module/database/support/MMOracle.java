@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.2 2001-01-21 20:01:25 daniel Exp $
+$Id: MMOracle.java,v 1.3 2001-01-21 20:37:07 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2001/01/21 20:01:25  daniel
+Version 0.9, crude and BYTE support is broken
+
 Revision 1.1  2001/01/20 12:50:55  daniel
 yes a first stab at the MMOracle db convertor, 80% working
 
@@ -183,7 +186,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.2 $ $Date: 2001-01-21 20:01:25 $
+* @$Revision: 1.3 $ $Date: 2001-01-21 20:37:07 $
 */
 public class MMOracle implements MMJdbc2NodeInterface {
 
@@ -1007,7 +1010,6 @@ public class MMOracle implements MMJdbc2NodeInterface {
 		} else {
 			result=getMatchCREATE(tableName)+"( "+getNumberString()+" int not null, "+result+" )";
 		}
-		 System.out.println("XMLCREATE="+result);
 
 		try {
 			MultiConnection con=mmb.getConnection();
