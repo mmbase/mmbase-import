@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.3 2004-02-26 23:55:32 michiel Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.4 2004-03-08 17:15:46 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
@@ -82,11 +82,13 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         int maxSize;
         if (maxTotalSize > 0) {
             int totalSize = Queries.count(query);
-            maxSize = maxTotalSize  / 2; // half for both, 
-            int numberOfNextBatches = (totalSize - offset)/ maxNumber + 1; // including current
-            if (numberOfNextBatches < maxSize) { // nextbatches will not use all
-                maxSize += (maxSize - numberOfNextBatches);
+            maxSize = maxTotalSize / 2; 
+            int numberOfNextBatches = (totalSize - offset)/ maxNumber; 
+            int availableForNext = (maxTotalSize + 1) / 2; // nextbatches plus current batch
+            if (numberOfNextBatches < availableForNext) { // nextbatches will not use all
+                maxSize += (availableForNext - numberOfNextBatches);
             }
+
             int max = getMaxNumber();
             if (max > 0 && maxSize > max) maxSize = max;
 
