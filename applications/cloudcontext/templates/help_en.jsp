@@ -3,7 +3,7 @@
 %><mm:content postprocessor="reducespace">
 <%@include file="import.jsp" %><%@include file="settings.jsp" %>
 <mm:import id="url">help.jsp</mm:import>
-<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+<mm:cloud loginpage="login.jsp"  rank="$rank">
  <%@include file="you.div.jsp" %>
  <mm:import id="current">help</mm:import>
  <%@include file="navigate.div.jsp" %>

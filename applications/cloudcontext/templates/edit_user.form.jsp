@@ -6,8 +6,9 @@
   <mm:fieldlist fields="lastlogon?">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="guivalue" /></td></tr>
   </mm:fieldlist>
+  <mm:cloudinfo type="user" id="cloudusername" write="false" />
   <mm:field name="username">
-    <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
+    <mm:compare referid2="cloudusername" inverse="true">
     <tr>
       <td><%=getPrompt(m,"groups")%></td>
       <td>
@@ -40,7 +41,7 @@
       </td>
     </tr>
     </mm:compare>
-    <mm:compare value="<%=cloud.getUser().getIdentifier()%>">
+    <mm:compare referid2="cloudusername">
     <tr>
       <td><%=getPrompt(m,"groups")%></td>
       <td>
