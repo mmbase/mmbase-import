@@ -45,11 +45,7 @@ public class ListTag extends AbstractNodeListTag {
         nodesString=parseNodes(nodes);
     }
 
-    public void setNode(String node) throws JspTagException {
-        nodesString=parseNodes(node);
-    }
-
-    private String parseNodes(String nodes) throws JspTagException {
+    protected String parseNodes(String nodes) throws JspTagException {
         // should be a StringTokenizer ?
         return getAttributeValue(nodes);
     }
