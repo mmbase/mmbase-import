@@ -35,16 +35,17 @@
 		</field>
 
 		<list role="related" destination="people" minoccurs="0"  maxoccurs="3">
-      <title>Authors</title>       
+      <title>Authors (notice the search-filters)</title>       
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
 				<prompt>People</prompt>
 				<search-filter>
 					<name>firstname contains</name>
 					<search-fields>firstname</search-fields>
+          <default>Jan</default>
 				</search-filter>
 				<search-filter>
 					<name>lastname contains</name>
-					<search-fields>lastname</search-fields>
+				  <search-fields>lastname</search-fields>
 				</search-filter>
 			</command>
 
