@@ -1472,29 +1472,24 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target name="rmmci" depends="compile">
     <mkdir dir="${build.dir}/rmmcitmp"/>
-    <unjar src="${servlet.jar}" dest="${build.dir}/rmmcitmp">
-      <patternset>
+    <unjar src="${servlet.jar}" dest="${build.dir}/rmmcitmp" />
+    <unjar src="${xml-apis.jar}" dest="${build.dir}/rmmcitmp" />
+    <jar jarfile="build/rmmci.jar">
+       <fileset dir="${build.dir}/classes">
+        <include name="org/mmbase/bridge/*.class"/>
+        <include name="org/mmbase/bridge/remote/**"/>
+       </fileset>
+       <fileset dir="${build.dir}/rmmcitmp">
+        <include name="org/w3c/dom/Document.class"/>
+        <include name="org/w3c/dom/Node.class"/>
+        <include name="org/w3c/dom/Element.class"/>
         <include name="javax/servlet/ServletRequest.class"/>
         <include name="javax/servlet/ServletResponse.class"/>
         <include name="javax/servlet/http/HttpServletRequest.class"/>
         <include name="javax/servlet/http/HttpServletResponse.class"/>
-      </patternset>
-    </unjar>
-    <unjar src="${xml-apis.jar}" dest="${build.dir}/rmmcitmp">
-      <patternset>
-        <include name="org/w3c/dom/Document.class"/>
-        <include name="org/w3c/dom/Node.class"/>
-        <include name="org/w3c/dom/Element.class"/>
-      </patternset>
-    </unjar>
-    <copy todir="${build.dir}/rmmcitmp">
-      <fileset dir="${build.dir}/classes">
-        <include name="org/mmbase/bridge/*.class"/>
-        <include name="org/mmbase/bridge/remote/**"/>
-      </fileset>
-    </copy>
-    <jar jarfile="build/rmmci.jar" basedir="${build.dir}/rmmcitmp"/>
-    <delete dir="${build.dir}/rmmcitmp"/>
+       </fileset>
+    </jar>
+    <delete dir="${build.dir}/rmmcitmp" />
   </target>
 
   <!-- =================================================================== -->
