@@ -444,6 +444,10 @@ public class servdb extends JamesServlet {
 											cline.mimetype=getAttachmentMimeType(getParamVector(req));
                                             //cline.mimetype="application/x-binary";
                                             mimetype=cline.mimetype;
+                                            String savefilename=getAttachmentFileName(getParamVector(req));
+                                            if (savefilename!=null) {
+	                                            res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
+					    }
                                         }
 									else 
 										// flash
@@ -752,6 +756,36 @@ public class servdb extends JamesServlet {
         result.getBytes(0,result.length(),data,0);
         return(data);
     }
+
+
+    /**
+     * Downloading Attachment
+     * cjr@dds.nl, July 27th 2000
+     *
+     * @return Byte array with contents of 'handle' field of attachment builder
+     */
+    public String getAttachmentFileName(Vector params) {
+	    log.debug("getAttachment(): param="+params);
+        String result="";
+        if (params.size()==1) {
+            MMObjectBuilder bul=mmbase.getMMObject("attachments");
+            MMObjectNode node=null;
+            try {
+                node=bul.getNode((String)params.elementAt(0));
+		if (node!=null) {
+			String filename=node.getStringValue("filename");
+			if (filename!=null && !filename.equals("")) {
+				return(filename);
+			}
+		}
+            } catch(Exception e) {
+                log.error("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
+                return null;
+            }
+	}
+	return(null);
+     }
+
 
     /**
      * Downloading Attachment
