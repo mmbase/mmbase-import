@@ -19,11 +19,10 @@ import java.io.*;
  * In theory, these files are valid according to the JPEG specifications.
  * However they break many applications, including Quark and, significantly,
  * various versions of Internet Explorer on various platforms.
- * http://www.photo.net/bboard/q-and-a-fetch-msg?msg_id=003j8d
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.2 2004-02-09 13:24:21 pierre Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.3 2004-04-07 14:11:08 keesj Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
