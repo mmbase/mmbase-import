@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * XMLBasicReader has two goals.
- <ul> 
+ <ul>
    <li>
    It provides a way for parsing XML
    </li>
@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.31 2003-04-07 19:46:22 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.32 2003-04-10 07:59:42 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -53,7 +53,24 @@ public class XMLBasicReader  {
     private static DocumentBuilder altDocumentBuilder = null;
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
-    public    static final String PUBLICID_ERROR = "-//MMBase//DTD error 1.0//EN";
+
+    /** Public ID of the Error DTD version 1.0 */
+    public static final String PUBLICID_ERROR_1_0 = "-//MMBase//DTD error 1.0//EN";
+    /** DTD respource filename of the Error DTD version 1.0 */
+    public static final String DTD_ERROR_1_0 = "error_1_0.dtd";
+
+    /** Public ID of the most recent Error DTD */
+    public static final String PUBLICID_ERROR = PUBLICID_ERROR_1_0;
+    /** DTD respource filename of the most recent Error DTD */
+    public static final String DTD_ERROR = DTD_ERROR_1_0;
+
+    /**
+     * Register the Public Ids for DTDs used by XMLBasicReader
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerPublicIDs() {
+        XMLEntityResolver.registerPublicID(PUBLICID_ERROR_1_0, DTD_ERROR_1_0, XMLBasicReader.class);
+    }
 
     /** set this one to true, and parser will be loaded...  */
 
@@ -78,7 +95,7 @@ public class XMLBasicReader  {
         try {
             InputSource is = new InputSource(new FileInputStream(path));
             is.setSystemId("file://" + path);
-            return is;                
+            return is;
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
@@ -87,7 +104,7 @@ public class XMLBasicReader  {
             is.setSystemId(FILENOTFOUND + path);
             is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
                                                    "<!DOCTYPE error PUBLIC \"" + PUBLICID_ERROR + "\"" +
-                                                   " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" + 
+                                                   " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
                                                    "<error>" + e.toString() + "</error>"));
             return is;
         }

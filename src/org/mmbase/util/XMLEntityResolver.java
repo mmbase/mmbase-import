@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.30 2003-04-09 09:04:24 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.31 2003-04-10 07:59:42 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -67,18 +67,36 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     static {
-        // This list is not yet complete
-        publicIDtoResource.put("-//MMBase/DTD builder config 1.1//EN",  new Resource(XMLBasicReader.class,    "builder_1_1.dtd"));
-        publicIDtoResource.put("-//MMBase/DTD builder config 1.0//EN",  new Resource(XMLBasicReader.class,    "builder_1_0.dtd"));
-        publicIDtoResource.put("//MMBase - builder//",                  new Resource(XMLBasicReader.class,    "builder_1_1.dtd"));
-        publicIDtoResource.put("-//MMBase/DTD module config 1.0//EN",   new Resource(XMLModuleReader.class,   "module_1_0.dtd"));
-        publicIDtoResource.put("-//MMBase/ DTD module config 1.0//EN",  new Resource(XMLModuleReader.class,   "module_1_0.dtd"));
+        // ask known (core) xml readers to register their public ids and dtds
+        XMLBasicReader.registerPublicIDs();
+
+        // Most current Public IDs
+        publicIDtoResource.put("-//MMBase//DTD builder config 1.1//EN",  new Resource(XMLBasicReader.class, "builder_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD module config 1.0//EN",  new Resource(XMLModuleReader.class, "module_1_0.dtd"));
         publicIDtoResource.put("-//MMBase//DTD util config 1.0//EN",    new Resource(org.mmbase.util.xml.UtilReader.class, "util_1_0.dtd"));
-        publicIDtoResource.put("-//MMBase/DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
         publicIDtoResource.put("-//MMBase//DTD application config 1.1//EN", new Resource(XMLApplicationReader.class, "application_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD builder transactions 1.0//EN", new Resource(org.mmbase.module.TransactionHandler.class, "transactions_1_0.dtd"));
+
+        // Legacy Public IDs
+        publicIDtoResource.put("-//MMBase/DTD builder config 1.1//EN",  new Resource(XMLBasicReader.class, "builder_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD builder config 1.0//EN",  new Resource(XMLBasicReader.class, "builder_1_0.dtd"));
+        publicIDtoResource.put("//MMBase - builder//",                  new Resource(XMLBasicReader.class, "builder_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD module config 1.0//EN",   new Resource(XMLModuleReader.class, "module_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase/ DTD module config 1.0//EN",  new Resource(XMLModuleReader.class, "module_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
         publicIDtoResource.put("-//MMBase/DTD application config 1.0//EN", new Resource(XMLApplicationReader.class, "application_1_0.dtd"));
-        publicIDtoResource.put("-//MMBase//DTD builder transactions 1.0//EN", new Resource(org.mmbase.module.TransactionHandler.class,    "transactions_1_0.dtd"));
-        publicIDtoResource.put(XMLBasicReader.PUBLICID_ERROR, new Resource(XMLBasicReader.class,    "error_1_0.dtd"));
+    }
+
+    /**
+     * Register a given publicID, binding it to a resource determined by a given class and resource filename
+     * @param publicID the Public ID to register
+     * @param dtd the name of the resourcefile
+     * @param c the class indicating the location of the resource in the pacakage structure. The
+     *          resource is to be found in the 'resources' package under the package of the class.
+     */
+    public static void registerPublicID(String publicID, String dtd, Class c) {
+        publicIDtoResource.put(publicID, new Resource(c,dtd));
     }
 
     private String dtdpath;

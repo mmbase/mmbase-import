@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.64 2003-04-09 08:50:13 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.65 2003-04-10 07:59:41 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -254,7 +254,7 @@ public class MMAdmin extends ProcessorModule {
                         try {
                             BuilderWriter builderOut=new BuilderWriter(bul);
                             builderOut.setIncludeComments(true);
-                            builderOut.setExpandBuilder(true);
+                            builderOut.setExpandBuilder(false);
                             builderOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
