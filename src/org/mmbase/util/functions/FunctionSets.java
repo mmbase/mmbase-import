@@ -38,7 +38,7 @@ import org.mmbase.bridge.implementation.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.6 2004-12-06 15:25:19 pierre Exp $ 
+ * @version $Id: FunctionSets.java,v 1.7 2004-12-06 16:13:38 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -233,12 +233,16 @@ public class FunctionSets {
 
                 Parameter[] parameters = (Parameter[]) parameterList.toArray(new Parameter[0]);
 
-                SetFunction fun = new SetFunction(functionName, parameters, returnType);
-                fun.setDescription(description);
-                fun.setClassName(classname);
-                fun.setMethodName(methodname);
-                fun.initialize();
-                functionSet.addFunction(fun);
+                try {
+                    SetFunction fun = new SetFunction(functionName, parameters, returnType);
+                    fun.setDescription(description);
+                    fun.setClassName(classname);
+                    fun.setMethodName(methodname);
+                    fun.initialize();
+                    functionSet.addFunction(fun);
+                } catch (Exception e) {
+                    log.error(e);
+                }
             }
         }
     }
