@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.10 2003-03-04 13:49:16 nico Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.11 2003-04-03 16:34:10 michiel Exp $
  */
 class MultilevelSubscribeNode implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(MultilevelSubscribeNode.class.getName());
@@ -42,7 +42,9 @@ class MultilevelSubscribeNode implements MMBaseObserver {
         if(mmb.getMMObject(type) == null) {
             int builderNumber  = mmb.getRelDef().getNumberByName(type);
             String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
-            log.debug("replaced the type: "+type+" with type:" + newType);
+            if (log.isDebugEnabled()) {
+                log.debug("replaced the type: " + type + " with type:" + newType);
+            }
             type = newType;
         }
         mmb.addLocalObserver(type,this);
@@ -53,14 +55,14 @@ class MultilevelSubscribeNode implements MMBaseObserver {
      * @javadoc
      */
     public boolean nodeChanged(String machine,String number,String builder,String ctype) {
-        clearEntrys();
+        clearEntries();
         return(true);
     }
 
     /**
      * @javadoc
      */
-    public synchronized void clearEntrys() {
+    protected synchronized void clearEntries() {
         Vector myqueue=(Vector)queue.clone();
         for (Enumeration e=myqueue.elements(); e.hasMoreElements(); ) {
             MultilevelCacheEntry n=(MultilevelCacheEntry)e.nextElement();
