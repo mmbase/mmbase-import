@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.15 2003-04-04 17:22:55 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.16 2003-04-10 13:27:48 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -179,21 +179,21 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * You should only remove entries from LRUHashtable using the 'remove' function.
      * otherwise the linked list gets messed up.
      * The keySet of LRUHashtable therefore returns an unmodifiable set.
-     * @since MMBase-1.7
+     * @since MMBase-1.6.3
      */
     public Set keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
     /**
      * @see   #keySet
-     * @since MMBase-1.7
+     * @since MMBase-1.6.3
      */
     public Set entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
     /**
      * @see   #keySet
-     * @since MMBase-1.7
+     * @since MMBase-1.6.3
      */
     public Collection values() {
         return Collections.unmodifiableCollection(super.values());
