@@ -2,7 +2,7 @@
  * DocletFieldConfiguration.java
  *
  * Created on June 13, 2002, 12:59 PM
- */
+ **/
 
 package org.mmbase.applications.mmbasedoclet;
 
