@@ -2,7 +2,7 @@
 <!DOCTYPE providers PUBLIC "-//MMBase/DTD providers config 1.0//EN" "http://www.mmbase.org/dtd/providers_1_0.dtd">
 <providers>
 	<provider name="Submarine Package Server" maintainer="Submarine" method="http" >
-		<path>http://chat.submarine.nl/mmpm/sharing/sharedpackages.jsp</path>
+		<path>http://packages.submarine.nl/mmbase/mmpm/sharing/sharedpackages.jsp</path>
 		<account>guest</account>
 		<password>guest</password>
 		<description></description>
@@ -11,4 +11,8 @@
 		<path>~import</path>
 		<description>webapp import dir</description>
 	</provider>
+        <provider name="build dir" maintainer="local" method="disk" >
+                <path>~build</path>
+                <description>webapp build dir</description>
+        </provider>
 </providers>
