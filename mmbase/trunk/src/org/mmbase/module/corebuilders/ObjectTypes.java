@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.16 2002-08-01 07:50:18 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.17 2002-08-15 17:16:09 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -54,12 +54,12 @@ public class ObjectTypes extends TypeDef {
         if(!defaultDeploy.exists()) {
             // try to create the directory for deployment....
             if(!defaultDeploy.mkdirs()) {
-                log.warn("Could not create directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
+                log.warn("Could not create directory: " + defaultDeploy + ", new node-types cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }
             // check if we may write in the specified dir
             else if(!defaultDeploy.canWrite()) {
-                log.error("Could not write in directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
+                log.error("Could not write in directory: " + defaultDeploy + ", new node-typess cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }
         }
