@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.3 2005-03-09 16:32:25 michiel Exp $
+ * @version $Id: CharsetRemoverFilter.java,v 1.4 2005-03-09 16:54:09 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -72,7 +72,7 @@ public class CharsetRemoverFilter implements Filter {
             contentTypes.put("image/vnd.rn-realpix", "ISO-8859-1");
             contentTypes.put("application/smil", "ISO-8859-1");
         }
-        log.info("The following content-types will have no charset on the content-type: " + contenTypes);
+        log.info("The following content-types will have no charset on the content-type: " + contentTypes);
     }
 
 
