@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.118 2004-07-16 11:23:58 pierre Exp $
+ * @version $Id: MMBase.java,v 1.119 2004-10-04 14:12:19 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1414,9 +1414,8 @@ public class MMBase extends ProcessorModule {
         if (database != null) return; // initialized allready
         log.service("Initializing storage");
         // check if there is a storagemanagerfactory specified
-        String factoryClassName = getInitParameter("storagemanagerfactory");
-
-        if (factoryClassName != null) { // 'new' storage
+        String databasename = getInitParameter("DATABASE");
+        if (databasename == null) {
             try {
                 storageManagerFactory = StorageManagerFactory.newInstance(this);
                 // if so, instantiate the support class wrapper for the storage layer
@@ -1430,24 +1429,6 @@ public class MMBase extends ProcessorModule {
         } else { // deprecated code for 'old' storage implementations:
             File databaseConfig = null;
             String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
-            String databasename = getInitParameter("DATABASE");
-            if (databasename == null) {
-                DatabaseLookup lookup =
-                    new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
-                if (jdbc == null)
-                    throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
-                try {
-                    // dont use the getDirectConnection, upon failure, it will loop,....
-                    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
-                } catch (java.sql.SQLException sqle) {
-                    log.error(sqle);
-                    log.error(Logging.stackTrace(sqle));
-                    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
-                }
-            } else {
-                // use the correct databas-xml
-                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
-            }
             // get our config...
             XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
             try {
