@@ -16,7 +16,7 @@
 <mm:write referid="action">
   <mm:compare value="memory">
      <% Runtime runtime = Runtime.getRuntime(); %>
-	 <mm:import externid="gc">
+     <mm:import externid="gc" />
 		<mm:present referid="gc">
 		  <%runtime.gc();%>
         </mm:present>    
