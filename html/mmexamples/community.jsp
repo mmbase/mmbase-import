@@ -1,4 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page session="false" errorPage="mynews/error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content language="en" type="text/html" escaper="inline">
 <mm:cloud name="mmbase" jspvar="cloud">
 <html>
 <head>
@@ -68,7 +70,7 @@ a relation between the people node and the channel.
 A community can be a forum or a chat.
       </td>
       <td>
-        <a href="share/images/community_cloud.jpg" target="img"><img src="share/images/community_cloud.jpg" width="300" alt="cloud design"/></a>
+        <a href="<mm:url page="share/images/community_cloud.jpg" />" target="img"><img src="share/images/community_cloud.jpg" width="300" alt="cloud design"/></a>
       </td>
     </tr>
     <tr>
@@ -80,14 +82,10 @@ A community can be a forum or a chat.
 The image on the right shows the homepage of the community-example.
 This example shows you the basic features of the community application.
       </td>
-      <td><a href="share/images/community_manual.jpg" target="img"><img src="share/images/community_manual.jpg" width="300" alt="community manual" /></a></td>
+      <td><a href="<mm:url page="share/images/community_manual.jpg" />" target="img"><img src="share/images/community_manual.jpg" width="300" alt="community manual" /></a></td>
      </tr>
   </table>
 </body>
 </html>
 </mm:cloud>
-
-
-
-
-
+</mm:content>
