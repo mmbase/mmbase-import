@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.29 2002-09-20 12:25:41 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.30 2002-11-25 11:47:38 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -153,12 +153,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String setObjectField(String owner,String key,String field,Object value) {
-        MMObjectNode node;
-        int i;float f;double d;long l;
         String stringValue;
-
-        // Memo next can be done by new MMObjectNode.setValue
-        node=getNode(owner,key);
+        MMObjectNode node=getNode(owner,key);
         if (node!=null) {
             int type=node.getDBType(field);
             if (type>=0) {
@@ -172,7 +168,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                     case FieldDefs.TYPE_NODE:
                     case FieldDefs.TYPE_INTEGER:
                         try {
-                            i=Integer.parseInt(stringValue);
+                            int i=-1;
+                            if (!stringValue.equals("")) i=Integer.parseInt(stringValue);
                             node.setValue(field,i);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
@@ -183,7 +180,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         break;
                     case FieldDefs.TYPE_FLOAT:
                         try {
-                            f=Float.parseFloat(stringValue);
+                            float f=-1;
+                            if (!stringValue.equals("")) f=Float.parseFloat(stringValue);
                             node.setValue(field,f);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
@@ -191,7 +189,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         break;
                     case FieldDefs.TYPE_DOUBLE:
                         try {
-                            d=Double.parseDouble(stringValue);
+                            double d=-1;
+                            if (!stringValue.equals("")) d=Double.parseDouble(stringValue);
                             node.setValue(field,d);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
@@ -199,7 +198,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         break;
                     case FieldDefs.TYPE_LONG:
                         try {
-                            l=Long.parseLong(stringValue);
+                            long l=-1;
+                            if (!stringValue.equals("")) l=Long.parseLong(stringValue);
                             node.setValue(field,l);
                         } catch (NumberFormatException x) {
                             log.error("Value for field "+field+" is not a number "+stringValue);
