@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.20 2000-06-07 17:27:44 wwwtech Exp $
+	$Id: Images.java,v 1.21 2000-06-08 18:00:12 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.20  2000/06/07 17:27:44  wwwtech
+	Rico: fixed debug message
+	
 	Revision 1.19  2000/06/06 21:31:58  wwwtech
 	Rico: fixed a serious bug in which incorrect icaches entries where created
 	
@@ -71,11 +74,11 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.20 2000-06-07 17:27:44 wwwtech Exp $
+ * @version $Id: Images.java,v 1.21 2000-06-08 18:00:12 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 
 	ImageConvertInterface imageconvert=null;
 	Hashtable ImageConvertParams=new Hashtable();
