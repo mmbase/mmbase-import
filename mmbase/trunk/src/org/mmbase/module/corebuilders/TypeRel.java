@@ -208,6 +208,21 @@ public class TypeRel extends MMObjectBuilder {
 	}
 
     /**
+    *  Returns the display string for this node
+    *  It returns a commbination of objecttypes and rolename : "source->destination (role)".
+    *  @param node Node from which to retrieve the data
+    *  @return A <code>String</code> describing the content of the node
+    */
+    public String getGUIIndicator(MMObjectNode node) {
+        try {
+            return mmb.getTypeDef().getValue(node.getIntValue("snumber"))+
+                   "->"+mmb.getTypeDef().getValue(node.getIntValue("dnumber"))+
+                   " ("+mmb.getRelDef().getNode(node.getIntValue("rnumber")).getGUIIndicator()+")";
+        } catch (Exception e) {}
+        return null;
+    }
+
+    /**
     *  Returns the display string for a specified field.
     *  Returns, for snumber and dnumber, the name of the objecttype they represent, and for
     *  rnumber the display (GUI) string for the indicated relation definition.
