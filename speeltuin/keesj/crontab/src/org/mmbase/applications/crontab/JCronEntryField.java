@@ -68,4 +68,16 @@ public class JCronEntryField {
     public boolean valid(int otherValue){
         return valid[otherValue];
     }
+
+    public int hashCode() {
+        return content.hashCode();
+    }
+
+    public boolean equals(Object o) {
+        if (! (o instanceof JCronEntryField)) {
+            return false;
+        }
+        JCronEntryField f = (JCronEntryField) o;
+        return content.equals(f.content);
+    }
 }

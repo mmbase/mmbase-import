@@ -35,7 +35,7 @@ public class JCrontabBuilder extends MMObjectBuilder{
         jCronDaemon = JCronDaemon.getInstance();
         NodeIterator nodeIterator = LocalContext.getCloudContext().getCloud("mmbase").getNodeManager("crontab").getList(null,null,null).nodeIterator();
         while(nodeIterator.hasNext()){
-            jCronDaemon.addJCronEntry(createJCronEntry(nodeIterator.nextNode()));
+            jCronDaemon.add(createJCronEntry(nodeIterator.nextNode()));
         }
         
     }
@@ -43,7 +43,7 @@ public class JCrontabBuilder extends MMObjectBuilder{
     public int insert(String owner, MMObjectNode objectNodenode) {
         int number =super.insert(owner,objectNodenode);
         Node node = LocalContext.getCloudContext().getCloud("mmbase").getNode(number);
-        jCronDaemon.addJCronEntry(createJCronEntry(node));
+        jCronDaemon.add(createJCronEntry(node));
         return number;
     }
     

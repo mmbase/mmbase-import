@@ -7,34 +7,40 @@ import org.mmbase.util.logging.*;
 public class JCronEntry {
     
     private static final Logger log = Logging.getLoggerInstance(JCronEntry.class);
-    private JCronJob jCronJob;
+    private Runnable jCronJob;
 
     private Thread thread;
     
     private String id;
     private String name;
     private String className;
+    private String cronTime;
 
     private int count = 0;
 
+    private JCronEntryField second    ;// 0-59
     private JCronEntryField minute    ;// 0-59
     private JCronEntryField hour      ;// 0-23
     private JCronEntryField dayOfMonth;//1-31
     private JCronEntryField month     ;//1-12
     private JCronEntryField dayOfWeek ;//0-7 (0 or 7 is sunday)
     
-    public JCronEntry(String id, String crontime, String name, String className) throws Exception {
+    public JCronEntry(String id, String cronTime, String name, String className) throws Exception {
         this.id = id;
         this.name = name;
         this.className = className;
-        jCronJob = (JCronJob)Class.forName(className).newInstance();
-        jCronJob.init(this);
-        minute = new JCronEntryField();
-        hour = new JCronEntryField();
+        this.cronTime = cronTime;
+        jCronJob = (Runnable) Class.forName(className).newInstance();
+        if (jCronJob instanceof JCronJob) {
+            ((JCronJob) jCronJob).init(this);
+        }
+        second     = new JCronEntryField();
+        minute     = new JCronEntryField();
+        hour       = new JCronEntryField();
         dayOfMonth = new JCronEntryField();
-        month = new JCronEntryField();
-        dayOfWeek = new JCronEntryField();
-        setTimeVal(crontime);
+        month      = new JCronEntryField();
+        dayOfWeek  = new JCronEntryField();
+        setTimeVal(cronTime);
     }
     
     public boolean kick() {
@@ -50,8 +56,18 @@ public class JCronEntry {
 
     }
     
-    public void setTimeVal(String crontime){
-        StringTokenizer st = new StringTokenizer(crontime," ");
+    public void setTimeVal(String cronTime){
+        StringTokenizer st = new StringTokenizer(cronTime," ");
+        if (st.countTokens() > 5) {
+            throw new RuntimeException("Too many (" + st.countTokens() + "> 6)  tokens in " + cronTime);
+        }
+        /* not implemented
+        if (st.countTokens() == 6) {
+            second.setTimeVal(st.nextToken());
+        } else {
+            second.setTimeVal("0");
+        }
+        */
         minute.setTimeVal(st.nextToken());
         hour.setTimeVal(st.nextToken());
         dayOfMonth.setTimeVal(st.nextToken());
@@ -99,6 +115,20 @@ public class JCronEntry {
     }
 
     public String toString() {
-        return name + ": " + className + ":" + count;
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + count;
     }
+
+
+    public int hashCode() {
+        return id.hashCode() + name.hashCode() + className.hashCode() + cronTime.hashCode();
+    }
+    public boolean equals(Object o) {
+        if (! (o instanceof JCronEntry)) {
+            return false;
+        }
+        JCronEntry other = (JCronEntry) o;
+        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime);
+        
+    }
+
 }
