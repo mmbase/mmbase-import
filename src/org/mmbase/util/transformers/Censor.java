@@ -21,11 +21,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Censor.java,v 1.1 2003-05-11 10:00:45 michiel Exp $
+ * @version $Id: Censor.java,v 1.2 2003-05-12 11:15:35 michiel Exp $
  */
 
 public class Censor extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(Censor.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Censor.class);
 
     protected static Map forbidden;
     
