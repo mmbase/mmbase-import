@@ -11,9 +11,8 @@ package org.mmbase.bridge.jsp.taglib;
 
 import java.util.Vector;
 import java.util.StringTokenizer;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.LocalContext;
+
+import org.mmbase.bridge.Node;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
@@ -50,38 +49,37 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
   
     public void setPageContext(PageContext pc) {
         log.debug("setting page context: " + this.getClass().getName());
-
-        setPageContextOnly(pc); // make pageContext availabe.
-
-        pageContextTag = (ContextTag) pageContext.getAttribute("__context");    
+        setPageContextOnly(pc); // make pageContext availabe
+        pageContextTag = (ContextTag) pageContext.getAttribute("__context");
 
         if (pageContextTag == null) { // not yet put 
             log.debug("not found in pagecontext, creating one");
             log.debug("making the pageContextTag.");
             pageContextTag = new ContextTag();
-            pageContextTag.setId("context");
+
+            pageContextTag.setId(null);
+            // page context has no id, this also avoids that it tries registering itself in the parent (which it is itself)
+            // so don't change this!
+
             pageContextTag.setPageContextOnly(pageContext);
-            pageContextTag.pageContextTag = pageContextTag;
+            //pageContextTag.pageContextTag = pageContextTag;
             pageContextTag.fillVars();
             // register also the tag itself under __context.
-            // _must_ set __context before calling setPageContext otherwise in infinite loop.                        
+            // _must_ set __context before calling setPageContext otherwise in infinite loop. 
+            pageContextTag.createContainer(null);
+            pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
             pageContext.setAttribute("__context", pageContextTag);
 
-            try { // the startTag creates the hashmap in the pageContext.
-                pageContextTag.doStartTag();
-            } catch (JspTagException e) {
-                log.error("" + e);
-            }
            
             // there is one implicit ContextTag in every page.
-            // its id is 'context', it is registered in the pageContext as __context.
+            // its id is null, it is registered in the pageContext as __context.
             // 
             // it is called pageContext, because it is similar to the pageContext, but not the same.
         }  
     }
 
     public void setReferid(String r) throws JspTagException {
-        referid = getReferIdValue(getAttributeValue(r));
+        referid = getAttributeValue(r);
     }
 
     protected String getReferid() throws JspTagException {
@@ -102,24 +100,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
 
     /**
-     * Refer to a specific context.
+     * Refer to a specific context. This is only for analogy with other attributes like this.
+     *
      */
 
     public void setContext(String c) {
         log.debug("setting contextid to " + c);
-        //contextTag = null;
         contextId = c;
-    }
-
-    protected String getReferIdValue(String attribute) {
-        // also possible to indicate context in id:
-        StringTokenizer tk = new StringTokenizer(attribute,".");
-        attribute = tk.nextToken();
-        if (tk.hasMoreTokens()) {
-            setContext(attribute);
-            attribute = tk.nextToken();
-        }
-        return attribute;
     }
 
     /**
@@ -134,21 +121,14 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         int beginpos = attribute.indexOf("${");
         int endpos=0;
         while (beginpos>=0) {
-            result+=attribute.substring(endpos,beginpos);
+            result += attribute.substring(endpos,beginpos);
             endpos = attribute.indexOf("}",beginpos);
             if (endpos>=0) {
-                String varname=attribute.substring(beginpos+2,endpos);
-                StringTokenizer tk = new StringTokenizer(varname,".");
-                String context=contextId;
-                String varid = tk.nextToken();
-                if (tk.hasMoreTokens()) {
-                    context = varid;
-                    varid = tk.nextToken();
-                }
-                ContextTag ct = getContextTag(context);
-                String varValue = ct.getObjectAsString(varid);
+                String varName=attribute.substring(beginpos + 2, endpos);
+                String varValue = getString(varName);
                 if (varValue == null) {
-                    throw new JspTagException(varid + " could not be found in " + context);
+                    throw new JspTagException(varName + " could not be found (assert this error could not happen!)");
+                    // I think 
                 }
                 result+=varValue;
             }
@@ -181,6 +161,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             if (exception) {
                 throw new JspTagException ("Could not find parent of type " + classname);
             } else {
+                log.debug("Could not find parent of type " + classname);
                 return null;
             }
         }
@@ -212,19 +193,46 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     protected ContextTag getContextTag() throws JspTagException {
         return getContextTag(contextId);
     }
-    protected ContextTag getContextTag(String contextid) throws JspTagException {
-        log.debug("searching context " + contextid);
+    private ContextTag getContextTag(String contextid) throws JspTagException {
+
+        if(log.isDebugEnabled()) {
+            log.debug("Searching context " + contextid);
+        }
         ContextTag contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextid, false);
         if (contextTag == null) {
+            log.debug("Didn't find one, take the pageContextTag");
             contextTag = pageContextTag;
+            if (contextTag == null) {
+                throw new RuntimeException("Did not find pageContextTag!");
+            }
             if (contextid != null) {
-                if(! contextTag.getId().equals(contextid)) {
+                if(! contextid.equals(contextTag.getId())) {
                     throw new JspTagException("Could not find contex tag with id " + contextid + " (page context has id " + contextTag.getId() + ")");
                 }
             }
         }
-        log.debug("found a context with ID= " + contextTag.getId());
+        if (log.isDebugEnabled()) {
+            log.debug("found a context with ID= " + contextTag.getId());
+        }
         return contextTag;
+    }
+
+    /**
+     * 
+     */
+    protected Object getObject(String key) throws JspTagException {
+        // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
+        return getContextTag().getContainerObject(key);
+    }
+
+    protected String getString(String key) throws JspTagException {
+        Object o = getObject(key);
+        if (o == null) return null;
+        if (o instanceof Node) {
+            Node n = (Node) o;
+            return "" + n.getNumber();
+        }
+        return o.toString();
     }
 
 
@@ -233,7 +241,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /**
     * Simple util method to split comma separated values
-    * to a vector. Usefull for attributes.
+    * to a vector. Useful for attributes.
     * @param string the string to split
     * @param delimiter
     * @return a Vector containing the elements, the elements are also trimed
