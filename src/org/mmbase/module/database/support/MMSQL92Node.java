@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.36 2000-10-18 16:39:40 gerard Exp $
+$Id: MMSQL92Node.java,v 1.37 2000-11-07 14:28:55 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.36  2000/10/18 16:39:40  gerard
+gerard: added support for keys/primary keys, not completly checked.
+You can try it by setting keysSupported to true in this file
+
 Revision 1.35  2000/08/31 21:27:48  gerard
 gerard: fixed broadcast of inserting a new node into the database. If a node is inserted an 'n' (new) must be broadcasted instead of a 'c' (changed).
 
@@ -149,7 +153,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.36 $ $Date: 2000-10-18 16:39:40 $
+* @$Revision: 1.37 $ $Date: 2000-11-07 14:28:55 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -217,9 +221,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				node.setValue(prefix+fieldname,(Double)rs.getObject(i));
 				break;
 			case FieldDefs.TYPE_BYTE:
-				node.setValue(prefix+fieldname,"$SHORTED");
-				break;
-			case FieldDefs.TYPE_TEXT:
 				node.setValue(prefix+fieldname,"$SHORTED");
 				break;
 			}
@@ -646,8 +647,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					values+=", "+key+"=?";
 				}
 		}
+
 		if (values.length()>0) {
 			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE number="+node.getValue("number");
+			debug("update statement : "+values);
 			try {
 				MultiConnection con=mmb.getConnection();
 				PreparedStatement stmt=con.prepareStatement(values);
@@ -655,6 +658,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
 						key=(String)e.nextElement();
 						type=node.getDBType(key);
+						debug("field : "+key+" : "+type);
 						if (type==FieldDefs.TYPE_INTEGER) {
 							stmt.setInt(i,node.getIntValue(key));
 						} else if (type==FieldDefs.TYPE_FLOAT) {
@@ -663,7 +667,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 							stmt.setDouble(i,node.getDoubleValue(key));
 						} else if (type==FieldDefs.TYPE_LONG) {
 							stmt.setLong(i,node.getLongValue(key));
-						} else if (type==FieldDefs.TYPE_TEXT) {
+						} else if (type==FieldDefs.TYPE_STRING) {
 							setDBText(i,stmt,node.getStringValue(key));
 						} else if (type==FieldDefs.TYPE_BYTE) {
 							setDBByte(i,stmt,node.getByteValue(key));
@@ -837,7 +841,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.setDouble(i, node.getDoubleValue(key));
 		} else if (type==FieldDefs.TYPE_LONG) {
 			stmt.setLong(i, node.getLongValue(key));
-		} else if (type==FieldDefs.TYPE_TEXT) {
+		} else if (type==FieldDefs.TYPE_STRING) {
 			String tmp=node.getStringValue(key);
 			if (tmp!=null) {
 				setDBText(i, stmt,tmp);

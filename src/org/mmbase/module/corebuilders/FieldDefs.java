@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.12 2000-07-15 09:47:26 daniel Exp $
+$Id: FieldDefs.java,v 1.13 2000-11-07 14:28:55 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/07/15 09:47:26  daniel
+Changed getDBType to int
+
 Revision 1.11  2000/07/12 13:29:05  daniel
 Daniel added isKey to FieldDefs
 
@@ -53,7 +56,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.12 $ $Date: 2000-07-15 09:47:26 $
+ * @$Revision: 1.13 $ $Date: 2000-11-07 14:28:55 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -64,7 +67,7 @@ public class FieldDefs  {
 
 	public final static int TYPE_STRING = 1;
 	public final static int TYPE_INTEGER = 2;
-	public final static int TYPE_TEXT = 3;
+	public final static int TYPE_TEXT = 3; // not used anymore
 	public final static int TYPE_BYTE = 4;
 	public final static int TYPE_FLOAT = 5;
 	public final static int TYPE_DOUBLE = 6;

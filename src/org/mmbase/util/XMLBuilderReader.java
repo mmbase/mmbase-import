@@ -20,9 +20,12 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * @version $Id: XMLBuilderReader.java,v 1.19 2000-08-29 13:33:02 case Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.20 2000-11-07 14:28:56 vpro Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2000/08/29 13:33:02  case
+ * cjr: oops, wrong variabele given as argument in getProperties
+ *
  * Revision 1.18  2000/08/29 10:55:24  case
  * cjr: Modified getProperties for <properties> and <property name=..> tags
  *
@@ -151,7 +154,6 @@ public class XMLBuilderReader extends XMLBasicReader {
         if (val.equals("VARCHAR")) def.DBType=FieldDefs.TYPE_STRING;
         if (val.equals("STRING")) def.DBType=FieldDefs.TYPE_STRING;
         if (val.equals("INTEGER")) def.DBType=FieldDefs.TYPE_INTEGER;
-        if (val.equals("TEXT")) def.DBType=FieldDefs.TYPE_TEXT;
         if (val.equals("BYTE")) def.DBType=FieldDefs.TYPE_BYTE;
         if (val.equals("FLOAT")) def.DBType=FieldDefs.TYPE_FLOAT;
         if (val.equals("DOUBLE")) def.DBType=FieldDefs.TYPE_DOUBLE;
