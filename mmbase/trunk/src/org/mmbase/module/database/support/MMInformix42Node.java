@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.38 2002-07-31 10:01:12 vpro Exp $
+ * @version $Id: MMInformix42Node.java,v 1.39 2002-08-01 11:29:00 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -661,6 +661,21 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return (node);
     }
+
+    /**
+     * Returns whether this database support layer allows for builder to be a parent builder
+     * (that is, other builders can 'extend' this builder and its database tables).
+     *
+     * @since MMBase-1.6
+     * @param builder the builder to test
+     * @return true if the builder can be extended
+     */
+    public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
+        // Since every builder is allowed to be a parent-builder, we may
+        // allways return true.
+        return true;
+    }
+
 
     /*
     * Method: getDBText
