@@ -8,7 +8,7 @@ String now = org.mmbase.util.RFC1123.makeDate(new java.util.Date());
 response.setHeader("Expires",  now); 
 response.setHeader("Last-Modified",  now); 
 response.setHeader("Date",  now); 
-%><%@ page errorPage="error.jsp" language="java" contentType="text/html; charset=utf-8"
+%><%@ page language="java" contentType="text/html; charset=utf-8"
 %><html>
 <head> 
 <%@ page import="org.mmbase.bridge.*"    
@@ -27,9 +27,21 @@ response.setHeader("Date",  now);
   <mm:import id="page_size">20</mm:import>
   <mm:import id="hide_search">false</mm:import>
   <mm:import id="style_sheet">mmbase.css</mm:import>
+  <mm:import id="lang" externid="mmjspeditors_language">en</mm:import>
 </mm:context>
 <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
+
+<% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place%>
+<% java.util.Locale locale = null; %>
+<mm:write referid="config.lang" jspvar="lang" vartype="string">
+<%
+  locale  =  new java.util.Locale(lang, "");
+  m =
+  java.util.ResourceBundle.getBundle("org.mmbase.applications.jsp.editors.editors", 
+  locale);
+%>
+</mm:write>
 
 <mm:import id="style"><link href="css/<mm:write referid="config.style_sheet" />" rel="stylesheet" type="text/css" media="screen"  /></mm:import>
 <mm:import id="SESSION">mmbase_editors_cloud</mm:import>

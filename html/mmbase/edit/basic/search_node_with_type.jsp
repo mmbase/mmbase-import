@@ -24,7 +24,7 @@
            </tr>
         </mm:fieldlist>
         <tr>
-           <td colspan="2"><input class="search" type ="submit" name="search" value="search" /></td>
+           <td colspan="2"><input class="search" type ="submit" name="search" value="<%=m.getString("search")%>" /></td>
         </tr>
       </table>
   </form>
