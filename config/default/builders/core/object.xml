@@ -79,6 +79,7 @@
         <guiname xml:lang="fr">Objet</guiname>
         <guiname xml:lang="fy">Objekt Nummer</guiname>
         <guiname xml:lang="it">Oggetto</guiname>
+        <guiname xml:lang="zh">号</guiname>
         <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
@@ -111,6 +112,7 @@
         <guiname xml:lang="fr">Propriétaire</guiname>
         <guiname xml:lang="fy">Context</guiname>
         <guiname xml:lang="it">Proprietario</guiname>
+        <guiname xml:lang="zh">闆</guiname>
     <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
