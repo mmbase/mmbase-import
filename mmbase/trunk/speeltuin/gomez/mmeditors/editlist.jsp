@@ -14,8 +14,10 @@
     // basic security shortcut, to speed up getting the list of nodemanagers
     // not nice but speedy if you use basic security
     String authtype=null;
-    Module mmbase = cloud.getCloudContext().getModule("mmbase");
-    if (mmbase!=null) authtype = mmbase.getInfo("GETAUTHTYPE");
+    try {
+        Module mmbase = cloud.getCloudContext().getModule("mmbase");
+        if (mmbase!=null) authtype = mmbase.getInfo("GETAUTHTYPE");
+    } catch (Exception e) {}
     
     // check for older code
     if ("basic".equals(authtype)) {

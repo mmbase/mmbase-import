@@ -147,8 +147,10 @@
       <%
          // basic security shortcut, add type-based security
          String authtype=null;
-         Module mmbase = cloud.getCloudContext().getModule("mmbase");
-         if (mmbase!=null) authtype = mmbase.getInfo("GETAUTHTYPE");
+         try {
+            Module mmbase = cloud.getCloudContext().getModule("mmbase");
+            if (mmbase!=null) authtype = mmbase.getInfo("GETAUTHTYPE");
+         } catch (Exception e) {}
 
          RelationManagerList allowedRelations = manager.getAllowedRelations();
          class ARComparator implements java.util.Comparator {
