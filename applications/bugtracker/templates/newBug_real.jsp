@@ -36,7 +36,7 @@
 			</SELECT>
 		</td>
 		<td>
-			<INPUT NAME="newversion" VALUE="1.6.5" SIZE="10">
+			<INPUT NAME="newversion" VALUE="1.7.0" SIZE="10">
 		</td>
 </tr>
 </table>
