@@ -22,13 +22,21 @@ import org.mmbase.module.core.MMBaseContext;
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.3 $ $Date: 2000-08-06 14:54:34 $
+ * @version $Revision: 1.4 $ $Date: 2000-08-10 20:44:15 $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/08/06 14:54:34  case
+ * cjr: removed UNIX dependency from a path; added boolean for whether DTD is set
+ *
  */
 public class XMLEntityResolver implements EntityResolver {
-    String dtdpath, customdtdpath;
+
+    private String classname = getClass().getName();
+
+    String dtdpath;
     boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
+
+    private static boolean debug = false;
 
     /**
      * empty constructor
@@ -36,7 +44,6 @@ public class XMLEntityResolver implements EntityResolver {
     public XMLEntityResolver() {
         hasDTD = false;
         dtdpath = null;
-        customdtdpath = null;
     }
 
     /**
@@ -51,8 +58,15 @@ public class XMLEntityResolver implements EntityResolver {
             if (systemId.indexOf("http://www.mmbase.org/") != -1) {
                 int i = systemId.indexOf("/dtd/");
                 String dtdName = systemId.substring(i+5);
-                String dtdLocation = MMBaseContext.getConfigPath()+File.separator+"dtd"+File.separator+dtdName;
-                System.out.println("dtdLocation = "+dtdLocation);
+                String configpath = MMBaseContext.getConfigPath();
+                String separator = "";
+                if (!configpath.endsWith(File.separator)) {
+                    separator = File.separator;
+                }
+                String dtdLocation = MMBaseContext.getConfigPath()+separator+"dtd"+File.separator+dtdName;
+                if (debug) {
+                    debug("dtdLocation = "+dtdLocation);
+                }
                 InputStreamReader dtdInputStreamReader =
                     new InputStreamReader(new FileInputStream(dtdLocation));
                 InputSource dtdInputSource = new InputSource();
@@ -70,18 +84,13 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     /**
-     * Manually set a DTD that is to be used if the document doesn't refer to one itself.
-     *
-     * @param dtdpath Path to dtd file
-     */
-    public void setDTDPath(String dtdpath) {
-        this.customdtdpath = dtdpath;
-    }
-
-    /**
      * @return The actually used path to the DTD
      */
     public String getDTDPath() {
         return this.dtdpath;
+    }
+
+    private void debug( String msg ) {
+        System.out.println( classname +":"+msg );
     }
 }
