@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.2 2003-08-29 12:12:30 keesj Exp $
+ * @version $Id: StorageManager.java,v 1.3 2004-02-05 12:18:49 michiel Exp $
  */
 public interface StorageManager {
 
@@ -75,7 +75,7 @@ public interface StorageManager {
      * Retrieve a large text for a specified object field.
      * Implement this method to allow for optimization of storing and retrieving large texts.
      * @param node the node to retrieve the text from
-     * @param fieldname the name of the field to retrieve
+     * @param field the FieldDefs of the field to retrieve
      * @return the retrieved text
      * @throws StorageException if an error occurred while retrieving the text value
      */
@@ -85,7 +85,7 @@ public interface StorageManager {
      * Retrieve a large binary object (byte array) for a specified object field.
      * Implement this method to allow for optimization of storing and retrieving binary objects.
      * @param node the node to retrieve the byte array from
-     * @param fieldname the name of the field to retrieve
+     * @param field the FieldDefs of the field to retrieve
      * @return the retrieved byte array
      * @throws StorageException if an error occurred while retrieving the binary value
      */
@@ -191,22 +191,19 @@ public interface StorageManager {
 
     /**
      * Creates a field and adds it to the storage of this builder.
-     * @param builder the builder whose storage to change
-     * @param fieldname the name fo the field to add
+     * @param field the FieldDefs of the field to add
      */
     public void create(FieldDefs field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
-     * @param builder the builder whose storage to change
-     * @param fieldname the name fo the field to change
+     * @param field the FieldDefs of the field to change
      */
     public void change(FieldDefs field) throws StorageException;
 
     /**
      * Deletes a field from the storage of this builder.
-     * @param builder the builder whose storage to change
-     * @param fieldname the name fo the field to delete
+     * @param field the FieldDefs of the field to delete
      */
     public void delete(FieldDefs field) throws StorageException;
 
