@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.96 2004-08-25 13:48:37 michiel Exp $
+ * @version $Id: Images.java,v 1.97 2004-08-26 12:10:38 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -174,6 +174,7 @@ public class Images extends AbstractImages {
                 return getNode(cacheImage(node, (String) args.get(0)));
             } catch (Exception e) {
                 log.error(e.getMessage());
+                log.error(Logging.stackTrace(e));
                 return null;
             }
         } else if ("height".equals(function) || "width".equals(function)) {
@@ -408,7 +409,9 @@ public class Images extends AbstractImages {
         String cacheKey = "" + node.getNumber() + template;
         Integer i = (Integer) templateCacheNumberCache.get(cacheKey);
         if (i != null) {
-            if (log.isDebugEnabled()) log.debug("found image in cache " + i);
+            if (log.isDebugEnabled()) { 
+                log.debug("found image in cache " + i + " for " + cacheKey);
+            }            
             return i.intValue();
         }
 
@@ -791,10 +794,21 @@ public class Images extends AbstractImages {
     }    
 
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        //log.info("Changed " + machine + " number " + builder + " "+ ctype); 
+        if (log.isDebugEnabled()) {            
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
+        }        
         MMObjectNode image = getNode(number);        
         invalidateTemplateCacheNumberCache(image.getNumber());
         return super.nodeLocalChanged(machine, number, builder, ctype);        
+    }
+
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        if (log.isDebugEnabled()) {            
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
+        }
+        MMObjectNode image = getNode(number);        
+        invalidateTemplateCacheNumberCache(image.getNumber());
+        return super.nodeRemoteChanged(machine, number, builder, ctype);        
     }
     
     

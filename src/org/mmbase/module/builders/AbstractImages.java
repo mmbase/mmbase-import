@@ -10,21 +10,30 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.io.ByteArrayInputStream;
 import org.mmbase.module.core.*;
+//import org.mmbase.util.ImageInfo;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.25 2004-05-06 12:34:44 keesj Exp $
+ * @version $Id: AbstractImages.java,v 1.26 2004-08-26 12:10:38 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
+
+    /*
+    static final ImageInfo imageInfo = new ImageInfo();
+
+    public final static Parameter[] WIDTH_PARAMETERS    = {};
+    public final static Parameter[] HEIGHT_PARAMETERS   = {};
+    */
 
     /**
      * Cache with 'ckey' keys.
@@ -41,18 +50,24 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
         void remove(int originalNodeNumber) {
             String prefix = "" + originalNodeNumber;
-            log.debug("removing " + prefix);
-            Iterator keys = keySet().iterator();
+            if (log.isDebugEnabled()) {
+                log.debug("removing " + prefix);
+            }
+            Iterator keys  = keySet().iterator();
             List removed = new ArrayList();
             while (keys.hasNext()) {
-                String key = (String)keys.next();
-                log.debug("checking " + key);
+                String key = (String) keys.next();
+                if (log.isDebugEnabled()) {
+                    log.debug("checking " + key);
+                }
                 if (key.startsWith(prefix)) {
                     // check is obviously to crude, e.g. if node number happens to be 4,
                     // about one in 10 cache entries will be removed which need not be removed,
                     // but well, it's only a cache, it's only bad luck...
                     // 4 would be a _very_ odd number for an Image, btw..
-                    log.debug("removing " + key + " " + get(key));
+                    if (log.isDebugEnabled()) {
+                        log.debug("removing " + key + " " + get(key));
+                    }
                     removed.add(key);
                     // cannot use keys.remove(), becaus then cache.remove is not called.
                 }
@@ -64,10 +79,33 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                 remove(key);
             }
         }
+        void removeCacheNumber(int icacheNumber) {
+            Iterator entries  = entrySet().iterator();
+            List removed = new ArrayList();
+            while (entries.hasNext()) {
+                Map.Entry entry = (Map.Entry) entries.next();                    
+                String key = (String) entry.getKey();
+                ByteFieldContainer bf = (ByteFieldContainer) entry.getValue();
+                
+                if (bf.number == icacheNumber) {
+                    removed.add(key);
+                    if (log.isDebugEnabled()) {
+                        log.debug("removing " + key);
+                    }
+                    // cannot use keys.remove(), becaus then cache.remove is not called.
+                }
+                
+            }
+            Iterator keys = removed.iterator();
+            while (keys.hasNext()) {
+                String key = (String)keys.next();
+                remove(key);
+            }
+        }
     }
 
     protected String getAssociation() {
-        return "images";
+        return "images";       
     }
     protected String getDefaultPath() {
         return "/img.db";
@@ -123,6 +161,55 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * @return the image as a <a>byte[]</code>, or <code>null</code> if something went wrong
      */
     abstract public byte[] getImageBytes(List params);
+    
+
+    /**
+     */
+    /*
+    protected int getHeight(MMObjectNode node) {       
+        byte[] data = node.getByteValue("handle");      
+        imageInfo.setInput(new ByteArrayInputStream(data));
+        
+        if (log.isServiceEnabled()) {
+            if (!imageInfo.check()) {
+                log.service("ImageBuilder: Error parsing image");  
+            }
+        }
+        int height = imageInfo.getHeight();
+        if (log.isDebugEnabled()) {
+            log.debug("ImageBuilder: height being returned = " + height);
+        }
+        return height;
+    }
+    */
+    /**
+     */
+    /*
+    protected int getWidth(MMObjectNode node) {
+
+       byte[] data = node.getByteValue("handle");      
+       imageInfo.setInput(new ByteArrayInputStream(data));
+       
+       if (log.isServiceEnabled()) {
+           if (!imageInfo.check()) {
+               log.service("ImageBuilder: Error parsing image");  
+           }
+       }
+       int width = imageInfo.getWidth();
+       if (log.isDebugEnabled()) {
+           log.debug("ImageBuilder: width being returned = " + width);
+       }
+       return width;
+    }
+    */
+
+    /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(AbstractImages.class, function);
+    }
+
 
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.
@@ -134,6 +221,12 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             return getImageMimeType(node);
         } else if (function.equals("format")) {
             return getImageFormat(node);
+            /*
+        } else if ("width".equals(function)) {    
+            return new Integer(getWidth(node));
+        } else if ("height".equals(function)) {     
+            return new Integer(getHeight(node));
+            */
         } else {
             return super.executeFunction(node, function, args);
         }
