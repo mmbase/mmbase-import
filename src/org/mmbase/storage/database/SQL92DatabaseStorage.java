@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.10 2003-05-02 20:21:28 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.11 2003-05-05 13:28:40 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -47,8 +47,8 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class.getName());
 
     // map with tables that are known to exist
-    // should logically be a Set, not a List.
-    private List existingTables = null;
+    private Set existingTables = null;
+
     // has this layer support for rollback?
     private boolean supportsRollback = false;
 
@@ -66,7 +66,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @param document the database configuration document
      */
     public void init(MMBase mmb,XMLDatabaseReader document) {
-        super.init(mmb,document);
+        super.init(mmb, document);
         loadExistingTables();
         loadSupportInformation();
         prepare();
@@ -78,14 +78,14 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     protected void loadExistingTables() {
         DatabaseTransaction trans=null;
         try {
-            trans=createDatabaseTransaction(false);
-            existingTables=trans.getTables(mmb.baseName);
+            trans = createDatabaseTransaction(false);
+            existingTables = trans.getTables(mmb.baseName);
             trans.commit();
         } catch (StorageException e) {
             if (trans!=null) trans.rollback();
             log.error(e.getMessage());
         }
-        if (existingTables==null) existingTables=new Vector();
+        if (existingTables == null) existingTables = new HashSet();
     }
 
     /**
@@ -371,8 +371,8 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Get text from blob
      * @javadoc
      */
-    public String getText(MMObjectNode node,String fieldname) {
-        return getText(node.getBuilder().getFullTableName(),fieldname,node.getNumber());
+    public String getText(MMObjectNode node, String fieldname) {
+        return getText(getFullTableName(node.getBuilder()), fieldname, node.getNumber());
     }
 
     /**
@@ -383,7 +383,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         if (getStoreBinaryAsFile()) {
             return readBytesFromFile(getBinaryFilePath()+node.getBuilder().getTableName()+File.separator+node.getNumber()+"."+fieldname);
         } else {
-            return getBytes(node.getBuilder().getFullTableName(),fieldname,node.getNumber());
+            return getBytes(getFullTableName(node.getBuilder()),fieldname,node.getNumber());
         }
     }
 
@@ -459,7 +459,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             }
         }
         // Prepare the statement using the amount of fields found.
-        String sqlinsert = insertSQL(builder.getFullTableName(), 
+        String sqlinsert = insertSQL(getFullTableName(builder), 
                                      fieldNames.toString(), fieldValues.toString());
         if (log.isDebugEnabled()) {
             log.debug("Executing insert with " + sqlinsert);
@@ -536,7 +536,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         }
         if (fields.size()>0) {
             String sqlupdate=
-                updateSQL(builder.getFullTableName(), setFields.toString(), node.getNumber());
+                updateSQL(getFullTableName(builder), setFields.toString(), node.getNumber());
             return trans.executeUpdate(sqlupdate, fields, node);
         }
         return true;
@@ -574,7 +574,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @throws StorageException if an error occurred during delete
      */
     public boolean deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException {
-        String sqldelete=deleteSQL(builder.getFullTableName(),node.getNumber());
+        String sqldelete=deleteSQL(getFullTableName(builder),node.getNumber());
         trans.executeUpdate(sqldelete);
         return true;
     }
@@ -588,7 +588,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @throws StorageException if an error occurred during selection
      */
     public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException {
-        String tableName=builder.getFullTableName();
+        String tableName=getFullTableName(builder);
         String sqlselect= selectSQL(tableName,null,number);
         ResultSet result=((DatabaseTransaction)trans).executeQuery(sqlselect);
         return ((DatabaseTransaction)trans).getNodeResult(builder);
@@ -723,7 +723,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                 }
             }
         }
-        String tableName = builder.getFullTableName();
+        String tableName = getFullTableName(builder);
         if (log.isDebugEnabled()) {
             log.debug("table " + tableName);
         }
@@ -731,7 +731,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         if (parentTableName!=null) parentTableName = getFullTableName(parentTableName);
         String sqlcreate = createSQL(tableName, createFields.toString(), parentTableName, parentFields.toString());
         boolean exists = ((DatabaseTransaction)trans).executeUpdate(sqlcreate);
-        if (exists) existingTables.add(tableName);
+        if (exists) existingTables.add(getTableName(tableName));
         return exists;
     }
 
@@ -759,7 +759,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return true if table exists, false if table doesn't exists
      */
     public boolean created(MMObjectBuilder builder) {
-        return created(builder.getFullTableName());
+        return created(getFullTableName(builder));
     }
 
     /**
@@ -770,17 +770,20 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      */
     public boolean created(String tableName) {
         // check whether the table is already known to exist
-        boolean exists=existingTables.contains(tableName);
+        boolean exists = existingTables.contains(getTableName(tableName));
         // if not, ask explicitly (table could have been created in the meantime by
         // another MMBase instance - paranoia? Maybe, but it is possible)
+
+        // michiel: this function is also called on restart of MMBase isn't it?
+        //          so why is this paranoia, it's _normal_.
         if (!exists) {
-            DatabaseTransaction trans=null;
+            DatabaseTransaction trans = null;
             try {
-                trans=createDatabaseTransaction(false);
-                exists=trans.hasTable(tableName);
+                trans = createDatabaseTransaction(false);
+                exists = trans.hasTable(getTableName(tableName));
                 trans.commit();
             } catch (StorageException e) {
-                if (trans!=null) trans.rollback();
+                if (trans != null) trans.rollback();
                 log.debug(e.getMessage());
             }
         }
@@ -793,7 +796,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return the number of objects the builder has, or -1 if the builder does not exist.
      */
     public int size(MMObjectBuilder builder) {
-        return size(builder.getFullTableName());
+        return size(getFullTableName(builder));
     }
 
     /**
@@ -869,13 +872,13 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         DatabaseTransaction trans=null;
         try {
             trans=createDatabaseTransaction(false);
-            String sqlselect=dropSQL(builder.getFullTableName());
+            String sqlselect=dropSQL(getFullTableName(builder));
             trans.executeQuery(sqlselect);
             trans.commit();
-            if (! existingTables.contains(builder.getFullTableName())) {
+            if (! existingTables.contains(getFullTableName(builder))) {
                 log.warn("Inconsistency in existingTables detected");
             }
-            existingTables.remove(builder.getFullTableName());
+            existingTables.remove(getFullTableName(builder));
             success = true;
         } catch (StorageException e) {
             if (trans!=null) trans.rollback();
