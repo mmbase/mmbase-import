@@ -6,7 +6,7 @@
         text = text.replaceAll("</?(font|style)[^>]*>","");
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
 //        text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
-        text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='100%'>");
+        text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='100%' class='Font'>");
         text = text.replaceAll("<p\\s*/>","");
         text = text.replaceFirst("\\A\\s*","");
         text = text.replaceFirst("\\s*\\z","");
