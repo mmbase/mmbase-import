@@ -207,6 +207,7 @@
 		<input type="hidden" name="action" value="setpackagename" />
 		&nbsp;&nbsp;<input name="newname" size="30" value="<mm:field name="packagename" />">
 		<input type="submit" value="save">
+<img src="<mm:write referid="image_help" />"  valign="middle" title="Name of this package, combined with the Maintainer will be its world wide id" /> 
 	</td>
 </form>
 <form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
@@ -215,6 +216,7 @@
 		<input name="newmaintainer" size="30" value="<mm:field name="maintainer" />" >
 		<input type="hidden" name="action" value="setpackagemaintainer" />
 		<input type="submit" value="save">
+<img src="<mm:write referid="image_help" />"  valign="middle" title="Maintainer of this package, combined with the Name will be its world wide id" /> 
 	</td>
 </form>
 </tr>
@@ -225,7 +227,9 @@
 		<center><textarea name="newdescription" rows="7" style="width: 98%"><mm:field name="description" /></textarea></center>
 		<p />
 		 <input type="hidden" name="action" value="setpackagedescription" />
-		<center><input type="submit" value="save"></center>
+		<center><input type="submit" value="save">
+<img src="<mm:write referid="image_help" />"  valign="middle" title="Description of this package, please fill it in correctly since its used in the online search system" /> 
+		</center>
 		<p />
 	</td>
 </tr>
@@ -243,7 +247,7 @@
 			<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 		 	<input type="hidden" name="action" value="setpackageinitiator" />
 			<td>
-			<input name="newname" value="<mm:field name="name" />"> at <input name="newcompany" value="<mm:field name="company" />"> <input type="submit" value="save"><br />
+			<input name="newname" size="15" value="<mm:field name="name" />"> at <input name="newcompany" size="15" value="<mm:field name="company" />"> <input type="submit" value="save"><br />
 			<input type="hidden" name="oldname" value="<mm:field name="name" />" />
 			<input type="hidden" name="oldcompany" value="<mm:field name="company" />" />
 			</td>
@@ -262,7 +266,9 @@
 		<td colsnap="2">
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 		<input type="hidden" name="action" value="addpackageinitiator" />
-		<input name="newname" value=""> at <input name="newcompany" value="" /> <input type="submit" value="add"><br />
+		<input name="newname" value="" size="15"> at <input name="newcompany" size="15" value="" /> <input type="submit" value="add">
+<img src="<mm:write referid="image_help" />"  valign="middle" title="Who started this package, within opensource a project can change hands quicky here we honor the ones who started it" />
+	<br />
 		</form>
 		</td>
 		</tr>
@@ -280,15 +286,15 @@
 			<option>LGPL
 			<option>BSD
 			<option>OTHER
-			</select><input type="submit" value="save" />
+			</select><input type="submit" value="save" /><img src="<mm:write referid="image_help" />"  valign="middle" title="License this package is released under, If not one of the given licenses select 'other' and use the name field" />
 		 	<input type="hidden" name="action" value="setpackagelicensetype" />
 		</form>
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
-		Name : <input name="newlicensename" value="<mm:field name="licensename" />" /><input type="submit" value="save" /><br />
+		Name : <input name="newlicensename" value="<mm:field name="licensename" />" /><input type="submit" value="save" /><img src="<mm:write referid="image_help" />"  valign="middle" title="License name, either its full name (mozilla public license for example) of the type field or name of your own license" /><br />
 		 <input type="hidden" name="action" value="setpackagelicensename" />
 		</form>
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
-		Version : <input name="newlicenseversion" value="<mm:field name="licenseversion" />" size="4" /> <input type="submit" value="save" /><br />
+		Version : <input name="newlicenseversion" value="<mm:field name="licenseversion" />" size="4" /> <input type="submit" value="save" /><img src="<mm:write referid="image_help" />"  valign="middle" title="version number of the defined license" /><br />
 		 <input type="hidden" name="action" value="setpackagelicenseversion" />
 		</form>
 		<p />
@@ -343,7 +349,7 @@
 		  <form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 		  <input type="hidden" name="action" value="setpackagecontact" />
 		 	<td>
-			<input name="newreason" value="<mm:field name="reason" />" size="15">:<input name="newname" value="<mm:field name="name" />" size="15"> (<input name="newemail" value="<mm:field name="mailto" />" size="15">) 
+			<input name="newreason" value="<mm:field name="reason" />" size="10">:<input name="newname" value="<mm:field name="name" />" size="10">(<input name="newemail" value="<mm:field name="mailto" />" size="10">) 
 			<input type="hidden" name="oldname" value="<mm:field name="name" />" />
 			<input type="hidden" name="oldemail" value="<mm:field name="mailto" />" />
 			<input type="hidden" name="oldreason" value="<mm:field name="reason" />" />
@@ -367,10 +373,11 @@
                 <form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
                 <td>
                 <input type="hidden" name="action" value="addpackagecontact" />
-		<input name="newreason" value="" size="15">:<input name="newname" value="" size="15"> (<input name="newemail" value="" size="15">) 
+		<input name="newreason" value="" size="10">:<input name="newname" value="" size="10">(<input name="newemail" value="" size="10">) 
 		</td>
 		<td>
 		 <input type="submit" value="add">
+		<img src="<mm:write referid="image_help" />"  valign="middle" title="contact people for this package with a reason for example 'bugs Joe Plain (joe@mysite.com)" />
                 </td>
 		<td></td>
                 </form>
@@ -411,7 +418,9 @@
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 		<tr><td>
 			<input type="hidden" name="action" value="addpackagedeveloper" />
-			name : <input name="newname" value=""> from <input name="newcompany" value="" > <input type="submit" value="add"><br />
+			name : <input name="newname" value=""> from <input name="newcompany" value="" > <input type="submit" value="add">
+		<img src="<mm:write referid="image_help" />"  valign="middle" title="Define all the developers who worked on this package (all versions), please keep this up to date" />
+		<br />
 		</td></tr>
 		</form>
 		</table>
