@@ -1,240 +1,160 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder maintainer="mmbase.org" version="0" extends="object">
+  <classfile>org.mmbase.module.builders.Versions</classfile>
 
-<!-- <status>
-	what is the status of this builder options : active or inactive
--->
-<status>active</status>
+  <searchage>1000</searchage>
 
-<!-- <classfile>
-	This is a optional tag, it names the classfile that allows you to add
-	support routines or changes them on a per builder base. For example
-	images has routines to image support etc etc.
+  <!-- <names>
+  names defines the different names used in user visible parts, singular for
+  for talking about 1 object (Url,Person) and plurar for talking about multiple
+  <Urls, people).
+  >-->
+  <names>
+	 <!-- singles per language as defined by ISO 639 -->
+	 <singular xml:lang="nl">VersieBeheer</singular>
+	 <singular xml:lang="en">VersionControl</singular>
+	 <singular xml:lang="us">VersionControl</singular>
+	 <singular xml:lang="eo">Versiestrilo</singular>
+	 <!-- multiple per language as defined by ISO 639 -->
+	 <plural xml:lang="nl">VersieBeheer</plural>
+	 <plural xml:lang="en">VersionControl</plural>
+	 <plural xml:lang="us">VersionControl</plural>
+	 <plural xml:lang="us">Versiestrilo</plural>
+  </names>
 
-	possible values : Dummy or disabled tag makes mmbase use the default setup
+  <!-- <descriptions>
+  small description of the builder for human reading
+  -->
+  <descriptions>
+	 <!-- descriptions per language as defined by ISO 639  -->
+	 <description xml:lang="nl">Houd bij van applicaties/builders welke versie actief is</description>
+	 <description xml:lang="en">Keeps track of what versions of apps/builders etc etc are installed</description>
+	 <description xml:lang="us">Keeps track of what versions of apps/builders etc etc are installed</description>
+	 <description xml:lang="eo">Administras la aktivajn versiojn de aplikaĵoj kaj konstruantoj</description>
+  </descriptions>
 
-		short name : Urls will start class : org.mmbase.module.builders.Urls.class
-
-		long name : nl.vpro.mmbase.module.builders.Urls will start that class
--->
-<classfile>org.mmbase.module.builders.Versions</classfile>
-
-<searchage>1000</searchage>
-
-<!-- <names>
-	names defines the different names used in user visible parts, singular for
-	for talking about 1 object (Url,Person) and plurar for talking about multiple
-	<Urls, people).
->-->
-<names>
-	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="nl">VersieBeheer</singular>
-	<singular xml:lang="en">VersionControl</singular>
-	<singular xml:lang="us">VersionControl</singular>
-	<!-- multiple per language as defined by ISO 639 -->
-	<plural xml:lang="nl">VersieBeheer</plural>
-	<plural xml:lang="en">VersionControl</plural>
-	<plural xml:lang="us">VersionControl</plural>
-</names>
-
-<!-- <descriptions>
-	small description of the builder for human reading
--->
-<descriptions>
-<!-- descriptions per language as defined by ISO 639  -->
-	<description xml:lang="nl">Houd bij van applicaties/builders welke versie actief is</description>
-	<description xml:lang="en">Keeps track of what versions of apps/builders etc etc are installed</description>
-	<description xml:lang="us">Keeps track of what versions of apps/builders etc etc are installed</description>
-</descriptions>
-
-<!-- <properties>
-you can define properties to be used by the classfile (if used) it uses
-a key/value system. Its a optional tag.
--->
-<properties>
-</properties>
-
-<!-- <fieldlist>
-	 defines the different fields in this object, be carefull the order is important
-	once defined keep them in the same order.
-	If you use number and owner (the 2 default fields, please check the docs for this)
--->
-<fieldlist>
-	<!-- POS 1 : <field> 'number' is a default field (see docs) -->
-	<field>
+  <fieldlist>
+	 <!-- POS 3 : <field> 'name'  -->
+	 <field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Object</guiname>
-			<guiname xml:lang="en">Object</guiname>
-			<guiname xml:lang="us">Object</guiname>
-			<guitype>integer</guitype>
+		  <guiname xml:lang="nl">Naam</guiname>
+		  <guiname xml:lang="en">Name</guiname>
+		  <guiname xml:lang="us">Name</guiname>
+		  <guiname xml:lang="eo">Nomo</guiname>
+		  <guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>-1</input>
-				<!-- position in list area of the editor -->
-				<list>10</list>
-				<!-- position in search area of the editor -->
-				<search>10</search>
-			</positions>
+		  <positions>
+			 <!-- position in the input area of the editor -->
+			 <input>1</input>
+			 <!-- position in list area of the editor -->
+			 <list>1</list>
+			 <!-- position in search area of the editor -->
+			 <search>1</search>
+		  </positions>
 		</editor>
 		<!-- database related  -->
 		<db>
-			<!-- name of the field in the database -->
-			<name>number</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true" key="true">INTEGER</type>
+		  <!-- name of the field in the database -->
+		  <name>name</name>
+		  <!-- MMBase datatype and demands on it -->
+		  <type state="persistent" size="64" notnull="false" key="true">STRING</type>
 		</db>
-	</field>
+	 </field>
 
-	<!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-	<field>
+	 <!-- POS 4 : <field> 'type'  -->
+	 <field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Eigenaar</guiname>
-			<guiname xml:lang="en">Owner</guiname>
-			<guiname xml:lang="us">Owner</guiname>
-			<guitype>string</guitype>
+		  <guiname xml:lang="nl">Type</guiname>
+		  <guiname xml:lang="en">Type</guiname>
+		  <guiname xml:lang="us">Type</guiname>
+		  <guiname xml:lang="eo">Tipo</guiname>
+		  <guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>-1</input>
-				<!-- position in list area of the editor -->
-				<list>11</list>
-				<!-- position in search area of the editor -->
-				<search>11</search>
-			</positions>
+		  <positions>
+			 <!-- position in the input area of the editor -->
+			 <input>2</input>
+			 <!-- position in list area of the editor -->
+			 <list>2</list>
+			 <!-- position in search area of the editor -->
+			 <search>2</search>
+		  </positions>
 		</editor>
 		<!-- database related  -->
 		<db>
-			<!-- name of the field in the database -->
-			<name>owner</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
+		  <!-- name of the field in the database -->
+		  <name>type</name>
+		  <!-- MMBase datatype and demands on it -->
+		  <type state="persistent" size="64" notnull="true" key="false">STRING</type>
 		</db>
-	</field>
+	 </field>
 
-	<!-- POS 3 : <field> 'name'  -->
-	<field>
+	 <!-- POS 5 : <field> 'version'  -->
+	 <field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Naam</guiname>
-			<guiname xml:lang="en">Name</guiname>
-			<guiname xml:lang="us">Name</guiname>
-			<guitype>string</guitype>
+		  <guiname xml:lang="nl">Versie</guiname>
+		  <guiname xml:lang="en">Version</guiname>
+		  <guiname xml:lang="us">Version</guiname>
+		  <guiname xml:lang="eo">Versio</guiname>
+		  <guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>1</input>
-				<!-- position in list area of the editor -->
-				<list>1</list>
-				<!-- position in search area of the editor -->
-				<search>1</search>
-			</positions>
+		  <positions>
+			 <!-- position in the input area of the editor -->
+			 <input>3</input>
+			 <!-- position in list area of the editor -->
+			 <list>3</list>
+			 <!-- position in search area of the editor -->
+			 <search>3</search>
+		  </positions>
 		</editor>
 		<!-- database related  -->
 		<db>
-			<!-- name of the field in the database -->
-			<name>name</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="64" notnull="false" key="true">STRING</type>
+		  <!-- name of the field in the database -->
+		  <name>version</name>
+		  <!-- MMBase datatype and demands on it -->
+		  <type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
-	</field>
+	 </field>
 
-	<!-- POS 4 : <field> 'type'  -->
-	<field>
+	 <!-- POS 6 : <field> 'maintainer'  -->
+	 <field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Type</guiname>
-			<guiname xml:lang="en">Type</guiname>
-			<guiname xml:lang="us">Type</guiname>
-			<guitype>string</guitype>
+		  <guiname xml:lang="nl">Beheerder</guiname>
+		  <guiname xml:lang="en">Maintainer</guiname>
+		  <guiname xml:lang="us">Maintainer</guiname>
+		  <guiname xml:lang="eo">Estro</guiname>
+		  <guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>2</input>
-				<!-- position in list area of the editor -->
-				<list>2</list>
-				<!-- position in search area of the editor -->
-				<search>2</search>
-			</positions>
+		  <positions>
+			 <!-- position in the input area of the editor -->
+			 <input>4</input>
+			 <!-- position in list area of the editor -->
+			 <list>4</list>
+			 <!-- position in search area of the editor -->
+			 <search>4</search>
+		  </positions>
 		</editor>
 		<!-- database related  -->
 		<db>
-			<!-- name of the field in the database -->
-			<name>type</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="64" notnull="true" key="false">STRING</type>
+		  <!-- name of the field in the database -->
+		  <name>maintainer</name>
+		  <!-- MMBase datatype and demands on it -->
+		  <type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
-	</field>
+	 </field>
 
-	<!-- POS 5 : <field> 'version'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="nl">Versie</guiname>
-			<guiname xml:lang="en">Version</guiname>
-			<guiname xml:lang="us">Version</guiname>
-			<guitype>integer</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>3</input>
-				<!-- position in list area of the editor -->
-				<list>3</list>
-				<!-- position in search area of the editor -->
-				<search>3</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>version</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true" key="false">INTEGER</type>
-		</db>
-	</field>
-
-	<!-- POS 6 : <field> 'maintainer'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="nl">Beheerder</guiname>
-			<guiname xml:lang="en">Maintainer</guiname>
-			<guiname xml:lang="us">Maintainer</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>4</input>
-				<!-- position in list area of the editor -->
-				<list>4</list>
-				<!-- position in search area of the editor -->
-				<search>4</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>maintainer</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
-		</db>
-	</field>
-
-</fieldlist>
+  </fieldlist>
 
 </builder>
