@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.168 2003-06-17 16:49:26 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.169 2003-06-26 20:52:15 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2920,16 +2920,26 @@ like the parameter list or the session (where ever it is available) --&gt;
       <name>value</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
       <info>
         The value to which you want to compare, this is always a String.
+      </info>
+    </attribute>
+    <attribute>
+      <name>valueset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
+      <info>
+          List of values. Compare is done with each, and total result if one of them evaluates true.
+          The value to which you want to compare, this is always a String.
       </info>
     </attribute>
     <attribute>
       <name>referid2</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
       <see tag="writer" attribute="vartype" />
       <info>
         The value can also be another context variable, which is not

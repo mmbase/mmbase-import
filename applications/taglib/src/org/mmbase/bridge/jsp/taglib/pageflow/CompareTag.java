@@ -17,21 +17,27 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import java.util.*;
 /**
  * A very simple tag to check if the value of a certain context
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.22 2003-06-06 10:03:24 pierre Exp $
+ * @version $Id: CompareTag.java,v 1.23 2003-06-26 20:52:15 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
 
     private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
 
-    private Attribute value = Attribute.NULL;
+    private Attribute value    = Attribute.NULL;
+    private Attribute valueSet = Attribute.NULL;
     public void setValue(String v) throws JspTagException {
         value =  getAttribute(v);
+    }
+
+    public void setValueset(String vs) throws JspTagException {
+        valueSet =  getAttribute(vs);
     }
 
     private Attribute referid2 = Attribute.NULL;
@@ -68,37 +74,48 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             throw new JspTagException("Cannot compare variable of type " + compare1.getClass().getName());
         }
 
-        Object compare2;
+        Set compareToSet = new HashSet();
         if (value != Attribute.NULL) {
-            compare2 = value.getValue(this);
+            if (valueSet != Attribute.NULL) {
+                throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
+            }
             if (referid2 != Attribute.NULL) {
                 throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
             }
+            compareToSet.add(value.getValue(this));
+        } else if (valueSet != Attribute.NULL) {
+            if (referid2 != Attribute.NULL) {
+                throw new JspTagException("Cannot indicate 'referid2' and 'valueSet' attributes both");
+            }
+            compareToSet.addAll(valueSet.getList(this));
         } else {
-            compare2 =  getCompare2();
+            compareToSet.add(getCompare2());
         }
 
-        if ((compare1 instanceof Number) && (compare2 instanceof String)) {
-            log.debug("found an instance of Number");
-            compare1 = new java.math.BigDecimal(compare1.toString());
-            if ("".equals(compare2)) { // do something reasonable in IsEmpty
-                compare2=new java.math.BigDecimal(0);
-            } else {
-                compare2 = new java.math.BigDecimal((String)compare2);
+        Iterator i = compareToSet.iterator();
+        while (i.hasNext()) {
+            Object compare2 = i.next();
+            if ((compare1 instanceof Number) && (compare2 instanceof String)) {
+                log.debug("found an instance of Number");
+                compare1 = new java.math.BigDecimal(compare1.toString());
+                if ("".equals(compare2)) { // do something reasonable in IsEmpty
+                    compare2 = new java.math.BigDecimal(0);
+                } else {
+                    compare2 = new java.math.BigDecimal((String)compare2);
+                }
+            }
+            
+            // if using 'BigDecimal' then avoid classcastexceptions also if other type is some number.
+            if (compare1 instanceof java.math.BigDecimal) {
+                if (! (compare2 instanceof java.math.BigDecimal)) {
+                    compare2 = new java.math.BigDecimal(compare2.toString());
+                }
+            }
+            
+            if (doCompare((Comparable)compare1, (Comparable)compare2) != getInverse() ) {
+                return EVAL_BODY_INCLUDE;
             }
         }
-
-        // if using 'BigDecimal' then avoid classcastexceptions also if other type is some number.
-        if (compare1 instanceof java.math.BigDecimal) {
-            if (! (compare2 instanceof java.math.BigDecimal)) {
-                compare2 = new java.math.BigDecimal(compare2.toString());
-            }
-        }
-
-        if (doCompare((Comparable)compare1, (Comparable)compare2) != getInverse() ) {
-            return EVAL_BODY_INCLUDE;
-        } else {
-            return SKIP_BODY;
-        }
+        return SKIP_BODY;
     }
 }
