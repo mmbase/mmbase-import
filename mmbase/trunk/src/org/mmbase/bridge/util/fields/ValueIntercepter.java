@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.11 2004-09-17 09:29:26 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.12 2004-10-05 18:07:26 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -325,8 +325,8 @@ public class ValueIntercepter {
                     Processor newProcessor = (Processor) createProcessor(reader, setProcessorElement);                    
 
                     Map map = null;
-                    if (setTypeString.equals("")) {
-                        map = setProcessor[fieldType][0];
+                    if (setTypeString.equals("") || setTypeString.equals("*")) {
+                        // map = setProcessor[fieldType][0];
                     } else {
                         int setFieldType = getType(setTypeString);
                         map = setProcessor[fieldType][setFieldType];
@@ -334,8 +334,22 @@ public class ValueIntercepter {
                     
                     if (map == null) {
                         map = new HashMap();
-                        if (setTypeString.equals("")) {
-                            setProcessor[fieldType][0] = map;
+                        if (setTypeString.equals("") || setTypeString.equals("*")) {
+                            if (setTypeString.equals("*")) {
+                                setProcessor[fieldType][0] = map;
+                            }
+                            // set for all except 'object'.
+                            setProcessor[fieldType][Field.TYPE_STRING] = map;
+                            setProcessor[fieldType][Field.TYPE_INTEGER] = map;
+                            setProcessor[fieldType][Field.TYPE_BYTE] = map;
+                            setProcessor[fieldType][Field.TYPE_FLOAT] = map;
+                            setProcessor[fieldType][Field.TYPE_DOUBLE] = map;
+                            setProcessor[fieldType][Field.TYPE_LONG] = map;
+                            setProcessor[fieldType][Field.TYPE_XML] = map;
+                            setProcessor[fieldType][Field.TYPE_NODE] = map;
+                            setProcessor[fieldType][Field.TYPE_DATETIME] = map;
+                            setProcessor[fieldType][Field.TYPE_BOOLEAN] = map;
+                            setProcessor[fieldType][Field.TYPE_LIST] = map;
                         } else {
                             int setFieldType =  getType(setTypeString);
                             setProcessor[fieldType][setFieldType] = map;
@@ -349,9 +363,9 @@ public class ValueIntercepter {
                 while (h.hasMoreElements()) {
                     Element getProcessorElement = (Element) h.nextElement();
                     String getTypeString = getProcessorElement.getAttribute("type");
-                    Map map;
+                    Map map = null;
                     if (getTypeString.equals("")) {
-                        map = getProcessor[fieldType][0];
+                        // map = getProcessor[fieldType][0];
                     } else {
                         int getFieldType =  getType(getTypeString);
                         map = getProcessor[fieldType][getFieldType];
@@ -359,8 +373,22 @@ public class ValueIntercepter {
 
                     if (map == null) {
                         map = new HashMap();
-                        if (getTypeString.equals("")) {
-                            getProcessor[fieldType][0] = map;
+                        if (getTypeString.equals("") || getTypeString.equals("*")) {
+                            if (getTypeString.equals("*")) {
+                                getProcessor[fieldType][0] = map;
+                            }
+                            // set for all except 'object'.
+                            getProcessor[fieldType][Field.TYPE_STRING] = map;
+                            getProcessor[fieldType][Field.TYPE_INTEGER] = map;
+                            getProcessor[fieldType][Field.TYPE_BYTE] = map;
+                            getProcessor[fieldType][Field.TYPE_FLOAT] = map;
+                            getProcessor[fieldType][Field.TYPE_DOUBLE] = map;
+                            getProcessor[fieldType][Field.TYPE_LONG] = map;
+                            getProcessor[fieldType][Field.TYPE_XML] = map;
+                            getProcessor[fieldType][Field.TYPE_NODE] = map;
+                            getProcessor[fieldType][Field.TYPE_DATETIME] = map;
+                            getProcessor[fieldType][Field.TYPE_BOOLEAN] = map;
+                            getProcessor[fieldType][Field.TYPE_LIST] = map;
                         } else {
                             int getFieldType =  getType(getTypeString);
                             getProcessor[fieldType][getFieldType] = map;
