@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.109 2003-11-10 17:51:44 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.110 2003-12-02 16:13:21 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -538,30 +538,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     */
     void verify(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
         mmbaseCop.getAuthorization().verify(userContext.getUserContext(), nodeID, srcNodeID, dstNodeID, operation);
-    }
-
-    /**
-    * initializes access rights for a newly created node
-    * @param nodeID the node to init
-    */
-    void createSecurityInfo(int nodeID) {
-        mmbaseCop.getAuthorization().create(userContext.getUserContext(), nodeID);
-    }
-
-    /**
-    * removes access rights for a removed node
-    * @param nodeID the node to init
-    */
-    void removeSecurityInfo(int nodeID) {
-        mmbaseCop.getAuthorization().remove(userContext.getUserContext(), nodeID);
-    }
-
-    /**
-    * updates access rights for a changed node
-    * @param nodeID the node to init
-    */
-    void updateSecurityInfo(int nodeID) {
-        mmbaseCop.getAuthorization().update(userContext.getUserContext(), nodeID);
     }
 
     // javadoc inherited

@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.109 2003-11-19 17:25:49 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.110 2003-12-02 16:13:21 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -476,11 +476,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             MMObjectNode node = getNode();
             if (isnew) {
                 node.insert(((BasicUser)cloud.getUser()).getUserContext());
-                cloud.createSecurityInfo(getNumber());
+                // cloud.createSecurityInfo(getNumber());
                 isnew = false;
             } else {
                 node.commit(((BasicUser)cloud.getUser()).getUserContext());
-                cloud.updateSecurityInfo(getNumber());
+                //cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
@@ -557,8 +557,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 }
                 MMObjectNode node = getNode();
                 int number = getNumber();
-                node.getBuilder().removeNode(node);
-                cloud.removeSecurityInfo(number);
+                //node.getBuilder().removeNode(node);
+                node.remove( ((BasicUser)cloud.getUser()).getUserContext());
+                //cloud.removeSecurityInfo(number);
             }
         }
         // the node does not exist anymore, so invalidate all references.
@@ -602,8 +603,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
                         int number = node.getNumber();
-                        node.getBuilder().removeNode(node);
-                        cloud.removeSecurityInfo(number);
+                        node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                     }
                 }
             }
@@ -876,9 +876,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
-                        int number = node.getNumber();
-                        alias.removeNode(node);
-                        cloud.removeSecurityInfo(number);
+                        node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                     }
                 }
             }
@@ -899,7 +897,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     // javadoc inherited (from Node)
     public void setContext(String context) {
         // set the context on the node (run after insert).
-        getNode().setContext(((BasicUser)cloud.getUser()).getUserContext(),context, !isnew && !(cloud instanceof Transaction));
+        getNode().setContext(((BasicUser)cloud.getUser()).getUserContext(),context, temporaryNodeId == -1);
     }
 
     // javadoc inherited (from Node)
