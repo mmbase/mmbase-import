@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.81 2003-09-19 09:04:28 pierre Exp $
+ * @version $Id: Images.java,v 1.82 2003-10-24 09:09:46 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -145,7 +145,6 @@ public class Images extends AbstractImages {
      * @javadoc
      */
     public void setDefaults(MMObjectNode node) {
-        node.setValue("description", "");
     }
 
     /**
