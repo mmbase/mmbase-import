@@ -50,13 +50,17 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     }
 
     public int doStartTag() throws JspTagException {
-        log.debug("Search the node.");
-        Node node = getNode();
-        if (type == null) {
-            helper.setValue(new Integer(node.countRelations())); 
+        if (getReferid() != null) {
+            helper.setValue(getContext().getObject(getReferid()));
         } else {
+            log.debug("Search the node.");
+            Node node = getNode();
+            if (type == null) {
+                helper.setValue(new Integer(node.countRelations())); 
+            } else {
             helper.setValue(new Integer(node.countRelatedNodes(type)));
-        }        
+            }        
+        }
         helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
