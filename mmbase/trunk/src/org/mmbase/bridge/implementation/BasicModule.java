@@ -42,29 +42,11 @@ public class BasicModule implements org.mmbase.bridge.Module {
         return cloudContext;
     }
 
- 	/**
-	 * Retrieve the name of the module.
-	 * @param language the language in which you want the name
-	 */
-	public String getName(String language) {
-	    // not yet implemented
-        return module.getName();
-    }
-
 	/**
-     * Retrieve the name of the module (in the default language defined in mmbaseroot.xml)
+     * Retrieve the name of the module
      */
     public String getName() {
         return module.getName();
-    }
-
-	/**
-	 * Retrieve the description of the module.
-	 * @param language the language in which you want the description
-	 */
-	public String getDescription(String language) {
-	    // not yet implemented
-        return module.getModuleInfo();
     }
 
 	/** 

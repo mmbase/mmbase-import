@@ -40,22 +40,10 @@ public interface NodeManager {
      */
     public String getName();
  	
- 	/**
-	 * Retrieve the descriptive name of the NodeManager
-	 * @param language the language in which you want the name
-	 */
-	public String getGUIName(String language);
-	
 	/**
      * Retrieve the descriptive name of the NodeManager (in the default language defined in mmbaseroot.xml)
      */
     public String getGUIName();
-
-	/**
-	 * Retrieve the description of the NodeManager
-	 * @param language the language in which you want the description
-	 */
-	public String getDescription(String language);
 
 	/** 
 	 * Retrieve the description of the NodeManager.

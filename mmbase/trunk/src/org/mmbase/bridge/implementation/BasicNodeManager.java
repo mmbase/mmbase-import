@@ -28,7 +28,7 @@ import org.mmbase.module.corebuilders.*;
 public class BasicNodeManager implements NodeManager {
 
     // Cloud for this nodetype
-    protected Cloud cloud=null;
+    protected BasicCloud cloud=null;
 
     // builder on which the type is based
     protected MMObjectBuilder builder=null;
@@ -46,7 +46,7 @@ public class BasicNodeManager implements NodeManager {
     }
 
     protected void init(MMObjectBuilder builder, Cloud cloud) {
-        this.cloud=cloud;
+        this.cloud=(BasicCloud)cloud;
         this.builder=builder;
         if (!builder.tableName.equals("multirelations")) {
     	    for(Iterator i=builder.getFields().iterator(); i.hasNext();){
@@ -61,12 +61,18 @@ public class BasicNodeManager implements NodeManager {
      * Gets a new (initialized) node
      */
     public Node createNode() {
-        MMObjectNode node= builder.getNewNode("system");
-        if (node==null) {
-	        return null;
-	    } else {
-	        return new BasicNode(node, this);
-	    }
+        // create object as a temporary node
+        int id = cloud.uniqueId();
+        System.out.println();
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
+        // if we are in a transaction, add the node to the transaction;
+        if (cloud instanceof BasicTransaction) {
+            ((BasicTransaction)cloud).add(currentObjectContext);
+        }
+        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
+        // set the owner to userName instead of account
+        node.setValue("owner",cloud.getUserName());
+        return new BasicNode(node, this, id);
     }
 
  	/**
@@ -83,14 +89,14 @@ public class BasicNodeManager implements NodeManager {
         return builder.getTableName();
     }
 
- 	/**
-	 * Retrieve the descriptive name of the NodeManager
-	 * @param language the language in which you want the name
-	 */
-	public String getGUIName(String language) {
+	/**
+     * Retrieve the descriptive name of the NodeManager
+     * Note: currently, this method returns the nodetype/builder table name!
+     */
+    public String getGUIName() {
 	    Hashtable singularNames=builder.getSingularNames();
         if (singularNames!=null) {
-            String tmp=(String)singularNames.get(language);
+            String tmp=(String)singularNames.get(cloud.getLanguage());
             if (tmp!=null) {
                 return tmp;
             }
@@ -98,34 +104,18 @@ public class BasicNodeManager implements NodeManager {
 	    return builder.getTableName();
 	}
 
-	/**
-     * Retrieve the descriptive name of the NodeManager (in the default language defined in mmbaseroot.xml)
-     * Note: currently, this method returns the nodetype/builder table name!
-     */
-    public String getGUIName() {
-	    return getGUIName(((BasicCloudContext)cloud.getCloudContext()).mmb.getLanguage());
-	}
-
-	/**
-	 * Retrieve the description of the NodeManager
-	 * @param language the language in which you want the description
+	/** 
+	 * Retrieve the description of the NodeManager.
 	 */
-	public String getDescription(String language) {
+	public String getDescription() {
 	    Hashtable descriptions=builder.getDescriptions();
         if (descriptions!=null) {
-            String tmp=(String)descriptions.get(language);
+            String tmp=(String)descriptions.get(cloud.getLanguage());
             if (tmp!=null) {
                 return tmp;
             }
         }
 	    return builder.getDescription();
-	}
-
-	/** 
-	 * Retrieve the description of the NodeManager. (in the default language defined in mmbaseroot.xml)
-	 */
-	public String getDescription() {
-	    return getDescription(((BasicCloudContext)cloud.getCloudContext()).mmb.getLanguage());
 	}
 
 	/**
@@ -157,7 +147,6 @@ public class BasicNodeManager implements NodeManager {
      * @return a <code>List</code> of found nodes
      */
     public List search(String where, String sorted, boolean direction) {
-  		
   		Vector retval = new Vector();
   		Enumeration nodeEnum = null;
   		if ((where!=null) && (!where.trim().equals(""))) {
@@ -172,6 +161,5 @@ public class BasicNodeManager implements NodeManager {
 			retval.addElement(new BasicNode((MMObjectNode)nodeEnum.nextElement(),this));
 		}
   		return retval;
-  		
     }
 }

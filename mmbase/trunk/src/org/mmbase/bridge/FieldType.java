@@ -42,6 +42,11 @@ public interface FieldType {
     public String getName();
  	
  	/**
+	 * Retrieve the field's GUI type
+	 */
+    public String getGUIType();
+ 	
+ 	/**
 	 * Retrieve the field's GUI name
 	 */
     public String getGUIName();
