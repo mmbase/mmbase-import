@@ -675,6 +675,14 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${mmbase.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/tomcat/lib"/>
+    <!--    xalan and xerces provide the functionality which is also provided by
+    	    the tomcat/lib/parser.jar and lib/jaxp.jar.. but newer
+	    to prevent it from load the class which is older and has less 
+	    functionaltiy move the old ones...
+    -->        
+    <delete file="${build.dir}/tomcat/lib/parser.jar" />
+    <delete file="${build.dir}/tomcat/lib/jaxp.jar" />    
+    
     <copy file="${jai_codec.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${jai_core.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/tomcat/lib"/>
