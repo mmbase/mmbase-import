@@ -9,9 +9,14 @@ MMBase partners.
 */
 
 /*
- $Id: sessions.java,v 1.2 2000-02-24 13:28:54 wwwtech Exp $
+ $Id: sessions.java,v 1.3 2000-03-09 16:21:29 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.2  2000/02/24 13:28:54  wwwtech
+ Rico: added addSetValue for adding of sets of values to a session set
+ so you can post a set of values to a session variable, fixed several debug messages (added
+ mostly)
+
 */
 package org.mmbase.module;
 
@@ -29,7 +34,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.2 2000-02-24 13:28:54 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.3 2000-03-09 16:21:29 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -57,7 +62,11 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		if (sessions!=null && wanted!=null) {
 			sessionInfo session=(sessionInfo)sessions.get(wanted);
 			if (session==null) {
-				session=new sessionInfo(sp.req.getRemoteHost(),wanted);
+				if (sp.req!=null) {
+					session=new sessionInfo(sp.req.getRemoteHost(),wanted);
+				} else {
+					session=new sessionInfo("<unknown>",wanted);
+				}
 				sessions.put(wanted,session);
 				// get all the propertie values of this node
 
