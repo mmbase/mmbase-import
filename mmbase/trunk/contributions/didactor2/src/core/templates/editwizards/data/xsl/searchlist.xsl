@@ -2,7 +2,10 @@
 <xsl:stylesheet
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction">
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:util="nl.didactor.xsl.Utilities"
+  >
+  
   <!--
     searchlist.xls
     
@@ -10,7 +13,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.1 2004-11-01 12:52:42 jdiepenmaat Exp $
+    @version $Id: searchlist.xsl,v 1.2 2004-11-18 12:45:28 jdiepenmaat Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -99,6 +102,9 @@
                 name="{@number}"
                 did="{@number}"
                 id="cb_{@number}" />
+              </td>
+              <td width="30%">
+                <xsl:value-of select="util:realNodeType(@number)"/>
               </td>
               <xsl:choose>
                 <xsl:when test="@type=&apos;images&apos;">
