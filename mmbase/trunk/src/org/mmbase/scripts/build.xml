@@ -1365,6 +1365,15 @@ Version: MMBase build ${version}
     <delete dir="${generated-source-src.dir}/org/mmbase/bridge/remote/rmi"/>
     <delete dir="${generated-source-src.dir}/org/mmbase/bridge/remote/implementation"/>
     <delete file="${generated-source-src.dir}/MMCI.xml"/>
+    <!-- Transition period. Until everybody removed the remote
+    code from their source-dir, we clean it also there.
+    -->
+    <delete>
+      <fileset dir="${source-src.dir}">
+        <include name="org/mmbase/bridge/remote/*.java"/>
+      </fileset>
+    </delete>
+    <delete file="${source-src.dir}/MMCI.xml"/>
   </target>
 
  <!-- ================================================================================ -->
