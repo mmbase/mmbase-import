@@ -118,6 +118,31 @@ public class XMLDatabaseReader  {
 	return(null);
     }
 
+
+    /**
+    * get the max drop size
+    */
+    public int getMaxDropSize() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("maxdropsize")) {
+				Node n3=n2.getFirstChild();
+				try {
+		    			String value=n3.getNodeValue();
+		    			return(Integer.parseInt(value));
+				} catch(Exception e) {
+					return(0);
+				}
+			
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(0);
+    }
+
     /**
     */
     public Hashtable getDisallowedFields() {
