@@ -65,7 +65,7 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
             CharTransformer ct = null;
             while (i.hasPrevious()) {         
                 ct = (CharTransformer) i.previous();
-                if (i.hasPrevious()) { // needing a new  Threads!
+                if (i.hasPrevious()) { // needing a new Thread!
                     r = new PipedReader();
                     Thread thread =  new TransformerLink(ct, r, w);
                     w = new PipedWriter((PipedReader) r);
@@ -77,7 +77,12 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
             // assert(r == startReader);
             if (ct != null) {
                 ct.transform(startReader, w);
+
                 w.flush();
+                startReader.close();
+                if (w instanceof PipedWriter) {
+                    w.close();
+                }
             }
         } catch (IOException e) {
             log.error(e.toString());
@@ -104,6 +109,10 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
             try {
                 charTransformer.transform(reader, writer);
                 writer.flush();
+                reader.close(); // Always a PipedReader
+                if (writer instanceof PipedWriter) {
+                    writer.close();
+                }
             } catch (IOException io) {
             }
         }
@@ -116,7 +125,11 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
         t.add(new CopyCharTransformer());
         System.out.println("Starting transform");
         t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
+        //StringWriter w = new StringWriter();
+        //t.transform(new StringReader("hello      world"), w);
+        //System.out.println(w.toString());
         System.out.println("Finished transform");
+ 
     }
     
 }
