@@ -15,12 +15,18 @@ import org.mmbase.storage.search.*;
 
 /**
  * Basic implementation.
+ * <p>
+ * The checkedDirectionality property defaults to false.
+ * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
+    
+    /** Checked directionality property. */
+    private boolean checkedDirectionality = false;
     
     /** Directionality property. */
     private int directionality = RelationStep.DIRECTIONS_BOTH;
@@ -59,6 +65,19 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
     }
     
     /**
+     * Sets checkedDirectionality property.
+     * 
+     * @param checkedDirectionality The checkedDirectionality property.
+     * @return This <code>BasicRelationStep</code> instance.
+     * @see #getCheckedDirectionality
+     */
+    public BasicRelationStep setCheckedDirectionality(
+            boolean checkedDirectionality) {
+        this.checkedDirectionality = checkedDirectionality;
+        return this;
+    }
+    
+    /**
      * Sets directionality property.
      * 
      * @param directionality The directionality.
@@ -87,6 +106,11 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
     public BasicRelationStep setRole(Integer role) {
         this.role = role;
         return this;
+    }
+    
+    // javadoc is inherited
+    public boolean getCheckedDirectionality() {
+        return checkedDirectionality;
     }
     
     // javadoc is inherited
