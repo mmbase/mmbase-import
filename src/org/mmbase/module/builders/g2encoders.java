@@ -20,37 +20,31 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @$Revision: 1.8 $ $Date: 2001-04-05 12:35:19 $
+ * @$Revision: 1.9 $ $Date: 2001-05-03 10:06:07 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 
     private static Logger log = Logging.getLoggerInstance(g2encoders.class.getName());
 
+	/**
+	 * Calls super and nodeChanged to react to change.
+	 * @param number object number of node who's state has been changed.
+	 * @param builder a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 * @return returnvalue of nodeChanged which is either true or false.
+	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		boolean result = false;
-		log.debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super");
-
-		super.nodeRemoteChanged(number,builder,ctype);
-		result = nodeChanged(number,builder,ctype);
-
-		log.debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): return("+result+")");
-		return result;
+		return super.nodeRemoteChanged(number,builder,ctype);
 	}
 
+	/**
+	 * Calls super and nodeChanged to react to change.
+	 * @param number object number of node who's state has been changed.
+	 * @param builder a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 * @return true, always.
+	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		boolean result = false;
-		log.debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super");
-
-		super.nodeLocalChanged(number,builder,ctype);
-		result = nodeChanged(number,builder,ctype);
-
-		log.debug("nodeLocalChanged("+number+","+builder+","+ctype+"): returning("+result+")");
-		return result;
-	}
-
-	public boolean nodeChanged(String number,String builder,String ctype) {
-		boolean result = true;
-		log.debug("nodeChanged("+number+","+builder+","+ctype+"), do nothing, return("+result+")");
-		return result;
+		return super.nodeLocalChanged(number,builder,ctype);
 	}
 }
