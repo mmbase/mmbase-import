@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.10 2003-08-08 13:30:03 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.11 2003-08-12 10:34:41 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -250,6 +250,13 @@ public class ContextContainer extends HashMap {
             result.addAll(parent.keySet());
         }
         return result;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    Set myKeySet() {
+        return super.keySet();
     }
 
     // utilities, since MMBase-1.7 moved from ContextTag to here.
