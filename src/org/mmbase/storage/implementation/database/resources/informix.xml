@@ -79,6 +79,7 @@
 		<disallowed-field name="variance" replacement="mmvariance" />
 		<disallowed-field name="avg" replacement="mmavg" />
 		<disallowed-field name="public" replacement="mmpublic" />
+                <disallowed-field name="text" replacement="mmtext" />
 	</disallowed-fields>
 
 </storage>
