@@ -12,27 +12,23 @@ package org.mmbase.config;
 import java.util.*;
 import java.io.*;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * @author Case Roole, cjr@dds.nl
  *
- * $Id: AbstractReport.java,v 1.8 2003-03-07 11:49:11 pierre Exp $
+ * $Id: AbstractReport.java,v 1.9 2003-07-07 13:33:25 keesj Exp $
  *
  *
  */
 public abstract class AbstractReport implements ReportInterface {
-    protected String mode,encoding;
+    protected String mode, encoding;
     protected Hashtable specialChars;
     protected String configpath;
 
-    private static Logger log = Logging.getLoggerInstance(AbstractReport.class.getName());
+   
     //protected String classname = getClass().getName();
     //protected boolean debug = false;
 
@@ -68,7 +64,7 @@ public abstract class AbstractReport implements ReportInterface {
         String res;
         int n = s.indexOf(sub);
         if (n >= 0) {
-            return s.substring(0,n) + rep + s.substring(n+sub.length());
+            return s.substring(0, n) + rep + s.substring(n + sub.length());
         } else {
             return s;
         }
@@ -84,64 +80,18 @@ public abstract class AbstractReport implements ReportInterface {
     protected Vector listDirectory(String path) throws IOException {
         File dir = new File(path);
         if (!dir.isDirectory()) {
-            throw new IOException("Path "+path+" is not a directory.\n");
+            throw new IOException("Path " + path + " is not a directory.\n");
         } else {
             String[] dirlist = dir.list(new XMLFilenameFilter());
             Vector v = new Vector();
-            for (int i=0;i<dirlist.length;i++) {
-                v.addElement(dirlist[i].substring(0,dirlist[i].length()-4));
+            for (int i = 0; i < dirlist.length; i++) {
+                v.addElement(dirlist[i].substring(0, dirlist[i].length() - 4));
             }
             return v;
         }
     }
 
 
-    /**
-     * Read an XML file in which key/value pairs are represented as tag and content
-     *
-     * @param path Full path to XML file
-     *
-     * @return Hashtable with the key/value pairs or an empty Hashtable if something went wrong.
-     * @duplicate A lot of very familiar code from other classes, which depends on Xerces, even.
-     */
-    protected Hashtable getPropertiesFromXML(String path) {
-        XMLProperties xmlReader = new XMLProperties();
-        SAXParser parser = new SAXParser();
-        // Telling the parser it must not use some features
-        // we're not using right now as dtd-validation and namespaces
-        try {
-            parser.setFeature("http://xml.org/sax/features/validation",false);
-            parser.setFeature("http://xml.org/sax/features/namespaces",false);
-        } catch (SAXNotSupportedException ex) {
-            log.debug("Config::databaseIsActive: failed because parser doesn't support feature");
-            ex.printStackTrace();
-        }
-        catch (SAXNotRecognizedException ex) {
-            log.debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
-            ex.printStackTrace();
-        }
-        // create new ContentHandler and let the parser use it
-        xmlReader = new XMLProperties();
-        parser.setContentHandler(xmlReader);
-
-        // get us a (normal) propertie reader
-        Hashtable mods = null;
-
-        // load the
-        String filename=configpath+File.separator+path;
-        // filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
-        // filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
-
-        // check if there's a xml-configuration file
-        try {
-            parser.parse(new InputSource(filename));
-            mods = xmlReader.getProperties();
-        } catch (Exception e) {
-            log.error("Error reading xml properties file " + path + ". Returning empty hashtable.");
-            mods = new Hashtable();
-        }
-        return mods;
-    }
 
     /**
      * @return String with '<' and '>' converted to respectively &lt; and &gt;
@@ -150,17 +100,17 @@ public abstract class AbstractReport implements ReportInterface {
     protected String htmlEntities(String s) {
         StringBuffer res = new StringBuffer();
         char c;
-        for (int i=0;i<s.length();i++) {
+        for (int i = 0; i < s.length(); i++) {
             c = s.charAt(i);
             switch (c) {
-            case '>':
-                res.append("&gt;");
-                break;
-            case '<':
-                res.append("&lt;");
-                break;
-            default:
-                res.append(c);
+                case '>' :
+                    res.append("&gt;");
+                    break;
+                case '<' :
+                    res.append("&lt;");
+                    break;
+                default :
+                    res.append(c);
             }
         }
         return res.toString();
@@ -171,12 +121,11 @@ public abstract class AbstractReport implements ReportInterface {
         LineNumberReader f = null;
         try {
             f = new LineNumberReader(new FileReader(path));
-        } catch (IOException canthappen) {
-        }
+        } catch (IOException canthappen) {}
 
         String res = "";
         List fatalList = pr.getFatalList();
-        for (int j=0;j<fatalList.size();j++) {
+        for (int j = 0; j < fatalList.size(); j++) {
             ErrorStruct fatalerror = (ErrorStruct)fatalList.get(j);
             int lineno = fatalerror.getLineNumber();
             int col = fatalerror.getColumnNumber();
@@ -185,7 +134,7 @@ public abstract class AbstractReport implements ReportInterface {
             if (f != null) {
                 try {
                     int i = f.getLineNumber();
-                    while (f.ready() && i<lineno-1) {
+                    while (f.ready() && i < lineno - 1) {
                         f.readLine();
                         i++;
                     }
@@ -194,7 +143,7 @@ public abstract class AbstractReport implements ReportInterface {
                         if (encoding.equalsIgnoreCase("html")) {
                             line = htmlEntities(line);
                         }
-                        res = res + "*** line "+lineno+": column "+col+": "+msg + eol;
+                        res = res + "*** line " + lineno + ": column " + col + ": " + msg + eol;
                         res = res + "*** " + line + eol;
                     }
                 } catch (IOException e) {
@@ -212,19 +161,18 @@ public abstract class AbstractReport implements ReportInterface {
      */
     private Hashtable getHTMLChars() {
         Hashtable h = new Hashtable();
-        h.put("amp","&amp;amp");
-        h.put("eol","<br />\n");
+        h.put("amp", "&amp;amp");
+        h.put("eol", "<br />\n");
         return h;
     }
-
 
     /**
      * @return Hashtable with some special characters represented for TEXT
      */
     private Hashtable getTEXTChars() {
         Hashtable h = new Hashtable();
-        h.put("amp","&amp;");
-        h.put("eol","\n");
+        h.put("amp", "&amp;");
+        h.put("eol", "\n");
         return h;
     }
 

@@ -9,19 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 
+import org.mmbase.config.ReportInterface;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.logging.*;
-import org.mmbase.config.*;
-import org.mmbase.module.core.*;
+import org.mmbase.util.xml.BuilderReader;
+import org.w3c.dom.Document;
 
 
 /**
@@ -52,7 +50,7 @@ import org.mmbase.module.core.*;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.20 2003-04-14 08:55:24 michiel Exp $
+ * @version $Id: Config.java,v 1.21 2003-07-07 13:34:22 keesj Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -142,40 +140,9 @@ public class Config extends ProcessorModule {
      * @return Whether a database mapping file is for the active DBMS
      */
     public boolean databaseIsActive(String path) {
-        XMLProperties xmlReader = new XMLProperties();
-        SAXParser parser = new SAXParser();
-        // Telling the parser it must not use some features
-        // we're not using right now as dtd-validation and namespaces
-        try {
-            parser.setFeature("http://xml.org/sax/features/validation",false);
-            parser.setFeature("http://xml.org/sax/features/namespaces",false);
-        } catch (SAXNotSupportedException ex) {
-            log.error("Config::databaseIsActive: failed because parser doesn't support feature");
-            ex.printStackTrace();
-        }
-        catch (SAXNotRecognizedException ex) {
-            log.error("Config::databaseIsActive(): failed because parser didn't recognize feature");
-            ex.printStackTrace();
-        }
-        // create new ContentHandler and let the parser use it
-        xmlReader = new XMLProperties();
-        parser.setContentHandler(xmlReader);
-
-        // get us a (normal) propertie reader
-        Hashtable mods = null;
-
-        // load the
-        String filename = mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml";
-        // filename=filename.replace('/',File.separator)
-        // filename=filename.replace('\\',File.separator)
-        // check if there's a xml-configuration file
-        try {
-            parser.parse(new InputSource(filename));
-            mods = xmlReader.getProperties();
-        } catch (Exception e) {}
-
-
-        String curdb = (String)mods.get("DATABASE");
+        XMLProperties xmlReader = XMLProperties.getPropertiesFromXML(mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml");
+        	
+        String curdb = (String)xmlReader.get("DATABASE");
         return path.indexOf(curdb) > 0;
     }
 
