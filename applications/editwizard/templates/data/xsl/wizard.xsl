@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.44 2002-07-17 14:07:31 pierre Exp $
+  @version $Id: wizard.xsl,v 1.45 2002-07-18 09:20:00 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -25,7 +25,7 @@
   <!-- It can be usefull to add a style, change the title -->
   <xsl:template name="style"> 
      <title><xsl:value-of select="title" /></title>
-     <link rel="stylesheet" type="text/css" href="../style.css" />
+     <link rel="stylesheet" type="text/css" href="../style/wizard.css" />
      <xsl:call-template name="extrastyle" /> <!-- see base.xsl -->
   </xsl:template>
 
@@ -34,13 +34,7 @@
        It is probably handier to override beforeform of formcontent.       
        -->
   <xsl:template name="body"> 
-    <body 
-      bgcolor="#FFFFFF"
-      leftmargin="0"
-      topmargin="0"
-      marginwidth="0"
-      marginheight="0"
-      onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();">
+    <body onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();">
       <xsl:call-template name="bodycontent" />
     </body>
   </xsl:template>
@@ -76,9 +70,13 @@
        especially /*/steps-validator and form[..] 
        -->
   <xsl:template name="formcontent">
-    <table cellspacing="0" cellpadding="3" border="0" width="100%">
+    <table class="body">
       <xsl:call-template name="superhead" />
-        <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>        
+        <tr>
+          <th colspan="2" class="divider">
+            <xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          </th>
+        </tr>        
         <xsl:apply-templates select="form[@id=/wizard/curform]" /><!-- produces <tr />'s -->
         <xsl:apply-templates select="/*/steps-validator" />       <!-- produces <tr />'s -->
     </table>
@@ -89,14 +87,19 @@
        -->
   <xsl:template name="buttons">
     <!-- our buttons -->
-    <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" />
-    <p>
-      <!-- cancel -->
-    <xsl:call-template name="cancelbutton" />
-      -
-      <!-- commit  -->
-      <xsl:call-template name="savebutton" />
-    </p><hr color="#005A4A" size="1" noshade="true" /></td></tr>    
+    <tr>
+      <td colspan="2" align="center">
+        <hr color="#005A4A" size="1" noshade="true" />
+        <p>
+          <!-- cancel -->
+          <xsl:call-template name="cancelbutton" />
+            -
+          <!-- commit  -->
+          <xsl:call-template name="savebutton" />
+        </p>
+        <hr color="#005A4A" size="1" noshade="true" />
+      </td>
+    </tr>    
   </xsl:template>
 
 
@@ -144,9 +147,21 @@
         <![CDATA[<!--
           window.history.forward(1);
           -->
-]]> 
+        ]]> 
       </xsl:text>
     </script>
+    <xsl:if test="*[@ftype='html']"><!-- hope this works -->
+      <script language="javascript">
+        <xsl:text disable-output-escaping="yes">
+          <![CDATA[<!--
+            if (browserutils.ie5560win) {
+            window.attachEvent("onload",start_wysiwyg);
+            }
+            -->
+          ]]> 
+        </xsl:text>
+      </script>      
+    </xsl:if>  
   </xsl:template>
 
 
@@ -202,32 +217,27 @@
       <tr>
         <xsl:apply-templates select="." />
       </tr>
-      <xsl:if test="@minoccurs or @maxoccurs">
-        <tr><td><img src="{$mediadir}nix.gif" width="1" height="1" hspace="0" vspace="0" border="0" alt="" /></td></tr>
-      </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
+  <!-- produces 2 or 3 td's -->
   <xsl:template match="field">
-    <td align="left" valign="top" width="150">
+    <xsl:param name="colspan">1</xsl:param>
+    <td class="fieldprompt">
       <xsl:call-template name="prompt" />
     </td>
-    <td align="left">
-      <xsl:if test="../../item[count(field|fieldset) &gt; 1]">
-        <xsl:attribute name="style">border-width:0 1 0 0; border-style:solid; border-color:#000000; padding-right:3;</xsl:attribute>
-      </xsl:if>
+    <td class="field" colspan="{$colspan}">
       <xsl:call-template name="fieldintern" />
     </td>
   </xsl:template>
 
+  <!-- produces 2 or 3 td's -->
   <xsl:template match="fieldset">
-    <td align="left" valign="top" width="60">
+    <xsl:param name="colspan">1</xsl:param>
+    <td class="fieldprompt">
       <xsl:call-template name="prompt" />
     </td>
-    <td align="left">
-      <xsl:if test="../../item[count(field|fieldset) &gt; 1]">
-        <xsl:attribute name="style">border-width:0 1 0 0; border-style:solid; border-color:#000000; padding-right:3;</xsl:attribute>
-      </xsl:if>
+    <td class="field" colspan="{$colspan}">
       <xsl:for-each select="field">
         <xsl:call-template name="fieldintern" />
         <xsl:text disable-output-escaping="yes"> </xsl:text>
@@ -245,10 +255,6 @@
   </xsl:template>
 
   <xsl:template name="prompt">
-      <xsl:if test="../../item[count(field|fieldset) &gt; 1]">
-        <xsl:attribute name="style">border-width:0 0 0 1; border-style:solid; border-color:#000000; padding-left:3;</xsl:attribute>
-      </xsl:if>
-      <img src="{$mediadir}nix.gif" width="60" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
       <span id="prompt_{@fieldname}" class="valid" prompt="{prompt}">
         <xsl:choose>
           <xsl:when test="description">
@@ -277,7 +283,7 @@
    <xsl:template match="value" mode="inputline">
      <xsl:param name="val" select="." />
        <xsl:apply-templates select="../prefix" />
-       <input type="text" size="80" name="{../@fieldname}" value="{$val}" class="width400" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
+       <input type="text" size="80" name="{../@fieldname}" value="{$val}" class="input" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
          <xsl:apply-templates select="../@*" />
         </input>
         <xsl:apply-templates select="../postfix" />
@@ -313,7 +319,7 @@
                 ftype="</xsl:text><xsl:value-of select="@ftype" /><xsl:text>"
                 dtminlength="</xsl:text><xsl:value-of select="@dtminlength" /><xsl:text>"
                 dtmaxlength="</xsl:text><xsl:value-of select="@dtmaxlength" /><xsl:text>"
-                class="width400" wrap="soft"
+                class="input" wrap="soft"
                 onkeyup="validate_validator(event);"
                 onblur="validate_validator(event);"</xsl:text>
           <xsl:choose>
@@ -337,7 +343,7 @@
           </span>
         </xsl:when>
         <xsl:when test="@ftype='relation' or @ftype='enum'">
-          <select name="{@fieldname}" class="width400" onchange="validate_validator(event);" onblur="validate_validator(event);">
+          <select name="{@fieldname}" class="input" onchange="validate_validator(event);" onblur="validate_validator(event);">
             <xsl:apply-templates select="@*" />
             <xsl:choose>
               <xsl:when test="optionlist/option[@selected='true']"></xsl:when>
@@ -456,7 +462,7 @@
 
         <xsl:when test="@ftype='realposition'">
        <span style="width:128" >
-          <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
+          <input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
               <xsl:apply-templates select="@*" />
             </input><input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();" />
           </span>
@@ -468,93 +474,91 @@
   </xsl:template>
 
 
-  <!-- ================================================================================
-       item
-       -->
-  <xsl:template match="item">
-    <span class="listitem" style="display:inline; ">
-      <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
-      <xsl:choose>
-        <xsl:when test="@displaytype='link'">
-          <span style="width:600;"><a href="{$wizardpage}&amp;wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value" /></a></span>
-        </xsl:when>
-        <xsl:when test="@displaytype='image'">
-          <span style="width:128; height:168;" >
-            <table border="0" cellspacing="0" cellpadding="0" width="128" style="display:inline; width:128;">
-              <tr>
-                <td>
-                  <xsl:call-template name="itembuttons" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span>
-                    <img src="{node:function(string(@destination), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
-                  </span>
-                </td>
-                <td width="20"><img src="{$mediadir}nix.gif" width="20" height="1" /></td>
-                <xsl:if test="field[not(@ftype='data' || @ftype='function')]">
-                  <!-- another field, not just data, eg. a position editor -->
-                  <td colspan="10" valign="top">
-                    <table border="0" cellspacing="0" cellpadding="0" width="200" style="width:200">
-                      <xsl:for-each select="field[not(@ftype='data' || @ftype='function')]">
-                        <tr>
-                          <xsl:apply-templates select="." />
-                        </tr>
-                      </xsl:for-each>
-                    </table>
-                  </td>
-                </xsl:if>
-              </tr>
-              <tr>
-                <td width="128">
-                  <span style="width:128; height:26; overflow:hidden; font-size:10px;"><xsl:value-of select="field[@ftype='data']/value" /></span>
-                </td>
-              </tr>
-            </table>
-          </span>
-        </xsl:when>
-        <xsl:when test="count(field|fieldset) &lt; 2">
-          <table border="0" cellspacing="0" cellpadding="0" width="100%">
-            <tr>
-              <td align="left" valign="top">
-                <table border="0" cellspacing="0" cellpadding="0">
-                  <tr>
-                     <xsl:for-each select="field|fieldset">
-                      <xsl:apply-templates select="." />
-                     </xsl:for-each>
-                  </tr>
-                </table>
-              </td>
-              <td align="right" valign="top">
-                <nobr>
-                  <xsl:call-template name="itembuttons" />
-                </nobr>
-              </td>
-            </tr>
-          </table>
-        </xsl:when>
-        <xsl:otherwise>
-          <table border="0" cellspacing="0" cellpadding="0" width="100%" >
-            <tr>
-              <td align="right" valign="top" xstyle="position:relative; top:0; left:0;">
-                  <xsl:call-template name="itembuttons" />
-              </td>
-            </tr>
-            <!-- draw all fields, if there are any for this item -->
-            <tr><td colspan="2" style="border-width:1 1 0 1; border-style:solid; border-color:#000000;"><img src="{$mediadir}nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
-            <xsl:for-each select="field|fieldset">
-              <tr>
-                <xsl:apply-templates select="." />
-              </tr>
-            </xsl:for-each>
-            <tr><td colspan="2" style="border-width:0 1 1 1; border-style:solid; border-color:#000000;"><img src="{$mediadir}nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
-          </table>
-        </xsl:otherwise>
-      </xsl:choose>
-    </span><wbr />
+  <!-- produces the <tr> (two columns) for a bunch of fields (used in item) -->
+  <xsl:template name="itemfields">
+    <xsl:for-each select="field|fieldset">
+      <tr>
+        <xsl:apply-templates select="." />
+       </tr>
+    </xsl:for-each>     
   </xsl:template>
 
+  <!-- 
+       ================================================================================
+       item, produces 3 column-tr's ( prompt (or image) -   item itself  -  (buttons)
+       -->
+  <xsl:template match="item">
+      <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
+      <xsl:choose>
+        <xsl:when test="@displaytype='link'"><!-- simply make the link, there must be a field name and number -->
+          <tr><td colspan="3">
+            <a href="{$wizardpage}&amp;wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value" /></a>
+          </td></tr>
+        </xsl:when>
+        <xsl:when test="@displaytype='image'"> <!-- first column is the image, show the fields in the second column -->
+          <tr>
+            <td colspan="3">
+              <xsl:call-template name="itembuttons" />
+            </td>
+          </tr>
+          <tr>
+            <td>          
+              <!-- the image -->
+              <img src="{node:function(string(@destination), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
+            </td>
+            <td colspan="2">
+              <xsl:if test="field|fieldset">
+                <table>
+                  <xsl:call-template name="itemfields" />
+                </table>                
+              </xsl:if>
+            </td>
+          </tr>
+        </xsl:when>
+        <xsl:when test="count(field|fieldset) &lt; 2"><!-- only one field ?, itembutton right from the item. -->
+          <tr>           
+            <xsl:for-each select="field|fieldset">
+              <xsl:apply-templates select="." /> <!-- two td's -->
+            </xsl:for-each>
+            <xsl:if test="not(field|fieldset)">
+              <td colspan="2">[]</td>
+            </xsl:if>          
+            <td align="right" valign="top">
+              <nobr>
+                <xsl:call-template name="itembuttons" />
+              </nobr>
+            </td>
+          </tr>
+        </xsl:when>
+        <xsl:otherwise><!-- more fields -->
+          <tr>            
+            <td colspan="3">
+              <xsl:call-template name="itembuttons" />
+             </td>
+          </tr>
+          <!-- draw all fields, if there are any for this item -->
+          <xsl:for-each select="field|fieldset">
+            <tbody class="fieldset">
+            <tr>
+              <xsl:choose>
+                <xsl:when test="position()=1">
+                  <xsl:attribute name="class">first</xsl:attribute>
+                </xsl:when>
+                <xsl:when test="position()=last()">
+                  <xsl:attribute name="class">last</xsl:attribute>
+                </xsl:when>
+              </xsl:choose>
+              <xsl:apply-templates select=".">
+                <xsl:with-param name="colspan">2</xsl:with-param>
+              </xsl:apply-templates>
+            </tr>
+          </tbody>
+          </xsl:for-each>          
+        </xsl:otherwise>
+      </xsl:choose>
+  </xsl:template><!-- item -->
+
+  <!-- produces a bunch of links -->
   <xsl:template name="itembuttons">
     <xsl:if test="@displaytype='audio'">
         <a href="{$ew_context}/rastreams.db?{@destination}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
@@ -592,7 +596,7 @@
        @bad-constant: styles should be in the style-sheet, and are then configurable.       
        -->
   <xsl:template match="list">
-    <td align="left" valign="top" colspan="2" class="listcanvas" width="558">
+    <td colspan="2" class="listcanvas">
       
       <div class="subhead" title="{description}">
         <nobr><xsl:value-of select="title" /></nobr>
@@ -600,30 +604,29 @@
 
       <!-- show the item's of the list like that -->
       <xsl:if test="item">
-        <br />
-        <div style="position:relative; top:0; left:0;">
-          <xsl:apply-templates select="item" />
-        </div><br />
+        <table class="itemlist"><!-- three columns -->       
+          <xsl:apply-templates select="item" />          
+        </table>
       </xsl:if>
 
 
       <!-- if 'add-item' command and a search, then make a search util-box -->
       <xsl:if test="command[@name='add-item']">
         <xsl:for-each select="command[@name='search']">
-          <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616"><!-- 616??!! -->
+          <table class="itemadd">
             <tr>
-              <td align="right" valign="top" class="search" width="100%">
-                <nobr>
+              <td>
                   <xsl:value-of select="prompt" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+                  <nobr><!-- the search-tools must not be seperated -->
                   <!-- alway make searching on age possible -->
-                  <select name="searchage_{../command[@name='add-item']/@cmd}" style="width:80"><!-- 80??!! -->
+                  <select name="searchage_{../command[@name='add-item']/@cmd}" class="age">
                     <xsl:call-template name="searchoptions" />
                   </select>
                   <!-- other search-possibilities are given in the xml -->
                   <select 
-                    name="searchfields_{../command[@name='add-item']/@cmd}" style="width:125;"
+                    name="searchfields_{../command[@name='add-item']/@cmd}"   class="searchpossibilities"
                     onChange="form['searchterm_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('default'); ">
-                    ><!-- 125???!! -->
+                    >
                     <xsl:choose>
                       <xsl:when test="search-filter">
                         <xsl:for-each select="search-filter">
@@ -638,14 +641,12 @@
                     <!-- always search on owner too -->
                     <option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
                   </select>
-                  <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/default}" style="width:175;" />
-                  <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  <span title="{$tooltip_search}" class="imagebutton" onClick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
+                  <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/default}" class="search" />
+                  <span title="{$tooltip_search}" class="imagebutton" 
+                    onClick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');">
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
                     <xsl:call-template name="prompt_search" />
-                  </span>
-                  <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
+                 </span>
                 </nobr>
               </td>
             </tr>
@@ -660,7 +661,7 @@
       <xsl:for-each select="command[@name='add-item']">
         <xsl:if test="not(../command[@name='startwizard'] and not(../command[@name='search' or @name='insert']))">
           <!-- if there is a start-wizard command and not 'search' or 'insert' command then do not add an extra 'add' button (will be added by 'startwizard' -->
-          <table border="0" cellspacing="0" cellpadding="0" width="616"><!-- @bad-constant -->
+          <table class="itemadd">
           <xsl:for-each select="../command[@name='search' or @name='insert']">
             <xsl:choose>
               <xsl:when test="@name='search'">
@@ -672,11 +673,10 @@
             </xsl:choose>
           </xsl:for-each>
           <tr>
-            <td align="right" valign="top" class="search" width="100%">
+            <td>
               <nobr>
-                <span class="imagebutton" onclick="doSendCommand('{@cmd}');"><xsl:call-template name="prompt_new" /></span>
-                <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
-                </nobr>
+                <span class="imagebutton" onclick="doSendCommand('{@cmd}');"><xsl:call-template name="prompt_new" /></span>                
+               </nobr>
               </td>
             </tr>
           </table>
@@ -689,9 +689,9 @@
       <xsl:for-each select="command[@name='startwizard']">
         <!-- only if less then maxoccurs -->
         <xsl:if test="not(ancestor::list/@maxoccurs) or (ancestor::list/@maxoccurs = '*') or count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
-        <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616">
+        <table class="itemadd">
           <tr>
-            <td align="right" valign="top" class="search" width="100%">
+            <td>
               <nobr>
                 <xsl:if test="@inline='true'">
                   <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
@@ -703,8 +703,7 @@
                     target="_blank">
                     <xsl:call-template name="prompt_add_wizard" />
                   </a>
-                </xsl:if>
-                <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
+                </xsl:if>                
                 </nobr>
               </td>
             </tr>

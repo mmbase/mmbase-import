@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.9 2002-07-08 10:02:13 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.10 2002-07-18 09:21:50 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -99,7 +99,7 @@ function doOnUnLoad_ew() {
     // alert(readCookie_general("scrollTop") + ", " + document.body.scrollTop);
 }
 
-document.writeln('<div id="searchframe" style="position:absolute; top:0; left:0; z-index:3000; visibility:hidden; padding-bottom:20;"><iframe onblur="removeModalIFrame();" src="searching.html" id="modaliframe" class="modaliframe" width="400" height="300" scrolling="no"></iframe></div>');
+document.writeln('<div id="searchframe" class="searchframe"><iframe onblur="removeModalIFrame();" src="searching.html" id="modaliframe" class="searchframe" scrolling="no"></iframe></div>');
 
 function doSearch(el, cmd, sessionkey) {
     var searchfields = document.forms[0].elements["searchfields_" + cmd].value;

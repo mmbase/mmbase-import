@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.15 2002-07-17 11:46:29 pierre Exp $
+  @version $Id: list.xsl,v 1.16 2002-07-18 09:16:50 michiel Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -25,12 +25,12 @@
 
   <xsl:template name="style"> <!-- It can be usefull to add a style, change the title -->
     <title><xsl:value-of select="$wizardtitle" /> - <xsl:value-of select="$title" /></title>
-    <link rel="stylesheet" type="text/css" href="../style.css" />
+    <link rel="stylesheet" type="text/css" href="../style/list.css" />
     <xsl:call-template name="extrastyle" /> <!-- override base.xsl for this -->
   </xsl:template>
 
   <xsl:template name="body"> <!-- You can put stuff before and after then. Don't forget to call 'bodycontent' -->
-    <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="window.focus();">
+    <body onload="window.focus();">
       <xsl:call-template name="bodycontent" />
     </body>
   </xsl:template>
@@ -47,44 +47,44 @@
     </tr>
   </xsl:template>
 
-  <xsl:template name="bodycontent"><!-- If you are really crazy, you can even go for overriding the bodycontent -->
+  <xsl:template name="bodycontent">
     <!-- I think all elements must have a class here, then you can customize then the appearance by putting another css -->
-    <table cellspacing="0" cellpadding="3" border="0" width="615">
+    <table class="list">
       <xsl:call-template name="superhead" />
       <tr>
-        <td><img width="1" src="{$mediadir}nix.gif" height="5" /></td>
-      </tr>
-      <tr>
-        <td width="124"></td>
-        <td width="558" valign="top" colspan="2" class="listcanvas" align="left">
+        <td class="left"></td>
+        <td class="listcanvas">
           <div title="{$tooltip_edit_list}" class="subhead">
             <nobr><xsl:value-of select="$title" />(<xsl:value-of select="@count" /> items)</nobr>
           </div>
           <br />
-            <xsl:call-template name="dolist" />
-            <xsl:if test="$creatable='true'">
-              <br />
-                <div width="100%" align="right">
-                  <a href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}" title="{$tooltip_new}"><xsl:call-template name="prompt_new" /></a>
-               </div>
-             </xsl:if>
-            </td>
-          </tr>
-          <tr>
-            <td width="124"></td>
-            <td colspan="20">
-              <div>
-                <xsl:if test="count(/*/pages/page)>1"><xsl:apply-templates select="/*/pages" /><br /><br /></xsl:if>
-                </div>
-              </td>
-          </tr>
+          <xsl:call-template name="dolist" />
+          <xsl:if test="$creatable='true'">
+            <br />
+            <div width="100%" align="right">
+              <a href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}" title="{$tooltip_new}"><xsl:call-template name="prompt_new" /></a>
+            </div>
+          </xsl:if>
+        </td>
+      </tr>
+      <tr>
+        <td class="left" />
+        <td>
+          <div>
+            <xsl:if test="count(/*/pages/page)>1"><xsl:apply-templates select="/*/pages" /><br /><br /></xsl:if>
+          </div>
+        </td>
+      </tr>
 
-          <tr class="itemrow" ><td colspan="2" align="center" >
-            <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}"><xsl:call-template name="prompt_index"/></a>
-            -
-            <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}"><xsl:call-template name="prompt_logout"/></a>
-          </td></tr>
-        </table>
+      <tr class="itemrow" >
+        <td class="left" />
+        <td align="center" >
+        <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}"><xsl:call-template name="prompt_index"/></a>
+        -
+        <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}"><xsl:call-template name="prompt_logout"/></a>
+        </td>
+      </tr>
+    </table>
   </xsl:template>
 
 

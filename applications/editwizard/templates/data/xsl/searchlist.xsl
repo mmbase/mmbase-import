@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.9 2002-07-05 11:57:30 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.10 2002-07-18 09:20:00 michiel Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -17,7 +17,6 @@
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
   <xsl:template match="pages">
-    <span class="pagenav">
       <xsl:choose>
         <xsl:when test="page[@previous='true']">
           <a class="pagenav" title="{$tooltip_previous}{@currentpage-1}"
@@ -39,7 +38,6 @@
           <xsl:call-template name="prompt_next" />
         </xsl:otherwise>
       </xsl:choose>
-    </span>
   </xsl:template>
 
   <xsl:template match="page">
@@ -52,15 +50,86 @@
     <span class="pagenav-current"><xsl:value-of select="position()" /><xsl:text> </xsl:text></span>
   </xsl:template>
 
+
+  <xsl:template name="form"> 
+    <form>
+      <div class="searchresult">
+        <table class="searchresult"><!-- IE is too stupid to understand div.searchresult table -->
+          <xsl:if test="not(object)">
+            <tr>
+              <td><xsl:call-template name="prompt_no_results" /></td>
+            </tr>
+          </xsl:if>
+          <xsl:for-each select="object">
+            <tr>
+              <xsl:choose>
+                <xsl:when test="(position() mod 2) = 0">
+                  <xsl:attribute name="class">even</xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:attribute name="class">odd</xsl:attribute>
+                </xsl:otherwise>
+              </xsl:choose>
+              
+              <td number="{@number}" onClick="doclick_search(this);" id="item_{@number}">
+                <input type="checkbox" style="position:absolute; top:0; left:0; visibility:hidden;" name="{@number}" did="{@number}" id="cb_{@number}" />
+                <xsl:choose>
+                  <xsl:when test="@type='images'">
+                    <xsl:value-of select="node:function(string(@number), 'gui()')" disable-output-escaping="yes" />
+                    <b><xsl:value-of select="field[1]" /></b><br />
+                    <xsl:value-of select="field[2]" /><br />
+                  </xsl:when>
+                  <xsl:when test="@type='audioparts'">
+                    <a href="{$ew_context}/rastreams.db?{@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+                    <label for="cb_{@number}" style="cursor:hand;"><xsl:apply-templates select="field" /></label>
+                  </xsl:when>
+                  <xsl:when test="@type='videoparts'">
+                    <a href="{$ew_context}/rmstreams.db?{@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+                    <label for="cb_{@number}" style="cursor:hand;"><xsl:apply-templates select="field" /></label>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <label for="cb_{@number}" style="cursor:hand;"><xsl:apply-templates select="field" /></label>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </td>
+            </tr>
+          </xsl:for-each>
+      </table>
+      </div>
+      <table class="pagenav">
+        <tr>
+          <td align="left" valign="top" colspan="2" style="background-color: white">
+            
+            <xsl:apply-templates select="pages" />
+            <xsl:if test="/list/@showing">
+              <xsl:text> </xsl:text> <span class="pagenav"><xsl:call-template name="prompt_more_results" /></span>
+            </xsl:if>
+            <xsl:if test="not(/list/@showing)">
+              <xsl:text> </xsl:text> <span class="pagenav"><xsl:call-template name="prompt_result_count" /></span>
+            </xsl:if>
+            
+          </td>
+        </tr>
+        <tr>
+          <td align="left" valign="top">
+            <input type="button" name="cancel" value="{$tooltip_cancel_search}" onclick="parent.removeModalIFrame();" style="width:199; height:24; background-color:buttonface;" />
+          </td>
+          <td align="right" valign="top">
+            <input type="button" name="ok" value="{$tooltip_end_search}" onclick="dosubmit();" style="width:199; height:24; background-color:buttonface;" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  </xsl:template>
+          
   <xsl:template match="list">
     <html>
       <head>
         <meta http-equiv="Content-Type"  content="text/html; charset=utf-8" />
         <title>Search Results</title>
+        <link rel="stylesheet" type="text/css" href="../style/searchlist.css" />
       </head>
-      <body bgcolor="#FFFFFF" onload="window.focus(); preselect(selected);">
-        <link rel="stylesheet" type="text/css" href="../style.css" />
-
+      <body onload="window.focus(); preselect(selected);">
         <script language="javascript">
         <xsl:text disable-output-escaping="yes">
         <![CDATA[
@@ -100,9 +169,20 @@
 
             function doclick_search(el) {
                 var cb = document.getElementById("cb_" + el.getAttribute("number"));
-                cb.checked = !cb.checked;
-                if (cb.checked) el.parentNode.className = 'selected_search';
-                else el.parentNode.className = 'unselected_search';
+                cb.checked = ! cb.checked;
+                if(cb.checked) {
+                   if (el.parentNode.className == "odd") { 
+                      el.parentNode.className = "selected_odd";
+                   } else {
+                      el.parentNode.className = "selected_even";
+                   }
+                } else {
+                   if (el.parentNode.className == "selected_odd") { 
+                      el.parentNode.className = "odd";
+                   } else {
+                      el.parentNode.className = "even";
+                   }
+                }
             }
 
             function dosubmit() {
@@ -141,79 +221,7 @@
         ]]>
         </xsl:text>
         </script>
-
-        <form>
-          <div style="position:absolute; top:0; left:0; width:398; height:255; overflow:auto;">
-            <table border="0" cellspacing="1" cellpadding="2" width="376">
-              <xsl:if test="not(object)">
-                <tr>
-                  <td><xsl:call-template name="prompt_no_results" /></td>
-                </tr>
-              </xsl:if>
-              <xsl:for-each select="object">
-                <tr class="unselected_search">
-                  <xsl:choose>
-                    <xsl:when test="(position() mod 2) = 0">
-                      <xsl:attribute name="bgcolor">#DDDDDD</xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:attribute name="bgcolor">#EEEEEE</xsl:attribute>
-                    </xsl:otherwise>
-                  </xsl:choose>
-
-                  <td align="left" valign="top" style="padding-left:3; cursor:hand;" number="{@number}" onclick="doclick_search(this);" id="item_{@number}">
-                    <input type="checkbox" style="position:absolute; top:0; left:0; visibility:hidden;" name="{@number}" did="{@number}" id="cb_{@number}" />
-                    <xsl:choose>
-                      <xsl:when test="@type='images'">
-                        <xsl:value-of select="node:function(string(@number), 'gui()')" disable-output-escaping="yes" />
-                        <span style="font-size:12;"><b><xsl:value-of select="field[1]" /></b></span><br />
-                        <span style="font-size:12;"><xsl:value-of select="field[2]" /></span><br />
-                      </xsl:when>
-                      <xsl:when test="@type='audioparts'">
-                        <a href="{$ew_context}/rastreams.db?{@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
-                        <label for="cb_{@number}" style="cursor:hand;"><span><xsl:apply-templates select="field" /></span></label>
-                      </xsl:when>
-                      <xsl:when test="@type='videoparts'">
-                        <a href="{$ew_context}/rmstreams.db?{@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
-                        <label for="cb_{@number}" style="cursor:hand;"><span><xsl:apply-templates select="field" /></span></label>
-                      </xsl:when>
-                      <xsl:otherwise>
-                        <label for="cb_{@number}" style="cursor:hand;"><span><xsl:apply-templates select="field" /></span></label>
-                      </xsl:otherwise>
-                    </xsl:choose>
-                  </td>
-                </tr>
-              </xsl:for-each>
-            </table>
-          </div>
-
-
-          <table border="0" cellspacing="0" cellpadding="0" width="395" style="position:absolute; top:258; left:0;">
-
-            <tr>
-              <td align="left" valign="top" colspan="2" style="background-color: white">
-
-                <xsl:apply-templates select="pages" />
-                <xsl:if test="/list/@showing">
-                  <xsl:text> </xsl:text> <span class="pagenav"><xsl:call-template name="prompt_more_results" /></span>
-                </xsl:if>
-                <xsl:if test="not(/list/@showing)">
-                  <xsl:text> </xsl:text> <span class="pagenav"><xsl:call-template name="prompt_result_count" /></span>
-                </xsl:if>
-
-              </td>
-            </tr>
-            <tr>
-              <td align="left" valign="top">
-                <input type="button" name="cancel" value="{$tooltip_cancel_search}" onclick="parent.removeModalIFrame();" style="width:199; height:24; background-color:buttonface;" />
-              </td>
-              <td align="right" valign="top">
-                <input type="button" name="ok" value="{$tooltip_end_search}" onclick="dosubmit();" style="width:199; height:24; background-color:buttonface;" />
-              </td>
-            </tr>
-          </table>
-
-        </form>
+        <xsl:call-template name="form" />
       </body>
     </html>
   </xsl:template>
