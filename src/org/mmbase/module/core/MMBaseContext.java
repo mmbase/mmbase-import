@@ -8,9 +8,16 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.13 2001-07-16 10:08:08 jaco Exp $
+$Id: MMBaseContext.java,v 1.14 2001-07-24 11:04:38 jaco Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2001/07/16 10:08:08  jaco
+jaco: Moved all configuration stuff to MMBaseContext.
+If needed params not found or incorrect a ServletException with a description isthrown.
+It's now again possible to not redirect System.out and System.err to a file.
+Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+
 Revision 1.12  2001/06/26 08:39:19  eduard
 eduard : i want to use logging, so now the value will be set to "mmbase.log" incase there is nothing known of the log file
 
@@ -70,7 +77,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.13 $ $Date: 2001-07-16 10:08:08 $
+ * @$Revision: 1.14 $ $Date: 2001-07-24 11:04:38 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -267,6 +274,12 @@ public class MMBaseContext {
      *
      */
     public synchronized static void initHtmlRoot() throws ServletException {
+        if (!initialized || sx == null) {
+            String message = "The init(ServletContext) method should be called"
+                                       + " first.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
         if (!htmlRootInitialized) {
             // Init htmlroot.
             htmlroot = sx.getInitParameter("mmbase.htmlroot");
@@ -305,12 +318,18 @@ public class MMBaseContext {
 
     /**
      * Returns the <code>ServeltContext</code> used to initialize MMBase.
+     * Before calling this method the init method should be called.
      *
      * @return  the <code>ServeltContext</code> used to initialize MMBase or
      *          <code>null</code> if MMBase was initilized without
      *          <code>ServletContext</code>
      */
     public synchronized static ServletContext getServletContext() {
+        if (!initialized) {
+            String message = "The init method should be called first.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
         return sx;
     }
 
@@ -322,29 +341,45 @@ public class MMBaseContext {
      * @return  the mmbase.config parameter
      */
     public synchronized static String getConfigPath() {
+        if (!initialized) {
+            String message = "The init method should be called first.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
         return configpath;
     }
 
     /**
      * Returns a string representing the mmbase.htmlroot parameter without a
-     * final <code>File.separator</code>.
+     * final <code>File.separator</code>. Before calling this method the
+     * initHtmlRoot method should be called to make sure this parameter is set.
      *
      * @return  the mmbase.htmlroot parameter or <code>null</code> if not
      *          initialized
      */
     public synchronized static String getHtmlRoot() {
+        if (!htmlRootInitialized) {
+            String message = "The initHtmlRoot method should be called first.";
+            System.err.println(message);
+            throw new RuntimeException();
+        }
        return htmlroot;
     }
 
     /**
      * Returns a string representing the mmbase.outputfile parameter. If set,
      * this is the file to wich all <code>System.out</code> and
-     * <code>System.err</code> output is redirected.
+     * <code>System.err</code> output is redirected. Before calling this method
+     * the init method should be called.
      *
-     * @return  the mmbase.htmlroot parameter or <code>null</code> if not
-     *          set
+     * @return  the mmbase.htmlroot parameter or <code>null</code> if not set
      */
     public synchronized static String getOutputFile() {
+        if (!initialized) {
+            String message = "The init method should be called first.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
         return outputfile;
     }
 
