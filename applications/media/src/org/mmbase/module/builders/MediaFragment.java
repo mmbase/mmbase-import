@@ -7,13 +7,14 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
  */
-package speeltuin.media.org.mmbase.module.builders;
+package org.mmbase.module.builders.media;
 
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * The MediaParts object specifies a piece of media. This can be audio, or video.
@@ -45,7 +46,7 @@ import org.mmbase.util.logging.Logging;
 public class MediaFragment extends MMObjectBuilder {
     
     // logging
-    private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaFragment.class.getName());
     
     // Sources from which the media is (will be) recorded.
     private final static int SOURCE_DEFAULT=0;
@@ -188,6 +189,7 @@ public class MediaFragment extends MMObjectBuilder {
     /**
      * add rawmedia object
      */
+    /*
     public void addRawMedia(RawAudios bul,int id, int status, int format, int speed, int channels) {
         MMObjectNode node=bul.getNewNode("system");
         node.setValue("id",id);
@@ -197,6 +199,7 @@ public class MediaFragment extends MMObjectBuilder {
         node.setValue("channels",channels);
         bul.insert("system",node);
     }
+    */
     
     /**
      * setDefaults for a node
@@ -244,66 +247,4 @@ public class MediaFragment extends MMObjectBuilder {
         return true;
     }
     
-    /**
-     * Replace all for frontend code
-     * Replace commands available are GETURL (gets mediafile url for an objectnumber),
-     * from cache or not depending on builder property.
-     * @param sp the scanpage
-     * @param sp the stringtokenizer reference with the replace command.
-     * @return the result value of the replace command or null.
-     */
-    public String replace(scanpage sp,StringTokenizer command) {
-        if (command.hasMoreTokens()) {
-            String token=command.nextToken();
-            // debug("replace: The nextToken = "+token);
-            if (token.equals("GETURL")) {
-                int number=0;
-                int userSpeed=getMinSpeed();
-                int userChannels=getMinChannels();
-                if (command.hasMoreTokens()) number=getNumberParam(command.nextToken());
-                if (command.hasMoreTokens()) userSpeed=getSpeedParam(command.nextToken());
-                if (command.hasMoreTokens()) userChannels=getChannelsParam(command.nextToken());
-                if (number!=-1) {
-                    String url = null;
-                    if (urlCaching)
-                        url = getUrlFromCache(sp,number,userSpeed,userChannels);
-                    else
-                        url = getUrl(sp,number,userSpeed,userChannels);
-                    if (log.isDebugEnabled()) {
-                        log.debug("replace: GETURL returns: " + url);
-                    }
-                    return url;
-                } else {
-                    log.error("getUrl: No objectnumber defined.");
-                    return null;
-                }
-            } else if (token.equals("GETURLNOCACHE")) {
-                if (log.isDebugEnabled()) {
-                    log.debug("replace: Command is GETURLNOCACHE getting url directly.");
-                }
-                int number=0;
-                int userSpeed=getMinSpeed();
-                int userChannels=getMinChannels();
-                if (command.hasMoreTokens()) number=getNumberParam(command.nextToken());
-                if (command.hasMoreTokens()) userSpeed=getSpeedParam(command.nextToken());
-                if (command.hasMoreTokens()) userChannels=getChannelsParam(command.nextToken());
-                if (number!=-1) {
-                    String url = null;
-                    url = getUrl(sp,number,userSpeed,userChannels);
-                    if(log.isDebugEnabled()) {
-                        log.debug("replace: GETURLNOCACHE returns: " + url);
-                    }
-                    return url;
-                } else {
-                    log.error("getUrl: No objectnumber defined.");
-                    return null;
-                }
-            } else {
-                log.error("replace: Unknown command: "+token);
-                return "ERROR: Unknown command: "+token;
-            }
-        }
-        log.info("replace: No command defined.");
-        return "No command defined";
-    }
 }
