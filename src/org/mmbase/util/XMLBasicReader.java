@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.25 2002-11-06 21:08:39 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.26 2002-11-08 21:18:51 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -246,13 +246,14 @@ public class XMLBasicReader  {
             return "";
         } else {
             NodeList nl = e.getChildNodes();
+            StringBuffer res = new StringBuffer();
             for (int i=0;i<nl.getLength();i++) {
                 Node n = nl.item(i);
                 if (n.getNodeType() == n.TEXT_NODE) {
-                    return n.getNodeValue();
+                    res.append(n.getNodeValue());
                 }
             }
-            return "";
+            return res.toString();
         }
     }
 
