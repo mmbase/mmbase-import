@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classpath>
+  <classpathentry kind="src" path="src/java">
+  </classpathentry>
+  <classpathentry kind="var" rootpath="JRE_SRCROOT" path="JRE_LIB" sourcepath="JRE_SRC">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-core-1.7-rc3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/simplexml-1.0.jar">
+  </classpathentry>
+  <classpathentry kind="output" path="target/classes">
+  </classpathentry>
+</classpath>
