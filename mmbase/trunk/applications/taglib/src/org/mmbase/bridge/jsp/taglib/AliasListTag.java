@@ -34,9 +34,9 @@ import org.mmbase.util.logging.Logging;
 public class AliasListTag extends NodeReferrerTag implements ListProvider, Writer {
     private static Logger log = Logging.getLoggerInstance(AliasListTag.class.getName());
 
-    protected WriterHelper helper = new WriterHelper(); 
+    protected WriterHelper helper = new WriterHelper();
 
-    public void setVartype(String t) throws JspTagException { 
+    public void setVartype(String t) throws JspTagException {
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -72,16 +72,16 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
      *
      *
      */
-    public int doStartTag() throws JspTagException{       
+    public int doStartTag() throws JspTagException{
         helper.overrideWrite(false); // default behavior is not to write to page
-        
-        currentItemIndex= -1;  // reset index        
+
+        currentItemIndex= -1;  // reset index
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof List)) {
                 throw new JspTagException("Context variable " + getReferid() + " is not a List");
             }
-            returnList = (List) o;            
+            returnList = (List) o;
         } else {
             Node node = getNode();
             returnList = node.getAliases();
@@ -90,17 +90,17 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         return SKIP_BODY;
     }
 
     public int doAfterBody() throws JspTagException {
         if (getId() != null) {
-            getContextTag().unRegister(getId());            
+            getContextTag().unRegister(getId());
         }
         if (returnValues.hasNext()){
             doInitBody();
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_AGAIN;
         } else {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -113,7 +113,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextTag().register(getId(), returnList);
-        }        
+        }
         return  EVAL_PAGE;
     }
 
@@ -122,7 +122,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         if (returnValues.hasNext()){
             currentItemIndex ++;
             helper.setValue(returnValues.next().toString());
-            helper.setJspvar(pageContext);  
+            helper.setJspvar(pageContext);
             if (getId() != null) {
                 getContextTag().register(getId(), helper.getValue());
             }

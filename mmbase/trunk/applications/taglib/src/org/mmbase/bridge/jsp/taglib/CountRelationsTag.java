@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The CountRelationsTag can be used as a child of a 'NodeProvider' tag to
  * show the number of relations the node has.
- * 
+ *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
  */
@@ -25,7 +25,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
     // Writer implementation:
     protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException { 
+    public void setVartype(String t) throws JspTagException {
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -40,7 +40,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     public void haveBody() { helper.haveBody(); }
 
     private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
-    private String type;   
+    private String type;
 
     /**
      * Set the type of related nodes wich should be counted. If not set all
@@ -57,16 +57,16 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
             log.debug("Search the node.");
             Node node = getNode();
             if (type == null) {
-                helper.setValue(new Integer(node.countRelations())); 
+                helper.setValue(new Integer(node.countRelations()));
             } else {
             helper.setValue(new Integer(node.countRelatedNodes(type)));
-            }        
+            }
         }
-        helper.setJspvar(pageContext);  
+        helper.setJspvar(pageContext);
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspTagException {

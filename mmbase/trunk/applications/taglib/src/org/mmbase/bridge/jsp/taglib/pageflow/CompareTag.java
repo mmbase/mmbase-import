@@ -20,9 +20,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * A very simple tag to check if the value of a certain context
- * variable equals a certain String value. 
- * 
- * @author Michiel Meeuwissen 
+ * variable equals a certain String value.
+ *
+ * @author Michiel Meeuwissen
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -38,7 +38,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
     public void setReferid2(String r) throws JspTagException {
         referid2 = getAttributeValue(r);
     }
-    
+
     protected boolean doCompare(Comparable v1, Comparable v2) {
         if (log.isDebugEnabled()) {
             log.debug("comparing " + (v1 != null ? v1.getClass().getName() : "") + "'" + v1 + "' to " + (v2 != null ? v2.getClass().getName() : "")+ "'" + v2 + "'");
@@ -51,10 +51,10 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             throw new JspTagException("Attribute 'value' of 'referid2' must be indicated");
         }
         return getObject(referid2);
-        
+
     }
 
-               
+
     public int doStartTag() throws JspTagException {
         Object compare1;
         if (getReferid() == null) {
@@ -69,12 +69,12 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
 
         Object compare2;
-        if (value != null) {            
-            compare2 = value;                   
+        if (value != null) {
+            compare2 = value;
             if (referid2 != null) {
                 throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
             }
-        } else {            
+        } else {
             compare2 =  getCompare2();
         }
 
@@ -82,11 +82,11 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             log.debug("found an instance of Number");
             compare1 = new java.math.BigDecimal(compare1.toString());
             if ("".equals(compare2)) { // do something reasonable in IsEmpty
-                compare2=new java.math.BigDecimal(0); 
+                compare2=new java.math.BigDecimal(0);
             } else {
                 compare2 = new java.math.BigDecimal((String)compare2);
             }
-        } 
+        }
 
         // if using 'BigDecimal' then avoid classcastexceptions also if other type is some number.
         if (compare1 instanceof java.math.BigDecimal) {
@@ -94,9 +94,9 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                 compare2 = new java.math.BigDecimal(compare2.toString());
             }
         }
-        
+
         if (doCompare((Comparable)compare1, (Comparable)compare2) != inverse ) {
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }

@@ -173,7 +173,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     protected String decode (String value, Node n) throws JspTagException {

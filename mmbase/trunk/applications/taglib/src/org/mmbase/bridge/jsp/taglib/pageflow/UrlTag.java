@@ -28,15 +28,15 @@ import javax.servlet.jsp.JspTagException;
 /**
  * A Tag to produce an URL with parameters. This meant to live in a
  * Context of type 'parameters'.
- * 
+ *
  * @author Michiel Meeuwissen
  */
 public class UrlTag extends CloudReferrerTag  implements Writer {
 
-    protected WriterHelper helper = new WriterHelper(); 
+    protected WriterHelper helper = new WriterHelper();
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setVartype(String t) throws JspTagException { 
+    public void setVartype(String t) throws JspTagException {
         throw new JspTagException("Url tag can only produces Strings");
     }
     public void setJspvar(String j) {
@@ -49,7 +49,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         return getUrl();
     }
     public void haveBody() { helper.haveBody(); }
-           
+
     private   List  referids = null;
     protected HashMap extraParameters = null;
     protected String  page;
@@ -59,25 +59,25 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     }
 
     public void setPage(String p) throws JspTagException {
-        page = getAttributeValue(p); 
+        page = getAttributeValue(p);
     }
 
     protected void addParameter(String key, Object value) throws JspTagException {
         extraParameters.put(key, value);
     }
 
-   
-    
-    public int doStartTag() throws JspTagException {  
+
+
+    public int doStartTag() throws JspTagException {
         extraParameters = new HashMap();
         if (page == null || "".equals(page)) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             page = new java.io.File(req.getRequestURI()).getName();
         }
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
-    protected String getUrl(boolean writeamp) throws JspTagException {        
+    protected String getUrl(boolean writeamp) throws JspTagException {
         String show = page;
         String amp = (writeamp ? "&amp;" : "&");
 
@@ -86,19 +86,19 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             show = req.getContextPath() + show;
         }
-        
+
         String connector = (show.indexOf('?') == -1 ? "?" : amp);
 
         if (referids != null) {
             Iterator i = referids.iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();           
-                String value = getString(key);                
+                String key = (String)i.next();
+                String value = getString(key);
                 show += connector + key + "=" + (value == null ? "" : org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value));
                 connector = amp;
             }
         }
-        
+
         {
             Iterator i = extraParameters.entrySet().iterator();
             while (i.hasNext()) {
@@ -107,7 +107,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
                 connector = amp;
             }
         }
-        
+
         {
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
             show = response.encodeURL(show);
@@ -127,13 +127,13 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         bodyContent.clearBody(); // don't show the body.
         helper.setBodyContent(bodyContent);
         if (helper.getJspvar() == null) {
-            helper.overrideWrite(true); 
+            helper.overrideWrite(true);
             // because Url tag can have subtags (param), default writing even with body seems sensible
             // unless jspvar is specified, because then, perhaps the user wants that..
         }
         doAfterBodySetValue();
-        helper.setJspvar(pageContext);  
-        
+        helper.setJspvar(pageContext);
+
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }

@@ -19,30 +19,30 @@ import javax.xml.transform.Source;
 
 /**
  * Has to live in a formatter tag.
- * 
- * @author Michiel Meeuwissen 
+ *
+ * @author Michiel Meeuwissen
  */
 
 public class XsltTag extends ContextReferrerTag  {
-    
-  
-    private static Logger log = Logging.getLoggerInstance(XsltTag.class.getName()); 
-    
-    private String ext;   
+
+
+    private static Logger log = Logging.getLoggerInstance(XsltTag.class.getName());
+
+    private String ext;
     private FormatterTag formatter;
-       
+
     public void setExtends(String e) throws JspTagException {
         ext = getAttributeValue(e);
     }
 
     public int doStartTag() throws JspTagException{
-        
+
         // Find the parent formatter.
         formatter = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
         if (formatter == null && getId() == null) {
             throw new JspTagException("No parent formatter found");
         }
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     /**
@@ -68,9 +68,9 @@ public class XsltTag extends ContextReferrerTag  {
             if (xsltString.startsWith("<xsl:stylesheet")) {
                 totalString = xsltString;
             } else {
-                totalString = 
+                totalString =
                     "<xsl:stylesheet xmlns:xsl = \"http://www.w3.org/1999/XSL/Transform\" version = \"1.0\" >\n" +
-                    xsltString + 
+                    xsltString +
                     "\n</xsl:stylesheet>";
             }
             Source src = new StreamSource(new java.io.ByteArrayInputStream(totalString.getBytes()));

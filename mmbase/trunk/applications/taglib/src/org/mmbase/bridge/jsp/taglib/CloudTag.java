@@ -316,7 +316,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         getContextTag().setCloudContext(cloud.getCloudContext());
 
 
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_AGAIN;
     }
 
     /**
