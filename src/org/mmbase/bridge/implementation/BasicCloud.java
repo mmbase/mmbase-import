@@ -355,7 +355,7 @@ public class BasicCloud implements Cloud, Cloneable {
      */
     String getAccount() {
         if (account==null) {
-            throw new org.mmbase.security.SecurityException("User not logged on.");
+            throw new org.mmbase.security.SecurityException("This is a read-only cloud. You cannot make edits, or log on to, a read-only cloud.");
         }
         return account;
     }
@@ -368,6 +368,7 @@ public class BasicCloud implements Cloud, Cloneable {
 	 * @return <code>true</code> if succesful (should throw exception?)
      */
     public boolean logon(String authenticatorName, Object[] parameters) {
+        getAccount();
         return authentication.login(authenticatorName,userContext,parameters);
     }
 
