@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ClusterBuilderTest extends TestCase {
     
@@ -40,11 +40,11 @@ public class ClusterBuilderTest extends TestCase {
     /** Insrel builder. */
     private InsRel insrel = null;
     
-    /** Pools builder, used as builder example. */
-    private MMObjectBuilder pools = null;
+    /** News builder, used as builder example. */
+    private MMObjectBuilder news = null;
     
-    /** Images builder, used as builder example. */
-    private MMObjectBuilder images = null;
+    /** People builder, used as builder example. */
+    private MMObjectBuilder people = null;
     
     /** Insrel builder, used as relation builder example. */
     /** Test nodes, created in setUp, deleted in tearDown. */
@@ -66,23 +66,29 @@ public class ClusterBuilderTest extends TestCase {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         insrel = mmbase.getInsRel();
-        pools = mmbase.getBuilder("pools");
-        images = mmbase.getBuilder("images");
+        news = mmbase.getBuilder("news");
+        people = mmbase.getBuilder("people");
+        assertTrue(
+            "Builder 'news' must be defined in order to run these tests.", 
+            news != null);
+        assertTrue(
+            "Builder 'people' must be defined in order to run these tests.", 
+            people != null);
         
         instance = mmbase.getClusterBuilder();
         
         // Add testnodes.
-        MMObjectNode pool1 = pools.getNewNode(JUNIT_USER);
-        pool1.setValue("name", "_TE$T_1");
-        pool1.setValue("description", "Pool created for testing only.");
-        pools.insert(JUNIT_USER, pool1);
-        testNodes.add(pool1);
+        MMObjectNode news1 = news.getNewNode(JUNIT_USER);
+        news1.setValue("title", "_TE$T_1");
+        news1.setValue("body", "News created for testing only.");
+        news.insert(JUNIT_USER, news1);
+        testNodes.add(news1);
         
-        MMObjectNode pool2 = pools.getNewNode(JUNIT_USER);
-        pool2.setValue("name", "_TE$T_2");
-        pool2.setValue("description", "Pool created for testing only.");
-        pools.insert(JUNIT_USER, pool2);
-        testNodes.add(pool2);
+        MMObjectNode news2 = news.getNewNode(JUNIT_USER);
+        news2.setValue("title", "_TE$T_2");
+        news2.setValue("body", "News created for testing only.");
+        news.insert(JUNIT_USER, news2);
+        testNodes.add(news2);
     }
     
     /**
@@ -110,15 +116,15 @@ public class ClusterBuilderTest extends TestCase {
      * Tests for bug #5795 or similar bugs.
      */
     public void testGetAllowedRelations() {
-       int imagesNr = images.getObjectType();
-       int poolsNr = pools.getObjectType();
+       int newsNr = news.getObjectType();
+       int peopleNr = people.getObjectType();
        int relatedNr = mmbase.getRelDef().getNumberByName("related");
-       Enumeration eAllowedRelations = mmbase.getTypeRel().getAllowedRelations(poolsNr, imagesNr);
+       Enumeration eAllowedRelations = mmbase.getTypeRel().getAllowedRelations(newsNr, peopleNr);
        assertTrue(eAllowedRelations.hasMoreElements());
        MMObjectNode typeRelNode = (MMObjectNode) eAllowedRelations.nextElement();
        assertTrue(typeRelNode.toString(), 
          typeRelNode.getIntValue("rnumber") == relatedNr);
-       eAllowedRelations = mmbase.getTypeRel().getAllowedRelations(imagesNr, poolsNr);
+       eAllowedRelations = mmbase.getTypeRel().getAllowedRelations(peopleNr, newsNr);
        assertTrue("\nbug #5795 or a similar bug",  eAllowedRelations.hasMoreElements());
        typeRelNode = (MMObjectNode) eAllowedRelations.nextElement();
        assertTrue(typeRelNode.toString(), 
@@ -128,19 +134,19 @@ public class ClusterBuilderTest extends TestCase {
     /** Test of testGetClusterNodes method, of class org.mmbase.module.core.ClusterBuilder. */
     public void testGetClusterNodes() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
-        BasicStep poolsStep = query.addStep(pools)
-            .setAlias("pools1");
-        FieldDefs poolsName = pools.getField("name");
-        BasicStepField poolsNameField = query.addField(poolsStep, poolsName)
-            .setAlias("a_name"); // should not affect result node fieldnames!
-        BasicSortOrder sortOrder = query.addSortOrder(poolsNameField)
+        BasicStep newsStep = query.addStep(news)
+            .setAlias("news1");
+        FieldDefs newsTitle = news.getField("title");
+        BasicStepField newsNameField = query.addField(newsStep, newsTitle)
+            .setAlias("a_title"); // should not affect result node fieldnames!
+        BasicSortOrder sortOrder = query.addSortOrder(newsNameField)
             .setDirection(SortOrder.ORDER_ASCENDING);
-        FieldDefs poolsDescription = pools.getField("description");
-        query.addField(poolsStep, poolsDescription);
-        FieldDefs poolsOwner = pools.getField("owner");
-        BasicStepField poolsOwnerField = query.addField(poolsStep, poolsOwner);
+        FieldDefs newsBody = news.getField("body");
+        query.addField(newsStep, newsBody);
+        FieldDefs newsOwner = news.getField("owner");
+        BasicStepField newsOwnerField = query.addField(newsStep, newsOwner);
         BasicFieldValueConstraint constraint
-        = new BasicFieldValueConstraint(poolsOwnerField, JUNIT_USER);
+        = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
         query.setConstraint(constraint);
         List resultNodes = instance.getClusterNodes(query);
         Iterator iResultNodes = resultNodes.iterator();
@@ -151,15 +157,15 @@ public class ClusterBuilderTest extends TestCase {
             MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
             assertTrue(resultNode instanceof ClusterNode);
             assertTrue(resultNode.getBuilder() == mmbase.getClusterBuilder());
-            assertTrue(resultNode.getStringValue("pools1.name") != null
-            && resultNode.getStringValue("pools1.name").length() > 0);
-            assertTrue(resultNode.getStringValue("pools1.name").equals(testNode.getStringValue("name")));
-            assertTrue(resultNode.getStringValue("pools1.description") != null
-            && resultNode.getStringValue("pools1.description").length() > 0);
-            assertTrue(resultNode.getStringValue("pools1.description").equals(testNode.getStringValue("description")));
-            assertTrue(resultNode.getStringValue("pools1.owner") != null
-            && resultNode.getStringValue("pools1.owner").length() > 0);
-            assertTrue(resultNode.getStringValue("pools1.owner").equals(testNode.getStringValue("owner")));
+            assertTrue(resultNode.getStringValue("news1.title") != null
+            && resultNode.getStringValue("news1.title").length() > 0);
+            assertTrue(resultNode.getStringValue("news1.title").equals(testNode.getStringValue("title")));
+            assertTrue(resultNode.getStringValue("news1.body") != null
+            && resultNode.getStringValue("news1.body").length() > 0);
+            assertTrue(resultNode.getStringValue("news1.body").equals(testNode.getStringValue("body")));
+            assertTrue(resultNode.getStringValue("news1.owner") != null
+            && resultNode.getStringValue("news1.owner").length() > 0);
+            assertTrue(resultNode.getStringValue("news1.owner").equals(testNode.getStringValue("owner")));
         }
         assertTrue(!iResultNodes.hasNext());
     }
@@ -237,13 +243,13 @@ public class ClusterBuilderTest extends TestCase {
             related.intValue() != -1);
 
         Map nodes = new HashMap();
-        assertTrue(instance.getBuilder("pools", nodes).equals(pools));
+        assertTrue(instance.getBuilder("news", nodes).equals(news));
         assertTrue(nodes.size() == 0);
         
-        assertTrue(instance.getBuilder("pools0", nodes).equals(pools));
+        assertTrue(instance.getBuilder("news0", nodes).equals(news));
         assertTrue(nodes.size() == 0);
         
-        assertTrue(instance.getBuilder("pools1", nodes).equals(pools));
+        assertTrue(instance.getBuilder("news1", nodes).equals(news));
         assertTrue(nodes.size() == 0);
         
         assertTrue(instance.getBuilder("related", nodes).
@@ -274,24 +280,24 @@ public class ClusterBuilderTest extends TestCase {
         BasicSearchQuery query = new BasicSearchQuery();
         Map roles = new HashMap();
         Map fieldsByName = new HashMap();
-        List tables = Arrays.asList(new Object[] {"pools", "pools1"});
+        List tables = Arrays.asList(new Object[] {"news", "news1"});
         Map stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 3);
         List steps = query.getSteps();
         assertTrue(steps.size() == 3);
         Step step0 = (Step) steps.get(0);
-        assertTrue(step0.getTableName().equals("pools"));
-        assertTrue(step0.getAlias().equals("pools"));
-        assertTrue(stepsByAlias.get("pools") == step0);
+        assertTrue(step0.getTableName().equals("news"));
+        assertTrue(step0.getAlias().equals("news"));
+        assertTrue(stepsByAlias.get("news") == step0);
         Step step1 = (RelationStep) steps.get(1);
         assertTrue(step1.getTableName().equals("insrel"));
         assertTrue(step1.getAlias().startsWith("insrel"));
         assertTrue(stepsByAlias.get("insrel") == step1);
         Step step2 = (Step) steps.get(2);
-        assertTrue(step2.getTableName().equals("pools"));
-        assertTrue(step2.getAlias().equals("pools1"));
-        assertTrue(stepsByAlias.get("pools1") == step2);
+        assertTrue(step2.getTableName().equals("news"));
+        assertTrue(step2.getAlias().equals("news1"));
+        assertTrue(stepsByAlias.get("news1") == step2);
         // Test (number)fields and fields map.
         assertTrue(fieldsByName.toString(), fieldsByName.size() == 2);
         List fields = query.getFields();
@@ -299,35 +305,35 @@ public class ClusterBuilderTest extends TestCase {
         StepField field0 = (StepField) fields.get(0);
         assertTrue(field0.getStep() == step0);
         assertTrue(field0.getFieldName().equals("number"));
-        assertTrue(fieldsByName.get("pools.number") == field0);
+        assertTrue(fieldsByName.get("news.number") == field0);
         StepField field1 = (StepField) fields.get(1);
         assertTrue(field1.getStep() == step2);
         assertTrue(field1.getFieldName().equals("number"));
-        assertTrue(fieldsByName.get("pools1.number") == field1);
+        assertTrue(fieldsByName.get("news1.number") == field1);
         // Test roles.
         assertTrue(roles.size() == 0);
         
         query = new BasicSearchQuery();
         roles.clear();
         fieldsByName.clear();
-        tables = Arrays.asList(new Object[] {"pools", "pools1"});
+        tables = Arrays.asList(new Object[] {"news", "news1"});
         stepsByAlias = instance.addSteps(query, tables, roles, false, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 3);
         steps = query.getSteps();
         assertTrue(steps.size() == 3);
         step0 = (Step) steps.get(0);
-        assertTrue(step0.getTableName().equals("pools"));
-        assertTrue(step0.getAlias().equals("pools"));
-        assertTrue(stepsByAlias.get("pools") == step0);
+        assertTrue(step0.getTableName().equals("news"));
+        assertTrue(step0.getAlias().equals("news"));
+        assertTrue(stepsByAlias.get("news") == step0);
         step1 = (RelationStep) steps.get(1);
         assertTrue(step1.getTableName().equals("insrel"));
         assertTrue(step1.getAlias().startsWith("insrel"));
         assertTrue(stepsByAlias.get("insrel") == step1);
         step2 = (Step) steps.get(2);
-        assertTrue(step2.getTableName().equals("pools"));
-        assertTrue(step2.getAlias().equals("pools1"));
-        assertTrue(stepsByAlias.get("pools1") == step2);
+        assertTrue(step2.getTableName().equals("news"));
+        assertTrue(step2.getAlias().equals("news1"));
+        assertTrue(stepsByAlias.get("news1") == step2);
         // Test (number)fields and fields map.
         assertTrue(fieldsByName.size() == 0);
         fields = query.getFields();
@@ -338,24 +344,24 @@ public class ClusterBuilderTest extends TestCase {
         query = new BasicSearchQuery();
         roles.clear();
         fieldsByName.clear();
-        tables = Arrays.asList(new Object[] {"pools", "related", "pools1"});
+        tables = Arrays.asList(new Object[] {"news", "related", "news1"});
         stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 3);
         steps = query.getSteps();
         assertTrue(steps.size() == 3);
         step0 = (Step) steps.get(0);
-        assertTrue(step0.getTableName().equals("pools"));
-        assertTrue(step0.getAlias().equals("pools"));
-        assertTrue(stepsByAlias.get("pools") == step0);
+        assertTrue(step0.getTableName().equals("news"));
+        assertTrue(step0.getAlias().equals("news"));
+        assertTrue(stepsByAlias.get("news") == step0);
         step1 = (RelationStep) steps.get(1);
         assertTrue(step1.getTableName().equals("insrel"));
         assertTrue(step1.getAlias().equals("related"));
         assertTrue(stepsByAlias.get("related") == step1);
         step2 = (Step) steps.get(2);
-        assertTrue(step2.getTableName().equals("pools"));
-        assertTrue(step2.getAlias().equals("pools1"));
-        assertTrue(stepsByAlias.get("pools1") == step2);
+        assertTrue(step2.getTableName().equals("news"));
+        assertTrue(step2.getAlias().equals("news1"));
+        assertTrue(stepsByAlias.get("news1") == step2);
         // Test (number)fields and fields map.
         assertTrue(fieldsByName.size() == 3);
         fields = query.getFields();
@@ -363,7 +369,7 @@ public class ClusterBuilderTest extends TestCase {
         field0 = (StepField) fields.get(0);
         assertTrue(field0.getStep() == step0);
         assertTrue(field0.getFieldName().equals("number"));
-        assertTrue(fieldsByName.get("pools.number") == field0);
+        assertTrue(fieldsByName.get("news.number") == field0);
         field1 = (StepField) fields.get(1);
         assertTrue(field1.getStep() == step1);
         assertTrue(field1.getFieldName().equals("number"));
@@ -371,7 +377,7 @@ public class ClusterBuilderTest extends TestCase {
         StepField field2 = (StepField) fields.get(2);
         assertTrue(field2.getStep() == step2);
         assertTrue(field2.getFieldName().equals("number"));
-        assertTrue(fieldsByName.get("pools1.number") == field2);
+        assertTrue(fieldsByName.get("news1.number") == field2);
         // Test roles.
         assertTrue(roles.size() == 1);
         Integer number = (Integer) roles.get("related");
@@ -381,7 +387,7 @@ public class ClusterBuilderTest extends TestCase {
         roles.clear();
         fieldsByName.clear();
         tables = Arrays.asList(
-            new Object[] {"pools", "related", "pools1", "related", "pools"});
+            new Object[] {"news", "related", "news1", "related", "news"});
         stepsByAlias 
             = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
@@ -389,25 +395,25 @@ public class ClusterBuilderTest extends TestCase {
         steps = query.getSteps();
         assertTrue(steps.size() == 5);
         step0 = (Step) steps.get(0);
-        assertTrue(step0.getTableName().equals("pools"));
-        assertTrue(step0.getAlias().equals("pools"));
-        assertTrue(stepsByAlias.get("pools") == step0);
+        assertTrue(step0.getTableName().equals("news"));
+        assertTrue(step0.getAlias().equals("news"));
+        assertTrue(stepsByAlias.get("news") == step0);
         step1 = (RelationStep) steps.get(1);
         assertTrue(step1.getTableName().equals("insrel"));
         assertTrue(step1.getAlias().equals("related"));
         assertTrue(stepsByAlias.get("related") == step1);
         step2 = (Step) steps.get(2);
-        assertTrue(step2.getTableName().equals("pools"));
-        assertTrue(step2.getAlias().equals("pools1"));
-        assertTrue(stepsByAlias.get("pools1") == step2);
+        assertTrue(step2.getTableName().equals("news"));
+        assertTrue(step2.getAlias().equals("news1"));
+        assertTrue(stepsByAlias.get("news1") == step2);
         Step step3 = (Step) steps.get(3);
         assertTrue(step3.getTableName().equals("insrel"));
         assertTrue(step3.getAlias().equals("related0"));
         assertTrue(stepsByAlias.get("related0") == step3);
         Step step4 = (Step) steps.get(4);
-        assertTrue(step4.getTableName().equals("pools"));
-        assertTrue(step4.getAlias().equals("pools0"));
-        assertTrue(stepsByAlias.get("pools0") == step4);
+        assertTrue(step4.getTableName().equals("news"));
+        assertTrue(step4.getAlias().equals("news0"));
+        assertTrue(stepsByAlias.get("news0") == step4);
         // Test (number)fields and field map.
         assertTrue(fieldsByName.size() == 3);
         fields = query.getFields();
@@ -429,16 +435,16 @@ public class ClusterBuilderTest extends TestCase {
         Map roles = new HashMap();
         Map fieldsByName = new HashMap();
         List tables = Arrays.asList(
-            new Object[] {"pools", "related", "images", "pools1"});
+            new Object[] {"news", "related", "people", "news1"});
         Map stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         assertTrue(query.getFields().size() == 4);
         assertTrue(fieldsByName.size() == 4);
 
-        instance.addFields(query, "pools.name", stepsByAlias, fieldsByName);
+        instance.addFields(query, "news.title", stepsByAlias, fieldsByName);
         
-        StepField stepField = getField(query, "pools", "name");
+        StepField stepField = getField(query, "news", "title");
         assertTrue(stepField != null);
-        assertTrue(stepField.equals(fieldsByName.get("pools.name")));
+        assertTrue(stepField.equals(fieldsByName.get("news.title")));
         assertTrue(stepField.getAlias() == null);
         assertTrue(query.getFields().size() == 5);
         assertTrue(fieldsByName.size() == 5);
@@ -452,60 +458,60 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(query.getFields().size() == 5);
         assertTrue(fieldsByName.size() == 5);
 
-        instance.addFields(query, "images.title", stepsByAlias, fieldsByName);
-        stepField = getField(query, "images", "title");
+        instance.addFields(query, "people.firstname", stepsByAlias, fieldsByName);
+        stepField = getField(query, "people", "firstname");
         assertTrue(stepField != null);
-        assertTrue(stepField.equals(fieldsByName.get("images.title")));
+        assertTrue(stepField.equals(fieldsByName.get("people.firstname")));
         assertTrue(stepField.getAlias() == null);
         assertTrue(query.getFields().size() == 6);
         assertTrue(fieldsByName.size() == 6);
 
-        instance.addFields(query, "pools1.name", stepsByAlias, fieldsByName);
-        stepField = getField(query, "pools1", "name");
+        instance.addFields(query, "news1.title", stepsByAlias, fieldsByName);
+        stepField = getField(query, "news1", "title");
         assertTrue(stepField != null);
-        assertTrue(stepField.equals(fieldsByName.get("pools1.name")));
+        assertTrue(stepField.equals(fieldsByName.get("news1.title")));
         assertTrue(stepField.getAlias() == null);
         assertTrue(query.getFields().size() == 7);
         assertTrue(fieldsByName.size() == 7);
         
         try {
             // Invalid expression, should throw IllegalArgumentException.
-            instance.addFields(query, "poolsnumber", stepsByAlias, fieldsByName);
+            instance.addFields(query, "newsnumber", stepsByAlias, fieldsByName);
             fail("Invalid expression, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
         try {
             // Invalid expression, should throw IllegalArgumentException.
-            instance.addFields(query, ".poolsnumber", stepsByAlias, fieldsByName);
+            instance.addFields(query, ".newsnumber", stepsByAlias, fieldsByName);
             fail("Invalid expression, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
         try {
             // Invalid expression, should throw IllegalArgumentException.
-            instance.addFields(query, "poolsnumber.", stepsByAlias, fieldsByName);
+            instance.addFields(query, "newsnumber.", stepsByAlias, fieldsByName);
             fail("Invalid expression, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
         try {
             // Unknown table alias, should throw IllegalArgumentException.
-            instance.addFields(query, "pols.number", stepsByAlias, fieldsByName);
+            instance.addFields(query, "xxx.number", stepsByAlias, fieldsByName);
             fail("Unknown table alias, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
         try {
             // Unknown field name, should throw IllegalArgumentException.
-            instance.addFields(query, "pools.nmber", stepsByAlias, fieldsByName);
+            instance.addFields(query, "news.xxx", stepsByAlias, fieldsByName);
             fail("Unknown table alias, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance.addFields(query, "f1(pools.description,pools1.description)", stepsByAlias, fieldsByName);
-        stepField = getField(query, "pools", "description");
+        instance.addFields(query, "f1(news.body,news1.body)", stepsByAlias, fieldsByName);
+        stepField = getField(query, "news", "body");
         assertTrue(stepField != null);
-        assertTrue(stepField.equals(fieldsByName.get("pools.description")));
+        assertTrue(stepField.equals(fieldsByName.get("news.body")));
         assertTrue(stepField.getAlias() == null);
-        stepField = getField(query, "pools1", "description");
+        stepField = getField(query, "news1", "body");
         assertTrue(stepField != null);
-        assertTrue(stepField.equals(fieldsByName.get("pools1.description")));
+        assertTrue(stepField.equals(fieldsByName.get("news1.body")));
         assertTrue(query.getFields().size() == 9);
         assertTrue(fieldsByName.size() == 9);
     }
@@ -517,13 +523,13 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue("Role 'related' must be defined to run this test.", 
             related != -1);
         // --- requires typerel to be defined for 
-        //     source, role, destination = "pools", "related", "images": ---
+        //     source, role, destination = "news", "related", "people": ---
         assertTrue("This (bidirectional) relation-type must be defined to run "
             + "this test: source, role, destination = "
-            + "'pools', 'related', 'images'",
+            + "'news', 'related', 'people'",
             mmbase.getTypeRel().reldefCorrect(
-                mmbase.getTypeDef().getIntValue("pools"), 
-                mmbase.getTypeDef().getIntValue("images"), related));
+                mmbase.getTypeDef().getIntValue("news"), 
+                mmbase.getTypeDef().getIntValue("people"), related));
         // --- requires relations to define a 'dir' field --
         assertTrue("Relations must define a 'dir' field to run this test.",
             insrel.usesdir);
@@ -532,7 +538,7 @@ public class ClusterBuilderTest extends TestCase {
         Map roles = new HashMap();
         Map fieldsByName = new HashMap();
         List tables = Arrays.asList(
-            new Object[] {"pools", "related", "images", "insrel", "pools0"});
+            new Object[] {"news", "related", "people", "insrel", "news0"});
         Map stepsByAlias 
             = instance.addSteps(query, tables, roles, true, fieldsByName);
         instance.addRelationDirections(query, ClusterBuilder.SEARCH_ALL, roles);
@@ -541,7 +547,7 @@ public class ClusterBuilderTest extends TestCase {
             == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(!relation1.getCheckedDirectionality());
         RelationStep relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue("\nknown to fail starting feb 20th 2003 due to bug 5795",
+        assertTrue(
             relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(!relation2.getCheckedDirectionality());
         
@@ -594,7 +600,7 @@ public class ClusterBuilderTest extends TestCase {
             query, ClusterBuilder.SEARCH_SOURCE, roles);
         relation1 = (RelationStep) stepsByAlias.get("related");
         assertTrue(relation1.getDirectionality() 
-            == RelationStep.DIRECTIONS_DESTINATION);
+            == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(relation1.getCheckedDirectionality());
         relation2 = (RelationStep) stepsByAlias.get("insrel");
         assertTrue(relation2.getDirectionality()
@@ -607,23 +613,23 @@ public class ClusterBuilderTest extends TestCase {
         Map roles = new HashMap();
         Map fieldsByName = new HashMap();
         List tables = Arrays.asList(
-            new Object[] {"pools", "related", "images", "pools1"});
+            new Object[] {"news", "related", "people", "news1"});
         Map stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         Vector fieldNames = new Vector(Arrays.asList(
-            new Object[] {"pools.number"}));
+            new Object[] {"news.number"}));
         Vector directions = new Vector();
         instance.addSortOrders(query, fieldNames, directions, fieldsByName);
         List sortOrders = query.getSortOrders();
         assertTrue(sortOrders.size() == 1);
         SortOrder sortOrder0 = (SortOrder) sortOrders.get(0);
         assertTrue(sortOrder0.getField() 
-            == (StepField) fieldsByName.get("pools.number"));
+            == (StepField) fieldsByName.get("news.number"));
         assertTrue(sortOrder0.getDirection() == SortOrder.ORDER_ASCENDING);
         
         query = new BasicSearchQuery();
         stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         fieldNames = new Vector(Arrays.asList(
-            new Object[] {"pools.number", "related.number", "images.title"}));
+            new Object[] {"news.number", "related.number", "people.firstname"}));
         directions = new Vector(Arrays.asList(
             new Object[] {"DOWN", "UP"}));
         instance.addSortOrders(query, fieldNames, directions, fieldsByName);
@@ -631,7 +637,7 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(sortOrders.size() == 3);
         sortOrder0 = (SortOrder) sortOrders.get(0);
         assertTrue(sortOrder0.getField() 
-            == (StepField) fieldsByName.get("pools.number"));
+            == (StepField) fieldsByName.get("news.number"));
         assertTrue(sortOrder0.getDirection() == SortOrder.ORDER_DESCENDING);
         SortOrder sortOrder1 = (SortOrder) sortOrders.get(1);
         assertTrue(sortOrder1.getField() 
@@ -646,10 +652,10 @@ public class ClusterBuilderTest extends TestCase {
     }
     
     public void testGetNodesStep() throws Exception {
-        // Get number of a pools node.
-        List poolsNodes = pools.getNodes(new NodeSearchQuery(pools));
-        MMObjectNode poolsNode = (MMObjectNode) poolsNodes.get(0);
-        int nodeNumber = poolsNode.getNumber();
+        // Get number of a news node.
+        List newsNodes = news.getNodes(new NodeSearchQuery(news));
+        MMObjectNode newsNode = (MMObjectNode) newsNodes.get(0);
+        int nodeNumber = newsNode.getNumber();
         
         BasicSearchQuery query = new BasicSearchQuery();
         BasicStep objectStep = query.addStep(mmbase.getBuilder("object"));
@@ -662,11 +668,11 @@ public class ClusterBuilderTest extends TestCase {
             instance.getNodesStep(query.getSteps(), nodeNumber) == objectStep);
 
         BasicStep insrelStep = query.addStep(mmbase.getInsRel());
-        BasicStep poolsStep = query.addStep(mmbase.getBuilder("pools"));
+        BasicStep newsStep = query.addStep(mmbase.getBuilder("news"));
         
         // Find step for builder.
         assertTrue(
-            instance.getNodesStep(query.getSteps(), nodeNumber) == poolsStep);
+            instance.getNodesStep(query.getSteps(), nodeNumber) == newsStep);
     }
     
     public void testGetMultiLevelSearchQuery() {
@@ -678,13 +684,13 @@ public class ClusterBuilderTest extends TestCase {
             snodes.add(testNode.getIntegerValue("number").toString());
         }
         List fields = Arrays.asList(
-            new String[] {"pools.name", "images.number"});
+            new String[] {"news.title", "people.number"});
         String pdistinct = "YES";
         List tables = Arrays.asList(
-            new String[] {"images", "insrel", "pools"});
-        String where = "where lower(images.title) like '%test%'";
+            new String[] {"people", "insrel", "news"});
+        String where = "where lower(people.firstname) like '%test%'";
         List order = Arrays.asList(
-            new String[] {"images.number", "pools.name"});
+            new String[] {"people.number", "news.title"});
         List directions = Arrays.asList(
             new String[] {"DOWN", "UP"});
         int searchDir = ClusterBuilder.SEARCH_BOTH;
@@ -697,13 +703,13 @@ public class ClusterBuilderTest extends TestCase {
         List steps = query.getSteps();
         assertTrue(steps.size() == 3);
         Step step0 = (Step) steps.get(0);
-        assertTrue(step0.getTableName().equals("images"));
+        assertTrue(step0.getTableName().equals("people"));
         RelationStep step1 = (RelationStep) steps.get(1);
         assertTrue(step1.getTableName().equals("insrel"));
         assertTrue(step1.getRole() == null);
         assertTrue(step1.getCheckedDirectionality());
         Step step2 = (Step) steps.get(2);
-        assertTrue(step2.getTableName().equals("pools"));
+        assertTrue(step2.getTableName().equals("news"));
         
         // Test nodes.
         assertTrue(snodes.size() > 0); // For test to succeed.
@@ -725,10 +731,10 @@ public class ClusterBuilderTest extends TestCase {
         List stepFields = query.getFields();
         assertTrue(stepFields.size() == 2);
         StepField field0 = (StepField) stepFields.get(0);
-        assertTrue(field0.getStep().getTableName().equals("pools"));
-        assertTrue(field0.getFieldName().equals("name"));
+        assertTrue(field0.getStep().getTableName().equals("news"));
+        assertTrue(field0.getFieldName().equals("title"));
         StepField field1 = (StepField) stepFields.get(1);
-        assertTrue(field1.getStep().getTableName().equals("images"));
+        assertTrue(field1.getStep().getTableName().equals("people"));
         assertTrue(field1.getFieldName().equals("number"));
         
         // Test sortorders.
@@ -745,7 +751,7 @@ public class ClusterBuilderTest extends TestCase {
         FieldValueConstraint constraint 
             = (FieldValueConstraint) query.getConstraint();
         assertTrue(constraint.getField().getStep() == step0);
-        assertTrue(constraint.getField().getFieldName().equals("title"));
+        assertTrue(constraint.getField().getFieldName().equals("firstname"));
         assertTrue(constraint.getOperator() == FieldCompareConstraint.LIKE);
         assertTrue(!constraint.isCaseSensitive());
         assertTrue(constraint.getValue().equals("%test%"));

@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConstraintParserTest extends TestCase {
     
@@ -25,7 +25,7 @@ public class ConstraintParserTest extends TestCase {
     private MMBase mmbase = null;
     private MMObjectBuilder images = null;
     private InsRel insrel = null;
-    private MMObjectBuilder pools = null;
+    private MMObjectBuilder news = null;
     
     public ConstraintParserTest(java.lang.String testName) {
         super(testName);
@@ -44,7 +44,7 @@ public class ConstraintParserTest extends TestCase {
         mmbase = MMBase.getMMBase();
         images = mmbase.getBuilder("images");
         insrel = mmbase.getInsRel();
-        pools = mmbase.getBuilder("pools");
+        news = mmbase.getBuilder("news");
         
         query = new BasicSearchQuery();
         instance = new ConstraintParser(query);
@@ -110,7 +110,7 @@ public class ConstraintParserTest extends TestCase {
             fail("Field does not exist, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        RelationStep step2 = query.addRelationStep(insrel, pools);
+        RelationStep step2 = query.addRelationStep(insrel, news);
         Step step3 = step2.getNext();
         try {
             // Field not prefixed, should throw IllegalArgumentException.
@@ -123,9 +123,9 @@ public class ConstraintParserTest extends TestCase {
         assertTrue(field.toString(), field.getFieldName().equals("title"));
         assertTrue(field.toString(), field.getAlias() == null);
 
-        field = instance.getField("pools.name");
+        field = instance.getField("news.title");
         assertTrue(field.toString(), field.getStep() == step3);
-        assertTrue(field.toString(), field.getFieldName().equals("name"));
+        assertTrue(field.toString(), field.getFieldName().equals("title"));
         assertTrue(field.toString(), field.getAlias() == null);
     }
     
@@ -149,7 +149,7 @@ public class ConstraintParserTest extends TestCase {
             fail("Field does not exist, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        RelationStep step2 = query.addRelationStep(insrel, pools);
+        RelationStep step2 = query.addRelationStep(insrel, news);
         Step step3 = step2.getNext();
         try {
             // Field not prefixed, should throw IllegalArgumentException.
@@ -162,16 +162,16 @@ public class ConstraintParserTest extends TestCase {
         assertTrue(field.toString(), field.getFieldName().equals("title"));
         assertTrue(field.toString(), field.getAlias() == null);
 
-        field = ConstraintParser.getField("pools.name", steps);
+        field = ConstraintParser.getField("news.title", steps);
         assertTrue(field.toString(), field.getStep() == step3);
-        assertTrue(field.toString(), field.getFieldName().equals("name"));
+        assertTrue(field.toString(), field.getFieldName().equals("title"));
         assertTrue(field.toString(), field.getAlias() == null);
     }
     
     /** Test of parseSimpleCondition method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testParseSimpleCondition() {
         Step step1 = query.addStep(images).setAlias("step1");
-        RelationStep step2 = query.addRelationStep(insrel, pools);
+        RelationStep step2 = query.addRelationStep(insrel, news);
         Step step3 = step2.getNext();
         StepField field1 = instance.getField("step1.title");
         StepField field2 = instance.getField("step1.description");
@@ -440,10 +440,10 @@ public class ConstraintParserTest extends TestCase {
     /** Test of parseCondition method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testParseCondition() {
         Step step1 = query.addStep(images).setAlias("step1");
-        RelationStep step2 = query.addRelationStep(insrel, pools);
+        RelationStep step2 = query.addRelationStep(insrel, news);
         Step step3 = step2.getNext();
         StepField field1 = instance.getField("step1.title");
-        StepField field2 = instance.getField("pools.number");
+        StepField field2 = instance.getField("news.number");
 
         // Empty constraint
         Constraint constraint = instance.parseCondition(
@@ -484,7 +484,7 @@ public class ConstraintParserTest extends TestCase {
                 .addChild(constraint2);
         constraint = instance.parseCondition(
             ConstraintParser.tokenize(
-                "step1.title = 'abc def' AND pools.number > 123")
+                "step1.title = 'abc def' AND news.number > 123")
                     .listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint3));
         
@@ -495,7 +495,7 @@ public class ConstraintParserTest extends TestCase {
                 .addChild(constraint2);
         constraint = instance.parseCondition(
             ConstraintParser.tokenize(
-                "step1.title = 'abc def' OR pools.number > 123")
+                "step1.title = 'abc def' OR news.number > 123")
                     .listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint3));
         
@@ -509,8 +509,8 @@ public class ConstraintParserTest extends TestCase {
                 .addChild(constraint4);
         constraint = instance.parseCondition(
             ConstraintParser.tokenize(
-                "step1.title = 'abc def' OR pools.number > 123"
-                    + " AND pools.number < 200")
+                "step1.title = 'abc def' OR news.number > 123"
+                    + " AND news.number < 200")
                     .listIterator());
         assertTrue(constraint.toString(), constraint.equals(constraint5));
     }
@@ -518,10 +518,10 @@ public class ConstraintParserTest extends TestCase {
     /** Test of toConstraint method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
     public void testToConstraint() {
         Step step1 = query.addStep(images).setAlias("step1");
-        RelationStep step2 = query.addRelationStep(insrel, pools);
+        RelationStep step2 = query.addRelationStep(insrel, news);
         Step step3 = step2.getNext();
         StepField field1 = instance.getField("step1.title");
-        StepField field2 = instance.getField("pools.number");
+        StepField field2 = instance.getField("news.number");
 
         // Empty constraint
         Constraint constraint = instance.toConstraint("");
