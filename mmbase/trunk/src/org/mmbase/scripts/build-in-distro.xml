@@ -55,7 +55,8 @@ about the Ant build tool.
 
     <!-- distribution dirs -->
     <property name="dist.root" value="${top.dir}/dist"/>
-    <property name="dist.dir" value="${dist.root}/${name}-${version}"/>
+    <property name="dist.version" value="${dist.root}/${name}-${version}"/>
+    <property name="dist.version" value="${dist.version}/mmbase"/>
     <property name="dist.lib" value="${dist.dir}/lib"/>
     <property name="dist.src" value="${dist.dir}/src"/>
     <property name="dist.log" value="${dist.dir}/log"/>
@@ -290,7 +291,7 @@ about the Ant build tool.
     </copydir> 
 
     <!-- copy the scripts -->
-    <copydir src="${src.dir}/org/mmbase/scripts" dest="${dist.scripts}"/>
+    <copydir src="${top.dir}/scripts" dest="${dist.scripts}"/>
 
     <!-- make scripts executable -->
     <chmod perm="+x" file="${dist.scripts}/compile"/>
@@ -321,7 +322,7 @@ about the Ant build tool.
     <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
 
     <!-- zip -->
-    <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.dir}" includes="**"/>
+    <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.version}" includes="**"/>
 
   </target>
 
