@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.25 $ $Date: 2000-11-07 14:28:55 $
+* @$Revision: 1.26 $ $Date: 2000-11-08 10:24:03 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -873,6 +873,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* Method: getDBKey()
 	*
 	*/
+	/* Disabled 
 	public synchronized int getDBKey() {
 		// get a new key
 
@@ -911,6 +912,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		debug("getDBKey(): got key("+currentdbkey+")");
 		return(number);
 	}
+	*/
 
 	/*
 	* Method: getAllNames()
