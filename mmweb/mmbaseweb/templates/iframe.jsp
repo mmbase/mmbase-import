@@ -3,6 +3,7 @@
 %><mm:cloud
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp" %>
+<%@ include file="/includes/relatedpages.jsp" %>
 <div id="pagecontent">
 <mm:list nodes="$page" path="pages,posrel,articles" searchdir="destination"
   orderby="posrel.pos" directions="UP">
