@@ -18,7 +18,7 @@ import org.mmbase.util.StringTagger;
  * @javadoc
  * @rename MultiLevelCacheEntry
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheEntry.java,v 1.3 2002-03-22 13:11:02 pierre Exp $
+ * @version $Id: MultilevelCacheEntry.java,v 1.4 2002-03-22 13:12:46 pierre Exp $
  */
 public class MultilevelCacheEntry {
     /**
@@ -52,7 +52,7 @@ public class MultilevelCacheEntry {
         this.han=han;
         this.hash=hash;
         this.cachedobject=o;
-    //    this.tagger=tagger;
+        this.tagger=tagger;
     }
 
     /**
