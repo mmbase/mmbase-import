@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.18 2003-08-19 10:32:42 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.19 2003-08-19 14:18:31 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -473,16 +473,18 @@ public abstract class StorageManagerFactory {
             }
             String key = id;
             if (!hasOption(Attributes.DISALLOWED_FIELD_CASE_SENSITIVE)) {
-                key = key.toUpperCase();
+                key = key.toLowerCase();
             }
             if (disallowedFields.containsKey(key)) {
                 String newid = (String)disallowedFields.get(key);
                 if (newid == null) {
                     String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
-                     if (prefix!=null) {
+                    if (prefix != null) {
                         id = prefix+"_"+id; 
                     } else {
-                        throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
+                        if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
+                            throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
+                        }
                     }
                 } else {
                     id = newid;

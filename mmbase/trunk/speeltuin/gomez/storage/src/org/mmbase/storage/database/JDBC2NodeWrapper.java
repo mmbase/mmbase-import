@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.6 2003-08-19 10:32:42 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.7 2003-08-19 14:18:32 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -257,6 +257,9 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     }
 
     public String getDisallowedField(String allowedfield) {
+        // to lowercase, temporary hack
+        allowedfield = allowedfield.toLowerCase();
+
         String disallowedfield = (String)allowedFields.get(allowedfield);
         if (disallowedfield != null) {
             return disallowedfield;
