@@ -47,7 +47,7 @@
   <td class="data"><%=builder.getStringValue("item3")%></td>
   <td class="data"><%=builder.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="builder/actions.jsp?builder="+builder.getStringValue("item1")%>"/>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page='<%="builder/actions.jsp?builder="+builder.getStringValue("item1")%>'/>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 <%      }
@@ -65,7 +65,7 @@
   <td class="data"><%=builder.getStringValue("item3")%></td>
   <td class="data"><%=builder.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="builder/actions.jsp?builder="+builder.getStringValue("item1")%>"/>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page='<%="builder/actions.jsp?builder="+builder.getStringValue("item1")%>'/>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 <%      }

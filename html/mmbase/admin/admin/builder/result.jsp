@@ -38,7 +38,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?builder="+builder%>' />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Builder Administration</td>
 </tr>
 

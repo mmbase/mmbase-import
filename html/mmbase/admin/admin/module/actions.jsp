@@ -81,7 +81,7 @@
  <td class="data"><%=prop.getStringValue("item1")%></td>
  <td class="data" colspan="3"><%=prop.getStringValue("item2")%>&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>" />"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
+    <a href="<mm:url page='<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>' />"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -91,13 +91,13 @@
  <td class="data">add new</td>
  <td class="data" colspan="3">&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="newproperty.jsp?module="+module%>"/>"><img src="../../images/next.gif" alt="add" border="0" align="right" /></a>
+    <a href="<mm:url page='<%="newproperty.jsp?module="+module%>'/>"><img src="../../images/next.gif" alt="add" border="0" align="right" /></a>
 </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
-  <form action="<mm:url page="result.jsp"/>" method="POST">
+  <form action="<mm:url page='result.jsp'/>" method="POST">
 <tr align="left">
 <th class="header">Action</th>
   <th class="header" colspan="3">Path</th>
@@ -130,7 +130,7 @@
  <td class="data">XML-check</td>
  <td class="data" colspan="3"><%=check%></td>
  <td class="linkdata" >
-  <form action="<mm:url page="../config/details.jsp"/>" method="POST" target="_xml">
+  <form action="<mm:url page='../config/details.jsp'/>" method="POST" target="_xml">
 <%    if (check.equals("Checked ok")) { %>
         <input type="hidden" name="todo" value="show" />
 <%  } else { %>
@@ -148,7 +148,7 @@
 <% } %>
 
 <tr>
-<td class="navigate"><a href="<mm:url page="../modules.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page='../modules.jsp' />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Module Overview</td>
 </tr>
 </table>
