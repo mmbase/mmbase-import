@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.60 2002-05-08 13:41:09 vpro Exp $
+ * @version $Id: MMSQL92Node.java,v 1.61 2002-05-24 06:17:13 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -1149,7 +1149,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public boolean addField(MMObjectBuilder bul,String fieldname) {
-        if (tableSizeProtection(bul)) return(false);
+        if (tableSizeProtection(bul)) {
+            log.service("Cannot add field to " + bul.getTableName() + " because of tableSizeProtection");
+            return false;
+        }
 
         log.info("Starting a addField : "+bul.getTableName()+" field="+fieldname);
         String tableName=bul.getTableName();
