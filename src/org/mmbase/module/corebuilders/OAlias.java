@@ -9,9 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.util.*;
+import java.util.Enumeration;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
-import org.mmbase.util.LRUHashtable;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,12 +20,12 @@ import org.mmbase.util.logging.Logging;
  * The OAlias builder is an optional corebuilder used to associate aliases with nodes.
  * Each OAlias object contains a name field (the alias), and a destination field (the number of
  * the object referenced).
- * This builder is not used directly. If you add aliases, use {@link MMObjectBuidler.createAlias} instead
+ * This builder is not used directly. If you add aliases, use {@link MMObjectBuilder.createAlias} instead
  * of the builder's insert method.
  * MMBase will run without this builder, but most applications use aliases.
  *
  * @author Rico Jansen
- * @version $Id: OAlias.java,v 1.11 2002-11-20 12:52:04 pierre Exp $
+ * @version $Id: OAlias.java,v 1.12 2002-11-26 10:02:21 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -33,9 +33,13 @@ public class OAlias extends MMObjectBuilder {
     // logging
     private static Logger log = Logging.getLoggerInstance(OAlias.class.getName());
     // cache
-    private final static LRUHashtable numbercache=new LRUHashtable(128);
+    private Cache numberCache = new Cache(128) {
+        public String getName()        { return "AliasCache"; }
+        public String getDescription() { return "Cache for node aliases"; }
+        };
 
     public OAlias() {
+        numberCache.putCache();
     }
 
     public boolean init() {
@@ -52,13 +56,13 @@ public class OAlias extends MMObjectBuilder {
      */
     public int getNumber(String name) {
         int rtn=-1;
-        MMObjectNode node = (MMObjectNode)numbercache.get(name);
+        MMObjectNode node = (MMObjectNode)numberCache.get(name);
         if (node==null) {
             Enumeration e=search("name=='"+name+"'");
             if (e.hasMoreElements()) {
                 node=(MMObjectNode)e.nextElement();
                 rtn=node.getIntValue("destination");
-                numbercache.put(name,node);
+                numberCache.put(name,node);
             }
         } else {
             rtn=node.getIntValue("destination");
@@ -112,6 +116,6 @@ public class OAlias extends MMObjectBuilder {
     public void removeNode(MMObjectNode node) {
         String name=node.getStringValue("name");
         super.removeNode(node);
-        numbercache.remove(name);
+        numberCache.remove(name);
     }
 }

@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.8 2002-10-30 00:14:13 michiel Exp $
+  @version $Id: caches.xml,v 1.9 2002-11-26 10:02:21 pierre Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -34,6 +34,11 @@
     <size>25</size>
   </cache>
 
+  <!-- Alias to number cache, used in OALias -->
+  <cache name="AliasCache">
+    <status>active</status>
+    <size>128</size>
+  </cache>
 
   <!-- ================================================================================
   Caches for XSL Transformations
