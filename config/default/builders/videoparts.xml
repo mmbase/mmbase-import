@@ -5,7 +5,7 @@
 <!-- <status>
 	what is the status of this builder options : active or inactive
 -->
-<status>active</status>
+<status>inactive</status>
 
 <!-- <classfile>
 	This is a optional tag, it names the classfile that allows you to add
@@ -18,9 +18,9 @@
 
 		long name : nl.vpro.mmbase.module.builders.Urls will start that class
 -->
-<classfile>Properties</classfile>
+<classfile>Dummy</classfile>
 
-<searchage>0</searchage>
+<searchage>7</searchage>
 
 <!-- <names>
 	names defines the different names used in user visible parts, singular for
@@ -29,9 +29,13 @@
 >-->
 <names>
 	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="us">Eigenschap</singular>
+	<singular xml:lang="nl">VideoOpname</singular>
+	<singular xml:lang="en">VideoPart</singular>
+	<singular xml:lang="us">VideoPart</singular>
 	<!-- multiple per language as defined by ISO 639 -->
-	<plural xml:lang="us">Eigenschap</plural>
+	<plural xml:lang="nl">VideoOpnames</plural>
+	<plural xml:lang="en">Videoparts</plural>
+	<plural xml:lang="us">Videoparts</plural>
 </names>
 
 <!-- <descriptions>
@@ -39,7 +43,9 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-	<description xml:lang="us">Flexible properties to be added to any object</description>
+	<description xml:lang="nl">Video Opname geeft niet aan in wat voor formaat het opslagen is</description>
+	<description xml:lang="en">Video part does not define format thats done by rawvideos</description>
+	<description xml:lang="us">Video part does not define format thats done by rawvideos</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -52,6 +58,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
+			<guiname xml:lang="nl">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
 			<guiname xml:lang="us">Object</guiname>
 			<guitype>integer</guitype>
 		</gui>
@@ -79,7 +87,9 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Eigenaar</guiname>
+			<guiname xml:lang="nl">Eigenaar</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Owner</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -102,12 +112,14 @@
 		</db>
 	</field>
 
-	<!-- POS 3 : <field> 'parent'  -->
+	<!-- POS 3 : <field> 'title'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">parent</guiname>
-			<guitype>integer</guitype>
+			<guiname xml:lang="nl">Titel</guiname>
+			<guiname xml:lang="en">Title</guiname>
+			<guiname xml:lang="us">Title</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -123,17 +135,19 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>parent</name>
+			<name>title</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true" key="false">INTEGER</type>
+			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<!-- POS 4 : <field> 'key'  -->
+	<!-- POS 4 : <field> 'subtitle'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">key</guiname>
+			<guiname xml:lang="nl">SubTitel</guiname>
+			<guiname xml:lang="en">SubTitle</guiname>
+			<guiname xml:lang="us">SubTitle</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -150,18 +164,20 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>key</name>
+			<name>subtitle</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
-	<!-- POS 5 : <field> 'ptype'  -->
+	<!-- POS 5 : <field> 'source'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">ptype</guiname>
-			<guitype>string</guitype>
+			<guiname xml:lang="nl">Bron</guiname>
+			<guiname xml:lang="en">Source</guiname>
+			<guiname xml:lang="us">Source</guiname>
+			<guitype>audiosource</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -171,24 +187,26 @@
 				<!-- position in list area of the editor -->
 				<list>3</list>
 				<!-- position in search area of the editor -->
-				<search>3</search>
+				<search>-1</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>ptype</name>
+			<name>source</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="16" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
-	<!-- POS 6 : <field> 'value'  -->
+	<!-- POS 6 : <field> 'playtime'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">value</guiname>
-			<guitype>field</guitype>
+			<guiname xml:lang="nl">Lengte</guiname>
+			<guiname xml:lang="en">Length</guiname>
+			<guiname xml:lang="us">Length</guiname>
+			<guitype>lengtestartstop</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -196,7 +214,36 @@
 				<!-- position in the input area of the editor -->
 				<input>4</input>
 				<!-- position in list area of the editor -->
-				<list>4</list>
+				<list>-1</list>
+				<!-- position in search area of the editor -->
+				<search>-1</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>playtime</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
+		</db>
+	</field>
+
+	<!-- POS 7 : <field> 'intro'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Samenvatting</guiname>
+			<guiname xml:lang="en">Intro</guiname>
+			<guiname xml:lang="us">Intro</guiname>
+			<guitype>field</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>5</input>
+				<!-- position in list area of the editor -->
+				<list>-1</list>
 				<!-- position in search area of the editor -->
 				<search>4</search>
 			</positions>
@@ -204,9 +251,67 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>value</name>
+			<name>intro</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
+			<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 8 : <field> 'body'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Tekst</guiname>
+			<guiname xml:lang="en">Text</guiname>
+			<guiname xml:lang="us">Text</guiname>
+			<guitype>field</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>6</input>
+				<!-- position in list area of the editor -->
+				<list>-1</list>
+				<!-- position in search area of the editor -->
+				<search>5</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>body</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="64000" notnull="false" key="false">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 9 : <field> 'storage'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Opslag</guiname>
+			<guiname xml:lang="en">Storage</guiname>
+			<guiname xml:lang="us">Storage</guiname>
+			<guitype>opslag</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>7</input>
+				<!-- position in list area of the editor -->
+				<list>-1</list>
+				<!-- position in search area of the editor -->
+				<search>6</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>storage</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
