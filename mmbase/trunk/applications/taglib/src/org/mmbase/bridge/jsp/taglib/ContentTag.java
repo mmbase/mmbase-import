@@ -15,11 +15,15 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 import javax.servlet.jsp.tagext.BodyContent;
 import java.util.*;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.mmbase.util.transformers.*;
 import org.mmbase.util.StringSplitter;
 
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.*;
+
 import org.xml.sax.InputSource;
 import org.w3c.dom.Element;
 
@@ -32,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.27 2004-08-02 15:24:24 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.28 2004-11-26 15:11:25 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -49,18 +53,30 @@ public class ContentTag extends LocaleTag  {
             public String  getEncoding(){ return "ISO-8859-1"; } 
         };
 
-    private static Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
-    private static Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
-    private static Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
-    private static Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
+    private static final Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
+    private static final Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
+    private static final Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
+    private static final Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
 
-    private static Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
+    private static final Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
 
     static {
         try {
             log = Logging.getLoggerInstance(ContentTag.class);
             org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
-            initialize();
+            ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
+                    public void onChange(String resource) {
+                        defaultEscapers.clear();
+                        defaultPostProcessors.clear();
+                        defaultEncodings.clear();
+                        charTransformers.clear();
+                        contentTypes.clear();
+                        initialize(getResourceLoader(), resource);
+                    }
+                };
+            watcher.add("content.xml");
+            watcher.start();
+            watcher.onChange("content.xml");
         } catch (Exception e) {
             log.error(e.toString());
         }
@@ -94,9 +110,36 @@ public class ContentTag extends LocaleTag  {
     /**
      * Initialize the write-escapers for MMBase taglib.
      */
-    private static void initialize() {
+    private static void initialize(ResourceLoader taglibLoader, String resource) {
         log.service("Reading taglib write-escapers");
-        InputSource escapersSource = new InputSource(ContentTag.class.getResourceAsStream("resources/taglibcontent.xml"));
+        InputStream stream = ContentTag.class.getResourceAsStream("resources/taglibcontent.xml");
+        if (stream != null) {
+            log.info("Reading backwards compatible resource " + ContentTag.class.getName()+"/resources/taglibcontext.xml");
+            InputSource escapersSource = new InputSource(stream);
+            readXML(escapersSource);
+        }
+        List resources = taglibLoader.getResourceList(resource);
+        log.info("Using " + resources);
+        ListIterator i = resources.listIterator();
+        while (i.hasNext()) i.next();
+        while (i.hasPrevious()) {
+            try {
+                URL u = (URL) i.previous();
+                log.info("Reading " + u);
+                URLConnection con = u.openConnection();
+                if (con.getDoInput()) {
+                    InputSource source = new InputSource(con.getInputStream());
+                    readXML(source);
+                }
+            } catch (Exception e) {
+                log.error(e);
+            }
+        }       
+        
+    }
+
+    protected static void readXML(InputSource escapersSource) {
+        
         XMLBasicReader reader  = new XMLBasicReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
 
@@ -105,7 +148,11 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) e.nextElement();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            log.service("Found an escaper '" + id + "' : " + ct);
+            if (charTransformers.containsKey(id)) {
+                log.warn("Replaced an escaper '" + id + "' : " + ct );
+            } else {
+                log.service("Found an escaper '" + id + "' : " + ct);
+            }
             charTransformers.put(id, ct);
         }
         log.service("Reading content tag post-processors");
@@ -114,7 +161,11 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) e.nextElement();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            log.service("Found an postprocessor '" + id + "' : " + ct);
+            if (charTransformers.containsKey(id)) {
+                log.warn("Replaced an postprocessor '" + id + "' : " + ct);
+            } else {
+                log.service("Found an postprocessor '" + id + "' : " + ct);
+            }
             charTransformers.put(id, ct);
         }
 
