@@ -20,9 +20,9 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainer.java,v 1.3 2003-07-29 17:08:09 michiel Exp $
+ * @version $Id: NodeListContainer.java,v 1.4 2003-08-07 17:17:40 michiel Exp $
  */
-public interface NodeListContainer extends TagIdentifier {
+public interface NodeListContainer extends TagIdentifier, NodeListContainerOrListProvider {
 
     /**
      * Returns the currently by the container defined query object. Subtags can use this query
