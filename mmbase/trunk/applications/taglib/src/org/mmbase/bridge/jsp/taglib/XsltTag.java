@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import  org.mmbase.bridge.jsp.taglib.util.Attribute;
+import  org.mmbase.bridge.jsp.taglib.functions.Functions;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +22,7 @@ import javax.xml.transform.stream.StreamSource;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: XsltTag.java,v 1.17 2005-03-29 13:12:22 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -32,19 +33,6 @@ public class XsltTag extends ContextReferrerTag  {
     private Attribute ext = Attribute.NULL;
     private FormatterTag formatter;
 
-
-    /**
-     * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
-     * 
-     * @since MMBase-1.8
-     */
-    public static String escape(String escaper, String string) {
-        try {
-            return ContentTag.getCharTransformer(escaper).transform(string);
-        } catch (Exception e) {
-            return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
-        }
-    }
 
 
     /**
@@ -98,8 +86,9 @@ public class XsltTag extends ContextReferrerTag  {
             } else {
                 totalString =
                     "<xsl:stylesheet xmlns:xsl = \"http://www.w3.org/1999/XSL/Transform\" version = \"1.0\"" + 
-                    " xmlns:taglib=\"" + getClass().getName() + "\"" + 
-                    " extension-element-prefixes=\"taglib\" >\n" +
+                    " xmlns:mm=\"" + Functions.class.getName() + "\"" + 
+                    " xmlns:taglib=\"" + Functions.class.getName() + "\"" + 
+                    " extension-element-prefixes=\"mm taglib\" >\n" +
                     xsltString +
                     "\n</xsl:stylesheet>";
             }
