@@ -4,6 +4,7 @@
 <% } %>
 <option>STRING</option>
 <option>INTEGER</option>
+<option>NODE</option>
 <option>LONG</option>
 <option>FLOAT</option>
 <option>DOUBLE</option>
