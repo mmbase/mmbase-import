@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html; charset=UTF-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><mm:content postprocessor="reducespace">
+%><mm:content postprocessor="reducespace" type="text/html" expires="0">
 <mm:import externid="language">en</mm:import>
 <%@include file="settings.jsp"%>
 <mm:import externid="url">index_users.jsp</mm:import>
