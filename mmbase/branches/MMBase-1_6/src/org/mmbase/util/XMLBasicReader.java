@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * XMLBasicReader has two goals.
- <ul> 
+ <ul>
    <li>
    It provides a way for parsing XML
    </li>
@@ -48,7 +48,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.26.2.2 2003-03-11 14:52:58 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.26.2.3 2003-04-11 10:16:53 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -78,9 +78,11 @@ public class XMLBasicReader  {
 
     private static InputSource getInputSource(String path) {
         try {
+            // remove file protocol if present to avoid errors in accessing file
+            if (path.startsWith("file://")) path= path.substring(7);
             InputSource is = new InputSource(new FileInputStream(path));
             is.setSystemId("file://" + path);
-            return is;                
+            return is;
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
