@@ -352,7 +352,8 @@ public class BasicNode implements Node {
 	};
 
 	/**
-	 * Retrieve all related nodes maintained by a given NodeManager.
+	 * Retrieve all related nodes maintained by a given NodeManager
+	 * @param type name of the NodeManager of the related nodes
 	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
 	public List getRelatedNodes(String type) {
@@ -368,6 +369,15 @@ public class BasicNode implements Node {
         return relvector;
     }
 
+	/**
+	 * Count all related nodes maintained by a given NodeManager
+	 * @param type name of the NodeManager of the related nodes
+	 * @return number of related nodes of a specific type
+	 */
+	public int countRelatedNodes(String type) {
+	    return node.getRelationCount(type);
+	};
+	
 	/**
      * Retrieves the aliases of this node
      * @return a code>List</code> with the alias names

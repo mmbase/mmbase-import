@@ -199,9 +199,17 @@ public interface Node {
 
 	/**
 	 * Retrieve all related nodes maintained by a given NodeManager
+	 * @param type name of the NodeManager of the related nodes
 	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
 	public List getRelatedNodes(String type);
+
+	/**
+	 * Count all related nodes maintained by a given NodeManager
+	 * @param type name of the NodeManager of the related nodes
+	 * @return number of related nodes of a specific type
+	 */
+	public int countRelatedNodes(String type);
 
 	/**
      * Retrieves the aliases of this node
