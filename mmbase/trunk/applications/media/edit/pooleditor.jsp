@@ -1,7 +1,7 @@
 <DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@include file="config/read.jsp" %><mm:content language="$config.lang" postprocessor="reducespace">
+%><%@include file="config/read.jsp" %><mm:content language="$config.lang" type="text/html" expires="0">
 <mm:cloud jspvar="cloud" method="asis">
 <html>
 <head>
@@ -9,6 +9,7 @@
   <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
   <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>  
 <head>
+<mm:import externid="origin"><mm:write referid="config.mediaeditors_origin"  /></mm:import>
 
 <body class="content">
    <h1><%=m.getString("categories")%></h1>
@@ -21,6 +22,7 @@
            <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="searchinput" /></td</tr>
          </mm:fieldlist>
          <tr><td /><td><input type="submit" value="<%=m.getString("search")%>" name="search" /></td></tr>
+         <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
        </table>
      </form>
    </mm:context>
@@ -38,7 +40,7 @@
           <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
       </mm:createnode>
-      <mm:node id="media_node" number="media.streams" />
+      <mm:node id="media_node" number="$origin" />
       <mm:createrelation source="media_node" destination="newpool" role="parent" />
     </mm:compare>
 
@@ -74,8 +76,8 @@
   <mm:import id="pagelength">10</mm:import>
 
   <table class="searchresult" style="width: 100%" >
-  <mm:node number="media.streams">
-    <mm:relatednodescontainer type="pools" role="parent">
+  <mm:node number="$origin">
+    <mm:relatednodescontainer type="pools" role="parent" searchdirs="destination">
 
       <mm:sortorder field="number" direction="down" />
       
@@ -105,6 +107,7 @@
         <td />
         <td colspan="2">
           <input type="hidden" name="number" value="new" />
+          <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
           <input type="submit" name="submitnode" value="<%=m.getString("new")%>" /></td>
         </form>
       </mm:maycreate>
@@ -121,6 +124,7 @@
             </mm:fieldlist>
             <td>
               <input type="hidden" name="number" value="<mm:field name="number" />" />
+              <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
               <input type="submit" name="submitnode" value="submit" /></td>
             </form>
           </mm:maywrite>
@@ -137,10 +141,16 @@
                 <form method="post" action="<mm:url />">
                 <input type="hidden" name="number" value="<mm:field name="number" />" />
                 <input type="submit" name="deletenode" value="delete" /></td>
+                <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
                 </form>
               </mm:compare>
             </mm:countrelations>
           </mm:maydelete>
+          <mm:countrelations type="pools" role="parent" searchdir="destination">
+            <mm:isgreaterthan value="0">
+              <a href="<mm:url><mm:param name="origin"><mm:field name="number" /></mm:param></mm:url>">Sub-categorie&euml;n</a>
+            </mm:isgreaterthan>
+          </mm:countrelations>
           </td>
         </tr>
       </mm:relatednodes>
