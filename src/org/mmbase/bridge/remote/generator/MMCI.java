@@ -1,12 +1,12 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
-*/
+ 
+ */
 
 package org.mmbase.bridge.remote.generator;
 import org.w3c.dom.*;
@@ -23,18 +23,18 @@ import org.mmbase.util.XMLBasicReader;
 public class MMCI{
     Hashtable classes;
     Vector classesVector;
-
+    
     private static MMCI STATIC_MMCI = null;
-
+    
     public MMCI(){
         classes = new Hashtable();
         classesVector = new Vector();
     }
-
+    
     public static MMCI getDefaultMMCI() throws Exception{
-            return getDefaultMMCI("MMCI.xml");
+        return getDefaultMMCI("MMCI.xml");
     }
-
+    
     public static MMCI getDefaultMMCI(String fileName) throws Exception{
         if (MMCI.STATIC_MMCI == null){
             XMLBasicReader reader=new XMLBasicReader(fileName);
@@ -42,12 +42,12 @@ public class MMCI{
         }
         return MMCI.STATIC_MMCI;
     }
-
+    
     public static MMCI fromXML(XMLBasicReader reader) throws Exception{
         MMCI mmci =  new MMCI();
         Element xmle=reader.getElementByPath("mmci");
         for(Enumeration enum = reader.getChildElements(xmle,"class");
-            enum.hasMoreElements();) {
+        enum.hasMoreElements();) {
             Element element = (Element)enum.nextElement();
             XMLClass myClass = XMLClass.fromXML(element);
             mmci.classes.put(myClass.getName(),myClass);
@@ -55,7 +55,7 @@ public class MMCI{
         }
         return mmci;
     }
-
+    
     public Vector getClasses(){
         return classesVector;
     }
@@ -65,13 +65,13 @@ public class MMCI{
         }
         return (XMLClass)((XMLClass)classes.get(name)).clone(true);
     }
-
+    
     public static void addDefaultBridgeClasses(Element xmle, Document doc) throws Exception {
         //mmbase interfaces
         //xmle.setComment("MMCI XML description file\nCreated on " + new java.util.Date() + "\nby remote.common.MMCI");
         //should we use BridgeException interface?
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
-
+        
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
@@ -97,7 +97,7 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
     }
-
+    
     public static void main(String [] argv) throws Exception{
         OutputStream os = System.out;
         if (argv.length >1){
@@ -118,6 +118,6 @@ public class MMCI{
             os.flush();
         }
     }
-
+    
 }
 
