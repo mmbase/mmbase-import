@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.5 2003-08-26 08:05:50 pierre Exp $
+ * @version $Id: Schemes.java,v 1.6 2003-09-01 12:36:13 pierre Exp $
  */
 public final class Schemes {
 
@@ -44,11 +44,11 @@ public final class Schemes {
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to create the table for</li>
      *    <li>{2} the field definitions (excluding simple index definitions)</li>
-     *    <li>{3} the simple index definitions. 
+     *    <li>{3} the simple index definitions.
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined</li>
      *    <li>{4} the field definitions, including simple index definitions</li>
-     *    <li>{5} the composite index definitions 
-     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined, 
+     *    <li>{5} the composite index definitions
+     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined,
      *            and no other field definitions.</li>
      *    <li>{6} the builder that this table extends from</li>
      *  </ul>
@@ -87,11 +87,11 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to create the table for</li>
-     *    <li>{2} the field definitions (excluding simple index definitions) 
+     *    <li>{2} the field definitions (excluding simple index definitions)
      *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined</li>
      *    <li>{3} the simple index definitions</li>
-     *    <li>{4} the field definitions, including simple index definitions 
-     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined, 
+     *    <li>{4} the field definitions, including simple index definitions
+     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined,
      *            and no other field definitions.</li>
      *    <li>{5} the composite index definitions</li>
      *  </ul>
@@ -276,7 +276,7 @@ public final class Schemes {
     /**
      *  The default scheme for selecting a node.
      */
-    public static final String SELECT_NODE_DEFAULT = "SELECT * FROM {1} WHERE {2} = {3,number,##########}";
+    public static final String SELECT_NODE_DEFAULT = "SELECT {2} FROM {1} WHERE {3} = {4,number,##########}";
 
     /**
      *  Name of the scheme for selecting a node type.
@@ -327,7 +327,7 @@ public final class Schemes {
      *  The default scheme for creating a sequence table.
      */
     public static final String CREATE_SEQUENCE_DEFAULT = "CREATE TABLE {0}_numberTable ({1})";
-    
+
     /**
      *  Name of the scheme for initializing a sequence or number table
      *  The parameters accepted are:
