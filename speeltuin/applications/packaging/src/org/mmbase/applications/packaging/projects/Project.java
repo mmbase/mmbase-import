@@ -169,7 +169,7 @@ public class Project {
             name = type.substring(type.indexOf("/") + 1);
         }
         if (path.equals("") || path.equals("[auto]")) {
-            path = "packaging" + File.separator + getName() + "_" + name + ".xml";
+            path = "packaging" + File.separator + getName() + "_" + type.replace('/','_') + ".xml";
             path = path.replace(' ', '_');
         }
 
@@ -209,7 +209,7 @@ public class Project {
             name = type.substring(type.indexOf("/") + 1);
         }
         if (path.equals("") || path.equals("[auto]")) {
-            path = "packaging" + File.separator + getName() + "_" + name + ".xml";
+            path = "packaging" + File.separator + getName() + "_" + type.replace('/','_') + ".xml";
             path = path.replace(' ', '_');
         }
         // check if the dirs are created, if not create them
