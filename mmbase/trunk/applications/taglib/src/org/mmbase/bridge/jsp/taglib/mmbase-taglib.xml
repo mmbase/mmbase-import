@@ -941,6 +941,33 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
+    <name>nodeinfo</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
+    <info>This thing can be used inside a NodeProvider tag, to get
+    certain information about the node.</info>
+    <attribute>
+      <name>type</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <possiblevalue>
+        <value>nodemanager</value>
+        <info>The name of the NodeManager of the node.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>guinodemanager</value>
+        <info>The GUI name of NodeManager of the node.</info>
+      </possiblevalue>
+    </attribute>  
+    <example>&lt;mm:node number="1645"&gt;
+Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
+  &lt;mm:fieldlist type="edit"&gt;
+    &lt;em&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/em&gt;:    &lt;mm:fieldinfo type="value" /&gt;&lt;br /&gt;
+  &lt;/mm:fieldlist&gt; 
+&lt;/mm:node&gt;
+</example>
+
+  </tag>
+  <tag>
     <name>present</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
     <info>
