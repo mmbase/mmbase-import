@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.49 2003-10-24 13:32:16 pierre Exp $
+ * @version $Id: NodeTag.java,v 1.50 2003-11-20 13:58:22 pierre Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -159,7 +159,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }
             } else {
                 // get the node from a parent element.
-                NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class, null, false);
+                NodeProvider nodeProvider = findNodeProvider(false);
                 if (nodeProvider == null) {
                     throw new JspTagException("Could not find parent of type org.mmbase.bridge.jsp.taglib.NodeProvider, and no 'number' or 'referid' attribute specified.");
                 }
