@@ -9,12 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
+import java.util.*;
 /**
  * A hashtable which has a maximum of entries.  Old entries are
  * removed when the maximum is reached.  This table is used mostly to
@@ -22,11 +17,10 @@ import java.util.Vector;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.12 2003-02-10 23:44:41 nico Exp $
+ * @version $Id: LRUHashtable.java,v 1.13 2003-03-04 17:07:00 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
-
     /**
      * First (virtual) element of the table.
      * The element that follows root is the oldest element in the table
@@ -178,6 +172,31 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * You should only remove entries from LRUHashtable using the 'remove' function.
+     * otherwise the linked list gets messed up.
+     * The keySet of LRUHashtable therefore returns an unmodifiable set.
+     * @since MMBase-1.7
+     */
+    public Set keySet() {
+        return Collections.unmodifiableSet(super.keySet());
+    }
+    /**
+     * @see   keySet
+     * @since MMBase-1.7
+     */
+    public Set entrySet() {
+        return Collections.unmodifiableSet(super.entrySet());
+    }
+    /**
+     * @see   keySet
+     * @since MMBase-1.7
+     */
+    public Collection values() {
+        return Collections.unmodifiableCollection(super.values());
     }
 
     /**
@@ -380,20 +399,21 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Returns an ordered list of Map.Entry's. This can be used to
      * present the contents of the LRU Map.
-     * 
+     *
      * @since MMBase-1.6
      */
-   public List getOrderedEntries(int maxNumber) {
-      List results = new Vector();
-      LRUEntry current = root.next;
-      int i = 0;
-      while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
-         results.add(0, current); 
-         current = current.next;
-         i++;
-      }
-      return results;
-   }
+
+    public List getOrderedEntries(int maxNumber) {
+	List results = new Vector();
+	LRUEntry current = root.next;
+        int i = 0;
+        while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
+            results.add(0, current); 
+            current = current.next;
+            i++;
+        }
+	return Collections.unmodifiableList(results);
+    }
 
     /**
      * Enumerator for the LRUHashtable.
@@ -467,16 +487,16 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             throw new UnsupportedOperationException("Cannot change values in LRU Hashtable");
         }
         
-        public String toString() {
-            // THis goes seriously wrong if a cache contains itself. (StackOverFlow)
-            // TODO: should be fixed.
-            return  ((value != null) ? value.toString() : null); 
-        }
         public int getByteSize() {
             return new SizeOf().sizeof(value);
         }
         public int getByteSize(SizeOf sizeof) {
             return sizeof.sizeof(value);
+        }
+        public String toString() {
+            // THis goes seriously wrong if a cache contains itself. (StackOverFlow)
+            // TODO: should be fixed.
+            return "" + value;
         }
         
     }
