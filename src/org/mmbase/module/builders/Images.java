@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.23 2000-06-15 16:54:39 wwwtech Exp $
+	$Id: Images.java,v 1.24 2000-07-06 08:40:07 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.23  2000/06/15 16:54:39  wwwtech
+	Rob: added error message
+	
 	Revision 1.22  2000/06/14 15:21:34  wwwtech
 	Rico: fixed array bug
 	
@@ -80,7 +83,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.23 2000-06-15 16:54:39 wwwtech Exp $
+ * @version $Id: Images.java,v 1.24 2000-07-06 08:40:07 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -102,25 +105,20 @@ public class Images extends MMObjectBuilder {
 
 	public boolean init() {
 		super.init();
-		/* Wait for builder property support
 		String tmp;
-		tmp=getParameter("ImageConvertClass");
+		int itmp;
+		tmp=getInitParameter("ImageConvertClass");
 		if (tmp!=null) ImageConvertClass=tmp;
-		loadImageConvertParams(getParameters());
-		tmp=getParameter("MaxConcurrentRequests");
+		getImageConvertParams(getInitParameters());
+		tmp=getInitParameter("MaxConcurrentRequests");
 		if (tmp!=null) {
 			try {
 				itmp=Integer.parseInt("MaxConcurrentRequests");
-			} catch ("NumberFormatException e");
+			} catch (NumberFormatException e) {
 				itmp=2;
 			}
 			MaxConcurrentRequests=itmp;
 		}
-		*/
-
-		// HACK remove when above comes true
-		ImageConvertParams.put("ImageConvert.ConverterRoot",ConverterRoot);
-		ImageConvertParams.put("ImageConvert.ConverterCommand",ConverterCommand);
 
 		imageconvert=loadImageConverter(ImageConvertClass);
 		imageconvert.init(ImageConvertParams);
@@ -183,6 +181,7 @@ public class Images extends MMObjectBuilder {
 		}
 		return(ici);
 	}
+
 
 	public String getImageMimeType(Vector params) {
 		String format=null,mimetype;
