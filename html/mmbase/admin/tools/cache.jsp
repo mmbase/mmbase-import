@@ -11,7 +11,7 @@
 </head>
 <body class="basic" >
 
-<table summary="email test" width="93%" cellspacing="1" cellpadding="3" border="0">
+<table summary="email test">
 
 <mm:import externid="active" from="parameters" />
 
@@ -26,7 +26,7 @@
   </mm:write></mm:write>
 </mm:present>
 
-<tr align="left">
+<tr>
   <th class="header" colspan="2">Cache Monitor - v1.0</th>
 </tr>
 <tr>
@@ -41,7 +41,7 @@
 %>
 
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header" colspan="2"><%= cache.getDescription() %> Cache Status</th>
 </tr>
 <tr>
@@ -61,7 +61,7 @@
 </tr>
 
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header"><%= cache.getDescription() %> Cache Property</th>
   <th class="header">Value</th>
 </tr>
@@ -88,7 +88,7 @@
 <tr>
   <td class="data">Show first 500 entry's of the cache</td>
   <td class="navigate">
-    <a href="<mm:url page="cache/showcache.jsp"><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>" ><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="cache/showcache.jsp"><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>" ><img src="../images/search.gif" alt="view" border="0" /></a>
   </td>
 </tr>
 
@@ -100,7 +100,7 @@
 
 
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header">Relation Cache Property</th>
   <th class="header">Value</th>
 </tr>
@@ -122,7 +122,7 @@
 </tr>
 
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header">Temporary Node Cache Property</th>
   <th class="header">Value</th>
 </tr>
@@ -133,8 +133,8 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>

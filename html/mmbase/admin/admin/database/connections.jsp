@@ -11,8 +11,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="databases" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="databases">
+<tr>
   <th class="header">Connection</th>
   <th class="header">Database</th>
   <th class="header">State</th>
@@ -36,8 +36,9 @@
 </tr>
 <% } %>
 <tr><td>&nbsp;</td></tr>
-<tr>
-<td class="navigate"><a href="<mm:url page="../databases.jsp"/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../databases.jsp"/>"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Database Overview</td>
 </tr>
 </table>

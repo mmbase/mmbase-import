@@ -15,8 +15,8 @@
 <% String value=null;
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
-<table summary="new builder field properties" width="93%" cellspacing="1" cellpadding="3">
-<tr align="left">
+<table summary="new builder field properties">
+<tr>
  <th class="header" colspan="3">Add New Field to Builder <%=builder%></th>
 </tr>
 <tr>
@@ -31,17 +31,17 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
 <th class="header">Field Property</th>
   <th class="header">Value</th>
-  <th class="header">Explain</th>
+  <th class="navigate">Explain</th>
 </tr>
 
 <form action="<mm:url page="actions.jsp"/>" method="POST">
 <tr>
     <td class="data">Name</td>
     <td class="data"><input type="text" name="dbname" value="" /></td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#dbname" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -50,7 +50,7 @@
     <% String property="mmbasetype"; %>
 <%@include file="properties/dbmmbasetype.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#dbmmbasetype" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -59,7 +59,7 @@
     <% property="guitype"; %>
 <%@include file="properties/guitype.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#guitype" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -68,7 +68,7 @@
     <% property="dbstate"; %>
 <%@include file="properties/dbstate.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#dbstate" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -77,7 +77,7 @@
     <% property="dbnotnull"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#dbnotnull" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -86,13 +86,13 @@
     <% property="dbkey"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#dbkey" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
     <td class="data">Size</td>
     <td class="data"><input type="text" name="dbsize" value="" /></td>
-    <td class="data"><a href="<mm:url page="/mmdocs/config/builders.html#dbsize" /> ">explain</a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -108,8 +108,8 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>

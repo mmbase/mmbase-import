@@ -13,19 +13,19 @@
 
 <body class="basic" >
 
-<table summary="license information" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="license information">
+<tr>
   <th class="header" colspan="2">License Information & Thanks to</th>
 </tr>
 <tr>
   <td class="multidata" colspan="2">
-			<p>Welcome to MMBase Content management system.
+                        <p>Welcome to MMBase Content management system.
 <br /><br />
 The Binary distro includes a database. Since we wanted a simple and 100% java solution we used Hsqldb, but MMBase itself supports many more both commercial and opensource products.
 <br /><br />
 The Source distro includes all the sources to build your own MMBase.
 
-			</p>
+                        </p>
 <p>
 If you run into problems you can get help from the following sources :
 <ul>
@@ -38,12 +38,12 @@ of the binary distro</li>
 </ul>
 </p>
 <p>
-		The MMBase Release Team.
+                The MMBase Release Team.
 </p>
 
   <p>About Hsqldb :</p><p>
 hsqldb is a relational database engine written in Java, with a JDBC driver, supporting a subset of ANSI-92 SQL. It offers a small (about 100k), fast database engine which offers both in memory and disk based tables.<br />
-	More information on Hsqldb can be found at <a href="http://www.hsqldb.org">http://www.hsqldb.org</a>.
+        More information on Hsqldb can be found at <a href="http://www.hsqldb.org">http://www.hsqldb.org</a>.
   </p>
   &nbsp;
   </td>
@@ -51,8 +51,8 @@ hsqldb is a relational database engine written in Java, with a JDBC driver, supp
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
 <td class="data">Return to home page</td>
 </tr>
 

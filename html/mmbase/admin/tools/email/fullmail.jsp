@@ -11,10 +11,10 @@
 </head>
 <body class="basic" >
 
-<table summary="applications" width="93%" cellspacing="1" cellpadding="3" border="0">
+<table summary="applications">
 
 <mm:node number="<%=request.getParameter("msg")%>" id="msg">
-<tr align="left">
+<tr>
   <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <tr>
@@ -90,8 +90,8 @@
 
 </mm:node>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../email.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../email.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" >Return to Email Monitor</td>
 </tr>
 </table>

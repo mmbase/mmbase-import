@@ -12,7 +12,7 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="builder actions" width="93%" cellspacing="1" cellpadding="3">
+<table summary="builder actions">
 <%
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 
@@ -43,7 +43,7 @@
     }
    }
 %>
-<tr align="left">
+<tr>
  <th class="header" colspan="5">Description of <%=builder%></th>
 </tr>
 <tr>
@@ -55,10 +55,10 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
 <th class="header">Setting</th>
   <th class="header" colspan="2">Value</th>
-  <th class="header" colspan="2">Change</th>
+  <th class="navigate" colspan="2">Change</th>
 </tr>
 <tr>
  <td class="data">Classfile</td>
@@ -70,12 +70,12 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
 <th class="header">Field</th>
   <th class="header">Name</th>
   <th class="header">Type</th>
   <th class="header">Size</th>
-  <th class="header">More</th>
+  <th class="navigate">More</th>
 </tr>
 <%
     Map params = new Hashtable();
@@ -90,7 +90,7 @@
  <td class="data"><%=field.getStringValue("item3")%></td>
  <td class="data"><%=field.getStringValue("item4")%></td>
  <td class="navigate">
-    <a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>"/>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
+    <a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>"/>"><img src="../../images/change.gif" alt="change" border="0" /></a>
 </td>
 </tr>
 
@@ -101,17 +101,17 @@
  <td class="data">&nbsp;</td>
  <td class="data">&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="newfield.jsp?builder="+builder%>" />"><img src="../../images/next.gif" alt="add new" border="0" align="right" /></a>
+    <a href="<mm:url page="<%="newfield.jsp?builder="+builder%>" />"><img src="../../images/create.gif" alt="add new" border="0" /></a>
 </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <form action="<mm:url page="result.jsp" />" method="POST">
-<tr align="left">
+<tr>
 <th class="header">Action</th>
   <th class="header" colspan="2">Path</th>
-  <th class="header" colspan="2">Confirm</th>
+  <th class="navigate" colspan="2">Confirm</th>
 </tr>
 <tr>
  <td class="data">Save</td>
@@ -119,7 +119,7 @@
  <td class="linkdata" colspan="2">
    <input type="hidden" name="builder" value="<%=builder%>" />
    <input type="hidden" name="cmd" value="BUILDERSAVE" />
-   <input type="submit" value="YES" />
+   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
  </td>
 </tr>
 </form>
@@ -131,10 +131,10 @@
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-builders-"+builder);
 %>
-<tr align="left">
+<tr>
 <th class="header">Action</th>
   <th class="header" colspan="2">Status</th>
-  <th class="header" colspan="2">View</th>
+  <th class="navigate" colspan="2">View</th>
 </tr>
 <tr>
  <td class="data">XML-check</td>
@@ -148,7 +148,7 @@
 <%  } %>
     <input type="hidden" name="config" value="builders" />
     <input type="hidden" name="target" value="<%=builder%>" />
-    <input type="submit" value="YES" />
+    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
 </form>
  </td>
 </tr>
@@ -157,8 +157,8 @@
 
 <% } %>
 
-<tr>
-<td class="navigate"><a href="../builders.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="../builders.jsp"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Builder Overview</td>
 </tr>
 </table>

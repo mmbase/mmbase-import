@@ -10,8 +10,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="applications" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="applications">
+<tr>
 <th class="header" colspan="6">Module Overview
 </th>
 </tr>
@@ -22,13 +22,13 @@
   </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header">Name</th>
   <th class="header">Version</th>
   <th class="header">Installed</th>
   <th class="header">Maintainer</th>
   <th class="header">Auto-Deploy</th>
-  <th class="header">&nbsp;</th>
+  <th class="navigate">Manage</th>
 </tr>
 <%
    Module mmAdmin = LocalContext.getCloudContext().getModule("mmadmin");
@@ -45,14 +45,14 @@
   <td class="data"><%=app.getStringValue("item4")%></td>
   <td class="data"><%=app.getStringValue("item5")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="application/actions.jsp?application="+app.getStringValue("item1")%>" />"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="<%="application/actions.jsp?application="+app.getStringValue("item1")%>" />"><img src="../images/next.gif" alt="next" border="0" /></a>
   </td>
 </tr>
 <% } %>
 <tr><td>&nbsp;</td></tr>
 
-  <tr>
-    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+  <tr class="footer">
+    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
     <td class="data" colspan="5">Return to home page</td>
   </tr>
 </table>
