@@ -10,19 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.module.gui.html;
 
 import java.util.*;
-import java.sql.*;
-import org.mmbase.module.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 
 /**
- * EditState, controls the users edit session, keeps EditStatesNodes
- * (hitlisted)
+ * EditState, controls the users edit session, keeps EditStateNodes
  *
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.12 2002-04-18 06:35:47 pierre Exp $
+ * @version $Id: EditState.java,v 1.12.2.1 2003-07-03 13:13:17 vpro Exp $
  */
 public class EditState {
 
@@ -55,22 +52,22 @@ public class EditState {
     public boolean pushState() {
         curNode=new EditStateNode(mmBase);
         nodes.addElement(curNode);
-        return(true);
+        return true;
     }
 
     public boolean clear() {
         nodes=new Vector();
-        return(true);
+        return true;
     }
 
     public boolean popState() {
         nodes.removeElement(curNode);
         curNode=(EditStateNode)nodes.lastElement();
-        return(true);
+        return true;
     }
 
     public Vector getEditStates() {
-        return(nodes);
+        return nodes;
     }
 
     public boolean setSearchValue(String fieldname,Object value) {
@@ -102,7 +99,7 @@ public class EditState {
     }
 
     public Hashtable getSearchValues() {
-        return (curNode.getSearchValues());
+        return curNode.getSearchValues();
     }
 
     public void clearSearchValues() {
@@ -139,7 +136,7 @@ public class EditState {
     }
 
     public Hashtable getHtmlValues() {
-        return (curNode.getHtmlValues());
+        return curNode.getHtmlValues();
     }
 
     public void clearHtmlValues() {
@@ -167,30 +164,30 @@ public class EditState {
 
     public MMObjectNode getEditNode() {
         if (curNode == null) return null;
-        return(curNode.getEditNode());
+        return curNode.getEditNode();
     }
 
 
 
     public MMObjectNode getEditNode(int i) {
         int pos=nodes.indexOf(curNode);
-        if ((pos-i)<0) return(null);
+        if ((pos-i)<0) return null;
         EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
         if (node==null) {
-            return(null);
+            return null;
         } else {
-            return(node.getEditNode());
+            return node.getEditNode();
         }
     }
 
     public EditStateNode getEditStateNode(int i) {
         int pos=nodes.indexOf(curNode);
-        if ((pos-i)<0) return(null);
+        if ((pos-i)<0) return null;
         EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
         if (node==null) {
-            return(null);
+            return null;
         } else {
-            return(node);
+            return node;
         }
     }
 
@@ -212,32 +209,32 @@ public class EditState {
     }
 
     public int getEditNodeNumber() {
-        return(curNode.getEditNodeNumber());
+        return curNode.getEditNodeNumber();
     }
 
     public int getEditNodeSrcNumber() {
         MMObjectNode snode=getEditSrcNode();
         if (snode!=null) {
-            return(snode.getIntValue("number"));
+            return snode.getIntValue("number");
         }
-        return(-1);
+        return -1;
     }
 
     public int getEditNodeDstNumber() {
         MMObjectNode snode=getEditDstNode();
         if (snode!=null) {
-            return(snode.getIntValue("number"));
+            return snode.getIntValue("number");
         }
-        return(-1);
+        return -1;
     }
 
     public String getEditNodeSrcDutchName() {
         MMObjectNode snode=getEditSrcNode();
         if (snode!=null) {
             String dname=snode.parent.getSingularName();
-            if (dname!=null) return(dname);
+            if (dname!=null) return dname;
         }
-        return("");
+        return "";
     }
 
 
@@ -245,9 +242,9 @@ public class EditState {
         MMObjectNode dnode=getEditDstNode();
         if (dnode!=null) {
             String dgui=dnode.getGUIIndicator();
-            if (dgui!=null) return(dgui);
+            if (dgui!=null) return dgui;
         }
-        return("");
+        return "";
     }
 
 
@@ -255,9 +252,9 @@ public class EditState {
         MMObjectNode snode=getEditSrcNode();
         if (snode!=null) {
             String sgui=snode.getGUIIndicator();
-            if (sgui!=null) return(sgui);
+            if (sgui!=null) return sgui;
         }
-        return("");
+        return "";
     }
 
 
@@ -265,9 +262,9 @@ public class EditState {
         MMObjectNode snode=getEditDstNode();
         if (snode!=null) {
             String dname=snode.parent.getSingularName();
-            if (dname!=null) return(dname);
+            if (dname!=null) return dname;
         }
-        return("");
+        return "";
     }
 
 
@@ -275,9 +272,9 @@ public class EditState {
         MMObjectNode snode=getEditSrcNode();
         if (snode!=null) {
             String dname=snode.getName();
-            if (dname!=null) return(dname);
+            if (dname!=null) return dname;
         }
-        return("");
+        return "";
     }
 
 
@@ -285,17 +282,17 @@ public class EditState {
         MMObjectNode snode=getEditDstNode();
         if (snode!=null) {
             String dname=snode.getName();
-            if (dname!=null) return(dname);
+            if (dname!=null) return dname;
         }
-        return("");
+        return "";
     }
 
     public MMObjectNode getEditSrcNode() {
-        return(curNode.getEditSrcNode());
+        return curNode.getEditSrcNode();
     }
 
     public MMObjectNode getEditDstNode() {
-        return(curNode.getEditDstNode());
+        return curNode.getEditDstNode();
     }
 
     public void setBuilder(String name) {
@@ -323,7 +320,7 @@ public class EditState {
     }
 
     public MMObjectBuilder getBuilder() {
-        return (curNode.getBuilder());
+        return curNode.getBuilder();
     }
 
     public void setSelectionQuery(String query) {
@@ -331,11 +328,11 @@ public class EditState {
     }
 
     public String getSelectionQuery() {
-        return (curNode.getSelectionQuery());
+        return curNode.getSelectionQuery();
     }
 
     public boolean isChanged() {
-        return (curNode.isChanged());
+        return curNode.isChanged();
     }
 
     public boolean addRelation(String owner) {
@@ -352,11 +349,11 @@ public class EditState {
         } else {
             log.error("addRelation("+owner+"): src("+src+"), pos("+pos+"), cannot create relation from "+node2+" to "+src+" reltype 2");
         }
-        return(result);
+        return result;
     }
 
     public boolean getInsSave() {
-        return (curNode.getInsSave());
+        return curNode.getInsSave();
     }
 
     public void setInsSave(boolean set) {
@@ -364,7 +361,7 @@ public class EditState {
     }
 
     public Vector getInsSaveList() {
-        return(curNode.getInsSaveList());
+        return curNode.getInsSaveList();
     }
 
     public void delInsSaveList() {
@@ -372,14 +369,14 @@ public class EditState {
     }
 
     public Hashtable getRelationTable() {
-        return(curNode.getRelationTable());
+        return curNode.getRelationTable();
     }
 
     public String getLanguage() {
-        return(mmBase.getLanguage());
+        return mmBase.getLanguage();
     }
 
     public String getUser() {
-        return(user);
+        return user;
     }
 }
