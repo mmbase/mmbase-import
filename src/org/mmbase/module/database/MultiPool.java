@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.51 2004-04-05 17:30:17 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.51.2.1 2004-04-23 13:41:14 michiel Exp $
  */
 public class MultiPool {
 
@@ -186,7 +186,7 @@ public class MultiPool {
      * Check the connections
      * @bad-constant  Max life-time of a query must be configurable
      */
-    public void checkTime() {
+    void checkTime() {
 
         if (log.isDebugEnabled()) {
             log.debug("JDBC -> Starting the pool check (" + this + ") : busy=" + busyPool.size() + " free=" + pool.size());
@@ -338,7 +338,7 @@ public class MultiPool {
     /**
      * Get a free connection from the pool
      */
-    public MultiConnection getFree() {
+    MultiConnection getFree() {
 
         MultiConnection con = null;
         try {
@@ -383,7 +383,7 @@ public class MultiPool {
     /**
      * putback the used connection in the pool
      */
-    public void putBack(MultiConnection con) {
+    void putBack(MultiConnection con) {
         //see comment in method checkTime()
         synchronized (semaphore) {
             if (log.isDebugEnabled()) {
@@ -391,13 +391,22 @@ public class MultiPool {
             }
 
             if (! busyPool.contains(con)) {
+                // try to guess wat happend, to report that in the logs
                 MMBase mmb = MMBase.getMMBase();
                 if (! mmb.isShutdown()) {
-                    log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
+                    try {
+                        if (con.isClosed()) {
+                            log.debug("Connection " + con + " as closed an not in busypool, so it was removed from busyPool by checkTime");
+                        } else {
+                            log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
+                        }
+                    } catch (SQLException sqe) {
+                        log.warn("Connection " + con + " not in busypool : " + sqe.getMessage());
+                    }
                 } else {
                     log.service("Connection " + con.lastSql + " was put back, but MMBase is shut down, so it was ignored.");
-                    return;
                 }
+                return;
             }
 
 
