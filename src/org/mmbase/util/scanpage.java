@@ -30,7 +30,7 @@ import org.mmbase.servlet.JamesServlet;
  * of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.15 2001-10-23 11:49:09 vpro Exp $
+ * @version $Id: scanpage.java,v 1.16 2001-11-25 18:32:22 vpro Exp $
  */
 public class scanpage {
     // logger
@@ -64,7 +64,7 @@ public class scanpage {
     /**
      * The user's MMBase session object, if available.
      */
-    public sessionInfo session;
+    public sessionInfo session=null;
     /**
      * The session name.
      */
@@ -429,4 +429,24 @@ public class scanpage {
         }
     }
 
+	public scanpage duplicate() {
+		scanpage dup=new scanpage();
+		dup.res=null;
+		dup.req=null;
+		dup.params=null;
+		dup.processor=this.processor;
+    	dup.session=this.session;
+    	dup.sname=this.sname;
+    	dup.name=this.name;
+		dup.rstatus=this.rstatus;
+		dup.body=this.body;
+		dup.req_line=this.req_line;
+		dup.wantCache=this.wantCache;
+		dup.mimetype=this.mimetype;
+		dup.querystring=this.querystring;
+		dup.partlevel=this.partlevel;
+		dup.loadmode=this.loadmode;
+    	dup.reload=this.reload;
+		return(dup);
+	}
 }
