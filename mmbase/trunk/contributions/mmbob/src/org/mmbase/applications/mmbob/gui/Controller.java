@@ -357,7 +357,9 @@ public class Controller {
 
 
     /**
-     * Provide general info on a forum
+     * Provide general info and statistics on a forum
+     * Remark: atm it also returns configuration settings, this will change in the near future
+     *         see getForumConfiguration for more info.
      *
      * @param id MMBase node number of the forum
      * @param sactiveid Id for the current (on the page) poster for admin/onwership checks
@@ -406,6 +408,56 @@ public class Controller {
 
         return virtual;
     }
+
+    /**
+     * Provide configuration info on a forum
+     *
+     * @param id MMBase node number of the forum
+     * @param sactiveid Id for the current (on the page) poster for admin/onwership checks
+     * @return (virtual) MMObjectNode representing the configuration of the given forum
+     *
+     */
+    public MMObjectNode getForumConfig(String id, String sactiveid) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        try {
+            int activeid = Integer.parseInt(sactiveid);
+
+            Forum f = ForumManager.getForum(id);
+            if (f != null) {
+                virtual.setValue("language", f.getLanguage());
+                virtual.setValue("accountcreationtype", f.getAccountCreationType());
+                virtual.setValue("accountremovaltype", f.getAccountRemovalType());
+                virtual.setValue("loginmodetype", f.getLoginModeType());
+                virtual.setValue("logoutmodetype", f.getLogoutModeType());
+                virtual.setValue("avatarsdisabled", f.getAvatarsDisabled());
+                virtual.setValue("avatarsuploadenabled", f.getAvatarsUploadEnabled());
+                virtual.setValue("avatarsgalleryenabled", f.getAvatarsGalleryEnabled());
+                virtual.setValue("contactinfoenabled", f.getContactInfoEnabled());
+                virtual.setValue("smileysenabled", f.getSmileysEnabled());
+                virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
+                virtual.setValue("postingsperpage", f.getPostingsPerPage());
+
+
+                if (activeid != -1) {
+                    Poster ap = f.getPoster(activeid);
+                    ap.signalSeen();
+                    addActiveInfo(virtual, ap);
+                    if (ap != null && f.isAdministrator(ap.getAccount())) {
+                        virtual.setValue("isadministrator", "true");
+                    } else {
+                        virtual.setValue("isadministrator", "false");
+                    }
+                }
+            }
+        } catch (Exception e) {
+		e.printStackTrace();
+        }
+
+        return virtual;
+    }
+
+
 
     /**
      * Provide info on a poster forum
@@ -541,24 +593,50 @@ public class Controller {
      * @param location ew location of the poster
      * @return  Feedback regarding the success of edit action
      */
-    public boolean editPoster(String forumid, int posterid, String firstname, String lastname, String email, String gender, String location) {
-
-        Forum f = ForumManager.getForum(forumid);
-        if (f != null) {
-            Poster p = f.getPoster(posterid);
-            if (p != null) {
-                p.setFirstName(firstname);
-                p.setLastName(lastname);
-                p.setEmail(email);
-                p.setGender(gender);
-                p.setLocation(location);
-                p.savePoster();
+    public String editPoster(String forumid, int posterid, String firstname, String lastname, String email, String gender, String location, String newpassword, String newconfirmpassword) {
+        if (newpassword.equals("")) {
+            log.debug("newpassword is empty");
+            Forum f = ForumManager.getForum(forumid);
+            if (f != null) {
+                Poster p = f.getPoster(posterid);
+                if (p != null) {
+                    p.setFirstName(firstname);
+                    p.setLastName(lastname);
+                    p.setEmail(email);
+                    p.setGender(gender);
+                    p.setLocation(location);
+                    p.savePoster();
+                } else {
+                    return "false";
+                }
+            }
+            return "true";
+        } else {
+            if (newpassword.equals(newconfirmpassword)) {
+            log.debug("newpassword equals newconfirmpassword");
+                Forum f = ForumManager.getForum(forumid);
+                if (f != null) {
+                    Poster p = f.getPoster(posterid);
+                    if (p != null) {
+                        p.setFirstName(firstname);
+                        p.setLastName(lastname);
+                        p.setEmail(email);
+                        p.setGender(gender);
+                        p.setLocation(location);
+                        p.setPassword(newpassword);
+                        p.savePoster();
+                    } else {
+                        return "false";
+                    }
+                }
+                return "passwordchanged";
             } else {
-                return false;
+                log.debug("newpassword and confirmpassword are not equal");
+                return "newpasswordnotequal";
             }
         }
-        return true;
     }
+       
 
     /**
      * create a new poster, creates a account and puts in the users admin system of the forum
@@ -573,28 +651,33 @@ public class Controller {
      * @param location Location of the new poster
      * @return Feedback from the create command (accountused for example)
      */
-    public String createPoster(String forumid, String account, String password, String firstname, String lastname, String email, String gender, String location) {
-        Forum f = ForumManager.getForum(forumid);
-        if (f != null) {
-            Poster p = f.getPoster(account);
-            if (p == null) {
-                p = f.createPoster(account, password);
-                if (p != null) {
-                    p.setFirstName(firstname);
-                    p.setLastName(lastname);
-                    p.setEmail(email);
-                    p.setGender(gender);
-                    p.setLocation(location);
-                    p.setPostCount(0);
-                    p.savePoster();
+    public String createPoster(String forumid, String account, String password, String confirmpassword, String firstname, String lastname, String email, String gender, String location) {
+        if (password.equals(confirmpassword)) {
+            Forum f = ForumManager.getForum(forumid);
+            if (f != null) {
+                Poster p = f.getPoster(account);
+                if (p == null) {
+                    p = f.createPoster(account, password);
+                    if (p != null) {
+                        p.setFirstName(firstname);
+                        p.setLastName(lastname);
+                        p.setEmail(email);
+                        p.setGender(gender);
+                        p.setLocation(location);
+                        p.setPassword(password);
+                        p.setPostCount(0);
+                        p.savePoster();
+                    } else {
+                        return "createerror";
+                    }
                 } else {
-                    return "createerror";
+                    return "inuse";
                 }
-            } else {
-                return "inuse";
             }
+            return "ok";
+        } else {
+            return ("passwordnotequal");
         }
-        return "ok";
     }
 
 
@@ -611,28 +694,32 @@ public class Controller {
      * @param location Location of the new poster
      * @return Feedback from the create command (accountused for example)
      */
-    public String createPosterProxy(String forumid, String account, String password, String firstname, String lastname, String email, String gender, String location,String proxypassword) {
-        Forum f = ForumManager.getForum(forumid);
-        if (f != null) {
-            Poster p = f.getPoster(account);
-            if (p == null) {
-                p = f.createPoster(account, password);
-                if (p != null) {
-                    p.setFirstName(firstname);
-                    p.setLastName(lastname);
-                    p.setEmail(email);
-                    p.setGender(gender);
-                    p.setLocation(location);
-                    p.setPostCount(0);
-                    p.savePoster();
+    public String createPosterProxy(String forumid, String account, String password, String confirmpassword,String firstname, String lastname, String email, String gender, String location,String proxypassword) {
+        if (password.equals(confirmpassword)) {
+            Forum f = ForumManager.getForum(forumid);
+            if (f != null) {
+                Poster p = f.getPoster(account);
+                if (p == null) {
+                    p = f.createPoster(account, password);
+                    if (p != null) {
+                        p.setFirstName(firstname);
+                        p.setLastName(lastname);
+                        p.setEmail(email);
+                        p.setGender(gender);
+                        p.setLocation(location);
+                        p.setPostCount(0);
+                        p.savePoster();
+                    } else {
+                        return "createerror";
+                    }
                 } else {
-                    return "createerror";
+                    return "inuse";
                 }
-            } else {
-                return "inuse";
             }
+            return "ok";
+        } else {
+            return ("passwordnotequal");
         }
-        return "ok";
     }
 
     /**
@@ -1261,6 +1348,7 @@ public class Controller {
     * get login information for this poster
     */
     public MMObjectNode forumLogin(String forumid,String account,String password) {
+        log.debug("going to login with account: " + account + " and password " + password);
                 VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
                 MMObjectNode virtual = builder.getNewNode("admin");
 		Forum f=ForumManager.getForum(forumid);

@@ -31,9 +31,9 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class ForumsConfig {
-   private static Logger log = Logging.getLoggerInstance(ForumManager.class);
+   private static Logger log = Logging.getLoggerInstance(ForumsConfig.class);
    private HashMap fieldaliases=new HashMap();
-   private HashMap subs=new HashMap();
+    private HashMap subs ;//=new HashMap();
    private String defaultaccount, defaultpassword;
    private String accountcreationtype="open";
    private String accountremovaltype="open";
@@ -42,11 +42,22 @@ public class ForumsConfig {
    private String guestreadmodetype="open";
    private String guestwritemodetype="open";
 
+    private String avatarsUploadEnabled = "true";
+    private String avatarsGalleryEnabled = "true";
+
+    private String contactInfoEnabled = "true";
+    private String smileysEnabled = "true";
+    private String privateMessagesEnabled = "true";
+    private int postingsPerPage = 10;
+
    private int quotamax = 100;
    private int quotasoftwarning = 60;
    private int quotawarning = 80;
 
     public ForumsConfig (XMLBasicReader reader,Element n) {
+        subs = null;
+        subs = new HashMap();
+        log.debug("subhasmap cleared");
 	decodeConfig(reader,n);
     }
 
@@ -76,6 +87,13 @@ public class ForumsConfig {
                             defaultpassword = password;
                         }
 
+                        //get avatar configuration 
+                        Element avatarsElement = reader.getElementByPath("mmbobconfig.forums.avatars");
+                        Element avatarsUploadElement = reader.getElementByPath(avatarsElement,"avatars.upload");
+                        avatarsUploadEnabled = avatarsUploadElement.getAttribute("enable");
+                        Element avatarsGalleryElement = reader.getElementByPath(avatarsElement,"avatars.gallery");
+                        avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
+
                         for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
                             Element n2 = (Element) ns2.nextElement();
                             nm = n2.getAttributes();
@@ -87,7 +105,7 @@ public class ForumsConfig {
                                 if (n3 != null) {
                                     role = n3.getNodeValue();
                                 }
-                                n3 = nm.getNamedItem("file");
+                               n3 = nm.getNamedItem("file");
                                 if (n3 != null) {
                                     dfile = n3.getNodeValue();
                                 }
@@ -119,7 +137,9 @@ public class ForumsConfig {
                                     setQuotaWarning(n3.getNodeValue());
                                 }
                             }
-                        }	
+                        }
+
+
 
 			
                         accountcreationtype = getAttributeValue(reader,n,"accountcreation","type");
@@ -128,6 +148,15 @@ public class ForumsConfig {
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
                         guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
+
+                        contactInfoEnabled = getAttributeValue(reader,n,"contactinfo","enable");
+                        smileysEnabled = getAttributeValue(reader,n,"smileys","enable");
+                        privateMessagesEnabled = getAttributeValue(reader,n,"privatemessages","enable");
+                        String inttemp = getAttributeValue(reader,n,"postingsperpage","value");
+                        if (inttemp != null) {
+                            postingsPerPage = (Integer.valueOf(inttemp)).intValue();
+                        }
+
                         for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
                                    	Element n2=(Element)ns2.nextElement();
                                         	nm=n2.getAttributes();
@@ -140,8 +169,7 @@ public class ForumsConfig {
 							String externkey=null;
                                         		n3=nm.getNamedItem("object");
                                         		if (n3!=null) {
-                                                		object=n3.getNodeValue();
-                                        		}
+                                                		object=n3.getNodeValue();                                        		}
                                         		n3=nm.getNamedItem("extern");
                                         		if (n3!=null) {
                                                 		extern=n3.getNodeValue();
@@ -299,5 +327,30 @@ public class ForumsConfig {
    public String getGuestWriteModeType() {
         return guestwritemodetype;
    }
+
+    public String getAvatarsUploadEnabled() {
+        return avatarsUploadEnabled;
+    }
+
+    public String getAvatarsGalleryEnabled() {
+        return avatarsGalleryEnabled;
+    }
+
+    public String getContactInfoEnabled() {
+        return contactInfoEnabled;
+    }
+
+    public String getSmileysEnabled() {
+        return smileysEnabled;
+    }
+
+    public String getPrivateMessagesEnabled() {
+        return privateMessagesEnabled;
+    }
+
+    public int getPostingsPerPage() {
+        return postingsPerPage;
+    }
+
 
 }

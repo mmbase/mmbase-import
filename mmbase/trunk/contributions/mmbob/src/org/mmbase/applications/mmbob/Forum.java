@@ -92,6 +92,10 @@ public class Forum {
         readRoles();
     }
 
+    public void resetConfig() {
+        config = ForumManager.getForumConfig(name);
+    }
+
     /**
      * Set the MMBase objectnumber of the forum
      *
@@ -710,6 +714,7 @@ public class Forum {
             String md5passwd = md5.transform(password);
 
             pnode.setStringValue("password", md5passwd);
+            log.debug("set password: " + password + " as md5 it looks like this: " + md5passwd);
             //  pnode.setStringValue("password",password);
             pnode.setIntValue("postcount", 0);
             pnode.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
@@ -926,11 +931,12 @@ public class Forum {
    }
 
    public PostAreaConfig getPostAreaConfig(String name) {
-	if (config != null) {
-        	return config.getPostAreaConfig(name);
-	} else {
-		return null;
-	}
+       if (config != null) {
+       	return config.getPostAreaConfig(name);
+       } else {
+       return null;
+       }
+
    }
 
    public String getAccountCreationType() {
@@ -997,6 +1003,86 @@ public class Forum {
 	}
         return ForumManager.getGuestWriteModeType();
    }
+
+    public String getAvatarsDisabled() {
+        log.debug("CHECKING");
+        if (getAvatarsUploadEnabled().equals("true") || getAvatarsGalleryEnabled().equals("true")) {
+            log.debug ("avatars are completly disabled");
+            return "false";
+        }
+log.debug ("avatars are completly");
+        return "true";
+    }
+
+
+
+    public String getAvatarsUploadEnabled() {
+        if (config != null) {
+            String tmp = config.getAvatarsUploadEnabled();
+            if (tmp != null) {
+                log.debug("config.getAvatarsUploadEnabled() on "+getId()+ ": " + tmp);
+                return tmp;
+            }
+        }
+        return ForumManager.getAvatarsUploadEnabled();
+    }
+
+    public String getAvatarsGalleryEnabled() {
+        if (config != null) {
+            String tmp = config.getAvatarsGalleryEnabled();
+            if (tmp != null) {
+                log.debug("config.getAvatarsGalleryEnabled() on "+getId()+ ": " + tmp);                
+                return tmp;
+                
+            }
+        }
+        return ForumManager.getAvatarsGalleryEnabled();
+    }
+
+
+    public String getContactInfoEnabled() {
+        if (config != null) {
+            String tmp = config.getContactInfoEnabled();
+            if (tmp != null) {
+                log.debug("config.getContactInfoEnabled() on "+getId()+ ": " + tmp);                
+                return tmp;
+                
+            }
+        }
+        return ForumManager.getContactInfoEnabled();
+    }
+
+    public String getSmileysEnabled() {
+        if (config != null) {
+            String tmp = config.getSmileysEnabled();
+            if (tmp != null) {
+                log.debug("config.getSmileysEnabled() on "+getId()+ ": " + tmp);                
+                return tmp;
+                
+            }
+        }
+        return ForumManager.getSmileysEnabled();
+    }
+
+    public String getPrivateMessagesEnabled() {
+        if (config != null) {
+            String tmp = config.getPrivateMessagesEnabled();
+            if (tmp != null) {
+                log.debug("config.getPrivateMessagesEnabled() on "+getId()+ ": " + tmp);                
+                return tmp;
+                
+            }
+        }
+        return ForumManager.getPrivateMessagesEnabled();
+    }
+
+    public int getPostingsPerPage() {
+        if (config != null) {
+            int tmpsize = config.getPostingsPerPage();
+            if (tmpsize > -1) return tmpsize;
+        }
+        return ForumManager.getPostingsPerPage();
+    }
 
 
 }
