@@ -244,7 +244,7 @@ public class PostThread {
 			pnode.setIntValue("posternumber",p.getId());
 		}
 
-		pnode.setStringValue("body",body);
+    	pnode.setStringValue("body",body);
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();
@@ -281,19 +281,26 @@ public class PostThread {
 	return true;
    }
 
-   private void syncNode(int queue) {
-	node.setIntValue("postcount",postcount);
-	node.setIntValue("viewcount",viewcount);
-	node.setIntValue("c_lastposttime",lastposttime);
-	node.setStringValue("c_lastposter",lastposter);
-	node.setStringValue("c_lastpostsubject",lastpostsubject);
-	ForumManager.syncNode(node,queue);
-   }
+    /**
+     * add the postarea-node to the given syncQueue
+     * @param queue syncQueue that must be used
+     */
+    private void syncNode(int queue) {
+     node.setIntValue("postcount",postcount);
+     node.setIntValue("viewcount",viewcount);
+     node.setIntValue("c_lastposttime",lastposttime);
+     node.setStringValue("c_lastposter",lastposter);
+     node.setStringValue("c_lastpostsubject",lastpostsubject);
+     ForumManager.syncNode(node,queue);
+    }
 
-   public void readPostings() {
+    /**
+     * Fill the postings vector with all Postings within the PostThread
+     */
+    public void readPostings() {
 	if (postings!=null) return;
         long start=System.currentTimeMillis();
-	postings=new Vector();
+	    postings=new Vector();
 	if (node!=null) {
 		NodeIterator i=node.getRelatedNodes("postings").nodeIterator();
 		while (i.hasNext()) {
@@ -399,41 +406,70 @@ public class PostThread {
 	return null;
    }
 
-   public boolean remove() {
-	if (postings==null) readPostings();
+    /**
+     * remove the whole PostThread
+     * @return <code>true</code> if the removal was successful
+     */
+    public boolean remove() {
+        if (postings == null) readPostings();
 
-	Enumeration e=postings.elements();
-	while (e.hasMoreElements()) {
-		Posting p=(Posting)e.nextElement();
-		if(!p.remove()) {
-			log.error("Can't remove Posting : "+p.getId());
-			return false;
-		}
-		postings.remove(p);
-	}
-	ForumManager.nodeDeleted(node);
-	return true;
-   }
+        Enumeration e = postings.elements();
+        while (e.hasMoreElements()) {
+            Posting p = (Posting) e.nextElement();
+            if (!p.remove()) {
+                log.error("Can't remove Posting : " + p.getId());
+                return false;
+            }
+            postings.remove(p);
+        }
+        ForumManager.nodeDeleted(node);
+        return true;
+    }
 
-   public void addWriter(Posting p) {
-	if (!writers.contains(p.getPoster())) writers.add(p.getPoster());
-   }
+    /**
+     * add the accountname/nick of the Poster of the given Posting in the Posthread to the writers vector
+     * @param p Posting
+     */
+    public void addWriter(Posting p) {
+        if (!writers.contains(p.getPoster())) writers.add(p.getPoster());
+    }
 
-   public boolean isWriter(String asker) {
-	if (writers.contains(asker)) return true;
-	return false;
-   }
+    /**
+     * determine if the given accountname/nick is a writer in this PostThread
+     * @param asker accountname/nick to be evaluated
+     * @return <code>true</code> if the accountname/nick is a writer in this thread. <code>false</code> if he isn't.
+     */
+    public boolean isWriter(String asker) {
+        if (writers.contains(asker)) return true;
+        return false;
+    }
 
-   public void childRemoved(Posting p) {
-	if (postings==null) readPostings();
-	postings.remove(p);
-	postcount--;
-	syncNode(ForumManager.FASTSYNC);
-	if (postings.size()==0) {
-		node.delete(true);
-		ForumManager.nodeDeleted(node);
-		parent.childRemoved(this);
-	} 
-   }
+    /**
+     * signal that a child (posting) has been
+     * removed inside this postthread.
+     *
+     * @param p posting that has been removed
+     */
+    public void childRemoved(Posting p) {
+        if (postings == null) readPostings();
+        postings.remove(p);
+        postcount--;
 
+        // if it was the last post that was removed, replace the lastpostsubject
+        // with a remove-message.
+        if (lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
+            lastpostsubject="** removed by moderator **";
+        }
+
+        if (postings.size() == 0) {
+            log.debug("Postthread: removing whole thread");
+            node.delete(true);
+            ForumManager.nodeDeleted(node);
+            parent.childRemoved(this);
+        } else {
+            log.debug("Postthread: removing just a reply from the thread");
+            syncNode(ForumManager.FASTSYNC);
+        }
+    }
 }
+
