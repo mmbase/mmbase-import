@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ShrinkTag.java,v 1.3 2004-06-30 17:51:57 michiel Exp $
+ * @version $Id: ShrinkTag.java,v 1.4 2004-07-12 15:05:27 michiel Exp $
  */
 public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer { 
 
@@ -77,47 +77,26 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         }
     }
     public void doInitBody() throws JspException {
+        // called once, if there is a body.
         log.debug("initbody");        
         Stack stack  = tree.getShrinkStack();
-        Entry entry = (Entry) stack.peek();
-        log.debug("making available now " + entry.string);
-        helper.setValue(entry.string); 
-        helper.doAfterBody();
-        write = helper.getWrite().getBoolean(this, false);
-        if (write) {
-            try {
-                pageContext.getOut().write(Casting.toString(helper.getValue()));
-            } catch (IOException ioe){
-                throw new TaglibException(ioe);
+        if (stack.size() > 0) {
+            Entry entry = (Entry) stack.peek();
+            log.debug("making available now " + entry.string);
+            helper.setValue(entry.string); 
+            helper.doAfterBody();
+            write = helper.getWrite().getBoolean(this, false);
+            if (write) {
+                try {
+                    pageContext.getOut().write(Casting.toString(helper.getValue()));
+                } catch (IOException ioe){
+                    throw new TaglibException(ioe);
+                }
             }
         }
         super.doInitBody();
     }
 
-    public int doEndTag() throws JspTagException {
-        log.debug("endtag");
-        if (! foundBody) { // write everything to page!
-            log.debug("no body, doing work");
-            Stack stack  = tree.getShrinkStack();
-            Entry entry = (Entry) stack.peek();
-            StringBuffer value = new StringBuffer();
-            while (depth >= endDepth) {
-                log.debug("writing now " + entry.string);
-                value.append(entry.string);
-                stack.pop();
-                if (stack.size() == 0) break;
-                entry = (Entry) stack.peek();
-                depth = entry.depth;
-            }
-            helper.setValue(value.toString());
-            super.doEndTag();
-            return helper.doEndTag();
-        } else {
-            log.debug("handled by doAfterBodies");
-            return super.doEndTag();
-        }
-
-    }
 
     public int doAfterBody() throws JspTagException {
         log.debug("afterbody");
@@ -162,6 +141,36 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         return SKIP_BODY;
 
 
+
+    }
+
+    public int doEndTag() throws JspTagException {
+        log.debug("endtag");
+        if (! foundBody) { // write everything to page!
+            Stack stack  = tree.getShrinkStack();
+            if (stack.size() > 0) {
+                log.debug("no body, doing work");
+                Entry entry = (Entry) stack.peek();
+                StringBuffer value = new StringBuffer();
+                while (depth >= endDepth) {
+                    log.debug("writing now " + entry.string);
+                    value.append(entry.string);
+                    stack.pop();
+                    if (stack.size() == 0) break;
+                    entry = (Entry) stack.peek();
+                    depth = entry.depth;
+                }
+                helper.setValue(value.toString());
+                super.doEndTag();
+                return helper.doEndTag();
+            } else {
+                log.debug("Empty stack, nothing to do");
+                return super.doEndTag();
+            }
+        } else {
+            log.debug("handled by doAfterBodies");
+            return super.doEndTag();
+        }
 
     }
 
