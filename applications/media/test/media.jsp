@@ -18,6 +18,7 @@ Try e.g to make a fragment /tv/vpro/noorderlicht/laatste.rm (type: rm) and the f
      <mm:field name="format" vartype="integer">
         <mm:compare value="12">
               <a href="<mm:url referids="fragment,source" page="test.ram.jsp" />">smil</a><br />
+              <a href="<mm:url referids="fragment,source" page="test.embedded.jsp" />">embededd smil</a><br />
          </mm:compare>
      </mm:field>
      </mm:node>
