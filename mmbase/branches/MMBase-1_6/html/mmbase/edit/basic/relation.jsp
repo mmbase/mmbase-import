@@ -33,9 +33,12 @@
    while(relationIterator.hasNext()) {
        Relation relation = relationIterator.nextRelation();
        Node otherNode = source ? relation.getDestination() : relation.getSource();
+        if (otherNode.equals(node)) continue; // happens when relation between 2 the same types ??
+
        // only show on actual type, so, not on parents
        // Not sure that this is what we want
-       if (otherNode.getNodeManager().equals(otherManager)) {
+       if (otherNode.getNodeManager().equals(otherManager)) 
+        {
 %>
 <tr>
     <%-- skip first field --%>
