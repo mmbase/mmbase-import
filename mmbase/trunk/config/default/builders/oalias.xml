@@ -177,7 +177,7 @@ a key/value system. Its a optional tag.
 		<gui>
 			<guiname xml:lang="nl">Bestemming</guiname>
 			<guiname xml:lang="us">Target</guiname>
-			<guitype>field</guitype>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -202,3 +202,4 @@ a key/value system. Its a optional tag.
 </fieldlist>
 
 </builder>
+
