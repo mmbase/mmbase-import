@@ -57,7 +57,8 @@ import org.mmbase.security.MMBaseCop;
  * out, as we can then assumes a correct model. This will optimize processing.
  *
  * @author Pierre van Rooden
- * @version 10 May 2001
+ * @since MMBase-1.5
+ * @version $Id: AbstractDove.java,v 1.1.2.1 2002-03-08 14:08:02 pierre Exp $
  */
 
 public abstract class AbstractDove {
@@ -115,6 +116,7 @@ public abstract class AbstractDove {
     public static final String ELM_NAME = "name";
     public static final String ELM_ROLE = "role";
     public static final String ELM_DESTINATION = "destination";
+    public static final String ELM_DESTINATIONTYPE = "destinationtype";
     public static final String ELM_LANG = "xml:lang";
     public static final String ELM_XPATH = "xpath";
     public static final String ELM_SOURCE = "source";
