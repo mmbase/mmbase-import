@@ -51,8 +51,9 @@
               Community application NOT installed please install before using it.<BR>
 You can install the Community application by going to ADMIN -> APPLICATIONS
             </mm:notpresent>
-            <mm:present referid="mynewsIsPresent">
-              This url will show the Community: <A HREF="/mmexamples/jsp/community/community.jsp" TARGET="community">http://yourhost:port/jspcommunity</A>
+            <mm:present referid="mynewsIsPresent">              
+              <mm:url id="url" page="/mmexamples/jsp/community/community.jsp" write="false" />
+              This url will show the Community: <A HREF="<mm:write referid="url" />" TARGET="community"><mm:write referid="url" /></A>
             </mm:present>
 
 			<BR><BR>
