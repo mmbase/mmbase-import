@@ -14,6 +14,7 @@ import java.sql.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
@@ -21,8 +22,7 @@ import org.mmbase.util.*;
  */
 public class Cookies extends MMObjectBuilder {
 
-	// debug level, make sure its false in cvs
-	public boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(Cookies.class.getName());
 
 	// remember the 250 most used cookies
 	LRUHashtable cache = new LRUHashtable(250);
@@ -59,11 +59,11 @@ public class Cookies extends MMObjectBuilder {
 		if (i!=null) {
                         // we have it in the cache so return that
 			if (i.intValue()!=-1) {
-				if (debug) debug("cookie positive cache");
+				log.debug("cookie positive cache");
 				return(i.intValue());
 			} else {
 				// this branch is only needed for the debug
-				if (debug) debug("cookie negative cache");
+				log.debug("cookie negative cache");
 				return(-1);
 			}
 		}
@@ -80,13 +80,13 @@ public class Cookies extends MMObjectBuilder {
 			cache.put(key,new Integer(number));
 			cache2.put(new Integer(number),key);
 
-			if (debug) debug("cookie positive");
+			log.debug("cookie positive");
 			return(number);
 		} else {
 			// not in the cloud but put it cache 
 			// to make sure it doesn't keep asking
 			// the database and return -1
-			if (debug) debug("cookie negative");
+			log.debug("cookie negative");
 			cache.put(key,new Integer(-1));
 			cache2.put(new Integer(-1),key);
 			return(-1);
