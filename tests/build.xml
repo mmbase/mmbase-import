@@ -1,4 +1,4 @@
-<project name="MMBaseTest" default="usage" basedir=".">
+<project name="MMBaseTest" default="run.all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Init                                                                -->
