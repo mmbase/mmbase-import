@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.34 2000-08-04 08:59:54 install Exp $
+	$Id: Images.java,v 1.35 2000-08-06 11:59:35 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.34  2000/08/04 08:59:54  install
+	Rob recovered
+	
 	Revision 1.33  2000/07/22 11:44:21  daniel
 	Removed some debug
 	
@@ -113,7 +116,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.34 2000-08-04 08:59:54 install Exp $
+ * @version $Id: Images.java,v 1.35 2000-08-06 11:59:35 daniel Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -303,7 +306,7 @@ public class Images extends MMObjectBuilder {
 										imageRequestTable.put(ckey,req);
 										imageRequestQueue.append(req);
 									} else {
-										debug("ConvertImage: a conversion in progress...  (requests="+(req.count()+1)+")");
+										if (debug) debug("ConvertImage: a conversion in progress...  (requests="+(req.count()+1)+")");
 									}
 								}
 								picture=req.getOutput();
