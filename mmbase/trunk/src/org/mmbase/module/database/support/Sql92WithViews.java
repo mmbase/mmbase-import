@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92WithViews.java,v 1.4 2004-01-27 12:04:49 pierre Exp $
+ * @version $Id: Sql92WithViews.java,v 1.5 2004-02-09 13:50:37 pierre Exp $
  */
 public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92WithViews.class.getName());
@@ -409,9 +409,9 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         // Now fill the fields
         try {
             preStmt.setEscapeProcessing(false);
-            Enumeration enum = ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();
-            while (enum.hasMoreElements()) {
-                currentField = (FieldDefs) enum.nextElement();
+            Enumeration enumeration = ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();
+            while (enumeration.hasMoreElements()) {
+                currentField = (FieldDefs) enumeration.nextElement();
                 String key = currentField.getDBName();
                 int DBState = node.getDBState(key);
                 if (!isInheritedField(bul, key) || getNumberString().equals(getAllowedField(key))) {

@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.21 2003-07-07 13:34:22 keesj Exp $
+ * @version $Id: Config.java,v 1.22 2004-02-09 13:50:33 pierre Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -141,7 +141,7 @@ public class Config extends ProcessorModule {
      */
     public boolean databaseIsActive(String path) {
         XMLProperties xmlReader = XMLProperties.getPropertiesFromXML(mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml");
-        	
+
         String curdb = (String)xmlReader.get("DATABASE");
         return path.indexOf(curdb) > 0;
     }
@@ -213,10 +213,10 @@ public class Config extends ProcessorModule {
                         Vector item1List = listDirectory(MMBaseContext.getConfigPath() + File.separator + category);
                         Vector item2List = new Vector();
                         Vector item3List = new Vector();
-                        Enumeration enum = item1List.elements();
+                        Enumeration enumeration = item1List.elements();
                         String path;
-                        while (enum.hasMoreElements()) {
-                            path = MMBaseContext.getConfigPath() +File.separator+category+File.separator+(String)enum.nextElement()+".xml";
+                        while (enumeration.hasMoreElements()) {
+                            path = MMBaseContext.getConfigPath() +File.separator+category+File.separator+(String)enumeration.nextElement()+".xml";
                             item2List.addElement(path);
                             if (category.equalsIgnoreCase("builders")) {
                                 item3List.addElement(builderIsActive(path) ? "true" : "false");

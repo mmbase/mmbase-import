@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.bridge.remote.generator;
@@ -47,10 +47,10 @@ public class RemoteGenerator {
         }
         mmci = MMCI.getDefaultMMCI(mmciFile);
         this.targetDir = targetDir;
-        Enumeration enum = mmci.getClasses().elements();
-        while (enum.hasMoreElements()) {
+        Enumeration enumeration = mmci.getClasses().elements();
+        while (enumeration.hasMoreElements()) {
 
-            XMLClass xmlClass = (XMLClass)enum.nextElement();
+            XMLClass xmlClass = (XMLClass)enumeration.nextElement();
             String name = xmlClass.getName();
 
             if (name.indexOf("org.mmbase") != -1) {
@@ -548,68 +548,68 @@ public class RemoteGenerator {
 
                 Vector oneImpl = getSupperClasses(oneClass);
                 Vector twoImplt = getSupperClasses(twoClass);
-                
+
                 Vector oneSub = getSubClasses(oneClass);
                 Vector twoSub = getSubClasses(twoClass);
 
                 //classes that don't implement anything always first
                 if (oneImpl.size() == 0 || twoImplt.size() == 0) {
-                	
+
                     return oneImpl.size() - twoImplt.size();
                 }
-                
+
                 boolean oneExtendsTwo = false;
-				boolean twoExtendsOne = false;
+                boolean twoExtendsOne = false;
                 for (int x = 0; x < oneSub.size(); x++) {
                     XMLClass j = (XMLClass)oneSub.get(x);
                     if (j.getName().equals(twoClass.getName())) {
-						twoExtendsOne = true;
+                        twoExtendsOne = true;
                     }
                 }
-                
-				
-				
-				for (int x = 0; x < twoSub.size(); x++) {
-					XMLClass j = (XMLClass)twoSub.get(x);
-					if (j.getName().equals(oneClass.getName())) {
-						
-						oneExtendsTwo = true;
-					}
-				}
 
-				if (oneExtendsTwo){
-					//System.err.println(oneClass.getName() + " extends " + twoClass.getName());
-					return 1;
-				}
-				
-				if (twoExtendsOne){
-					//System.err.println(oneClass.getName() + " is extended by " + twoClass.getName());
-					return -1;
-				}
-				
-				//System.err.println(oneClass.getName() + " equals " + twoClass.getName());
+
+
+                for (int x = 0; x < twoSub.size(); x++) {
+                    XMLClass j = (XMLClass)twoSub.get(x);
+                    if (j.getName().equals(oneClass.getName())) {
+
+                        oneExtendsTwo = true;
+                    }
+                }
+
+                if (oneExtendsTwo){
+                    //System.err.println(oneClass.getName() + " extends " + twoClass.getName());
+                    return 1;
+                }
+
+                if (twoExtendsOne){
+                    //System.err.println(oneClass.getName() + " is extended by " + twoClass.getName());
+                    return -1;
+                }
+
+                //System.err.println(oneClass.getName() + " equals " + twoClass.getName());
                 /*
                 if (ontImpl.indexOf(twoClass.getName()) != -1) {
                     retval = 1;
                 } else if (twoImplt.indexOf(oneClass.getName()) != -1) {
                     retval = -1;
                 }
-                
+
                 if (retval != 0) {
                     System.err.println(oneClass.getName() + " < " + twoClass.getName());
-                
+
                 }
                 return retval;
                 //System.err.println(oneClass.getName() + " ?? " + twoClass.getName());
                 //return oneClass.getName().compareTo(twoClass.getName());
-                 
+
                  */
                 return 0;
             }
 
         });
-		Collections.reverse(v);
-        Enumeration enum = v.elements();
+        Collections.reverse(v);
+        Enumeration enumeration = v.elements();
 
         sb.append("public static Object localToRMIObject(Object o) throws RemoteException {\n");
         sb.append("		Object retval = null;\n");
@@ -617,9 +617,9 @@ public class RemoteGenerator {
         sb2.append("		Object retval = null;\n");
 
         boolean isFirst = true;
-        while (enum.hasMoreElements()) {
+        while (enumeration.hasMoreElements()) {
 
-            XMLClass xmlClass = (XMLClass)enum.nextElement();
+            XMLClass xmlClass = (XMLClass)enumeration.nextElement();
             String name = xmlClass.getName();
 
             if (name.indexOf("org.mmbase") != -1) {

@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.17 2004-02-09 13:50:36 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -332,8 +332,8 @@ public class ObjectSelector implements CommandHandlerInterface {
                 result.addElement(node.getValue("number").toString());
                 HTMLString = "";
 
-                for (Enumeration enum = vals.elements(); enum.hasMoreElements();) {
-                    key = ((FieldDefs)enum.nextElement()).getDBName();
+                for (Enumeration enumeration = vals.elements(); enumeration.hasMoreElements();) {
+                    key = ((FieldDefs)enumeration.nextElement()).getDBName();
                     guival=builder.getGUIIndicator(key,node);
                     if (guival!=null) {
                         HTMLString += "<td bgcolor=\"#FFFFFF\" width=\"500\"> "+guival+"&nbsp;</td> ";
@@ -369,8 +369,8 @@ public class ObjectSelector implements CommandHandlerInterface {
 
         if (builder != null) {
             fieldDefs = builder.getSortedListFields();
-            for (Enumeration enum = fieldDefs.elements(); enum.hasMoreElements();) {
-                result.addElement(((FieldDefs)enum.nextElement()).getGUIName(language));
+            for (Enumeration enumeration = fieldDefs.elements(); enumeration.hasMoreElements();) {
+                result.addElement(((FieldDefs)enumeration.nextElement()).getGUIName(language));
             }
         }
 
