@@ -41,11 +41,10 @@
 	</contextsourcelist>
 
 	<description>
-		MyNews is a example (very bad one) of a news magazine
+		The MyNews magazine is an example of a magazine with news articles.
 	</description>
 
 	<install-notice>
-		Now its installed you can view a default magazine with
-		/news.
+		The MyNews application is installed. Look at yourhost/mynews for the magazine.
 	</install-notice>
 </application>
