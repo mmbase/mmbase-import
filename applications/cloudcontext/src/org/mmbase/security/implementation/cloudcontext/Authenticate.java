@@ -21,22 +21,21 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: Authenticate.java,v 1.1 2003-05-22 17:14:02 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.2 2003-06-16 13:07:17 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static Logger log = Logging.getLoggerInstance(Authenticate.class.getName());
     private long uniqueNumber;
 
     /**
-     * @javadoc
+     * Constructor. Only initializes an 'unique number' for this security instance, which can be used in
+     * 'isValid'.
      */
     public Authenticate() {
         uniqueNumber = System.currentTimeMillis();
     }
 
-    /**
-     * @javadoc
-     */
+    // javadoc inherited
     protected void load() throws SecurityException {
         Users users = Users.getBuilder();
         if (users == null) {
@@ -51,11 +50,11 @@ public class Authenticate extends Authentication {
         }
     }
 
-    /**
-     * @javadoc
-     */
+    // javadoc inherited
     public UserContext login(String s, Map map, Object aobj[]) throws SecurityException  {
-        log.trace("login-module: '" + s + "'");
+        if (log.isDebugEnabled()) {
+            log.trace("login-module: '" + s + "'");
+        }
         MMObjectNode node = null;
         Users users = Users.getBuilder();
         if (users == null) {
@@ -79,9 +78,8 @@ public class Authenticate extends Authentication {
         return new User(node, uniqueNumber);
     }
 
-    /**
-     * @javadoc
-     */
+    
+    // javadoc inherited
     public boolean isValid(UserContext usercontext) throws SecurityException {
         if (! (usercontext instanceof User)) {
             log.debug("Changed to other security implementation");
