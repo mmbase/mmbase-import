@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.classsecurity;
 
 import java.io.FileInputStream;
+import java.io.File;
 import java.util.*;
 
 import org.mmbase.security.*;
@@ -28,7 +29,7 @@ import org.xml.sax.InputSource;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.3 2004-05-04 09:43:23 keesj Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.4 2004-05-10 15:44:27 michiel Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
@@ -78,8 +79,19 @@ public class ClassAuthenticationWrapper extends Authentication {
             String wrappedUrl   = authentication.getAttributes().getNamedItem("url").getNodeValue();
             
             
+            // make the url absolute in case it isn't:
+            File authFile = null;
+            if (! wrappedUrl.equals("")) {
+                authFile = new File(wrappedUrl);
+            }
+            if (authFile != null  && (! authFile.isAbsolute())) { // so relative to current one
+                // being parsed file. make it absolute,
+                log.debug("authentication file was not absolutely given (" + wrappedUrl + ")");
+                authFile = new File(configFile.getParent() + File.separator + wrappedUrl);
+                log.debug("will use: " + authFile.getAbsolutePath());
+            }
             wrappedAuthentication = getAuthenticationInstance(wrappedClass);
-            wrappedAuthentication.load(manager, fileWatcher, wrappedUrl);
+            wrappedAuthentication.load(manager, fileWatcher, authFile.getAbsolutePath());
             ClassAuthentication.stopWatching();
             ClassAuthentication.load(configFile);
 
