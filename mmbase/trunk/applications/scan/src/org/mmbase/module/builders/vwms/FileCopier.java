@@ -17,12 +17,13 @@ import org.mmbase.util.logging.*;
 /**
  * A background process that starts file copy commands.
  * The process uses a {@link Queue} that holds {@link aFile2Copy} objects.
- * The copier is astratred by file transfer VWMs such as PageMaster, who maintain
+ * The copier is started by file transfer VWMs such as PageMaster, who maintain
  * the queue by filling it with information on files to transfer.
  * FileCopier does not copy files itself, instead, it starts a {@link SCPcopy} class for each
  * file to be copied.
  *
  * @author Rico Jansen
+ * @author Pierer van Rooden (javadocs)
  */
 public class FileCopier implements Runnable {
 
