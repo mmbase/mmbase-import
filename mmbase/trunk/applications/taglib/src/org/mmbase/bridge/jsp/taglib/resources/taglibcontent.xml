@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.26 2004-11-12 21:58:27 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.27 2005-02-14 14:38:50 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -155,6 +155,14 @@
     <class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
     <info>Escapes for use in SQL (escaping of quotes). You will _not_ have to use this if use mm:constraint.</info>
   </escaper>
+  <escaper id="js-single-quotes">
+    <class config="ESCAPE_SINGLE_QUOTES">org.mmbase.util.transformers.Javascript</class>
+    <info>Escapes single quotes for use in Javascript (with \').</info>
+  </escaper>
+  <escaper id="js-double-quotes">
+    <class config="ESCAPE_DOUBLE_QUOTES">org.mmbase.util.transformers.Javascript</class>
+    <info>Escapes double quotes for use in Javascript (with \").</info>
+  </escaper>
   <escaper id="url">
     <class config="ESCAPE">org.mmbase.util.transformers.Url</class>
     <info>Escapes for use in an URL (using escaping with %). When you use mm:url with mm:param tags you will not have to use this.</info>
@@ -251,6 +259,14 @@
     <class>org.mmbase.util.transformers.Perl</class>
     <info>
       Interpret the complete body as a perl program, and write the result.
+    </info>
+  </postprocessor>
+  <postprocessor id="cp1252">
+    <class>org.mmbase.util.transformers.CP1252Surrogator</class>
+    <info>
+      Surrogates the characters which are specific for CP1552 to simple
+      ASCII. (Characters from the ISO-8859-1 character set remain
+      untouched).
     </info>
   </postprocessor>
 
