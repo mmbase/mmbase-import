@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.5 2002-12-05 17:04:44 pierre Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.6 2003-01-07 14:41:27 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -125,7 +125,7 @@
 		<itemizedlist>
 			<listitem>
 				<para>Emacs</para>
-				<para>A unix based, non-graphical tool that provides several handholds for editing.</para>
+				<para>A unix based, non-graphical tool that provides several handholds for editing. aa</para>
 			</listitem>
 		</itemizedlist>
 		<itemizedlist>
