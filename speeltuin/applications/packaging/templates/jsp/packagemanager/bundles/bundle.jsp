@@ -64,7 +64,7 @@ function doLoad()
 
 function refresh()
 {
-    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&id=<mm:write referid="id" />&newmsg=installed&msgtype=install';
+    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&id=<mm:write referid="id" />&version=<mm:write referid="version" />&provider=<mm:write referid="provider" />&newmsg=installed&msgtype=install';
 }
 //-->
 </script>
@@ -91,12 +91,12 @@ When the install is done you can check state and log to see if all went well
 function doLoad()
 {
     // the timeout value should be the same as in the "refresh" meta-tag
-    setTimeout( "refresh()", 2*1000 );
+    setTimeout( "refresh()", 1000 );
 }
 
 function refresh()
 {
-    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&id=<mm:write referid="id" />&newmsg=installed&msgtype=uninstall';
+    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&id=<mm:write referid="id" />&version=<mm:write referid="version" />&provider=<mm:write referid="provider" />&newmsg=installed&msgtype=uninstall';
 }
 //-->
 </script>
@@ -124,7 +124,7 @@ function refresh()
 		<br />
 		<b>If installed correctly, please read the release and install notes<br />
 		For warnings and errors see below or under the 'show logfile'.<br /><br /></b>
-		<form action="<mm:url page="index.jsp" referids="main,sub,id" />" method="post">
+		<form action="<mm:url page="index.jsp" referids="main,sub,id,provider,version" />" method="post">
 		<center><input type="submit" value="ok"></center>
 		</form>
 	</tr>
@@ -148,7 +148,7 @@ function refresh()
 		<br />
 		<b>
 		See log for any problems, read release notes to see if a uninstall really			 removed all parts once installed.<br /><br /></b>
-		<form action="<mm:url page="index.jsp" referids="main,sub,id" />" method="post">
+		<form action="<mm:url page="index.jsp" referids="main,sub,id,provider,version" />" method="post">
 		<center><input type="submit" value="ok"></center>
 		</form>
 	</tr>
