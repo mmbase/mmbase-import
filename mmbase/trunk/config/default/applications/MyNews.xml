@@ -1,0 +1,34 @@
+<application name="MyNews" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+	  <builder maintainer="mmbase.org" version="1">mags</builder>
+	  <builder maintainer="mmbase.org" version="1">urls</builder>
+	  <builder maintainer="mmbase.org" version="1">jumpers</builder>
+	  <builder maintainer="mmbase.org" version="1">news</builder>
+	  <builder maintainer="mmbase.org" version="1">mmevents</builder>
+	  <builder maintainer="mmbase.org" version="1">people</builder>
+	</neededbuilderlist>	
+
+	<neededreldeflist>
+	  <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	  <relation from="mags" to="news" type="related" />
+	  <relation from="news" to="urls" type="related" />
+	  <relation from="news" to="mmevents" type="related" />
+	  <relation from="news" to="people" type="related" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+	  <datasource path="MyNews/mags.xml" />
+	  <datasource path="MyNews/news.xml" />
+	  <datasource path="MyNews/people.xml" />
+	  <datasource path="MyNews/urls.xml" />
+	  <datasource path="MyNews/jumpers.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+	  <relationsource path="MyNews/insrel.xml" />	
+	</relationsourcelist>
+</application>
