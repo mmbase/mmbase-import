@@ -77,17 +77,17 @@ public class Controller {
 
     public List getBundleVersions(String id) {
         // get the bundles of one id (all versions)
-        Enumeration bundleversions = BundleManager.getBundleVersions(id);
+        Iterator bundleversions = BundleManager.getBundleVersions(id);
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (bundleversions.hasMoreElements()) {
-            BundleVersionContainer  bvc = (BundleVersionContainer)bundleversions.nextElement();
+        while (bundleversions.hasNext()) {
+            BundleVersionContainer  bvc = (BundleVersionContainer)bundleversions.next();
 
-            Enumeration bundles = bvc.getBundles();
-            while (bundles.hasMoreElements()) {
-                BundleInterface  b = (BundleInterface)bundles.nextElement();
+            Iterator bundles = bvc.getBundles();
+            while (bundles.hasNext()) {
+                BundleInterface  b = (BundleInterface)bundles.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("id",b.getId());
                 virtual.setValue("name",b.getName());
@@ -110,12 +110,12 @@ public class Controller {
     public List getBundleNeededPackages(String id,String wv,String newuser) {
         // get the bundles of one id (all versions)
         BundleInterface bundle = BundleManager.getBundle(id);
-        Enumeration neededpackages = bundle.getNeededPackages();
+        Iterator neededpackages = bundle.getNeededPackages();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (neededpackages.hasMoreElements()) {
-            Hashtable np = (Hashtable)neededpackages.nextElement();
+        while (neededpackages.hasNext()) {
+            Hashtable np = (Hashtable)neededpackages.next();
 
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name",(String)np.get("name"));

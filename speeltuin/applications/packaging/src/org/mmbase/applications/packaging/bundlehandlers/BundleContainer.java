@@ -45,7 +45,7 @@ public class BundleContainer implements BundleInterface {
 
     private BundleInterface activeBundle;
 
-    private Hashtable versions = new Hashtable();
+    private HashMap versions = new HashMap();
     
     public BundleContainer(BundleInterface b) {
         // its the first one so it has to be the best
@@ -103,7 +103,7 @@ public class BundleContainer implements BundleInterface {
         return true;
     }
 
-    public Enumeration getNeededPackages() {
+    public Iterator getNeededPackages() {
         return activeBundle.getNeededPackages();
     }
 
@@ -159,8 +159,8 @@ public class BundleContainer implements BundleInterface {
         return activeBundle.getProvider();
     }
 
-    public Enumeration getVersions() {
-        return versions.elements();
+    public Iterator getVersions() {
+        return versions.values().iterator();
     }
 
     public BundleInterface getVersion(String version,ProviderInterface provider) {
@@ -186,11 +186,11 @@ public class BundleContainer implements BundleInterface {
         return null;
     }
 
-    public Enumeration getInstallSteps() {
+    public Iterator getInstallSteps() {
         return activeBundle.getInstallSteps();
     }
 
-    public Enumeration getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         return activeBundle.getInstallSteps(logid);
     }
 
