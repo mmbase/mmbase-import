@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.4 2003-07-21 21:22:31 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.5 2003-07-21 23:38:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQuery implements Query  {
@@ -95,15 +95,25 @@ public class BasicQuery implements Query  {
         return addRelationStep(rm, RelationStep.DIRECTIONS_BOTH); // would 'DESTINATION' not be better?
     }
     public RelationStep addRelationStep(RelationManager rm, int dir) {
-
-
         if (used) throw new BridgeException("Query was used already");
         InsRel insrel =  (InsRel) ((BasicRelationManager)rm).builder;
         MMObjectBuilder otherBuilder = ((BasicNodeManager) rm.getDestinationManager()).builder;        
-        BasicRelationStep step = query.addRelationStep(insrel, otherBuilder);
-        step.setDirectionality(dir); 
-        ((BasicStep) step.getNext()).setAlias(rm.getDestinationManager().getName());
-        return step;
+        BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
+        relationStep.setDirectionality(dir); 
+        ((BasicStep) relationStep.getNext()).setAlias(rm.getDestinationManager().getName());
+
+        /*
+          optimize query 
+        relationStep.setCheckedDirectionality(true);
+        // Check directionality is requested and supported.
+        if (dir != SEARCH_ALL && InsRel.usesdir) {
+            relationStep.setCheckedDirectionality(true);
+        }
+        BasicCloudContext.mmb;
+
+        too much copying from ClusterBuilder -> like to centralize code somewhere
+        */
+        return relationStep;
     }
 
     
@@ -128,6 +138,10 @@ public class BasicQuery implements Query  {
         query.setOffset(offset);
         return this;
 
+    }
+
+    public FieldNullConstraint    createConstraint(StepField f) {
+        return new BasicFieldNullConstraint(f);
     }
 
     public FieldValueConstraint        createConstraint(StepField f, Object v) {
@@ -157,8 +171,7 @@ public class BasicQuery implements Query  {
     }
     
     public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
-        BasicCompositeConstraint c = new BasicCompositeConstraint(operator);
-        
+        BasicCompositeConstraint c = new BasicCompositeConstraint(operator);        
         c.addChild(c1);
         c.addChild(c2);
         return c;
@@ -167,6 +180,14 @@ public class BasicQuery implements Query  {
     public void setConstraint(Constraint c) {
         if (used) throw new BridgeException("Query was used already");
         query.setConstraint(c);
+    }
+
+    public SortOrder addSortOrder(StepField f, int direction) {
+        if (used) throw new BridgeException("Query was used already");
+        BasicSortOrder s = new BasicSortOrder(f);
+        s.setDirection(direction);
+        return s;
+        
     }
 
     public boolean isUsed() {
