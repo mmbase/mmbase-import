@@ -2,7 +2,6 @@
   fields="posrel.pos,urls.url,urls.name,urls.description"
   orderby="posrel.pos" directions="UP">
   <mm:first>
-  <mm:present referid="news"><div class="newsurl"></mm:present>
   <table class="relationcontainer">
   <tr><th>Urls</th></tr>
   <tr><td>
@@ -19,6 +18,5 @@
   </td>
   </tr>
   </table>
-  <mm:present referid="news"></div></mm:present>
   </mm:last>
 </mm:related>
