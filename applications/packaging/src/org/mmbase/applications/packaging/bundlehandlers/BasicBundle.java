@@ -134,6 +134,10 @@ public class BasicBundle implements BundleInterface {
             return "installed";
         }
 
+        if (BundleManager.upgradeAvailable(this)) {
+            return "upgrade available";
+        }
+
         if (state == null) return "";
         return state;
     }
