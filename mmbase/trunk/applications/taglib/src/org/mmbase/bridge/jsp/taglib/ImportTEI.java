@@ -21,9 +21,6 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  */
 public class ImportTEI extends WriterTEI {
     
-    public ImportTEI() { 
-        super(); 
-    }
     protected int scope() {
         return VariableInfo.AT_END;
     }
