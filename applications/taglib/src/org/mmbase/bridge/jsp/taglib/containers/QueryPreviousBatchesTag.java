@@ -14,6 +14,7 @@ import java.util.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Query;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.StringListTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.*;
@@ -23,16 +24,21 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.2 2004-01-06 18:10:16 michiel Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.3 2004-02-26 23:55:32 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
 
     protected Attribute container  = Attribute.NULL;
     protected Attribute indexOffsetOffset = Attribute.NULL;
+    protected Attribute maxtotal = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
+    }
+
+    public void setMaxtotal(String m) throws JspTagException {
+        maxtotal = getAttribute(m);
     }
 
     public void setIndexoffset(String i ) throws JspTagException {
@@ -69,8 +75,28 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         if (offset % maxNumber != 0) { // be paranoid, perhaps not necessary, but guarantees less queries in case of url-hacking (if 'offset' is used on url)
             throw new JspTagException("Offset (" + offset + ") is not a multipible of max-number (" + maxNumber + "): Cannot batch results.");
         }
+
+
+        int maxTotalSize = maxtotal.getInt(this, -1);
+
+        int maxSize;
+        if (maxTotalSize > 0) {
+            int totalSize = Queries.count(query);
+            maxSize = maxTotalSize  / 2; // half for both, 
+            int numberOfNextBatches = (totalSize - offset)/ maxNumber + 1; // including current
+            if (numberOfNextBatches < maxSize) { // nextbatches will not use all
+                maxSize += (maxSize - numberOfNextBatches);
+            }
+            int max = getMaxNumber();
+            if (max > 0 && maxSize > max) maxSize = max;
+
+        } else {
+            maxSize = getMaxNumber();
+        }
+
+
         List result = new ArrayList();
-        int maxSize = getMaxNumber();
+
         while (offset > 0) {
             offset -= maxNumber;
             if (offset < 0) offset = 0;
