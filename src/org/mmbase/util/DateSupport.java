@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.16 2003-10-31 15:15:14 keesj Exp $
+ * @version $Id: DateSupport.java,v 1.17 2004-01-08 12:01:50 pierre Exp $
  */
 public class DateSupport {
 
@@ -57,7 +57,7 @@ public class DateSupport {
     * Return the number of days in the month in a specified year.
     * Leap years have to be taken into account
     *
-    * @param year The year valid values 0..100 where 0 is y2k 2000  untill 89 => 2089 and 90 being the year 1990   
+    * @param year The year valid values 0..100 where 0 is y2k 2000  untill 89 => 2089 and 90 being the year 1990
     * @param month The month where 0 is januari
     */
     static public int daysInMonth(int year, int month) {
@@ -421,7 +421,7 @@ public class DateSupport {
         Date v = new Date((long) val * 1000);
         Calendar c = Calendar.getInstance();
         c.setTime(v);
-        return c.get(Calendar.MONTH) + 1;
+        return c.get(Calendar.MONTH);
     }
 
     /**
