@@ -2,6 +2,7 @@ package org.mmbase.security.basic;
 
 import org.mmbase.security.UserContext;
 import org.mmbase.security.Operation;
+import org.mmbase.security.Rank;
 
 import org.mmbase.module.core.MMObjectNode;
 
@@ -49,25 +50,21 @@ public class Authorization extends org.mmbase.security.Authorization {
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) {
 	log.debug("checking user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber);
-        boolean permitted = true;
+        boolean permitted = false;
         if(manager.getActive()) {
 	    // if we are admin, everything is permitted....
-    	    org.mmbase.security.basic.UserContext u = (org.mmbase.security.basic.UserContext) user;	    
-	    if(u.isAdmin()) {
+	    if(user.getRank() == Rank.ADMIN) {
 	    	log.debug("user admin has always all rights..");
 	    	return true;
 	    }
-	    permitted = ! u.isAnonymous();
             switch(operation.getInt()) {
                 case Operation.CREATE_INT:
                     // say we may always create, if we are authenticated.
-
-    	    	    // permitted already set well..
+    	    	    permitted = !(user.getRank() == Rank.ANONYMOUS);
                     break;
                 case Operation.LINK_INT:
                     // nah, we always except links from other nodes.....
-		    
-    	    	    // permitted already set well..
+		    permitted = !(user.getRank() == Rank.ANONYMOUS);
                     break;
                 case Operation.READ_INT:
                     // nah, we may always view other nodes.,....
@@ -78,18 +75,24 @@ public class Authorization extends org.mmbase.security.Authorization {
                 case Operation.WRITE_INT:
                     // dont think so when we are anonymous...
                     // we are logged in, check if we may edit this node,....
-                    MMObjectNode node = getMMNode(nodeNumber);
-                    String ownerName = node.getStringValue("owner");
-                    if(ownerName.equals("bridge")) {
-                        // was created by the bridge, we can take this one....
-                        log.debug("record was from bridge... hihi we take it...");
-                        permitted = true;
-                    }
-                    else {
-                        log.debug("Owner of checking field is:'" + ownerName +
-                                  "' and user is '" + user.getIdentifier() + "'");
-                        permitted = ownerName.equals(user.getIdentifier());
-                    }                    
+		    if(user.getRank() != Rank.ANONYMOUS) {
+                        MMObjectNode node = getMMNode(nodeNumber);
+    	                String ownerName = node.getStringValue("owner");
+                        if(ownerName.equals("bridge")) {
+            	            // was created by the bridge, we can take this one....
+                            log.debug("record was from bridge... hihi we take it...");
+                    	    permitted = true;
+                        }
+    	                else {
+                            log.debug("Owner of checking field is:'" + ownerName +
+            	                      "' and user is '" + user.getIdentifier() + "'");
+                            permitted = ownerName.equals(user.getIdentifier());
+                    	}                  
+		    }
+		    else {
+		    	// if user is anonymous.....
+			permitted = false;
+		    }
                     break;
                 default:
                     throw new org.mmbase.security.SecurityException("Operation was NOT permitted...");
