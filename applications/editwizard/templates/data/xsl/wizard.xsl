@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.48 2002-07-18 12:24:12 michiel Exp $
+  @version $Id: wizard.xsl,v 1.49 2002-07-18 15:21:13 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -225,7 +225,7 @@
   <xsl:template match="field">
     <xsl:param name="colspan">1</xsl:param>
     <td class="fieldprompt">
-      <xsl:call-template name="prompt" />
+      <xsl:call-template name="prompt" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     </td>
     <td class="field" colspan="{$colspan}">
       <xsl:call-template name="fieldintern" />
@@ -778,10 +778,10 @@
 
 
   <xsl:template name="stepbutton">
-    <xsl:variable name="schemaid" select="@form-schema" />
+    a:<xsl:variable name="schemaid" select="@form-schema" />      
       <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
-        titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"
-        > <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
+        titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"> 
+      <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
       <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
       <xsl:call-template name="prompt_step" />
       </a>
