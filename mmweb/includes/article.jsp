@@ -9,14 +9,13 @@
   <td>&nbsp;</td>
 </tr><tr>
   <td width="540" valign="top">	
-  <mm:content escaper="links">
-	<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
-	<mm:field name="body"><mm:isnotempty>
-		<mm:remove referid="news"/><mm:import id="news"/>
-		<div><%@ include file="/includes/urls.jsp" %>
-		<mm:write /></div>
-	</mm:isnotempty></mm:field>
-  </mm:content>
+	<mm:content escaper="links">
+	  <mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
+	</mm:content>
+	  <mm:remove referid="news"/><mm:import id="news" /><%@ include file="/includes/urls.jsp" %>
+	<mm:content escaper="links">
+	  <mm:field name="body"><mm:isnotempty><div><mm:write /></div></mm:isnotempty></mm:field>
+	</mm:content>
   </td>
   <td valign="top">
 	<mm:related path="posrel,images" fields="posrel.pos" orderby="posrel.pos">
