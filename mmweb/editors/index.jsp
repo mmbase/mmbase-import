@@ -1,6 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud" sessionname="edtrs">
-
+<mm:cloud name="mmbase" loginpage="login.jsp" rank="basic user" jspvar="cloud">
 <html>
 <head>
 <title>MMBase editors (ingelogd als <%= cloud.getUser().getIdentifier() %>)</title>
@@ -13,5 +12,4 @@
 	</frameset>
 </frameset>
 </html>
-
 </mm:cloud>
