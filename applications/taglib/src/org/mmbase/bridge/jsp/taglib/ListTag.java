@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.35 2003-11-06 09:07:25 pierre Exp $
+ * @version $Id: ListTag.java,v 1.36 2003-11-07 10:40:31 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -187,7 +187,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             }
 */
             NodeList nodes = getCloud().getList(query);
-            return setReturnValues(nodes, true, query);
+            return setReturnValues(nodes, true);
         }
     }
 

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.28 2003-11-06 09:07:25 pierre Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.29 2003-11-07 10:40:31 michiel Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -121,7 +121,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         }
 
         NodeList nodes = cloud.getList(query);
-        return setReturnValues(nodes, true, query);
+        return setReturnValues(nodes, true);
     }
 }
 

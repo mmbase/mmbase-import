@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.55 2003-11-06 09:07:24 pierre Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.56 2003-11-07 10:40:30 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -102,7 +102,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected int timerHandle = -1;
 
-    private String previousValue = null; // static because  doInitBody
+    private String previousValue = null; 
 
     public int getIndex() {
         return currentItemIndex;
@@ -251,27 +251,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param trim if true, trim the list using offset and max
      *        (if false, it is assumed the calling routine already did so)
      * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
-     *  list is empty. THis value should be passed as the result of {
-     *  @link #doStartTag}.
+     *  list is empty. THis value should be passed as the result of {@link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        return setReturnValues(nodes, trim, null);
-    }
-
-    /**
-     * Creates the node iterator and sets appropriate variables (such as listsize).
-     * Takes a node list, and trims it using the offset and
-     * max attributes if so indicated.
-     * The list is assumed to be already sorted.
-     * @param nodes the nodelist to create the iterator from
-     * @param trim if true, trim the list using offset and max
-     *        (if false, it is assumed the calling routine already did so)
-     * @param query the Query used to create the list. Used to determine the 'changedOn' property.
-     * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
-     *  list is empty. THis value should be passed as the result of {
-     *  @link #doStartTag}.
-     */
-    protected int setReturnValues(NodeList nodes, boolean trim, Query query) throws JspTagException {
         ListSorter.sort(nodes, (String) comparator.getValue(this), pageContext);
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
@@ -308,12 +290,18 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         previousValue = null;
         changed = true;
 
-        if (query!=null) {
+        Query query = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
+
+        if (query != null) {
             // get changeOn value for mm:changed tag
             List ls = query.getSortOrders();
-            if (ls.size()>0) {
+            if (ls.size() > 0) {
                 StepField sf= ((SortOrder)ls.get(0)).getField();
-                returnList.setProperty("orderby",sf.getStep().getAlias()+'.'+sf.getFieldName());
+                if (query instanceof NodeQuery) {
+                    returnList.setProperty("orderby", sf.getFieldName());
+                } else {
+                    returnList.setProperty("orderby", sf.getStep().getAlias() + '.' + sf.getFieldName());
+                }
             }
         } else {
             if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
@@ -375,13 +363,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             Node next = nodeIterator.nextNode();
             // use order as stored in the nodelist (the property of the tag may not be set
             // if you use referid to get the result of a prevuious listtag)
-            String listorder=(String)returnList.getProperty("orderby");
-            if (listorder != null && ! "".equals(listorder)) {
+            String listOrder=(String) returnList.getProperty("orderby");
+            if (listOrder != null && ! "".equals(listOrder)) {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
-                String f = (String)StringSplitter.split(listorder).get(0);
+                String f = (String) StringSplitter.split(listOrder).get(0);
                 String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
-                if (previousValue !=null) {
+                if (previousValue != null) {
                     if (value.equals(previousValue)) {
                         changed = false;
                     } else {
