@@ -261,6 +261,15 @@ public class ContextTag extends ContextReferrerTag {
         }
         return location;
     }
+    public static String locationToString(int i) {
+        switch(i) {
+        case LOCATION_PARENT:      return "parent";
+        case LOCATION_PARAMETERS:  return "parameters";
+        case LOCATION_SESSION:     return "session";
+        case LOCATION_PAGE:        return "page";
+        default:                   return "<>";
+        }
+    }
 
 
     private ContextContainer container = null; 
