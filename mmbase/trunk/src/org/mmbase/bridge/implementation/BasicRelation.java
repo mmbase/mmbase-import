@@ -20,10 +20,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.32 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.33 2004-01-16 13:29:25 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
-    private static Logger log = Logging.getLoggerInstance(BasicRelation.class);
+    private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
 
     private RelationManager relationManager = null;
     protected int snum;
@@ -38,21 +38,21 @@ public class BasicRelation extends BasicNode implements Relation {
      * @javadoc
      */
     BasicRelation(MMObjectNode node, Cloud cloud) {
-        super(node,cloud);
+        super(node, cloud);
     }
 
     /**
      * @javadoc
      */
     BasicRelation(MMObjectNode node, NodeManager nodeManager) {
-        super(node,nodeManager);
+        super(node, nodeManager);
     }
 
     /**
      * @javadoc
      */
     BasicRelation(MMObjectNode node, Cloud cloud, int id) {
-        super(node,cloud,id);
+        super(node, cloud, id);
     }
 
     /**
@@ -130,6 +130,7 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         return relationManager;
     }
+
 
     /**
      *
