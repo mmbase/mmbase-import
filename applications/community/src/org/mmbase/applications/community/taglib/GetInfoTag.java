@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.community;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
@@ -21,73 +19,58 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
-* GetInfo tag obtains information from the multipurpose INFO field.
-*
-* @author Pierre van Rooden
-*/
-public class GetInfoTag extends NodeReferrerTag {
+ * GetInfo tag obtains information from the multipurpose INFO field.
+ *
+ * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
+ */
+public class GetInfoTag extends NodeReferrerTag implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
 
-    protected Node node;
+    protected WriterHelper helper = new WriterHelper();
+
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+
     private String key=null;
-    private String value=null;
-    private String jspvar=null;
-    private boolean skiponempty=true;
-
     public void setKey(String k) throws JspTagException {
-        key=k;
+        key = getAttributeValue(k);
     }
 
-    public void setJspvar(String v) throws JspTagException {
-        jspvar = v;
-    }
-
-    public void setSkiponempty(boolean skip) {
-        skiponempty=skip;
-    }
 
     public int doStartTag() throws JspTagException{
         // firstly, search the node:
-        node = getNode();
+        Node node = getNode();
 
         // found the node now. Now we can decide what must be shown:
-        if (key==null) key="name";
-        value=node.getStringValue("getinfovalue("+key+")");
-        if ((value == null) || (value.length()==0)) {
-            if (skiponempty) {
-                return SKIP_BODY;
-            } else {
-                value="";
-            }
+        if (key == null) key = "name";
+        String value=node.getStringValue("getinfovalue("+key+")");
+        if (value == null) value="";            
+        helper.setValue(value);
+        helper.setJspvar(pageContext);  
+        if (getId() != null) {
+            getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_TAG;
     }
 
-    /**
-     * write the value of the field.
-     **/
-    public void doInitBody() throws JspTagException {
-        if (jspvar!=null) {
-            pageContext.setAttribute(jspvar, value);
-        } else {
-            try {
-                bodyContent.print(value);
-            } catch (java.io.IOException e) {
-                throw new JspTagException (e.toString());
-            }
-        }
-    }
 
     /**
      * write the value of the field.
      **/
     public int doAfterBody() throws JspTagException {
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());
-        }
-        return SKIP_BODY;
+        helper.setBodyContent(bodyContent);
+        return helper.doAfterBody();
     }
 }
