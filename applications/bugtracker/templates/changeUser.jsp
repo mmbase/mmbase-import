@@ -3,28 +3,18 @@
   <%@include file="parameters.jsp" %>
   <mm:import externid="error">none</mm:import>
   <form action="<mm:url referids="parameters,$parameters"/>" method="POST">
-        <input type="hidden" name="action" value="checkuser"/>
-  <table class="list">
-    <mm:compare referid="error" value="login">
-      <tr>
-        <td colspan="2">
-          feedback <font color="#cc0000">** wrong account or password **</font>
-        </td>
-      </tr>
-    </mm:compare>
+   <input type="hidden" name="action" value="checkuser"/>
+   <table class="list">
+     <mm:compare referid="error" value="login">
+       <tr>
+         <td colspan="2">
+           feedback <font color="#cc0000">** wrong account or password **</font>
+         </td>
+       </tr>
+     </mm:compare>
 
-    <tr>
-      <th>Login</th>
-      <td>
-        <input name="account" value="" size="10" />
-      </td>
-    </tr>
-    <tr>
-      <th>Password</th>
-      <td>
-        <input name="password" value="" size="10" type="password" />
-      </td>
-    </tr>
+    <tr><th>Login</th><td><input name="account" value="" size="10" /></td></tr>
+    <tr><th>Password</th><td><input name="password" value="" size="10" type="password" /></td></tr>
     <tr>
       <td colspan="2">
         <input type="submit" value="login" />
@@ -40,5 +30,4 @@
     </tr>
   </table>
 </form>
-</body>
 </mm:cloud>
