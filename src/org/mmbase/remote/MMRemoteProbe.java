@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMRemoteProbe.java,v 1.7 2000-12-19 17:10:54 vpro Exp $
+$Id: MMRemoteProbe.java,v 1.8 2001-01-24 14:10:26 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/12/19 17:10:54  vpro
+Davzev: Still managed to add some debug and comment
+
 Revision 1.6  2000/12/19 13:31:03  vpro
 Davzev: Added cvs comments
 
@@ -24,7 +27,7 @@ import java.io.*;
 
 /**
  * 
- * @version $Revision: 1.7 $ $Date: 2000-12-19 17:10:54 $
+ * @version $Revision: 1.8 $ $Date: 2001-01-24 14:10:26 $
  * @author Daniel Ockeloen
  */
 public class MMRemoteProbe implements Runnable {
@@ -95,7 +98,7 @@ public class MMRemoteProbe implements Runnable {
 	 */
 	public void doWork() {
 		try {
-			if (debug) debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep again.");
+			if (debug) debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep.");
 			con.commitNode(servicenr,"mmservers",toXML());
 			Thread.sleep(SLEEPTIME);
 		} catch(Exception e) {
@@ -116,6 +119,7 @@ public class MMRemoteProbe implements Runnable {
 			host=InetAddress.getLocalHost().getHostName();
 		} catch(Exception e) { 
 			debug("toXML(): ERROR: Could not get localhost address!"); 
+			e.printStackTrace();
 		}
 		String body="<?xml version=\"1.0\"?>\n";
 		body+="<!DOCTYPE mmnode.mmservers SYSTEM \"http://openbox.vpro.nl/mmnode/mmservers.dtd\">\n";
