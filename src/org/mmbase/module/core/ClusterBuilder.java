@@ -392,13 +392,13 @@ public class ClusterBuilder extends VirtualBuilder {
             where="";
         }
 
+        String query="";
         try {
             MultiConnection con=null;
             Statement stmt=null;
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
-                String query;
                 if (basenodestring.length()+relstring.length()+where.length()>1) {
                     query="select "+distinct+" "+select+" from "+stables+" where "+basenodestring+relstring+where+" "+order;
                 } else {
@@ -430,7 +430,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         } catch (Exception e) {
             // something went wrong print it to the logs
-            log.error("searchMultiLevelVector(): ERROR: ");
+            log.error("Query failed:"+query);
             log.error(Logging.stackTrace(e));
             return null;
         }
