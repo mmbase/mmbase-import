@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * This is the http implementation of the ProtocolDriver interface. 
  * It can signal a specific remote builder node using HTTP GET.
  * 
- * @version $Revision: 1.8 $ $Date: 2001-05-07 13:41:18 $ 
+ * @version $Revision: 1.9 $ $Date: 2001-05-07 15:24:54 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {
@@ -98,9 +98,9 @@ public class http implements ProtocolDriver {
 			out.print("User-Agent: org.mmbase\r\n");
 			out.print("\r\n");
 			out.flush();
+			out.close();
 			String line=in.readLine();
 			log.debug("signalRemoteNode("+number+","+builder+","+ctype+"): Result of GET request (1stline):"+line);
-			out.close();
 		} catch(Exception e) {
 			log.error("Exception " + Logging.stackTrace(e));
 		}
