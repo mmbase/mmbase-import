@@ -21,7 +21,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.13 2003-08-04 10:16:04 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.14 2003-08-04 10:57:35 pierre Exp $
  */
 public interface StorageManager {
 
@@ -94,20 +94,20 @@ public interface StorageManager {
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
-     * This method inserts a new object, and registers the change.
+     * This method creates a new object in the storage, and registers the change.
      * Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored.
      * @param node The node to insert
      * @return The (new) number for this node, or -1 if an error occurs.
      * @throws StorageException if an error occurred during insert
      */
-    public int insert(MMObjectNode node) throws StorageException;
+    public int create(MMObjectNode node) throws StorageException;
 
     /**
      * Commit this node to the specified builder.
      * @param node The node to commit
      * @throws StorageException if an error occurred during commit
      */
-    public void commit(MMObjectNode node) throws StorageException;
+    public void change(MMObjectNode node) throws StorageException;
 
     /**
      * Delete a node
@@ -149,6 +149,18 @@ public interface StorageManager {
     public void create() throws StorageException;
 
     /**
+     * Changes the storage of a builder to match its new configuration.
+     * @param builder the builder whose storage to change
+     */
+    public void change(MMObjectBuilder builder) throws StorageException;
+
+    /**
+     * Drops the storage of this builder.
+     * @param builder the builder whose storage to drop
+     */
+    public void delete(MMObjectBuilder builder) throws StorageException;
+
+    /**
      * Determine if a storage element exists for storing the given builder's objects
      * @param builder the builder to check
      * @return <code>true</code> if the storage element exists, false if it doesn't
@@ -180,37 +192,25 @@ public interface StorageManager {
     public int size() throws StorageException;
 
     /**
-     * Drops the storage of this builder.
-     * @param builder the builder whose storage to drop
-     */
-    public void drop(MMObjectBuilder builder) throws StorageException;
-
-    /**
-     * Adds a field to the storage of this builder.
+     * Creates a field and adds it to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to add
      */
-    public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
-
-    /**
-     * Deletes a field from the storage of this builder.
-     * @param builder the builder whose storage to change
-     * @param fieldname the name fo the field to delete
-     */
-    public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
+    public void create(FieldDefs field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to change
      */
-    public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
+    public void change(FieldDefs field) throws StorageException;
 
     /**
-     * Changes the storage of a builder to match its new configuration.
+     * Deletes a field from the storage of this builder.
      * @param builder the builder whose storage to change
+     * @param fieldname the name fo the field to delete
      */
-    public void updateStorage(MMObjectBuilder builder) throws StorageException;
+    public void delete(FieldDefs field) throws StorageException;
 
 }
 
