@@ -9,17 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.*;
-import java.sql.*;
-import java.io.*;
-
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @version $Id: Properties.java,v 1.9 2001-05-04 13:54:56 vpro Exp $
+ * @version $Id: Properties.java,v 1.10 2003-03-04 14:12:22 nico Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 

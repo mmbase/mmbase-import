@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.util.*;
-
-import org.mmbase.util.*;
 /*
-    $Id: TemporaryNodeManagerInterface.java,v 1.12 2001-08-24 07:31:34 pierre Exp $
+    $Id: TemporaryNodeManagerInterface.java,v 1.13 2003-03-04 14:19:00 nico Exp $
 
     $Log: not supported by cvs2svn $
+    Revision 1.12  2001/08/24 07:31:34  pierre
+    pierre: reindenting and some code convention changes, so bugfixes will be better visible.
+
     Revision 1.11  2001/07/24 07:30:06  pierre
     pierre: added createTmpAlias() method for creating aliases in a transaction.
     Fixes a bug in the MMCI.
@@ -56,7 +56,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManagerInterface.java,v 1.12 2001-08-24 07:31:34 pierre Exp $
+ * @version $Id: TemporaryNodeManagerInterface.java,v 1.13 2003-03-04 14:19:00 nico Exp $
  */
 public interface TemporaryNodeManagerInterface {
     public String createTmpNode(String type,String owner,String key);

@@ -10,21 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.builders;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.2 $ $Date: 2001-05-21 11:27:23 $ 
+ * @version0 $Revision: 1.3 $ $Date: 2003-03-04 14:12:21 $ 
  */
 public class EmailQueueProbe implements Runnable {
 

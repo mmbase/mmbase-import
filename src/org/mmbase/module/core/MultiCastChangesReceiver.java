@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.lang.*;
 import java.net.*;
 import java.util.*;
-import java.io.*;
 
 import org.mmbase.util.*;
 
@@ -25,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesReceiver.java,v 1.6 2002-03-11 10:42:36 pierre Exp $
+ * @version $Id: MultiCastChangesReceiver.java,v 1.7 2003-03-04 14:19:00 nico Exp $
  */
 public class MultiCastChangesReceiver implements Runnable {
 

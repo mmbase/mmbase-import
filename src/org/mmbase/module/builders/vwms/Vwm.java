@@ -11,8 +11,7 @@ package org.mmbase.module.builders.vwms;
 
 import java.util.*;
 import java.io.*;
-import java.lang.*;
-import org.mmbase.util.*;
+
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;

@@ -11,10 +11,8 @@ MMBase partners.
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.sql.*;
 
 import org.mmbase.module.ParseException;
-import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -22,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: Forums.java,v 1.6 2001-04-02 15:57:32 wwwtech Exp $
+ * @version $Id: Forums.java,v 1.7 2003-03-04 14:12:23 nico Exp $
  */
 public class Forums extends MMObjectBuilder {
 

@@ -9,14 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.util.*;
 import java.lang.Exception;
 
-import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.corebuilders.OAlias;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.30 2002-11-25 11:47:38 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.31 2003-03-04 14:19:02 nico Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 

@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import java.sql.*;
-import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.corebuilders.InsRel;
@@ -33,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.28 2003-01-22 12:35:05 robmaris Exp $
+ * @version $Id: MultiRelations.java,v 1.29 2003-03-04 14:12:20 nico Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {

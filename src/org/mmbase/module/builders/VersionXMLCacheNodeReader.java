@@ -15,15 +15,10 @@ import java.util.*;
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.*;
 
-/**
-*/
 public class VersionXMLCacheNodeReader {
 
     Document document;

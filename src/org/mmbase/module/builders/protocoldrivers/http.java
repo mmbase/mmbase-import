@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.protocoldrivers;
 
-import java.lang.*;
 import java.net.*;
-import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.logging.Logger;
@@ -24,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * It can signal a specific remote builder node using HTTP GET.
  * 
  * @rename Http
-  * @version $Revision: 1.12 $ $Date: 2001-12-14 09:33:20 $ 
+  * @version $Revision: 1.13 $ $Date: 2003-03-04 14:12:25 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {

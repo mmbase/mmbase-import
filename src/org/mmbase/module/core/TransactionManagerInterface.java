@@ -10,12 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import org.mmbase.module.corebuilders.*;
 
 /*
-    $Id: TransactionManagerInterface.java,v 1.5 2001-08-24 07:31:35 pierre Exp $
+    $Id: TransactionManagerInterface.java,v 1.6 2003-03-04 14:19:00 nico Exp $
 
     $Log: not supported by cvs2svn $
+    Revision 1.5  2001/08/24 07:31:35  pierre
+    pierre: reindenting and some code convention changes, so bugfixes will be better visible.
+
     Revision 1.4  2000/12/14 10:54:52  rico
     Rico: added John Balder's changes for exception handling
 
@@ -34,7 +36,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManagerInterface.java,v 1.5 2001-08-24 07:31:35 pierre Exp $
+ * @version $Id: TransactionManagerInterface.java,v 1.6 2003-03-04 14:19:00 nico Exp $
  */
 public interface TransactionManagerInterface {
     public String create(Object user,String transactionname)
