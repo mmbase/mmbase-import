@@ -15,111 +15,184 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.vwms.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
+ * Virtual WebMasterS (VWMS) are agents within MMBase.
+ * To be able to start a VWMS the following things have to be done:
+ * - Create a VWMS that does the work
+ * - Start the VWMS in the VWMS-Builder.
+ * - Make a relation from the Vwm object to a MMserver.
+ * - start the VWMS-Builder if it isn't already running.
+ *
+ * In the Vwms builder you have to insert the following information:
+ * Name: name of the Vwm
+ * Machine: machine on which the VwmM is running (wanted_cpu)
+ * Maintenance_Time: This is the interval time in which the Vwm is invoked
+ * State: inactive means Vwm is off. active means Vwm is on.
+ * Description: just a description
+ * ClassName: the classname of the actual VWM that is performing the task.
+ *
+ * (extracted from the VWMS documentation at www.MMBase.org)
+ *
  * @author Arjan Houtman
  * @author Rico Jansen
+ * @author Pierre van Rooden (javadoc)
  */
+
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
+
+	private static Logger log = Logging.getLoggerInstance(Vwms.class.getName());
+	
 	Hashtable vwm_cache = new Hashtable ();
+	
 	private String emailFromDomain;
 	private String emailReturnPath;
 	private String emailTo;
-	private static boolean debug=false;
 
+    /**
+    * Initializes the vwms builder.
+    * Doesn't do anything, which is odd as you would expect it to read the emailXXX properties.
+    * This now happens in the {@link #sendMail} method.
+    *
+    * @return Always true.
+    */
 	public boolean init () {
-		super.init ();
-
-		return (true);
+		return super.init ();
 	}
 
+	/**
+	* Returns gui information for a field.
+	* Returns a descriptive value in the case of the 'status' field.
+    * @param node The node to display
+    * @param field the name field of the field to display
+    * @return the display of the node's field as a <code>String</code>, null if not specified
+	*/
 	public String getGUIIndicator (String field, MMObjectNode node) {
 		if (field.equals ("status")) {
 			int val = node.getIntValue ("status");
 			if (val==1) { 
-				return("inactive");
+				return "inactive";
 			} else if (val==2) {
-				return("active");
+				return "active";
 			} else if (val==3) {
-				return("refresh");
+				return "refresh";
 			} else {
-				return ("unknown");
+				return "unknown";
 			}
 		}
-		return (null);
+		return null;
 	}
 
+	/**
+	* Starts all vwms whose 'wanted_cpu' field indicates they want to be run on this machine (either this particular one or all machines),
+	* and that are marked as 'active'.
+	* The builder tries to load the class (which should implement the VwmInterface),
+	* instantiate a vwms using that class, and initialize it.
+	* The vwm is also referred to as a 'bot'.
+	* @deprecated Unused. Use startVwms() instead.
+	*/
 	public void startVwmsByField() {
 		Class newclass;
-		if (debug) System.out.println("Vwms:startVwmsByField -> Vwms on machine "+getMachineName());
-		Enumeration e=search("WHERE (wantedcpu='"+getMachineName()+"' OR wantedcpu='*') AND status=2");
-		for (;e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Vwms:startVwmsByField -> VWM="+node);
+		log.debug("Vwms:startVwmsByField -> Vwms on machine "+getMachineName());
+		for (Enumeration f=search("WHERE (wantedcpu='"+getMachineName()+"' OR wantedcpu='*') AND status=2"); f.hasMoreElements();) {
+			MMObjectNode node=(MMObjectNode)f.nextElement();
+			log.service("Vwms:startVwmsByField -> VWM="+node);
 			String name = node.getStringValue("name");
 			String classname=node.getStringValue("classname");
 			try {
-				System.out.println("Vwms:startVwmsByField -> Trying to create bot : "+name+" classname "+classname);
+				log.service("Vwms:startVwmsByField -> Trying to create bot : "+name+" classname "+classname);
 				newclass=Class.forName(classname);
-				System.out.println("Vwms:startVwmsByField -> Loaded load class : "+newclass);
+				log.service("Vwms:startVwmsByField -> Loaded load class : "+newclass);
 				VwmInterface vwm = (VwmInterface)newclass.newInstance();
 				vwm.init(node,this);
 				vwm_cache.put(name,vwm);
-			} catch (Exception f) {
-				System.out.println("Vwms:startVwmsByField -> Can't load class : "+name);
-				f.printStackTrace();
+			} catch (Exception e) {
+				log.error("Vwms:startVwmsByField -> Can't load class : "+name+" : "+e.getMessage());
+				log.error(Logging.stackTrace(e));
 			}
 		}
 	}
 
-
+	/**
+	* Starts all vwms whose 'entries are related to the current server (entry in mmservers),
+	* and that are marked as 'active'.
+	* The builder tries to load the class (which should implement the VwmInterface),
+	* instantiate a vwms using that class, and initialize it.
+	*/
 	public void startVwms() {
 		Class newclass;
 		// try to find my own node
-		if (debug) System.out.println("Vwms:startVwms -> Vwms on machine "+getMachineName());
+		log.debug("Vwms:startVwms -> Vwms on machine "+getMachineName());
 		MMObjectBuilder bul=mmb.getMMObject("mmservers");
 		Enumeration e=bul.search("WHERE name='"+getMachineName()+"'");
 		if (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms");
-			for (;f.hasMoreElements();) {
+/* search is implemented in MMSERVERS, so better:
+		MMServers bul=(MMServers)mmb.getMMObject("mmservers");
+		MMObjectNode node=bul.getMMServerNode(getMachineName());
+		if (node!=null) {
+*/
+			for (Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms"); f.hasMoreElements();) {
 				MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
-				System.out.println("Vwms:startVwms -> VWM="+vwmnode);
+				log.service("Vwms:startVwms -> VWM="+vwmnode);
 				String name = vwmnode.getStringValue("name");
 				String classname=vwmnode.getStringValue("classname");
 				try {
-					System.out.println("Vwms:startVwms -> Trying to create bot : "+name+" classname "+classname);
+					log.service("Vwms:startVwms -> Trying to create bot : "+name+" classname "+classname);
 					newclass=Class.forName(classname);
-					System.out.println("Vwms:startVwms -> Loaded load class : "+newclass);
+					log.service("Vwms:startVwms -> Loaded load class : "+newclass);
 					VwmInterface vwm = (VwmInterface)newclass.newInstance();
 					vwm.init(vwmnode,this);
 					vwm_cache.put(name,vwm);
-				} catch (Exception g) {
-					System.out.println("Vwms:startVwms -> Can't load class : "+name);
-					g.printStackTrace();
+				} catch (Exception err) {
+				    log.error("Vwms:startVwms -> Can't load class : "+name+" : "+err.getMessage());
+				    log.error(Logging.stackTrace(err));
 				}
 			}
 		}
 	}
 
+	/**
+	* Passes a task to a vwm.
+	* @param vwmname the name of the vwm to pass the task
+	* @param node the node to apss as a task
+	* @return <code>true</code> if the task was passed, <code>false</code> if the vwm did not exist.
+	*/
 	public boolean putTask(String vwmname, MMObjectNode node) {
 		Vwm vwm=(Vwm)vwm_cache.get(vwmname);
 		if (vwm!=null) {
 			vwm.putTask(node);
-			return(true);
+			return true;
 		} else {
-			System.out.println("Vwms : Could not find VWM : "+vwmname);
-			return(false);
+			log.error("Vwms : Could not find VWM : "+vwmname);
+			return false;
 		}
 	}
 
+	/**
+	* Send mail, using this builder's email settings.
+	* Passes its parameters,a s well as the field emailTo to the method that actually sends the mail.
+	* The field emailTo can be null when passed the first time, which means that the first call would always fail (?)
+	* @param who email address (?) of the sender
+	* @param subject subject of the message
+	* @param msg the message itself
+	* @return <code>true</code> if the mail was send, <code>false</code> otherwise
+	*/
 	public boolean sendMail(String who,String subject, String msg) {
 		//using default to mailadres
-		return(sendMail(who,emailTo,subject,msg));
+		return sendMail(who,emailTo,subject,msg);
 	}
 
 
-
+	/**
+	* Send mail, using this builder's email settings.
+	* @param who email address (?) of the sender
+	* @param to email address of the receiver
+	* @param subject subject of the message
+	* @param msg the message itself
+	* @return <code>true</code> if the mail was send, <code>false</code> otherwise
+	*/
 	public boolean sendMail(String who,String to,String subject, String msg) {
 		// added a kinda weird check so it only checks settings when
 		// needed, daniel.
@@ -127,17 +200,23 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 		if (emailTo==null) {
 			// get email config and check it
  	  		emailFromDomain = getInitParameter("fromdomain");
-			if (emailFromDomain == null || emailFromDomain.equals("")) debug (" missing init param from");
-			if(emailFromDomain.equals("@yourcompany.nl")) 
-				debug (" fromdomain init parameter is still default, please change!!!!");
+			if (emailFromDomain == null || emailFromDomain.equals("")) {
+			    log.warn(" missing init param from");
+			} else if(emailFromDomain.equals("@yourcompany.nl")) {
+				log.warn(" fromdomain init parameter is still default, please change!!!!");
+			}
 			emailReturnPath = getInitParameter("returnpath");
-			if (emailReturnPath == null || emailReturnPath.equals("")) debug (" missing init param returnpath");
-			if(emailReturnPath.equals("youremail@yourcompany.nl")) 
-				debug (" returnpath init parameter is still default, please change!!!!");
+			if (emailReturnPath == null || emailReturnPath.equals("")) {
+			    log.warn(" missing init param returnpath");
+			} else if(emailReturnPath.equals("youremail@yourcompany.nl")) {
+				log.warn(" returnpath init parameter is still default, please change!!!!");
+			}
 			emailTo = getInitParameter("to");
-			if (emailTo == null || emailTo.equals("")) debug ("missing init param subject");
- 			if(emailTo.equals("youremail@yourcompany.nl")) 
-			debug (" to init parameter is still default, please change!!!!");
+			if (emailTo == null || emailTo.equals("")) {
+			    log.warn("missing init param subject");
+			} else if(emailTo.equals("youremail@yourcompany.nl")) {
+			    log.warn(" to init parameter is still default, please change!!!!");
+			}
 		}
 
 		String from="vwm_"+who+emailFromDomain;
@@ -152,23 +231,31 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 			mail.setText(subject);
 		}
 		if (mmb.getSendMail().sendMail(mail)==false) {
-			System.out.println("vwms -> mail failed");
-			return(false);
+			log.error("vwms -> mail failed");
+			return false;
 		} else {
-			System.out.println("vwms -> mail send");
-			return(true);
+			log.info("vwms -> mail send");
+			return true;
 		}
 	}
 
+	/**
+	* Retrieve a currently active vwm by name.
+	* @param vwmname the name of the vwm to retrieve
+	* @return a VwmInterface object, or null if the vwm does not exist or is not active.
+	*/
 	public VwmInterface getVwm(String vwmname) {
 		VwmInterface vwm=(VwmInterface)vwm_cache.get(vwmname);
-		if (vwm!=null) {
-			return(vwm);
-		} else {
-			return(null);
-		}
+		return vwm;
 	}
 
+	/**
+	* Passes a remote change of a vwms node to the appropriate (active) vwm.
+    * @param number Number of the changed node as a <code>String</code>
+    + @param builder type of the changed node
+    + @param ctype command type, not very well documented
+    * @return always <code>true</code>
+	*/
     public boolean nodeRemoteChanged(String number,String builder,String ctype) {
         super.nodeRemoteChanged(number,builder,ctype);
 		if (ctype.equals("c")) {
@@ -183,9 +270,16 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 				}
 			}
 		}
-		return(true);
+		return true;
 	}
 
+	/**
+	* Passes a local change of a vwms node to the appropriate (active) vwm.
+    * @param number Number of the changed node as a <code>String</code>
+    + @param builder type of the changed node
+    + @param ctype command type, not very well documented
+    * @return always <code>true</code>
+	*/
     public boolean nodeLocalChanged(String number,String builder,String ctype) {
         super.nodeLocalChanged(number,builder,ctype);
 		if (ctype.equals("c")) {
@@ -200,7 +294,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 				}
 			}
 		}
-		return(true);
+		return true;
 	}
 
 }
