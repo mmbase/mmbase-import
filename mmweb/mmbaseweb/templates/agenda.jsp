@@ -1,12 +1,13 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="true"
 %><mm:cloud
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/header.jsp"
 %>
 <td class="white" colspan="2" valign="top">
 <mm:node referid="page"><h2><mm:field name="title" /></h2></mm:node>
-<mm:import externid="eventnr" />
+<mm:import externid="item" />
+<mm:import externid="eventnr"><mm:write referid="item" /></mm:import>
 <%@ include file="/includes/agenda_etc.jsp" %>
 <div class="newsinhoud">
 <%-- news, related to category Developers --%>
