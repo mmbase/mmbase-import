@@ -34,8 +34,13 @@ public class MultiPool
 	String dbm;
 	Object synobj=new Object();
 	DatabaseSupport databasesupport;
+	final static boolean debug = false;
 
 	boolean doReconnect=true;
+
+	final static void debug (Object message) {
+		System.out.println("MultiPool -> "+message);
+	}	
 
    MultiPool(DatabaseSupport databasesupport,String url, String name, String password,int conMax) throws SQLException {
 		this(databasesupport,url,name,password,conMax,500);
@@ -81,46 +86,56 @@ public class MultiPool
 			for (Enumeration e=busypool.elements();e.hasMoreElements();) {
 				con=(MultiConnection)e.nextElement();
 				diff=nowTime-con.getStartTime();
-				if (diff>5) System.out.println("Checking a busy connection "+con);
+				if (diff>5) {
+					 debug("MultiPool -> Checking a busy connection "+con);
+				}
 				if (diff<30) {
 					// below 30 we still wait
 				} else if (diff<120) {
 					// between 30 and 120 we putback 'zero' connections
 					if (con.lastSql==null || con.lastSql.length()==0) {
-						System.out.println("JDBC -> null connection putBack");
+						debug("JDBC -> null connection putBack");
 						putBack(con);
 					}
 				} else {
 					// above 120 we close the connection and open a new one
 					MultiConnection newcon=null;
 	
-					System.out.println("JDBC -> KILLED SQL "+con.lastSql+" time "+diff);
+					if (debug) {
+						debug("JDBC -> KILLED SQL "+con.lastSql+" time "+diff);
+					}
 					try {
 						Connection realcon=DriverManager.getConnection(url,name,password);
 						initConnection(realcon);
 						newcon=new MultiConnection(this,realcon);
-						System.out.println("JDBC -> WOW added JDBC connection now ("+pool.size()+")");
+						if (debug) {
+							debug("JDBC -> WOW added JDBC connection now ("+pool.size()+")");
+						}
 					} catch(Exception re) {
-						System.out.println("JDBC -> ERROR Can't add connection to pool");
+						debug("JDBC -> ERROR Can't add connection to pool");
 					}
 					busypool.removeElement(con);
 					try {
 						con.realclose();
 					} catch(Exception re) {
-						System.out.println("JDBC -> Can't close a connection !!!");
+						debug("JDBC -> Can't close a connection !!!");
 					}
 					if (newcon!=null) pool.addElement(newcon);
 				}	
 			}
 			if ((busypool.size()+pool.size())>conMax) {
 				int i;
-				System.out.println("JDBC -> Warning number of connections exceeds conMax "+(busypool.size()+pool.size()));
+				if (debug) {
+					debug("JDBC -> Warning number of connections exceeds conMax "+(busypool.size()+pool.size()));
+				}
 				// Check if there are dups in the pools
 				for(Enumeration e=busypool.elements();e.hasMoreElements();) {
 					bcon=(MultiConnection)e.nextElement();
 					i=pool.indexOf(bcon);
 					if (i>=0) {
-						System.out.println("JDBC -> duplicate connection found at "+i);
+						if(debug) {
+							debug("JDBC -> duplicate connection found at "+i);
+						}
 						pool.removeElementAt(i);
 					}
 				}
@@ -128,12 +143,14 @@ public class MultiPool
 				while(((busypool.size()+pool.size())>conMax) && pool.size()>2) {
 					// Remove too much ones.
 					con=(MultiConnection)pool.elementAt(0);
-					System.out.println("JDBC -> removing connection "+con);
+					if(debug) {	
+						debug("JDBC -> removing connection "+con);
+					}
 					pool.removeElementAt(0);
 					try {
 //						con.realclose();
 					} catch(Exception e) {
-						System.out.println("JDBC -> Can't close connection");
+						debug("JDBC -> Can't close connection");
 					}
 				}
 			}
@@ -152,9 +169,11 @@ public class MultiPool
 			try{
 				Thread.sleep(10000);
 			} catch(InterruptedException e){
-				System.out.println("JDBC -> getFree sleep INT");
+				debug("JDBC -> getFree sleep INT");
 			}
-			System.out.println("JDBC -> sleep on "+this);
+			if( debug) {
+				debug("JDBC -> sleep on "+this);
+			}
 		}
 		synchronized(synobj) {
 			con=(MultiConnection)pool.elementAt(0);
@@ -175,12 +194,14 @@ public class MultiPool
 				if (busypool.contains(con)) {
 					if (doReconnect && (con.getUsage()>maxQuerys)) {
 						MultiConnection oldcon;
-						System.out.println("JDBC -> Re-Opening connection");
+						if(debug) {
+							debug("JDBC -> Re-Opening connection");
+						}
 						oldcon=con;
 						try {
 							oldcon.realclose();
 						} catch(Exception re) {
-							System.out.println("JDBC -> Can't close a connection !!!");
+							debug("JDBC -> Can't close a connection !!!");
 						}
 						try {
 							if (name.equals("url") && password.equals("url")) {
@@ -193,7 +214,7 @@ public class MultiPool
 								con=new MultiConnection(this,realcon);
 							}
 						} catch(Exception re) {
-							System.out.println("JDBC -> ERROR Can't add connection to pool");
+							debug("JDBC -> ERROR Can't add connection to pool");
 						}
 						pool.addElement(con);
 						busypool.removeElement(oldcon);
@@ -203,11 +224,11 @@ public class MultiPool
 						busypool.removeElement(con);
 					}
 				} else {
-					System.out.println("JDBC -> ERROR can't remove from putback");
+					debug("JDBC -> ERROR can't remove from putback");
 				}
 			}
 		} else {
-			System.out.println("JDBC -> ERROR trying to putback connection 2 times");
+			debug("JDBC -> ERROR trying to putback connection 2 times");
 			try {
 				throw new Exception("putBack");
 			} catch (Exception e) {
@@ -259,7 +280,7 @@ public class MultiPool
 			rtn=true;
 		} catch (Exception e) {
 			rtn=false;
-			System.out.println("JDBC -> checkConnection failed");
+			debug("JDBC -> checkConnection failed");
 			e.printStackTrace();
 		}
 		return(rtn);
