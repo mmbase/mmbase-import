@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.40 2001-02-16 09:22:15 pierre Exp $
+$Id: scanparser.java,v 1.41 2001-02-22 16:29:39 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.40  2001/02/16 09:22:15  pierre
+scanparser : fixed GOTO command
+
 Revision 1.39  2001/02/02 22:37:58  daniel
  changed some debug calls
 
@@ -140,7 +143,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.40 $ $Date: 2001-02-16 09:22:15 $
+ * @$Revision: 1.41 $ $Date: 2001-02-22 16:29:39 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -491,15 +494,15 @@ public class scanparser extends ProcessorModule {
 		// <TRANSACTION text1> text2 </TRANSACTION>
 		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
 		newbody=new StringBuffer();
-		postcmd=-1;
+		postcmd=0;
 
 		while ((precmd=body.indexOf("<transactions",postcmd))!=-1) {
-			newbody.append(body.substring(postcmd+1,precmd));
+			newbody.append(body.substring(postcmd,precmd));
 			prepostcmd=precmd+13;
 			if ((postcmd=body.indexOf('>',precmd))!=-1) {
 				end_pos2=body.indexOf("</transactions>",prepostcmd);
 				if (end_pos2!=-1) {
-					postcmd=end_pos2+16;
+					postcmd=end_pos2+15;
 					try {
 						newbody.append(do_transaction(body.substring(precmd,postcmd),session,sp));
 					} catch(Exception e) {
@@ -512,7 +515,7 @@ public class scanparser extends ProcessorModule {
 			}
 		}
 
-		newbody.append(body.substring(postcmd+1));
+		newbody.append(body.substring(postcmd));
 		body=newbody.toString();
 
 
