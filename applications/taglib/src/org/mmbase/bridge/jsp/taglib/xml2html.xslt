@@ -344,8 +344,10 @@
       <td colspan="2">
         <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
         <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
-        <br />
         <xsl:apply-templates select="info"/>
+        <xsl:if test="since">         
+         (since: <xsl:value-of select="since" />)
+        </xsl:if>
       </td>
     </tr>
     <xsl:if test="see">
@@ -550,6 +552,9 @@
         </xsl:choose>
       </xsl:otherwise>      
     </xsl:choose>
+    <xsl:if test="since">
+      (since: <xsl:value-of select="since" />)
+    </xsl:if>
     <br />
     <xsl:if test="info">
       <xsl:apply-templates select="info"/>
@@ -590,10 +595,10 @@
 </xsl:template>
 
 <xsl:template match="info">
-  <xsl:apply-templates select="p|text()|em|a|ul" />  
+  <xsl:apply-templates select="p|text()|em|a|ul|pre" />  
 </xsl:template>
 
-<xsl:template match="p|text()|a|ul">
+<xsl:template match="p|text()|a|ul|pre">
   <xsl:copy-of select="." />
 </xsl:template>
 
