@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.14 2002-05-22 13:44:34 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.15 2002-05-29 09:45:46 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -324,8 +324,11 @@ public class WizardDatabaseConnector {
      * @param objectDef The objectdefinition.
      * @param objectNode The new object
      * @param params The parameters to use when creating the objects and relations.
+     * @param createorder ordernr under which this object is added (i.e. when added to a list)
+     *                     The first ordernr in a list is 1
      */
-    private void fillObjectFields(Document data, Node targetParentNode, Node objectDef, Node objectNode, Hashtable params) {
+    private void fillObjectFields(Document data, Node targetParentNode, Node objectDef,
+                                  Node objectNode, Hashtable params, int createorder) {
         // fill-in (or place) defined fields and their values.
         NodeList fields = Utils.selectNodeList(objectDef, "field");
         for (int i=0; i<fields.getLength(); i++) {
@@ -335,6 +338,12 @@ public class WizardDatabaseConnector {
             Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
             String value=Utils.getText(field);
             if ((value!=null) && value.startsWith("{")) {
+                // if you add a list of items, the order of the list may be of import.
+                // the variable {$pos} is used to make that distinction
+                int pos=value.indexOf("{$pos}");
+                if (pos>=0) {
+                    value=value.substring(0,pos)+createorder+value.substring(pos+6);
+                }
                 Node parent=data.getDocumentElement();
                 log.debug(parent.toString());
                 log.debug(value.substring(1,value.length()-1));
@@ -350,6 +359,18 @@ public class WizardDatabaseConnector {
                 Utils.storeText(newfield, value, params); // process innerText: check for params
             }
         }
+    }
+
+    /**
+     * This method can create a object (or a tree of objects and relations)
+     *
+     * @param targetParentNode The place where the results should be appended.
+     * @param objectDef The objectdefinition.
+     * @param params The params to use when creating the objects and relations.
+     * @return The resulting object(tree) node.
+     */
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params) throws WizardException {
+        return createObject(data, targetParentNode, objectDef, params, 1);
     }
 
     /**
@@ -376,12 +397,14 @@ public class WizardDatabaseConnector {
      * *) if dnumber is supplied, no new object is created (shouldn't be included in the relation node either),
      *  but the relation will be created and directly linked to an object with number "dnumber".
      *
-     * @param     targetParentNode        The place where the results should be appended.
-     * @param     objectDef               The objectdefinition.
-     * @param     params                  The params to use when creating the objects and relations.
-     * @return   The resulting object(tree) node.
+     * @param targetParentNode The place where the results should be appended.
+     * @param objectDef The objectdefinition.
+     * @param params The params to use when creating the objects and relations.
+     * @param createorder ordernr under which this object is added (i.e. when added to a list)
+     *                     The first ordernr in a list is 1
+     * @return The resulting object(tree) node.
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params, int createorder) throws WizardException {
         String objecttype = Utils.getAttribute(objectDef, "type");
         String nodename = objectDef.getNodeName();
 
@@ -414,7 +437,7 @@ public class WizardDatabaseConnector {
                 log.error("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
                 throw new WizardException("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
             }
-            fillObjectFields(data,targetParentNode,objectDef,objectNode,params);
+            fillObjectFields(data,targetParentNode,objectDef,objectNode,params,createorder);
             relations = Utils.selectNodeList(objectDef, "relation");
         }
 
@@ -452,7 +475,7 @@ public class WizardDatabaseConnector {
                 snumber = Utils.getAttribute(objectNode, "number");
                 relationNode = getNewRelation(objectNode, role, snumber, dnumber);
 
-                fillObjectFields(data,targetParentNode,relation,relationNode,params);
+                fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
 
                 tagDataNode(relationNode);
                 lastCreatedRelation = relationNode;
