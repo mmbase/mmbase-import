@@ -266,7 +266,7 @@ public class InsRel extends MMObjectBuilder {
             return re.elements();
         } else {
             TypeDef typedef = mmb.getTypeDef();
-            String builder = typedef.getValue(otype); 
+            MMObjectBuilder wantedBuilder = mmb.getBuilder(typedef.getValue(otype));
             Vector list = new Vector();
             for(Enumeration e = re.elements(); e.hasMoreElements(); ) {
                 MMObjectNode node = (MMObjectNode) e.nextElement();
@@ -274,7 +274,8 @@ public class InsRel extends MMObjectBuilder {
                 if (nodenr == src) {
                     nodenr = node.getIntValue("dnumber");
                 }
-                if (mmb.getBuilder(typedef.getValue(getNodeType(nodenr))).isInstanceOfBuilder(builder)) {
+                MMObjectBuilder nodeBuilder = mmb.getBuilder(typedef.getValue(getNodeType(nodenr)));
+                if (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder)) {
                     list.add(node);
                 }                 
             }
