@@ -5,7 +5,7 @@
 <%@include file="/includes/header.jsp" %>
 <mm:import id="template">/development/projects/project.jsp</mm:import>
 <td class="white" colspan="2" valign="top">
-  <mm:listnodes type="project" orderby="status,number" directions="down" id="projectlist">
+  <mm:listnodes type="project" orderby="status,number" directions="up,down" id="projectlist">
     <mm:changed>
       [<a href="#<mm:field name="number" />"><mm:field name="status" /></a>]&nbsp;
     </mm:changed>
