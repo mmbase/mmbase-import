@@ -17,7 +17,7 @@
   </head>
   <body>
     <mm:import externid="offset" vartype="Integer" jspvar="offset">0</mm:import>
-    <mm:import externid="max" vartype="Integer" jspvar="max">10</mm:import>
+    <mm:import externid="max" vartype="Integer" jspvar="max">20</mm:import>
     <table class="objectlist">
       <tr>
         <td class="editprecol">&nbsp;</td>
