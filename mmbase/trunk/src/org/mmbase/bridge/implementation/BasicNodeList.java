@@ -11,8 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Collection;
 
 /**
  * A list of nodes
@@ -27,64 +27,75 @@ public class BasicNodeList extends BasicList implements NodeList {
     /**
     * ...
     */
-    BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
+    public BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c);
         this.cloud=cloud;
         this.nodemanager=nodemanager;
     }
 
-    BasicNodeList(Collection c, Cloud cloud) {
-        this(c,cloud,null);
+    public BasicNodeList(Collection c, Cloud cloud) {
+        this(c, cloud, null);
     }
 
     /**
-	*
-	*/
-	public Object get(int index) {
-    	Object o=getObject(index);
-    	if (o instanceof Node) {
-    	    return (Node)o;
-    	}
-    	MMObjectNode mmn= (MMObjectNode)o;
-    	NodeManager nm = nodemanager;
-    	if (nm==null) {
+    *
+    */
+    public Object get(int index) {
+        Object o=getObject(index);
+        if (o instanceof Node) {
+            return (Node)o;
+        }
+        MMObjectNode mmn= (MMObjectNode)o;
+        NodeManager nm = nodemanager;
+        if (nm==null) {
             nm=cloud.getNodeManager(mmn.parent.getTableName());
         }
-    	Node n=new BasicNode(mmn,nm);
-    	objects[index]=n;
+        Node n=new BasicNode(mmn,nm);
+        objects[index]=n;
         return n;
-	}
+    }
 
     /**
-	*
-	*/
-	public Node getNode(int index) {
-	    return (Node)get(index);
-	}
-
+     *
+     */
+    public Node getNode(int index) {
+        return (Node)get(index);
+    }
+    
     /**
-	*
-	*/
-	public NodeList subNodeList(int fromIndex, int toIndex) {
-	    return new BasicNodeList(subList(fromIndex, toIndex),cloud);
-	}
-	/**
-	*
-	*/
-	public NodeIterator nodeIterator() {
-	    return new BasicNodeIterator(this);
-	};
+     *
+     */
+    public NodeList subNodeList(int fromIndex, int toIndex) {
+        return new BasicNodeList(subList(fromIndex, toIndex),cloud);
+    }
 
-	public class BasicNodeIterator extends BasicIterator implements NodeIterator {
-	
-	    BasicNodeIterator(BasicList list) {
-	        super(list);
-	    }
-	
-	    public Node nextNode() {
-	        return (Node)nextObject();
-	    }
-	
-	}
-	
+
+    /*
+    public NodeList sort(String field, boolean order) {
+           Vector nodesVector = new Vector(this);
+           NodeComparator nodeComparator = new NodeComparator(field, order);
+           java.util.Collections.sort(nodesVector, nodeComparator);
+           return new BasicNodeList((Collection)nodesVector, cloud);
+    }
+    */
+    
+    /**
+     *
+     */
+    public NodeIterator nodeIterator() {
+        return new BasicNodeIterator(this);
+    };
+    
+    public class BasicNodeIterator extends BasicIterator implements NodeIterator {
+    
+        BasicNodeIterator(BasicList list) {
+            super(list);
+        }
+    
+        public Node nextNode() {
+            return (Node)nextObject();
+        }
+    
+    }
+    
 }
