@@ -40,14 +40,15 @@
 
 <div class="bodypart">
 
-  <mm:include page="path.jsp?type=index" />
+  <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+  <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+  <mm:include page="path.jsp?type=index" referids="logoutmodetype" />
 
   <table cellpadding="0" cellspacing="0" class="list"  style="margin-top : 10px;" width="95%">
-    <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <tr>
       <mm:compare referid="posterid" value="-1">
-        <th width="100"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></th>
+        <th width="100"><mm:field name="accountcreationtype"><mm:compare value="open"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></mm:compare></mm:field></th>
       <td align="left">
         <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
           <mm:present referid="loginfailed">
@@ -82,7 +83,9 @@
               </mm:compare>
             </mm:field>
           </a>
+	  <mm:compare referid="logoutmodetype" value="open">
           <a href="logout.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="mlg_Logout" /></a>
+	  </mm:compare>
         </th>
         <td align="left" valign="top">
           <mm:compare referid="image_logo" value="" inverse="true">
