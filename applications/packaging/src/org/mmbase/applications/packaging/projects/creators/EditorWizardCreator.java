@@ -193,5 +193,9 @@ public class EditorWizardCreator extends BasicCreator implements CreatorInterfac
         target.setItem("exclude", "/CVS/");
     }
 
+  public String getDefaultTargetName() {
+        return "editwizard";
+  }
+
 }
 

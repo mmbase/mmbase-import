@@ -314,5 +314,9 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
 	return set;
     }
 
+  public String getDefaultTargetName() {
+        return "data";
+  }
+
 }
 

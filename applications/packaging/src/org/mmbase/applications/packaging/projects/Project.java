@@ -206,12 +206,19 @@ public class Project {
      * @return       Description of the Return Value
      */
     public boolean addPackageTarget(String name, String type, String path) {
+        CreatorInterface cr = ProjectManager.getCreatorByType(type);
         if (name.equals("") || name.equals("[auto]")) {
-            name = type.substring(type.indexOf("/") + 1);
+	    if (cr != null) {
+		name = cr.getDefaultTargetName();
+		name = checkDubName(name);
+	    } else {
+            	name = type.substring(type.indexOf("/") + 1);
+	    }
         }
         if (path.equals("") || path.equals("[auto]")) {
             path = "packaging" + File.separator + getName() + "_" + type.replace('/','_') + ".xml";
             path = path.replace(' ', '_');
+	    path = checkDubFilename(path);
         }
         // check if the dirs are created, if not create them
         String dirsp = basedir + path.substring(0, path.lastIndexOf(File.separator));
@@ -223,8 +230,6 @@ public class Project {
         t.setPath(path);
         t.setBaseDir(basedir);
         t.setType(type);
-        // get the handler
-        CreatorInterface cr = ProjectManager.getCreatorByType(type);
         if (cr != null) {
             t.setCreator(cr);
             t.setDefaults();
@@ -535,6 +540,37 @@ public class Project {
             }
         }
         return false;
+    }
+
+    private String checkDubName(String name) {
+	boolean dub =  true;
+	int counter = 2;
+	String newname =  name;
+	while (dub) {
+		Target t =  getTarget(newname);
+		if (t != null) {
+			newname = name + (counter++);
+		} else {
+			dub = false;
+		}
+	}
+	return newname;
+    }
+
+
+    private String checkDubFilename(String filename) {
+	boolean dub =  true;
+	int counter = 2;
+	String newfilename =  filename;
+	while (dub) {
+		File t=new File(basedir+File.separator+newfilename);
+		if (t.exists()) {
+			newfilename = filename.substring(0,filename.length()-4) + (counter++)+".xml";
+		} else {
+			dub = false;
+		}
+	}
+	return newfilename;
     }
 
 }
