@@ -2,13 +2,12 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <!-- this example is similar to the library wizard lib/createattachment -->
 <wizard-schema id="attachments">
-  <title>Example attachment editwizard</title>
+	<title>Example attachment editwizard</title>
 
 	<action type="create">
 		<object type="attachments">
-      <field name="mimetype">application/octet-stream</field>
-      <field name="size">0</field>
-			<relation destination="{$origin}" role="related" />
+			<field name="mimetype">application/octet-stream</field>
+			<field name="size">0</field>
 		</object>
 	</action>
 
