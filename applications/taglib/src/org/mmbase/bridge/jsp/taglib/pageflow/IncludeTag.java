@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.53 2004-08-02 17:20:55 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.54 2004-11-11 18:32:19 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -256,60 +256,31 @@ public class IncludeTag extends UrlTag {
             if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
                 throw new JspTagException("Not allowed to cite " + relativeUrl);
             }
-            String urlFile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
 
             // take of the sessionid if it is present
             //HttpSession session = request.getSession(false);
             //if (session != null && session.isNew())
-                { // means there is a ;jsession argument
-                int j = urlFile.lastIndexOf(';');
+            { // means there is a ;jsession argument
+                int j = relativeUrl.lastIndexOf(';');
                 if (j != -1) {
-                    urlFile = urlFile.substring(0, j);
+                    relativeUrl = relativeUrl.substring(0, j);
                 }
-
-            }
-            File file = new File(urlFile);
-
-            if (file.isDirectory()) {
-                throw new JspTagException("Cannot cite a directory");
-            }
-
-            if (! file.toURL().getProtocol().equals("file")) {
-                throw new JspTagException("Cannot only cite local files");
+                
             }
 
 
-            if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
-            FileInputStream inputStream = new FileInputStream(file);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            int c = inputStream.read();
-            while (c != -1) {
-                bytes.write(c);
-                c = inputStream.read();
-            }
-            byte[] allBytes = bytes.toByteArray();
+            String resource = relativeUrl.substring(request.getContextPath().length());
+            if (log.isDebugEnabled()) log.debug("Citing " + resource);
             
-            String encoding = encodingAttribute.getString(this);
-            if (encoding.equals("")) {
-                encoding = GenericResponseWrapper.getXMLEncoding(allBytes);
+            
+            Reader reader = ResourceLoader.getWebRoot().getReader(resource);
+            StringWriter writer = new StringWriter();
+            while (true) {
+                int c = reader.read();
+                if (c == -1) break;
+                writer.write(c);
             }
-
-            String fileContents;
-            if (encoding == null) {
-                log.debug("Could not find XML encoding in file");
-                if (file.getName().endsWith(".xml")) {
-                    log.debug("Supposing UTF-8");
-                    fileContents = new String(allBytes, "UTF-8");
-                } else {
-                    log.debug("NOT XML");
-                    // use default encoding for other files               
-                    fileContents = new String(allBytes, System.getProperty("file.encoding"));
-                }
-            } else {
-                log.debug("Found " + encoding);
-                fileContents = new String(allBytes, encoding);
-            }
-            helper.setValue(debugStart(urlFile) + fileContents + debugEnd(urlFile));
+            helper.setValue(debugStart(resource) + writer.toString() + debugEnd(resource));
         } catch (IOException e) {
             throw new TaglibException (e);
         }
