@@ -19,7 +19,7 @@ import org.xml.sax.SAXParseException;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.10 2003-03-10 11:51:14 pierre Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.11 2003-03-11 14:58:15 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -121,9 +121,10 @@ public class XMLErrorHandler implements ErrorHandler {
         String systemId = ex.getSystemId();
         if (systemId != null) {
             int index = systemId.lastIndexOf('/');
-            if (index != -1)
+            if (index != -1) {
                 systemId = systemId.substring(index + 1);
-                str.append(systemId);
+            }
+            str.append(systemId);
         }
         str.append(" line:");
         str.append(ex.getLineNumber());
