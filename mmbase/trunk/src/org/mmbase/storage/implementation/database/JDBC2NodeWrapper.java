@@ -28,21 +28,37 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.2 2003-08-27 17:45:31 michiel Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.3 2003-09-01 12:36:13 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
     private static final Logger log = Logging.getLoggerInstance(JDBC2NodeWrapper.class);
-    
+
     private StorageManagerFactory factory;
-    
+
     private Map allowedFields;
-    
+
     private Map disallowedFields;
-    
+
     private MMBase mmbase;
-    
-    public JDBC2NodeWrapper() {
+
+    public JDBC2NodeWrapper(StorageManagerFactory factory) {
+        this.factory = factory;
+        mmbase = factory.getMMBase();
+        disallowedFields = factory.getDisallowedFields();
+        allowedFields = new HashMap();
+        for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
+            Map.Entry e = (Map.Entry)i.next();
+            String val = (String) e.getValue();
+            String key = (String) e.getKey();
+            if (val != null) {
+                allowedFields.put(val, key);
+            }
+        }
+    }
+
+    public void init(MMBase mmb,XMLDatabaseReader parser) {
+        // do nothing
     }
 
     public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
@@ -75,7 +91,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
         throw new UnsupportedOperationException("Storage classes do not support MMNODE syntax. Use SearchQuery.");
     }
-    
+
     /**
      * @javadoc
      */
@@ -90,7 +106,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return null;
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -105,7 +121,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return null;
         }
     }
-    
+
     public byte[] getDBByte(ResultSet rs,int idx) {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
@@ -119,7 +135,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return null;
         }
     }
-    
+
     public String getDBText(ResultSet rs,int idx) {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
@@ -133,7 +149,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return null;
         }
     }
-    
+
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
         try {
             return factory.getStorageManager().create(node);
@@ -142,7 +158,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             throw new StorageError(se);
         }
     }
-    
+
     public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
         try {
             factory.getStorageManager().change(node);
@@ -152,7 +168,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             throw new StorageError(se);
         }
     }
-    
+
     public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
         try {
             factory.getStorageManager().delete(node);
@@ -161,7 +177,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             throw new StorageError(se);
         }
     }
-    
+
     /**
      * Gives an unique number for a node to be inserted.
      * This method should be implemneted to work with multiple mmbase instances working on
@@ -176,27 +192,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             throw new StorageError(se);
         }
     }
-    
-    public void init(MMBase mmb,XMLDatabaseReader parser) {
-        mmbase = mmb;
-        try {
-            this.factory = StorageManagerFactory.newInstance(mmbase);
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError();
-        }
-        disallowedFields = factory.getDisallowedFields();
-        allowedFields = new HashMap();
-        for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
-            Map.Entry e = (Map.Entry)i.next();
-            String val = (String) e.getValue();
-            String key = (String) e.getKey();
-            if (val != null) {
-                allowedFields.put(val, key);
-            }
-        }
-    }
-    
+
     public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
@@ -208,7 +204,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             log.error(se.getMessage());
         }
     }
-    
+
     public boolean created(String tableName) {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
@@ -251,10 +247,10 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         javax.sql.DataSource ds = (javax.sql.DataSource)factory.getAttribute(Attributes.DATA_SOURCE);
         Connection con = ds.getConnection();
         if (con instanceof MultiConnection) {
-            return (MultiConnection)con; 
+            return (MultiConnection)con;
         } else {
             return new MultiConnection(null, con);
-        }        
+        }
     }
 
     public String getDisallowedField(String allowedfield) {
@@ -284,7 +280,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     public String getOwnerString() {
         return getAllowedField("owner");
     }
-    
+
     public String getOTypeString() {
         return getAllowedField("otype");
     }
@@ -299,7 +295,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         }
     }
 
-    
+
     public boolean updateTable(MMObjectBuilder bul) {
         try {
             factory.getStorageManager().change(bul);
@@ -339,7 +335,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             throw new StorageError(se);
         }
     }
-    
+
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         try {
             return factory.getSearchQueryHandler().getSupportLevel(feature, query);

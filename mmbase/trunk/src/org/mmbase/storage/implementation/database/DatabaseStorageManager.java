@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.7 2003-08-29 12:12:27 keesj Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.8 2003-09-01 12:36:12 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -47,7 +47,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * The currently active Connection.
-     * This member is set by {!link #getActiveConnection()} and unset by {@link releaseActiveConnection()}
+     * This member is set by {!link #getActiveConnection()} and unset by {@link #releaseActiveConnection()}
      */
     protected Connection activeConnection;
 
@@ -193,7 +193,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Commits the change to a node.
      * If the manager is in a transaction (and supports it), the change is stored in a
-     * {@link Changes} object (to be committed after the transaction ends).
+     * {@link #changes} object (to be committed after the transaction ends).
      * Otherwise it directly commits and broadcasts the changes
      * @param node the node to register
      * @param change the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
@@ -256,10 +256,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Retrieve a text for a specified object field.
-     * The default method uses {@link ResultSet.getString()} to obtain text.
+     * The default method uses {@link ResultSet#getString()} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
-     
+
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -280,7 +280,7 @@ public class DatabaseStorageManager implements StorageManager {
                     bytes.write(c);
                     c = inStream.read();
                 }
-                inStream.close(); 
+                inStream.close();
                 return new String(bytes.toByteArray(), factory.getMMBase().getEncoding());
             } catch (IOException ie) {
                 throw new StorageException(ie);
@@ -332,7 +332,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
-     * The default method uses {@link ResultSet.getBytes()} to obtain text.
+     * The default method uses {@link ResultSet#getBytes()} to obtain text.
      * Override this method if you want to optimize retrieving large objects,
      * i.e by using clobs or streams.
      * @param result the resultset to retrieve the text from
@@ -455,8 +455,8 @@ public class DatabaseStorageManager implements StorageManager {
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
             // use field.inStorage()
-            if (((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
-                 (field.getDBState() == FieldDefs.DBSTATE_SYSTEM))) {
+            if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT ||
+                field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
                 // skip bytevalues that are written to file
                 if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
                     storeBinaryAsFile(node,field);
@@ -719,9 +719,9 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Store the text value of a field in a prepared statement
      * Null values are stored as NULL if possible, otherwise they are stored as an empty string.
-     * If the FORCE_ENCODE_TEXT option is set, text is encoded (using the MMBase encoding) to a byte array 
+     * If the FORCE_ENCODE_TEXT option is set, text is encoded (using the MMBase encoding) to a byte array
      * and stored as a binary stream.
-     * Otherwise it uses {@link PreparedStatement.setString()} to set the data.
+     * Otherwise it uses {@link PreparedStatement#setString()} to set the data.
      * Override this method if you use another way to store large texts (i.e. Clobs).
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
@@ -792,7 +792,26 @@ public class DatabaseStorageManager implements StorageManager {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
             getActiveConnection();
-            String query = scheme.format(new Object[] { this, builder, builder.getField("number"), new Integer(number)});
+            // get a builders fields
+            List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
+            List fields =  new ArrayList();
+            StringBuffer fieldNames = null;
+            for (Iterator f = builderFields.iterator(); f.hasNext();) {
+                FieldDefs field = (FieldDefs) f.next();
+                // use field.inStorage()
+                if ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT ||
+                     field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
+                     !shorten(field)) {
+                    // store the fieldname and the value parameter
+                    String fieldName = (String)factory.getStorageIdentifier(field);
+                    if (fieldNames != null) {
+                        fieldNames = new StringBuffer(fieldName);
+                    } else {
+                        fieldNames.append(',').append(fieldName);
+                    }
+                }
+            }
+            String query = scheme.format(new Object[] { this, builder, fieldNames, builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
             return getNode(s.executeQuery(query), builder);
         } catch (SQLException se) {
@@ -952,7 +971,7 @@ public class DatabaseStorageManager implements StorageManager {
                     String indexDef = getIndexDefinition(field);
                     if (indexDef != null) {
                         // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
-                        // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement, 
+                        // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
                         // and the comma should not be prefixed.
                         if (rowtypeScheme == null || createIndices.length() > 0) createIndices.append(", ");
                         createIndices.append(indexDef);
@@ -970,7 +989,7 @@ public class DatabaseStorageManager implements StorageManager {
             String indexDef = getCompositeIndexDefinition(compositeIndices);
             if (indexDef != null) {
                 // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
-                // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement, 
+                // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
                 // and the comma should not be prefixed.
                 if (rowtypeScheme == null || createIndices.length() > 0) createCompositeIndices.append(", ");
                 createCompositeIndices.append(indexDef);
