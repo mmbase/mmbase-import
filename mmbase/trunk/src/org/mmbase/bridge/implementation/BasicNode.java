@@ -119,7 +119,7 @@ public class BasicNode implements Node {
 	/**
      * Retrieves the node ID
      */
-    public int getNodeID() {
+    public int getNodeNumber() {
         int i=getIntValue("number");
         // new node, thus return temp id.
         // note that temp id is equal to "number" if the node is edited
@@ -182,7 +182,7 @@ public class BasicNode implements Node {
             // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
 	        if ((action == ACTION_EDIT) ||
      	        ((action == ACTION_REMOVE) && (nodeManager instanceof BasicTransaction))) {
-     	        int id = getNodeID();
+     	        int id = getNodeNumber();
 	            String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
 	            if (cloud instanceof BasicTransaction) {
     	            // store new temporary node in transaction
@@ -341,7 +341,7 @@ public class BasicNode implements Node {
 	        if (isnew) {
 //	            node.insert(cloud.getUserName());
                 node.insert("bridge");
-	            cloud.createSecurityInfo(getNodeID());
+	            cloud.createSecurityInfo(getNodeNumber());
 	            isnew=false;
 	        } else {
 	            node.commit();
@@ -606,7 +606,7 @@ public class BasicNode implements Node {
 	    Vector aliasvector=new Vector();
 	    OAlias alias=mmb.OAlias;
 	    if (alias!=null) {
-	        for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNodeID()); e.hasMoreElements();) {
+	        for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNodeNumber()); e.hasMoreElements();) {
 	            MMObjectNode node=(MMObjectNode)e.nextElement();
 	            aliasvector.add(node.getStringValue("name"));
 	        }
@@ -630,7 +630,7 @@ public class BasicNode implements Node {
 	    } else if (isnew) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
-            getNode().parent.createAlias(getNodeID(),aliasName);
+            getNode().parent.createAlias(getNodeNumber(),aliasName);
         }
     }
 
@@ -646,7 +646,7 @@ public class BasicNode implements Node {
 	    // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
 	    // Live with it.
 	    if (!isnew) {
-	        String sql = "WHERE (destination"+"="+getNodeID()+")";
+	        String sql = "WHERE (destination"+"="+getNodeNumber()+")";
 	        if (aliasName!=null) {
 	            sql += " AND (name='"+aliasName+"')";
 	        }
@@ -713,6 +713,6 @@ public class BasicNode implements Node {
     * This effectively returns th objectnode's number
     */
     public int hashCode() {
-        return getNodeID();
+        return getNodeNumber();
     };
 }

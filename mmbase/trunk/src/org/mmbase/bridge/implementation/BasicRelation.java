@@ -76,7 +76,7 @@ public class BasicRelation extends BasicNode implements Relation {
         } else {
     	    getNode().setValue("snumber",source);
         }
-	    snum=node.getNodeID();
+	    snum=node.getNodeNumber();
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class BasicRelation extends BasicNode implements Relation {
         } else {
     	    getNode().setValue("dnumber",dest);
         }
-	    dnum=node.getNodeID();
+	    dnum=node.getNodeNumber();
 	}
 
  	/**
