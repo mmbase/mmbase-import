@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page language="java" contentType="text/html; charset=iso8859-1" %>
 <mm:cloud>
-<mm:import externid="project" />
+<mm:import externid="project" required="true" />
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
 <td class="white" colspan="2" valign="top">
@@ -20,6 +20,7 @@
     </tr>
     <tr>
       <td class="projectDownloads">
+          <mm:import id="backtemplate">/development/projects/project.jsp</mm:import>
 	  <%@include file="/includes/attachment.jsp" %>
 	  <%@include file="/includes/urls.jsp" %>
 	  <%@include file="/includes/documentation.jsp" %>
