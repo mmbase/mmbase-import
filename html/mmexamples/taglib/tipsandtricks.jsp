@@ -12,7 +12,7 @@
 <h1>Tips and Tricks</h1>
 
 <ul>
-  <li><em>How can I iterate?</em>
+  <li><a name="iterate" /><em>How can I iterate?</em>
      <p>
        Of course you can iterate over MMBase lists by use of the
        several nodelists. For other iterations I'd like to refer to
@@ -29,13 +29,13 @@
       </tr>
       </table>
   </li>
-  <li><em>How do I find out if a list is empty?</em>
+  <li><a name="listempty" /><em>How do I find out if a list is empty?</em>
      <p>
       Define a variable in the mm:first tag. After the list you can put in the body of mm:notpresent 
 	  the things which should happen if the list is empty.
      </p>
   </li>
-  <li><em>How can I write a field only if another field is empty?</em>
+  <li><a name="isempty" /><em>How can I write a field only if another field is empty?</em>
        <p>
        Use the 'mm:empty' tag in combination with
        the 'write="true"' attribute. This is valid for all 'writer' tags. For example 
@@ -43,7 +43,7 @@
    You need the 'write' attribute because it is false on default if the tag has a body.
    </p>
   </li>
-  <li><em>I get an exception if I use the 'id' attribute in a tag in
+  <li><a name="idsinlist" /><em>I get an exception if I use the 'id' attribute in a tag in
      the body of a list.</em><p>This can be solved in several
      ways.</p><p> The first solution is to make sure that the tag with
      the id attribute is evaluated only once (e.g. by using an
@@ -58,7 +58,7 @@
     <p>The last, and perhaps ugliest solution, is to 'remove' the id in concern at the end of the
      body of the list, by using the 'mm:remove' tag.</p>
   </li>
-  <li><em>How to make personalized pages (taking a collection of info from page to page)?</em>
+  <li><a name="contextsession" /><em>How to make personalized pages (taking a collection of info from page to page)?</em>
   <p>
    It is possible to write a whole `context' to the session. Give a context an id, and with the
    write-tag write it to the session. With the 'import' tag you can pick it up in another page.
@@ -81,7 +81,7 @@
    automaticly URL-escaped and encoded (putting the session in the URL if cookies are disabled).
    </p>
   </li>
-  <li><em>How do I divide my list in pages?</em> 
+  <li><a name="dividelist" /><em>How do I divide my list in pages?</em> 
    <p>There is no prefabricated solution for this, but using the 'undocumented' ${+ } feature it can be
    done relatively nicely in a taglib-only way. With for example the following list attributes:
 <pre>
@@ -110,7 +110,7 @@
             &lt;/a&gt;
   </pre>
   </li>
-  <li><em>If something is not possible with the MMBase taglib, you can alway use jsp (or other taglibs)!</em>
+  <li><a name="notpossible" /><em>If something is not possible with the MMBase taglib, you can alway use jsp (or other taglibs)!</em>
    <p>
     E.g. basic looping constructions are not really available in the MMBase taglib. You can use
     another taglib for this, or use JSP. For this the 'jspvar' (and 'vartype') attributes are available.
@@ -120,13 +120,14 @@
     'flee' to JSP too quickly.
    </p>
    </li>
-   <li><em>Can I put the form, and the code to handle the form easily in one JSP page?</em>
+   <li><a name="form" /><em>Can I put the form, and the code to handle the form easily in one JSP page?</em>
     <p>
       Yes. Use the 'mm:present' and 'mm:notpresent' tags to separate the two pieces of code. Check
       on the submit value of the form or on some hidden value.
     </p>
    </li>
-   <li><em>How do i reuse pieces of taglib/jsp code?</em>
+   <li><a name="reuse" />
+    <em>How do i reuse pieces of taglib/jsp code?</em>
     <p>
     The standard jsp &lt;%@ include %&gt; directive can be very useful to include small pieces of
     reusable taglib code. If for example you have lists of urls on several places in your site, you
@@ -142,7 +143,8 @@
      If you prefer to cut and copy your way, that's fine too, of course :-)
     </p>
   </li>
-  <li><em>What's the difference between listnodes and list, relatednodes and  related?</em>
+  <li><a name="listvslistnodes" />
+   <em>What's the difference between listnodes and list, relatednodes and  related?</em>
     <p>
       The difference is that 'listnodes' and 'relatednodes' return real nodes, and the fields you
       can refer to simply by their name.  'list' and 'related' return 'cluster' nodes, which are
