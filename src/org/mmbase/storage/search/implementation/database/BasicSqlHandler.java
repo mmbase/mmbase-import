@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -315,10 +315,13 @@ public class BasicSqlHandler implements SqlHandler {
             //append(getAllowedValue(tableName));
             append(tableName);
             
-            // Table alias
+            // Table alias (tablename when table alias not set).
             if (tableAlias != null) {
                 sb.append(" ").
                 append(getAllowedValue(tableAlias));
+            } else {
+                sb.append(" ").
+                append(getAllowedValue(tableName));
             }
             
             if (iSteps.hasNext()) {
