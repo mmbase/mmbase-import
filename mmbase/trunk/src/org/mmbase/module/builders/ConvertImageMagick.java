@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.22 2002-01-23 21:21:20 eduard Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.23 2002-02-12 18:35:44 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -305,7 +305,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
      */
     private byte[] ConvertImage(byte[] pict,String cmd, String format) {
         String command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-        log.debug("command:"+command);
+        if (log.isDebugEnabled()) log.debug("command:" + command + " in " +   new File("").getAbsolutePath());
         try {            
             log.debug("starting program");
             Process p = Runtime.getRuntime().exec(command);
@@ -342,9 +342,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 byte[]  errorMessage = imagestream.toByteArray();
                 if(errorMessage.length > 0) {
                     log.error("from stderr with command '" + command + "' --> '" + new String(errorMessage) + "'");
-                    log.error("working dir: '" + new File("file").getParentFile().getAbsolutePath() + "'");
-                } 
-                else {
+                    log.error("working dir: '" + new File("").getAbsolutePath() + "'");
+                } else {
                     log.debug("no information on stderr found");
                 }
                 log.warn("should it return null here?, it wasnt this way, so i didnt change it...");
