@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.45 2000-12-28 22:22:20 daniel Exp $
+$Id: MMSQL92Node.java,v 1.46 2001-01-29 14:29:02 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.45  2000/12/28 22:22:20  daniel
+added updateTable (with warning)
+
 Revision 1.44  2000/11/25 12:43:07  daniel
 number mapping support : added calls for Number, implemented the methods
 
@@ -177,7 +180,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.45 $ $Date: 2000-12-28 22:22:20 $
+* @$Revision: 1.46 $ $Date: 2001-01-29 14:29:02 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -194,6 +197,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private String numberString;
 	private String otypeString;
 	private String ownerString;
+	private boolean bdm=false;
+	private String datapath="/tmp/data/";
 
 	MMBase mmb;
 
@@ -203,6 +208,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	public void init(MMBase mmb,XMLDatabaseReader parser) {
 		this.mmb=mmb;
 		this.parser=parser;
+
+		datapath=parser.getBlobDataDir();
+		if (datapath!=null && !datapath.equals("")) {
+			bdm=true;
+		}
 
 		typeMapping=parser.getTypeMapping();
 		disallowed2allowed=parser.getDisallowedFields();
@@ -386,20 +396,27 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	* get byte of a database blob
 	*/
 	public byte[] getShortedByte(String tableName,String fieldname,int number) {
-		try {
-			byte[] result=null;
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
-			if (rs.next()) {
-				result=getDBByte(rs,1);
+		if (!bdm) {
+			try {
+				byte[] result=null;
+				MultiConnection con=mmb.getConnection();
+				Statement stmt=con.createStatement();
+				ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
+				if (rs.next()) {
+					result=getDBByte(rs,1);
+				}
+				stmt.close();
+				con.close();
+				return(result);
+			} catch (Exception e) {
+				System.out.println("MMObjectBuilder : trying to load bytes");
+				e.printStackTrace();
 			}
-			stmt.close();
-			con.close();
+		} else {
+			MMObjectNode tn=mmb.getTypeDef().getNode(number);
+			String stype=mmb.getTypeDef().getValue(tn.getIntValue("otype"));	
+    			byte[] result=readBytesFile(datapath+stype+"/"+number+"."+fieldname);
 			return(result);
-		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : trying to load bytes");
-			e.printStackTrace();
 		}
 		return(null);
 	}
@@ -484,7 +501,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		if (number==-1) number=getDBKey();
 		// did it fail ? ifso exit 
 		if (number == -1) return(-1);
-
+	
+		// moved this to before so i have it in blob save
+		node.setValue("number",number);
 
 		// Create a String that represents the amount of DB fields to be used in the insert.
 		// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
@@ -497,13 +516,19 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 			  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
 				if (debug) debug("Insert: DBState = "+DBState+", adding key: "+key);
-				fieldAmounts+=",?";
+
+					// hack for blobs to disk
+					int dbtype=node.getDBType(key);
+					if (!bdm || dbtype!=FieldDefs.TYPE_BYTE) {
+						fieldAmounts+=",?";
+					} else {
+					}
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 				if (debug) debug("Insert: DBState = "+DBState+", skipping key: "+key);
 			} else {
 
                	if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
-					fieldAmounts+=",?";
+						fieldAmounts+=",?";
 				} else {
 					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
                	}
@@ -532,8 +557,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 				  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
 					if (debug) debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
-					setValuePreparedStatement( stmt, node, key, j );
-					j++;
+					if (setValuePreparedStatement( stmt, node, key, j )) j++;
+
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					if (debug) debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
@@ -611,7 +636,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(node.getIntValue("number"),tableName,"n");
 			}
 		}
-		node.setValue("number",number);
+		//node.setValue("number",number);
 		node.clearChanged();
 		//System.out.println("INSERTED="+node);
 		return(number);	
@@ -919,7 +944,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	/**
 	 * set prepared statement field i with value of key from node
 	 */
-	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
+	private boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
 		throws SQLException
 	{
 		int type = node.getDBType(key);
@@ -939,7 +964,20 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				setDBText(i, stmt,"");
 			}
 		} else if (type==FieldDefs.TYPE_BYTE) {	
-				setDBByte(i, stmt, node.getByteValue(key));
+				if (!bdm) {
+					setDBByte(i, stmt, node.getByteValue(key));
+				} else {
+					String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));	
+					File file = new File(datapath+stype);
+					try {
+						file.mkdirs();
+					} catch(Exception e) {
+						System.out.println("Can't create dir : "+datapath+stype);
+					}
+					byte[] value=node.getByteValue(key);
+					saveFile(datapath+stype+"/"+node.getIntValue("number")+"."+key,value);
+					return(false);
+				}
 		} else { 
 			String tmp=node.getStringValue(key);
 			if (tmp!=null) {
@@ -948,7 +986,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.setString(i, "");
 			}
 		}
+		return(true);
 	}
+
+
 
 	public boolean create(MMObjectBuilder bul) {
 		return(create_real(bul,bul.getTableName()));
@@ -972,12 +1013,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				String name=(String)e.nextElement();
 				FieldDefs def=bul.getField(name);
 				if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					String part=convertXMLType(def);
-					if (result==null) {
-						result=part;
+					if (!bdm || def.getDBType()!=FieldDefs.TYPE_BYTE) {
+						String part=convertXMLType(def);
+						if (result==null) {
+							result=part;
+						} else {
+							result+=", "+part;
+						}	
 					} else {
-						result+=", "+part;
-					}	
+					}
 				}
 			}
 		}
@@ -1235,4 +1279,32 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(ownerString);
 	}
 
+
+	static boolean saveFile(String filename,byte[] value) {
+		File sfile = new File(filename);
+		try {
+			DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+			scan.write(value);
+			scan.flush();
+			scan.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return(true);
+	}
+
+
+    byte[] readBytesFile(String filename) {
+	File bfile = new File(filename);
+	int filesize = (int)bfile.length();
+	byte[] buffer=new byte[filesize];
+	try {
+			FileInputStream scan = new FileInputStream(bfile);
+		int len=scan.read(buffer,0,filesize);
+		scan.close();
+	} catch(FileNotFoundException e) {
+		System.out.println("error getfile : "+filename);
+ 	} catch(IOException e) {}
+	return(buffer);
+    }
 }
