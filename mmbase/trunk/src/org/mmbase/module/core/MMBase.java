@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.91 2003-07-02 10:48:29 michiel Exp $
+ * @version $Id: MMBase.java,v 1.92 2003-07-04 13:57:27 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -68,6 +68,11 @@ public class MMBase extends ProcessorModule {
 
     // logging
     private static Logger log = Logging.getLoggerInstance(MMBase.class);
+
+    /**
+     * Reference to the MMBase singleton. Used for quick reference by getMMBase();
+     */
+    private static MMBase mmbaseroot=null;
 
     /**
      * Defines what 'channel' we are talking to when using multicast.
@@ -536,7 +541,10 @@ public class MMBase extends ProcessorModule {
      * @return the active MMBase module
      */
     static public MMBase getMMBase() {
-        return (MMBase)getModule("mmbaseroot",true);
+        if (mmbaseroot == null) {
+            mmbaseroot = (MMBase) getModule("mmbaseroot",true);
+        }
+        return mmbaseroot;
     }
 
     /**
