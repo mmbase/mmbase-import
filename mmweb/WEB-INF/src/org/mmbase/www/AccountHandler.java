@@ -2,6 +2,7 @@ package org.mmbase.www;
 
 import java.util.*;
 import org.apache.commons.lang.util.Validate;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.validator.EmailValidator;
 import org.mmbase.bridge.Cloud;
@@ -26,10 +27,9 @@ public class AccountHandler {
     * if there's exactly result, mail username + password to mail.
     * @param cloud
     * @param request
-    * @param response
     * @throws IllegalArgumentException with message if anything goes wrong.
     */
-   public static void forgotten(Cloud cloud, HttpServletRequest request, HttpServletResponse response) throws MessagingException {
+   public static void forgotten(Cloud cloud, HttpServletRequest request) throws MessagingException {
       String mail = request.getParameter("email");
       Validate.notEmpty(mail, "You have not specified an email address");
       Validate.isTrue(EmailValidator.getInstance().isValid(mail), "Not a valid email address.");
@@ -80,9 +80,8 @@ public class AccountHandler {
     * and a new_email param. Updates the user object with the new email address.
     * @param cloud
     * @param request
-    * @param response
     */
-   public static void changeEmail(Cloud cloud, HttpServletRequest request, HttpServletResponse response) {
+   public static void changeEmail(Cloud cloud, HttpServletRequest request) {
       String email = request.getParameter("new_email");
       Validate.notEmpty(email, "You must fill in an email address.");
       Validate.isTrue(EmailValidator.getInstance().isValid(email), "Not a valid email address.");
@@ -135,6 +134,11 @@ public class AccountHandler {
       request.getSession().setAttribute("user", userNumber);
       Node person = getPerson(node);
       request.getSession().setAttribute("person", new Integer(person.getNumber()));
+      String fullName = person.getStringValue("firstname");
+      String suffix = person.getStringValue("suffix");
+      suffix = StringUtils.isEmpty(suffix) ? " " : " " + suffix + " ";
+      fullName = fullName + suffix + person.getStringValue("lastname");
+      request.getSession().setAttribute("user_node_name", fullName);
       request.getSession().setAttribute("organisations", getOrganisations(person));
 
    }
@@ -155,7 +159,7 @@ public class AccountHandler {
    private static Node getPerson(Node user) {
       NodeList relatedNodes = user.getRelatedNodes("persons");
       if(relatedNodes.size() != 1) {
-         return null;
+         throw new IllegalArgumentException("This user is not related to a person.");
       }
       return relatedNodes.getNode(0);
    }

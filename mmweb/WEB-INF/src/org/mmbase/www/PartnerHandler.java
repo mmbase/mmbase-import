@@ -1,6 +1,10 @@
 package org.mmbase.www;
 
 import java.util.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.MalformedURLException;
 import javax.servlet.http.*;
 import org.apache.commons.lang.util.Validate;
 import org.apache.commons.validator.UrlValidator;
@@ -31,7 +35,12 @@ public class PartnerHandler {
       String name = request.getParameter("name");
       String url = request.getParameter("url");
       String description = request.getParameter("description");
-      Validate.isTrue(new UrlValidator().isValid(url), "Not a valid url.");
+      Validate.notNull(url, "No url specified.");
+      try {
+         new URL(url);
+      } catch (MalformedURLException ex) {
+         Validate.isTrue(false, "'"+url+"' is not a valid url.");
+      }
       Node homepage = getHomePage(cloud);
       Node news = cloud.getNodeManager("news").createNode();
       news.setStringValue("title", title);
@@ -45,7 +54,7 @@ public class PartnerHandler {
       urlnode.setStringValue("description", description);
       urlnode.commit();
       homepage.createRelation(news, getRelationManager(cloud, "pages", "news")).commit();
-      news.createRelation(urlnode, getRelationManager(cloud, "news", "url")).commit();
+      news.createRelation(urlnode, getRelationManager(cloud, "news", "urls")).commit();
 
    }
 
@@ -60,7 +69,7 @@ public class PartnerHandler {
             }
          }
       }
-      return null;
+      throw new IllegalArgumentException("No relationManager found."+src+":"+target);
    }
 
    private static Node getHomePage(Cloud cloud) {
