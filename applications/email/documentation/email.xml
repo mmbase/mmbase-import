@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.3 2004-04-05 23:25:01 gerard Exp $</edition>
+    <edition>$Id: email.xml,v 1.4 2004-04-14 20:49:31 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -41,25 +41,31 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 			
   <!--  create the email node -->
   <mm:createnode id="mail1" type="email">
-         <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
+         <mm:setfield name="from">Daniel <daniel@mmbase.org></mm:setfield>
          <mm:setfield name="to">daniel@mmbase.org</mm:setfield>
+         <mm:setfield name="cc">michiel@mmbase.org,documentation@mmbase.org</mm:setfield>
          <mm:setfield name="subject">my first mmbase email !!</mm:setfield>
          <mm:setfield name="body">Just testing email</mm:setfield>
+         <mm:function name="mail" /><!-- mail the email node -->
    </mm:createnode>
-
-   <!-- mail the email node -->
-   <mm:node referid="mail1">
-         <mm:field name="mail(oneshot)" />
-   </mm:node>
 
 			]]>
 			</programlisting>
 			<para>
-			Here you see 2 parts in the first we create and fill the email object with the fields we need, most of the normal headers can be set (to,from, reply-to, subject etc etc). We also give it a id so we can refer to it for sending and finding out what happened. The second part opens the email node and calls the mail(type) function with the type oneshot. The oneshot type means the email will be deleted once its mailed, for reasons you will find out in following examples its not deleted right away but only after the email expire time passed.</para>
+        Here the Node is created and filled the with the fields we
+        need, most of the normal headers can be set (to, from, reply-to, subject, cc, bcc, body),
+        and even before it is commited, it is send with the 'mail'
+        function on it. The mail function has one parameter 'type', which defaults to 'oneshot' (so it is
+        not supplied here). The oneshot type means the email will be deleted once its mailed, for reasons
+        you will find out in following examples its not deleted right away but only after the email expire
+        time passed.               
+      </para>
 	</section>
-	       <section><title>Finding out what happened to the email</title>
-    <para>The node is only tagged to be deleted if you use oneshot, you can still visit it in one of the editors or ask it questions like the example below that shows if the mail worked and at what time.
-</para>
+  <section><title>Finding out what happened to the email</title>
+    <para>
+      The node is only tagged to be deleted if you use oneshot, you can still visit it in one of the
+      editors or ask it questions like the example below that shows if the mail worked and at what time.
+    </para>
 			<programlisting format="linespecific">
 			<![CDATA[
   (from example2.jsp)
@@ -74,14 +80,14 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
    <!-- mail the email node -->
    <mm:node referid="mail1">
-         <mm:field name="mail(oneshot)" />
+         <mm:function name="mail"><mm:param name="type">oneshot</mm:param></mm:function>
    </mm:node>
  
  <!--check if mmbase could mail the message -->
   <mm:node referid="mail1">
          <mm:field name="mailstatus">
                  <mm:compare value="1">
-                         Mail was delivered at <mm:field name=
+                         Mail was delivered at <mm:field name="mailedtime"><mm:time format=":LONG.LONG" /></mm:field>
                   </mm:compare>
                    <mm:compare value="2">
                          Mail failed
@@ -93,10 +99,17 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
 			]]>
 			</programlisting>
-			<para>.</para>
-	</section>
-		       <section><title>Sending mail to users and groups</title>
-    <para>The above examples are clear but not  very dynamic, it just mails one person that we know the email address of usefull for sending account messages or greetingcards but within a modern website you also want to mail groups of users like in a mailing list or all the people that are part of a community topic. The mmbase email object will automaticly check any related users or groups of users and allow you to mail them just as easy as mailing just one of them. The following example mails a whole group with users, so in mmbase terms its users->groups->email. Once we give the mail command it will find check if there are related groups and if these groups have related users. If so it creates a list of all the found users and mails them.
+      <para>
+        Here you see 2 parts in the first we create the node and it is given an
+        id so we can refer to it for sending and finding out what happened.
+        The second part opens the email node and calls the mail function with the type oneshot (this
+        time explicitely). Then in the third part we use the mail node again, just to show some status
+        information about it.
+      </para>
+    </section>
+    <section><title>Sending mail to users and groups</title>
+    <para>
+      The above examples are clear but not  very dynamic, it just mails one person that we know the email address of usefull for sending account messages or greetingcards but within a modern website you also want to mail groups of users like in a mailing list or all the people that are part of a community topic. The mmbase email object will automaticly check any related users or groups of users and allow you to mail them just as easy as mailing just one of them. The following example mails a whole group with users, so in mmbase terms its users->groups->email. Once we give the mail command it will find check if there are related groups and if these groups have related users. If so it creates a list of all the found users and mails them.
 </para>
 			<programlisting format="linespecific">
 			<![CDATA[
@@ -117,7 +130,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
   <!-- start the mailer and wait for it to finish -->
   <mm:node referid="mail1">
-          <mm:field name="mail(oneshot)" />
+    <mm:function name="name" />
   </mm:node>
 
 
@@ -142,7 +155,7 @@ Now the oneshot will mail and tag itself to be deleted by mmbase, but in the abo
 <programlisting format="linespecific">
 <![CDATA[Todo this use  :
 
-<mm:field name="startmail(oneshotkeep) " />]]>
+<mm:function  name="startmail" />]]>
 </programlisting>
 
 </section>
