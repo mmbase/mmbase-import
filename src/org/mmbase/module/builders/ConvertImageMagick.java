@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.12 2001-04-26 12:23:19 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.13 2001-04-26 12:45:46 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2001/04/26 12:23:19  vpro
+	Rico: major bug fix in Images, minor stuff in the rest
+	
 	Revision 1.11  2001/03/08 13:40:45  install
 	Rob converted to new logging system
 	
@@ -58,7 +61,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.12 2001-04-26 12:23:19 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.13 2001-04-26 12:45:46 vpro Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -300,6 +303,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 			}
 			log.debug("Done converting"); 
 			image=imagestream.toByteArray();
+			log.debug("Returning Image"); 
 		} catch (Exception e) {
 			log.error("Failure converting image "+cmd+" "+format);
 			log.error("Message : "+e.getMessage());

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ImageRequest.java,v 1.1 2000-06-05 14:42:14 wwwtech Exp $
+	$Id: ImageRequest.java,v 1.2 2001-04-26 12:45:46 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/06/05 14:42:14  wwwtech
+	Rico: image queuing built in plus parallel converters
+	
 */
 package org.mmbase.module.builders;
 
@@ -18,7 +21,7 @@ import java.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequest.java,v 1.1 2000-06-05 14:42:14 wwwtech Exp $
+ * @version $Id: ImageRequest.java,v 1.2 2001-04-26 12:45:46 vpro Exp $
  */
 public class ImageRequest {
 	String ckey;
@@ -58,7 +61,8 @@ public class ImageRequest {
 			count++;
 			try {
 				wait();
-			} catch (InterruptedException e) { }
+			} catch (InterruptedException e) { 
+			}
 		}
 		return out;
 	}
@@ -71,5 +75,9 @@ public class ImageRequest {
 
 	public int count() {
 		return(count);
+	}
+
+	public String toString() {
+		return("id="+id+" : key="+ckey);
 	}
 }
