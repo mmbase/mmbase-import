@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * is still busy or just finished.
  *
  * @author Rico Jansen?, Daniel?, David van Zeventer
- * @version $Revision: 1.21 $ $Date: 2001-05-02 15:32:04 $
+ * @version $Revision: 1.22 $ $Date: 2001-05-11 07:57:49 $
  */
 public class EncodeHandler implements Runnable {
 	private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -100,13 +100,13 @@ public class EncodeHandler implements Runnable {
 	/**
 	 * Checks EncoderHandlers task variable to decide what to do.
 	 * Currently there are two type of tasks: service tasks and 'recover for service' tasks.
-	 * The servicetasks are tasks for CDRipping 'newcdtrack' and Encoding 'g2encode'.
+	 * The servicetasks are tasks for CDRipping 'cdrip' and Encoding 'g2encode'.
 	 * The recovertasks perform recovery for when the mmbaseserver is being reset when service is busy 
 	 * or when service just finished. 
 	 */
 	public void run () {
 		log.info("Task is:'"+task+"', handling it now.");
-		if (task.equals("newcdtrack")) {
+		if (task.equals("cdrip")) {
 			doCDRip();
 		} else if (task.equals("g2encode")) {
 			doG2Encode();
