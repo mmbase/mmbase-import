@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -17,11 +17,16 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Rico Jansen
  * @version 27 Apr 1999
  */
 public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
+
+    private static Logger log = Logging.getLoggerInstance(CopyServices.class.getName()); 
 
 	public final static String buildername = "CopyServices";
 	private final Hashtable busyServices=new Hashtable();
@@ -42,11 +47,11 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 				+", toroot varchar(255)"
 				+", state char(32)"
 				+", info varchar(255) not null) under "+mmb.baseName+"_object_t");
-			System.out.println("Created "+tableName);
+			log.debug("Created "+tableName);
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create type "+tableName);
+			log.debug("can't create type "+tableName);
 			e.printStackTrace();
 		}
 		try {
@@ -56,7 +61,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
+			log.debug("can't create table "+tableName);
 			e.printStackTrace();
 		}
 		return(false);
@@ -97,7 +102,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 				con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.debug("Error on : "+number+" "+owner+" fake");
 			return(-1);
 		}
 		signalNewObject(tableName,number);
@@ -120,7 +125,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 	public boolean nodeChanged(String number,String builder,String ctype) {
 		MMObjectNode node=getNode(number);
 		if (node!=null) {
-			System.out.println("CopyServices node="+node.toString());
+            log.debug("CopyServices node="+node.toString());
 			// is if for me ?, enum related mmservers to check
 			Enumeration e=mmb.getInsRel().getRelated(number,"mmservers");
 			while  (e.hasMoreElements()) {
@@ -141,11 +146,11 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 		String state=node.getStringValue("state");
 
 		if (!state.equals("busy")) {
-			System.out.println("Action called on CopyServices : "+node);
+			log.debug("Action called on CopyServices : "+node);
 			// start a thread to handle command
 			new CopyServicesProbe(this,node);
 		} else {
-			System.out.println("Problem action called on copyservice : "+node+" while it was busy");
+			log.debug("Problem action called on copyservice : "+node+" while it was busy");
 		}
 	}
 
@@ -167,7 +172,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 			busyInt=node.getIntegerValue("number");
 			obtainLock(busyInt);
 
-			System.out.println(buildername+" -> send to "+node);
+			log.debug(buildername+" -> send to "+node);
 
 			info="FROM="+src.getIntValue("number")+" TO="+dst.getIntValue("number");
 			changed=false;
@@ -178,7 +183,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 					waitUntilNodeChanged(node);
 					newnode=getNode(node.getIntValue("number"));
 					state=newnode.getStringValue("state");
-					System.out.println(buildername+" Claim wait="+state);
+					log.debug(buildername+" Claim wait="+state);
 					if (state.equals("waiting")||state.equals("error")) changed=true;
 				}
 			}
@@ -192,11 +197,11 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 				waitUntilNodeChanged(node);
 				newnode=getNode(node.getIntValue("number"));
 				state=newnode.getStringValue("state");
-				System.out.println(buildername+" Operation wait="+state);
+				log.debug(buildername+" Operation wait="+state);
 				if (state.equals("waiting")||state.equals("error")) changed=true;
 			}
 			val=newnode.getStringValue("info");
-			System.out.println(buildername+": copy : "+val);
+			log.debug(buildername+": copy : "+val);
 
 			releaseLock(busyInt);
 		} else {
@@ -222,7 +227,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 			busyInt=node.getIntegerValue("number");
 			obtainLock(busyInt);
 
-			System.out.println(buildername+" -> send to "+node);
+			log.debug(buildername+" -> send to "+node);
 			info="FROM="+src.getIntValue("number");
 
 			changed=false;
@@ -233,7 +238,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 					waitUntilNodeChanged(node);
 					newnode=getNode(node.getIntValue("number"));
 					state=newnode.getStringValue("state");
-					System.out.println(buildername+" Claim wait="+state);
+					log.debug(buildername+" Claim wait="+state);
 					if (state.equals("waiting")||state.equals("error")) changed=true;
 				}
 			}
@@ -245,11 +250,11 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 				waitUntilNodeChanged(node);
 				newnode=getNode(node.getIntValue("number"));
 				state=newnode.getStringValue("state");
-				System.out.println(buildername+" Operation wait="+state);
+				log.debug(buildername+" Operation wait="+state);
 				if (state.equals("waiting")||state.equals("error")) changed=true;
 			}
 			val=newnode.getStringValue("info");
-			System.out.println(buildername+": remove : "+val);
+			log.debug(buildername+": remove : "+val);
 
 			releaseLock(busyInt);
 		} else {
@@ -264,7 +269,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 				try {
 					busyServices.wait(60000);	
 				} catch (InterruptedException ie) {}
-				System.out.println("CopyServices -> Waiting for "+number);
+				log.debug("CopyServices -> Waiting for "+number);
 			}
 			busyServices.put(number,number);
 		}
@@ -278,7 +283,7 @@ public class CopyServices extends MMObjectBuilder implements MMBaseObserver {
 			try {
 				busyServices.notify();
 			} catch (Exception xx) {
-				System.out.println("CopyServices -> Notify -> "+xx);
+				log.debug("CopyServices -> Notify -> "+xx);
 				xx.printStackTrace();
 			}
 		}
