@@ -39,13 +39,7 @@ public class BasicCloudContext implements CloudContext {
     /**
     * Transaction Manager to keep track of transactions
     */
-	static TransactionManager transactionManager = null;
-
-	/**
-	* Securitymanager
-	*/
-	public static org.mmbase.security.SecurityManager securityManager= null;
-	
+    static TransactionManager transactionManager = null;
 	
     // map of clouds by name
     private static HashMap localClouds = new HashMap();
@@ -63,25 +57,21 @@ public class BasicCloudContext implements CloudContext {
         if (i!=null) {
             mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
 		
-            try {
-                securityManager = new org.mmbase.security.SecurityManager(MMBaseContext.getConfigPath()+File.separator+"security"+File.separator+"security.xml");
-            } catch (Exception e) {
-                throw new BasicBridgeException(e);
-            }
-
             // create transaction manager and temporary node manager
             tmpObjectManager = new TemporaryNodeManager(mmb);
-		    transactionManager = new TransactionManager(mmb,tmpObjectManager);
+    	    transactionManager = new TransactionManager(mmb,tmpObjectManager);
 		
-		    // create module list
-		    while(i.hasNext()) {
+    	    // create module list
+    	    while(i.hasNext()) {
                 Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);
                 localModules.put(mod.getName(),mod);
             }
+	    
             Cloud cloud = new BasicCloud("mmbase",this);
-
             localClouds.put(cloud.getName(),cloud);
-        } else {
+        } 
+	else {
+	    // why dont we start mmbase, when there isnt a running instance, just change the check...
             throw new BasicBridgeException("MMBase has not been started, and cannot be started by this Class");
         }
     }
