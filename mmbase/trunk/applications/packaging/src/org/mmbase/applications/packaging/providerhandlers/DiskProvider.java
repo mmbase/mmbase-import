@@ -28,7 +28,6 @@ import org.w3c.dom.*;
  * the provider and feeds them to the package and bundle managers.
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class DiskProvider extends BasicProvider implements ProviderInterface {
     private static Logger log = Logging.getLoggerInstance(DiskProvider.class);

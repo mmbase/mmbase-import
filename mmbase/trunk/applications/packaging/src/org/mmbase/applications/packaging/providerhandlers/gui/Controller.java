@@ -27,7 +27,6 @@ import org.mmbase.module.core.*;
 
 /**
  * @author     Daniel Ockeloen
- * @created    July 20, 2004
  * @version    $Id: guiController.java
  */
 public class Controller {

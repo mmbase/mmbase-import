@@ -17,7 +17,6 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author     danielockeloen
- * @created    July 20, 2004
  */
 public class ProviderFileWriter {
 
