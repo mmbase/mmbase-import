@@ -124,7 +124,14 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 value = getNodeVar().getStringValue(fieldName);
             }
         } else {                        // a field was found!
-            
+            // if direct parent is a Formatter Tag, then communicate 
+            FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+            if (f != null && f.wantXML()) {                
+                log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
+                node.toXML(f.getDocument(), field); // add the field
+                value = "";               
+            } else { // do the rest as well.
+                                         
                 if (helper.getVartype() == WriterHelper.TYPE_NODE) {
                     value = node.getNodeValue(fieldName);
                 } else {
@@ -138,7 +145,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                         value = convert(node.getStringValue(fieldName));
                     }
                 }
-    
+            }
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
         helper.setValue(value);
