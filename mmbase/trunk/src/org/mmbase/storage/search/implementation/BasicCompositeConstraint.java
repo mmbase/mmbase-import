@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.4 2003-08-05 20:27:54 michiel Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.5 2003-11-27 17:58:41 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint
@@ -115,7 +115,7 @@ implements CompositeConstraint {
             return isInverse() == constraint.isInverse()
                 && logicalOperator == constraint.getLogicalOperator()
                 && childs.equals(constraint.getChilds());
-            // TODO: (later) should order of childs matter (it does now)?
+            // XXX should order of childs matter (it does now)?
         } else {
             return false;
         }

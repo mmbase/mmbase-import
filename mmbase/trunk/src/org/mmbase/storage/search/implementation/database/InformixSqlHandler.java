@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.4 2003-03-10 11:51:00 pierre Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.5 2003-11-27 17:58:42 robmaris Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -67,8 +67,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
-
-        // TODO: (later) test table and field aliases for uniqueness.
+        // XXX should table and field aliases be tested for uniqueness?
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {

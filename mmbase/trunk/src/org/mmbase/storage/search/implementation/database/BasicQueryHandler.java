@@ -28,7 +28,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.18 2003-11-26 15:21:50 robmaris Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.19 2003-11-27 17:58:41 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -53,7 +53,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
      */
     public BasicQueryHandler(SqlHandler sqlHandler) {
         this.sqlHandler = sqlHandler;
-        // TODO: (later) test if MMBase is properly initialized first.
         mmbase = MMBase.getMMBase();
     }
 

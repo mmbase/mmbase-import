@@ -20,10 +20,9 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.19 2003-11-26 15:32:39 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.20 2003-11-27 17:58:42 robmaris Exp $
  * @since MMBase-1.7
  */
-// TODO: (later) must wildcard characters be escaped?
 
 public class BasicSqlHandler implements SqlHandler {
 
@@ -47,7 +46,8 @@ public class BasicSqlHandler implements SqlHandler {
      * @param str The input string.
      * @return The modified string.
      */
-    // TODO: (later) perhaps place this somewhere else?
+    // XXX must wildcard characters be escaped?
+    // XXX  perhaps place this somewhere else?
     public static String toSqlString(String str) {
         String result = str;
         if (str != null) {
@@ -149,17 +149,16 @@ public class BasicSqlHandler implements SqlHandler {
      *        to allowed alternatives.
      */
     public BasicSqlHandler(Map disallowedValues) {
-        // TODO: (later) test if MMBase is properly initialized first.
         mmbase = MMBase.getMMBase();
         disallowed2Allowed = new HashMap(disallowedValues);
     }
 
     // javadoc is inherited
-    // TODO: (later) what exception to throw when an unsupported feature is
-    // encountered (currently throws UnsupportedOperationException).
+    // XXX what exception to throw when an unsupported feature is
+    // encountered (currently throws UnsupportedOperationException)?
     public String toSql(SearchQuery query, SqlHandler firstInChain)
     throws SearchQueryException {
-        // TODO: (later) test table and field aliases for uniqueness.
+        // XXX should table and field aliases be tested for uniqueness?
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
@@ -532,8 +531,8 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    // TODO: (later) what exception to throw when an unsupported constraint is
-    // encountered (currently throws UnsupportedOperationException).
+    // XXX what exception to throw when an unsupported constraint is
+    // encountered (currently throws UnsupportedOperationException)?
     public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite) {
 

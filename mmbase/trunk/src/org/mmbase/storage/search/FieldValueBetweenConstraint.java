@@ -10,12 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search;
 
 /**
- * A constraint that restricts the value of a stepfield to be in a specified range of values.
+ * A constraint that restricts the value of a stepfield to be in a specified 
+ * range of values (numerical or string).
  * <p>
  * This corresponds to the use of "between ... and ..." in SQL SELECT-syntax. 
  *
  * @author Rob van Maris
- * @version $Id: FieldValueBetweenConstraint.java,v 1.4 2003-09-02 19:54:13 michiel Exp $
+ * @version $Id: FieldValueBetweenConstraint.java,v 1.5 2003-11-27 17:58:41 robmaris Exp $
  * @since MMBase-1.7
  */
 public interface FieldValueBetweenConstraint extends FieldConstraint {
@@ -28,8 +29,6 @@ public interface FieldValueBetweenConstraint extends FieldConstraint {
      * An integral numerical value, however, is represented by a string using
      * the standard <em>integer</em> format, i.e. without the decimal point
      * (e.g. "123" instead of "123.0").
-
-     * @todo MM: why not Number getLowerLimit?
      */
     String getLowerLimit();
 
