@@ -31,6 +31,12 @@
       <url>http://www.mmbase.org/</url>
 			<properties><war.bundle>true</war.bundle></properties>
     </dependency>
+		<!-- add log4j because we like it -->
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+			<properties><war.bundle>true</war.bundle></properties>
+    </dependency>
     <dependency>
       <groupId>mmbase</groupId>
       <artifactId>mmbase-taglib</artifactId>
