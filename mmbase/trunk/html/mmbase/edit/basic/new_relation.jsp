@@ -58,7 +58,7 @@
         <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name" />' >
         <input type="hidden" name="create_relation" value="yes" />
         <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
-        <tr><th colspan="2">new relation (<mm:write referid="role_name" />)</th></tr>
+        <tr><th colspan="2"><%= m.getString("new_relation.new") %> (<mm:write referid="role_name" />)</th></tr>
         <tr><th colspan="2">between <mm:field node="node_number" name="gui()" /> and <mm:field node="node" name="gui()" /></th></tr>
         <mm:node referid="relation">
      	    <input type="hidden" name="relation" value="<mm:field name="number" />" />

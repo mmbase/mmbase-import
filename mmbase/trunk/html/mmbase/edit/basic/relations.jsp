@@ -87,7 +87,7 @@
   </tr>
   <tr><!-- a row with three columns -->
   <td class="data">&nbsp;</td> <!-- empty -->
-  <td class="data">new relation</td>
+  <td class="data"><%= m.getString("new_relation.new")%></td>
   <td class="navigate"> <!-- + -->
   <a href='<mm:url page="new_relation.jsp" >
            <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>
