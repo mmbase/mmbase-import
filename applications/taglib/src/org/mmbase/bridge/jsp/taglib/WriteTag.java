@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* The writetag can take a variable from the context and put it in a
-* jsp variable, or write it to the page.
-*
-* @author Michiel Meeuwissen 
-*/
+ * The writetag can take a variable from the context and put it in a
+ * jsp variable, or write it to the page.
+ *
+ * @author Michiel Meeuwissen 
+ */
 
 public class WriteTag extends ContextReferrerTag {
 
@@ -145,28 +145,29 @@ public class WriteTag extends ContextReferrerTag {
 
     }
     
-
-    public int doStartTag() throws JspTagException {
-
+    protected Object getObject() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("getting object " + getReferid());
         }
+        return getObject(getReferid());
+    }
+
+
+    public int doStartTag() throws JspTagException {
+
+     
         if (type == TYPE_BYTES) { 
             log.debug("Indicated that this are bytes");
             // writing bytes to the page?? We write uuencoded...
             if (jspvar != null) {
                 throw new JspTagException("Jspvar of type 'bytes' is not supported");                
             }            
-            byte [] bytes = getContextTag().getBytes(getReferid());
+            byte [] bytes = getContextTag().getBytes(getReferid()); // a hack..
             if (bytes != null) {
                 extraBodyContent = org.mmbase.util.Encode.encode("BASE64", bytes); 
             }
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("-> " + getObject(getReferid()));
-            }
-            
-            Object value = getObject(getReferid());
+            Object value = getObject();
             
             extraBodyContent = null;
             if (jspvar != null) { // a jspvar was defined, don't write to page. 
