@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 *
 **/
-public class CloudTag extends BodyTagSupport implements CloudProvider {
+public class CloudTag extends ContextTag implements CloudProvider {
     /*
         keesj: This class is full of ugly authentication code
         we should create an authenticationFactory. An other problem
