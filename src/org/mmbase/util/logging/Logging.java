@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 import java.lang.reflect.Method;
-import java.io.File;
+import java.io.*;
+import java.net.URL;
 
 /** 
  * With this class the logging is configured and it supplies the `Logger' objects.
@@ -92,7 +93,21 @@ public class Logging {
             return;
         }
    
-        configfile = configurationFile.getAbsolutePath();
+        // Convert the file to a system-dependant URL string for the parser to use
+        try {
+            URL logURL = configurationFile.toURL();
+            configfile = logURL.toString();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Cannot get URL from file " + 
+                               configfile + 
+                               " : " +
+                               e.toString());
+            // that doesn't work, so let's try to do it ourselves
+            configfile = "file://" + configurationFile.getAbsolutePath();
+        }                               
+         
         //configfile = configfile.replace('/',(System.getProperty("file.separator")).charAt(0));
         //configfile = configfile.replace('\\',(System.getProperty("file.separator")).charAt(0));   
         
@@ -114,7 +129,7 @@ public class Logging {
         } 
 
         String classToUse    = "org.mmbase.util.logging.SimpleImpl"; // default
-        String configuration = "stderr,info";                        // default
+        String configuration = "stderr,debug";                        // default
         try { // to read the XML configuration file
             
             Object parser = domParserClass.newInstance();
@@ -125,7 +140,7 @@ public class Logging {
             setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/dom/defer-node-expansion",        new Boolean(true)});
             // setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/continue-after-fatal-error",  new Boolean(true)});
             
-            configfile="file://" + configfile;
+            // configfile="file://" + configfile;
             
             // System.out.println("configfile:" + configfile);
             parse.invoke(parser, new Object[] {configfile});            
