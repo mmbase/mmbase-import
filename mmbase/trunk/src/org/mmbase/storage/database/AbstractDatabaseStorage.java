@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.9 2003-05-02 20:27:16 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.10 2003-05-05 13:23:12 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -345,7 +345,21 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return the expanded tablename
      */
     protected String getFullTableName(String tableName) {
-        return mmb.baseName + "_" + tableName;
+        return getTableName(mmb.baseName + "_" + tableName);
+    }
+    /**
+     * @since MMBase-1.7
+     */
+    protected final String getFullTableName(MMObjectBuilder buil) {
+        return getTableName(buil.getFullTableName());
+    }
+
+    /**
+     * can override this, e.g. with tableName.toUpperCase
+     * @since MMBase-1.7
+     */
+    protected String getTableName(String tableName) {
+        return tableName;
     }
 
     /**
@@ -637,7 +651,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         } else if (keyType==KEY_SECONDARY) {
             result = applyKeyScheme(name,result,name);
         } else if (keyType==KEY_FOREIGN) {
-            result=applyForeignKeyScheme(name,result,getFullTableName("object"));
+            result=applyForeignKeyScheme(name, result, getFullTableName("object"));
         } else if (keyType==KEY_NOTNULL) {
             result=applyNotNullScheme(name,result);
         } else {
