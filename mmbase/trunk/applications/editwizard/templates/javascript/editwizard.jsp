@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.41 2004-01-12 22:09:08 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.42 2004-02-04 15:28:07 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -38,7 +38,6 @@ function doOnLoad_ew() {
                 if (elem.value && (elem.value != "")) {
                     var d = getDate(elem.value);
                     var id = elem.name;
-
                     if ((ftype == "datetime") || (ftype == "date")) {
                         form.elements["internal_" + id + "_day"].selectedIndex = d.getDate() - 1;
                         form.elements["internal_" + id + "_month"].selectedIndex = d.getMonth();
@@ -48,8 +47,14 @@ function doOnLoad_ew() {
                     }
 
                     if ((ftype == "datetime") || (ftype == "time")) {
-                        form.elements["internal_" + id + "_hours"].value = d.getHours();
-                        form.elements["internal_" + id + "_minutes"].value = d.getMinutes();
+                        form.elements["internal_" + id + "_hours"].selectedIndex = d.getHours();
+                        form.elements["internal_" + id + "_minutes"].selectedIndex = d.getMinutes();
+                    }
+
+                    if (ftype == "duration") {
+                        form.elements["internal_" + id + "_hours"].selectedIndex = d.getUTCHours();
+                        form.elements["internal_" + id + "_minutes"].selectedIndex = d.getUTCMinutes();
+                        form.elements["internal_" + id + "_seconds"].selectedIndex = d.getUTCSeconds();
                     }
                 }
                 break;
@@ -74,19 +79,19 @@ function doOnUnLoad_ew() {
 //********************************
 
 function doHelp() {
-	var w=window.open("","Help", "width=350 height=400 scrollbars=yes toolbar=no statusbar=no resizable=yes");
-	try {
-		var str=document.getElementById("help_text").innerHTML;
+    var w=window.open("","Help", "width=350 height=400 scrollbars=yes toolbar=no statusbar=no resizable=yes");
+    try {
+        var str=document.getElementById("help_text").innerHTML;
 
-		w.document.writeln('<html><head>');
-		w.document.writeln('<link rel="stylesheet" href="../style/layout/help.css">');
-		w.document.writeln('<link rel="stylesheet" href="../style/color/help.css">');
-		w.document.writeln('</head><body>');
-		w.document.writeln(str);
-		w.document.writeln('</body></html>');
-	} catch (e) {
-		w.close();
-	}
+        w.document.writeln('<html><head>');
+        w.document.writeln('<link rel="stylesheet" href="../style/layout/help.css">');
+        w.document.writeln('<link rel="stylesheet" href="../style/color/help.css">');
+        w.document.writeln('</head><body>');
+        w.document.writeln(str);
+        w.document.writeln('</body></html>');
+    } catch (e) {
+        w.close();
+    }
 }
 
 function doSearch(el, cmd, sessionkey) {
@@ -107,7 +112,7 @@ function doSearch(el, cmd, sessionkey) {
         var form = document.forms["form"];
         var errmsg=form.getAttribute("filter_required")
         if (errmsg==null || errmsg=="") {
-            errmsg="Entering a search term is required";                        
+            errmsg="Entering a search term is required";
         }
         alert(errmsg);
         return;
@@ -128,17 +133,17 @@ function doSearch(el, cmd, sessionkey) {
 
     // lastobject is generally the last builder in the nodepath.
     // however, if the first field is a "<buildername>.number" field, that buildername is used
-    
+
     var tmp=nodepath.split(",");
     var lastobject="";
     if (tmp.length>1) {
         lastobject=tmp[tmp.length-1];
         tmp=fields.split(",");
         if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
-            lastobject=tmp[0].split(".")[0];            
+            lastobject=tmp[0].split(".")[0];
         }
     }
-    
+
     // check constraints
     var cs = searchfields.split("|");
     if (constraints!="" && constraints) var constraints = "("+constraints+") AND (";
@@ -147,16 +152,16 @@ function doSearch(el, cmd, sessionkey) {
         if (i>0) constraints += " OR ";
         var fieldname=cs[i];
         if (fieldname.indexOf(".")==-1 && lastobject!="") fieldname = lastobject+"."+fieldname;
-        
+
         if (searchtype=="string") {
             constraints += fieldname+" = '%25"+searchterm+"%25'";
         } else if (searchtype=="like") {
-            var commaloc = fieldname.indexOf(','); 
+            var commaloc = fieldname.indexOf(',');
             while (commaloc > -1) {
                var tmpfield = fieldname.substring(0, commaloc);
                fieldname = fieldname.substring(commaloc + 1, fieldname.length);
                constraints += "LOWER("+tmpfield+") LIKE '%25"+searchterm+"%25' OR ";
-               commaloc = fieldname.indexOf(','); 
+               commaloc = fieldname.indexOf(',');
             }
             constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
         } else {
@@ -176,7 +181,7 @@ function doSearch(el, cmd, sessionkey) {
             }
         }
         // make sure these fields are added to the fields-param, but not if its the number field
-        // 
+        //
         //if (fields.indexOf(fieldname)==-1 && fieldname.indexOf("number")==-1) {
         //    fields += "," + fieldname;
         //}
@@ -195,16 +200,16 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("type", el.getAttribute("type"));
     url += "&cmd=" + cmd;
 
-	showSearchScreen(cmd, url);
+    showSearchScreen(cmd, url);
 }
 
 function showSearchScreen(cmd, url) {
-	alert("Add the searchwindow.js or searchiframe.js to the wizard.xsl");
+    alert("Add the searchwindow.js or searchiframe.js to the wizard.xsl");
 }
 
 function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
     doCheckHtml();
-    
+
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/start-wizard/"+fieldid+"/"+dataid+"/"+objectnumber+"/"+origin+"/";
     fld.value = wizardname;
@@ -213,7 +218,7 @@ function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
 
 function doGotoForm(formid) {
     doCheckHtml();
-        
+
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/goto-form//"+formid+"//";
     fld.value = "";
@@ -286,10 +291,10 @@ function resizeEditTable() {
     var divButtonsHeight = document.getElementById("commandbuttonbar").offsetHeight;
     var divTop = findPosY(document.getElementById("editform"));
 
-    if ((navigator.appVersion.indexOf('MSIE')!=-1) 
+    if ((navigator.appVersion.indexOf('MSIE')!=-1)
         && (navigator.appVersion.indexOf('Mac')!=-1)) {
-        
-      // IE on the Mac has some overflow problems. 
+
+      // IE on the Mac has some overflow problems.
       // These statements will move the button div to the right position and
       // resizes the editform div.
       var docHeight = getDimensions().documentHeight;
@@ -339,7 +344,7 @@ function objMouseOut(el) {
 function objClick(el) {
    var href = el.getAttribute("href")+"";
    var target = el.getAttribute("target")+"";
-   
+
    if (href.length<10) return;
    if (target == "_blank") {
       window.open(href,"");
@@ -366,13 +371,13 @@ function restoreScroll() {
 }
 
 function saveScroll() {
-	if (!cleanupScroll) {
-	    writeCookie_general("scrollTop", document.getElementById("editform").scrollTop);
-	    writeCookie_general("prevForm", document.forms[0].id);
-	} else {
-		writeCookie_general("scrollTop", 0);
-		writeCookie_general("prevForm", 0);
-	}
+    if (!cleanupScroll) {
+        writeCookie_general("scrollTop", document.getElementById("editform").scrollTop);
+        writeCookie_general("prevForm", document.forms[0].id);
+    } else {
+        writeCookie_general("scrollTop", 0);
+        writeCookie_general("prevForm", 0);
+    }
 }
 
 function cleanScroll() {
