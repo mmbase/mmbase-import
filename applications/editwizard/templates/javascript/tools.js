@@ -3,7 +3,7 @@
  * Routines for reading and writing cookies
  *
  * @since    MMBase-1.6
- * @version  $Id: tools.js,v 1.3 2002-05-27 09:50:47 pierre Exp $
+ * @version  $Id: tools.js,v 1.4 2003-07-23 19:02:27 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -12,7 +12,7 @@
 function readCookie_general(theName, theDefault) {
     try {
         var theCookie = document.cookie + "|;";
-        var p = theCookie.indexOf("Q42=");
+        var p = theCookie.indexOf("MMBase-EditWizard=");
         if (p == -1) return theDefault;
         theCookie = theCookie.substring(p, theCookie.indexOf(";", p)) + "|";
         var pos = theCookie.indexOf(theName + ":");
@@ -56,10 +56,13 @@ function writeCookie_general(theName, theValue) {
         for (var n in nvs) s += "|" + n + ":" + nvs[n];
 
         //write the cookie
-        var nextYear = new Date();
-        nextYear.setFullYear(nextYear.getFullYear()+1);
-        var c = "Q42=" + s + "|; expires=" + nextYear.toGMTString() + "; path=/;";
+
+		//var nextYear = new Date();
+        //nextYear.setFullYear(nextYear.getFullYear()+1);
+		//var c = "MMBase-EditWizard=" + s + "|; expires=" + nextYear.toGMTString() + "; path=/;";
+        var c = "MMBase-EditWizard=" + s + "|; path=/;"; 
         document.cookie = c;
+
     } catch (e) {
         alert("Error in writeCookie_general('" + theName + "', '" + theValue + "'): " + e.description);
     }
