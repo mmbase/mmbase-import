@@ -4,6 +4,12 @@
 	<creator type="display/html" class="org.mmbase.applications.packaging.projects.creators.DisplayHtmlCreator">
 		<description>Creates mmp files for display/html packages</description>
 	</creator>
+	<creator type="display/theme" class="org.mmbase.applications.packaging.projects.creators.DisplayThemeCreator">
+		<description>Creates mmp files for display/theme packages</description>
+	</creator>
+	<creator type="editor/wizard" class="org.mmbase.applications.packaging.projects.creators.EditorWizardCreator">
+		<description>Creates mmp files for editor/wizard packages</description>
+	</creator>
 	<creator type="java/jar" class="org.mmbase.applications.packaging.projects.creators.JavaJarCreator">
 		<description>Creates mmp files for java/jar packages</description>
 	</creator>
