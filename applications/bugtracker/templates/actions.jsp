@@ -210,8 +210,8 @@ password : <mm:write referid="password" />
         <mm:setfield name="mailtype">1</mm:setfield>
         <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
         <mm:setfield name="from"><mm:write referid="from" /></mm:setfield>
-        <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />] <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
-        <mm:setfield name="body">
+        <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> update #<mm:node referid="bugreportnode"><mm:field name="bugid" />] <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
+        <mm:setfield name="body"><mm:node number="$updater">updater: <mm:field name="gui()"/> </mm:node>
            <mm:node number="$bugreport">
 issue      :<mm:field name="issue" escape="none"/>
 bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
