@@ -43,7 +43,7 @@ public abstract class ContextLoginModule {
     }
     
     protected Rank getRank(String username) throws org.mmbase.security.SecurityException {
-    	String xpath = "/config/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
+    	String xpath = "/contextconfig/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
 	log.debug("gonna execute the query:" + xpath);
 	Node found;
 	try {
@@ -69,7 +69,7 @@ public abstract class ContextLoginModule {
     }        
     
     protected String getModuleValue(String username) throws org.mmbase.security.SecurityException {
-    	String xpath = "/config/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
+    	String xpath = "/contextconfig/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
 	log.debug("gonna execute the query:" + xpath);
 	Node found;
 	try {
