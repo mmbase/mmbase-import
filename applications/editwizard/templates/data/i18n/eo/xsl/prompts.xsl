@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.7 2004-01-12 22:07:12 nico Exp $
+  @version $Id: prompts.xsl,v 1.8 2004-01-20 17:59:31 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -105,7 +105,7 @@
 <xsl:variable name="filter_required" >Estas devige enigi serĉeron.</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
-<xsl:value-of select="$title" />(<xsl:value-of select="@count" /> da eroj)
+  <xsl:value-of select="$title" disable-output-escaping="yes"  />(<xsl:value-of select="/list/@count" /> da eroj)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Jen la ŝanĝeblaj eroj.</xsl:variable>
 <!-- searchlist prompts/tooltips -->
