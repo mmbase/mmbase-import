@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.31 2003-06-05 14:37:28 michiel Exp $
+  @version $Id: list.xsl,v 1.32 2003-06-05 14:48:31 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -62,89 +62,101 @@
     </tr>
   </xsl:template>
 
-	<xsl:template name="searchbox">
-		<xsl:if test="$searchfields!=''">
-			<tr>
-				<td class="left"></td>
-				<td class="searchcanvas">
-					<table>
-						<tr>
-							<xsl:if test="$creatable='true'">
-								<td width="250" valign="top">
-									<span class="header">
-										<xsl:value-of select="$title"/> :</span>
-									<br/>
-									<a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
-										<img src="{$mediadir}new.gif" width="20" height="20" hspace="2" align="absmiddle" alt="" border="0"/>
-									</a>
-								</td>
-							</xsl:if>
-							<td valign="top">
-								<form action="list.jsp">
-									<span class="header"><xsl:call-template name="prompt_search_list" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:value-of select="$title"/>:</span>
-									<br />
-									
-									<xsl:choose>
-									  <xsl:when test="$searchagetype='edit'">
-											<input type="text" style="width:80px;" name="age" class="age" value="{$age}" />
-										</xsl:when>
-									  <xsl:when test="$searchagetype='none'">
-										</xsl:when>
-										<xsl:otherwise>
-											<select name="age" class="input" style="width:80px;">
-												<option value="1">
-													<xsl:if test="$age='0'">
-														<xsl:attribute name="selected">selected</xsl:attribute>
-													</xsl:if><xsl:call-template name="age_now" /></option>
-												<option value="1">
-													<xsl:if test="$age='1'">
-														<xsl:attribute name="selected">selected</xsl:attribute>
-													</xsl:if><xsl:call-template name="age_day" /></option>
-												<option value="7">
-													<xsl:if test="$age='7'">
-														<xsl:attribute name="selected">selected</xsl:attribute>
-													</xsl:if><xsl:call-template name="age_week" /></option>
-												<option value="31">
-													<xsl:if test="$age='31'">
-														<xsl:attribute name="selected">selected</xsl:attribute>
-													</xsl:if><xsl:call-template name="age_month" /></option>
-												<option value="365">
-													<xsl:if test="$age='365'">
-														<xsl:attribute name="selected">selected</xsl:attribute>
-													</xsl:if><xsl:call-template name="age_year" /></option>
-												<option value="-1">
-													<xsl:if test="$age='-1'">
-														<xsl:attribute name="selected">selected</xsl:attribute>
-													</xsl:if><xsl:call-template name="age_any" /></option>
-											</select>
-										</xsl:otherwise>
-									</xsl:choose>
-									<select name="realsearchfield" style="width:100px;" >
-										<option value="{$searchfields}"><xsl:call-template name="prompt_search_title" /></option>
-										<xsl:if test="$objecttype=''">
-											<option value="number"><xsl:call-template name="prompt_search_number" /></option>
-											<option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
-										</xsl:if>
-										<xsl:if test="$objecttype!=''">
-											<option value="{$objecttype}.number"><xsl:call-template name="prompt_search_number" /></option>
-											<option value="{$objecttype}.owner"><xsl:call-template name="prompt_search_owner" /></option>
-										</xsl:if>
-									</select>
-									<input type="hidden" name="proceed" value="true" />
-									<input type="hidden" name="sessionkey" value="{$sessionkey}" />
-									<input type="hidden" name="language" value="${language}" />
-									<input type="text" name="searchvalue" value="{$searchvalue}" class="input" style="width:200px;"/>
-                                    <input type="image" src="{$mediadir}search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
-                                    <br/><span class="subscript"> (<xsl:call-template name="prompt_age" />)(<xsl:call-template name="prompt_search_term" />)</span>
-								</form>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</xsl:if>
-	</xsl:template>
-	
+  <!-- The search-box it the thing which appears on the top of a 'list' page.
+       In your extension you must create a tr with a form to list.jsp (so, the form must provide
+       list.jsp post arguments)
+       -->
+
+  <xsl:template name="searchbox">
+    <xsl:if test="$searchfields!=''">
+      <tr>
+        <td class="left"></td>
+        <td class="searchcanvas">
+          <table>
+            <tr>
+              <xsl:if test="$creatable='true'">
+                <td width="250" valign="top">
+                  <span class="header">
+                    <xsl:value-of select="$title"/> :
+                  </span>
+                  <br/>
+                  <a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
+                    <img src="{$mediadir}new.gif" width="20" height="20" hspace="2" align="absmiddle" alt="" border="0"/>
+                  </a>
+                </td>
+              </xsl:if>
+              <td valign="top">
+                <form>
+                  <span class="header"><xsl:call-template name="prompt_search_list" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:value-of select="$title"/>:</span>
+                  <br />
+                      
+                  <xsl:choose>
+                    <xsl:when test="$searchagetype='edit'">
+                      <input type="text" style="width:80px;" name="age" class="age" value="{$age}" />
+                    </xsl:when>
+                    <xsl:when test="$searchagetype='none'">
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <select name="age" class="input" style="width:80px;">
+                        <option value="1">
+                          <xsl:if test="$age='0'">
+                            <xsl:attribute name="selected">selected</xsl:attribute>
+                          </xsl:if><xsl:call-template name="age_now" />
+                        </option>
+                        <option value="1">
+                          <xsl:if test="$age='1'">
+                            <xsl:attribute name="selected">selected</xsl:attribute>
+                          </xsl:if><xsl:call-template name="age_day" />
+                        </option>
+                        <option value="7">
+                          <xsl:if test="$age='7'">
+                            <xsl:attribute name="selected">selected</xsl:attribute>
+                          </xsl:if><xsl:call-template name="age_week" />
+                        </option>
+                        <option value="31">
+                          <xsl:if test="$age='31'">
+                            <xsl:attribute name="selected">selected</xsl:attribute>
+                          </xsl:if><xsl:call-template name="age_month" />
+                        </option>
+                        <option value="365">
+                          <xsl:if test="$age='365'">
+                            <xsl:attribute name="selected">selected</xsl:attribute>
+                          </xsl:if><xsl:call-template name="age_year" />
+                        </option>
+                        <option value="-1">
+                          <xsl:if test="$age='-1'">
+                            <xsl:attribute name="selected">selected</xsl:attribute>
+                          </xsl:if><xsl:call-template name="age_any" />
+                        </option>
+                      </select>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                  <select name="realsearchfield" style="width:100px;" >
+                    <option value="{$searchfields}"><xsl:call-template name="prompt_search_title" /></option>
+                    <xsl:if test="$objecttype=''">
+                      <option value="number"><xsl:call-template name="prompt_search_number" /></option>
+                      <option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
+                    </xsl:if>
+                    <xsl:if test="$objecttype!=''">
+                      <option value="{$objecttype}.number"><xsl:call-template name="prompt_search_number" /></option>
+                      <option value="{$objecttype}.owner"><xsl:call-template name="prompt_search_owner" /></option>
+                    </xsl:if>
+                  </select>
+                  <input type="hidden" name="proceed" value="true" />
+                  <input type="hidden" name="sessionkey" value="{$sessionkey}" />
+                  <input type="hidden" name="language" value="${language}" />
+                  <input type="text" name="searchvalue" value="{$searchvalue}" class="input" style="width:200px;"/>
+                  <input type="image" src="{$mediadir}search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
+                  <br /><span class="subscript"> (<xsl:call-template name="prompt_age" />)(<xsl:call-template name="prompt_search_term" />)</span>
+                </form>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </xsl:if>
+  </xsl:template>
+                
   <xsl:template name="bodycontent">
     <!-- I think all elements must have a class here, then you can customize then the appearance by putting another css -->
     <table class="body">
