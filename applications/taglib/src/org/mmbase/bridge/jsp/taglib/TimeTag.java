@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.34 2003-10-15 07:39:36 pierre Exp $
+ * @version $Id: TimeTag.java,v 1.35 2003-10-15 14:14:00 pierre Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
 
@@ -106,7 +106,6 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             throw new JspTagException("Unknown value for precision/significance attribute: '" + p + "'");
         }
     }
-
 
     private int getPrecision() throws JspTagException {
         String p = precision.getString(this).toLowerCase();
@@ -337,7 +336,11 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             }
             if (prec == PRECISION_WEEKS)  {
                 // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS
-                cal.set(Calendar.DAY_OF_WEEK,  1);
+                cal.set(Calendar.DAY_OF_WEEK, 1);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
             }
             date = cal.getTime();
         }
@@ -350,17 +353,12 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 case PRECISION_SECONDS:  cal.set(Calendar.MINUTE,    0);
                 case PRECISION_MINUTES:  cal.set(Calendar.HOUR,      0);
                 case PRECISION_HOURS:    cal.set(Calendar.DAY_OF_MONTH,    0);
+                case PRECISION_WEEKS:    ;
                 case PRECISION_DAYS:     cal.set(Calendar.MONTH,  Calendar.JANUARY);
                 case PRECISION_MONTHS:   cal.set(Calendar.YEAR, 0);
                 case PRECISION_YEARS:
                 default:
             }
-            /*
-            if (rel == PRECISION_WEEKS)  {
-                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS
-                cal.set(Calendar.DAY_OF_WEEK,  1);
-            }
-            */
             date = cal.getTime();
         }
 
