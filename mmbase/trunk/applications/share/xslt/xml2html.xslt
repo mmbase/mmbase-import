@@ -229,11 +229,12 @@
   <xsl:param name="attribute" select="''" /> 
   <xsl:param name="anchor"    select="''" /> 
   <xsl:variable name="usefile" select="$file or (not($type='all') and not(/taglib/*[name = $tag]/type and contains(/taglib/*[name = $tag]/type, $type)))" />
-    <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
+  <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
   <xsl:if test="not($attribute='') or not($usefile)">#<xsl:value-of select="$tag" /></xsl:if>
   <xsl:if test="not($anchor='')">#<xsl:value-of select="$anchor" /></xsl:if>
   <xsl:if test="$attribute">.<xsl:value-of select="$attribute" /></xsl:if>
 </xsl:template>
+
 
 <!-- Generates an entry for table of all tags or taginterfaces -->
 <xsl:template match="tag|taginterface" mode="toc">
@@ -281,16 +282,25 @@
 <xsl:template match="see">
   <xsl:param name="file" select="false()" />
   <xsl:param name="type" select="'all'" />
-  <a>
-    <xsl:attribute name="href">
-      <xsl:call-template name="tagref">
-        <xsl:with-param name="file" select="$file" />
-        <xsl:with-param name="type" select="$type" />
-        <xsl:with-param name="tag"  select="@tag"  /><xsl:with-param name="attribute"  select="@attribute" />
-      </xsl:call-template>
-    </xsl:attribute>
-    <xsl:if test="@attribute"><xsl:value-of select="@attribute" /> attribute of </xsl:if><xsl:value-of select="@tag" />
-  </a>
+    <xsl:if test="@type">
+      <a>
+        <xsl:attribute name="href">mmbase-taglib-<xsl:value-of select="@type" />.html</xsl:attribute>
+        <xsl:value-of select="/taglib/tagtypes/type[@name=current()/@type]/description" />
+      </a>
+    </xsl:if>
+    <xsl:if test="not(@type)">
+      <a>
+        <xsl:attribute name="href">
+          <xsl:call-template name="tagref">
+            <xsl:with-param name="file" select="$file" />
+            <xsl:with-param name="type" select="$type" />
+            <xsl:with-param name="tag"  select="@tag"  />
+            <xsl:with-param name="attribute"  select="@attribute" />
+          </xsl:call-template>
+        </xsl:attribute>
+        <xsl:if test="@attribute"><xsl:value-of select="@attribute" /> attribute of </xsl:if><xsl:value-of select="@tag" />
+      </a>
+    </xsl:if>
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
 
