@@ -2,8 +2,16 @@
   Reuseable generic login-page.
   Perhaps this could be placed on a more generic location like /mmbase
 --%>
-<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*" 
+<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,java.util.*" 
 %><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><%!
+   String getPrompt(String key, Locale locale) {
+     try {
+       return ResourceBundle.getBundle(AuthenticationData.STRINGS, locale).getString(key);
+     } catch (MissingResourceException mre) {
+       return key;
+     }
+   }
 %>
 <mm:import from="request" externid="language">en</mm:import>
 <mm:import from="request" externid="country"></mm:import>
@@ -19,12 +27,12 @@
   <mm:import externid="referrer">search_node.jsp</mm:import>
   <mm:compare referid="reason" value="failed">
     <p class="failed">
-      Failed to log in <mm:write referid="exactreason"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>. Try again.
+      <%=getPrompt("failed", locale)%> <mm:write referid="exactreason"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>.
     </p>
   </mm:compare>
   <mm:compare referid="reason" value="rank">
     <p class="failed">
-      Failed to log in, rank too low. Try again with another user name.
+      <%=getPrompt("failed_rank", locale)%>
     </p>
   </mm:compare>
   <table>
@@ -51,10 +59,10 @@
         }
      %>
      <input type="hidden" name="usernames" values="<mm:write referid="usernames" />" />
-    <tr><td /><td><input type="submit" name="command" value="login" /></td></tr>
+    <tr><td /><td><input type="hidden" name="command" value="login" /><input type="submit" name="__submit" value="<%=getPrompt("login", locale)%>" /></td></tr>
   </form>
     <tr>
-      <td>Authenticate:</td>
+      <td><%=getPrompt("authenticate", locale)%>:</td>
       <td>
         <form method="post" name="auth">
         <select name="authenticate" onChange="document.forms['auth'].submit();">
