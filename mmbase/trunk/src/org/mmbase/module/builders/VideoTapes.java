@@ -28,9 +28,10 @@ public class VideoTapes extends MMObjectBuilder {
 		if (field.equals("playtime")) {
 			String str;
 			int val=(node.getIntValue("playtime")/1000);
+			if (val<=0) return "00:00:00";
 			int h=val/3600;val=val-(h*3600);
 			int m=val/60;val=val-(m*60);
-			if (m<10) { str="0"+h; } else { str=""+h; }
+			if (h<10) { str="0"+h; } else { str=""+h; }
 			if (m<10) { str+=":0"+m; } else { str+=":"+m; }
 			if (val<10) { str+=":0"+val; } else { str+=":"+val; }
 			return(str);			
