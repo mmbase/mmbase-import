@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.10 2002-08-14 10:23:35 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.11 2002-10-25 13:09:53 michiel Exp $
  */
 public class ContextAuthentication extends Authentication {
     private static Logger log=Logging.getLoggerInstance(ContextAuthentication.class.getName());
@@ -50,7 +50,7 @@ public class ContextAuthentication extends Authentication {
 
         try {
             InputSource in = new InputSource(new FileInputStream(configFile));
-            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(in);
+            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
         } catch(org.xml.sax.SAXException se) {
             log.error("error parsing file :"+configFile);
             String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";

@@ -1,4 +1,4 @@
-<!ELEMENT action ( object | relation )* >
+<!ELEMENT action ( object | relation  | prompt | description )* >
 <!ATTLIST action type NMTOKEN #REQUIRED >
 
 <!ELEMENT command ( prompt?, search-filter* ) >
@@ -51,6 +51,7 @@
 <!ATTLIST list role NMTOKEN #IMPLIED >
 <!ATTLIST list type NMTOKEN #IMPLIED >
 <!ATTLIST list fields CDATA #IMPLIED >
+<!ATTLIST list include CDATA #IMPLIED >
 
 <!ELEMENT lists ( optionlist ) >
 
