@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * The implementation of the log tag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: LogTag.java,v 1.8 2003-06-06 10:03:18 pierre Exp $ 
+ * @version $Id: LogTag.java,v 1.9 2003-08-11 15:27:25 michiel Exp $ 
  */
 
 public class LogTag extends ContextReferrerTag {
@@ -64,7 +64,9 @@ public class LogTag extends ContextReferrerTag {
     }
 
     public int doEndTag() throws JspTagException {
-        if (doLog && jspvar == null) log.service(counter++ + ": " + (bodyContent != null ? bodyContent.getString() : ""));
+        if (doLog && jspvar == null) { 
+            log.service(counter++ + ": " + (bodyContent != null ? bodyContent.getString() : "-"));
+        }
         if (jspvar != null) {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());

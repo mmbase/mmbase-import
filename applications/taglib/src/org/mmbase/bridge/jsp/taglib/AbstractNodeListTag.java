@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.50 2003-08-08 16:03:48 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.51 2003-08-11 15:27:13 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -192,9 +192,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     // ContextProvider implementation
-    public ContextContainer getContainer() throws JspTagException {
-        if (collector == null) return getContextProvider().getContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector.getContainer();
+    public ContextContainer getContextContainer() throws JspTagException {
+        if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
+        return collector.getContextContainer();
     }
 
 
@@ -204,7 +204,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
         log.debug("doStartTaghelper");
         // make a (temporary) container
-        collector = new ContextCollector(getContextProvider().getContainer());
+        collector = new ContextCollector(getContextProvider().getContextContainer());
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
@@ -233,7 +233,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
-                getContextProvider().getContainer().unRegister(getId());
+                getContextProvider().getContextContainer().unRegister(getId());
             }
             return setReturnValues((NodeList) o);
         }
@@ -318,7 +318,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         log.debug("doafterbody");
         super.doAfterBody();
         if (getId() != null) {
-            getContextProvider().getContainer().unRegister(getId());
+            getContextProvider().getContextContainer().unRegister(getId());
         }
 
         if (collector != null) { // might occur for some legacy extensions
@@ -344,7 +344,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int doEndTag() throws JspTagException {
 
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), returnList);
+            getContextProvider().getContextContainer().register(getId(), returnList);
         }
         TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {

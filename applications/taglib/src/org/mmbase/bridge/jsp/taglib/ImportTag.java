@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.33 2003-07-07 14:50:38 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.34 2003-08-11 15:27:18 michiel Exp $
  */
 
 public class ImportTag extends WriteTag {
@@ -100,15 +100,15 @@ public class ImportTag extends WriteTag {
         }
         if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
             if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
-            getContextProvider().getContainer().unRegister(useId);
+            getContextProvider().getContextContainer().unRegister(useId);
         }
 
         if (externid != Attribute.NULL) {            
             if (log.isDebugEnabled()) log.trace("Externid was given " + externid.getString(this));
             if (from == Attribute.NULL) {
-                found = (getContextProvider().getContainer().findAndRegister(pageContext, externid.getString(this), useId) != null);
+                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId) != null);
             } else {
-                found = (getContextProvider().getContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId) != null);
+                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId) != null);
             }
 
             if (! found && required.getBoolean(this, false)) {
@@ -124,7 +124,7 @@ public class ImportTag extends WriteTag {
         if (found) {
             helper.setValue(value, WriterHelper.NOIMPLICITLIST); 
             if (useId != null) {
-                getContextProvider().getContainer().reregister(useId, getValue());
+                getContextProvider().getContextContainer().reregister(useId, getValue());
             }
             return SKIP_BODY;
         } else {
@@ -159,7 +159,11 @@ public class ImportTag extends WriteTag {
                         log.debug("Found a default in the body (" + body + ")");
                     }
                     helper.setValue(body);       
-                    getContextProvider().getContainer().reregister(useId, getValue());
+                    getContextProvider().getContextContainer().reregister(useId, getValue());
+                }  else {
+                    //  might be vartype="list" or so, still need to set
+                    helper.setValue(null);    
+                    getContextProvider().getContextContainer().reregister(useId, getValue());
                 }
             }
         } else { // get value from the body of the tag.
@@ -168,7 +172,7 @@ public class ImportTag extends WriteTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                getContextProvider().getContainer().register(useId, getValue());
+                getContextProvider().getContextContainer().register(useId, getValue());
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time

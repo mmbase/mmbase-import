@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.74 2003-07-10 11:04:53 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.75 2003-08-11 15:27:14 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -433,7 +433,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private int evalBody() throws JspTagException {
 
         if (getId() != null) { // write to context.
-            getContextProvider().getContainer().register(getId(), cloud);
+            getContextProvider().getContextContainer().register(getId(), cloud);
         }
 
         if (cloud == null)
@@ -466,7 +466,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
             }
             log.debug("found cloud with referid");
-            cloud = (Cloud)getContextProvider().getContainer().getObject(getReferid());
+            cloud = (Cloud)getContextProvider().getContextContainer().getObject(getReferid());
             return true;
         }
         return false;

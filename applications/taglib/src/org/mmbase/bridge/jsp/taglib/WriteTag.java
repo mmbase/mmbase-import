@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.36 2003-07-25 08:36:10 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.37 2003-08-11 15:27:23 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -90,7 +90,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
 
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         if (sessionvar != Attribute.NULL) {
             if (pageContext.getSession() == null) {

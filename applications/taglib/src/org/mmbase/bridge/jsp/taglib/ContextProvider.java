@@ -19,11 +19,11 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
  * 
  * @since MMBase-1.7
  * @author Michiel Meeuwissen
- * @version $Id: ContextProvider.java,v 1.3 2003-06-06 10:03:06 pierre Exp $
+ * @version $Id: ContextProvider.java,v 1.4 2003-08-11 15:27:15 michiel Exp $
  **/
 
 public interface ContextProvider  extends TagIdentifier {
 
-    public ContextContainer getContainer() throws JspTagException;
+    public ContextContainer getContextContainer() throws JspTagException;
 
 }

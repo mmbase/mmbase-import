@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.17 2003-06-06 10:03:22 pierre Exp $ 
+ * @version $Id: TransactionTag.java,v 1.18 2003-08-11 15:27:27 michiel Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -74,7 +74,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             transaction = findCloudProvider().getCloudVar().getTransaction(name.getString(this));
             if (getId() != null) { // put it in context
                 log.debug("putting transaction in context");
-                getContextProvider().getContainer().register(getId(), transaction);
+                getContextProvider().getContextContainer().register(getId(), transaction);
             }
         }
         if (jspvar != null) {
@@ -88,7 +88,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (commit.getBoolean(this, true)) {
             ((Transaction) getCloudVar()).commit();
             if (getId() != null) {
-                getContextProvider().getContainer().unRegister(getId());
+                getContextProvider().getContextContainer().unRegister(getId());
             }
         }
         return EVAL_PAGE;

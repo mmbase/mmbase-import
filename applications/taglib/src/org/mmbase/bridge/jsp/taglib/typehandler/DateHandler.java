@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.7 2003-08-04 20:19:08 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.8 2003-08-11 15:27:29 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -180,12 +180,12 @@ public class DateHandler extends AbstractTypeHandler {
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
         try {
-            Integer day    = new Integer( (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_day")));
-            Integer month  = new Integer( (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_month")));
-            Integer year   = new Integer( (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_year")));
-            Integer hour   = new Integer( (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_hour")));
-            Integer minute = new Integer( (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_minute")));
-            Integer second = new Integer( (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_second")));
+            Integer day    = new Integer( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_day")));
+            Integer month  = new Integer( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_month")));
+            Integer year   = new Integer( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_year")));
+            Integer hour   = new Integer( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_hour")));
+            Integer minute = new Integer( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_minute")));
+            Integer second = new Integer( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_second")));
             cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
             node.setLongValue(fieldName, cal.getTime().getTime() / DATE_FACTOR);
         } catch (java.lang.NumberFormatException e) {
@@ -204,12 +204,12 @@ public class DateHandler extends AbstractTypeHandler {
         String guitype = field.getGUIType();
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
-        String input_day    =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_day"));
-        String input_month  =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_month"));
-        String input_year   =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_year"));
-        String input_hour   =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_hour"));
-        String input_minute =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_minute"));
-        String input_second =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName + "_second"));
+        String input_day    =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_day"));
+        String input_month  =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_month"));
+        String input_year   =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_year"));
+        String input_hour   =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_hour"));
+        String input_minute =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_minute"));
+        String input_second =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName + "_second"));
         if (input_day==null || input_hour==null) {
             return null;
         }
@@ -225,7 +225,7 @@ public class DateHandler extends AbstractTypeHandler {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
         }
         // check if changed:
-        if (! context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName)).equals("" + cal.getTime().getTime() / DATE_FACTOR)) {
+        if (! context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName)).equals("" + cal.getTime().getTime() / DATE_FACTOR)) {
             buffer.append("( [" + fieldName + "] >" + (cal.getTime().getTime() / DATE_FACTOR) + ")");
         } else {
             return null;

@@ -26,7 +26,7 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.33 2003-08-08 16:03:48 michiel Exp $ 
+ * @version $Id: FieldListTag.java,v 1.34 2003-08-11 15:27:16 michiel Exp $ 
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -139,8 +139,8 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
 
     // ContextProvider implementation
-    public ContextContainer getContainer() {
-        return collector.getContainer();
+    public ContextContainer getContextContainer() {
+        return collector.getContextContainer();
     }
 
 
@@ -148,7 +148,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     *
     **/
     public int doStartTag() throws JspTagException{
-        collector = new ContextCollector(getContextProvider().getContainer());
+        collector = new ContextCollector(getContextProvider().getContextContainer());
 
         if (getReferid() != null) {
             if (nodeManagerAtt != Attribute.NULL || type != Attribute.NULL) {
@@ -202,7 +202,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public int doAfterBody() throws JspTagException {
         if (getId() != null) {
-            getContextProvider().getContainer().unRegister(getId());
+            getContextProvider().getContextContainer().unRegister(getId());
         }
 
         collector.doAfterBody();
@@ -225,7 +225,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), returnList);
+            getContextProvider().getContextContainer().register(getId(), returnList);
         }
         return  EVAL_PAGE;
     }
@@ -235,7 +235,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             currentItemIndex ++;
             currentField = fieldIterator.nextField();
             if (getId() != null) {
-                getContextProvider().getContainer().register(getId(), currentField);
+                getContextProvider().getContextContainer().register(getId(), currentField);
             }
         }
     }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.16 2003-08-07 14:34:20 michiel Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.17 2003-08-11 15:27:16 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
@@ -51,7 +51,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     public int doStartTag() throws JspTagException {
         helper.setTag(this);
         if (getReferid() != null) {
-            helper.setValue(getContextProvider().getContainer().getObject(getReferid()));
+            helper.setValue(getContextProvider().getContextContainer().getObject(getReferid()));
         } else {
             log.debug("Search the node.");
             Node node = getNode();
@@ -64,7 +64,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
             helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), direction)));
         }
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
