@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import org.mmbase.util.logging.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: XMLModuleReader.java,v 1.12 2004-10-01 08:41:11 pierre Exp $
+ * @version $Id: XMLModuleReader.java,v 1.13 2004-11-11 16:52:57 michiel Exp $
  */
 public class XMLModuleReader extends XMLBasicReader {
     // logger
@@ -55,6 +56,10 @@ public class XMLModuleReader extends XMLBasicReader {
 
     public XMLModuleReader(String filename) {
         super(filename, XMLModuleReader.class);
+    }
+
+    public XMLModuleReader(InputSource is) {
+        super(is, XMLModuleReader.class);
     }
 
     /**
