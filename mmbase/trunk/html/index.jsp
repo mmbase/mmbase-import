@@ -15,7 +15,7 @@
   <tr>
     <td colspan="3">
       <p>
-        You are running <%=org.mmbase.Version.get() %>
+        You are running <a href="<mm:url page="/version" />"><%=org.mmbase.Version.get() %></a>
       </p>
       <p>
         This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
