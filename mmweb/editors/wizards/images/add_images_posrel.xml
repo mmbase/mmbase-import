@@ -8,8 +8,8 @@
 	<item displaymode="section" displaytype="image">
 		<title></title>
 		<description></description>
-		<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
 		<field name="title" ftype="data"><prompt>Naam</prompt></field>
+		<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
 		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="wizards/images/images">
 			<prompt></prompt>
 		</field>
