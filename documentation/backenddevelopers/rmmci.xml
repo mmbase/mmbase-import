@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>Remote MMBase Cloud Interface</title>
 		<date>2001</date>
-		<edition>$Id: rmmci.xml,v 1.3 2002-12-04 16:12:17 pierre Exp $</edition>
+		<edition>$Id: rmmci.xml,v 1.4 2003-01-14 13:54:53 kees Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kees</firstname>
@@ -198,30 +198,29 @@ grant {
 		<section>
 			<title>Example</title>
 			<programlisting>import org.mmbase.bridge.*;
-
 import java.util.*;
 
 public class RMMCITest{
-		public static void main(String[] argv){
-				CloudContext cloudContext= ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
-				HashMap user = new HashMap();
-				user.put("username", "admin");
-				user.put("password", "admin2k");
-				Cloud cloud = cloudContext.getCloud("mmbase","name/password",user);
-				NodeManager nodeManager = cloud.getNodeManager("mmservers");
-				NodeIterator nodeIterator = nodeManager.getList(null,null,null).nodeIterator();
-				System.out.println("NodeManager " + nodeManager.getName());
-				while(nodeIterator.hasNext()){
-						Node node = nodeIterator.nextNode();
-						FieldIterator fieldIterator = nodeManager.getFields(NodeManager.ORDER_EDIT).fieldIterator();
-						System.out.println("name \t: value");
-						while(fieldIterator.hasNext()){
-								Field field = fieldIterator.nextField();
-								String fieldName = field.getName();
-								System.out.println(fieldName +"\t: "+ node.getStringValue(fieldName));
-						}
-				}
-		}
+   public static void main(String[] argv){
+      CloudContext cloudContext= ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
+      HashMap user = new HashMap();
+      user.put("username", "admin");
+      user.put("password", "admin2k");
+      Cloud cloud = cloudContext.getCloud("mmbase","name/password",user);
+      NodeManager nodeManager = cloud.getNodeManager("mmservers");
+      NodeIterator nodeIterator = nodeManager.getList(null,null,null).nodeIterator();
+      System.out.println("NodeManager " + nodeManager.getName());
+      while(nodeIterator.hasNext()){
+         Node node = nodeIterator.nextNode();
+         FieldIterator fieldIterator = nodeManager.getFields(NodeManager.ORDER_EDIT).fieldIterator();
+         System.out.println("name \t: value");
+         while(fieldIterator.hasNext()){
+            Field field = fieldIterator.nextField();
+            String fieldName = field.getName();
+            System.out.println(fieldName +"\t: "+ node.getStringValue(fieldName));
+         }
+      }
+   }
 }
 			</programlisting>
 			<screen>[keesj@carlit classes]$ <userinput>java RMMCITest</userinput>
@@ -239,6 +238,9 @@ jdk	: 1.3.0/Java HotSpot(TM) Client VM
 			<title>TODO</title>
 			<itemizedlist>
 				<listitem><para>Creating a build.xml that create a jar rmmci.jar containing everything needed for using RMMCI at client side.</para></listitem>
+				<listitem><para>When a bridge class extends a java.util.list interface the generaterd classes should extends AbstractList so that sorting and using the base methods is possible.</para></listitem>
+				<listitem><para>Generate better errors send stack traces to the client?.</para></listitem>
+				<listitem><para>write guidelines for writing rmmci compatilble code (no casting etc).</para></listitem>
 			</itemizedlist>
 		</section>
 	</section>
