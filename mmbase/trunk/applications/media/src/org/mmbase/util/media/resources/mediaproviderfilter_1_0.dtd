@@ -3,16 +3,3 @@
 
 <!ELEMENT chain (filter+)>
 <!ELEMENT filter (#PCDATA)>
-
-<!ELEMENT filterOnHost (hostfilter+)>
-<!ELEMENT hostfilter (#PCDATA)>
-<!ATTLIST hostfilter
-  user           CDATA   #REQUIRED
-  provider	 CDATA   #REQUIRED
->
-
-<!ELEMENT sortProviders (provider+)>
-<!ELEMENT provider (#PCDATA)>
-<!ATTLIST provider
-  host		 CDATA   #REQUIRED
->

@@ -41,27 +41,9 @@ import java.lang.Integer;
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
  */
-public class MediaSourceFilter {
-    
+public class MediaSourceFilter extends GroupComparator {    
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
-    
-    private MediaFragments mediaFragmentBuilder = null;
-    private MediaSources mediaSourceBuilder = null;
         
-    private static int minSpeed        = 0;
-    private static int maxSpeed        = 0;
-    private static int minChannels     = 0;
-    private static int maxChannels     = 0;
-    
-    // PreferredSource information
-    private List preferredSources = null;
-    
-    // contains the external filters
-    private Map externFilters = null;
-    
-    // This chain contains the filters for the mediaproviders
-    private static List filterChain = null;
-    
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
             readConfiguration(file);
@@ -71,10 +53,8 @@ public class MediaSourceFilter {
     /**
      * Construct the MediaSourceFilter
      */
-    public MediaSourceFilter(MediaFragments mf, MediaSources ms) {
-        mediaFragmentBuilder = mf;
-        mediaSourceBuilder = ms;
-        
+    public MediaSourceFilter() {
+        super();        
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "mediasourcefilter.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
@@ -93,222 +73,23 @@ public class MediaSourceFilter {
         if (log.isServiceEnabled()) {
             log.service("Reading " + configFile);
         }
+        clear();
 
-        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
-        
-        // reading filterchain information
-        externFilters = new Hashtable();
-        filterChain   = new Vector();
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());        
         for(Enumeration e = reader.getChildElements("mediasourcefilter.chain","filter"); e.hasMoreElements();) {
             Element chainelement=(Element)e.nextElement();
             String chainvalue = reader.getElementValue(chainelement);
-            if(!chainvalue.equals("preferredSource")) {
-                
-                try {
-                    Class newclass = Class.forName(chainvalue);
-                    externFilters.put(chainvalue,(MediaSourceFilterInterface)newclass.newInstance());
-                    filterChain.add(chainvalue);
-                } catch (Exception exception) {
-                    log.error("Cannot load MediaSourceFilter "+chainvalue+"\n"+exception);
-                }
-                
-                log.debug("Read extern chain: "+chainvalue);
-                
-            } else {
-                log.debug("Read standard chain: "+chainvalue);
-                filterChain.add(chainvalue);
-            }
-        }
-        // reading preferredSource information
-        preferredSources = new Vector();
-        for( Enumeration e = reader.getChildElements("mediasourcefilter.preferredSource","source");e.hasMoreElements();) {
-            Element n3=(Element)e.nextElement();
-            String format = reader.getElementAttributeValue(n3,"format");
-            preferredSources.add(format.toLowerCase());
-            log.debug("Adding preferredSource format: "+format);
-        }
-        
-        try {
-            minSpeed    = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minspeed"));
-            maxSpeed    = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxspeed"));
-            minChannels = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minchannels"));
-            maxChannels = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxchannels"));
-        } catch (Exception e) {
-            log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information");
-        }
-        if(log.isDebugEnabled()) {
-            log.debug("Minspeed="   + minSpeed);
-            log.debug("Maxspeed="   + maxSpeed);
-            log.debug("Minchannels="+ minChannels);
-            log.debug("Maxchannels="+ maxChannels);
+            try {
+                Class newclass = Class.forName(chainvalue);
+                add((ResponseInfoComparator) newclass.newInstance());
+            } catch (ClassNotFoundException ex) {
+                log.error("Cannot load filter " + chainvalue + "\n" + ex);
+            } catch (InstantiationException ex1) {
+                log.error("Cannot load filter " + chainvalue + "\n" + ex1);
+            } catch (IllegalAccessException ex2) {
+                log.error("Cannot load filter " + chainvalue + "\n" + ex2);
+            }                   
         }
     }
     
-    
-    /**
-     * Filter the most appropriate mediasource. This method is invoked from MediaFragment.
-     * The mediaSource will be found by passing a list of mediaSources through a chain
-     * of mediaSources filters.
-     * @param mediaFragment the given media fragment
-     * @param info Additional information given by an user
-     * @return the most appropriate media source
-     */
-    public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {
-        
-        List mediaSources = mediaFragmentBuilder.getSources(mediaFragment);
-        
-        if (mediaSources == null || mediaSources.size() == 0) {
-            log.warn("mediaFragment " + mediaFragment.getStringValue("title") + " does not have media sources");
-        }
-        
-        // passing the mediasources through al the filters
-        for (Iterator i = filterChain.iterator(); i.hasNext();) {
-            String filter = (String) i.next();
-            if (log.isDebugEnabled()) log.debug("Using filter " + filter);
-            if(filter.equals("preferredSource")) {
-                mediaSources = getPreferredSource(mediaSources, info);
-            } else {
-                MediaSourceFilterInterface mpfi = (MediaSourceFilterInterface) externFilters.get(filter);
-                mediaSources = mpfi.filterMediaSource(mediaSources, mediaFragment, info);
-            }
-        }        
-        return  takeOneMediaSource(mediaSources);
-    }
-    
-    /**
-     * Take one mediasource. This method is used to just take one mediasource
-     * of a list with appropriate media sources.
-     * @param mediasources list of appropriate media sources
-     * @return The mediasource that is going to handle the request
-     */
-    private MMObjectNode takeOneMediaSource(List mediasources) {
-
-        if(mediasources == null) return null;
-        
-        Iterator i = mediasources.iterator();
-        while(i.hasNext()) {
-            // just return first found media source.
-            return (MMObjectNode) i.next();
-        }
-        return null;
-    }
-    
-    /**
-     * Find a media source with a format specified in the preferredSource list in the
-     * mediasourcefilter configuration file.
-     * @param mediasources The list with appropriate mediasources
-     * @param info Additional information
-     * @return The most appropriate media source
-     */
-    private List getPreferredSource(List mediasources, Map info) {
-        MMObjectNode node = null;
-        
-        for (Iterator i = preferredSources.iterator(); i.hasNext();) {
-            String format = (String) i.next();
-            if (log.isDebugEnabled()) log.debug("checking format "+format);
-            if(format.equals("ra")) {
-                node = getRealAudio(mediasources, info);
-            } else {
-                int formatnumber = MediaSources.convertFormatToNumber(format);
-                if( formatnumber==-1) {
-                    log.error("Check you mediasourcefilter configuration");
-                }
-                node = getFormat(mediasources, formatnumber);
-            } 
-            if (node!=null) {
-                if (log.isDebugEnabled()) log.debug("found mediasource format "+format);
-                List mediasource = new Vector();
-                mediasource.add(node);
-                return mediasource;
-            }
-        }
-        log.error("No appropriate mediasource found.");
-        return null;
-    }
-    
-    /**
-     * Select the mediasource that is of the approriate format
-     * @param mediaSources the list of appropriate mediasources
-     * @param format the wanted format
-     * @return a mediasource of wanted format
-     */
-    private MMObjectNode getFormat(List mediaSources, int format) {
-        if (log.isDebugEnabled()) log.debug("Getting format "+format);
-        for(Iterator i=mediaSources.iterator(); i.hasNext();) {
-            MMObjectNode mediaSource = (MMObjectNode) i.next();
-            
-            // Is the MediaSource ready for use && is it of format surestream
-            if(mediaSource.getIntValue("format") == format ) {
-                if(mediaSource.getIntValue("state") == MediaSources.DONE) {
-                    log.debug("Media source found ("+mediaSource.getStringValue("number")+")");
-                    return mediaSource;
-                } else {
-                    log.debug("Media source ("+mediaSource.getStringValue("number")+")does not have status DONE");
-                }
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * select the best realaudio mediasource if available
-     * @param mediaSources the list of appropriate mediasources
-     * @return the best realaudio mediasource
-     */
-    private MMObjectNode getRealAudio(List mediaSources, Map info) {
-        int wantedspeed   = 0;
-        int wantedchannels= 0;
-        if(info.containsKey("wantedspeed")) {
-            wantedspeed=Integer.parseInt(""+info.get("wantedspeed"));
-        }
-        if(info.containsKey("wantedchannels")) {
-            wantedchannels=Integer.parseInt(""+info.get("wantedchannels"));
-        }
-        
-        if( wantedspeed < minSpeed ) {
-            log.error("wantedspeed("+wantedspeed+") less than minspeed("+minSpeed+")");
-            wantedspeed = minSpeed;
-        }
-        if( wantedspeed > maxSpeed ) {
-            log.error("wantedspeed("+wantedspeed+") greater than maxspeed("+maxSpeed+")");
-            wantedspeed = maxSpeed;
-        }
-        if( wantedchannels < minChannels ) {
-            log.error("wantedchannels("+wantedchannels+") less than minchannels("+minChannels+")");
-            wantedchannels = minChannels;
-        }
-        if( wantedchannels > maxChannels ) {
-            log.error("wantedchannels("+wantedchannels+") greater than maxchannels("+maxChannels+")");
-            wantedchannels = maxChannels;
-        }
-        
-        MMObjectNode bestR5 = null;
-        for(Iterator i=mediaSources.iterator(); i.hasNext();) {
-            MMObjectNode mediaSource = (MMObjectNode) i.next();
-            
-            // Is the MediaSource ready for use && is format realaudio
-            if( mediaSource.getIntValue("status") == MediaSources.DONE  &&
-            mediaSource.getIntValue("format") == MediaSources.RA_FORMAT ) {
-                if(mediaSourceBuilder.getSpeed(mediaSource) <= wantedspeed && mediaSourceBuilder.getChannels(mediaSource) <= wantedchannels) {
-                    if(bestR5==null) {
-                        bestR5 = mediaSource;
-                    } else {
-                        if(mediaSourceBuilder.getChannels(bestR5) < mediaSourceBuilder.getChannels(mediaSource)) {
-                            bestR5 = mediaSource;
-                        }
-                        if(mediaSourceBuilder.getSpeed(bestR5) < mediaSourceBuilder.getSpeed(mediaSource) && mediaSourceBuilder.getChannels(bestR5) == mediaSourceBuilder.getChannels(mediaSource)) {
-                            bestR5 = mediaSource;
-                        }
-                    }
-                }
-            }
-        }
-        // did we find a R5 stream ?
-        if( bestR5 != null ) {
-            log.debug("R5 stream found "+bestR5.getStringValue("number"));
-            return bestR5;
-        }
-        
-        return null;
-    }
 }
