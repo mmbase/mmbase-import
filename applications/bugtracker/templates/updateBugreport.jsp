@@ -62,7 +62,7 @@
 </tr>
 <tr>
   <td>
-    <input name="newversion" value="<mm:field name="version" />" SIZE="10" />
+    <input name="newversion" value="<mm:field name="version" />" size="10" />
   </td>
   <td>
   <select name="newarea">
