@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.27 2002-03-15 09:44:15 pierre Exp $
+ * @version $Id: Node.java,v 1.28 2002-03-20 13:16:46 eduard Exp $
  */
 public interface Node {
 
@@ -212,17 +212,6 @@ public interface Node {
     public String getStringValue(String fieldName);
 
     /**
-     * Returns the value of the specified field as a <code>dom.Element</code>
-     *
-     * @param fieldName  the name of the field to be returned
-     * @param tree       the DOM Document to which it must be added
-     * @return           the value of the specified field as a DOM Element.
-     * @since MMBase-1.6
-     */
-
-    public Element getXMLValue(String fieldName, Document tree);
-
-    /**
     * Commit the node to the database.
     * Makes this node and/or the changes made to this node visible to the cloud.
     * If this method is called for the first time on this node it will make
@@ -266,37 +255,17 @@ public interface Node {
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName);
-
-
-
+    
     /**
-     * Get the xml for this node.
+     * Returns the value of the specified field as a <code>dom.Element</code>
      *
-     * @param tree The DOM document to which it must be added
-     *
+     * @param fieldName  the name of the field to be returned
+     * @param tree       the DOM Document to which it must be added
+     * @return           the value of the specified field as a DOM Element.
      * @since MMBase-1.6
      */
-     public Element toXML(Document tree);
 
-    /**
-     * Get the xml for this node and do not include all fields but only the ones specified in the fieldList
-     * This fieldlist can be 'null' to add no fields.
-     * @param tree        The DOM document to which it must be added
-     * @param fieldList   Which Fields must be included.
-     *
-     * @since MMBase-1.6
-     */
-    public Element toXML(Document tree, FieldList fieldList);
-
-    /**
-     * Get the xml for this node and and include only one field.
-     * @param tree        The DOM document to which it must be added
-     * @param field       Which Field must be included.
-     *
-     * @since MMBase-1.6
-     */
-    public Element toXML(Document tree, Field field);
-
+    public Element getXMLValue(String fieldName, Document tree);    
 
     /**
      * Checks whether this node has any relations.

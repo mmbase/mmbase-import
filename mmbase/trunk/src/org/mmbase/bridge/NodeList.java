@@ -16,7 +16,7 @@ import java.util.List;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.4 2002-02-22 14:44:02 michiel Exp $
+ * @version $Id: NodeList.java,v 1.5 2002-03-20 13:16:46 eduard Exp $
  */
 public interface NodeList extends List {
 
@@ -30,15 +30,6 @@ public interface NodeList extends List {
      * Returns an type-specific iterator for this list.
      */
     public NodeIterator nodeIterator();
-
-    /**
-     * Writes this nodelist to a DOM document
-     *
-     * @param tree the DOM document.
-     * @since MMBase-1.6
-     */
-    
-    public void toXML(org.w3c.dom.Document tree);
 
     /**
      * Returns a sublist of this list.
