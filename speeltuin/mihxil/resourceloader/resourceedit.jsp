@@ -10,25 +10,57 @@
     <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />    
   </head>
 <body>
-  <%!  
-  ResourceLoader resourceLoader = ResourceLoader.getRoot();   
-  Xml            xmlEscaper     = new Xml(Xml.ESCAPE);
-
-  %>
-  <form method="post" name="resource">
+  <%! Xml  xmlEscaper     = new Xml(Xml.ESCAPE);  %>
+  <%
+  ResourceLoader resourceLoader = (ResourceLoader) session.getAttribute("resourceedit_document");
+  if (resourceLoader == null) resourceLoader = ResourceLoader.getRoot();   
+%>
+  <form method="post" name="resource" action="<mm:url />">
 <table>
   <mm:cloud>
+  <mm:import externid="dirs" />
+  <mm:write referid="dirs" jspvar="dir" vartype="String">
+    <mm:isnotempty>
+    <% resourceLoader = new ResourceLoader(resourceLoader, dir); 
+       session.setAttribute("resourceedit_document", resourceLoader);
+    %>    
+    </mm:isnotempty>
+  </mm:write>
   <mm:import externid="resource" vartype="string" jspvar="resource" />
+  <mm:import externid="recursive" />
+  <% boolean recursive = false; %>
+  <mm:present referid="recursive"><% recursive = true; %></mm:present>
   <mm:import externid="keepsearch"><%=ResourceLoader.XML_PATTERN.pattern()%></mm:import>
   <mm:import externid="search" vartype="string" jspvar="search" ><mm:write referid="keepsearch" escape="none" /></mm:import>
   <tr>
     <th class="main" colspan="2">
       <mm:present referid="resource">
-        <a href="<mm:url referids="search" />">&lt;-- Back</a> | 
+        <a href="<mm:url referids="search,recursive?" />">&lt;-- Back</a> | 
       </mm:present>
       <mm:write referid="title" /> 
     </th> 
-    <th class="main" colspan="1">Root: <%= resourceLoader.toInternalForm("") %></th>
+    <th class="main" colspan="1">
+      Root: <%= resourceLoader.toInternalForm("") %>
+      <mm:notpresent referid="resource">
+      <select name="dirs" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">
+        <option value=""></option>
+        <% if (! resourceLoader.equals(ResourceLoader.getRoot())) {
+         %>
+           <option value="..">..</option>
+        <%
+           }
+           Iterator diri = resourceLoader.getResourceContexts(null, false).iterator(); 
+           while (diri.hasNext()) {
+           String dir = (String) diri.next();
+        %>
+           <option value="<%=dir%>"><%=dir%></option>
+        <%
+           }
+        %>
+      </select>      
+      recursive: <input type="checkbox" name="recursive" <mm:present referid="recursive">checked="checked"</mm:present> onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();" />
+      </mm:notpresent>
+    </th>
   </tr> 
   <input type="hidden" name="keepsearch" value="<mm:write referid="search" />" />
   <mm:notpresent referid="resource">
@@ -37,7 +69,7 @@
       <td colspan="2">
         <input type="text" name="search" value="<mm:write referid="search" />" />
         <select name="examples" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">         
-           <option value="" <mm:isempty referid="search"> selected="selected" </mm:isempty> >ALL</option>
+           <option value=".*" <mm:isempty referid="search"> selected="selected" </mm:isempty> >ALL</option>
            <mm:write value=".*\.xml$$">
               <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xml's</option>
            </mm:write>
@@ -57,7 +89,7 @@
     <tr><th>&nbsp;</th><th>Resource-name</th><th>External URL</th></tr>
     <tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="" /></mm:url>">new</a></td><td colspan="2"></td></tr>
     <%
-    Iterator i = resourceLoader.getResourcePaths(search == null || search.equals("") ? null : java.util.regex.Pattern.compile(search), true).iterator();
+    Iterator i = resourceLoader.getResourcePaths(search == null || search.equals("") ? null : java.util.regex.Pattern.compile(search), recursive).iterator();
 
     while (i.hasNext()) {
        String res = (String) i.next();
@@ -65,7 +97,7 @@
        URLConnection con = url.openConnection();
        boolean editable = con.getDoOutput();
 %>
-<tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="<%=res%>" /></mm:url>"><%= editable ? "Edit" : "View"%></a></td>
+<tr><td><a href="<mm:url referids="search,recursive?"><mm:param name="resource" value="<%=res%>" /></mm:url>"><%= editable ? "Edit" : "View"%></a></td>
 <%
       out.println("<td>"  + res + "</td><td>" + url  + "</td></tr>");
 }
