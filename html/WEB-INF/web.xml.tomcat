@@ -4,13 +4,13 @@
 <web-app>
 
     <servlet>
-        <servlet-name>plaatjes</servlet-name>
+        <servlet-name>images</servlet-name>
         <servlet-class>org.mmbase.servlet.servdb</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>plaatjes</servlet-name>
+        <servlet-name>images</servlet-name>
         <url-pattern>/img.db</url-pattern>
     </servlet-mapping>
 
