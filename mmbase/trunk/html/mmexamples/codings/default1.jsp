@@ -1,6 +1,6 @@
 <%@page session="false" language="java" contentType="text/html;charset=iso-8859-1"  
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%>
+%><mm:import externid="postprocessor">reducespace</mm:import><mm:content type="text/html" postprocessor="$postprocessor" encoding="ISO-8859-1">
 <mm:cloud>
 <html>
   <head>
@@ -70,4 +70,4 @@
   </body>
 </html>
 </mm:cloud>
-
+</mm:content>
