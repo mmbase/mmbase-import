@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Context Security Configuration</title>
     <date>12 February 2003</date>
-    <edition>$Id: context-security.xml,v 1.6 2003-02-26 15:18:55 pierre Exp $</edition>
+    <edition>$Id: context-security.xml,v 1.7 2003-02-27 15:48:47 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -286,18 +286,18 @@
         <listitem>
           <para>&lt;contains named="..." &gt; : The group or user that is member of this group. The element &#39;type&#39; determines of this is a user or a group member. If you specify the wrong type then the correct entry cannot be found.</para>
         </listitem>
-		</itemizedlist>
+    </itemizedlist>
     </section>
-	<section>
+  <section>
       <title>&lt;contexts&gt; &lt;context /&gt; &lt;/contexts&gt;</title>
       <para>The following values can be given to the elements of contexts.</para>
-      <itemizedlist>	
+      <itemizedlist>
         <listitem>
           <para>&lt;contexts&gt; ... &lt;/contexts&gt; : This is a list of contexts that can be used within the context system.</para>
         </listitem>
         <listitem>
-          <para>&lt;contexts default="..." &gt : This field refers to a context that should be used when the owner field of an object refers to an context that cannot be found. So the value should be named in one of the &lt;contexts&gt; 
-		  &lt;context name="..." &gt &lt;/contexts&gt; elements.</para>
+          <para>&lt;contexts default="..." &gt; : This field refers to a context that should be used when the owner field of an object refers to an context that cannot be found. So the value should be named in one of the &lt;contexts&gt;
+      &lt;context name="..." &gt; &lt;/contexts&gt; elements.</para>
           <para>Within these &lt;contexts&gt; ... &lt;/contexts&gt; is it possible to create new contexts which use the following structure:</para>
           <programlisting><![CDATA[
 <context name="%contextname%">
@@ -313,7 +313,7 @@
           <para>The following values can be given to the elements:</para>
           <itemizedlist>
             <listitem>
-              <para>&lt;context name="..." &gt  : The name of the context.</para>
+              <para>&lt;context name="..." &gt;  : The name of the context.</para>
             </listitem>
             <listitem>
               <para>&lt;context&gt; &lt;operation type="..." /&gt; &lt;/context&gt; : The type of operation where rights are granted to. Valid values are &#39;read&#39;, &#39;write&#39;, &#39;link&#39;, &#39;delete&#39; and &#39;change context&#39;</para>
