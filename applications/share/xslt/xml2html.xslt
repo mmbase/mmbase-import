@@ -354,7 +354,7 @@
     <tr>
     <td>tags of this type</td><td>
            <xsl:apply-templates
-              select="/taglib/*[(name()='tag' or name()='taginterface') and contains(type, $type)]/extends[.=current()/name]/parent::*" 
+              select="/taglib/*[(name()='tag' or name()='taginterface') and ($file or contains(type, $type))]/extends[.=current()/name]/parent::*" 
               mode="tocext" >
              <xsl:with-param name="file" select="$file" />
              <xsl:with-param name="type" select="$type" />
