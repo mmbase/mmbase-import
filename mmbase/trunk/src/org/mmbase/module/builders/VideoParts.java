@@ -27,6 +27,8 @@ import org.mmbase.util.*;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
 
+import nl.vpro.mmbase.util.media.video.*;
+
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
@@ -557,6 +559,11 @@ public class VideoParts extends MMObjectBuilder {
 	*/
 	public void setDefaults(MMObjectNode node) {
 		node.setValue("storage",2);
+	}
+
+	public String getVideopartUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
+	{
+        	return VideoUtils.getVideoUrl( mmbase, sp, number, speed, channels);
 	}
 
 	public static void debug( String msg )
