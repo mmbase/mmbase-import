@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
+
   <classfile>Dummy</classfile>
   <searchage>14</searchage>
   <names>
      <!-- singles per language  as defined by RFC xxx -->
-     <singular xml:lang="en">SyncNode</singular>
-     <singular xml:lang="nl">SyncNode</singular>
+     <singular xml:lang="en">Synchronisation Node</singular>
+     <singular xml:lang="nl">Synchronisatienode</singular>
      <singular xml:lang="eo">Samignodo</singular>
      <!-- multiple per language  as defined by RFC xxx -->
-     <plural xml:lang="en">SyncNodes</plural>
-     <plural xml:lang="nl">SyncNodes</plural>
+     <plural xml:lang="en">Synchronisation Nodes</plural>
+     <plural xml:lang="nl">Synchronisatienodes</plural>
      <plural xml:lang="eo">Samignodoj</plural>
   </names>
 
@@ -18,8 +19,8 @@
   small description of the builder for human reading
   -->
   <descriptions>
-     <description xml:lang="en">SyncNodes are used to map remote mmbase nodes to this node</description>
-     <description xml:lang="nl">SyncNodes worden gebruikt om remote mmbase nodes te mappen naar lokale nodes</description>
+     <description xml:lang="en">Synchronisation Nodes are used to map remote MMBase nodes to this node</description>
+     <description xml:lang="nl">Synchronisatienodes worden gebruikt om remote MMBase nodes te mappen naar lokale nodes</description>
      <description xml:lang="eo">Samignodoj estas uzataj por mapi forajn MMBase-nodoj al lokaj</description>
   </descriptions>
 
@@ -33,8 +34,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="en">ExportSource</guiname>
-          <guiname xml:lang="nl">ExportSource</guiname>
+          <guiname xml:lang="en">Export Source</guiname>
+          <guiname xml:lang="nl">Exportbron</guiname>
           <guiname xml:lang="eo">Eksportfonto</guiname>
           <guitype>string</guitype>
         </gui>
@@ -62,8 +63,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="en">TimeStamp</guiname>
-          <guiname xml:lang="nl">TijdStempel</guiname>
+          <guiname xml:lang="en">Time Stamp</guiname>
+          <guiname xml:lang="nl">Tijdstempel</guiname>
           <guiname xml:lang="eo">Tempstampo</guiname>
           <guitype>integer</guitype>
         </gui>
@@ -91,8 +92,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="en">ExportNumber</guiname>
-          <guiname xml:lang="nl">ExportNummer</guiname>
+          <guiname xml:lang="en">Export Number</guiname>
+          <guiname xml:lang="nl">Exportnummer</guiname>
           <guiname xml:lang="eo">Eksportnumero</guiname>
           <guitype>integer</guitype>
         </gui>
@@ -121,8 +122,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="en">LocalNumber</guiname>
-          <guiname xml:lang="nl">LocalNummer</guiname>
+          <guiname xml:lang="en">Local Number</guiname>
+          <guiname xml:lang="nl">Lokaal Nummer</guiname>
           <guiname xml:lang="eo">Ĉi-numero</guiname>
           <guitype>integer</guitype>
         </gui>

@@ -6,13 +6,13 @@
   <searchage>14</searchage>
 
   <names>
-     <singular xml:lang="en">Cached image</singular>
-     <singular xml:lang="nl">Gecached plaatje</singular>
+     <singular xml:lang="en">Cached Image</singular>
+     <singular xml:lang="nl">Gebufferd Plaatje</singular>
      <singular xml:lang="fr">Image Antémémoire</singular>
      <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
 
-     <plural xml:lang="en">Cached images</plural>
-     <plural xml:lang="nl">Gecachte plaatjes</plural>
+     <plural xml:lang="en">Cached Images</plural>
+     <plural xml:lang="nl">Gebufferde Plaatjes</plural>
      <plural xml:lang="fr">Images antémémoire</plural>
      <plural xml:lang="eo">Kaŝmemoritaj Bildoj</plural>
   </names>
@@ -22,8 +22,8 @@
   -->
   <descriptions>
      <!-- descriptions per language  as defined by RFC xxx -->
-     <description xml:lang="en">Caching table for rendered images</description>
-     <description xml:lang="nl">Caching tabel voor bewerkte plaatjes</description>
+     <description xml:lang="en">Cache for rendered images</description>
+     <description xml:lang="nl">Buffer  voor bewerkte plaatjes</description>
      <description xml:lang="us">Cachant la table pour rendues des images</description>
      <description xml:lang="eo">Kaŝmemoranta tabelo por konvertitaj bildoj</description>
   </descriptions>
