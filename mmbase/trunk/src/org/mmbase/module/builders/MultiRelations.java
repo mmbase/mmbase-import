@@ -30,19 +30,45 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.19 2001-03-09 15:11:31 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.20 2001-03-12 08:58:27 pierre Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
+
+    /**
+    * Search for all valid relations.
+    * When searching relations, return both relations from source to deastination and from destination to source,
+    * provided directionality allows
+    */
+    public static final int SEARCH_BOTH = 0;
+    /**
+    * Search for destinations,
+    * When searching relations, return only relations from source to deastination.
+    */
+    public static final int SEARCH_DESTINATION = 1;
+    /**
+    * Seach for sources.
+    * When searching a multilevel, return only relations from destination to source, provided directionality allows
+    */
+    public static final int SEARCH_SOURCE = 2;
+    /**
+    * Search for all relations.
+    * When searching a multilevel, return both relations from source to deastination and from destination to source.
+    * Directionality is not checked - ALL relations are used.
+    */
+    public static final int SEARCH_ALL = 3;
+
+    /**
+    * Search for eitehr destination or source.
+    * When searching a multilevel, return either relations from source to destination OR from destination to source.
+    * The returned set is decided through teh typerel tabel. However, if both directiosn ARE somehow supported, the
+    * system onyl returns source to destination relations.
+    * This is the default value (for compatibility purposes).
+    */
+    public static final int SEARCH_EITHER = 4;
 	
     // logging variable
 	private static Logger log = Logging.getLoggerInstance(MultiRelations.class.getName());
 
-	// if set to true, the old multilevel functionality will be used
-	// this means that if relations exists in two directions, only one direction will be concidered valid,
-	// so not all relations may be returned.
-	// if set to false, multirelations uses the new functionality (which will return all relations)
-	private static final boolean supportoldway=false;
-	
     /**
     * Creates an instance of the MultiRelations builder.
     * Called from the MMBase class.
@@ -191,7 +217,7 @@ public class MultiRelations extends MMObjectBuilder {
 	public Vector searchMultiLevelVector(int snode,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
 		Vector v=new Vector();
 		v.addElement(""+snode);
-		return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction);
+		return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
 	}
 
 	/**
@@ -216,6 +242,32 @@ public class MultiRelations extends MMObjectBuilder {
     * @return a <code>Vector</code> containing all matching nodes
 	*/
 	public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
+	    return searchMultiLevelVector(snodes,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
+	}
+		
+	/**
+	* Return all the objects that match the searchkeys.
+    * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
+    *      listed in the tables parameter.
+    * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
+    *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
+    *      Examples: 'people.lastname'
+    * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
+    * @param tables The builder chain. A list containing builder names.
+    *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
+    *      a relation builder by placing the name of the builder between two builders to search.
+    *      Example: company,people or typedef,authrel,people.
+    * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+    *      The syntax is either sql (if preceded by "WHERE') or
+    *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
+    * @param orderVec the fieldnames on which you want to sort.
+    * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
+    *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
+    *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
+    * @return a <code>Vector</code> containing all matching nodes
+	*/
+	public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction,
+	                                     int searchdir) {
 		String stables,relstring,select,order,basenodestring,distinct;
 		Vector alltables,selectTypes;
 		MMObjectNode basenode;
@@ -285,7 +337,7 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 		
 		// get the relation string
-		relstring=getRelationString(alltables);
+		relstring=getRelationString(alltables, searchdir);
 		if ((relstring.length()>0) && (basenodestring.length()>0)) {
 				relstring=" AND "+relstring;
 		}
@@ -682,7 +734,7 @@ public class MultiRelations extends MMObjectBuilder {
 	* @param alltables the tablenames to use
 	* @return a condition as a <code>String</code>
 	*/
-	protected String getRelationString(Vector alltables) {
+	protected String getRelationString(Vector alltables, int searchdir) {
 		StringBuffer result=new StringBuffer("");
 		int siz;
 		String src,dst;
@@ -697,6 +749,10 @@ public class MultiRelations extends MMObjectBuilder {
 		reldef=mmb.getRelDef();
 		insrel=mmb.getInsRel();
 		siz=alltables.size()-2;
+		
+		log.debug("SEARCHDIR="+searchdir);
+
+		
 		for (int i=0;i<siz;i+=2) {
 		    boolean desttosrc=false;
 		    boolean srctodest=false;
@@ -712,25 +768,26 @@ public class MultiRelations extends MMObjectBuilder {
 			// check if  a definite rnumber was requested...
             if (rnum>-1) {
 			    result.append(idx2char(i+1)+".rnumber="+rnum+" AND ");
-			    srctodest=typerel.reldefCorrect(so,ro,rnum);
-                desttosrc=typerel.reldefCorrect(ro,so,rnum);
+			    srctodest=(searchdir!=SEARCH_SOURCE) && typerel.reldefCorrect(so,ro,rnum);
+                desttosrc=(searchdir!=SEARCH_DESTINATION) && typerel.reldefCorrect(ro,so,rnum);
             } else {
 			    MMObjectNode typenode;
 			    for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
 			        // get the allowed relation definitions
 			        typenode = (MMObjectNode)e.nextElement();
-			        desttosrc= desttosrc || typenode.getIntValue("snumber")==ro;
-			        srctodest= srctodest || typenode.getIntValue("snumber")==so;
+			        desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
+			        srctodest= (searchdir!=SEARCH_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
 			        if (desttosrc && srctodest) break;
 			    }
             }
 
 			// check for directionality if supported
 			String dirstring="";
-			if (InsRel.usesdir) {
-			    dirstring=" AND "+idx2char(i+1)+".dir=2";
+			if (InsRel.usesdir && (searchdir!=SEARCH_ALL)) {
+			    dirstring=" AND "+idx2char(i+1)+".dir<>1";
 			}
-			if (desttosrc && srctodest && supportoldway) { // support old
+			
+			if (desttosrc && srctodest && (searchdir==SEARCH_EITHER)) { // support old
 			    desttosrc=false;
 			}			
             if (desttosrc) {
