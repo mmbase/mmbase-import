@@ -26,9 +26,16 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Case Roole, cjr@dds.nl
  * 
- * $Id: AbstractReport.java,v 1.5 2001-07-16 10:08:07 jaco Exp $
+ * $Id: AbstractReport.java,v 1.5.6.1 2002-12-03 21:53:53 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2001/07/16 10:08:07  jaco
+ * jaco: Moved all configuration stuff to MMBaseContext.
+ * If needed params not found or incorrect a ServletException with a description isthrown.
+ * It's now again possible to not redirect System.out and System.err to a file.
+ * Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+ * If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+ *
  * Revision 1.4  2001/07/09 12:30:02  jaco
  * jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
  *
@@ -37,6 +44,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Revision 1.2  2000/10/07 17:06:07  case
  * cjr: Added checking of mmbase JVM options and some minor bugfixes
+ * @duplicate A lot of very familiar code from other classes
  *
  */
 public abstract class AbstractReport implements ReportInterface {
@@ -185,9 +193,9 @@ public abstract class AbstractReport implements ReportInterface {
 	}
 
 	String res = "";
-	Vector fatalList = pr.getFatalList();
+	List fatalList = pr.getFatalList();
 	for (int j=0;j<fatalList.size();j++) {
-	    ErrorStruct fatalerror = (ErrorStruct)fatalList.elementAt(j);
+	    ErrorStruct fatalerror = (ErrorStruct)fatalList.get(j);
 	    int lineno = fatalerror.getLineNumber();
 	    int col = fatalerror.getColumnNumber();
 	    String msg = fatalerror.getMessage();
