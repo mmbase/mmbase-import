@@ -18,7 +18,7 @@
     <singular xml:lang="nl">Funktierelatie</singular>
     <!-- multiple per language  as defined by RFC xxx -->
     <plural xml:lang="en">Function Relation</plural>
-    <singular xml:lang="nl">Funktierelaties</singular>
+    <plural xml:lang="nl">Funktierelaties</plural>
 </names>
 
 <!-- <descriptions>
