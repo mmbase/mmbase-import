@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.10 2000-12-19 10:57:07 vpro Exp $
+$Id: MMHttpAcceptor.java,v 1.11 2000-12-19 17:10:54 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/12/19 10:57:07  vpro
+Davzev: Added some debug in commitNode
+
 Revision 1.9  2000/11/29 13:57:22  vpro
 davzev: Added more debug and comments
 
@@ -27,7 +30,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.10 $ $Date: 2000-12-19 10:57:07 $
+ * @version $Revision: 1.11 $ $Date: 2000-12-19 17:10:54 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
@@ -46,6 +49,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	int port=8080;
 	String remoteHost;
 	int remotePort=80;
+	String protocol = "http";
 	
 	public MMHttpAcceptor(String servername,String remoteHost,int remotePort) {
 		this.remoteHost=remoteHost;
@@ -54,6 +58,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		init();
 	}
 
+	/**
+	 * Calls start().
+	 */
 	public void init() {
 		this.start();	
 	}
@@ -165,7 +172,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 
 		//System.out.println("DO POST ON : "+xml);
 		try {
-			if (debug) debug("commitNode: Posting "+tableName+" node "+nodename+" in XML format using POST "+url+" HTTP/1.1\r\n to "+remoteHost+":"+remotePort);
+			if (debug) debug("commitNode: Posting "+tableName+" node "+nodename+" in XML format to "+remoteHost+":"+remotePort+" using POST "+url+" HTTP/1.1\r\n");
 			connect=new Socket(remoteHost,remotePort);
 			try {
 				out=new PrintStream(connect.getOutputStream());
@@ -219,7 +226,10 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	}
 
 	/**
-	 * Connects to itself to retrieve the node information (in XML format) and save it as a hashtable.
+	 * Connects to remote host and requests for an xml version of the node, 
+	 * retrieves xmldata and calls the parser to store node locally as a hashtable.
+	 * @param nodename the name of the service node (aka remotebuilder node)
+	 * @param tableName the name of the service builder  (aka remotebuilder) that created it. 
 	 * @return true, always
 	 */
 	public boolean getNode(String nodename,String tableName) {
@@ -234,7 +244,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
  
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
-			if (debug) debug("getNode("+nodename+","+tableName+"): Performing GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
+			if (debug) debug("getNode("+nodename+","+tableName+"): Requesting "+tableName+" node "+nodename+" in XML format from "+remoteHost+":"+remotePort+" using GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
@@ -272,14 +282,26 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		return(true);
 	}
 
+	/**
+	 * Gets localport number.
+	 * @return port number as an integer.
+	 */
 	public int getLocalPort() {
 		return(port);
 	}
 
+	/**
+	 * Gets protocol name.
+	 * @return protocol name.
+	 */
 	public String getProtocol() {
-		return("http");
+		return(protocol);
 	}
 
+	/**
+	 * Gets the localhost name.
+	 * @return localhost name.
+	 */
 	public String getLocalHost() {
 		try {
 			return(InetAddress.getLocalHost().getHostName());
