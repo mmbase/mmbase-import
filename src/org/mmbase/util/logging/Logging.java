@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.logging;
 import java.lang.reflect.Method;
 import java.io.*;
+import java.util.Set;
+import java.util.HashSet;
 import java.net.URL;
 
 /** 
@@ -81,7 +83,16 @@ public class Logging {
             return;
         }  
 
+       // There is a problem when dtd's for the various modules are on a remote
+        // machine and this machine is down. Log4j will hang without an error and if
+        // SimpleImpl is used in log.xml it too will constantly try to connect to the
+        // machine for the dtd's without giving an error! This line might give a hint 
+        // where to search for these kinds of problems..
+        
         System.out.println("Configuring logging with " + configfile);
+        System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
+
+
 
         configurationFile = new File(configfile);
         configurationFile = configurationFile.getAbsoluteFile();
@@ -179,19 +190,17 @@ public class Logging {
 
        
         System.out.println("Class to use for logging " + classToUse);
-        System.out.println("*** Warning depending on your selected logging system no more loglines ***");
-        System.out.println("*** will be written to this file, See the selected logging systems ***");
-        System.out.println("*** config file(s) for more hints where they are now ***");
+        System.out.println("(Depending on your selected logging system no more logging");
+        System.out.println("might be written to this file. See the configuration of the");
+        System.out.println("selected logging system for more hints where logging will appear)");
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             //System.out.println("classloader1: " + ClassLoader.getSystemClassLoader().getClass().getName());
-            //System.out.println("classloader2: " + Logging.class.getClassLoader().getClass().getName());
-            
+            //System.out.println("classloader2: " + Logging.class.getClassLoader().getClass().getName());            
             //logclass = Logging.class.getClassLoader().loadClass(classToUse);
             //logclass = Class.forName(classToUse, true, ClassLoader.getSystemClassLoader());  
             logClass = Class.forName(classToUse);
-            // logclass = Thread.currentThread().getContextClassLoader().loadClass(classToUse);
-                
+            // logclass = Thread.currentThread().getContextClassLoader().loadClass(classToUse);                
             // It's a little tricky to find the right classloader, but as it is now, it works for me.
             
         } catch (ClassNotFoundException e) {
@@ -202,6 +211,7 @@ public class Logging {
             System.err.println("Exception to find class " + classToUse + ": " +  e);
             logClass = logClassCopy;
         }
+        // System.out.println("logging to " + getLocations());
         configureClass(configuration);
     }
 
@@ -240,8 +250,7 @@ public class Logging {
      * @param s A string describing the `category' of the Logger. This is a log4j concept.
      */
 
-    public  static Logger getLoggerInstance (String s) { 
-  
+    public  static Logger getLoggerInstance (String s) {   
         // call the getLoggerInstance static method of the logclass:
         try {
             Method getIns = logClass.getMethod("getLoggerInstance", new Class[] { String.class } );
@@ -253,6 +262,23 @@ public class Logging {
         return null; // should not come here.
 
     }
+    /**
+     * Returns a Set of String which indicates where your logging can
+     * be (If this is implemented in the class).
+     */ 
+    /*
+    public  static Set getLocations() {   
+        // call the getLoggerInstance static method of the logclass:
+        try {
+            Method getIns = logClass.getMethod("getLocations", new Class[] {} );
+            return  (Set) getIns.invoke(null, new Object[] {}); 
+        } catch (Exception e) {
+            HashSet result = new HashSet();
+            result.add("<could not be determined>");
+            return result;
+        }
+    }
+    */
 
     /** 
      * If the configured Logger implements a shutdown static method,
