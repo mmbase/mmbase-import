@@ -22,12 +22,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.37 2003-09-02 20:25:18 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.38 2003-12-17 21:09:03 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
     // Logger routine
-    private static Logger log = Logging.getLoggerInstance(TypeDef.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TypeDef.class);
 
     /**
      * Number-to-name cache.
@@ -39,7 +39,7 @@ public class TypeDef extends MMObjectBuilder {
      * Name-to-number cache.
      * @duplicate should be moved to org.mmbase.cache
      */
-    private Map nameToNumberCache= null; // typedef name -> object number
+    private Map nameToNumberCache = null; // typedef name -> object number
 
     /**
      * List of known builders.
@@ -51,16 +51,16 @@ public class TypeDef extends MMObjectBuilder {
      */
     public TypeDef() {
         // set broadcasting of changes to false
-        broadcastChanges=false;
+        broadcastChanges = false;
     }
 
     protected Map getNumberToNameCache() {
-        if (numberToNameCache==null) readCache();
+        if (numberToNameCache == null) readCache();
         return numberToNameCache;
     }
 
     protected Map getNameToNumberCache() {
-        if (nameToNumberCache==null) readCache();
+        if (nameToNumberCache == null) readCache();
         return nameToNumberCache;
     }
 
