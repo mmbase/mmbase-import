@@ -1,7 +1,7 @@
 <table  class="list">
   <tr><th width="50">Bug #</th><th>state</th><th>time</th><th>issue</th><th>&nbsp;</th></tr>
   <mm:listnodes id="bugreport" type="bugreports" orderby="time" directions="down" max="15" offset="$noffset">
-    <tr>
+    <tr <mm:even>class="even"</mm:even>>
       <td>#<mm:field name="bugid" /></td>
       <td>
         <mm:field name="bstatus">
@@ -13,9 +13,9 @@
           <mm:compare value="6">Closed</mm:compare>
         </mm:field>
       </td>
-      <td>
+      <td style="font-family: monospace">
         <mm:field name="time">
-          <mm:time format="HH:mm:ss, EE d MM yyyy" />
+          <mm:time format="HH:mm:ss, EE dd MM yyyy" />
         </mm:field>
       </td>
       <td>

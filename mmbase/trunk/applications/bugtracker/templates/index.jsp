@@ -2,6 +2,8 @@
 %><%@page language="java" contentType="text/html; charset=utf-8"
 %><mm:content expires="0" type="text/html">
 <mm:cloud>
+  <%@include file="actions.jsp" %>
+  <%@include file="showMessage.jsp" %>
 <html>
   <head>
     <title>MMBase Bugtracker example</title>

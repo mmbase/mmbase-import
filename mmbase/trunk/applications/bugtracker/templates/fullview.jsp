@@ -9,7 +9,6 @@
   <mm:import externid="bugreport" />
   <mm:import externid="flap">overview</mm:import>
   
-  <%@include file="actions.jsp" %>
   
   <mm:node number="$bugreport">
     <mm:related path="rolerel,users" constraints="rolerel.role='maintainer'" max="1">

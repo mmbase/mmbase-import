@@ -1,36 +1,33 @@
 <mm:import id="template">fullview.jsp</mm:import>
-<table class="subnav">
-
-  <tr>
-    <td width="25">
-      <a href="<mm:url referids="parameters,$parameters" />"><img border="0" src="<mm:url page="images/arrow-left.png" />" /></a>
-    </td>
-
+<ul id="tabnav">
+<!--
+     <li><a href="<mm:url referids="parameters,$parameters" />"> <img border="0" src="<mm:url page="images/arrow-left.png" />" /></a></li>
+-->
+     <li><a href="<mm:url referids="parameters,$parameters" />"><img border="0" src="images/arrow-left.png"/>&nbsp;</a></li>
     <!-- overview flap -->
     <mm:compare referid="flap" value="overview" inverse="true">
-      <td><a href="<mm:url referids="parameters,$parameters,bugreport,template"><mm:param name="flap" value="overview" /></mm:url>">Overview</a></td>
+      <li><a href="<mm:url referids="parameters,$parameters,bugreport,template"><mm:param name="flap" value="overview" /></mm:url>">Overview</a></li>
     </mm:compare>
     <mm:compare referid="flap" value="overview">
-      <td class="selected">Overview</td>
+      <li><a href="#" class="active">Overview</a></li>
     </mm:compare>
     
     
 
     <!-- history flap -->
     <mm:compare referid="flap" value="history" inverse="true">
-      <td><a href="<mm:url referids="parameters,$parameters,bugreport,template" ><mm:param name="flap" value="history" /></mm:url>">History</a></td>
+      <li><a href="<mm:url referids="parameters,$parameters,bugreport,template" ><mm:param name="flap" value="history" /></mm:url>">History</a></li>
     </mm:compare>
     <mm:compare referid="flap" value="history">
-      <td class="selected">History</td>
+      <li ><a href="#" class="active">History</a></li>
     </mm:compare>
     
     
     <!-- change flap -->
     <mm:compare referid="flap" value="change" inverse="true">
-      <td><a href="<mm:url referids="parameters,$parameters,bugreport,template" ><mm:param name="flap" value="change" /></mm:url>">Change</a></td>
+      <li><a href="<mm:url referids="parameters,$parameters,bugreport,template" ><mm:param name="flap" value="change" /></mm:url>">Change</a></li>
     </mm:compare>
     <mm:compare referid="flap" value="change">
-      <td class="selected">Change</td>
+      <li><a href="#" class="active">Change</a></li>
     </mm:compare>
-  </tr>
-</table>
+</ul>
