@@ -250,7 +250,7 @@
       <programlisting>
 <![CDATA[
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD cache config 1.0//EN" "http://www.mmbase.org/dtd/caches_1_0.dtd">
+<!DOCTYPE caches PUBLIC "-//MMBase/DTD cache config 1.0//EN" "http://www.mmbase.org/dtd/caches_1_0.dtd">
 
 <caches>
   <!-- ================================================================================
