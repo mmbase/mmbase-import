@@ -38,13 +38,22 @@ public class MMBaseUserRepository extends IrcUserRepository {
     private RelationManager rolerelRelationManager;
     private Node userGroupNode;
     private Node chatserversNode;
+    String usersNodeManagerName;
+    String usersAccountFieldName;
+    String usersSessioinFieldName;
     
-    public MMBaseUserRepository(Cloud cloud, NodeManager usersNodeManager, RelationManager rolerelRelationManager, Node userGroupNode, Node chatserversNode) {
+    public MMBaseUserRepository(Cloud cloud, NodeManager usersNodeManager,
+            RelationManager rolerelRelationManager, Node userGroupNode,
+            Node chatserversNode, String usersNodeManagerName,
+            String usersAccountFieldName, String usersSessioinFieldName) {
         this.cloud = cloud;
         this.usersNodeManager = usersNodeManager;
         this.rolerelRelationManager = rolerelRelationManager;
         this.userGroupNode = userGroupNode;
         this.chatserversNode = chatserversNode;
+        this.usersNodeManagerName = usersNodeManagerName;
+        this.usersAccountFieldName = usersAccountFieldName;
+        this.usersSessioinFieldName = usersSessioinFieldName;
     }
 
     public User getUser(Socket socket) {
@@ -73,17 +82,17 @@ public class MMBaseUserRepository extends IrcUserRepository {
         Node usersNode;
         NodeList nodeList;
         nodeList = cloud.getList(userGroupNode.getStringValue("number"),
-                                 userGroupNode.getNodeManager().getName() + ",users",
-                                 "users.number",
-                                 "users.account = '" + Escape.singlequote(nick) + "' AND users.session = '" + Escape.singlequote(pass) + "'",
+                                 userGroupNode.getNodeManager().getName() + "," + usersNodeManagerName,
+                                 usersNodeManagerName + ".number",
+                                 usersNodeManagerName + "."+ usersAccountFieldName + " = '" + Escape.singlequote(nick) + "' AND " + usersNodeManagerName + "." + usersSessioinFieldName + " = '" + Escape.singlequote(pass) + "'",
                                  null, null, null, false);
         if (nodeList.size() == 0) {
             return UserRepository.REGISTER_INCORRECT_PASSWORD;
         } else {
-            String usersNodeNumber = nodeList.getNode(0).getStringValue("users.number");
+            String usersNodeNumber = nodeList.getNode(0).getStringValue(usersNodeManagerName + ".number");
             usersNode = cloud.getNode(usersNodeNumber);
         }
-        MMBaseUser mmbaseUser = new MMBaseUser(user, cloud, rolerelRelationManager, chatserversNode, usersNode);
+        MMBaseUser mmbaseUser = new MMBaseUser(user, cloud, rolerelRelationManager, chatserversNode, usersNode, usersNodeManagerName, usersAccountFieldName);
         unregisteredSockets.remove(socket);
         unregisteredNicks.remove(nick.toLowerCase());
         registeredSockets.put(socket, mmbaseUser);
