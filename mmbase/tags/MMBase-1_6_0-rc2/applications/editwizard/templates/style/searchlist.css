@@ -1,0 +1,42 @@
+
+/**
+
+  Editwizard cascading style sheet.
+  You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
+
+  The following is used in searchlist.
+  Search-lists are those things that pop-up if you want to search for a node to make a relation to.
+  Here you can customize how they must look like.
+
+  @version  $Id: searchlist.css,v 1.3 2002-08-20 12:18:54 pierre Exp $
+  
+*/
+
+@import url("base.css");
+
+div.searchresult {
+  /* contains only the search-result table. Needed to set height and overflow */
+  height: 255;
+  overflow: auto;
+}
+
+table.searchresult {
+  width: 100%;
+  cell-spacing: 1;
+  cell-padding: 2;
+} 
+
+table.searchresult td { 
+	 color:#000000;
+     padding-left: 3;
+ }
+table.searchresult tr.even td { background-color: #DDD; }
+table.searchresult tr.odd  td { background-color: #EEE; }
+table.searchresult tr.selected_even td { color: #fff; background-color: #000; }
+table.searchresult tr.selected_odd  td { color: #fff; background-color: #777; }
+
+table.pagenav {
+  position:absolute; 
+  top:258; 
+  left:0;
+}

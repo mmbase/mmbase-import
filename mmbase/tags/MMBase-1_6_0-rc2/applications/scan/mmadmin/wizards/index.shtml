@@ -1,0 +1,13 @@
+<PROCESSOR MMBASE>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="/mmadmin/beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="/mmadmin/beeld/mmbaselogosmall.gif" ALIGN="right">
+<PART /mmadmin/nav.shtml?3>
+<BR>
+<PART /mmadmin/wizards/$SESSION-WIZ^/step$PARAM1.shtml>
+</HTML>

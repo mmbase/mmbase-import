@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+   <TITLE>BugTracker</TITLE>
+</HEAD>
+<BODY BACKGROUND="../beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+<transactions>
+	<create>
+		<createObject type="email">
+			<setField name="mailtype">1</setField>
+			<setField name="to">$MOD-MMBASE-BUILDER-users-email^</setField>
+			<setField name="from">bugs@mmbase.org</setField>
+			<setField name="subject">Your user account at mmbase.org</setField>
+			<setField name="body">
+You requested a acount at mmbase.org for the bugtracker. 
+The account and password are :
+	
+		account : $MOD-MMBASE-BUILDER-users-account
+		password : $MOD-MMBASE-BUILDER-users-password
+
+Keep this messages or make a note of the account/password in a safe place.
+			</setField>
+		</createObject>
+	</create>
+</transactions>
+
+<FORM ACTION="changeUser.shtml" METHOD="POST">
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD WIDTH="50"><IMG SRC="../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>feedback</B>
+	</TD>
+</TR>
+
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+		<BR>
+		<CENTER>
+			Welcome on the site : $SESSION-LID<p>
+			A mail with your password is mailed to your account,<BR>
+			with this you can login to the site
+		<BR>
+		<BR>
+		 <CENTER><INPUT TYPE="SUBMIT" VALUE="Got It Let Me Login">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>
+
