@@ -84,7 +84,7 @@ public class PackageDiscovery implements Runnable {
 	kicker = null;
     }
 
-    private void getPackages() {
+    public void getPackages() {
         // get all the providers lines up for a call
         Iterator i = ProviderManager.getProviders();
         while (i.hasNext()) {
