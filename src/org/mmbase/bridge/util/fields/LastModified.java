@@ -18,7 +18,7 @@ import java.util.Date;
  * thrown (in other words, the field is read only).
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModified.java,v 1.2 2004-10-05 18:08:40 michiel Exp $
+ * @version $Id: LastModified.java,v 1.3 2005-01-03 12:12:11 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
@@ -34,6 +34,6 @@ public class LastModified implements CommitProcessor, Processor {
     }     
   
     public void commit(Node node, Field field) {
-        node.getFieldValue(field).set(new Date());
+        node.getFieldValue(field).setObject(new Date());
     }        
 }
