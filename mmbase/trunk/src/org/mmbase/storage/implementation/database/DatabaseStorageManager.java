@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.27 2003-09-22 09:07:39 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.28 2003-09-22 09:39:29 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -696,7 +696,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected void setNodeValue(PreparedStatement statement, int index, MMObjectNode value, FieldDefs field) throws StorageException, SQLException {
         if (value == MMObjectNode.VALUE_NULL || value == null) {
             if (field.getDBNotNull()) {
-                throw new StorageException("Field with name "+field.getDBName()+" can not be NULL.");
+                throw new StorageException("The NODE field with name "+field.getDBName()+" can not be NULL.");
             } else {
                 statement.setNull(index, java.sql.Types.INTEGER);
             }
@@ -1257,8 +1257,8 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         boolean result = exists((String)factory.getStorageIdentifier(builder));
-        if (result) { 
-            verify(builder); 
+        if (result) {
+            verify(builder);
         }
         return result;
     }
