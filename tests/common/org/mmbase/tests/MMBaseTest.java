@@ -11,7 +11,7 @@ package org.mmbase.tests;
 import junit.framework.TestCase;
 import java.io.File;
 import org.mmbase.util.logging.Logging;
-
+import org.mmbase.module.tools.MMAdmin;
 
 /**
  * This class contains static methods for MMBase tests.
@@ -33,6 +33,13 @@ public abstract class MMBaseTest extends TestCase {
     static public void startMMBase() throws Exception {
         org.mmbase.module.core.MMBaseContext.init();
         org.mmbase.module.core.MMBase.getMMBase();
+        MMAdmin mmadmin = (MMAdmin) org.mmbase.module.core.MMBase.getModule("mmadmin", true);
+        while (! mmadmin.getState()) {
+            Thread.sleep(1000);
+        }
+
+
+        
     }
     /**
      * If no running MMBase is needed, then you probably want at least to initialize logging.
@@ -45,6 +52,19 @@ public abstract class MMBaseTest extends TestCase {
      */
     static public void startLogging(String configure) throws Exception {
         Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + configure);
+    }
+
+    /**
+     * Always useful, an mmbase running outside an app-server, you can talk to it with rmmci.
+     */
+    public static void main(String[] args) {
+        try {
+            startMMBase();
+            while(true) {
+                
+            }
+        } catch (Exception e) {
+        }
     }
 
 }
