@@ -139,6 +139,14 @@
 				<!-- since, when not mentioned it will be ISO-8859-1, all new systems will get urf-8 -->
 	<property name="encoding">UTF-8</property>
 
+	<!--
+	name="xmlbuilderwriterdir"
+	If specified, MMBase will write xml cinfigurauin files  to this directory when loading builders.
+	This can be useful if you want to convert old format builder xmld to the new format.
+
+	-->
+	<!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
+
 	</properties>
 </module>
 
