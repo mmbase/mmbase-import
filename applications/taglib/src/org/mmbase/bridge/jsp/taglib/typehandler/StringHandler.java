@@ -23,7 +23,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.6 2003-07-01 10:57:47 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.7 2003-07-01 11:20:43 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -105,7 +105,7 @@ public class StringHandler extends AbstractTypeHandler {
         if ("".equals(search)) {
             return null;
         }
-        Sql sql = new Sql(Sql.SINGLE_QUOTES);
+        Sql sql = new Sql(Sql.ESCAPE_QUOTES);
         
         return "( UPPER( [" + fieldName + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
     }
