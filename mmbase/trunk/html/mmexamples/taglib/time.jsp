@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <html>
 <head>
 <title>	MMBase time tag</title> 
@@ -14,6 +14,9 @@ This page contains time tag examples. For information about the
 time tag attributes see the 
 <a href="<mm:url page="/mmdocs/mmbase-taglib.html#time" />">Taglib documentation</a>.
 </p>
+<p>
+<mm:time time="tomorrow" />
+</p>
 <table>
 <tr><td colspan="2">Show the time in seconds from the start of the epoc</td></tr>
 <tr valign="top">
@@ -25,28 +28,24 @@ time tag attributes see the
   <td width="50%"><pre>&lt;mm:time format="EEEE d MMMM" /&gt;</pre></td>
   <td width="50%"><mm:time format="EEEE d MMMM" /></td>
 </tr>
+<mm:log />
 <tr><td colspan="2">You can use keywords such as: yesterday, tomorrow, today, now (not the beginning of the day), the days of the week, and the months of the year, to show the time. The tag will always show the beginning of the day (resp. month).</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/timetime.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/timetime.jsp" %></td>
 </tr>
+<mm:log />
+<tr><td colspan="2"> Show the time in different languages and formats. If the format starts with a
+colon, localized date formats can be used with constants FULL, LONG, MEDIUM and SHORT. Otherwise it
+is a pattern for SimpleDateFormat.  </td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/timelocale.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/timelocale.jsp" %></td>
+</tr>
+<mm:log />
 </table>
 <ol>
-<%--
 <li>
-Show the time in different languages.<br />
-&lt;mm:time format="EEEE d MMMM" language="en" />
-<mm:time format="EEEE d MMMM" language="en" /><br />
-&lt;mm:time format="EEEE d MMMM" language="es" />
-<mm:time format="EEEE d MMMM" language="es" /><br />
-&lt;mm:time format="EEEE d MMMM" language="de" />
-<mm:time format="EEEE d MMMM" language="de" /><br />
-&lt;mm:time format="EEEE d MMMM" language="fr" />
-<mm:time format="EEEE d MMMM" language="fr" />
-</li>
---%>
-<li>
-
 <mm:time time="tomorrow" format="yyyy/MM/dd HH:mm:ss" /><br />
 &lt;mm:time time="saturday" format="yyyy/MM/dd HH:mm:ss" />" 
 <mm:time time="saturday" format="yyyy/MM/dd HH:mm:ss" /><br />
