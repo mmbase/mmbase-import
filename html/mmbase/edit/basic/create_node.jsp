@@ -13,6 +13,14 @@
 <input type="hidden" name="new" value="new" />
 <input type="hidden" name="backpage_ok" value="<mm:url page="change_node.jsp" referids="" />" />
 <input type="hidden" name="backpage_cancel" value="<mm:url page="search_node.jsp" referids="node_type" />" />
+<mm:import externid="node" />
+<mm:present referid="node">
+    <mm:import externid="role_name" />
+    <mm:import externid="direction" />
+    <input type="hidden" name="node" value="<mm:write referid="node" />" />
+    <input type="hidden" name="role_name" value="<mm:write referid="role_name" />" />
+    <input type="hidden" name="direction" value="<mm:write referid="direction" />" />
+</mm:present>
 <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
 <tr><th colspan="2"><%=m.getString("create_node.new")%> <mm:write referid="node_type" /></th></tr>
     <mm:fieldlist id="my_form" type="edit" nodetype="${node_type}" >
