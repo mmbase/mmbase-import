@@ -171,8 +171,11 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
             String name = zippy.getName();
             String htmldir = MMBaseContext.getHtmlRoot() + File.separator;
 
+
             // only unpack all thats in the html dir
-            if (name.indexOf("html/") == 0) {
+            name = name.replace('/',File.separatorChar);
+            name = name.replace('\\',File.separatorChar);
+            if (name.indexOf("html"+File.separator) == 0) {
                 installStep substep = step.getNextInstallStep();
                 // remove the "html/" to get the real install base
                 name = name.substring(5);

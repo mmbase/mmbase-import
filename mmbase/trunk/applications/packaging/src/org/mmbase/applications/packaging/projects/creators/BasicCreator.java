@@ -618,7 +618,7 @@ public class BasicCreator implements CreatorInterface {
 			Iterator files=getFileNames(new ArrayList(),basedir,include,exclude).iterator();
 			while (files.hasNext()) {
 				String fn=(String)files.next();
-				if (!fn.endsWith("/")) {
+                                if (!fn.endsWith(File.separator)) {
       				FileInputStream file = new FileInputStream(fn);
         			packageStep substep=step.getNextPackageStep();
 	       	 		substep.setUserFeedBack("adding "+guiname+" file : "+fn);
