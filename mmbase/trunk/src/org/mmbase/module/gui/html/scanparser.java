@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.28 2000-11-02 11:15:52 install Exp $
+$Id: scanparser.java,v 1.29 2000-11-06 13:32:37 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.28  2000/11/02 11:15:52  install
+Changed evaluation sequence, TRANSACTION will be evaluated before GOTO
+
 Revision 1.27  2000/10/15 22:51:46  gerard
 gerard: added some checks
 submitted by Eduard Witteveen
@@ -107,7 +110,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.28 $ $Date: 2000-11-02 11:15:52 $
+ * @$Revision: 1.29 $ $Date: 2000-11-06 13:32:37 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -702,10 +705,19 @@ public class scanparser extends ProcessorModule {
 			filename=part2;
 		}
 
+ 		if ((filename.length()>0) && (filename.charAt(0)!='/')) {
+ 			//davzev trying out part from dir 4okt2000
+ 			String servletPath = sp.req.getServletPath();
+ 			//debug("do_part: filename:"+servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename);
+ 			filename = servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename;
+ 			if (debug) debug("do_part: filename:"+filename);
+ 		}
+ 
+
 		// Test if we are going circular
-		if (sp.partlevel>4) {
+		if (sp.partlevel>8) {
 			debug("Warning more then "+sp.partlevel+" nested parts "+sp.req_line);
-			if (sp.partlevel>10) throw new CircularParseException("Too many parts, level="+sp.partlevel+" URI "+sp.getUrl());
+			if (sp.partlevel>14) throw new CircularParseException("Too many parts, level="+sp.partlevel+" URI "+sp.getUrl());
 		}
 
 		// debug("do_part(): filename="+filename);
