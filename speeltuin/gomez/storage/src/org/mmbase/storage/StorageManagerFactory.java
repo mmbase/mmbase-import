@@ -19,6 +19,9 @@ import org.mmbase.storage.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * This class contains functionality for retrieving StorageManager instances, which give access to the storage device.
  * It also provides functionality for setting and retrieving configuration data.
@@ -27,10 +30,13 @@ import org.mmbase.module.corebuilders.FieldDefs;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.15 2003-08-04 14:23:20 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.16 2003-08-05 11:12:19 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
+    // logger
+    private static Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
+    
     /**
      * A reference to the MMBase module
      */
@@ -163,6 +169,16 @@ public abstract class StorageManagerFactory {
      */
     protected void load() throws StorageException {
         StorageReader reader = getDocumentReader();
+        if (reader == null) {
+            if (storageManagerClass == null || queryHandlerClass == null) {
+                throw new StorageConfigurationException("No storage reader specified, and no default values available.");
+            } else {
+                log.warn("No storage reader specified, continue using default values.");
+                log.debug("Default storage manager : " + storageManagerClass.getName());
+                log.debug("Default query handler : " + queryHandlerClass.getName());
+                return;
+            }
+        }
         
         // get the storage manager class
         Class configuredClass = reader.getStorageManagerClass();
@@ -234,22 +250,18 @@ public abstract class StorageManagerFactory {
     }
     
     /**
-     * Locates and opens the storage configuration document.
+     * Locates and opens the storage configuration document, if available.
      * The configuration document to open can be set in mmbasereoot (using the storage property).
      * The property should point to a resource which is to be present in the MMBase classpath.
-     * If not given or the resource cannot be found, this method throws an exception.
-     * Overriding factories may provide ways to auto-detect the location of a configuration file, or
-     * dismiss with its use.
-     * @throws StorageException if something went wrong while obtaining the document reader, or if no reader can be found
-     * @return a StorageReader instance
+     * Overriding factories may provide ways to auto-detect the location of a configuration file.
+     * @throws StorageException if something went wrong while obtaining the document reader
+     * @return a StorageReader instance, or null if no reader has been configured
      */
     public StorageReader getDocumentReader() throws StorageException {
         // determine storage resource.
-        // use the parameter set in mmbaseroot if it is given
         String storagepath = mmbase.getInitParameter("storage");
-        if (storagepath == null) {
-            throw new StorageConfigurationException("No storage resource specified.");
-        } else {
+        // use the parameter set in mmbaseroot if it is given
+        if (storagepath != null) {
             InputStream resource = this.getClass().getResourceAsStream(storagepath);
             if (resource == null) {
                 throw new StorageConfigurationException("Storage resource '"+storagepath+"' not found.");
@@ -257,6 +269,9 @@ public abstract class StorageManagerFactory {
             InputSource in = new InputSource(resource);
             in.setSystemId("resource://" + storagepath);
             return new StorageReader(this,in);
+        } else {
+            // otherwise return null
+            return null;
         }
     }
 

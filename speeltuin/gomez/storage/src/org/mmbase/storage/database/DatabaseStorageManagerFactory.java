@@ -9,15 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.StringTokenizer;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.StorageReader;
@@ -42,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.11 2003-08-04 11:38:23 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.12 2003-08-05 11:12:20 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -66,10 +65,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
       "TRIM,TRUE,UNION,UNIQUE,UNKNOWN,UPDATE,UPPER,USAGE,USER,USING,VALUE,VALUES,VARCHAR,VARYING,VIEW,WHEN,WHENEVER,WHERE,WITH,WORK,"+
       "WRITE,YEAR,ZONE";
     
-    // default sql handler. Copied from org.mmbase.module.databse.support.BaseJdbc2Node
-    private final static Class DEFAULT_SQL_HANDLER =
+    // Default query handler class.
+    private final static Class DEFAULT_QUERY_HANDLER_CLASS =
         org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
     
+    // Default storage manager class
+    private final static Class DEFAULT_STORAGE_MANAGER_CLASS =
+        org.mmbase.storage.database.RelationalDatabaseStorageManager.class;
+
     /**
      * The datasource in use by this factory.
      * The datasource is retrieved either from the application server, or by wrapping the JDBC Module in a generic datasource.
@@ -172,8 +175,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             throw new StorageInaccessibleException(se);
         }
         
-        // default searchquery handler
-        queryHandlerClass = DEFAULT_SQL_HANDLER;
+        // default storagemanager class
+        queryHandlerClass = DEFAULT_STORAGE_MANAGER_CLASS;
+
+        // default searchquery handler class
+        queryHandlerClass = DEFAULT_QUERY_HANDLER_CLASS;
         
         // load configuration data.
         super.load();
@@ -193,33 +199,37 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * @return a StorageReader instance
      */
     public StorageReader getDocumentReader() throws StorageException {
-        try {
-            return super.getDocumentReader();
-        } catch (StorageException se) {
-            // old code
-            File databaseConfig = null;
-            // configuration path.
-            String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
-    
-            // determine database name.
-            // use the parameter set in mmbaseroot if it is given
-            String databasename =mmbase.getInitParameter("database");
-            if (databasename == null) {
+        StorageReader reader = super.getDocumentReader();
+        // if no storage reader configuration has been specified, auto-detect
+        if (reader == null) {
+            String databaseResourcePath;
+            // First, determine the database name from the parameter set in mmbaseroot
+            String databaseName =mmbase.getInitParameter("database");
+            if (databaseName != null) {
+                // if databsename is specified, use that database resource
+                databaseResourcePath = "/org/mmbase/storage/database/resource/"+databaseName+".xml";
+            } else {
                 // otherwise, search for supported drivers using the lookup xml
-                DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+                DatabaseStorageLookup lookup = new DatabaseStorageLookup();
+                Connection con = null;
                 try {
-                    databaseConfig = lookup.getDatabaseConfig(dataSource.getConnection());
+                    con = dataSource.getConnection();
+                    databaseResourcePath = lookup.getResourcePath(con.getMetaData());
                 } catch (SQLException sqle) {
                     throw new StorageInaccessibleException(sqle);
+                } finally {
+                    // close connection
+                    if (con != null) { 
+                        try { con.close(); } catch (SQLException sqle) {}
+                    }
                 }
-            } else {
-                // use the correct database-xml
-                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
             }
-            // get our config...
-            // This won't work now, we will probably need a LegacyStorageReader...
-            return new StorageReader(this,databaseConfig.getPath());
+            // get configuration
+            InputStream stream = DatabaseStorageManagerFactory.class.getResourceAsStream(databaseResourcePath);
+            InputSource in = new InputSource(stream);
+            reader = new StorageReader(this, in);
         }
+        return reader;
     }
         
 }
