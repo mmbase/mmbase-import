@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.17 2000-11-10 10:31:32 vpro Exp $
+$Id: AudioParts.java,v 1.18 2000-12-14 15:53:39 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.17  2000/11/10 10:31:32  vpro
+davzev: Added method makeRealCompatible that checks for Realplayer incompatible chars in title and author field plus url rtsp-pnm check uses charAt(0) instead of startsWith.
+
 Revision 1.16  2000/10/05 12:14:14  vpro
 Rico: removed limit on getGUIIndicator
 
@@ -76,15 +79,16 @@ import org.mmbase.util.*;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
 
+import org.mmbase.util.media.*;
 import org.mmbase.util.media.audio.*;
 import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.17 2000-11-10 10:31:32 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.18 2000-12-14 15:53:39 vpro Exp $
  * 
  */
-public class AudioParts extends MMObjectBuilder {
+public class AudioParts extends MediaParts {
 
 	public final static int AUDIOSOURCE_DEFAULT=0;
 	public final static int AUDIOSOURCE_DROPBOX=4;
@@ -94,7 +98,7 @@ public class AudioParts extends MMObjectBuilder {
 	public final static int AUDIOSOURCE_VWM=8;
 
 	// Define LRU Cache for audio urls.
-	public static LRUHashtable urlCache = new LRUHashtable(1024);
+	//moved to mediaparts public static LRUHashtable urlCache = new LRUHashtable(1024);
 
 	/**
 	* pre commit from the editor
@@ -276,390 +280,6 @@ public class AudioParts extends MMObjectBuilder {
 		node.setValue("storage",RawAudioDef.STORAGE_STEREO_NOBACKUP);
 		node.setValue("body","");
 	}
-
-    /**
-    * replace all for frontend code
-    */
-    public String replace(scanpage sp, StringTokenizer command) {
-
-		if (command.hasMoreTokens()) {
-            String token=command.nextToken();
-            // debug("replace: The nextToken = "+token);
-
-            if (token.equals("GETURL")) {
-				// Url retrieving goes via an urlcache.
-				String url = getFromUrlCache(sp,command);
-				return url;
-            } else {
-  				debug("replace: Unknown command used: "+token);
-		  		return("Unknown command used: "+token+" ,says the AudioParts builder");
-			}
-        }
-        
-  		debug("replace: No command defined.");
-  		return("No command defined, says the AudioParts builder.");
-    }
-
-	/**
-	 * getFromUrlCache: This method retrieves the url from a cache if available.
-	 * Else it wil generate it first and put it in the cache and return.
-	 * If the url generation method returns null, no cache entry will be made and null will be returned.
-	 * 
-	 * @param sp The scanpage object used when retrieving the users' settings.
-	 * @param command A StringTokenizer object containing the rest of the $MOD cmd string.
-	 * @return A String containing the Url to the audiofile or null.
-	 */
-	String getFromUrlCache(scanpage sp, StringTokenizer command) {
-		if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 ) 
-			debug("getFromUrlCache: "+urlCache.getStats());
-
-		if (!command.hasMoreTokens()) {
-			System.out.println("Audioparts:getFromUrlCache: No AudioParts ObjectNumber defined.");
-			return null;
-		} else {
-			int apNumber = 0;
-			String url = null;
-			String token = command.nextToken();
-			// debug("getFromUrlCache: The nextToken = "+token);
-			try {
-				apNumber = Integer.parseInt(token);
-			} catch(Exception e) {
-				System.out.println("Audioparts:getFromUrlCache: "+e);
-				System.out.println("Audioparts:getFromUrlCache: Invalid AudioPartnumber used -> number="+token);
-				return null;
-			}
-
-			url = (String) urlCache.get(new Integer(apNumber));
-			if (url == null) {
-				debug("getFromUrlCache : MISS for audiopartnr: "+apNumber);
-				// NOT IN CACHE retrieving & putting in cache now and returning.
-				url =  doGetUrl(sp,command,apNumber);
-				if (url==null) {
-					System.out.println("Audioparts:getFromUrlCache: doGetUrl returns null, no cache put returning null");
-					return null;
-				} else if (url.charAt(0)=='r') {
-						// debug("getFromUrlCache : Putting Cache entry: "+url);
-						urlCache.put(new Integer(apNumber),url);
-						return url;
-				} else if (url.charAt(0)=='p') {
-						int pos = 0;
-						StringBuffer urlsb = new StringBuffer(url);
-						pos = url.indexOf(".ra");
-						String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
-						// debug("getFromUrlCache : Putting Cache entry: "+cachedUrl);
-						urlCache.put(new Integer(apNumber),cachedUrl);
-						return url; //Return original result url from method doGetUrl.
-				} else {
-					System.out.println("Audioparts:getFromUrlCache: Invalid Url string: "+url+" , returning null");
-					return null;
-				}
-			} else if (url.startsWith("r")) {
-				// IN CACHE and Audiopart is RealPlayer format G2 or higher.
-				debug("getFromUrlCache : HIT Returning entry: "+url);
-				return url;		
-			} else if (url.startsWith("p")) {
-				// IN CACHE and Audiopart is RealPlayer format RA5 or lower.
-				// Retrieve speed & channels from command args , default value = 16kbit mono.
-				int delim = '%';
-				int pos = 0;
-				String userSpeed = "16000";
-				String userChannels = "1";
-				StringBuffer urlsb = new StringBuffer(url);
-				
-				if (command.hasMoreTokens()) {
-					userSpeed = command.nextToken();
-					userChannels = command.nextToken();
-				} else {
-					System.out.println("Audioparts:getFromUrlCache: No speed & channels given, using 16000 & 1");
-				}
-				pos = url.indexOf(delim);
-				urlsb.setCharAt(pos,userSpeed.charAt(0));
-				url = ""+urlsb;
-				pos = url.indexOf(delim);
-				urlsb.setCharAt(pos,userSpeed.charAt(1));
-				url = ""+urlsb;
-				pos = url.indexOf(delim);
-				urlsb.setCharAt(pos,userChannels.charAt(0));
-				url = ""+urlsb;
-				debug("getFromUrlCache : HIT Returning entry: "+url);
-				return url;
-			} else {
-				System.out.println("Audioparts:getFromUrlCache: Invalid UrlCache entry: "+url+" , returning null");
-				return null;
-			}
-		}
-	}
-
-	/*
-		------------------------------------------------------------
-		Duplicate code, should move to mediautils and be generalized
-		------------------------------------------------------------
-	*/
-
-	/**
-	 * doGetUrl: Retrieve the Url of the audiofile of this AudioParts node.
-	 * This method first checks to see if the related RawAudios node uses a SureStream format.
-	 * If so And the file is available, then it builds the Url using RawAudios.getHostname .getFileName
-	 * .getProtocolName and returns it.
-	 * If the RawAudios node isn't ready yet (status!= 'done') then a null value is returned.
-	 *
-	 * If it uses a RA format and is available it adds it to a availableRaNodes vector.
-	 * After adding, it selects the bestRaNode from this vector relying on the users' settings
-	 * and builds the Url using RawAudios.getHostname .getFileName .getProtocalName and returns it.
-	 *
-	 * NOTE: The title and author informat is NOT added to the Url, since this can be done using LISTINGS.
-	 *
-	 * @param sp The scanpage object used when retrieving the users' settings.
-	 * @param command A StringTokenizer object containing the rest of the $MOD cmd string.
-	 * @param apNumber The current audiopart Number as an integer value.
-	 * @return A String containing the Url to the audiofile or null.
-	 */
-	String doGetUrl(scanpage sp, StringTokenizer command, int apNumber) {
-		Vector availableRaNodes = new Vector();
-
-		// First select the RawAudio node and determine format and status.
-		MMObjectBuilder raBuilder = mmb.getMMObject("rawaudios");
-		Enumeration e = raBuilder.search("where id="+apNumber);
-		while (e.hasMoreElements()) {
-			MMObjectNode raNode = (MMObjectNode) e.nextElement();
-			int format = raNode.getIntValue("format");
-			int status = raNode.getIntValue("status");
-			if (format == RawAudios.SURESTREAM_FORMAT) {
-				if (status == RawAudios.GEDAAN) {
-					String protName = RawAudios.getProtocolName(format);
-					String hostName = RawAudios.getHostName(raNode.getStringValue("url"));
-					// Since a surestream controls the speed & channels himself, the other 2 args I give value 0.
-					String fileName = RawAudios.getFileName(format,0,0);
-					// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
-					String songInfo = getSongInfo(apNumber);
-					String startstopTimes = getStartStopTimes(apNumber);
-					// debug("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
-					return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
-				} else {
-					debug("doGetUrl: This rawaudio isn't ready yet status="+status);
-					return null;
-				}
-			} else if (format == RawAudios.RA_FORMAT) {
-				if (status == RawAudios.GEDAAN) availableRaNodes.addElement(raNode);
-			}
-		}
-
-		// Retrieve the best RA file if one was found else return nothing.
-		// NOTE: If only other formats were found (eg WAVS MP3 etc.) then do nothing and return.
-		if (availableRaNodes != null) {
-			// debug("doGetUrl: The availableRanodes Vector contains: "+availableRaNodes);
-			// Retrieve the best RawAudios node.
-			MMObjectNode bestNode = getBestRaNode(sp, command, availableRaNodes);
-			if (bestNode != null) {
-				int speed    = bestNode.getIntValue("speed");
-				int channels = bestNode.getIntValue("channels");
-				String protName = RawAudios.getProtocolName(RawAudios.RA_FORMAT);
-				String hostName = RawAudios.getHostName(bestNode.getStringValue("url"));
-				String fileName = RawAudios.getFileName(RawAudios.RA_FORMAT,speed,channels);
-				// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
-				String songInfo = getSongInfo(apNumber);
-				String startstopTimes = getStartStopTimes(apNumber);
-				// debug ("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
-				return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
-			} else {
-				debug("doGetUrl: There isn't any rawaudio available at this moment.");
-				return null;
-			}
-		} else {
-			debug("doGetUrl: There isn't any rawaudio available at this moment at all.");
-			return null;
-		}
-	}
-
-	/**
-	 * getBestRaNode: Retrieves the best RawAudios Node by using the command arguments given
-	 * OR by using the users' speed & channel settings from his SESSION VARS.
-	 *
-	 * @param sp The scanpage object used when retrieving the users' settings.
-	 * @param command A StringTokenizer object containing the rest of the $MOD cmd string.
-	 * @param availableRaNodes
-	 * @return A MMObjectNode containing the bestRaNode or null.
-	 */
-	MMObjectNode getBestRaNode(scanpage sp, StringTokenizer command, Vector availableRaNodes) {
-		int userSpeed    = 0;
-		int userChannels = 0;
-		int bestSpeed    = 0;
-		int bestChannels = 0;
-		int posOffset = Integer.MAX_VALUE;
-		int negOffset = Integer.MAX_VALUE;
-		Vector userSettings = null;
-
-		try {
-			// Retrieve speed & channels from either command args or users' SESSION VAR
-			if (command.hasMoreTokens()) {
-				// debug("getBestRaNode: Gettings speed & channels settings from the command args.");
-				String token = command.nextToken();
-				userSpeed    = Integer.parseInt(token);
-				token = command.nextToken();
-				userChannels = Integer.parseInt(token);
-			} else {
-				// debug("getBestRaNode: Gettings speed & channels settings from users' SESSION");
-				// Get the session module using "mmb" classfield from MMObjectBuilder from which AudioParts is extended.
-				sessionsInterface sessions = (sessionsInterface) mmb.getModule("SESSION");
-				sessionInfo session = sessions.getSession(sp,sp.sname);
-				userSpeed    = Integer.parseInt(sessions.getValue(session,"SETTING_RASPEED"));
-				userChannels = Integer.parseInt(sessions.getValue(session,"SETTING_RACHANNELS"));
-			}
-		} catch(Exception e) {
-			debug("getBestRaNode: "+e);
-			debug("getBestRaNode: Invalid userSpeed or userChannels, using closest starting from "+"s="+userSpeed+" c="+userChannels);
-			// Since the userspeed & channels aren't set they are still 0 , so the closest to 0 will be used.
-		}
-
-		// debug("getBestRaNode: userSpeed = "+userSpeed+" , userChannels = "+userChannels);
-
-		//Calculate speed offset to speed in availableRaNodes vector.
-		Enumeration e = availableRaNodes.elements();
-		while (e.hasMoreElements()) {
-			MMObjectNode node = (MMObjectNode) e.nextElement();
-			int nodeSpeed    = node.getIntValue("speed");
-			int nodeChannels = node.getIntValue("channels");
-			if (userSpeed >= nodeSpeed) {
-				if (posOffset > Math.abs(userSpeed - nodeSpeed)) posOffset = Math.abs(userSpeed - nodeSpeed);
-			} else {
-				if (negOffset > Math.abs(userSpeed - nodeSpeed)) negOffset = Math.abs(userSpeed - nodeSpeed);
-			}
-		}
-
-		// Calculate closest AKA best speed
-		if (posOffset < negOffset) {
-			// use lower closest RaNode
-			bestSpeed = userSpeed - posOffset;
-		} else {
-			// use higher closest RaNode
-			bestSpeed = userSpeed + negOffset;
-		}
-
-		// The 40 & 80Kbit streams can have 1 or 2 channels so test what the user wants.
-		if ((bestSpeed == 40000) || (bestSpeed == 80000)) {
-			if ((userChannels == 1) || (userChannels == 2))
-				bestChannels = userChannels;
-		}
-
-		// Select & return the bestNode.
-		e = availableRaNodes.elements();
-		while (e.hasMoreElements()) {
-			MMObjectNode node = (MMObjectNode) e.nextElement();
-			if (node.getIntValue("speed") == bestSpeed) {
-				// Check bestChannels if it isn't set again (thus still 0) then take first node and return.
-				if (bestChannels == 0) {
-					return node;
-				} else if (node.getIntValue("channels") == bestChannels) {
-					return node;
-				}
-			}
-		}
-
-		// We Only Get Here When A 40Kbit OR 80Kbit Stream is found but the Channel Number is != userChannels.
-		// Then we return the first 40Kbit OR 80Kbit Stream that is found!
-		if ((bestSpeed == 40000) || (bestSpeed == 80000)) {
-			debug("getBestRaNode: Requested a 40 or 80Kbit stream with channel setting != node channel, so I give you the one I do have.");
-			e = availableRaNodes.elements();
-			while (e.hasMoreElements()) {
-				MMObjectNode node = (MMObjectNode) e.nextElement();
-				if (node.getIntValue("speed") == bestSpeed) {
-					return node;
-				}
-			}
-		}
-
-		// Did Something went wrong?
-		debug("getBestRaNode: The're Aren't any available RaNodes or something went wrong.");
-		return null;
-	}
-
-	/**
-	 * getSongInfo: Gets the song info for this audiopart number.
-	 * @param apNumber An integer which is either an audiopart number number.
-	 * @return The song info in a RealFormat compliant String.
-	 */
-	String getSongInfo(int apNumber) {
-		String title  = null; // Set title and author string to init value null.
-		String author = null;
-
-		// Get the title info by retrieving the node for this number (which is either an audiopart ).
-		MMObjectNode node = getNode(apNumber); // check this
-		if (node != null) {
-			title = makeRealCompatible(node.getStringValue("title"));
-			if (title == null)
-				title="";
-		} else {
-			debug("getSongInfo: ERROR: Cannot get node for audiopart number = "+apNumber);
-		}
-
-		// Get the author info by finding the related groups node.
-		Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),"groups");
-		if (e.hasMoreElements()) {
-			MMObjectNode groupsNode = (MMObjectNode) e.nextElement();
-			author = makeRealCompatible(groupsNode.getStringValue("name"));
-		}
-		if (author == null)
-			author="";
-
-		// String songinfo = "?title=\""+title+"\"&author=\""+author+"\"";
-		// NOTE: SMIL has problems with double quotes inside <audio src=""/> tags so double quotes are removed.
-		// NOTE: No "&" characters are allowed inside a title or author field.
-		String songinfo = "?title="+title+"&author="+author;
-
-		// debug("getSongInfo: Returning String: "+"\""+songinfo+"\"");
-		return songinfo;
-	}
-
-	/**
-	 * getStartStopTimes: Get the start & stop times for this AudioPart if any were applied.
-	 * using the RealFormat "?start=starttime&end=endtime"
-	 * @param apNumber An integer containing the AudioPart number.
-	 * @return The start&stoptimes in a RealFormat compliant String.
-	 */
-	String getStartStopTimes(int apNumber) {
-		String starttime = null;
-		String stoptime  = null;
-		String startstoptimes = "";
-
-		MMObjectNode nodestartstop = getNode(apNumber); // check this
-		if (nodestartstop != null) {
-
-			// Get related propnodes having fields starttime & stoptime to find out the start&stop times.
-			MMObjectNode sStartprop = (MMObjectNode) nodestartstop.getProperty("starttime");
-			if (sStartprop != null) {
-				String sStartvalue = sStartprop.getStringValue("value");
-				starttime = sStartvalue;
-			}
-			MMObjectNode sStopprop = (MMObjectNode) nodestartstop.getProperty("stoptime");
-			if (sStopprop != null) {
-				String sStopvalue = sStopprop.getStringValue("value");
-				stoptime = sStopvalue;
-			}
-		} else {
-			debug("getStartStopTimes: ERROR: Cannot get node for audiopart number = "+apNumber);
-		}
-		// debug("getStartStopTimes: starttime = "+starttime+" , stoptime = "+stoptime);
-
-		// NOTE: SMIL has problems with double quotes inside <audio src=""/> tags so double quotes are removed.
-		if (starttime != null) startstoptimes += "&start="+starttime;
-		if (stoptime  != null) startstoptimes += "&end="+stoptime;
-
-		// if ( (starttime != null) || (stoptime != null) ) debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
-		return startstoptimes;
-	}
-
-	/*
-		------------------------------------------------------------
-	*/
-
-
-
-
-	public String getAudiopartUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
-	{
-        	return AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
-	}
-
 
 	/*
 		Time stuff should be in util class
@@ -880,32 +500,47 @@ public class AudioParts extends MMObjectBuilder {
 		}
 	}
 
+	
+	/**
+	 * Calls the get url method for audioparts.
+	 * @param sp the scanpage
+	 * @param number the videopart object number
+	 * @param speed the user speed value
+	 * @param channels the user channels value
+	 * @return a String with url to a videopart.
+	 */
+	public String doGetUrl(scanpage sp,int number,int userSpeed,int userChannels){
+		return getAudiopartUrl(mmb,sp,number,userSpeed,userChannels);
+	}
+	
+	/**
+	 * Gets the url for a audiopart using the mediautil classes.
+	 * @param mmbase mmbase reference
+	 * @param sp the scanpage
+	 * @param number the videopart object number
+	 * @param speed the user speed value
+	 * @param channels the user channels value
+	 * @return a String with url to a videopart.
+	 */
+	public String getAudiopartUrl(MMBase mmbase,scanpage sp,int number,int speed,int channels){
+        return AudioUtils.getAudioUrl(mmbase,sp,number,speed,channels);
+	}
 
-   /**
-     * Removes RealPlayer incompatible characters from the string.
-     * '#' characters are replaced by space characters.
-     * Characters that are allowed are every letter or digit and '.', '-' and '_' chars.
-     * @param s the String that needs to be fixed.
-     * @return a Nedstat compatible String.
-     */
-    private String makeRealCompatible(String s) {
-        if (s != null) {
-            char[] sArray = s.replace('#',' ').toCharArray();
-            char[] dArray = new char[sArray.length];
+	/**
+	 * Gets minimal speed setting from audioutils
+	 * @return minimal speed setting
+	 */
+	public int getMinSpeed() {
+		return RawAudioDef.MINSPEED;
+	}
+	/**
+	 * Gets minimal channel setting from audioutil
+	 * @return minimal channel setting
+	 */
+	public int getMinChannels() {
+		return RawAudioDef.MINCHANNELS;
+	}
 
-            int j = 0;
-            for (int i=0;i<sArray.length;i++) {
-                if (Character.isLetterOrDigit(sArray[i]) ||(sArray[i]==' ')||(sArray[i]=='.')||(sArray[i]=='-')||(sArray[i]=='_')) {
-                    dArray[j] = sArray[i];
-                    j++;
-                }
-            }
-            //Only use the characters until the first character with value=0. This is from index 0 to j-1.
-            return (new String(dArray)).substring(0,j);
-        } else {
-            return null;
-        }
-    }
 
 	/*
 		Test
