@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
 <storage>
+	<!-- MySQLdb configuration resource. -->
 
 	<storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
 
+	<!-- use the manager for relational databases -->
 	<storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
 
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.MySqlSqlHandler" />
 
 	<attributes>
-	 <!-- uncomment to automatically prefix reserved words with "m_"
-		<attribute name="defaultStorageIdentifierPrefix">m</attribute>
-	 -->
-
+	  <!-- MySQL does not default support transactions, but it's Metadata object claims that it does
+		     So set support to false. 
+		-->
+		
 		<option name="database-supports-transactions" value="false" />
-		<option name="database-supports-blob" value="false" />
-		<option name="database-supports-composite-index" value="false" />
 
+	  <!-- Explictly encode text when storing it in the database	-->
+		<option name="database-force-encode-text" />
+		
+	  <!-- Use Blobs	-->
+		<option name="database-supports-blob" />
+		
+	  <!-- Older versions of teh MySQL support layer sis not support composite indices,
+		     so for backward compatibility, we turn this off.
+		-->
+		<option name="database-supports-composite-index" value="false" />
 	</attributes>
 
+	<!-- MySQL type mappings 	-->
 	<type-mappings>
 		<type-mapping name="DOUBLE" type="double" />
 		<type-mapping name="LONG" type="bigint" />
@@ -35,6 +46,7 @@
 		<type-mapping name="BYTE" min-size="65536" max-size="16777216" type="mediumblob" />
 	</type-mappings>
 
+	<!-- MySQL disallowed fields (copied from the old configurations) 	-->
 	<disallowed-fields>
 		<disallowed-field name="parent" replacement="m_parent"/>
 		<disallowed-field name="type" replacement="m_type"/>

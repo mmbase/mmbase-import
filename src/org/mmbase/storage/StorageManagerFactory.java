@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.1 2003-08-21 09:59:28 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.2 2003-08-22 12:34:47 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -189,6 +189,19 @@ public abstract class StorageManagerFactory {
         setAttributes(reader.getAttributes());
         // get disallowed fields, and add these to the default list
         disallowedFields.putAll(reader.getDisallowedFields());
+        
+        // add default replacements when DEFAULT_STORAGE_IDENTIFIER_PREFIX is given
+        String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
+        if (prefix !=null) {
+            for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
+                Map.Entry e = (Map.Entry)i.next();
+                String name = (String) e.getKey();
+                String replacement = (String) e.getValue();
+                if (replacement == null ) {
+                    e.setValue(prefix + "_" + name);
+                }
+            }
+        }
 
         // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
@@ -196,6 +209,7 @@ public abstract class StorageManagerFactory {
 
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
+        // need to move this to DatabaseStorageManagerFactory
         configuredClass = reader.getSearchQueryHandlerClass();
         if (configuredClass != null) {
             queryHandlerClass = configuredClass;
@@ -362,6 +376,7 @@ public abstract class StorageManagerFactory {
     public Scheme getScheme(Object key, String defaultPattern) {
         Scheme scheme = getScheme(key);
         if (scheme == null) {
+            if (attributes.containsKey(key)) return null;
             scheme = new Scheme(this,defaultPattern);
             setAttribute(key,scheme);
         }
@@ -376,7 +391,11 @@ public abstract class StorageManagerFactory {
      * @param pattern the pattern to use for the scheme
      */
     public void setScheme(Object key, String pattern) {
-        setAttribute(key,new Scheme(this,pattern));
+        if (pattern == null || pattern.equals("")) {
+            setAttribute(key,null);
+        } else {
+            setAttribute(key,new Scheme(this,pattern));
+        }
     }
 
     /**
@@ -473,13 +492,8 @@ public abstract class StorageManagerFactory {
             if (disallowedFields.containsKey(key)) {
                 String newid = (String)disallowedFields.get(key);
                 if (newid == null) {
-                    String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
-                    if (prefix != null) {
-                        id = prefix+"_"+id; 
-                    } else {
-                        if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
-                            throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
-                        }
+                    if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
+                        throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
                     }
                 } else {
                     id = newid;
