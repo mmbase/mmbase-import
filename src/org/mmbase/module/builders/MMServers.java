@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author  $Author: daniel $
- * @version $Id: MMServers.java,v 1.21 2004-01-28 23:44:06 daniel Exp $
+ * @version $Id: MMServers.java,v 1.22 2004-01-28 23:46:00 daniel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -172,7 +172,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             boolean imoke=false;
   	    String machineName=mmb.getMachineName();
       	    host=mmb.getHost();
-            log.info("doCheckUp(): machine="+machineName);
+            log.debug("doCheckUp(): machine="+machineName);
             Enumeration e=search("");
             while (e.hasMoreElements()) {
                 MMObjectNode node=(MMObjectNode)e.nextElement();
