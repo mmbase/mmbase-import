@@ -12,6 +12,7 @@ package org.mmbase.module.core;
 import java.util.*;
 import java.sql.*;
 
+import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.gui.html.*;
@@ -242,6 +243,19 @@ public class MMObjectNode {
 
         setUpdate(fieldname);
         return true;
+    }
+
+    /**
+     * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
+     * Note that if this node is a node in cache, the changes are immediately visible to
+     * everyone, even if the changes are not committed.
+     * The fieldname is added to the (public) 'changed' vector to track changes.
+     * @param fieldname the name of the field to change
+     * @param fieldValue the value to assign
+     * @return always <code>true</code>
+     */
+    public boolean setValue(String fieldname,boolean fieldvalue) {
+        return setValue(fieldname,new Boolean(fieldvalue));
     }
 
     /**
@@ -518,14 +532,18 @@ public class MMObjectNode {
     /**
      * Get a value of a certain field.
      * The value is returned as an int value. Values of non-int, numeric fields are converted if possible.
-     * Non-numeric fields return -1.
+     * Booelan fields return 0 for false, 1 for true.
+     * String fields are parsed to a number, if possible.
+     * All remaining field values return -1.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as an <code>int</code>
      */
     public int getIntValue(String fieldname) {
         Object i=getValue(fieldname);
         int res=-1;
-        if (i instanceof Number) {
+        if (i instanceof Boolean) {
+            res=((Boolean)i).booleanValue() ? 1 : 0;
+        } else if (i instanceof Number) {
             res=((Number)i).intValue();
         } else if (i!=null) {
             try {
@@ -535,18 +553,64 @@ public class MMObjectNode {
         return res;
     }
 
+    /**
+     * Get a value of a certain field.
+     * The value is returned as an boolean value.
+     * If the actual value is numeric, this call returns <code>true</code>
+     * if the value is a positive, non-zero, value. In other words, values '0'
+     * and '-1' are concidered <code>false</code>.
+     * If the value is a string, this call returns <code>true</code> if
+     * the value is "true" or "yes" (case-insensitive).
+     * In all other cases (including calling byte fields), <code>false</code>
+     * is returned.
+     * Note that there is currently no basic MMBase boolean type, but some
+     * <code>excecuteFunction</code> calls may return a Boolean result.
+     *
+     * @param fieldname the name of the field who's data to return
+     * @return the field's value as an <code>int</code>
+     */
+    public boolean getBooleanValue(String fieldname) {
+        Object b=getValue(fieldname);
+        boolean res=false;
+        if (b instanceof Boolean) {
+            res=((Boolean)b).booleanValue();
+        } else if (b instanceof Number) {
+            res=((Number)b).intValue()>0;
+        } else if (b instanceof String) {
+            // note: we don't use Boolean.valueOf() because that only captures
+            // the value "true"
+            res= ((String)b).equalsIgnoreCase("true") ||
+                 ((String)b).equalsIgnoreCase("yes");
+            // Call MMLanguage, and compare to
+            // the 'localized' values of true or yes.
+            if ((!res) && (parent!=null)) {
+                MMLanguage languages = (MMLanguage)Module.getModule("mmlanguage");
+                if (languages!=null) {
+                    res= ((String)b).equalsIgnoreCase(
+                                languages.getFromCoreEnglish("true")) ||
+                         ((String)b).equalsIgnoreCase(
+                                languages.getFromCoreEnglish("yes"));
+                }
+            }
+        }
+        return res;
+    }
 
     /**
      * Get a value of a certain field.
      * The value is returned as an Integer value. Values of non-Integer, numeric fields are converted if possible.
-     * Non-numeric fields return -1.
+     * Booelan fields return 0 for false, 1 for true.
+     * String fields are parsed to a number, if possible.
+     * All remaining field values return -1.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as an <code>Integer</code>
      */
     public Integer getIntegerValue(String fieldname) {
         Object i=getValue(fieldname);
         int res=-1;
-        if (i instanceof Number) {
+        if (i instanceof Boolean) {
+            res=((Boolean)i).booleanValue() ? 1 : 0;
+        } else if (i instanceof Number) {
             res=((Number)i).intValue();
         } else if (i!=null) {
             try {
@@ -559,14 +623,18 @@ public class MMObjectNode {
     /**
      * Get a value of a certain field.
      * The value is returned as a long value. Values of non-long, numeric fields are converted if possible.
-     * Non-numeric fields return -1.
+     * Booelan fields return 0 for false, 1 for true.
+     * String fields are parsed to a number, if possible.
+     * All remaining field values return -1.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as a <code>long</code>
      */
     public long getLongValue(String fieldname) {
         Object i=getValue(fieldname);
         long res =-1;
-        if (i instanceof Number) {
+        if (i instanceof Boolean) {
+            res=((Boolean)i).booleanValue() ? 1 : 0;
+        } else if (i instanceof Number) {
             res=((Number)i).longValue();
         } else if (i!=null) {
             try {
@@ -580,17 +648,20 @@ public class MMObjectNode {
     /**
      * Get a value of a certain field.
      * The value is returned as a float value. Values of non-float, numeric fields are converted if possible.
-     * Non-numeric fields return -1.
+     * Booelan fields return 0 for false, 1 for true.
+     * String fields are parsed to a number, if possible.
+     * All remaining field values return -1.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as a <code>float</code>
      */
     public float getFloatValue(String fieldname) {
         Object i=getValue(fieldname);
         float res =-1;
-        if (i instanceof Number) {
+        if (i instanceof Boolean) {
+            res=((Boolean)i).booleanValue() ? 1 : 0;
+        } else if (i instanceof Number) {
             res=((Number)i).floatValue();
         } else if (i!=null) {
-
             try {
               res=Float.parseFloat(""+i);
             } catch (NumberFormatException e) {}
@@ -602,14 +673,18 @@ public class MMObjectNode {
     /**
      * Get a value of a certain field.
      * The value is returned as a double value. Values of non-double, numeric fields are converted if possible.
-     * Non-numeric fields return -1.
+     * Booelan fields return 0 for false, 1 for true.
+     * String fields are parsed to a number, if possible.
+     * All remaining field values return -1.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as a <code>double</code>
      */
     public double getDoubleValue(String fieldname) {
         Object i=getValue(fieldname);
         double res =-1;
-        if (i instanceof Number) {
+        if (i instanceof Boolean) {
+            res=((Boolean)i).booleanValue() ? 1 : 0;
+        } else if (i instanceof Number) {
             res=((Number)i).doubleValue();
         } else if (i!=null) {
             try {
