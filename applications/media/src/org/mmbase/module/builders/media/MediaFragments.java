@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.26 2003-01-22 22:17:14 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.27 2003-01-28 12:51:26 rob Exp $
  * @since MMBase-1.7
  */
 
@@ -417,10 +417,9 @@ public class MediaFragments extends MMObjectBuilder {
 
 
     // --------------------------------------------------------------------------------
-    // 
+    // These methods are added to be backwards compatible. 
 
         
-    // deprecated, for downwards compatability
     private Map               classification     = null;
 
      /**
@@ -451,4 +450,44 @@ public class MediaFragments extends MMObjectBuilder {
          return;
      }
      
+    /**
+     * Replace all for frontend code
+     * Replace commands available are GETURL (gets mediafile url for an objectnumber),
+     * @param sp the scanpage
+     * @param command the stringtokenizer reference with the replace command.
+     * @return the result value of the replace command or null.
+     */
+    public String replace(scanpage sp,StringTokenizer command) {
+        if (command.hasMoreTokens()) {
+            String token=command.nextToken();
+
+	    log.debug("scan - "+token);
+            if (token.equals("GETURL")) {
+                Integer number=null, userSpeed=null, userChannels=null;
+                if (command.hasMoreTokens()) number=new Integer(command.nextToken());
+                if (command.hasMoreTokens()) userSpeed=new Integer(command.nextToken());
+                if (command.hasMoreTokens()) userChannels=new Integer(command.nextToken());
+                if (number!=null) {
+			MMObjectNode media = getNode(number.intValue());
+			Map info = new HashMap();
+			if(userSpeed!=null) {
+				info.put("speed",""+userSpeed);
+			}
+			if(userChannels!=null) {
+				info.put("channels",""+userChannels);
+			}
+                    String url = getURL(media, info);
+		    log.debug("resolving url = "+url);
+                    return url;
+                } else {
+			log.error("No mediafragment specified"); 
+                    return null;
+                }
+            } 
+	    log.error("only command GETURL is supported");
+	    return "only command GETURL is supported";
+        }
+        log.error("No commands defined.");
+        return "No commands defined.";
+    }
 }
