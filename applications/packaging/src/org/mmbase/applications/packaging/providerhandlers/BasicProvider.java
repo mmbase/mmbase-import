@@ -12,6 +12,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.installhandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 
@@ -32,6 +33,8 @@ public class BasicProvider implements ProviderInterface {
     private static Logger log = Logging.getLoggerInstance(BasicProvider.class);
 
     private long lastupdate;
+  
+    private installStep step;
 
     String name;
     String method;
@@ -292,6 +295,14 @@ public class BasicProvider implements ProviderInterface {
     public boolean publish(PackageInterface bundle,String sharepassword) {
 	log.error("Publish (package) call not supported in this provider type : "+getName());
 	return false;
+    }
+
+    public void setInstallStep(installStep step) {
+	this.step = step;
+    }    
+
+    public installStep getInstallStep() {
+	return step; 
     }
 
 }

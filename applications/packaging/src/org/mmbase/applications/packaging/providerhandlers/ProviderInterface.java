@@ -11,6 +11,7 @@ import java.io.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
+import org.mmbase.applications.packaging.installhandlers.*;
 
 /**
  * Interface for all the provider handlers
@@ -82,6 +83,13 @@ public interface ProviderInterface {
      * @param  path  The new path value
      */
     public void setPath(String path);
+
+    /**
+     *  Sets the installStep attribute of the ProviderInterface object
+     *
+     * @param  step  The installstep
+     */
+    public void setInstallStep(installStep step);
 
 
     /**
