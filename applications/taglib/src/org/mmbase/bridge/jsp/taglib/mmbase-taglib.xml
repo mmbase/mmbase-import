@@ -788,6 +788,17 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>    
+    <attribute>
+        <name>deleterelations</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <possiblevalue>
+           <value>true</value>
+        </possiblevalue>
+        <possiblevalue>
+           <value>false</value>
+        </possiblevalue>
+    </attribute>    
   </tag>
   <tag>
     <name>fieldlist</name>
@@ -848,6 +859,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <info>A form entry for the field. This can only be used if the
         FieldList was in a NodeProvider tag. If the FieldList has an
         id, the names of the form entries will be prefixed with it.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>value</value>         
+        <info>The value of this field. Can only be used if in a NodeProviderTag.
         </info>
       </possiblevalue>
     </attribute>

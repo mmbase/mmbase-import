@@ -64,7 +64,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             fieldClass = Class.forName("org.mmbase.bridge.jsp.taglib.FieldListTag");
 
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find FieldTag class");  
+            throw new JspTagException ("Could not find FieldListTag class");  
         }
 
         FieldListTag fieldTag = (FieldListTag) findAncestorWithClass((Tag)this, fieldClass); 
@@ -86,6 +86,9 @@ public class FieldInfoTag extends NodeReferrerTag {
             show = field.getName();
         } else if ("guiname".equals(name)) {
             show = field.getGUIName();
+        } else if ("value".equals(name)) {
+            Node node = fieldTag.findNodeProvider().getNodeVar();
+            show = node.getStringValue(field.getName());
         } else if ("input".equals(name)) {
             // not yet complete...
             Node node = fieldTag.findNodeProvider().getNodeVar();
@@ -113,6 +116,10 @@ public class FieldInfoTag extends NodeReferrerTag {
                                          "value=\"" + node.getStringValue(field.getName()) + "\" />";
                 break;
             }
+        } else if ("useinput".equals(name)) {
+            
+        } else {
+            throw new JspTagException("Unknown value for name  attribute " + name);
         }
                
         try {         
