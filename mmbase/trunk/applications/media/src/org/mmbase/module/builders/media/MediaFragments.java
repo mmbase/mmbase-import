@@ -17,7 +17,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import javax.servlet.http.*;
 
-
 /**
  * The MediaFragment object specifies a piece of media. This can be audio, or video.
  * A mediafragment contains a title, description of the media and also information about
@@ -46,22 +45,30 @@ public class MediaFragments extends MMObjectBuilder {
     
     // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
-      
+    
     // This filter is able to find the best mediasource by a mediafragment.
     private MediaSourceFilter mediaSourceFilter = null;
     
     // The media source builder
     private MediaSources mediaSourceBuilder = null;
     
+    // Is the mediafragment builders already init ?
+    private static boolean initDone=false;
+    
+    // depricated, for downwards compatability
+    private static Hashtable classification = null;
+    
     public MediaFragments() {
     }
     
     public boolean init() {
+        if(initDone) return super.init();
+        initDone=true;
+        
         boolean result = super.init();
-        
-        
+               
         // Retrieve a reference to the MediaSource builder
-               mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
+        mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
         if(mediaSourceBuilder==null) {
             log.error("Builder mediasources is not loaded.");
         } else {
@@ -70,7 +77,37 @@ public class MediaFragments extends MMObjectBuilder {
         
         mediaSourceFilter = new MediaSourceFilter(this, mediaSourceBuilder);
         
+        // depricated for downwards compatibility
+        retrieveClassificationInfo();
+        
         return result;
+    }
+    
+    /**
+     * For downloads compatibility reasons, the first version of the mediafragment builder
+     * will contain the classification field. This field will contain numbers that are 
+     * resolved using the lookup builder. This construction, using classification in 
+     * mediafragment, was used for speeding up listings. 
+     */
+    private void retrieveClassificationInfo() {
+        
+        MMObjectBuilder lookup = (MMObjectBuilder) mmb.getMMObject("lookup");
+        if(lookup==null) {
+            log.debug("Downwards compatible classification code not used.");
+            return;
+        }
+        log.debug("Using downwards compatible classification code.");
+        classification =  new Hashtable();
+        MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
+        Vector nodes = fn.getRelatedNodes("lookup");
+        for (Enumeration e = nodes.elements();e.hasMoreElements();) {
+            MMObjectNode node = (MMObjectNode)e.nextElement();
+            String index = node.getStringValue("index");
+            String value = node.getStringValue("value");
+            log.debug("classification uses: "+index+" -> "+value);
+            classification.put(index,value);
+        }
+        return;
     }
     
     /**
@@ -186,11 +223,11 @@ public class MediaFragments extends MMObjectBuilder {
      * used by the editors
      */
     public String getGUIIndicator(String field,MMObjectNode node) {
-        return "not implemented (11)";
+        return node.getStringValue(field);
     }
     
-   
-           
+    
+    
     /**
      * add rawmedia object
      */
@@ -205,7 +242,7 @@ public class MediaFragments extends MMObjectBuilder {
         bul.insert("system",node);
     }
      */
-        
+    
     /**
      * Removes related media sources.
      * @param number objectnumber of the media fragment.
@@ -310,5 +347,5 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
         }
         return true;
-    } 
+    }
 }
