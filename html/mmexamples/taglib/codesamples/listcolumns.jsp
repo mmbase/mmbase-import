@@ -10,7 +10,7 @@
       </mm:index>
       <mm:last>
         <mm:index jspvar="i">
-            <td colspan="<%= cols - i.intValue() / cols%>" />
+            <td colspan="<%= cols - i.intValue() % cols%>" />
         </mm:index>        
       </mm:last>     
     </mm:listnodes>

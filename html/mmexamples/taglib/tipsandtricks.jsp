@@ -12,9 +12,9 @@
 <h1>Tips and Tricks</h1>
 
 <ul>
-  <li><a name="iterate" /><em>How can divide my list result in columns?</em>
+  <li><a name="listcolumn" /><em>How can I divide my list result in columns?</em>
      <p>
-       You need some simple escaping to jsp and some basic aritmetic
+       You need some simple escaping to jsp and some basic arithmetic
        for this.
      </p>
      <table>
