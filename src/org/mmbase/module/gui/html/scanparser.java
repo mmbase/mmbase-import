@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.43 2001-03-12 11:53:41 pierre Exp $
+$Id: scanparser.java,v 1.44 2001-03-29 22:41:10 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.43  2001/03/12 11:53:41  pierre
+pierre: removed nonsensical debug code
+
 Revision 1.42  2001/03/08 18:43:23  michiel
 added logging
 
@@ -132,6 +135,7 @@ import java.lang.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import java.util.zip.*;
 //import javax.servlet.*;
 //import javax.servlet.http.*;
 
@@ -151,7 +155,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.43 $ $Date: 2001-03-12 11:53:41 $
+ * @$Revision: 1.44 $ $Date: 2001-03-29 22:41:10 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -159,7 +163,7 @@ public class scanparser extends ProcessorModule {
 	
 	private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
 
-	public static scancacheInterface scancache=null;
+    public static scancacheInterface scancache=null;
     private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
     private static idInterface id=null;
@@ -167,6 +171,8 @@ public class scanparser extends ProcessorModule {
 	private static TransactionHandler transactionhandler;
     private static Hashtable processors = new Hashtable();
     private static boolean debug=false;
+    private static RandomPlus rnd;
+    private static int crcseed;
 
 	private CounterInterface counter = null;
 
@@ -211,6 +217,8 @@ public class scanparser extends ProcessorModule {
 		mmbase=(MMBase)getModule("MMBASEROOT");
 		transactionhandler=(TransactionHandler)getModule("TRANSACTIONHANDLER");
         // org.mmbase stats=(StatisticsInterface)getModule("STATS");
+	rnd=new RandomPlus();
+	crcseed=rnd.nextInt();
     }
 
 	public String doPrePart(String template, int last, int rpos, int numitems,int epos) {
@@ -493,6 +501,10 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(body,"<SAVE ",'>',18,session,sp);
 		body=part; 
 
+		// <CRC HREF=", make it possible to save  
+		part=finddocmd(body,"<CRC HREF=",'>',23,session,sp);
+		body=part; 
+
 		// <TRANSACTION text1> text2 </TRANSACTION>
 		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
 		newbody=new StringBuffer();
@@ -686,6 +698,9 @@ public class scanparser extends ProcessorModule {
 							return partbody;
 						};
 						newbody.append(partbody);
+						break;
+					case 23: // '<CRC CHECK'
+						newbody.append(do_crc(session,body.substring(prepostcmd,postcmd)));
 						break;
 					default: 
 						log.fatal("Woops broken case in method finddocmd");
@@ -1238,6 +1253,12 @@ public class scanparser extends ProcessorModule {
         return("");
     }
 
+    private final String do_crc(sessionInfo session,String part) {
+	part=part.substring(1,part.length()-2);
+
+    	int crckey=calccrc32(part);
+        return("<A HREF=\""+part+"+CRC"+crckey+"\">");
+    }
 
     private final String do_session(String part2,sessionInfo session) {
         if (sessions!=null) {
@@ -1347,7 +1368,10 @@ public class scanparser extends ProcessorModule {
 		part2=part.substring(pnt+1);
 		part1=part.substring(0,pnt);
 		if (part1.indexOf("SESSION-")==0) {
-			if (sessions!=null) sessions.setValue(session,part1.substring(8),part2);
+			if (sessions!=null) {
+				// do some sec. checks
+				sessions.setValue(session,part1.substring(8),part2);
+			}
 		} else if (part1.indexOf("ID-")==0) {
 			String name=HttpAuth.getRemoteUser(sp);
 			if (name!=null && name.length()>1) {
@@ -2176,4 +2200,15 @@ public class scanparser extends ProcessorModule {
 		transactionhandler.handleTransaction(template,session,sp);
 		return "";	
 	}
+
+
+    public static int calccrc32(String str) {
+        CRC32 crc=new CRC32();
+	str=""+crcseed+str+crcseed;
+        byte dst[]=new byte[str.length()];
+
+        str.getBytes(0,str.length(),dst,0);
+        crc.update(dst);
+        return((int)crc.getValue());
+    }
 }
