@@ -5,8 +5,10 @@
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<link rel="stylesheet" href="my_editors.css" type="text/css" />
 	<title>my_editors - <%= title %></title>
+	<link rel="stylesheet" href="my_editors.css" type="text/css" />
+	<link href="img/favicon.ico" rel="icon" type="image/x-icon">
+	<link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
 </head>
 <body bgcolor="#FFFFFF">
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 50px; margin-bottom: 50px;" align="center">

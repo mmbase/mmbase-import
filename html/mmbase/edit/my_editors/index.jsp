@@ -9,27 +9,37 @@
 <tr>
 <td valign="top" width="20%">
 <!-- Choose a node type -->
-<table width="230" border="0" cellspacing="0" cellpadding="3">
+<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">
+<tr bgcolor="#CCCCCC">
+  <td colspan="3" align="center"> List of <b><mm:write referid="conf_list" /></b> node types (<a href="config.jsp">configure</a>)</td> 
+</tr>
 <% // Choose a node type
 String guiName = "";
 NodeManagerList l = wolk.getNodeManagers();
 java.util.Collections.sort(l);
+int j = 0;
 for (int i = 0; i < l.size(); i++) {
 	NodeManager nm = l.getNodeManager(i);
 	guiName = nm.getGUIName();
-%>
-	<tr>
+ 	if (nm.mayCreateNode() && !nm.hasField("dnumber") || conf_list.equals("all")) { // Are we allowed to create?
+ 	j++;
+ 	%>
+	<tr<%if (j % 2 == 0) { %> bgcolor="#FFFFFF"<% } %>>
 	  <td align="right"><b><%= nm.getName() %></b> </td>
 	  <td><a href="index.jsp?ntype=<%= nm.getName() %>" title="show nodes"><%= guiName %></a></td>
-	  <td nowrap="nowrap">
-	    <a href="index.jsp?ntype=<%= nm.getName() %>" title="show recent nodes"><img src="img/mmbase-search.gif" alt="show recent nodes" width="21" height="20" border="0" /></a>
-	    <a href="new_object.jsp?ntype=<%= nm.getName() %>" title="new node"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
+	  <td nowrap="nowrap"> 
+	  	<a href="index.jsp?ntype=<%= nm.getName() %>" title="show recent nodes"><img src="img/mmbase-search.gif" alt="show recent nodes" width="21" height="20" border="0" /></a>
+	    <% if (nm.mayCreateNode()) { %><a href="new_object.jsp?ntype=<%= nm.getName() %>" title="new node"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a><% } %>
 	  </td>
 	</tr>
-<% } %>
-<tr>
-  <td colspan="3" align="center" valign="bottom"> 
+	<%
+	}
+} 
+%>
+</table>
+<!-- /nodetypes -->
 <!-- table about icons -->
+<div align="center">
 <table border="0" cellpadding="0" cellspacing="0">
   <tr align="left">
     <td colspan="2">&nbsp;</td>
@@ -72,12 +82,8 @@ for (int i = 0; i < l.size(); i++) {
     <td colspan="5" bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
   </tr>
 </table>
-<!-- end about the icons -->
-
-  </td>
-</tr>
-</table>
-<!-- Einde nodetypes -->
+</div>
+<!-- /about the icons -->
 </td>
 <td valign="top" width="80%">
 

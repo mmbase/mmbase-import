@@ -32,9 +32,6 @@ String node_gui = "";
 	</table>
 	<!-- end table back button -->
 
-  	
-
-
   </td>
   <td valign="top" width="80%">
 
@@ -63,11 +60,12 @@ String node_gui = "";
 			int nr_rel = Integer.parseInt(nr_rels);
 			if (nr_rel > 0) { 
 			%>
-				<p class="message">This node has <%= nr_rel %> relation(s) with other node(s).<br />
-				<input type="submit" name="delete" value="Delete_with_relations" /></p>
+				<mm:maydelete><p class="message">This node has <%= nr_rel %> relation(s) with other node(s).<br />
+				<input type="submit" name="delete" value="Delete_with_relations" /></p></mm:maydelete>
 			<% } else { %>
-				<input type="submit" name="delete" value="Delete" />
+				<mm:maydelete><p class="message"><input type="submit" name="delete" value="Delete" /></p></mm:maydelete>
 			<% } %>
+				<mm:maydelete inverse="true"><p class="message">You are not allowed to delete this node.</p></mm:maydelete>
 		  </td>
 		</tr>
 		</table>
@@ -78,16 +76,16 @@ String node_gui = "";
 
 	<%-- Delete the node --%>
 	<mm:present referid="delete">
-		<mm:deletenode number="<%= nr %>" deleterelations="true" />
-		<p>&nbsp;</p>
+		<mm:node number="$nr"><mm:maydelete><mm:deletenode number="$nr" deleterelations="true" /></mm:maydelete></mm:node>
 		<table border="0" cellspacing="0" cellpadding="4" class="table-form">
 		<tr>
 		  <td bgcolor="#CCCCCC" align="right" nowrap>
 		    <a href="new_object.jsp?ntype=<%= node_type %>" title="a new node of this type"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
 		  </td>
-		  <td bgcolor="#CCCCCC" class="title-m"><b><%= node_gui %></b> (<%= node_type %>) is deleted</td>
+		  <td bgcolor="#CCCCCC" class="title-s">Node deleted!</td>
 		<tr>
-		  <td colspan="2">
+		  <td>&nbsp;</td>
+		  <td>
 		  	<p class="message">The node of type <b><%= node_gui %></b> (<%= node_type %>) is deleted.<br />
 		  	<a href="index.jsp?ntype=<%= node_type %>" title="back to the overview of <%= node_type %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0" /></a>
 		  	Back to the <a href="index.jsp?ntype=<%= node_type %>">overview of <%= node_type %></a>.</p>
