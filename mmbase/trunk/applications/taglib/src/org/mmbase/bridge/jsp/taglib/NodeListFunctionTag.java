@@ -31,14 +31,14 @@ import javax.servlet.http.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListNodesFunctionTag.java,v 1.1 2004-01-14 22:08:45 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.1 2004-01-15 14:45:52 michiel Exp $
  */
-public class ListNodesFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
+public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
     //cannot extend AbstractNodeList because we extend AbstractFunctionTag alreeady. Sigh, stupid java.
     //even proxies are no option because I do not instantiate nor call these tag objects.
     //therefore, all this stuff with helpers.
 
-    private static final Logger log = Logging.getLoggerInstance(ListNodesFunctionTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeListFunctionTag.class);
 
 
     private NodeProviderHelper nodeHelper = new NodeProviderHelper(this);

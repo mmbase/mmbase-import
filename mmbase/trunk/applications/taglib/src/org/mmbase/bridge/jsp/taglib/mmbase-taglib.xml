@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.231 2004-01-14 22:08:30 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.232 2004-01-15 14:45:53 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1810,7 +1810,7 @@ access the value of title:
     <see tag="booleanfunction" />
     <see tag="function" />
     <see tag="functioncontainer" />
-    <see tag="listnodesfunction" />
+    <see tag="nodelistfunction" />
     <attribute>
       <name>comparator</name>
       <required>false</required>
@@ -1820,14 +1820,14 @@ access the value of title:
   </tag>
 
   <tag>
-    <name>listnodesfunction</name>
+    <name>nodelistfunction</name>
     <extends>listprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <extends>functiontag</extends>
     <extends>nodeprovider</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesFunctionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.NodeListFunctionTag</tagclass>
     <info>
       Gets the function value of function `name' from surrounding nodeprovider.  The function value
       is supposed to be NodeList, and this tags acts as a 'listprovider' tag and 'nodeprovider'.
