@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 /*
-$Id: MMMckoiNode.java,v 1.1 2001-10-02 14:19:23 vpro Exp $
+$Id: MMMckoiNode.java,v 1.2 2001-10-03 10:29:03 vpro Exp $
 
 MMBase database driver for the Open Source Java Database from 
 http://www.mckoi.com/database
@@ -21,6 +21,9 @@ Author: original author of the sql92 driver,
  adjusted by Marcel Maatkamp, VPRO Digitaal (marmaa@vpro.nl)
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2001/10/02 14:19:23  vpro
+marcel: McKoi's database driver (see http://http://www.mckoi.com/database)
+
 
 */
 package org.mmbase.module.database.support;
@@ -38,7 +41,7 @@ import org.mmbase.util.logging.*;
 /**
 * @author Marcel Maatkamp
 * @version $Version$
-* @$Revision $Revision: 1.1 $ $Date: 2001-10-02 14:19:23 $
+* @$Revision $Revision: 1.2 $ $Date: 2001-10-03 10:29:03 $
 */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 
@@ -619,7 +622,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
 
     	// when we had a update...
     	if(builderFieldSql != null) {
-	    String sql = "UPDATE "+mmb.baseName+"_"+bul.tableName+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number"+";");
+	    String sql = "UPDATE "+mmb.baseName+"_"+bul.tableName+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number")+";";
 	    log.debug("Temporary SQL statement, which will be filled with parameters : " + sql);
 	    
 	    try {
