@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.26 2002-09-20 08:58:24 pierre Exp $
+ * @version $Id: Cloud.java,v 1.27 2002-09-20 09:18:17 pierre Exp $
  */
 public interface Cloud {
 
@@ -58,8 +58,33 @@ public interface Cloud {
     public Node getNodeByAlias(String alias);
 
     /**
+     * Returns the relation with the specified number from this cloud. The returned
+     * node is a new instance of <code>Relation</code> with a reference to this
+     * instance of <code>Cloud</code>.
+     *
+     * @param number                  the number of the requested node
+     * @return                        the requested node
+     * @throws NotFoundException  if the specified node could not be found
+     * @throws ClassCastException  if the specified node is not a relation
+     */
+    public Relation getRelation(int number);
+
+    /**
+     * Returns the relation with the specified number from this cloud. 
+     * If the string passed is not a number, the string is assumed to be an alias. 
+     * The returned node is a new instance of <code>Relation</code> with a reference to this
+     * instance of <code>Cloud</code>.
+     *
+     * @param number    a string containing the number or alias of the requested node
+     * @return          the requested node
+     * @throws NotFoundException  if the specified node could not be found
+     * @throws ClassCastException  if the specified node is not a relation
+     */
+    public Relation getRelation(String number);
+
+    /**
      * Determines whether a node with the specified number is available from this cloud.
-     * The node returns true if yej Node exists and if the user has sufficent right to access
+     * The node returns true if a Node exists and if the user has sufficent right to access
      * the node.
      *
      * @param number    the number of the node
@@ -70,13 +95,34 @@ public interface Cloud {
     /**
      * Determines whether a node with the specified number is available from this cloud.
      * If the string passed is not a number, the string is assumed to be an alias. 
-     * The node returns true if yej Node exists and if the user has sufficent right to access
+     * The node returns true if a Node exists and if the user has sufficent right to access
      * the node.
      *
      * @param number a string containing the number or alias of the requested node
      * @return          true if the node is available
      */
     public boolean hasNode(String number);
+
+    /**
+     * Determines whether a relation with the specified number is available from this cloud.
+     * The node returns true if a Node exists, the user has sufficent right to access it, and 
+     * the node is a relation.     
+     *
+     * @param number    the number of the node
+     * @return          true if the node is available
+     */
+    public boolean hasRelation(int number);
+
+    /**
+     * Determines whether a relation with the specified number is available from this cloud.
+     * If the string passed is not a number, the string is assumed to be an alias. 
+     * The node returns true if a Node exists, the user has sufficent right to access it, and 
+     * the node is a relation.     
+     *
+     * @param number a string containing the number or alias of the requested node
+     * @return          true if the node is available
+     */
+    public boolean hasRelation(String number);
 
     /**
      * Returns all node managers available in this cloud.
