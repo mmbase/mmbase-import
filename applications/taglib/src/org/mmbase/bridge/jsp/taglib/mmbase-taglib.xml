@@ -325,20 +325,24 @@ one or more examplevalue tags is you want to give some example values.
         cases.
       </info>
     </attribute>
-  </tag>
-  <tag>
-    <name>mod</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.MMMod</tagclass>
-    <info>This tag can be used to call features provided by Modules in MMBase.</info>
-    <attribute>
-        <name>name</name>
-        <required>true</required>
-    </attribute>
-    <attribute>
-        <name>value</name>
-        <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
+    <example>
+&lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)  
+only to user kamer --&gt;
+&lt;mm:cloud logon="kamer" method="http"&gt;
+logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br /&gt;
+&lt;mm:node number="kamer_pool" id="my_node"&gt;
+  &lt;mm:related type="news" sorted="number" direction="DOWN"&gt;
+     &lt;mm:head&gt;
+        &lt;!-- show a small heading, in which also appears the node-number of the pool --&gt;
+        &lt;mm:field node="my_node" name="number" /&gt;:
+        &lt;mm:field head="number" /&gt;: &lt;mm:field head="title" /&gt;&lt;br /&gt;
+     &lt;/mm:head&gt;
+     &lt;mm:field name="number" /&gt;: &lt;mm:field name="title" /&gt;&lt;br /&gt;
+  &lt;/mm:related&gt;
+&lt;/mm:node&gt;
+&lt;/mm:list&gt;
+&lt;/mm:cloud&gt;
+    </example>
   </tag>
   <tag>
     <name>info</name>
@@ -351,7 +355,7 @@ one or more examplevalue tags is you want to give some example values.
 	<rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-        <name>modules</name>
+        <name>module</name>
         <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -470,12 +474,20 @@ one or more examplevalue tags is you want to give some example values.
   <tag>
     <name>listCondition</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
-    <info></info>
+    <info>
+    Must be used in the body of a list tag. And the body of itself
+    will only be evaluated if some condition is true.
+    </info>
     <attribute>
         <name>value</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<info></info>
+	<info>
+	 The `value' of the condition, in other words what the
+         condition is, described with a string. There is a limited set
+         available now. They are also availabe as `macro'-tags on this
+         tag.
+	 </info>
         <possiblevalue>
           <value>first</value>
           <info>
@@ -528,6 +540,9 @@ one or more examplevalue tags is you want to give some example values.
   <tag>
     <name>nodefield</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeFieldTag</tagclass>
+    <info>
+    Shows a field from a node without the need of use a node tag with a field tag in its body.
+    </info>
     <attribute>
         <name>number</name>
         <required>false</required>
