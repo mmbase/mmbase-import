@@ -82,8 +82,8 @@ NetComponents can be found at:
   <property name="documentation.builders.language" value="en" />
   <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
 
-  <property name="source-config.dir"         location="${source.dir}/config/default"/>
-  <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
+  <property name="source-config.dir"         location="${source.dir}/config"/>
+  <property name="source-config-builders.dir" location="${source.dir}/config/builders;${source.dir}/config/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="source-html.dir"           location="${source.dir}/html"/>
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
@@ -1474,15 +1474,6 @@ Version: MMBase build ${version}
   <target name="clean.remote" depends="init">
     <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote"/>
     <delete failonerror="false" file="${generated-source-src.dir}/MMCI.xml"/>
-    <!-- Transition period. Until everybody removed the remote
-    code from their source-dir, we clean it also there.
-    -->
-    <delete failonerror="false">
-      <fileset dir="${source-src.dir}">
-        <include name="org/mmbase/bridge/remote/*.java"/>
-      </fileset>
-    </delete>
-    <delete file="${source-src.dir}/MMCI.xml"/>
   </target>
 
   <target name="xsltransformer" depends="init.compile">
@@ -1547,7 +1538,7 @@ Version: MMBase build ${version}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx150m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
@@ -1608,7 +1599,7 @@ Version: MMBase build ${version}
           fork="yes"
           failonerror="no"
           output="${mmdocs.dir}/templaters/builders/allbuilders-total.xml">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx100m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
@@ -1641,7 +1632,7 @@ Version: MMBase build ${version}
           classpathref="compile.classpath"
 					fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx100m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
@@ -1656,7 +1647,7 @@ Version: MMBase build ${version}
           classpathref="compile.classpath"
 					fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx100m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
