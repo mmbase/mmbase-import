@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http">
 	<mm:import externid ="deletenumber" />
 	<mm:import externid ="nodemanager" />
 	
