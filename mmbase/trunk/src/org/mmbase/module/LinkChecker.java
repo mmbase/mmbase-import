@@ -26,12 +26,14 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 	MMBase mmbase;
 	MMObjectBuilder urls;
 	MMObjectBuilder jumpers;
+	SendMail sendmail;
 
 	public void init() {
 		super.init();
 	    mmbase=(MMBase)getModule("MMBASEROOT");
 		urls=(MMObjectBuilder)mmbase.getMMObject("urls");
 		jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
+		sendmail=(SendMail)getModule("sendmail");
 		start();
 	}
 
@@ -84,6 +86,11 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     public void run () {
 		// Wait till all builders are loaded.
 		try { Thread.sleep(10000); } catch (Exception wait) { }
+        String from=getInitParameter("from");
+        String to=getInitParameter("to");
+
+		
+		String data="";
 
         try {
 			// Get the urls and Jumper builders.
@@ -93,6 +100,9 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 			if(jumpers==null) {
    				jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
     		}
+			if(sendmail==null) {
+				sendmail=(SendMail)getModule("sendmail");
+			}
 
 			// Get all urls.
          	Enumeration e = urls.search("");
@@ -102,7 +112,8 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             	String theUrl = ""+url.getValue("url");
 				// Check if an url is correct.
 				if(!checkUrl(theUrl)) {
-					System.out.println("LinkChecker -> Error in url "+theUrl +" (objectnumber="+number+")");
+					//System.out.println("LinkChecker -> Error in url "+theUrl +" (objectnumber="+number+")");
+					data+="Error in url "+theUrl +" (objectnumber="+number+")\n";
 				}
     		}
 			// Get all jumpers.
@@ -113,9 +124,13 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             	String theUrl = ""+jumper.getValue("url");
 				// Check if an jumper is correct.
 				if(!checkUrl(theUrl)) {
-					System.out.println("LinkChecker -> Error in jumper "+theUrl +" (objectnumber="+number+")");
+					//System.out.println("LinkChecker -> Error in jumper "+theUrl +" (objectnumber="+number+")");
+					data+="Error in jumper "+theUrl +" (objectnumber="+number+")\n";
 				}
     		}
+
+			// Send Email
+			sendmail.sendMail(from,to,data);
         } catch (Exception e) {
             System.out.println("LinkChecker -> Error in Run()");
             e.printStackTrace();
