@@ -30,7 +30,16 @@
 		</td>
 </tr>
 </table>
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="95%">
+<tr>
 
+		<th>
+		<b>******* <a href="http://packages.mmbase.org/mmbase/packagemanager/public"><font color="black">click here for the preview / new packaging system (1.8) with extra applications</font></a> *******</b>
+		</th>
+</tr>
+</table>
+<br />
+<br />
 <mm:write referid="main">
  <mm:compare value="bundles"><%@ include file="bundles.jsp" %></mm:compare>
  <mm:compare value="bundle"><%@ include file="bundle.jsp" %></mm:compare>
