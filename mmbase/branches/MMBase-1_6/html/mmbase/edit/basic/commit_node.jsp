@@ -46,14 +46,14 @@
       <mm:present referid="node">
         <mm:import externid="role_name" />
         <mm:import externid="direction" />
-        <mm:import id="redirectTo"><mm:url page="new_relation.jsp" referids="node,role_name,direction,node_type" >
+        <mm:import id="redirectTo"><mm:url escapeamps="false" page="new_relation.jsp" referids="node,role_name,direction,node_type" >
           <mm:param name="create_relation">yes</mm:param>
           <mm:param name="node_number"><mm:field name="number" /></mm:param>
         </mm:url></mm:import>
       </mm:present>
 
       <mm:notpresent referid="node">
-        <mm:import id="redirectTo"><mm:url page="change_node.jsp" >
+        <mm:import id="redirectTo"><mm:url escapeamps="false" page="change_node.jsp" >
           <mm:param name="node_number"><mm:field name="number" /></mm:param>
         </mm:url></mm:import>
       </mm:notpresent>
