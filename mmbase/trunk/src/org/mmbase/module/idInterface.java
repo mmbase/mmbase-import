@@ -12,10 +12,11 @@ package org.mmbase.module;
 /**
  * @javadoc
  * @application SCAN
+ * @rename IdInterface
  * @deprecated no implementation of this interface exists, and the only class that references the interface
  *             (scanparser) never instantiates it.
  * @author vpro
- * @version $Id: idInterface.java,v 1.4 2004-10-04 14:58:10 pierre Exp $
+ * @version $Id: idInterface.java,v 1.5 2004-10-04 15:02:10 pierre Exp $
  */
 public interface idInterface {
     public String getState(String userName, String name);
