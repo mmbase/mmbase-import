@@ -161,8 +161,8 @@ private PoolBuilder	pools;
 
 		props=parseProperties(propnode.getStringValue("value"));
 		cmd=Strip.DoubleQuote((String)props.get("CMD"),Strip.BOTH);
-		System.out.println("AudioSmurf -> cmd "+cmd);
-		if (cmd.equals("LASTEPISODE")) {
+		System.out.println("AudioSmurf -> ("+prgnode.getIntValue("number")+") cmd "+cmd);
+		if (cmd!=null && cmd.equals("LASTEPISODE")) {
 			Enumeration e=vec.elements();
 			if (e.hasMoreElements()) { // Only the newest one
 				anode=(MMObjectNode)e.nextElement();
