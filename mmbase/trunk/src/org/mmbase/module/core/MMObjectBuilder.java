@@ -1931,7 +1931,7 @@ public class MMObjectBuilder extends MMTable {
         //if (number!=null) {
         //	return number;
         //} else {
-        Enumeration e=search("WHERE name='"+name+"'");
+        Enumeration e=search("name=='"+name+"'");
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
             number=""+node.getIntValue("number");
