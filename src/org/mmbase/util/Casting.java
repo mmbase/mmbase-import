@@ -64,20 +64,23 @@ public class Casting {
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
-   
+
     static public Document toXML(Object o, String documentType, String conversion) {
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
-            // This is a laborous action, so we log it on service. 
+            // This is a laborous action, so we log it on service.
             // It will happen often if the nodes are not cached and so on.
+            String xmltext=toString(o);
             if (log.isServiceEnabled()) {
-                log.service("Object " + o.toString().substring(0,20) + "... is not a Document, but a " + o.getClass().getName());
+                String msg = xmltext;
+                if (msg.length()>20) msg = msg.substring(0,20);
+                log.service("Object " + msg + "... is not a Document, but a " + o.getClass().getName());
             }
-            return convertStringToXML(toString(o), documentType, conversion);
+            return convertStringToXML(xmltext, documentType, conversion);
         }
         return (Document) o;
     }
-   
+
 
     /**
      * Get a binary value of a certain field.
@@ -92,7 +95,7 @@ public class Casting {
             return toString(obj).getBytes();
         }
     }
-   
+
     /**
      * Get a value of a certain field.
      * The value is returned as an MMObjectNode.
@@ -174,7 +177,7 @@ public class Casting {
             } else {
                 // still not yet!
                 // Call MMLanguage, and compare to
-                // the 'localized' values of true or yes.                
+                // the 'localized' values of true or yes.
                 org.mmbase.module.gui.html.MMLanguage languages = (org.mmbase.module.gui.html.MMLanguage) org.mmbase.module.Module.getModule("mmlanguage");
                 if (languages!=null) {
                     return  ((String)b).equalsIgnoreCase(
@@ -324,7 +327,7 @@ public class Casting {
                 log.debug("no <!DOCTYPE header found");
             }
         } else {
-            // not XML, make it XML, when conversion specified, use it...           
+            // not XML, make it XML, when conversion specified, use it...
             if(conversion == null) {
                 conversion = "MMXF_POOR";
                 log.warn("Using default for XML conversion: '" + conversion + "'.");
@@ -405,7 +408,7 @@ public class Casting {
             log.warn("doctype check can not completely be trusted");
         }
 
-        try {            
+        try {
             //make a string from the XML
             TransformerFactory tfactory = org.mmbase.cache.xslt.FactoryCache.getCache().getDefaultFactory();
             Transformer serializer = tfactory.newTransformer();
