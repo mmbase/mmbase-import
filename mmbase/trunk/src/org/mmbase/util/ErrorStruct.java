@@ -80,4 +80,11 @@ public class ErrorStruct {
     public String getMessage() {
 	return msg;
     }
+
+	/**
+ 	 * prints the ErrorStruct
+	 */
+	public String toString() {
+		return "ErrorStruct: type="+errorType+" line="+line+" position="+col+" message="+msg;
+	}
 }
