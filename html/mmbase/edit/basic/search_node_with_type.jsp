@@ -33,23 +33,21 @@
 
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
-<mm:context>
-  <form name="search" method="post" action='<mm:url referids="node,node_type,role_name,direction" />'>
+<mm:context id="form">
+  <form name="search" method="post" action='<mm:url id="url" referids="node?,node_type,role_name?,direction?" />'>
     <table class="search" align="center" width="100%" border="0" cellspacing="1">
       <%-- search table --%>
       <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
         <tr align="left">
           <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
-          <td width="100%"><mm:fieldinfo type="searchinput" /></td>
+          <td width="100%" colspan="3"><mm:fieldinfo type="searchinput" /></td>
         </tr>
       </mm:fieldlist>
       <tr align="left">
         <td width="20%"><%=m.getString("search.minage")%></td>
-        <td width="100%"><input type ="text" class="small" size="80" name="_search_form_minage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_minage_$node_type" />" /></td>
-      </tr>
-      <tr align="left">
+        <td width="30%"><input type ="text" class="small" size="80" name="_search_form_minage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_minage_$node_type" />" /></td>
         <td width="20%"><%=m.getString("search.maxage")%></td>
-        <td width="100%"><input type ="text" class="small" size="80" name="_search_form_maxage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_maxage_$node_type" />" /></td>
+        <td width="30%"><input type ="text" class="small" size="80" name="_search_form_maxage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_maxage_$node_type" />" /></td>
       </tr>
       <tr>          
         <td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td>
@@ -81,7 +79,13 @@
  <mm:write id="offset" value="${+($page - $config.indexoffset)*$config.page_size}" write="false" />
  <mm:offset    value="$offset"  />
  <mm:maxnumber value="$config.page_size" />  
-
+ 
+ <mm:url id="baseurl" referid="form.url" referids="directions,search,orderby" write="false">
+   <!--pass all search field values -->
+   <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+     <mm:fieldinfo type="reusesearchinput" />
+   </mm:fieldlist>
+ </mm:url>
 
 
 <mm:import id="pager">
@@ -91,11 +95,15 @@
     <td class="navigate" colspan="1" style="text-align: left;">
 
       <mm:isgreaterthan referid="page" value="$config.indexoffset">
-        <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
-           <mm:param name="page" value="${+ $page - 1}" />
-           </mm:url>'>
+        <nobr>
+        <a href='<mm:url referid="baseurl" referids="config.indexoffset@page" />'>
+           <span class="previous"></span><span class="alt">[&lt;&lt;-first ]</span>
+         </a>
+        </a>
+        <a href='<mm:url referid="baseurl"><mm:param name="page" vartype="integer" value="${+ $page - 1}" /></mm:url>'>
           <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
         </a>
+        </nobr>
       </mm:isgreaterthan>
     </td>
     <td class="navigate" colspan="1">
@@ -108,13 +116,9 @@
           </mm:compare>
         </mm:index>
       </mm:first>
-      <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
-        <mm:param name="page"><mm:index /></mm:param>
-        <!--pass all search field values -->
-        <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-           <mm:fieldinfo type="reusesearchinput" />
-        </mm:fieldlist>        
-       </mm:url>' ><mm:index />
+      <a href='<mm:url referid="baseurl">
+      <mm:param name="page"><mm:index /></mm:param>
+      </mm:url>' ><mm:index />
     </a>
    </mm:previousbatches>
    </mm:context>
@@ -127,15 +131,9 @@
       <mm:nextbatches max="21" indexoffset="$config.indexoffset">
        <mm:index offset="1">
        <mm:compare value="21" inverse="true">
-       <a href='<mm:url referids="node,node_type,role_name,direction,orderby,search">
-       <mm:param name="page"><mm:index /></mm:param>
-        <!--pass all search field values -->
-         <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-             <mm:fieldinfo type="reusesearchinput" />
-         </mm:fieldlist>
-         </mm:url>' >
+       <a href='<mm:url referid="baseurl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
           <mm:index />
-            </a>
+        </a>
        </mm:compare>
        <mm:compare value="21">
         ...
@@ -149,17 +147,22 @@
       </td>
       <td class="navigate" colspan="1" style="text-align: right;">
         <mm:present referid="needsnext">
-          <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
-          <mm:param name="page" value="${+ $page + 1}" />
-          </mm:url>'>
-          <span class="next"></span><span class="alt">[next page ->]</span>
+          <nobr>
+          <a href='<mm:url referid="baseurl"><mm:param name="page" vartype="integer" value="${+ $page + 1}" /></mm:url>'>
+          <span class="next"></span><span class="alt">[next page -&gt;]</span>
         </a>
+        <a href='<mm:url referid="baseurl">
+           <mm:param name="page" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
+           </mm:url>'>
+           <span class="next"></span><span class="alt">[last -&gt;&gt;]</span>
+         </a>
+         </nobr>
         </mm:present>
       </td>
     </mm:context>
    </tr>
 </table>
-</mm:import>
+</mm:import><%-- pager --%>
 
 <mm:write referid="pager" escape="none" />
 
@@ -171,10 +174,7 @@
     <mm:context>
     <mm:fieldlist nodetype="$node_type" type="list" jspvar="field">
          <% if (field.hasIndex()) { %>
-         <th><a href="<mm:url referids="node,node_type,role_name,direction,search">
-         <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-             <mm:fieldinfo type="reusesearchinput" />
-         </mm:fieldlist>
+         <th><a href="<mm:url referid="baseurl">
          <mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
         <mm:fieldinfo type="name">
          <mm:compare referid2="orderby">

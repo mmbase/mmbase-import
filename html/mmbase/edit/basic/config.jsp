@@ -12,14 +12,28 @@
     <mm:write cookie="mmjspeditors_language"  referid="lang"         />
     <mm:write cookie="mmjspeditors_method"    referid="method"       />
     <mm:write cookie="mmjspeditors_session"   referid="session"      />
+    <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
+    <mm:write cookie="mmjspeditors_page_size"   referid="page_size"      />
   </mm:context>  
   <form name="config">
     <table class="edit" summary="editor configuration" width="93%"  cellspacing="1" cellpadding="3" border="0">
       <tr><th colspan="2"><%= m.getString("config.config") %></th></tr>
       <tr>
         <td><%= m.getString("config.pagesize")%></td>  
-        <td><input type="text" size="30" name="page_size" value="<mm:write referid="config.page_size" />" />
-            <input type="text" size="30" name="indexoffset" value="<mm:write referid="config.indexoffset" />" /></td>
+        <td>
+            <select name="mmjspeditors_page_size">
+              <option value="5" <mm:compare referid="config.page_size" value="5">selected="selected"</mm:compare>>5</option>
+              <option value="10" <mm:compare referid="config.page_size" value="10">selected="selected"</mm:compare>>10</option>
+              <option value="20" <mm:compare referid="config.page_size" value="20">selected="selected"</mm:compare>>20</option>
+              <option value="30" <mm:compare referid="config.page_size" value="30">selected="selected"</mm:compare>>30</option>
+              <option value="40" <mm:compare referid="config.page_size" value="40">selected="selected"</mm:compare>>40</option>
+              <option value="100" <mm:compare referid="config.page_size" value="100">selected="selected"</mm:compare>>100</option>
+          </select>
+            <select name="mmjspeditors_indexoffset">
+              <option value="0" <mm:compare referid="config.indexoffset" value="0">selected="selected"</mm:compare>>0</option>
+              <option value="1" <mm:compare referid="config.indexoffset" value="1">selected="selected"</mm:compare>>1</option>
+          </select>
+        </td>
       </tr>
       <tr>
         <td><%= m.getString("config.stylesheet") %></td>
