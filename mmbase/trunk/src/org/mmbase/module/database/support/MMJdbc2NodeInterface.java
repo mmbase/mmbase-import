@@ -23,7 +23,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.23 2003-03-19 15:00:46 kees Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.24 2003-08-27 17:44:32 michiel Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**
@@ -52,13 +52,21 @@ public interface MMJdbc2NodeInterface extends SearchQueryHandler {
         throws StorageException;
 
     /**
-     * @javadoc please
+     * Sets the value of the field with name 'fieldName' in the node. Using the given database
+     * result set. The value of the field will be taken form the i-th collumn of the result set.
+     * @param node      The node from which a field must be set
+     * @param fieldName The name of the field which must be set
+     * @param resultSet The resultset from which the value of the field must be obtained
+     * @param i         The integer indicating from which position the value must be gotten from the resultSet record.
      */
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
+    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldName, ResultSet resultSet, int i);
+
+
     /**
-     * @javadoc please
+     * @see decodeDBnodeField(MMObjectNode, String, ResultSet, int)
+     * @param prefix When using cluster nodes, the key of the value map of the node must be prefixed (e.g. with 'news.')
      */
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
+    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldName, ResultSet resultSet, int i, String prefix);
 
     /**
      * Converts an MMNODE expression to an SQL expression. Returns the
