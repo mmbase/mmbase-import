@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.8 2004-02-26 22:09:28 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.9 2004-03-08 14:19:43 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -174,7 +174,8 @@ public class ValueIntercepter {
         log.service("Reading fieldtype-definitions");
         InputSource fieldTypes = new InputSource(thisClass.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
         if (fieldTypes.getSystemId() == null) {
-            fieldTypes.setSystemId("resource:" + thisClass.getPackage().getName() + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honousley no idea what it should be, but this is at least fit for humans (in case of errors)
+            Package pack = thisClass.getPackage(); // could be null if: the package of the class, or null if no package information is available from the archive or codebase.
+            fieldTypes.setSystemId("resource:" + (pack != null ? pack.getName() : "") + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honestley no idea what it should be, but this is at least fit for humans (in case of errors)
         }
         XMLBasicReader reader  = new XMLBasicReader(fieldTypes, thisClass);
 
