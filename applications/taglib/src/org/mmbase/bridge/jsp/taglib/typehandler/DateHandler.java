@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.12 2003-12-12 20:10:24 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.13 2003-12-18 09:03:49 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -256,7 +256,7 @@ public class DateHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public String useHtmlInput(Node node, Field field) throws JspTagException {
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
 
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
@@ -268,11 +268,16 @@ public class DateHandler extends AbstractTypeHandler {
             Integer minute = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute")));
             Integer second = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second")));
             cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
-            node.setLongValue(fieldName, cal.getTime().getTime() / DATE_FACTOR);
+            long oldValue = node.getLongValue(field.getName());
+            long newValue = cal.getTime().getTime() / DATE_FACTOR;
+            if (oldValue != newValue) {
+                node.setLongValue(fieldName, newValue);
+                return true;
+            }
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ") in field " + fieldName);
         }
-        return "";
+        return false;
     }
 
 

@@ -21,14 +21,18 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.7 2003-08-29 12:12:28 keesj Exp $
+ * @version $Id: TypeHandler.java,v 1.8 2003-12-18 09:03:49 michiel Exp $
  */
 
 public interface TypeHandler {
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException;
+
+    /**
+     * returns true if setValue happened.
+     */
     
-    public String useHtmlInput(Node node, Field field) throws JspTagException;
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException;
 
 
     /**

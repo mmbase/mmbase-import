@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.9 2003-12-17 21:10:55 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.10 2003-12-18 09:03:49 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -59,7 +59,7 @@ public class ByteHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public String useHtmlInput(Node node, Field field) throws JspTagException {        
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {        
         String fieldName = field.getName();
         byte [] bytes  = tag.getContextTag().getBytes(prefix(fieldName));
         if (bytes == null){
@@ -67,8 +67,9 @@ public class ByteHandler extends AbstractTypeHandler {
         }
         if ( bytes.length > 0) {
             node.setByteValue(fieldName, bytes);
+            return true;
         }
-        return "";
+        return false;
     }
     
     /**
