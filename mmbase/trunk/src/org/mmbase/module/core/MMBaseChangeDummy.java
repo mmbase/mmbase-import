@@ -33,6 +33,18 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
 	public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
 		System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
+
+		MMObjectBuilder bul=parent.getMMObject(tb);
+		if (bul==null) {
+			System.out.println("MMBaseChangeDummy -> Unknown builder="+tb);
+			return(false);
+		} 
+	
+		try {
+			int iid=Integer.parseInt(id);
+			bul.nodeLocalChanged(iid,tableName,ctype);
+		} catch(Exception e) {
+		}
 		return(true);
 	}
 
