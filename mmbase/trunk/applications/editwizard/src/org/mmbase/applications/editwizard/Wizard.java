@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.126 2004-05-09 09:55:05 nico Exp $
+ * @version $Id: Wizard.java,v 1.127 2004-05-27 08:43:04 johannes Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -873,6 +873,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Node queryresult = null;
 
                 try {
+                    // replace {$origin} and such
+                    String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
+                    Utils.setAttribute(query, "where", newWhere);
                     queryresult = databaseConnector.getList(query);
                     queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
                 } catch (Exception e) {
