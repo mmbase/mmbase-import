@@ -99,7 +99,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
-  <property name="deprecation" value="off"/>
+  <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="database.name" value="install"/>
   <property name="database.user" value="mmuser"/>
