@@ -18,9 +18,60 @@
 <xsl:variable name="attrcolor">green</xsl:variable>
 <xsl:variable name="reqcolor">red</xsl:variable>
 
-
 <!-- main entry point -->
 <xsl:template match="taglib">
+  <xsl:apply-templates select="tagtypes/type" />
+  <!-- xsl:apply-templates select="tag|taginterface" mode="file" / -->
+  <!-- create a toc file -->
+   <!--
+  <xsl:document href="{$basedir}toc.html">
+    <html>
+      <body 
+        bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+        <h1>MMBase taglib <xsl:value-of select="/taglib/tlibversion" /> documentation</h1>
+          <xsl:for-each select="tagtypes/type">
+             <a href="mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
+          </xsl:for-each>
+          <hr />
+          All 'tags' in seperate files (these are small jsp's, probably will be possible to add working examples): <br />
+          groups: <br />
+          <xsl:apply-templates select="taginterface" mode="toc" >
+            <xsl:sort select="name" />
+            <xsl:with-param name="file"  select="true()" />
+          </xsl:apply-templates><br />
+          tags: <br />
+          <xsl:apply-templates select="tag" mode="toc" >
+            <xsl:sort select="name" />
+            <xsl:with-param name="file"  select="true()" />
+          </xsl:apply-templates><br />
+    </body>
+    </html>
+  </xsl:document>
+  -->
+</xsl:template>
+
+<!-- The several 'types' of tags -->
+<xsl:template match="type[@name = 'all']">
+ 
+    <xsl:apply-templates select="/taglib" mode="main">
+       <xsl:with-param name="info" select="info" />
+       <xsl:with-param name="type" select="@name" />
+    </xsl:apply-templates>
+  <!-- 
+  <xsl:document href="{$basedir}mmbase-taglib-{@name}.html">
+    <xsl:apply-templates select="/taglib" mode="main">
+       <xsl:with-param name="info" select="info" />
+       <xsl:with-param name="type" select="@name" />
+    </xsl:apply-templates>
+  </xsl:document>
+  -->
+</xsl:template>
+
+
+
+<xsl:template match="taglib" mode="main">
+  <xsl:param name="info" />
+  <xsl:param name="type" />
   <html>
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -40,7 +91,7 @@
           </tr>
         <tr>
           <td></td>
-          <td><xsl:apply-templates select="info"/></td>
+          <td><xsl:apply-templates select="$info"/></td>
           <td></td>
         </tr>
         <tr>
@@ -54,9 +105,8 @@
           <td></td>
           <td>
             <a name="toc"/>			
-            <xsl:apply-templates select="taginterface" mode="toc" >
-				<xsl:sort select="name" />
-   		  	    <xsl:with-param name="last" select="position()" />
+            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="toc" >
+                <xsl:sort select="name" />
             </xsl:apply-templates><br />
           </td>
           <td></td>
@@ -65,9 +115,8 @@
           <td></td>
           <td>
             <a name="toc"/>			
-            <xsl:apply-templates select="tag" mode="toc" >
-				<xsl:sort select="name" />
-   		  	    <xsl:with-param name="last" select="position()" />
+            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="toc" >
+                <xsl:sort select="name" />
             </xsl:apply-templates><br />
           </td>
           <td></td>
@@ -82,8 +131,8 @@
         <tr>
           <td></td>
           <td>
-            <xsl:apply-templates select="taginterface" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
-            <xsl:apply-templates select="tag" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
+            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
+            <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
           </td>
           <td></td>
         </tr>
@@ -147,6 +196,19 @@
   </a>
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
+
+<!-- Create a file for a tag -->
+<xsl:template match="tag|taginterface" mode="file">
+  <xsl:document href="{$basedir}{name}.jsp">
+  <html>
+  <body>
+  <h1><xsl:value-of select="name" /></h1>
+   <xsl:apply-templates select="." mode="full" />
+  </body>
+  </html>
+  </xsl:document>
+</xsl:template>
+
 
 <xsl:template match="tag|taginterface" mode="full">
   
