@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.120 2004-02-10 15:34:07 michiel Exp $
+    @version $Id: wizard.xsl,v 1.121 2004-02-17 16:19:40 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -20,6 +20,9 @@
 
   <xsl:variable name="date-pattern">dd MMMM yyyy HH:mm</xsl:variable>
   <xsl:variable name="htmlareadir">../htmlarea/</xsl:variable>
+
+  <xsl:variable name="default-cols">80</xsl:variable>
+  <xsl:variable name="default-rows">10</xsl:variable>
 
   <xsl:param name="objectnumber"/>
 
@@ -648,10 +651,10 @@
     <span>
       <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
         <xsl:if test="not(@cols)">
-          <xsl:attribute name="cols">80</xsl:attribute>
+          <xsl:attribute name="cols"><xsl:value-of select="$default-cols" /></xsl:attribute>
         </xsl:if>
         <xsl:if test="not(@rows)">
-          <xsl:attribute name="rows">10</xsl:attribute>
+          <xsl:attribute name="rows"><xsl:value-of select="$default-rows" /></xsl:attribute>
         </xsl:if>
         <xsl:apply-templates select="@*"/>
 
