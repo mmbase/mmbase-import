@@ -25,7 +25,7 @@ import org.mmbase.util.XMLDatabaseReader;
  *             StorageManager implementation.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.26 2004-01-27 12:04:47 pierre Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.27 2004-07-23 08:55:02 pierre Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**
@@ -55,9 +55,13 @@ public interface MMJdbc2NodeInterface extends SearchQueryHandler {
 
     /**
      * Sets the value of the field with name 'fieldName' in the node. Using the given database
-     * result set. The value of the field will be taken form the i-th collumn of the result set.
+     * result set. The value of the field will be taken from the i-th collumn of the result set.
+     * Note: This method may attempt to map the provided 'database' fieldname to the MMBase name.
+     * In very specific cases, this may not have the desired result.
+     *
      * @param node      The node from which a field must be set
-     * @param fieldName The name of the field which must be set
+     * @param fieldName The name of the field which must be set. This is expected to be the field as used by the database,
+     *                  not the field as used by MMBase.
      * @param resultSet The resultset from which the value of the field must be obtained
      * @param i         The integer indicating from which position the value must be gotten from the resultSet record.
      */
