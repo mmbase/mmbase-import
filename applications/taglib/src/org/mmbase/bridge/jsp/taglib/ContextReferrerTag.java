@@ -44,7 +44,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected String     contextId = null; // context to which this tag is referring to.
     protected String     referid = null;
-    private boolean showParseEnd = false;
+    private   String     thisPage = null;
 
 
     void setPageContextOnly(PageContext pc) {
@@ -61,8 +61,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContexTag found in pagecontext, creating..");
-            log.service("Parsing JSP page: " + ((HttpServletRequest)pageContext.getRequest()).getRequestURI());
-            showParseEnd = true;
+            thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
+            log.service("Parsing JSP page: " + thisPage); 
 
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
@@ -108,8 +108,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public void release() {        
         super.release();
         log.debug("releasing context-referrer " + this.getClass().getName());
-        if (showParseEnd) {
-            log.service("END Parsing JSP page: " + ((HttpServletRequest)pageContext.getRequest()).getRequestURI());
+        if (thisPage != null) {
+            log.service("END Parsing JSP page: " + thisPage);
+            thisPage = null;
         }
         id = null;
         referid = null;
