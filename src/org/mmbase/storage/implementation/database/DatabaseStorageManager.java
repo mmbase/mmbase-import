@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.71 2004-09-17 10:17:06 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.72 2004-09-17 12:31:10 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -87,7 +87,7 @@ public class DatabaseStorageManager implements StorageManager {
     // for debug purposes
     protected final void logQuery(String msg) {
         if (log.isDebugEnabled()) {
-            log.debug("Query :" + msg);       
+            log.debug("Query :" + msg);
             log.trace(Logging.stackTrace());
         }
     }
@@ -373,7 +373,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Unlike
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
- 
+
      * @param result the resultset to retrieve the xml from
      * @param index the index of the xml in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -384,7 +384,7 @@ public class DatabaseStorageManager implements StorageManager {
      protected String getXMLValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
          return getStringValue(result, index, field);
      }
-    
+
 
 
 
@@ -715,8 +715,8 @@ public class DatabaseStorageManager implements StorageManager {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
             while (true) {
-                Statement s = null;                
-                ResultSet rs = null; 
+                Statement s = null;
+                ResultSet rs = null;
                 try {
                     s = activeConnection.createStatement();
                     rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
@@ -733,10 +733,10 @@ public class DatabaseStorageManager implements StorageManager {
                         // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
                         break;
                     }
-                    continue; 
+                    continue;
                  } finally {
-                     if (s != null) s.close();                    
-                     if (rs != null) rs.close(); 
+                     if (s != null) s.close();
+                     if (rs != null) rs.close();
                  }
                 break;
             }
@@ -760,7 +760,7 @@ public class DatabaseStorageManager implements StorageManager {
         logQuery(query);
         ps.executeUpdate();
         ps.close();
-        
+
     }
 
     // javadoc is inherited
@@ -840,7 +840,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setValue(PreparedStatement statement, int index, MMObjectNode node, FieldDefs field) throws StorageException, SQLException {
         String fieldName = field.getDBName();
-        Object value = node.getValue(fieldName); 
+        Object value = node.getValue(fieldName);
         switch (field.getDBType()) {
             // Store numeric values
         case FieldDefs.TYPE_INTEGER :
@@ -848,19 +848,19 @@ public class DatabaseStorageManager implements StorageManager {
         case FieldDefs.TYPE_DOUBLE :
         case FieldDefs.TYPE_LONG :
             setNumericValue(statement, index, value, field);
-            break;           
+            break;
         case FieldDefs.TYPE_BOOLEAN :
-            setBooleanValue(statement, index, value, field);            
+            setBooleanValue(statement, index, value, field);
         case FieldDefs.TYPE_DATETIME :
-            setDateTimeValue(statement, index, value, field);            
+            setDateTimeValue(statement, index, value, field);
             break;
             // Store nodes
         case FieldDefs.TYPE_NODE :
             // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
-            setNodeValue(statement, index, value, field);            
+            setNodeValue(statement, index, value, field);
             break;
             // Store strings
-        case FieldDefs.TYPE_XML : 
+        case FieldDefs.TYPE_XML :
             setXMLValue(statement, index, value, field);
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
@@ -872,7 +872,7 @@ public class DatabaseStorageManager implements StorageManager {
             // note: do not use getByteValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
             setBinaryValue(statement, index, value, field);
-            break;         
+            break;
         }
         case FieldDefs.TYPE_LIST : {
             setListValue(statement, index, value, field);
@@ -969,7 +969,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
         int nodeNumber = Casting.toInt(node);
-        
+
         if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
             throw new StorageException("The NODE field with name " + field.getDBName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
         }
@@ -983,7 +983,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setBooleanValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) return;
-        boolean bool = Casting.toBoolean(value);       
+        boolean bool = Casting.toBoolean(value);
         statement.setBoolean(index, bool);
     }
 
@@ -993,7 +993,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setDateTimeValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) return;
-        java.util.Date date = Casting.toDate(value);       
+        java.util.Date date = Casting.toDate(value);
         statement.setTimestamp(index, new Timestamp(date.getTime()));
     }
     /**
@@ -1001,8 +1001,8 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setListValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) return;
-        List list = Casting.toList(value);       
-        statement.setObject(index, list, java.sql.Types.ARRAY);
+        List list = Casting.toList(value);
+        statement.setObject(index, list);
     }
 
     /**
@@ -1045,7 +1045,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;        
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;
         String value = Casting.toString(objectValue);
 
         // Store data as a binary stream when the code is a clob or blob, or
@@ -1064,7 +1064,7 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, value);
         }
     }
-    
+
     /**
      * This default implementation calls {@link #setStringValue}.
      * Override this method if you want to override this behavior.
@@ -1230,7 +1230,7 @@ public class DatabaseStorageManager implements StorageManager {
                 // string-type fields
             case FieldDefs.TYPE_XML : {
                 return getXMLValue(result, index, field);
-            } 
+            }
             case FieldDefs.TYPE_STRING : {
                 return getStringValue(result, index, field);
             }
@@ -1423,7 +1423,7 @@ public class DatabaseStorageManager implements StorageManager {
                 FieldDefs field = (FieldDefs)f.next();
                 if (
                     (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
-                    field.getDBType() == FieldDefs.TYPE_NODE &&  
+                    field.getDBType() == FieldDefs.TYPE_NODE &&
                     ! field.getDBName().equals("number")) {
                     String query = createIndex.format(new Object[] { this, builder, field.getDBName()});
                     try {
@@ -1899,7 +1899,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Drop a constraint for a composite index.
      * You should have an active connection before calling this method.
-     * @param builder the builder for which to drop the composite key     
+     * @param builder the builder for which to drop the composite key
      * @throws StorageException if the composite index cannot be deleted
      * @throws SQLException when a database error occurs
      * @throws
@@ -2114,7 +2114,7 @@ public class DatabaseStorageManager implements StorageManager {
                         FieldDefs field = (FieldDefs)fields.next();
                         String fieldName = field.getDBName();
                         if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
-                            
+
                             // check whether it might be in a column
                             boolean foundColumn = false;
                             {
@@ -2139,7 +2139,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     releaseActiveConnection();
                                 }
                             }
-                            
+
                             List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
                             log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                             Iterator i = nodes.iterator();
@@ -2178,7 +2178,7 @@ public class DatabaseStorageManager implements StorageManager {
                     if (fromDatabase > 0) {
                         log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
                     }
-                    
+
                 } else {
                     log.service("Converted no fields");
                 }
