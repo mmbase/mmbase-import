@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.4 2002-04-17 13:17:46 pierre Exp $
+ * @version $Id: MMMckoiNode.java,v 1.5 2002-04-18 14:42:59 pierre Exp $
  */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 
@@ -987,8 +987,6 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
     * will be removed once the xml setup system is done
     */
     public boolean create_real(MMObjectBuilder bul,String tableName) {
-
-        if (!bul.isXMLConfig()) return(false);
 
         // use the builder to get the fields are create a
         // valid create SQL string

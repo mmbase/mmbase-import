@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.58 2002-04-17 13:17:47 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.59 2002-04-18 14:43:00 pierre Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -1068,8 +1068,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @duplicate move to create()
      */
     public boolean create_real(MMObjectBuilder bul,String tableName) {
-
-        if (!bul.isXMLConfig()) return(false);
 
         // use the builder to get the fields are create a
         // valid create SQL string

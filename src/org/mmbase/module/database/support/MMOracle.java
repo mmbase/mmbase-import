@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.6 $ $Date: 2002-04-17 13:17:47 $
+* @$Revision: 1.7 $ $Date: 2002-04-18 14:42:59 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -842,8 +842,6 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
     * will be removed once the xml setup system is done
     */
     public boolean create_real(MMObjectBuilder bul,String tableName) {
-
-        if (!bul.isXMLConfig()) return(false);
 
         // use the builder to get the fields are create a
         // valid create SQL string

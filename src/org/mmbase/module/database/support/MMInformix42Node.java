@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 * @author Mark Huijser
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.34 $ $Date: 2002-04-17 13:17:45 $
+* @$Revision: 1.35 $ $Date: 2002-04-18 14:42:59 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -85,7 +85,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      */
     public boolean create(MMObjectBuilder bul) {
         if (log.isDebugEnabled()) log.trace("Method: create()");
-        if (!bul.isXMLConfig()) return(false);
 
         String createtype=null;
         String createtable=null;
