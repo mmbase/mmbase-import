@@ -105,8 +105,8 @@ public class RealURLComposer extends FragmentURLComposer  {
     
     /**
      * Removes RealPlayer incompatible characters from the string.
-     * '#' characters are replaced by space characters.
-     * Characters that are allowed are every letter or digit and ' ', '.', '-' and '_' chars.
+     * <code>'#' characters are replaced by space characters.
+     * Characters that are allowed are every letter or digit and ' ', '.', '-' and '_' chars.</code>
 
      *
      * @param s the String that needs to be fixed.
