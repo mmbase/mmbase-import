@@ -1,5 +1,5 @@
 This document describes all things which needs to be taken care of before
-the release of MMBase-1.7.0. Please add your own todo.
+the release of MMBase-1.8.0. Please add your own todo.
 There's also a list of testers and their environments at the end of
 this document. Please add your name if you're willing to test.
 
@@ -7,15 +7,17 @@ TODO
 - update releasenotes
 - check all bugs and change priority to high if they need to be fixed
   before the release
-- decide what to do with the applications
+- decide what to do with Email code in core
 - change html directory structure
 - check documentation
-- move scan-related html into a scan-application
 - create/change upgrade documentation
 - test with large clouds
 - automatic install of required applications (distro must build fully automaticly)
-
-
+- projects to finish:
+  - Optimization
+  - FieldTypes
+  - Function Framework (not a project)
+  - Distro project
 
 TESTERS
 - VPRO: Solaris/jdk-1.4/Orion-1.5.4/Informix
