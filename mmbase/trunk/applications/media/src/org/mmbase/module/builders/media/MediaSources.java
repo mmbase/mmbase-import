@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.27 2003-01-22 22:17:14 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.28 2003-01-24 09:14:03 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -58,7 +58,9 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_CODEC       = "codec";
     public static final String FUNCTION_MIMETYPE    = "mimetype";
-    
+
+    // formats
+    public static final int RM_FORMAT = 6;
     
     // Codecs
     public final static int VORBIS_CODEC = 1;
@@ -417,13 +419,13 @@ public class MediaSources extends MMObjectBuilder {
      *
      * @param source the media source.
      * @param providername the name of the provider that is going to be related.
+     * @param owner the owner name that is creating the relation.
      */
 
-    /* MM: commented out because does not compile against MMBase 1.6. It was not tested any way.
-
-    public void addProvider(MMObjectNode source, String providername) {
+    public void addProvider(MMObjectNode source, String providername, String owner) {
         MMObjectBuilder providers = (MMObjectBuilder) mmb.getMMObject("mediaproviders");
-        
+       
+	/** should be used in 1.7	
         NodeSearchQuery query = new NodeSearchQuery(providers);
         StepField namefield = query.getField(providers.getField("name"));
         BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(namefield,providername);
@@ -434,20 +436,26 @@ public class MediaSources extends MMObjectBuilder {
             providerlist = providers.getNodes(query);
         } catch (SearchQueryException sqe) {
             log.error("Exception while querying "+sqe);
-        }
-        
-        if(providerlist.size()==0) {
+	}
+	*/
+
+	int providernumber = 0;
+	Enumeration e = providers.search("WHERE name='"+providername+"'");
+        if (!e.hasMoreElements()) {
             log.error("No media provider found with name "+providername);
             return;
-        }
-        if(providerlist.size()>1) {
+	} else {
+		MMObjectNode provider = (MMObjectNode)e.nextElement();
+   		providernumber = provider.getIntValue("number");
+		log.debug("found provider with number = "+providernumber);
+	}
+	if (e.hasMoreElements()) {
             log.error("Multiple media providers with name "+providername+" found");
             return;
-        }
-        MMObjectNode provider = (MMObjectNode)providerlist.get(0);
+	}
         
-        MMObjectNode insrel = mmb.getInsRel().getNewNode("MediaSync");
-        insrel.setValue("snumber", provider.getValue("number"));
+        MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
+        insrel.setValue("snumber", providernumber);
         insrel.setValue("dnumber", source.getValue("number"));
         insrel.setValue("rnumber", mmb.getInsRel().oType);
         
@@ -458,7 +466,7 @@ public class MediaSources extends MMObjectBuilder {
             log.debug("relation created "+insrel);
         }
     }
-    */    
+
 
     /**
      * get all mediaproviders belonging to this mediasource
