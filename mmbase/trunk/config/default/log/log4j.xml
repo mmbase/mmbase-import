@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.14 2002-04-17 11:08:03 michiel Exp $
+   @version $Id: log4j.xml,v 1.15 2002-07-24 09:52:58 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -19,8 +19,8 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
-    <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
-    <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+    <!ENTITY logger   "org.mmbase.util.logging.log4j2.Log4jImpl" >
+    <!ENTITY priority "org.mmbase.util.logging.log4j2.Log4jPriority" >
     <!ENTITY logdir   "/tmp/" >
 ]>
 

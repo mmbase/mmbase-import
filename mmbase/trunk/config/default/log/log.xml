@@ -7,6 +7,6 @@
    <class>org.mmbase.util.logging.SimpleImpl</class>
    <configuration>stdout,info</configuration>
   -->
-   <class>org.mmbase.util.logging.log4j.Log4jImpl</class>
+   <class>org.mmbase.util.logging.log4j2.Log4jImpl</class>
    <configuration>log4j.xml</configuration>
 </logging>
