@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.32 2003-05-08 11:24:51 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.33 2003-06-18 15:20:40 kees Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -231,7 +231,7 @@ public class MultiRelations extends MMObjectBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      The syntax is either sql (if preceded by "WHERE') or
      *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param orderVec the fieldnames on which you want to sort.
@@ -258,7 +258,7 @@ public class MultiRelations extends MMObjectBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      The syntax is either sql (if preceded by "WHERE') or
      *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param orderVec the fieldnames on which you want to sort.
@@ -283,7 +283,7 @@ public class MultiRelations extends MMObjectBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      The syntax is either sql (if preceded by "WHERE') or
      *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param orderVec the fieldnames on which you want to sort.
