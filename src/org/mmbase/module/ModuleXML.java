@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.13 $ $Date: 2000-10-15 22:49:49 $
+ * @version $Revision: 1.14 $ $Date: 2000-12-20 00:27:31 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -111,6 +111,8 @@ public abstract class ModuleXML extends Module {
             filename = filename + ".xml";
             //parse the configuration file
             try {
+		// rewrite as uri
+		filename="file:///"+filename;
                 parser.parse(new InputSource(filename));
                 mods = xmlReader.getProperties();
             } catch(Exception f) {
@@ -157,6 +159,8 @@ public abstract class ModuleXML extends Module {
                     //check if there's a xml-configuration file
                     if (parser!=null && (new File(filename+".xml")).exists()) {
                         filename = filename + ".xml";
+			// rewrite as uri
+			filename="file:///"+filename;
                         //parse the configuration file
                         parser.parse(new InputSource(filename));
                         modprops = xmlReader.getProperties();

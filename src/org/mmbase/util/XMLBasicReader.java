@@ -22,9 +22,13 @@ import org.mmbase.module.corebuilders.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: XMLBasicReader.java,v 1.5 2000-08-18 19:43:45 case Exp $
+ * @version $Id: XMLBasicReader.java,v 1.6 2000-12-20 00:24:53 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2000/08/18 19:43:45  case
+ * cjr: Added getChildElements(element,tag) method to get obtain all child
+ *      elements with a certain tag.
+ *
  * Revision 1.4  2000/08/17 21:16:00  case
  * cjr: returned value for non-set attributes now is "" (should it be null?)
  *
@@ -47,6 +51,7 @@ public class XMLBasicReader  {
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             EntityResolver resolver = new XMLEntityResolver();
             parser.setEntityResolver(resolver);
+	    path="file:///"+path;
             parser.parse(path);
             document = parser.getDocument();
 
