@@ -9,14 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.*;
-import java.sql.*;
-
-import org.mmbase.module.database.*;
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 
 /**
  */

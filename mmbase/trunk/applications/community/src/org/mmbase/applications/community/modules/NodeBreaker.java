@@ -13,7 +13,6 @@ package org.mmbase.module.community;
 import java.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

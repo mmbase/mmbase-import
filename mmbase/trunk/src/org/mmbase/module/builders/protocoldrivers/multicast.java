@@ -9,11 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.protocoldrivers;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
 /**
  *
  * @rename Multicast

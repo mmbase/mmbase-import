@@ -13,14 +13,13 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 //import org.mmbase.module.builders.protocoldrivers.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @author  $Author: rob $
- * @version $Revision: 1.18 $ $Date: 2003-01-14 10:53:19 $
+ * @author  $Author: nico $
+ * @version $Revision: 1.19 $ $Date: 2003-03-04 14:12:21 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 

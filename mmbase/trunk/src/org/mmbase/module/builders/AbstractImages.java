@@ -11,8 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
-import org.mmbase.servlet.MMBaseServlet;
-import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.15 2002-11-01 13:51:10 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.16 2003-03-04 14:12:18 nico Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {

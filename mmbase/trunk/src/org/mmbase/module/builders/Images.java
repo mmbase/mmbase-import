@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
-import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -29,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.65 2003-02-18 10:37:02 michiel Exp $
+ * @version $Id: Images.java,v 1.66 2003-03-04 14:12:21 nico Exp $
  */
 public class Images extends AbstractImages {
 

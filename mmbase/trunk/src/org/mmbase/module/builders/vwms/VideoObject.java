@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
-import java.util.*;
-import java.text.*;
-
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;

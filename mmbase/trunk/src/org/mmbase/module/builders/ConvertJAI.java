@@ -16,14 +16,13 @@ import java.util.*;
 import java.io.*;
 import com.sun.media.jai.codec.*;
 
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * Converts Images using image Java Advanced Imaging
  *
  * @author Daniel Ockeloen
- * @version $Id: ConvertJAI.java,v 1.8 2002-04-12 08:39:55 pierre Exp $
+ * @version $Id: ConvertJAI.java,v 1.9 2003-03-04 14:12:19 nico Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
 

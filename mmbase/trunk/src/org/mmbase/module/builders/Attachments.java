@@ -10,17 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.io.*;
-import java.sql.*;
+import javax.servlet.http.HttpServletResponse;
 
-import org.mmbase.servlet.MMBaseServlet;
-import org.mmbase.module.builders.*;
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -29,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.22 2003-01-06 17:04:29 michiel Exp $
+ * @version $Id: Attachments.java,v 1.23 2003-03-04 14:12:19 nico Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());

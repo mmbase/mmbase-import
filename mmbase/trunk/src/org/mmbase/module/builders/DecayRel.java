@@ -9,13 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.*;
-import java.sql.*;
-
-import org.mmbase.module.database.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 
 /**
  * @deprecated-now does not add functionality

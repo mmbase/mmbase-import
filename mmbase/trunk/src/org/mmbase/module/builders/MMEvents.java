@@ -10,16 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.util.Date;
-import java.sql.*;
-import org.mmbase.module.database.*;
+
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.11 2002-03-14 10:47:13 vpro Exp $
+ * @version $Id: MMEvents.java,v 1.12 2003-03-04 14:12:22 nico Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());

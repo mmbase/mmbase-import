@@ -9,15 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.sql.*;
-
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 
 /**
  * @javadoc
- * @version $Revision: 1.8 $ $Date: 2002-01-07 15:58:45 $
+ * @version $Revision: 1.9 $ $Date: 2003-03-04 14:12:22 $
  */
 public class Todos extends MMObjectBuilder {
 

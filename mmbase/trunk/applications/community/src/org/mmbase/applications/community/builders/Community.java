@@ -12,9 +12,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
-import org.mmbase.module.community.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
