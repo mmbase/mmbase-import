@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: PasswordLogin.java,v 1.5 2004-03-08 17:42:31 michiel Exp $
+ * @version $Id: PasswordLogin.java,v 1.6 2004-04-19 16:38:59 michiel Exp $
  */
 
 public class PasswordLogin extends ContextLoginModule {
-    private static Logger log=Logging.getLoggerInstance(PasswordLogin.class.getName());
+    private static Logger log = Logging.getLoggerInstance(PasswordLogin.class);
 
     public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
         
