@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.46 2003-12-10 13:17:48 michiel Exp $
+ * @version $Id: Config.java,v 1.47 2004-01-19 17:03:13 michiel Exp $
  */
 
 public class Config {
@@ -129,7 +129,6 @@ public class Config {
          *   <li>popupid</li>
          *   <li>objectnumber</li>
          * </ul>
-         * Calls {@link #baseConfig()} to read common parameters.
          *
          * @since MMBase-1.6.4
          * @param configurator the configurator containing request information
@@ -740,8 +739,8 @@ public class Config {
          * @since MMBase-1.6.4
          * @param config the configuration object for the list or wizard.
          */
-        public void config(Config.SubConfig c) throws WizardException {
-            c.configure(this);
+        public void config(Config.SubConfig config) throws WizardException {
+            config.configure(this);
         }
 
     }
