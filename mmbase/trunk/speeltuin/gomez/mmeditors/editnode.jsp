@@ -103,7 +103,7 @@
         <td class="editlink" >
           <mm:fieldinfo type="guitype" vartype="String" jspvar="guitype" >
             <% String editpath=request.getContextPath()+request.getServletPath();
-               editpath=editpath.substring(0,path.length()-13)+"editparts/"+guitype+".jsp";
+               editpath=editpath.substring(0,editpath.length()-13)+"editparts/"+guitype+".jsp";
             %>
             <% if (new java.io.File(page.getServletConfig().getServletContext().getRealPath(path)).exists()) { %>
               <a href="<mm:url page="editparts/${_}.jsp"><mm:param name="field"><mm:fieldinfo type="name" /></mm:param></mm:url>" target="workarea">##</a>
