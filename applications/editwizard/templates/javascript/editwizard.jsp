@@ -181,7 +181,7 @@ function doclicksearch(el, cmd, sessionkey) {
     if (!window.frames[0] || !window.frames[0].document || (window.frames[0].document.location.href.indexOf(url) == -1)) {
         if (window.frames[0] && window.frames[0].document) {
             window.frames[0].document.open();
-            window.frames[0].document.writeln('<link rel="stylesheet" type="text/css" href="style.css" /><span>...searching...</span>');
+            window.frames[0].document.writeln('<link rel="stylesheet" type="text/css" href="../style.css" /><span>...searching...</span>');
             window.frames[0].document.close();
         }
 
