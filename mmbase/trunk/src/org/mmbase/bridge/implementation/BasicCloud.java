@@ -91,20 +91,26 @@ public class BasicCloud implements Cloud, Cloneable {
      *  Constructor to call from the CloudContext class
      *  (package only, so cannot be reached from a script)
      */
-    BasicCloud(String cloudName, CloudContext cloudcontext) {
-        cloudContext=(BasicCloudContext)cloudcontext;
-        typedef = cloudContext.mmb.getTypeDef();
-        language = cloudContext.mmb.getLanguage();
+    BasicCloud(String cloudName, CloudContext cloudContext) {
+        this.cloudContext=(BasicCloudContext)cloudContext;
+		
+	// get the mmbase module...
+	MMBase mmb = this.cloudContext.mmb;
+				
         // determine security manager for this cloud
-
-        authorization=((BasicCloudContext)cloudcontext).securityManager.getAuthorization();
-        authentication=((BasicCloudContext)cloudcontext).securityManager.getAuthentication();
+	MMBaseCop mmbaseCop = mmb.getMMBaseCop();
+	if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");
+        authorization= mmbaseCop.getAuthorization();
+        authentication=mmbaseCop.getAuthentication();
         userContext=new UserContext();
+
+	// other settings of the cloud...
+        typedef = mmb.getTypeDef();
+        language = mmb.getLanguage();
 
         // normally, we want the cloud to read it's context from an xml file.
         // the current system does not support multiple clouds yet,
         // so as a temporary hack we set default values
-
         name = cloudName;
         description = cloudName;
     }
