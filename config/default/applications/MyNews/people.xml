@@ -1,8 +1,10 @@
-<people exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
-	<node number="603" owner="system">
-		<firstname>Rob</firstname>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<people exportsource="mmbase://127.0.0.1/install/b1" timestamp="20000602143030">
+	<node number="1075" owner="admin">
+		<email>rob@mmbase.org</email>
+		<account></account>
 		<lastname>Vermeulen</lastname>
-		<email>robv@vpro.nl</email>
-		<account> </account>
+		<firstname>Rob</firstname>
 	</node>
+
 </people>
