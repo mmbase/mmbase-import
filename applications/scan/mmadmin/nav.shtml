@@ -22,7 +22,9 @@
 <TD WIDTH="850" BORDER=0>
 	<PART nav/nav_top.shtml>
 	<IMG SRC="beeld/wit.gif" WIDTH="800" HEIGHT="1" ALIGN="top"><BR>
-	<PART nav/nav$PARAM1.shtml?$PARAM1+$PARAM2>
+	<IF $PARAM1=N>
+	<PART /mmadmin/nav/nav$PARAM1.shtml?$PARAM1+$PARAM2>
+	</IF>
 </TD>
 </TR>
 </TABLE>
