@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.46 2004-02-06 15:10:19 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.47 2004-02-06 21:37:01 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -39,10 +39,17 @@ public class DatabaseStorageManager implements StorageManager {
     // Since it is only used for synchronizing on class level, it does not itself contain data.
     protected static final Object sequenceLock = new Object();
 
+
+    /**
+     * Whether the warning about blob on legacy location was given.
+     */
+    private static boolean legacyWarned = false;
+
+
     /**
      * The factory that created this manager
      */
-    protected StorageManagerFactory factory;
+    protected DatabaseStorageManagerFactory factory;
 
     /**
      * The datasource through which to access the database.
@@ -73,6 +80,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected Map changes;
 
+
     /**
      * Constructor
      */
@@ -90,7 +98,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void init(StorageManagerFactory factory) throws StorageException {
-        this.factory = factory;
+        this.factory = (DatabaseStorageManagerFactory) factory;
         dataSource = (DataSource)factory.getAttribute(Attributes.DATA_SOURCE);
         if (factory.supportsTransactions()) {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
@@ -330,32 +338,43 @@ public class DatabaseStorageManager implements StorageManager {
         return field.getDBType() == FieldDefs.TYPE_BYTE;
     }
 
+
+    /**
+     * Read a binary (blob) from a field in the database
+     * @param node the node the binary data belongs to
+     * @param field the binary field
+     * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
+     */
+    protected byte[] readBinaryFromDatabase(MMObjectNode node, FieldDefs field) {
+        try {
+            MMObjectBuilder builder = node.getBuilder();
+            Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
+            String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
+            getActiveConnection();
+            Statement s = activeConnection.createStatement();
+            ResultSet result = s.executeQuery(query);
+            if ((result != null) && result.next()) {
+                byte[] retval = getBinaryValue(result, 1, field);
+                result.close();
+                s.close();
+                return retval;
+            } else {
+                s.close();
+                throw new StorageException("Node with number " + node.getNumber() + " not found.");
+            }
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
+
     // javadoc is inherited
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
             return readBinaryFromFile(node, field);
         } else
-            try {
-                MMObjectBuilder builder = node.getBuilder();
-                Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
-                String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
-                getActiveConnection();
-                Statement s = activeConnection.createStatement();
-                ResultSet result = s.executeQuery(query);
-                if ((result != null) && result.next()) {
-                    byte[] retval = getBinaryValue(result, 1, field);
-                    result.close();
-                    s.close();
-                    return retval;
-                } else {
-                    s.close();
-                    throw new StorageException("Node with number " + node.getNumber() + " not found.");
-                }
-            } catch (SQLException se) {
-                throw new StorageException(se);
-            } finally {
-                releaseActiveConnection();
-            }
+            return readBinaryFromDatabase(node, field);
     }
 
     /**
@@ -404,26 +423,49 @@ public class DatabaseStorageManager implements StorageManager {
      * @return The File where to store or read the binary data
      */
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
-        String basePath = (String)factory.getAttribute(Attributes.BINARY_FILE_PATH);
-        if (basePath == null || basePath.equals("")) {
-            basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
-        } else if (!basePath.startsWith("/")) {
-            basePath = MMBaseContext.getServletContext().getRealPath("/") + File.separator + basePath;
+        String basePath = factory.getBinaryFileBasePath();
+        StringBuffer pathBuffer = new StringBuffer();
+        int number = node.getNumber() / 1000;
+        while (number > 0) {
+            int num = number % 100;
+            pathBuffer.insert(0, num);
+            if (num < 10) pathBuffer.insert(0, 0);
+            pathBuffer.insert(0, File.separator);
+            number /= 100;
         }
-        basePath = basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName();
-        int number = node.getNumber()/1000;
-        if (number > 0) {
-            String extraPath = "";
-            while (number > 0) {
-                String num = ""+(100+(number%100));
-                extraPath = num.substring(1) + File.separator + extraPath;
-                number = number / 100;
+        pathBuffer.insert(0, basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName());
+        return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
+    }
+
+    /**
+     * Tries legacy paths
+     * @returns such a File if found and readable, 'null' otherwise.
+     */
+    private File getLegacyBinaryFile(MMObjectNode node, String fieldName) {
+        // the same basePath, so you so need to set that up right.
+        String basePath = factory.getBinaryFileBasePath();
+
+        File f = new File(basePath, node.getBuilder().getTableName() + File.separator + node.getNumber() + '.' + fieldName);        
+        if (f.exists()) { // 1.6 storage or 'support' blobdatadir
+            if (! f.canRead()) {
+                log.warn("Found '" + f + "' but it cannot be read");
+            } else {
+                return f;
             }
-            basePath = basePath + File.separator + extraPath;
         }
-        File dir = new File(basePath);
-        dir.mkdirs();
-        return new File(dir, "" + node.getNumber() + "." + fieldName);
+        
+        f = new File(basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName() + File.separator + node.getNumber() + '.' + fieldName );
+        if (f.exists()) { // 1.7.0.rc1 blob data dir
+            if (! f.canRead()) {
+                log.warn("Found '" + f + "' but it cannot be read");
+            } else {
+                return f;
+            }
+        }
+
+        // don't know..
+        return null;
+
     }
 
     /**
@@ -436,6 +478,7 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             String fieldName = field.getDBName();
             File binaryFile = getBinaryFile(node, fieldName);
+            binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
             byte[] value = node.getByteValue(fieldName);
             DataOutputStream byteStream = new DataOutputStream(new FileOutputStream(binaryFile));
             byteStream.write(value);
@@ -443,6 +486,40 @@ public class DatabaseStorageManager implements StorageManager {
             byteStream.close();
         } catch (IOException ie) {
             throw new StorageException(ie);
+        }
+    }
+
+
+    /**
+     * Checks whether file is readable and existing. Warns if not.
+     * If non-existing it checks older locations.
+     * @return the file to be used, or null if no existing readable file could be found, also no 'legacy' one.
+     */
+
+    protected File checkFile(File binaryFile, MMObjectNode node, FieldDefs field) {
+        String fieldName = field.getDBName();
+        if (! binaryFile.canRead()) {
+            String desc = "while it should contain the byte data for node '" + node.getNumber() + "' field '" + fieldName + "'. Returning null.";
+            if (! binaryFile.exists()) {
+                // try legacy
+                File legacy = getLegacyBinaryFile(node, fieldName);
+                if (legacy == null) {
+                    log.warn("The file '" + binaryFile + "' does not exist, " + desc);
+                    log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '" + factory.getBinaryFileBasePath() + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
+
+                } else {
+                    if (! legacyWarned) {
+                        log.warn("Using the legacy location '" + legacy + "' rather then '" + binaryFile + "'. You might want to convert this dir.");
+                        legacyWarned = true;
+                    }
+                    return legacy;
+                }
+            } else {
+                log.error("The file '" + binaryFile + "' can not be read, " + desc);
+            }
+            return null;
+        } else {
+            return binaryFile;
         }
     }
 
@@ -456,17 +533,11 @@ public class DatabaseStorageManager implements StorageManager {
     protected byte[] readBinaryFromFile(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
             String fieldName = field.getDBName();
-            File binaryFile = getBinaryFile(node, fieldName);
-            if (! binaryFile.canRead()) {
-                String desc = "while it should contain the byte data for node '" + node.getNumber() + "' field '" + fieldName + "'. Returning null.";
-                if (! binaryFile.exists()) {
-                    log.debug("The file '" + binaryFile + "' does not exist, " + desc);
-                } else {
-                    log.error("The file '" + binaryFile + "' can not be read, " + desc);
-                }
+            File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
+            if (binaryFile == null) {
                 return null;
             }
-            int fileSize = (int)binaryFile.length();
+            int fileSize = (int) binaryFile.length();
             byte[] buffer = new byte[fileSize];
             if (fileSize > 0) {
                 FileInputStream byteStream = new FileInputStream(binaryFile);
@@ -1773,6 +1844,95 @@ public class DatabaseStorageManager implements StorageManager {
                     releaseActiveConnection();
                 }
             }
+        }
+    }
+
+    /**
+     * Convert legacy file
+     * @return Number of converted fields. Or -1 if not storing binaries as files
+     */
+
+    public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException {
+        if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+            int result = 0;
+            int fromDatabase = 0;
+            Enumeration builders = factory.getMMBase().getMMObjects();
+            while (builders.hasMoreElements()) {
+                MMObjectBuilder builder = (MMObjectBuilder) builders.nextElement();
+                Iterator fields = builder.getFields().iterator();
+                while (fields.hasNext()) {
+                    FieldDefs field = (FieldDefs) fields.next();
+                    String fieldName = field.getDBName();
+                    if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
+
+                        // check whether it might be in a column
+                        boolean foundColumn = false;
+                        {
+                            try {
+                                getActiveConnection();
+                                String tableName = (String)factory.getStorageIdentifier(builder);
+                                DatabaseMetaData metaData = activeConnection.getMetaData();
+                                ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
+                                while (columnsSet.next()) {                                      
+                                    if (columnsSet.getString("COLUMN_NAME").equals(fieldName)) {
+                                        foundColumn = true;
+                                        break;
+                                    }
+                                }
+                                columnsSet.close();                            
+                            } catch (java.sql.SQLException sqe) {
+                                log.error(sqe.getMessage());
+                            } finally {
+                                releaseActiveConnection();
+                            }
+                        }
+
+                        List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
+                        log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");                        
+                        Iterator i = nodes.iterator();
+                        while (i.hasNext()) {
+                            MMObjectNode node = (MMObjectNode) i.next();
+                            File storeFile = getBinaryFile(node, fieldName);
+                            if (! storeFile.exists()) { // not found!                                
+                                File legacyFile = getLegacyBinaryFile(node, fieldName);
+                                if (legacyFile != null) {
+                                    storeFile.getParentFile().mkdirs();
+                                    if (legacyFile.renameTo(storeFile)) {
+                                        log.service("Renamed " + legacyFile + " to " + storeFile);
+                                        result++;
+                                    } else {
+                                        log.warn("Could not rename " + legacyFile + " to " + storeFile);
+                                    }
+                                } else {
+                                    if (foundColumn) {
+                                        byte[] bytes = readBinaryFromDatabase(node, field);
+                                        node.setValue(fieldName, bytes);
+                                        storeBinaryAsFile(node, field);
+                                        node.setValue(fieldName, null); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                        // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                        result++; fromDatabase++;
+                                        log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
+                                    }                                                         
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (result > 0) {
+                log.info("Converted " + result + " fields " + ((fromDatabase > 0 && fromDatabase < result) ? " of wich  " + fromDatabase + " from database" : ""));
+                if (fromDatabase > 0) {
+                    log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
+                }
+
+            } else {
+                log.service("Converted no fields");
+            }
+            return result;
+        } else {
+
+            // 
+            return -1;
         }
     }
 }
