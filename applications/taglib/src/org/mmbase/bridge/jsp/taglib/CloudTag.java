@@ -138,6 +138,12 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         throw new JspTagException("Cannot get Nodes directly from Cloud (use a group tag)");
     }
 
+    public String getId() {
+        String id = super.getId();
+        if (id != null) return id;
+        return "cloud";
+    }
+
 
     /**
     * Deny access to this page.
@@ -323,7 +329,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                 session.setAttribute("cloud_" + cloudName, cloud);
             }
         }        
-        pageContext.setAttribute("cloud", cloud);
+        pageContext.setAttribute(getId(), cloud);
         return EVAL_BODY_TAG;
     }
     

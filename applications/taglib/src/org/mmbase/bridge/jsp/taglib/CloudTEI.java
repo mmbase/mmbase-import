@@ -14,15 +14,21 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
 
 /**
-* The TEI class belonging to the CloudTag.
+* The TEI class belonging to the CloudTag and descendents
 *
 * @author Michiel Meeuwissen
 **/
 public class CloudTEI extends TagExtraInfo {
     
-
     public CloudTEI() { 
         super(); 
+    }
+
+    protected String defaultCloudName() {
+        return "cloud";
+    }
+    protected String cloudType() {
+        return "org.mmbase.bridge.Cloud";
     }
         
     /**
@@ -32,7 +38,16 @@ public class CloudTEI extends TagExtraInfo {
     public VariableInfo[] getVariableInfo(TagData data){      
         VariableInfo[] variableInfo = null;
         variableInfo    =  new VariableInfo[1];
-        variableInfo[0] =  new VariableInfo("cloud", "org.mmbase.bridge.Cloud", true, VariableInfo.NESTED);
+        Object idObject = data.getAttribute("id");
+        String cloudVarName = defaultCloudName();
+        if (idObject != null){
+            if (idObject == TagData.REQUEST_TIME_VALUE) { // then of course we cannot set a variable with that name 
+            } else {
+                cloudVarName = "" + idObject;
+            }
+        }
+
+        variableInfo[0] =  new VariableInfo(cloudVarName, cloudType(), true, VariableInfo.NESTED);
         return variableInfo;
     }
         
