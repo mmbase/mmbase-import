@@ -1,4 +1,4 @@
-<%@ page errorPage="exception.jsp"x
+<%@ page errorPage="exception.jsp"
 %><%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.49 2004-05-24 14:02:42 michiel Exp $
+     * @version  $Id: list.jsp,v 1.50 2004-08-24 09:24:52 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
