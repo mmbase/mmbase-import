@@ -22,7 +22,8 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: ListConditionTag.java,v 1.16 2003-06-06 10:03:08 pierre Exp $ 
+ */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
 

@@ -21,7 +21,8 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: LocaleTag.java,v 1.10 2003-06-06 10:03:08 pierre Exp $ 
+ */
 
 public class LocaleTag extends ContextReferrerTag  {
     private static Logger log = Logging.getLoggerInstance(LocaleTag.class.getName());

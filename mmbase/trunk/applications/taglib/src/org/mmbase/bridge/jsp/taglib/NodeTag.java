@@ -26,7 +26,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
+ * @version $Id: NodeTag.java,v 1.43 2003-06-06 10:03:09 pierre Exp $ 
  */
+
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(NodeTag.class.getName());

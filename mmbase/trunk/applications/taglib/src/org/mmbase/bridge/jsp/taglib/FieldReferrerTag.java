@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    FieldInfoTag
- *
+ * @version $Id: FieldReferrerTag.java,v 1.5 2003-06-06 10:03:07 pierre Exp $ 
  */
 
 public abstract class FieldReferrerTag extends NodeReferrerTag {	

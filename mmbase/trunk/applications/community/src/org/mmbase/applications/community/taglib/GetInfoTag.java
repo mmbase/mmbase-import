@@ -26,7 +26,9 @@ import org.mmbase.bridge.jsp.taglib.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
+ * @version $Id: GetInfoTag.java,v 1.11 2003-06-06 10:03:13 pierre Exp $
  */
+ 
 public class GetInfoTag extends NodeReferrerTag implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(GetInfoTag.class.getName());

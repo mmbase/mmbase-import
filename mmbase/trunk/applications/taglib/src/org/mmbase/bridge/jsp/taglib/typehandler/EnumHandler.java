@@ -26,6 +26,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: EnumHandler.java,v 1.4 2003-06-06 10:03:36 pierre Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {

@@ -15,6 +15,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
  * TEI class for the ImportTag. Only differs from WriterTEI in scope and default.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: ImportTEI.java,v 1.5 2003-06-06 10:03:07 pierre Exp $ 
  */
 public class ImportTEI extends WriterTEI {
     

@@ -16,7 +16,9 @@ import javax.servlet.jsp.JspTagException;
  *
  * @see PresentTag
  * @author Michiel Meeuwissen
+ * @version $Id: NotPresentTag.java,v 1.9 2003-06-06 10:03:26 pierre Exp $
  */
+
 public class NotPresentTag extends PresentTag {
 
     public int doStartTag() throws JspTagException {

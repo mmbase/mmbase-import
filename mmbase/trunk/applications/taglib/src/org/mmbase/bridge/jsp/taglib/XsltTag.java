@@ -21,6 +21,7 @@ import javax.xml.transform.Source;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: XsltTag.java,v 1.8 2003-06-06 10:03:10 pierre Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {

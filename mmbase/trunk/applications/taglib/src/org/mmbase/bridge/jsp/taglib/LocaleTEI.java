@@ -17,7 +17,9 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * TEI class for the Locale tag.
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: LocaleTEI.java,v 1.2 2003-06-06 10:03:08 pierre Exp $ 
+s */
+
 public class LocaleTEI extends TagExtraInfo {
 
     public VariableInfo[] getVariableInfo(TagData data) {

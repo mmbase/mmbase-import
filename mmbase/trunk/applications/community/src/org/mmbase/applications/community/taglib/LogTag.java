@@ -21,7 +21,9 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * at the start of the  body tag.
  *
  * @author Pierre van Rooden
+ * @version $Id: LogTag.java,v 1.3 2003-06-06 10:03:14 pierre Exp $
  */
+ 
 public class LogTag extends NodeTag {
 
     public final static String STOP =  "STOP";

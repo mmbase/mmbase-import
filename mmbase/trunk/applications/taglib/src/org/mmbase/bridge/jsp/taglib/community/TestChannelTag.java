@@ -22,7 +22,9 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * to true.
  *
  * @author Pierre van Rooden
+ * @version $Id: TestChannelTag.java,v 1.3 2003-06-06 10:03:15 pierre Exp $
  */
+ 
 public class TestChannelTag extends NodeTag {
 
     public final static String OPEN =  "OPEN";

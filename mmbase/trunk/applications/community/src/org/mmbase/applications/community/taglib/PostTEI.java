@@ -14,10 +14,12 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 
 /**
-* The GetInfo tag can export one jsp variable.
-*
-* @author Pierre van Rooden
-*/
+ * The GetInfo tag can export one jsp variable.
+ *
+ * @author Pierre van Rooden
+ * @version $Id: PostTEI.java,v 1.3 2003-06-06 10:03:14 pierre Exp $
+ */
+ 
 public class PostTEI extends TagExtraInfo {
 
     public PostTEI() {

@@ -21,7 +21,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
+ * @version $Id: CountRelationsTag.java,v 1.14 2003-06-06 10:03:07 pierre Exp $ 
  */
+
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());

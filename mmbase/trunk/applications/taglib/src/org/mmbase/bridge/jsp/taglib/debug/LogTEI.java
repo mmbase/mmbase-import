@@ -18,7 +18,9 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * A TEI for a Logger instance.
  *
  * @author Michiel Meeuwissen 
- **/
+ * @version $Id: LogTEI.java,v 1.2 2003-06-06 10:03:16 pierre Exp $ 
+ */
+
 public class LogTEI extends TagExtraInfo {
 
     public VariableInfo[] getVariableInfo(TagData data) {

@@ -32,7 +32,9 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
+ * @version $Id: IncludeTag.java,v 1.37 2003-06-06 10:03:25 pierre Exp $
  */
+
 public class IncludeTag extends UrlTag {
 
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 

@@ -26,8 +26,8 @@ import org.mmbase.util.Casting; // not used enough
  * Tags that are Writers can use the this class. It's a pitty that
  * they can't extend, but that's life.
  *
- *
  * @author Michiel Meeuwissen 
+ * @version $Id: WriterHelper.java,v 1.27 2003-06-06 10:03:10 pierre Exp $ 
  */
 
 public class WriterHelper extends BodyTagSupport {

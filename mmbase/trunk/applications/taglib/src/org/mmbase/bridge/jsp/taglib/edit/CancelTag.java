@@ -12,10 +12,11 @@ package org.mmbase.bridge.jsp.taglib.edit;
 import org.mmbase.bridge.Transaction;
 
 /**
-* This tag can be used inside a transaction tag, to cancel it.
-*
-* @author Michiel Meeuwissen 
-**/
+ * This tag can be used inside a transaction tag, to cancel it.
+ *
+ * @author Michiel Meeuwissen 
+ * @version $Id: CancelTag.java,v 1.5 2003-06-06 10:03:19 pierre Exp $
+ */
 
 public class CancelTag extends CommitTag {
 

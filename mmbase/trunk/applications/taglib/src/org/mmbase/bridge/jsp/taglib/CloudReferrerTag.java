@@ -22,11 +22,12 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* Tags which are meant to live as a child of the CloudTag, could extend this
-* class. 
-*
-* @author Michiel Meeuwissen 
-*/
+ * Tags which are meant to live as a child of the CloudTag, could extend this
+ * class. 
+ *
+ * @author Michiel Meeuwissen 
+ * @version $Id: CloudReferrerTag.java,v 1.20 2003-06-06 10:03:06 pierre Exp $ 
+ */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
 	

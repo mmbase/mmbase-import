@@ -21,7 +21,9 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * closed at the start of the body, depending on the action given.
  *
  * @author Pierre van Rooden
+ * @version $Id: ChannelTag.java,v 1.3 2003-06-06 10:03:12 pierre Exp $
  */
+ 
 public class ChannelTag extends NodeTag {
 
     public final static String OPEN =  "OPEN";

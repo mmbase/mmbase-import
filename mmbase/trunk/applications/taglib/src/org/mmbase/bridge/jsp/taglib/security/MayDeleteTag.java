@@ -14,10 +14,12 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A very simple tag to check if node may be deleted.
-*
-* @author Michiel Meeuwissen
-*/
+ * A very simple tag to check if node may be deleted.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: MayDeleteTag.java,v 1.6 2003-06-06 10:03:32 pierre Exp $
+ */
+
 public class MayDeleteTag extends MayWriteTag implements Condition {
 
     public int doStartTag() throws JspTagException {

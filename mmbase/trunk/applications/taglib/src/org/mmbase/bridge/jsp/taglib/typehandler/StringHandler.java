@@ -17,10 +17,14 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.Encode;
 
 /**
+ * @javadoc
+ *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: StringHandler.java,v 1.4 2003-06-06 10:03:38 pierre Exp $
  */
+
 public class StringHandler extends AbstractTypeHandler {
 
     /**
