@@ -28,8 +28,8 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.6 2003-06-17 09:32:19 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: Users.java,v 1.7 2003-06-18 14:15:39 michiel Exp $
+ * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
 
@@ -192,14 +192,14 @@ public class Users extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * @return The string representation the username of the User node.
      */
     public String getUserName(MMObjectNode node) {
          return node.getStringValue("username");
     }
 
     /**
-     * @javadoc
+     * Encodes a password for storage (to avoid plain text passwords).
      */
     protected String encode(String s)  {
         return encoder.encode(s);
@@ -249,7 +249,7 @@ public class Users extends MMObjectBuilder {
                 
                 if ("state".equals(field)) {
 
-                    // THIS KIND OF STUFF SHOUDL BE AVAILEBLE IN MMOBJECTBUILDER.
+                    // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
                     if (args.size() > 1) {
