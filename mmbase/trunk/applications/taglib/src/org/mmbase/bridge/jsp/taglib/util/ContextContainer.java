@@ -23,6 +23,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: ContextContainer.java,v 1.2 2002-08-01 20:20:07 pierre Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -38,7 +39,7 @@ public class ContextContainer extends HashMap {
 
     public ContextContainer(String _id, ContextContainer _parent) {
         super();
-        id = _id;        
+        id = _id;
         parent = _parent;
     }
 
@@ -46,12 +47,12 @@ public class ContextContainer extends HashMap {
      * Keys must be Strings, so put(Object, ..) is forbidden in this HashMap!
      *
      */
-       
+
     public Object put(Object key, Object value) {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
     }
     /**
-     * Not all Strings can be allowed as keys. Keys are like variable names. 
+     * Not all Strings can be allowed as keys. Keys are like variable names.
      *
      */
 
@@ -77,16 +78,16 @@ public class ContextContainer extends HashMap {
     private Pair getPair(String key, boolean checkParent) throws JspTagException {
         // checking if key contains a 'dot'.
         int dotpos = key.indexOf('.');
-        if (dotpos > 0) {  
+        if (dotpos > 0) {
             String contextKey = key.substring(0, dotpos);
             // find the Context:
             boolean wentDown = true;
             Object c = simpleGet(contextKey, checkParent);
             if(c == null && checkParent && parent != null) {
-                c =  parent.get(key, true); 
+                c =  parent.get(key, true);
                 wentDown = false;
-            } 
-            
+            }
+
             if(c == null) {
                 throw new JspTagException("Context '" + contextKey+ "' could not be found.");
             }
@@ -114,7 +115,7 @@ public class ContextContainer extends HashMap {
 
     /**
      * Like the containsKey of HashMap.
-     * 
+     *
      * @param key          The key to search
      * @param checkParent  If this is false, it will only look in the current Container (and below).
      */
@@ -125,7 +126,7 @@ public class ContextContainer extends HashMap {
             return simpleContainsKey(key, checkParent);
         } else {
             return p.context.containsKey(p.restKey, ! p.wentDown);
-        }                
+        }
     }
     public boolean containsKey(String key) throws JspTagException {
         return containsKey(key, true);
@@ -135,11 +136,11 @@ public class ContextContainer extends HashMap {
     /**
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
-    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot. 
+    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
         Object result =  super.get(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
-        } 
+        }
         return result;
     }
 
@@ -151,7 +152,7 @@ public class ContextContainer extends HashMap {
         Pair p = getPair(key, checkParent);
         if (p == null) {
             return simpleGet(key, checkParent);
-        } else {     
+        } else {
             return p.context.get(p.restKey, ! p.wentDown);
         }
     }
