@@ -18,7 +18,10 @@ import javax.servlet.jsp.JspTagException;
 /**
  * The time taglib provides you easy functionality for using times in your web pages.
  *
- * @author Rob Vermeulen (VPRO)
+ * @author  Rob Vermeulen (VPRO)
+ * @author  Michiel Meeuwissen
+ * @since   MMBase-1.6
+ * @version $Id: TimeTag.java,v 1.3 2002-04-16 09:39:42 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -30,35 +33,39 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     private String time = null;
     private String inputformat = null;
     private String offset = null;
-    private String format = null;
-    private String language = null;
+ 
+    /**
+     * DateFormat user for parsing dates. Given dates are always in english. 
+     */
+    private SimpleDateFormat parseFormat = new SimpleDateFormat("", Locale.ENGLISH);
+
+    /**
+     * Format attribute used for displaying the dates.
+     */
+    private String format;
     
-    // DateFormat used for displaying the dates.
-    private SimpleDateFormat sdf = null;
-    
-    // Fast way to find the day number of a day
+    /**
+     * Fast way to find the day number of a day
+     */
     static private Hashtable days = new Hashtable();
-    // Fast way to find the month number of a month
+    /**
+     * Fast way to find the month number of a month
+     */
     static private Hashtable months = new Hashtable();
-    static private String userlanguage = null;
     
     static {
-        userlanguage = System.getProperty("user.language");
-        
-        // Set to english
-        Locale language = new Locale("en","");
-        SimpleDateFormat sdf = new SimpleDateFormat("",language);
-        DateFormatSymbols dfs = sdf.getDateFormatSymbols();
-        
+        DateFormatSymbols dfs = new SimpleDateFormat("", Locale.ENGLISH).getDateFormatSymbols();
         setDays(dfs);
         setMonths(dfs);
     }
-    
+
+
+    // Writer functionality
     public void haveBody() { helper.haveBody(); }
 
        
     public void setVartype(String t) throws JspTagException {
-        throw new JspTagException("Time tag can only produces Strings");
+        helper.setVartype(t);
     }
     
     public void setJspvar(String j) {
@@ -69,12 +76,14 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         helper.setWrite(getAttributeBoolean(w));
     }
     
+    // Attributes
     public void setTime(String time) throws JspTagException {
         this.time = getAttributeValue(time);
     }
     
     public void setFormat(String format) throws JspTagException {
         this.format = getAttributeValue(format);
+
     }
     
     public void setInputformat(String inputformat) throws JspTagException {
@@ -84,40 +93,30 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     public void setOffset(String offset) throws JspTagException {
         this.offset = getAttributeValue(offset);
     }
-    
-    public void setLanguage(String language) throws JspTagException {
-        this.language=getAttributeValue(language);
-    }
-    
+        
     public Object getWriterValue() throws JspTagException {
         return evaluateTime();
     }
     
+
+    
     public int doStartTag() throws JspTagException {
-        return EVAL_BODY_AGAIN;
+        return EVAL_BODY_BUFFERED;
     }
     
     public int doAfterBody() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        
-        if (helper.getJspvar() == null) {
-            helper.overrideWrite(true);
-        }
         helper.setValue(evaluateTime());
-        helper.setVartype("string");
-        helper.setJspvar(pageContext);
-        
+        helper.setJspvar(pageContext); 
+      
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
-        }
-        
+        }        
         // Strange, release is not always invoked.
         time = null;
         inputformat = null;
         offset = null;
         format = null;
-        language = null;
-        
         return helper.doAfterBody();
     }
     
@@ -126,23 +125,69 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         inputformat = null;
         offset = null;
         format = null;
-        language = null;
     }
        
+
+    /**
+     * Converts a string to a DateFormat constant.
+     * 
+     * @param style A string describing the dateformat style (FULL, LONG, MEDIUM, SHORT)
+     * @return A DateFormat style constant.
+     * @see    java.text.DateFormat
+     */
+    private int getDateFormatStyle(String style) throws JspTagException {
+        if ("FULL".equals(style)) {
+            return DateFormat.FULL;
+        } else if ("LONG".equals(style)) {
+            return DateFormat.LONG;
+        } else if ("MEDIUM".equals(style)) {
+            return DateFormat.MEDIUM;
+        } else if ("SHORT".equals(style)) {
+            return DateFormat.SHORT;
+        } else {
+            throw new JspTagException("Unknown DateFormat Style " + style);
+        }
+    }
     /**
      * Evaluate the time.
+     * @TODO This function is a too complicated. The several functionalities should be spread to different functions.
+     * @javadoc
      */
     private String evaluateTime() throws JspTagException {
-        log.debug("TIME="+time+" OFFSET="+offset+" FORMAT="+format+" INPUTFORMAT="+inputformat+" LANUAGE="+language);
-        Date date = null;
-        
-        // Select the language for displaying dates.
-        if(language==null) {
-            language = userlanguage;
+        if (log.isDebugEnabled()) {
+            log.debug("TIME="+time+" OFFSET="+offset+" FORMAT="+format+" INPUTFORMAT="+inputformat);
         }
-        Locale local = new Locale(language,"");
-        sdf = new SimpleDateFormat("",local);
+        DateFormat dateFormat = null;
+        if (format != null) {            
+            Locale locale = Locale.getDefault();
+
+            /*
+            LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
+            if (localeTag != null) {
+                locale = localeTag.getLocale();
+            } else {
+                locale = Locale.getDefault();
+            }
+            */
+
+            if (format.charAt(0) == ':') {
+                log.debug("found symbolic format");
+                if (format.charAt(1) == '.') {
+                    dateFormat = DateFormat.getTimeInstance(getDateFormatStyle(format.substring(2)), locale);
+                } else if (format.indexOf('.') == -1) {
+                    dateFormat = DateFormat.getDateInstance(getDateFormatStyle(format.substring(1)), locale);
+                } else {
+                    int i = format.indexOf('.');
+                    dateFormat = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)), 
+                                                               getDateFormatStyle(format.substring(i+1)), locale);
+                }
+            } else {
+                dateFormat = new SimpleDateFormat(format, locale);
+            }
+        }
         
+
+        Date date = null; 
         // If the time attribute is not set, check if referid is used, otherwise check if the parent set the time.
         // Otherwise use current time
         if(time==null) {
@@ -159,19 +204,21 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             if(time==null) {
                 date = new Date();
             }
+        } else {        
+            // Is the time given in second from EPOC (UTC)?
+            try {
+                long timeFromEpoc = Long.parseLong(time);
+                date = new Date(timeFromEpoc*1000);
+            } catch (NumberFormatException nfe) {
+                // perhaps it was a keyWord... 
+            }
         }
-        
-        // Is the time given in second from EPOC (UTC)?
-        try {
-            long timeFromEpoc = Long.parseLong(time);
-            date = new Date(timeFromEpoc*1000);
-        } catch (NumberFormatException nfe) {}
         
         // Is a day specified, like: monday, tuesday ?
         if(date==null && isDay(time)) {
             try {
                 date = handleDay(time);
-            } catch (ParseException e) {
+            } catch (ParseException e) {               
                 log.error("Cannot evaluate handleDay with time "+time);
             }
         }
@@ -204,8 +251,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         // The input format is provided. We use that to parse the time attribute
         if(date==null && inputformat!=null) {
             try {
-                sdf.applyPattern(inputformat);
-                date = sdf.parse(time);
+                parseFormat.applyPattern(inputformat);
+                date = parseFormat.parse(time);
             } catch (Exception e) {
                 return "Cannot evaluate time "+time+" inputformat "+inputformat;
             }
@@ -222,46 +269,33 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             // If no format is specifyd, we return the time in second from EPOC (UTC)
             return ""+date.getTime()/1000;
         } else {
-            // Maybe add extra formats for reltime things org.mmbase.util.Reltime.
-            sdf.applyPattern(format);
-            return sdf.format(date);
+            return dateFormat.format(date);
         }
     }
     
     /**
-     * check if it is a day
+     * Check if a certain string is the name of a day.    
      */
     private boolean isDay(String day) {
-        if(days.containsKey(day.toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
+        return days.containsKey(day.toLowerCase());
     }
     
     /**
-     * check if it is a month
+     * Check if a certain string is the name of a month.
      */
     private boolean isMonth(String month) {
-        if(months.containsKey(month.toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
+        return months.containsKey(month.toLowerCase());
     }
     
     /**
      * check if it is a keyword
      */
     private boolean isKeyword(String keyword) {
-        if(keyword.equalsIgnoreCase("now") ||
-        keyword.equalsIgnoreCase("today") ||
-        keyword.equalsIgnoreCase("tomorrow") ||
-        keyword.equalsIgnoreCase("yesterday"))  {
-            return true;
-        } else {
-            return false;
-        }
+        return 
+            keyword.equalsIgnoreCase("now") ||
+            keyword.equalsIgnoreCase("today") ||
+            keyword.equalsIgnoreCase("tomorrow") ||
+            keyword.equalsIgnoreCase("yesterday");
     }
     
     /**
@@ -273,12 +307,12 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         inputformat="y/M/d H:m:s";
         
         if(time.length()==8) {
-            sdf.applyPattern("y/M/d");
-            time=sdf.format(date)+" "+time;
+            parseFormat.applyPattern("y/M/d");
+            time=parseFormat.format(date)+" "+time;
         } else {
             if(time.length()==10) {
-                sdf.applyPattern("H:m:s");
-                time+=" "+sdf.format(date);
+                parseFormat.applyPattern("H:m:s");
+                time+=" "+parseFormat.format(date);
             } else {
                 if(time.length()!=19) {
                     throw new Exception();
@@ -398,22 +432,22 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * return the start of the day
      */
     private Date getBeginOfDay(Date date) throws ParseException {
-        sdf.applyPattern("yyyy/MM/dd");
-        String newdate=sdf.format(date);
-        newdate+=" 00:00:00";
-        sdf.applyPattern("yyyy/MM/dd HH:mm:ss");
-        return sdf.parse(newdate);
+        parseFormat.applyPattern("yyyy/MM/dd");
+        String newdate = parseFormat.format(date);
+        newdate +=" 00:00:00";
+        parseFormat.applyPattern("yyyy/MM/dd HH:mm:ss");
+        return parseFormat.parse(newdate);
     }
     
     /**
      * return the start of the month
      */
     private Date getBeginOfMonth(Date date) throws ParseException {
-        sdf.applyPattern("yyyy/MM");
-        String newdate=sdf.format(date);
+        parseFormat.applyPattern("yyyy/MM");
+        String newdate=parseFormat.format(date);
         newdate+="/01 00:00:00";
-        sdf.applyPattern("yyyy/MM/dd HH:mm:ss");
-        return sdf.parse(newdate);
+        parseFormat.applyPattern("yyyy/MM/dd HH:mm:ss");
+        return parseFormat.parse(newdate);
     }
     
     /**
