@@ -1,4 +1,5 @@
 /*
+$Id: EncodeHandler.java,v 1.4 2000-03-21 15:36:57 wwwtech Exp $
 
 VPRO (C)
 
@@ -6,6 +7,7 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders.vwms;
 
@@ -21,13 +23,13 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Rico Jansen
+ * @version $Revision: 1.4 $ $Date: 2000-03-21 15:36:57 $
  */
 public class EncodeHandler implements Runnable {
 
 	private String 	classname = getClass().getName();
 	private boolean debug = false;
 	private void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
-
 
 	Thread kicker = null;
 	EncodeCop parent;
@@ -82,14 +84,14 @@ public class EncodeHandler implements Runnable {
 		// by recording it using a cdplayer allready 'claimed'
 		// by the user.
 
-		System.out.println("EncodeHandler newcdtrack started");
+		debug("EncodeHandler newcdtrack started");
 
 		// get the cdtrack id that will be used in the rawaudio node
 		int id=node.getIntValue("number");	
 
 		// get the owner of the cdtrack to find the cdplayer he has claimed !
 		String owner=node.getStringValue("owner");	
-		System.out.println("EncodeCop -> hunt cdplayer claimed by : "+owner);
+		debug("EncodeCop -> hunt cdplayer claimed by : "+owner);
 		cdplayers bul=(cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");	
 		MMObjectNode playernode=bul.getClaimedBy(owner);
 
@@ -99,7 +101,7 @@ public class EncodeHandler implements Runnable {
 			MMObjectNode wavnode=addRawAudio(id,2,3,441000,2); 
 
 			// setup the player & start the player  
-			System.out.println("encodeHandler -> "+playernode);
+			debug("encodeHandler -> "+playernode);
 			playernode.setValue("state","record");
 			playernode.setValue("info","tracknr="+node.getIntValue("tracknr")+" id="+id);
 			playernode.commit();
@@ -110,7 +112,7 @@ public class EncodeHandler implements Runnable {
 			while (!changed) {	
 				parent.Vwms.mmb.mmc.waitUntilNodeChanged(playernode);
 				newnode=bul.getNode(playernode.getIntValue("number"));
-				System.out.println("NEWNODE="+newnode);
+				debug("NEWNODE="+newnode);
 				String state=newnode.getStringValue("state");
 				if (state.equals("waiting")||state.equals("error")) changed=true;
 			}
@@ -125,13 +127,13 @@ public class EncodeHandler implements Runnable {
 			addRawAudio(id,1,6,96000,2);   
 
 		} else {
-			System.out.println("EncodeCop -> problem : can't find cdplayer claimed by : "+owner);
+			debug("EncodeCop -> problem : can't find cdplayer claimed by : "+owner);
 		}
 	}
 
 
 	public void doG2Encode() {
-		System.out.println("EncodeHandler g2encoder started");
+		debug("EncodeHandler g2encoder started");
 
 		g2encoders bul=(g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");	
 

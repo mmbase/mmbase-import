@@ -1,6 +1,6 @@
 /*
 
-$Id: MMServers.java,v 1.6 2000-03-20 13:17:29 wwwtech Exp $
+$Id: MMServers.java,v 1.7 2000-03-21 15:37:31 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/20 13:17:29  wwwtech
+Rico: added super.getValue for global function support
+
 Revision 1.5  2000/03/13 10:41:11  wwwtech
 Rico: increased service timeout to 15 minutes
 
@@ -37,13 +40,13 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.6 $ $Date: 2000-03-20 13:17:29 $
+ * @version $Revision: 1.7 $ $Date: 2000-03-21 15:37:31 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	private String  classname = getClass().getName();
 	private boolean debug	  = true;
-	private void	debug(String msg){System.out.println(classname+":"+msg);}
+	// private void	debug(String msg){System.out.println(classname+":"+msg);}
 
 	private int serviceTimeout=60*15; // 15 minutes
 	private String javastr;

@@ -21,6 +21,8 @@ import org.mmbase.module.builders.*;
  */
 
 public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
+	public String classname = getClass().getName();
+	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	// probe
 	VwmProbe probe;

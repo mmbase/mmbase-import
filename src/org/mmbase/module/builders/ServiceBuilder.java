@@ -29,7 +29,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
-	private void debug(String msg){System.out.println(classname+":"+msg);}
+	// private void debug(String msg){System.out.println(classname+":"+msg);}
 
 	Hashtable cache=null;
 
