@@ -1,4 +1,4 @@
-lo/*
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.18 2002-07-09 13:58:14 pierre Exp $
+ * @version $Id: Dove.java,v 1.19 2002-07-09 18:13:39 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -936,7 +936,8 @@ public class Dove extends AbstractDove {
             RelationManager relman=cloud.getRelationManager(role);
             String sourcenumber=getNodeReferenceFromValue("_source",values, aliases);
             String destinationnumber=getNodeReferenceFromValue("_destination",values, aliases);
-            Relation newnode=relman.createRelation(cloud.getNode(sourcenumber),cloud.getNode(destinationnumber));
+            if (log.isDebugEnabled()) log.debug("Creating a relations between node " + sourcenumber + " and " + destinationnumber);
+            Relation newnode=relman.createRelation(cloud.getNode(sourcenumber), cloud.getNode(destinationnumber));
             Element relationelement=doc.createElement(RELATION);
             // note that source and destination may be switched (internally) when you
             // commit a bi-directional relation, if the order of the two differs in typerel
@@ -961,7 +962,7 @@ public class Dove extends AbstractDove {
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support role : " + role + ":" + e.getMessage(),out);
+            Element err=addContentElement(ERROR,"Error. Does the cloud does support role :" + role + "?:" + e.getMessage(), out);
             err.setAttribute(ELM_TYPE,IS_CLIENT);
         }
         return false;
@@ -1038,7 +1039,7 @@ public class Dove extends AbstractDove {
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support role : "+role,out);
+            Element err=addContentElement(ERROR,"Cloud does not support role : "+role, out);
             err.setAttribute(ELM_TYPE,IS_SERVER);
         }
         return false;
@@ -1093,7 +1094,7 @@ public class Dove extends AbstractDove {
             }
         } catch(RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support type : "+type + "(" + e.toString() + ")",out);
+            Element err=addContentElement(ERROR, "Cloud does not support type : "+type + "(" + e.toString() + ")",out);
             err.setAttribute(ELM_TYPE,IS_CLIENT);
         }
         return false;
