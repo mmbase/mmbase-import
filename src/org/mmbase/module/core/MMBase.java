@@ -687,11 +687,13 @@ public class MMBase extends ProcessorModule  {
 	public MMJdbc2NodeInterface getDatabase() {
 		if (database==null) {
 			try {
-				String tmp=getInitParameter("JDBC2NODE");
-				Class newclass=Class.forName("org.mmbase.module.database.support."+tmp);
+				String databasename=getInitParameter("DATABASE");
+				String path=MMBaseContext.getConfigPath()+("/databases/"+databasename+".xml");
+				XMLDatabaseReader dbdriver=new XMLDatabaseReader(path);
+				Class newclass=Class.forName(dbdriver.getMMBaseDatabaseDriver());
 				if (debug) debug("Loaded load class : "+newclass);
 				database=(MMJdbc2NodeInterface)newclass.newInstance();
-				database.init(this);
+				database.init(this,dbdriver);
 			} catch(Exception e) {
 				e.printStackTrace();	
 			}
