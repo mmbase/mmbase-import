@@ -9,10 +9,10 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.10 2002-07-18 09:20:00 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.11 2002-07-18 11:37:40 michiel Exp $
   -->
 
-  <xsl:import href="baselist.xsl" />
+  <xsl:import href="xsl/baselist.xsl" />
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
@@ -128,6 +128,7 @@
         <meta http-equiv="Content-Type"  content="text/html; charset=utf-8" />
         <title>Search Results</title>
         <link rel="stylesheet" type="text/css" href="../style/searchlist.css" />
+        <xsl:call-template name="extrastyle" /> <!-- see base.xsl -->
       </head>
       <body onload="window.focus(); preselect(selected);">
         <script language="javascript">
