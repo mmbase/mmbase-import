@@ -34,12 +34,12 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.7 2003-09-19 09:59:43 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.8 2003-11-18 15:00:21 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
+    private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
     // standard sql reserved words
     private final static String STANDARD_SQL_KEYWORDS =
@@ -184,7 +184,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
             con.close();
         } catch (SQLException se) {
-            log.fatal(Logging.stackTrace(se));
+            // log.fatal(se.getMessage() + Logging.stackTrace(se)); will be logged in StorageManagerFactory already
             throw new StorageInaccessibleException(se);
         }
 
