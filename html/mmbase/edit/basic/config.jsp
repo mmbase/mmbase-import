@@ -47,6 +47,7 @@
              <option value="blue.css" <mm:compare referid="config.style_sheet" value="blue.css">selected="selected"</mm:compare>>blue</option>
              <option value="purple.css" <mm:compare referid="config.style_sheet" value="purple.css">selected="selected"</mm:compare>>purple</option>
              <option value="yellow.css" <mm:compare referid="config.style_sheet" value="yellow.css">selected="selected"</mm:compare>>yellow</option>
+             <option value="my_editors.css.jsp" <mm:compare referid="config.style_sheet" value="my_editors.css.jsp">selected="selected"</mm:compare>>My Editors</option>
             </select></td>
      </tr>
      <tr><td><%= m.getString("config.method") %></td>
