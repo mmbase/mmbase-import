@@ -31,7 +31,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="deprecation" value="on" />
 
   <property name="project.source.dir" location="." />
-  <property name="project.templates.dir" location="${project.source.dir}/templates" />
+  <property name="project.templates.dir" value="${project.source.dir}/templates" />
+  <property name="project.examples.dir"  value="${project.source.dir}/examples" />
   <property name="project.build.postfix" value="" />
   <property name="project.build.dir"  location="./build${project.build.postfix}" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
@@ -49,7 +50,8 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="webapp.dir"      value="${build.dir}/mmbase/mmbase-webapp"/>
 
-  <property name="templates.dir"   value="${webapp.dir}/mmbase" />
+  <property name="templates.dir"   value="${webapp.dir}/mmbase" />  
+  <property name="examples.dir"    value="${webapp.dir}/examples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
@@ -66,7 +68,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="project.target.templates.dir" value="${project.name}" />
   <property name="mmbase.classes" value="no_extra_classes" />
-  <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
+  <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but that would result in copying everything in stead (ant suck!)... -->
 
   <property name="tests.source.dir"   location="../../tests" />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
@@ -88,6 +90,10 @@ Create a build.xml with a DOCTYPE like this:
   <target name="init" depends="">
     <available property="src.available"           file="${project.source.dir}/src"/>
     <available property="documentation.available" file="${project.source.dir}/documentation" />
+
+    <available property="examples.available"      file="${project.examples.dir}"/>
+    <available property="templates.available"      file="${project.templates.dir}"/>
+
 
     <condition property="do.documentation">
        <equals arg1="${build.documentation}" arg2="true" />
@@ -298,14 +304,22 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </javadoc>
   </target>
 
-  <target name="install" depends="jar">
-    <copy todir="${release.lib.dir}" file="${project.jar}" /> 
+  <target name="install.templates" depends="init" if="templates.available">
     <copy todir="${templates.dir}/${project.target.templates.dir}">
       <fileset dir="${project.templates.dir}">
-        <include name="**"/>
       </fileset>      
     </copy>
-    
+  </target>
+
+  <target name="install.examples" depends="init" if="examples.available">
+    <copy todir="${examples.dir}/${project.target.templates.dir}">
+      <fileset dir="${project.examples.dir}">
+      </fileset>      
+    </copy>
+  </target>
+
+  <target name="install" depends="jar,install.templates,install.examples">
+    <copy todir="${release.lib.dir}" file="${project.jar}" /> 
   </target>
 
 
