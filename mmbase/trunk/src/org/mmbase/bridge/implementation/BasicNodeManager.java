@@ -22,6 +22,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.Operation;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
+import org.mmbase.cache.NodeListCache;
 
 
 /**
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.71 2003-12-21 13:23:28 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.72 2004-01-06 18:46:43 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -51,6 +52,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @since MMBase-1.7
      */
     protected Set queryFields = new HashSet();
+
+    private static NodeListCache nodeListCache = NodeListCache.getCache();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -270,10 +273,19 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public NodeList getList(NodeQuery query) {
         try {
             boolean checked = cloud.setSecurityConstraint(query);
+
+
             
-            List resultList = mmb.getDatabase().getNodes(query, builder);
             
-            builder.processSearchResults(resultList);
+            List resultList = (List) nodeListCache.get(query);
+
+            if (resultList == null) {
+                resultList = mmb.getDatabase().getNodes(query, builder);                        
+                builder.processSearchResults(resultList);
+                nodeListCache.put(query, resultList);
+            }
+
+
             
             BasicNodeList resultNodeList = new BasicNodeList(resultList, cloud);
             
