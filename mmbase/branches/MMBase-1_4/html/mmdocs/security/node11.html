@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2K.1beta (1.56)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>context</TITLE>
+<META NAME="description" CONTENT="context">
+<META NAME="keywords" CONTENT="status2">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2K.1beta">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="status2.css">
+
+<LINK REL="previous" HREF="node10.html">
+<LINK REL="up" HREF="node9.html">
+<LINK REL="next" HREF="node12.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html126"
+  HREF="node12.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.png"></A> 
+<A NAME="tex2html124"
+  HREF="node9.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.png"></A> 
+<A NAME="tex2html120"
+  HREF="node10.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html127"
+  HREF="node12.html">About this document ...</A>
+<B> Up:</B> <A NAME="tex2html125"
+  HREF="node9.html">The implementation</A>
+<B> Previous:</B> <A NAME="tex2html121"
+  HREF="node10.html">basic</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00042000000000000000">
+context</A>
+</H2>
+This implementation can be used, when a more advanged system is needed.
+
+<UL>
+<LI>org.mmbase.security.implementation.context.ContextAuthentication
+	This class will load several modules, which can be used for authentication. The config file for this authentication can be found in the config directory security/context/config.xml. In this xml the modules, users, groups and contexes can be specified.
+    	Notice that the name of the context must be the same as the name of the owner field inside MMBase.
+
+<P>
+</LI>
+<LI>org.mmbase.security.implementation.context.ContextAuthorization
+	This class will load the authorization. The config file for this authentication can be found in the config directory security/context/config.xml. In this xml the modules, users, groups and contextes can be specified. 
+	Notice that the name of the context must be the same as the name of the owner field inside MMBase.
+</LI>
+</UL>
+The config file of the context security has the following settings:
+
+<P>
+
+<UL>
+<LI>/config 
+    The configuration for the user-&gt;group*-&gt;context-&gt;object security
+
+<P>
+</LI>
+<LI>/config/loginmodules 
+    The login modules are used for authentication of the users, the name is the method which is used during the login
+
+<P>
+</LI>
+<LI>/config/loginmodules 
+    is the module whitch should be loaded and has the following attributes:
+    
+<UL>
+<LI>name 
+	The name of the module, this will be used to lookup the modules. This is specified when a user wants to do a login.
+</LI>
+<LI>class
+	The class which should be used for a login on the system.
+    
+</LI>
+</UL>
+</LI>
+<LI>/config/loginmodules/properties OPTIONAL
+    extra properties that can be used by the loginmodule.
+
+<P>
+</LI>
+<LI>/config/accounts 
+     This is used by the loginmodules, to get the users with their properties
+</LI>
+<LI>/config/accounts/username 
+    The information about the users which are known to our system. it has the following attributes:
+    
+<UL>
+<LI>name 
+	The name name of the user.
+</LI>
+<LI>context
+	The context which should be used as default context: when a new object is created by this user, the context will be set to the value specified here.
+    
+</LI>
+</UL>
+</LI>
+<LI>/config/accounts/username/identify
+    The information for a user for a specific login module. The value of this tag could be used by a loginmodule to verify the user.
+    
+<UL>
+<LI>type What kind of login module should use this information
+</LI>
+<LI>rank What will be the rank of the user after a succesfull login
+    
+</LI>
+</UL>    
+</LI>
+<LI>/config/groups The groups which are known to our system.
+</LI>
+<LI>/config/groups/group A group in our system.
+    
+<UL>
+<LI>name The name of the current group
+    
+</LI>
+</UL>
+</LI>
+<LI>/config/groups/group/contains Something that gets the rights of the current group.
+    
+<UL>
+<LI>type The type of what gets the rights of the current group.
+</LI>
+<LI>named The name of what gets the rights of the current group.	
+    
+</LI>
+</UL>        
+</LI>
+<LI>/config/contexts The contexts which are in our system.
+</LI>
+<LI>/config/contexts/context A context in our system
+    
+<UL>
+<LI>name The name of the context, this is also the value which is stored/used from the owner field
+    
+</LI>
+</UL>            
+</LI>
+<LI>/config/contexts/context/operation A operation which can be done on the system.
+    
+<UL>
+<LI>type The type of operation which can be done on the system (can be: create/read/write/link/delete/change context )
+    
+</LI>
+</UL>
+</LI>
+<LI>/config/contexts/context/operation/contains The rights will be granted to the following group:
+    
+<UL>
+<LI>group The name of the group which will be granted the rights.
+    
+</LI>
+</UL>
+</LI>
+</UL><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html126"
+  HREF="node12.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.png"></A> 
+<A NAME="tex2html124"
+  HREF="node9.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.png"></A> 
+<A NAME="tex2html120"
+  HREF="node10.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html127"
+  HREF="node12.html">About this document ...</A>
+<B> Up:</B> <A NAME="tex2html125"
+  HREF="node9.html">The implementation</A>
+<B> Previous:</B> <A NAME="tex2html121"
+  HREF="node10.html">basic</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Eduard.Witteveen@omroep.nl
+</ADDRESS>
+</BODY>
+</HTML>
