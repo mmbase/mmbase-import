@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.46 2004-02-16 17:27:25 henk Exp $</edition>
+    <edition>$Id: index.xml,v 1.47 2004-02-27 13:08:01 gerard Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -84,13 +84,6 @@
         id="installtomcat.pdf" url="administrators/install-tomcat.pdf">PDF</ulink>)</para>
       </listitem>
 
-      <listitem>
-        <!-- old format (mmdocs) documentation -->
-
-        <para>Installation instructions for Orion (<ulink
-        id="installationorion" url="install/orion-1.x.html">HTML</ulink>)</para>
-      </listitem>
-
 	  <listitem>
         <!-- external documentation -->
         <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
@@ -154,13 +147,6 @@
         id="applications.pdf" url="informationanalysts/applications.pdf">PDF</ulink>)</para>
       </listitem>
 
-      <listitem>
-        <!-- old format (mmdocs) documentation -->
-
-        <para><ulink id="remoteservices"
-        url="administrators/remoteservices.html">MMBase Remote Services</ulink></para>
-      </listitem>
-
     </itemizedlist>
   </section>
 
@@ -178,13 +164,6 @@
         <para>Remote MMBase Cloud Interface (<ulink id="rmmci"
         url="backenddevelopers/rmmci.html">HTML</ulink>, <ulink id="rmmci.pdf"
         url="backenddevelopers/rmmci.pdf">PDF</ulink>)</para>
-      </listitem>
-
-      <listitem>
-        <!-- old format (mmdocs) documentation -->
-
-        <para><ulink id="tcp" url="developers/TCP2_4_8.html">TCP and the
-        Transaction Handler</ulink></para>
       </listitem>
 
       <listitem>
@@ -275,13 +254,6 @@
       </listitem>
 
       <listitem>
-        <!-- old format (mmdocs) documentation -->
-
-        <para>SCAN (<ulink id="veryoldanddeprecatedscan"
-        url="templaters/SCAN1_0.html">HTML</ulink>)</para>
-      </listitem>
-
-      <listitem>
         <para>XML Importer (TCP 2.0)</para>
 
         <para>Overview (<ulink id="xmlimporteroverview"
@@ -290,14 +262,12 @@
         url="frontenddevelopers/xmlimporter/overview.pdf">PDF</ulink>)</para>
 
         <para>Quick start (<ulink id="xmlimporterquickstart"
-        url="developers/xmlimporter/quickstart.html">HTML</ulink>,
-        <ulink id="xmlimporterquickstart.pdf"
-        url="developers/xmlimporter/quickstart.pdf">PDF</ulink>)</para>
+        url="developers/xmlimporter/quickstart.html">HTML</ulink>, 
+        PDF version not available)</para>
 
         <para>Cook Book (<ulink id="xmlimportercookbook"
-        url="developers/xmlimporter/cookbook.html">HTML</ulink>,
-        <ulink id="xmlimportercookbook.pdf"
-        url="developers/xmlimporter/cookbook.pdf">PDF</ulink>)</para>
+        url="developers/xmlimporter/cookbook.html">HTML</ulink>, 
+        PDF version not available)</para>
       </listitem>
     </itemizedlist>
   </section>
