@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.28 2000-07-22 10:48:45 daniel Exp $
+	$Id: HtmlBase.java,v 1.29 2000-08-07 22:25:14 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.28  2000/07/22 10:48:45  daniel
+	Removed some debug
+	
 	Revision 1.27  2000/07/15 23:58:32  daniel
 	added option to turn html caching off
 	
@@ -113,7 +116,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.28 2000-07-22 10:48:45 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.29 2000-08-07 22:25:14 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -265,7 +268,11 @@ public class HtmlBase extends ProcessorModule {
 		MMObjectBuilder bul=null;
 		try {
 
-			snode=Integer.parseInt(tagger.Value("NODE"));
+			String tm=tagger.Value("NODE");
+			snode=mmb.OAlias.getNumber(tm);
+			if (snode==-1) {
+				snode=Integer.parseInt(tm);
+			}
 			int otype=mmb.TypeDef.getIntValue(type);
 			bul=mmb.getMMObject(type);
 			Enumeration e=null;
