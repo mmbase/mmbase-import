@@ -19,7 +19,7 @@
   <siteDirectory>/home/maven/site/mmbase</siteDirectory>
   <distributionDirectory>/home/maven/site/mmapps/jars/</distributionDirectory>
   <repository>
-    <connection>scm:cvs:pserver:guest@www.mmbase.org:/usr/local/cvs:all</connection>
+    <connection>scm:cvs:pserver:guest@www.mmbase.org:/usr/local/cvs:mmbase-core</connection>
     <url>http://www.mmbase.org/viewcvs/</url>
   </repository>
   <versions>
@@ -103,8 +103,9 @@
     <report>maven-junit-report-plugin</report>
     <report>maven-jxr-plugin</report>
     <report>maven-license-plugin</report>
+    <report>maven-jdiff-plugin</report>
+    <!--
     <report>maven-linkcheck-plugin</report>
-<!--
     <report>maven-checkstyle-plugin</report>
 	 -->
     <report>maven-pmd-plugin</report>
