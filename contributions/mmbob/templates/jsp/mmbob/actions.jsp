@@ -1,6 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud>
 <mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
 <mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
+</mm:cloud>
 <mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <mm:import externid="action" />
 <mm:import externid="forumid" />
