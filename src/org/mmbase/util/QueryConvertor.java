@@ -171,7 +171,8 @@ class DBConditionItem extends ParseItem {
         char operatorChar;
 
         conditionPos = item.indexOf('=');
-        identifier = item.substring(0,conditionPos);
+        if (conditionPos == -1) throw new RuntimeException("No '=' found in query item '" + item + "'");
+        identifier = item.substring(0, conditionPos);
         boolean hasPrefix = false;
         String prefix = "";
         int prefixPos = identifier.indexOf(".");
