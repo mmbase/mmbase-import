@@ -12,15 +12,15 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import javax.servlet.jsp.JspTagException;
 
 /**
-* A very simple tag to check if a request post parameter is not present.
-* Inspired by Struts taglib.
-* 
-* @author Michiel Meeuwissen
-*/
+ * The inverse of PresentTag.
+ *
+ * @see PresentTag
+ * @author Michiel Meeuwissen
+ */
 public class NotPresentTag extends PresentTag {
               
     public int doStartTag() throws JspTagException {
-        if (getKey() == null) {
+        if (! getContextTag().isPresent(getReferid())) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
