@@ -295,7 +295,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             anonymousClouds.put(key, cloud);
         }
     }
-    private String getSessionName() {
+    public String getSessionName() {
         if (sessionName == null) {
             return "cloud_" + cloudName;
         } else {
