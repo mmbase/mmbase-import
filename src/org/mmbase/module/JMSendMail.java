@@ -25,13 +25,19 @@ import org.mmbase.util.logging.*;
  * @since  MMBase-1.6
  */
 public class JMSendMail extends AbstractSendMail {
-    private static Logger log = Logging.getLoggerInstance(JMSendMail.class.getName());
-    private Session session;
+    private static final Logger log = Logging.getLoggerInstance(JMSendMail.class);
+    protected Session session;
 
+    /**
+     * {@inheritDoc}
+     */
     public void reload() {
         init();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void init() {                     
         try {
             String smtphost   = getInitParameter("mailhost");
@@ -84,32 +90,44 @@ public class JMSendMail extends AbstractSendMail {
     }
 
     /**
+     * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
+     */
+
+    protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
+        if (log.isServiceEnabled()) {
+            log.service("JMSendMail sending mail to " + to);
+        }
+        // construct a message
+        MimeMessage msg = new MimeMessage(session);
+        if (from != null && ! from.equals("")) {
+            msg.setFrom(new InternetAddress(from));
+        }
+
+        msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        
+        if (headers.get("CC") != null) {                
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("CC")));
+        }
+        if (headers.get("BCC") != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("BCC")));
+        }
+        msg.setSubject((String) headers.get("Subject"));
+
+        return msg;
+    }
+
+    /**
      * Send mail with headers 
      */
     public boolean sendMail(String from, String to, String data, Map headers) {
         try {
+            MimeMessage msg = constructMessage(from, to, headers);
 
-            if (log.isServiceEnabled()) log.service("JMSendMail sending mail to " + to);
-            // construct a message
-            MimeMessage msg = new MimeMessage(session);
-            if (from != null && ! from.equals("")) {
-                msg.setFrom(new InternetAddress(from));
-            }
-
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-            if (headers.get("CC") != null) {                
-                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("CC")));
-            }
-            if (headers.get("BCC") != null) {
-                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("BCC")));
-            }
-            msg.setSubject((String) headers.get("Subject"));
             msg.setText(data);
             Transport.send(msg);
             log.debug("JMSendMail done.");
             return true;
-        } catch (javax.mail.MessagingException e) {
+        } catch (MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage());
             log.debug(Logging.stackTrace(e));
         }
