@@ -7,7 +7,7 @@
 
     <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.4 2003-06-30 12:39:44 johannes Exp $</edition>
+    <edition>$Id: storage.xml,v 1.5 2003-07-01 10:06:38 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -54,21 +54,21 @@ public interface Transaction {
 				<title>Transaction Methods:</title>
 				<para><variablelist>
 						<varlistentry>
-							<term><methodname>public boolean supportsRollback();</methodname></term>
+							<term><methodname>boolean supportsRollback();</methodname></term>
 							<listitem>
 								<para>This method returns <constant>true</constant> if the transaction object supports rollback.</para>
 								<note><para>This method generally retrieves it's data by calling the <methodname>supportsRollback</methodname> method of the Storage class. Useful for when you do not have a reference to Storage, but otherwise a bit superfluous. However it is possible for individual transactions to turn rollback on or off (i.e. when querying data, rollback may be turned off as it makes the transaction quicker), so this method may still yield different results.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public boolean commit();</methodname></term>
+							<term><methodname>boolean commit();</methodname></term>
 							<listitem>
 								<para>This method closes the transaction and commits all changes. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, committing or closing fails.</para>
 								<para>You should call this method only after all changes for this transaction have been made. The commit() actually closes the transaction (i.e. it closes the database connection), making it inaccessible after the call. Any further attempts to use the Transaction will throw a StorageException.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public boolean rollback();</methodname></term>
+							<term><methodname>boolean rollback();</methodname></term>
 							<listitem>
 								<para>This method cancels the transaction. If the transaction supports rollback, all changes made to the storage through the transaction are undone. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, cancelling fails.</para>
 								<para>You should call not use the transaction any more after this method is called, as, similar to commit, it closes the transaction and makes it inaccessible, so any further use will throw a StorageException.</para>
@@ -439,9 +439,290 @@ public interface Storage extends SearchQueryHandler {
 				<title>DatabaseStorage Methods:</title>
 				<para><variablelist>
 						<varlistentry>
+							<term>Constants: KEY_NONE, KEY_PRIMARY, KEY_SECONDARY, KEY_FOREIGN, KEY_NOTNULL</term>
+							<listitem>
+								<para>Constants used to indicate whether a certain field is a key, and if so, what type.
+								It is used in the <methodname>constructFieldDefiniton()</methodname> method, which is defined in AbstractDatabaseStorage.
+								</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
 							<term><methodname>void init(MMBase mmb, XMLDatabaseReader reader);</methodname></term>
 							<listitem>
-								<para>...</para>
+								<para>Initializes the database layer. This reads database specific content from the database configuration document. If needed, the code creates a 'numbertable' for mmbase to track number generation. It should also load the JDBC mopdule, load database properties (such as whether it supports rollback, etc.)</para>
+								<note><para>Rewriting XMLDatabaseReader to use sax, and act as a property holder, allows all configuration to be stored in a seperate class. That class can then also load schemes.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean getStoreBinaryAsFile();</methodname></term>
+							<listitem>
+								<para>Returns true if binaries are stored as files on disk, instead of in the database. Initially retrieved form the databse configuration file (if the bolbdatapath is given, this method returns true)</para>
+								<note><para>Should be renamed, moved to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setStoreBinaryAsFile(boolean value);</methodname></term>
+							<listitem>
+								<para>Sets whether binaries should be stored as files on disk, instead of in the database.</para>
+								<note><para>Should be renamed, moved to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>File getBinaryFilePath();</methodname></term>
+							<listitem>
+								<para>Returns the directory where binary fiels are to be stored (provided getStoreBinaryAsFile() returns true).</para>
+								<note><para>Should be moved to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setBinaryFilePath(File path);</methodname></term>
+							<listitem>
+								<para>Sets the directory where binary files are to be stored. The initial value is <filename class="directory">/tmp/data</filename>.</para>
+								<note><para>Should be moved to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setFieldNameMap(Map fieldmap);</methodname></term>
+							<listitem>
+								<para>Sets the mapping of MMBase fieldnames (typically reserved words) to database fieldnames. Loaded form the database configuration file.</para>
+								<para>This map is used to map MMBase fieldnames to fieldnames that are acceptable to the database, i.e. Oracle does not accept 'number' as a fieldname, though MMBase uses it as a field name.</para>
+								<note><para>Remove (not really needed) or move to a seperate class (XMLDatabaseReader?).</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>Map getFieldNameMap();</methodname></term>
+							<listitem>
+								<para>Returns the mapping of MMBase fieldnames.</para>
+								<note><para>Remove (not really needed) or move to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setTypeMap(Map typeMap);</methodname></term>
+							<listitem>
+								<para>Sets the type map used to convert MMBase types to database types (needed for creating tables).</para>
+								<note><para>Remove (not really needed) or move to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>Map getTypeMap();</methodname></term>
+							<listitem>
+								<para>Returns the type map.</para>
+								<note><para>Remove (not really needed) or move to a seperate class (XMLDatabaseReader?)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setPrimaryKeyScheme(String scheme);</methodname></term>
+							<listitem>
+								<para>The primary key scheme is a parameterized string that defines the definition part of a primary key field.</para>
+								<variablelist>
+								  <title>Parameters</title>
+									<varlistentry>
+									  <term>{0}</term>
+										<listitem><para>the name of the field to create.</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{1}</term>
+										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
+									</varlistentry>
+								</variablelist>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String getPrimaryKeyScheme();</methodname></term>
+							<listitem>
+								<para>The primary key scheme is a parameterized string that defines the definition part of a primary key field.</para>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setNotNullScheme(String scheme);</methodname></term>
+							<listitem>
+								<para>The not null scheme is a parameterized string that defines the definition part of a field that cannot be null.</para>
+								<variablelist>
+								  <title>Parameters</title>
+									<varlistentry>
+									  <term>{0}</term>
+										<listitem><para>the name of the field to create.</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{1}</term>
+										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
+									</varlistentry>
+								</variablelist>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String getNotNullScheme();</methodname></term>
+							<listitem>
+								<para>The not null scheme is a parameterized string that defines the definition part of a field that cannot be null.</para>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setKeyScheme(String scheme);</methodname></term>
+							<listitem>
+								<para>The key scheme is a parameterized string that defines the definition part of a field that is a secondary (unique) key.</para>
+								<variablelist>
+								  <title>Parameters</title>
+									<varlistentry>
+									  <term>{0}</term>
+										<listitem><para>the name of the field to create.</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{1}</term>
+										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
+									</varlistentry>
+								</variablelist>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String getKeyScheme();</methodname></term>
+							<listitem>
+								<para>The key scheme is a parameterized string that defines the definition part of a field that is a secondary (unique) key.</para>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setForeignKeyScheme(String scheme);</methodname></term>
+							<listitem>
+								<para>The foreign key scheme is a parameterized string that defines the definition part of a field that is a foreign key.</para>
+								<variablelist>
+								  <title>Parameters</title>
+									<varlistentry>
+									  <term>{0}</term>
+										<listitem><para>the name of the field to create.</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{1}</term>
+										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
+									</varlistentry>
+								</variablelist>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String getForeignKeyScheme();</methodname></term>
+							<listitem>
+								<para>The foreign key scheme is a parameterized string that defines the definition part of a field that is a foreign key.</para>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setCreateScheme(String scheme);</methodname></term>
+							<listitem>
+								<para>The create scheme is a parameterized string that describes the SQL create table statement.</para>
+								<variablelist>
+								  <title>Parameters</title>
+									<varlistentry>
+									  <term>{0}</term>
+										<listitem><para>the name of the table to create.</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{1}</term>
+										<listitem><para>the list of field definitions (seperated by commas)</para></listitem>
+									</varlistentry>
+								</variablelist>
+								<note><para>Should be moved to a separate utility class (Schemes).  Scheme may need to be extended with additional information, such as keys to use.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String getCreateScheme();</methodname></term>
+							<listitem>
+								<para>The create scheme is a parameterized string that describes the SQL create table statement.</para>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setCreateExtendedScheme(String scheme);</methodname></term>
+							<listitem>
+								<para>The create scheme is a parameterized string that describes the SQL create table statement for extended (OO) tables.</para>
+								<variablelist>
+								  <title>Parameters</title>
+									<varlistentry>
+									  <term>{0}</term>
+										<listitem><para>the name of the table to create.</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{1}</term>
+										<listitem><para>the list of field definitions (seperated by commas)</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{2}</term>
+										<listitem><para>the name of teh table to extend</para></listitem>
+									</varlistentry>
+								</variablelist>
+								<note><para>Should be moved to a separate utility class (Schemes). Scheme may need to be extended with additional information, such as keys to use.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String getCreateExtendedScheme();</methodname></term>
+							<listitem>
+								<para>The create scheme is a parameterized string that describes the SQL create table statement for extended (OO) tables. Only for OO databases.</para>
+								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void setMaxDropSize(int value);</methodname></term>
+							<listitem>
+								<para>Sets the maximum size of a table before it can be 'dropped', generally as part of some table altering process.</para>
+								<note><para>Silly (mostly undocumented) property which should be dropped. Maybe replace with a field indicating whether tables can be altered.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>int getMaxDropSize();</methodname></term>
+							<listitem>
+								<para>Returns the maximum size of a table before it can be 'dropped', generally as part of some table altering process.</para>
+								<note><para>Should be dropped.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean supportsExtendedTables();</methodname></term>
+							<listitem>
+								<para>Returns true of the database used is OO.</para>
+								<note><para>Remove this property - methods depending on thsi property (i.e. create table method) should be overridden in the approppriate classes.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String mapToTableFieldName(String fieldName);</methodname></term>
+							<listitem>
+								<para>Maps a mmbase fieldname to a database fieldname. Only used internally.</para>
+								<note><para>If interfaces are changed to abstract classes, this method should become protected.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>String mapToMMBaseFieldName(String fieldName);</methodname></term>
+							<listitem>
+								<para>Maps a database fieldname to a mmbase fieldname. Only used internally.</para>
+								<note><para>If interfaces are changed to abstract classes, this method should become protected.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>JDBCInterface getJDBC();</methodname></term>
+							<listitem>
+								<para>Returns the JDBC Module.</para>
+								<note><para>The JDBC module should be moved and renamed (org.mmbase.storage.database.JDBC).</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);</methodname></term>
+							<listitem>
+								<para>Stores a field from a table ResultSet in a MMObjectNode (using the index in the resultset and the fieldname of the node). This method is called by DatabaseTransaction.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException;</methodname></term>
+							<listitem>
+								<para>Stores a field from a Node in a prepatred statement (using the index in the statement and the fieldname of the node). This method is called by DatabaseTransaction.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>void registerChanged(MMObjectNode node, String change);</methodname></term>
+							<listitem>
+								<para>Register a change of a Node in the database.</para>
+								<note><para>Move to Transaction</para></note>
 							</listitem>
 						</varlistentry>
 					</variablelist></para>
@@ -484,7 +765,7 @@ public class DatabaseTransaction {
 				<title>DatabaseTransaction Methods (in addition to the methods in Transaction):</title>
 				<para><variablelist>
 						<varlistentry>
-							<term><methodname>public DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;</methodname></term>
+							<term><methodname>DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;</methodname></term>
 							<listitem>
 								<para>The constructor for the DatabaseTransaction object.</para>
 								<para>The transaction attempts to obtain a connection with the database, using the DatabaseStorage to obtain the needed data (such as a reference to the JDBC module).
@@ -493,28 +774,28 @@ public class DatabaseTransaction {
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public boolean databaseSupportsRollback() throws StorageException;</methodname></term>
+							<term><methodname>boolean databaseSupportsRollback() throws StorageException;</methodname></term>
 							<listitem>
 								<para>Queries the database metadata to test whether this database supports rollback. Rollback of a transaction is defined as making undone any changes to the persistent storage used (i.e. a database), since the transaction started. Not all databases support this.</para>
 								<note><para>This method should be called only once, at the initialization of the storage layer, to determine whether rollback is available. It may be worthwhile to replace this method with a getMetaData() method. We can then move the rollback test itself to the DatabaseStorage.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public boolean hasTable(String tableName) throws StorageException;</methodname></term>
+							<term><methodname>boolean hasTable(String tableName) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Queries the database metadata to test whether a given table exists.</para>
 								<note><para>It may be worthwhile to replace this method with a getMetaData() method (see <methodname>databaseSupportsRollback()</methodname>. We can then move the table test itself to the DatabaseStorage.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public Set getTables(String baseName) throws StorageException;</methodname></term>
+							<term><methodname>Set getTables(String baseName) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Queries the database metadata to obtain a list of tables following a specified pattern.</para>
 								<note><para>It may be worthwhile to replace this method with a getMetaData() method (see <methodname>databaseSupportsRollback()</methodname>. We can then move the table list itself to the DatabaseStorage.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public void registerChanged(MMObjectNode node, String change);</methodname></term>
+							<term><methodname>void registerChanged(MMObjectNode node, String change);</methodname></term>
 							<listitem>
 								<para>Register changes for broadcasting after commit.</para>
 								<para>The Transaction maintains a cache of changes to nodes. If the Transaction is successfully committed, it will broadcast these changes using MultiCast, by calling the <methodname>registerChanged</methodname> in the DatabaseStorage. This ensures that changes are only broadcasted if the commit was successful.</para>
@@ -523,7 +804,7 @@ public class DatabaseTransaction {
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public ResultSet executeQuery(String sql) throws StorageException;</methodname></term>
+							<term><methodname>ResultSet executeQuery(String sql) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Execute a SQL statement on the database, and return the ResultSet.</para>
 								<note><para>I generally feel that the Query interface should be used by DatabaseStorage. DatabaseTransaction merely passes commands (sql statements) to the database. I think it is appropriate to pass sql strings, rather than query objects, especially as it allows for the DatabaseStorage to pass it's own statements.</para></note>
@@ -531,14 +812,14 @@ public class DatabaseTransaction {
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public boolean executeUpdate(String sql) throws StorageException;</methodname></term>
+							<term><methodname>boolean executeUpdate(String sql) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). If the execution was successful (but did not generate an error) the method returns true.</para>
 								<note><para>see <methodname>executeQuery()</methodname></para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;</methodname></term>
+							<term><methodname>boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;</methodname></term>
 							<listitem>
 							  <para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). The sql query will be run using a prepared statement, which is then filled with content from the passed node. The fields parameter contains the fields to add to the statement. The SQL statement should be appropriate to be used as a prepared statement, and have the appropriate type and number of parameters (as in fields).</para>
 								<para>If the execution was successful (but did not generate an error) the method returns true.</para>
@@ -546,13 +827,13 @@ public class DatabaseTransaction {
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public int getIntegerResult();</methodname></term>
+							<term><methodname>int getIntegerResult();</methodname></term>
 							<listitem>
 								<para>Attempts to return a single integer result from the last retrieved resultset. Use this method to return the result of a query which returns a resultset of records containing one single numeric field If the query failed, or returned an unexpected result, or if the resultset is exhausted, the function returns -1. If this is due to an error then the error is logged.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term><methodname>public MMObjectNode getNodeResult(MMObjectBuilder builder);</methodname></term>
+							<term><methodname>MMObjectNode getNodeResult(MMObjectBuilder builder);</methodname></term>
 							<listitem>
 								<para>Attempts to return a single Node from the last retrieved resultset. Use this method to return the result of a query which returns a resultset of records containing fields from a builder table. If the query failed, or returned an unexpected result, or if the resultset is exhausted, the function returns null. If this is due to an error then the error is logged. Currently does not work for clusternodes, as far as I know.</para>
 								<note><para>This method (and <methodname>getIntegerResult()</methodname>) assume that Transaction can (and should) be used to temporarily store a resultset. If we choose for this approach (rather than move the code to DatabaseStorage), we would also need <methodname>getResultSet()</methodname> and <methodname>next()</methodname> methods, so we can iterate.</para></note>
