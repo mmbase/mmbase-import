@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mmbaseusers" maintainer="www.mmbase.org" version="1" extends="object">
+<builder extends="object" maintainer="www.mmbase.org" name="mmbaseusers" version="1">
   <classfile>org.mmbase.security.implementation.cloudcontext.builders.Users</classfile>
   <names>
     <singular xml:lang="en">Security Account</singular>
@@ -39,7 +39,7 @@
       </editor>
       <db>
         <name>username</name>
-        <type state="persistent" size="32" notnull="true" key="true">STRING</type>
+        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -57,7 +57,7 @@
       </editor>
       <db>
         <name>password</name>
-        <type state="persistent" size="32" notnull="true">STRING</type>
+        <type notnull="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -75,7 +75,7 @@
       </editor>
       <db>
         <name>confirmpassword</name>
-        <type state="virtual" size="32" notnull="true">STRING</type>
+        <type notnull="true" size="32" state="virtual">STRING</type>
       </db>
     </field>
     <field>
@@ -92,7 +92,7 @@
       </editor>
       <db>
         <name>defaultcontext</name>
-        <type state="persistent" notnull="true" key="false">NODE</type>
+        <type key="false" notnull="true" state="persistent">NODE</type>
       </db>
     </field>
     <field>
@@ -109,7 +109,7 @@
       </editor>
       <db>
         <name>status</name>
-        <type state="persistent" notnull="true">INTEGER</type>
+        <type notnull="true" state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -127,7 +127,7 @@
       </editor>
       <db>
         <name>validfrom</name>
-        <type state="persistent" notnull="true">LONG</type>
+        <type notnull="true" state="persistent">LONG</type>
       </db>
     </field>
 
@@ -145,7 +145,7 @@
       </editor>
       <db>
         <name>validto</name>
-        <type state="persistent" notnull="true">LONG</type>
+        <type notnull="true" state="persistent">LONG</type>
       </db>
     </field>
 
@@ -164,7 +164,7 @@
       </editor>
       <db>
         <name>lastlogon</name>
-        <type state="persistent" notnull="true">LONG</type>
+        <type notnull="true" state="persistent">LONG</type>
       </db>
     </field>
 
