@@ -9,6 +9,13 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+
+<div style="display:none;">
+<%--<div>--%>
+    <mm:treeinclude write="true" page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" />
+</div>
+ 
+
 <div class="providerMenubar" style="white-space: nowrap">
   <mm:import id="providerbaritems" vartype="list">search,pop,address,agenda,portfolio,email</mm:import>
   
