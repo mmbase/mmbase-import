@@ -45,6 +45,9 @@ public class ForumsConfig {
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
 
+    private String xsltpostingsodd = "xslt/posting2xhtmlDark.xslt";
+    private String xsltpostingseven = "xslt/posting2xhtmlLight.xslt";
+
     private String contactInfoEnabled = "true";
     private String smileysEnabled = "true";
     private String privateMessagesEnabled = "true";
@@ -86,6 +89,13 @@ public class ForumsConfig {
                             defaultaccount = account;
                             defaultpassword = password;
                         }
+
+                        //get xslt configuration 
+                        Element xsltElement = reader.getElementByPath("mmbobconfig.forums.xslts.postings");
+			if (xsltElement!=null) {
+                         	xsltpostingsodd = xsltElement.getAttribute("odd");
+                         	xsltpostingseven = xsltElement.getAttribute("even");
+			}
 
                         //get avatar configuration 
                         Element avatarsElement = reader.getElementByPath("mmbobconfig.forums.avatars");
@@ -334,6 +344,14 @@ public class ForumsConfig {
 
     public String getAvatarsGalleryEnabled() {
         return avatarsGalleryEnabled;
+    }
+
+    public String getXSLTPostingsOdd() {
+        return xsltpostingsodd;
+    }
+
+    public String getXSLTPostingsEven() {
+        return xsltpostingseven;
     }
 
     public String getContactInfoEnabled() {

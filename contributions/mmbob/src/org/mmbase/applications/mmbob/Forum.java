@@ -1027,6 +1027,28 @@ log.debug ("avatars are completly");
         return ForumManager.getAvatarsUploadEnabled();
     }
 
+
+    public String getXSLTPostingsOdd() {
+        if (config != null) {
+            String tmp = config.getXSLTPostingsOdd();
+            if (tmp != null) {
+                return tmp;
+            }
+        }
+        return ForumManager.getXSLTPostingsOdd();
+    }
+
+
+    public String getXSLTPostingsEven() {
+        if (config != null) {
+            String tmp = config.getXSLTPostingsEven();
+            if (tmp != null) {
+                return tmp;
+            }
+        }
+        return ForumManager.getXSLTPostingsEven();
+    }
+
     public String getAvatarsGalleryEnabled() {
         if (config != null) {
             String tmp = config.getAvatarsGalleryEnabled();

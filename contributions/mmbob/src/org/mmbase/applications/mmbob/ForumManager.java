@@ -412,6 +412,14 @@ public class ForumManager {
        return config.getGuestWriteModeType();
    }
 
+    public static String getXSLTPostingsOdd() {
+        return config.getXSLTPostingsOdd();
+    }
+
+    public static String getXSLTPostingsEven() {
+        return config.getXSLTPostingsEven();
+    }
+
     public static String getAvatarsUploadEnabled() {
         return config.getAvatarsUploadEnabled();
     }
