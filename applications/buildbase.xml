@@ -32,6 +32,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="project.source.dir" location="." />
   <property name="project.build.dir"  location="./build" />
+  <property name="project.metainf.dir"    value="${project.build.dir}/build/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
 
 
@@ -42,6 +43,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
   <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
 
+  <property name="share.dir"    location="../share" />
 
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
@@ -71,7 +73,7 @@ Create a build.xml with a DOCTYPE like this:
     <mkdir dir="${project.build.dir}"/>
     <property name="name" value="${project.name}"/>
     <property name="version" value="${DSTAMP}"/>
-    <property name="distro"  value="1.6.0"/>
+    <property name="distro"  value="1.7.0"/>
   </target>
 
 
@@ -100,6 +102,7 @@ Create a build.xml with a DOCTYPE like this:
   <copy todir="${project.build.dir}/classes">
     <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
   </copy>
+  <mkdir dir="${project.metainf.dir}" />
   
     <echo file="${project.build.dir}/manifest.mf">
 Name: org/mmbase
@@ -116,7 +119,8 @@ Build-compiler: ${build.compiler}
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
 	     includes="**"
-	     manifest="${project.build.dir}/manifest.mf" >
+    manifest="${project.build.dir}/manifest.mf" >
+    <metainf dir="${project.metainf.dir}" includes="**" />
     </jar>
 
   </target>
@@ -172,12 +176,10 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <echo message="copying to ${project.build.dir}" />
 
     <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
-      <fileset dir="${project.source.dir}/src">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <exclude name="build/**"/>
+      <fileset dir="${project.source.dir}">
+        <include name="src/**/*.properties"/>
+        <include name="src/**/*.dtd"/>
+        <include name="src/**/*.xml"/>
       </fileset>
     </copy>
 
@@ -191,7 +193,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            excludes="${compile.excludes}"
            source="1.4"
       >
-      <classpath>
+      <classpath id="compile.classpath">
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
