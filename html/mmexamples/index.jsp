@@ -34,16 +34,6 @@ the same name as the example.<br />
 </tr>
 
 <tr>
-	<td>Community</td>
-	<td>
-		Example of the community-features of MMBase (forum &amp; chat)
-	</td>
-	<td class="link" >
-		<a href="<mm:url page="jsp/community.jsp" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
-	</td>
-</tr>
-
-<tr>
 	<td>My News</td>
 	<td>
 		 Small example of a news/magazine system
@@ -72,6 +62,17 @@ the same name as the example.<br />
 		<a href="<mm:url page="jsp/my_editors/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
+
+<tr>
+	<td>Community (requires 'community' module from mmbase-community.jar)</td>
+	<td>
+    Example of the community-features of MMBase (forum &amp; chat)
+	</td>
+	<td class="link" >
+		<a href="<mm:url page="jsp/community.jsp" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+	</td>
+</tr>
+
 
 <tr><td colspan="3">&nbsp;</td></tr>
 
