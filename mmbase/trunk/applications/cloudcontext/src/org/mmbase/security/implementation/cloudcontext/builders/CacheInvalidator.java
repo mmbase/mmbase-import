@@ -9,12 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseObserver;
 import java.util.*;
-import org.mmbase.cache.Cache;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import org.mmbase.module.core.MMBaseObserver;
+import org.mmbase.util.logging.*;
 
 /**
  * Invalidates the security caches if somethings changes in the
@@ -24,12 +22,12 @@ import org.mmbase.util.logging.Logging;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.3 2003-08-05 21:26:33 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.4 2003-11-05 15:48:03 keesj Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements MMBaseObserver {
 
-    private static final Logger log = Logging.getLoggerInstance(CacheInvalidator.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CacheInvalidator.class);
 
     private static CacheInvalidator instance = new CacheInvalidator();
 
@@ -37,6 +35,7 @@ class CacheInvalidator implements MMBaseObserver {
     static CacheInvalidator getInstance() {
         return instance;
     }
+    
     private CacheInvalidator() {
     }
 
