@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.36 2003-11-19 16:57:42 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.37 2003-12-24 15:15:15 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
 
@@ -150,6 +150,9 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 df = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)),
                                                             getDateFormatStyle(format.substring(i+1)), locale);
             }
+        } else if (format.equals("e")) {
+            df = new DayOfWeekDateFormat();
+            
         } else {
             df = new SimpleDateFormat(format, locale);
         }
@@ -217,7 +220,9 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * @javadoc
      */
     private String evaluateTime() throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputFormat +"'");
+        if (log.isDebugEnabled()) { 
+            log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputFormat +"'");
+        }
 
         String usetime = null;
         Date date = null;
@@ -583,5 +588,24 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         for(int i=0; i<montharray.length;i++) {
             months.put(montharray[i].toLowerCase(),new Integer(i));
         }
+    }
+
+    protected class DayOfWeekDateFormat extends DateFormat {
+        public Date parse(String source, ParsePosition pos) {
+            Calendar calendar = Calendar.getInstance();
+            int day = source.charAt(0) - '0';
+            pos.setIndex(pos.getIndex() + 1);            
+            calendar.set(Calendar.DAY_OF_WEEK, day);
+            return calendar.getTime();
+        }
+        public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            // pos.setBeginIndex(0); pos.setEndIndex(1);
+            toAppendTo.append(calendar.get(Calendar.DAY_OF_WEEK));
+            return toAppendTo;
+        }
+
+        
     }
 }
