@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.15 2002-05-22 13:50:35 pierre Exp $
+  @version $Id: wizard.xsl,v 1.16 2002-05-23 08:12:13 pierre Exp $
   -->
 
 
@@ -197,11 +197,11 @@
         </xsl:when>
         <xsl:when test="@ftype='startwizard'">
            <xsl:if test="@inline='true'">
-          <nobr><a href="{$popuppage}&amp;inline=true&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >(start new wizard)</a>
+          <nobr><a href="{$popuppage}&amp;inline=true&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >(start wizard)</a>
           </nobr>
           </xsl:if>
            <xsl:if test="not(@inline='true')">
-          <nobr><a href="{$popuppage}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start new wizard)</a>
+          <nobr><a href="{$popuppage}&amp;inline=false&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start wizard)</a>
           </nobr>
           </xsl:if>
         </xsl:when>
@@ -464,7 +464,7 @@
                 <a href="{$popuppage}&amp;inline=true&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" ><img src="{$mediadir}new.gif" border="0" /></a>
           </xsl:if>
            <xsl:if test="not(@inline='true')">
-                <a href="{$popuppage}&amp;inline=false&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
+                <a href="{$popuppage}&amp;inline=false&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
           </xsl:if>
                 <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
               </nobr>

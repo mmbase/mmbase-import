@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.11 2002-05-22 13:50:35 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.12 2002-05-23 08:12:14 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -124,7 +124,37 @@ if (request.getParameter("remove") != null) {
         // a separate running popup, so remove sessiondata
             session.removeAttribute(sessionKey);
 %>
-<html><script language="javascript">window.close();</script></html>
+<html>
+<script language="javascript">
+ try { // Mac IE doesn't always support window.opener.
+<%
+            if (closedObject instanceof Config.WizardConfig &&
+                ((Config.WizardConfig)closedObject).wiz.committed()) {
+                String sendCmd="";
+                String objnr="";
+                Config.WizardConfig inlineWiz=(Config.WizardConfig)closedObject;
+                // we move from a inline sub-wizard to a parent wizard...
+                // with an inline popupwizard we should like to pass the newly created or updated
+                // item to the 'lower' wizard.
+                objnr=inlineWiz.objectNumber;
+                if ("new".equals(objnr)) {
+                    // obtain new object number
+                    objnr=inlineWiz.wiz.getObjectNumber();
+                    String parentFid = inlineWiz.parentFid;
+                    if ((parentFid!=null) && (!parentFid.equals(""))) {
+                        String parentDid = inlineWiz.parentDid;
+                        sendCmd="cmd/add-item/"+parentFid+"/"+parentDid+"//";
+                    }
+                } else {
+                    sendCmd="cmd/update-item////";
+                }
+%>
+   window.opener.doSendCommand("<%=sendCmd%>","<%=objnr%>");
+<%          } %>
+ } catch (e) {}
+ window.close();
+</script>
+</html>
 <%
         } else {
             if (! refer.startsWith("http:")) {
