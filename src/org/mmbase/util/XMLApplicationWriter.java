@@ -12,9 +12,7 @@ package org.mmbase.util;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.util.xml.BuilderWriter;
 
@@ -36,20 +34,26 @@ public class XMLApplicationWriter  {
     private static Logger log = Logging.getLoggerInstance(XMLApplicationWriter.class.getName());
 
     public static Vector writeXMLFile(XMLApplicationReader app, String targetpath, String goal, MMBase mmb) {
-    Vector resultmsgs=new Vector();
+        Vector resultmsgs=new Vector();
 
         // again this is a stupid class generating the xml file
         // the second part called the extractor is kind of neat
         // but very in early beta
-        String  name       =app.getApplicationName();
-        String  maintainer =app.getApplicationMaintainer();
-        int     version    =app.getApplicationVersion();
-        boolean deploy     =app.getApplicationAutoDeploy();
+        String name = app.getApplicationName();
+        String maintainer = app.getApplicationMaintainer();
+        int version = app.getApplicationVersion();
+        boolean deploy = app.getApplicationAutoDeploy();
 
         String body =
             "<?xml version=\"1.0\"?>\n" +
             "<!DOCTYPE application PUBLIC \"-//MMBase/DTD application config 1.0//EN\" \"http://www.mmbase.org/dtd/application_1_0.dtd\">\n" +
-            "<application name=\""+name+"\" maintainer=\""+maintainer+"\" version=\""+version+"\" auto-deploy=\""+deploy+"\">\n";
+            "<application name=\"" + name +
+              "\" maintainer=\"" + maintainer +
+              "\" version=\"" + version +
+              "\" auto-deploy=\"" + deploy + "\">\n";
+
+        // write the needed builders
+        body+=getRequirements(app);
 
         // write the needed builders
         body+=getNeededBuilders(app);
@@ -91,7 +95,19 @@ public class XMLApplicationWriter  {
 
         resultmsgs.addElement("Writing Application file : "+targetpath+"/"+app.getApplicationName()+".xml");
 
-        return(resultmsgs);
+        return resultmsgs;
+    }
+
+    static String getRequirements(XMLApplicationReader app) {
+        String body="\t<requirements>\n";
+        List apps=app.getRequirements();
+        for (Iterator i=apps.iterator();i.hasNext();) {
+            Map bset=(Map)i.next();
+            String name=(String)bset.get("name");
+            body+="\t\t<requires name=\""+name+"\" />\n";
+        }
+        body+="\t</requirements>\n\n";
+        return body;
     }
 
     static String getNeededBuilders(XMLApplicationReader app) {
@@ -107,7 +123,6 @@ public class XMLApplicationWriter  {
         body+="\t</neededbuilderlist>\n\n";
         return(body);
     }
-
 
     static String getNeededRelDefs(XMLApplicationReader app) {
         String body="\t<neededreldeflist>\n";

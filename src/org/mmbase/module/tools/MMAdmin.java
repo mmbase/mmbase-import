@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.59 2003-03-07 08:50:26 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.60 2003-03-13 12:44:06 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -201,40 +201,8 @@ public class MMAdmin extends ProcessorModule {
                 doRestart(user);
             } else if (token.equals("LOAD") && !kioskmode) {
                 ApplicationResult result=new ApplicationResult(this);
-                Versions ver=(Versions)mmb.getMMObject("versions");
                 String appname=(String)cmds.get(cmdline);
-                String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-                XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
-                if (app!=null) {
-                    String name=app.getApplicationName();
-                    String maintainer=app.getApplicationMaintainer();
-                    int version=app.getApplicationVersion();
-                    int installedversion=ver.getInstalledVersion(name,"application");
-                    if (installedversion==-1 || version>installedversion) {
-                        if (installedversion==-1) {
-                            log.info("Installing application : "+name);
-                        } else {
-                            log.info("installing application : "+name+" new version from "+installedversion+" to "+version);
-                        }
-                        if (installApplication(name,result)) {
-                            result.success("Application loaded oke\n\n"+
-                                           "The application has the following install notice for you : \n\n"+
-                                           app.getInstallNotice());
-                            if (installedversion==-1) {
-                                ver.setInstalledVersion(name,"application",maintainer,version);
-                            } else {
-                                ver.updateInstalledVersion(name,"application",maintainer,version);
-                            }
-                        }
-                    } else {
-                        result.success("Application was allready loaded (or a higher version)\n\n"+
-                                       "To remind you here is the install notice for you again : \n\n"+
-                                       app.getInstallNotice());
-                    }
-                } else {
-                    result.error("Install error: can't find xml file: "+path+appname+".xml");
-                }
-                if (result.isSuccess()) {
+                if (installApplication(appname,result,new HashSet(),false)) {
                     lastmsg=result.getMessage();
                 } else {
                     lastmsg="Problem installing application : "+appname+"\n"+result.getMessage();
@@ -546,7 +514,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
             return;
         }
-        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<BR><BR>\n";
+        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<br /><br />\n";
         log.info("Server Reset requested by '"+user+"' Restart in 3 seconds");
         restartwanted=true;
         probe = new MMAdminProbe(this,3*1000);
@@ -564,31 +532,90 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         log.info("Starting apptool with : "+path+File.separator+appname+".xml");
         MMAppTool app=new MMAppTool(path+File.separator+appname+".xml");
-        lastmsg="Started a instance of the MMAppTool with path : <BR><BR>\n";
-        lastmsg+=path+File.separator+appname+".xml<BR><BR>\n";
+        lastmsg="Started a instance of the MMAppTool with path : <br /><br />\n";
+        lastmsg+=path+File.separator+appname+".xml<br /><br />\n";
         return true;
     }
 
     /**
-     * @javadoc
+     * Installs the application
+     * @param applicationname Name of the application file, without the xml extension
+     *                        This is also assumed to be the name of teh application itself
+     *                        (if not, a warning will be issued)
+     * @param result the result object, containing error messages when the installation fails,
+                     or the installnotice if succesfull or already installed
+     * @param installationSet set of installations that are currently being installed.
+     *                        used to check if there are circular dependencies
+     * @param autoDeploy if true, the installation is only installed if the application is set to autodeploy
+     * @return true if succesfull, false otherwise
      */
-    private boolean installApplication(String applicationname, ApplicationResult result) {
+    private boolean installApplication(String applicationname, ApplicationResult result,
+                                       Set installationSet, boolean autoDeploy) {
+        if (installationSet.contains(applicationname)) {
+            return result.error("Circular reference to application with name "+applicationname);
+        }
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
+        Versions ver=(Versions)mmb.getMMObject("versions");
         if (app!=null) {
-            if (installBuilders(app.getNeededBuilders(), path + applicationname,result)) {
-                if (installRelDefs(app.getNeededRelDefs(),result)) {
-                    if (installAllowedRelations(app.getAllowedRelations(),result)) {
-                        if (installDataSources(app.getDataSources(),applicationname, result)) {
-                            if (!installRelationSources(app.getRelationSources(), result)) {
-                                result.error("Application installer stopped : can't install relationsources");
-                            }
-                        }
+            // test autodeploy
+            if (autoDeploy && !app.getApplicationAutoDeploy()) {
+                return true;
+            }
+            // should be installed - add to installation set
+            installationSet.add(applicationname);
+            List requires=app.getRequirements();
+            for (Iterator i=requires.iterator(); i.hasNext();) {
+                Map reqapp= (Map)i.next();
+                String appname= (String)reqapp.get("name");
+                log.service("Application '"+applicationname+"' requires : "+appname);
+                if (!installApplication(appname,result,installationSet,false)) {
+                    return false;
+                }
+            }
+            // note: currently name and application file name should be the same
+            String name=app.getApplicationName();
+            if(!name.equals(applicationname)) {
+                result.warn("Application name "+name+" not the same as the base filename "+applicationname+".\n"+
+                            "This may cause problems when referring to this application.");
+            }
+            String maintainer=app.getApplicationMaintainer();
+            int version=app.getApplicationVersion();
+            int installedversion=ver.getInstalledVersion(name,"application");
+            if (installedversion==-1 || version>installedversion) {
+                if (installedversion==-1) {
+                    log.info("Installing application : "+name);
+                } else {
+                    log.info("installing application : "+name+" new version from "+installedversion+" to "+version);
+                }
+                if (installBuilders(app.getNeededBuilders(), path + applicationname,result) &&
+                    installRelDefs(app.getNeededRelDefs(),result) &&
+                    installAllowedRelations(app.getAllowedRelations(),result) &&
+                    installDataSources(app.getDataSources(),applicationname, result) &&
+                    installRelationSources(app.getRelationSources(), result)) {
+                    if (installedversion==-1) {
+                        ver.setInstalledVersion(name,"application",maintainer,version);
+                    } else {
+                        ver.updateInstalledVersion(name,"application",maintainer,version);
                     }
+                    log.info("Application '"+name+"' deployed succesfully.");
+                    result.success("Application loaded oke\n\n"+
+                                   "The application has the following install notice for you : \n\n"+
+                                   app.getInstallNotice());
+                }
+                // installed or failed - remove from installation set
+                installationSet.remove(applicationname);
+            } else {
+                // only return this message if the application is the main (first) application
+                // and if it was not auto-deployed (as in that case messages would not be deemed very useful)
+                if (installationSet.size()==1) {
+                    result.success("Application was allready loaded (or a higher version)\n\n"+
+                                   "To remind you here is the install notice for you again : \n\n"+
+                                   app.getInstallNotice());
                 }
             }
         } else {
-            result.error("Can't install application : "+path+applicationname+".xml");
+            result.error("Install error: can't find xml file: "+path+applicationname+".xml");
         }
         return result.isSuccess();
     }
@@ -637,7 +664,6 @@ public class MMAdmin extends ProcessorModule {
                     }
                     for (Enumeration n = importednodes.elements();n.hasMoreElements();) {
                         MMObjectNode importnode=(MMObjectNode)n.nextElement();
-                        log.info(importnode.toString());
                         int exportnumber=importnode.getIntValue("thread");
                         int localnumber=-1;
                         Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
@@ -1070,31 +1096,9 @@ public class MMAdmin extends ProcessorModule {
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
-                    XMLApplicationReader app=new XMLApplicationReader(path+aname);
-                    if (app!=null && app.getApplicationAutoDeploy()) {
-                        String name=app.getApplicationName();
-                        String maintainer=app.getApplicationMaintainer();
-                        int version=app.getApplicationVersion();
-                        int installedversion=ver.getInstalledVersion(name,"application");
-                        if (installedversion==-1 || version>installedversion) {
-                            if (installedversion==-1) {
-                                log.info("Auto deploy application : "+aname+" started");
-                            } else {
-                                log.info("Auto deploy application : "+aname+" new version from "+installedversion+" to "+version);
-                            }
-                            ApplicationResult result= new ApplicationResult(this);
-                            if (installApplication(aname.substring(0,aname.length()-4),result)) {
-                                if (installedversion==-1) {
-                                    ver.setInstalledVersion(name,"application",maintainer,version);
-                                } else {
-                                    ver.updateInstalledVersion(name,"application",maintainer,version);
-                                }
-                                log.info("Auto deploy application : "+aname+" done");
-                            } else {
-                                log.error("Problem installing application : "+name);
-                            }
-                        }
-
+                    ApplicationResult result= new ApplicationResult(this);
+                    if (!installApplication(aname.substring(0,aname.length()-4),result,new HashSet(),true)) {
+                        log.error("Problem installing application : "+aname);
                     }
                 }
             }
@@ -1112,11 +1116,11 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
         Vector savestats=XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
-        lastmsg="Application saved oke<BR><BR>\n";
-        lastmsg+="Some statistics on the save : <BR><BR>\n";
+        lastmsg="Application saved oke<br /><br />\n";
+        lastmsg+="Some statistics on the save : <br /><br />\n";
         for (Enumeration h = savestats.elements();h.hasMoreElements();) {
             String result=(String)h.nextElement();
-            lastmsg+=result+"<BR><BR>\n";
+            lastmsg+=result+"<br /><br />\n";
         }
         return true;
     }
@@ -1913,20 +1917,23 @@ public class MMAdmin extends ProcessorModule {
         boolean error(String message) {
             success=false;
             adminModule.log.error(message);
-            resultMessage += "\n"+message;
+            if (!resultMessage.equals("")) resultMessage += "\n";
+            resultMessage += message;
             return false;
         }
 
         boolean warn(String message) {
             success=false;
             adminModule.log.warn(message);
-            resultMessage += "\n"+message;
+            if (!resultMessage.equals("")) resultMessage += "\n";
+            resultMessage += message;
             return false;
         }
 
         boolean success(String message) {
             success=true;
-            resultMessage += "\n"+message;
+            if (!resultMessage.equals("")) resultMessage += "\n";
+            resultMessage += message;
             return true;
         }
 
