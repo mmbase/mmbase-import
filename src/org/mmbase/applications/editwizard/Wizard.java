@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.59 2002-08-13 06:44:48 michiel Exp $
+ * @version $Id: Wizard.java,v 1.60 2002-08-13 08:20:22 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -726,17 +726,20 @@ public class Wizard implements org.mmbase.util.Sizeable {
 
             String xpath = Utils.getAttribute(field, "fdatapath", null);
 
-            if (xpath == null) {
-                throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
-            }
-            // xpath is found. Let's see howmany 'hits' we have
-            NodeList fieldinstances = Utils.selectNodeList(data, xpath);
-            if (fieldinstances==null) {
-                throw new WizardException("The xpath: " + xpath + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
-            }
             Node fieldDataNode = null;
-            if (fieldinstances.getLength() > 0) fieldDataNode = fieldinstances.item(0);
-
+            NodeList fieldinstances = null;
+            if (xpath == null) {
+                if (! "startwizard".equals(Utils.getAttribute(field, "ftype", null))) {
+                    throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
+                }
+            } else {
+                // xpath is found. Let's see howmany 'hits' we have
+                fieldinstances = Utils.selectNodeList(data, xpath);
+                if (fieldinstances==null) {
+                    throw new WizardException("The xpath: " + xpath + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
+                }
+                if (fieldinstances.getLength() > 0) fieldDataNode = fieldinstances.item(0);
+            }
             // A normal field.
             if (nodeName.equals("field")) {
                 if (fieldDataNode != null) {
@@ -750,6 +753,12 @@ public class Wizard implements org.mmbase.util.Sizeable {
                         //set number attribute in field
                         Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
                         createFormField(form, field, fieldDataNode);
+                    } else if ("startwizard".equals(ftype)) {
+                        log.debug("A startwizard!");
+                        //set number attribute in field
+                        Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
+                        createFormField(form, field, fieldDataNode);
+                        
                     }
                 }
 
@@ -913,7 +922,10 @@ public class Wizard implements org.mmbase.util.Sizeable {
             // field nodes
             String name = Utils.getAttribute(singlenode, "name", null);
             String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
-            if (name!=null && fdatapath==null) {
+            if (name == null && fdatapath == null) {
+                fdatapath = "object/field[@name='number']";
+            }
+            if (name != null && fdatapath == null) {
                 // normal field or a field inside a list node?
                 Node parentNode=singlenode.getParentNode();
                 String parentname = parentNode.getNodeName();
@@ -1202,9 +1214,11 @@ public class Wizard implements org.mmbase.util.Sizeable {
                 if (ftype.equals("function")) {
                     theValue = Utils.getAttribute(field, "name");
                     log.debug("Found a function field " + theValue);
+                } else if (ftype.equals("startwizard")) {
+                    log.debug("found a startwizard field");
                 } else {
                     log.debug("Probably a new node");
-                    throw new WizardException("No datanode given for field " + theValue + " and ftype does not equal 'function' (but " + ftype + ")");
+                    throw new WizardException("No datanode given for field " + theValue + " and ftype does not equal 'function' or 'startwizard'(but " + ftype + ")");
                 }
             } else if (datanode.getNodeType() == Node.ATTRIBUTE_NODE){
                 theValue = datanode.getNodeValue();
