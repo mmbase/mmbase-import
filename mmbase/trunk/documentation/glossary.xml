@@ -594,7 +594,7 @@
 				</glossdef>
       </glossentry>
 
-      <glossentry id="xmlimporter">
+      <glossentry id="tcp">
         <glossterm>temporary cloud project</glossterm>
         <acronym>TCP</acronym>
         <glossdef>
