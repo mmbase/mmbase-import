@@ -3,8 +3,9 @@
 <logging>
    <class>org.mmbase.util.logging.ExceptionImpl</class>
    <!--  
-  Throw exception on warnings (and higher), those will be considered
+  Throw exception on error (and higher), those will be considered
   test-case failures.
+  Warnings are written to stdout
   -->
-   <configuration>warn</configuration>
+   <configuration>error,warn</configuration>
 </logging>
