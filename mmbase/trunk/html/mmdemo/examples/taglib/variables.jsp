@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+
 %><html>
 <body>
 <%@ include file="menu.jsp"%>
@@ -54,7 +55,7 @@ page="${a}" />
  in the body of the write tag). We create a new variable 'A' wich is
  'a' but uppercased with a java function.
 </p>
-<mm:write jspvar="a" referid="a" type="String">
+<mm:write jspvar="a" referid="a" vartype="String">
  <mm:import id="A"><%= a.toUpperCase() %></mm:import>
 </mm:write>
 <p>
@@ -76,7 +77,7 @@ page="${a}" />
 </p>
 <p>
  Lets make a jsp-variable of this node, and write a field of it:
-<mm:write jspvar="td" referid="typedefnode" type="Node">
+<mm:write jspvar="td" referid="typedefnode" vartype="Node">
  <%= td.getValue("description") %>
 </mm:write>
 </p>
@@ -140,7 +141,7 @@ page="${a}" />
 </ul>
 </p>
 <p>Making a jspvar of the list. Size of list is: 
-<mm:write referid="alist" jspvar="list" type="List">
+<mm:write referid="alist" jspvar="list" vartype="List">
   <%= list.size() %>
 </mm:write>
 </p>
