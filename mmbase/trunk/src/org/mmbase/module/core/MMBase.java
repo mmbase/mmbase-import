@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.109 2004-02-24 11:53:18 michiel Exp $
+ * @version $Id: MMBase.java,v 1.110 2004-02-24 13:49:03 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -95,7 +95,7 @@ public class MMBase extends ProcessorModule {
      * Time in seconds, when mmbase was started.
      * @since MMBase-1.7
      */
-    public static final int startTime = (int) System.currentTimeMillis() / 1000;
+    public static final int startTime = (int) (System.currentTimeMillis() / 1000);
 
     /**
      * Builds a MultiCast Thread to receive and send
