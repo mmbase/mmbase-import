@@ -797,6 +797,12 @@ See mmexamples/taglib for more elaborated examples.
       <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        See <a href="#list.constraints">list</a>, but notice that it is not necessary to prefix the
+        field names with `nodemanager' names. You can put the field names in [] to enable 'key word
+        escaping'. E.g. in some databases 'status' is not a valid field name. [status] will
+        translate the fieldname in the right way.
+      </info>
     </attribute>
     <attribute>
       <name>orderby</name>
@@ -1227,14 +1233,41 @@ access the value of title:
     <info>
       Gets the field `name' from node `node' (can also be list).
     </info>
+    <see>node</see>
     <attribute>
       <name>name</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-	The name of the field to get.
-      </info>
+        The name of the field to get. It could also be field-like `functions' which can be
+        recognized by the appearing of parentheses. Which functions are available is principally
+        dependent on the node-type.
+      </info>      
+      <examplevalue>
+        <value>title</value>
+        <info>Returns the value of the field `title'</info>
+      </examplevalue>
+      <examplevalue>
+        <value>gui()</value>
+        <info>Returns an html `GUI' representation of the node</info>     
+      </examplevalue>
+      <examplevalue>
+        <value>gui(handle)</value>
+        <info>Returns an html 'GUI' representation of the field `handle'</info>     
+      </examplevalue>
+      <examplevalue>
+        <value>cache(s(100))</value>
+        <info>Only for images. Returns the icache node number of a image rescaled to 100.</info>     
+      </examplevalue>
+      <examplevalue>
+        <value>html(body)</value>
+        <info>Returns the body field converted to (bad) HTML.</info>     
+      </examplevalue>
+      <examplevalue>
+        <value>wrap(title,10)</value>
+        <info>Wraps the title to 10 chars.</info>     
+      </examplevalue>
     </attribute>
     <example>See the example for tag 'node'.</example>
   </tag>
