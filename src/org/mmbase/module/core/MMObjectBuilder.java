@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.131 2002-04-17 15:59:46 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.132 2002-04-18 07:10:03 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2444,7 +2444,6 @@ public class MMObjectBuilder extends MMTable {
      * @returns the short name in either the default language or in "en"
      */
     public String getSingularName() {
-        if (singularNames == null) return null;
         String tmp = getSingularName(mmb.getLanguage());
         if (tmp==null) tmp=getSingularName("en");
         if (tmp==null) tmp=tableName;
@@ -2467,7 +2466,6 @@ public class MMObjectBuilder extends MMTable {
      * @returns the long name in either the default language or in "en"
      */
     public String getPluralName() {
-        if (pluralNames==null)  return null;
         String tmp = getPluralName(mmb.getLanguage());
         if (tmp==null) tmp = getPluralName("en");
         if (tmp==null) tmp=getSingularName();
