@@ -2009,6 +2009,30 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
   </tag>
   <tag>
+    <name>isnotempty</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
+    <info>
+	  Checks if parent writer is not empty.
+    </info>
+	<attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>isempty</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsEmptyTag</tagclass>
+    <info>
+	  Checks if parent writer is empty.
+    </info>
+	<attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
     <name>aliaslist</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
     <info>
@@ -2111,7 +2135,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   <tag>
     <name>countrelations</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.CountRelationsTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
       This tag can be used inside a node tag to show the number of relations
       the node has.
@@ -2248,4 +2272,68 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	</info>
     </attribute>
   </tag>
+  <tag>
+    <name>size</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.SizeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
+    <info>
+	  The size of the current list.
+    </info>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>list</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>write</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+   </tag>
+  <tag>
+    <name>index</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.IndexTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
+    <info>
+	  The index of the current item of the current list.
+    </info>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>list</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>write</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+	  <info>
+		 Where do you want to start counting. Default this is 1.
+		</info>
+    </attribute>
+   </tag>
 </taglib>
