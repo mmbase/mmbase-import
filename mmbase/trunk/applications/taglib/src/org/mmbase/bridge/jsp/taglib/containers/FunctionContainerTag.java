@@ -26,7 +26,7 @@ cd a * Function Container can be used around Function (-like) Tags
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.4 2003-08-12 18:13:40 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.5 2003-08-13 10:36:14 michiel Exp $
  */
 public class FunctionContainerTag extends CloudReferrerTag implements FunctionContainer {
     private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
@@ -91,8 +91,8 @@ public class FunctionContainerTag extends CloudReferrerTag implements FunctionCo
                     a.set("language", localeTag.getLocale().getLanguage());
                 }
             }
-            if (a.hasArgument(USERCONTEXT_ARGUMENT)) {
-                a.set("usercontext", getCloud().getUser());
+            if (a.hasArgument(USER_ARGUMENT)) {
+                a.set("user", getCloud().getUser());
             }
         } else {
             parameters = new ArrayList();
