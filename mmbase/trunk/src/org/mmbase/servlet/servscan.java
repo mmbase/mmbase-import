@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.34 2003-02-11 10:43:29 vpro Exp $
+ * @version $Id: servscan.java,v 1.35 2003-02-11 16:08:14 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -376,16 +376,6 @@ public class servscan extends JamesServlet {
                 }
 
             	if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
-
-                    // Start VPRO specific hack, not committed to CVS!!!
-                    // Redirect if browsing on WWW
-                    String host = sp.req.getServerName();
-                    if (host.equals("www.vpro.nl") || host.equals("3voor12.vpro.nl") || host.equals("bieslog.vpro.nl")) {
-                            res.setStatus(302,"OK");
-                            res.setHeader("Location","http://pages.vpro.nl" + req_line);
-                            return true;
-                    }
-                    // End VPRO specific hack, not committed to CVS!!
 
 	                sp.wantCache="PAGE";
                 	String rst=parser.scancache.get(sp.wantCache, req_line, sp);
