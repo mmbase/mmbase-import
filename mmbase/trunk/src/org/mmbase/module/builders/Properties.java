@@ -7,27 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-	$Id: Properties.java,v 1.7 2000-12-10 15:48:27 daniel Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.6  2000/11/14 14:52:11  gerard
-	gerard: removed empty method public String getGUIIndicator(String field,MMObjectNode node)
-	and changed name into key in the method getGuiIndicator(MMObjectNode node)
-	
-	Revision 1.5  2000/03/30 13:11:33  wwwtech
-	Rico: added license
-	
-	Revision 1.4  2000/03/29 10:59:24  wwwtech
-	Rob: Licenses changed
-	
-	Revision 1.3  2000/03/24 14:34:00  wwwtech
-	Rico: total recompile
-	
-	Revision 1.2  2000/02/24 14:14:49  wwwtech
-	Rico: debug changed
-	
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -37,14 +16,14 @@ import java.io.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
- * @version $Id: Properties.java,v 1.7 2000-12-10 15:48:27 daniel Exp $
+ * @version $Id: Properties.java,v 1.8 2001-03-26 09:34:37 install Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(Properties.class.getName());
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("key");
@@ -85,7 +64,7 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
 	public boolean nodeChanged(String number, String builder, String ctype) {
 		if (builder.equals(tableName)) {
-			if (debug) debug("nodeChanged(): Property change ! "+number+","+builder+","+ctype);
+			log.debug("nodeChanged(): Property change ! "+number+","+builder+","+ctype);
 			if (ctype.equals("d")) {
 				// Should zap node prop cache parent, but node already gone...
 			}
@@ -95,7 +74,7 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 				if (isNodeCached(Integer.parseInt(number))) {
 					MMObjectNode pnode=getNode(number);
 					if (pnode!=null) {
-						if (debug) debug("nodeChanged(): Zapping node prop cache for "+number);
+						log.debug("nodeChanged(): Zapping node prop cache for "+number);
 						pnode.delPropertiesCache();
 					}
 				}
@@ -107,7 +86,7 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 				if (node!=null) {
 					int parent=node.getIntValue("parent");
 					if (isNodeCached(parent)) {
-						if (debug) debug("nodeChanged(): Zapping node properties cache for "+parent);
+						log.debug("nodeChanged(): Zapping node properties cache for "+parent);
 						MMObjectNode pnode=getNode(parent);	
 						if (pnode!=null) pnode.delPropertiesCache();
 					}	
