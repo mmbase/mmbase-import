@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.40 2004-12-13 13:55:44 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.41 2004-12-20 17:50:45 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -93,7 +93,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final FieldPosition dontcareFieldPosition = new FieldPosition(SimpleDateFormat.YEAR_FIELD);
 
     protected void appendDateValue(StringBuffer sb, Date value) {
