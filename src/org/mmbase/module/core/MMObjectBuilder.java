@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.194 2002-12-05 14:48:49 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.195 2002-12-05 16:17:28 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1087,7 +1087,7 @@ public class MMObjectBuilder extends MMTable {
      * Enumerate all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where) {
@@ -1099,7 +1099,7 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort) {
@@ -1113,7 +1113,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort,boolean direction) {
@@ -1124,7 +1124,7 @@ public class MMObjectBuilder extends MMTable {
      * Returns a vector containing all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where) {
@@ -1138,7 +1138,7 @@ public class MMObjectBuilder extends MMTable {
      * @param sorted      a comma separated list of field names on wich the
      *                    returned list should be sorted
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where,String sorted) {
@@ -1152,7 +1152,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where,String sorted,boolean direction) {
@@ -1185,7 +1185,7 @@ public class MMObjectBuilder extends MMTable {
      *                    value.
      * @return            a vector containing all the objects that apply in the
      *                    requested order
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where, String sorted, String directions) {
@@ -1208,7 +1208,7 @@ public class MMObjectBuilder extends MMTable {
      * - Throws exception on SQL errors
      * - returns List rather then Vector.
      * @since MMBase-1.6
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
@@ -1236,7 +1236,7 @@ public class MMObjectBuilder extends MMTable {
      * @param directions Comma-separated list of sorting directions ("UP" 
      *        or "DOWN") of the fields to sort on.
      * @since MMBase-1.6
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
@@ -1257,7 +1257,7 @@ public class MMObjectBuilder extends MMTable {
      * Parses arguments of searchVector and searchList
      * @since MMBase-1.6
      * @sql
-     * @deprecated Use {@link #getSearchQuery(String) getSearchQuery()} instead.
+     * @deprecated Use <code>getSearchQuery(String)</code> instead.
      * @deprecated-now This method no longer serves a purpose and is called 
      *                  from nowhere.
      */
@@ -1474,7 +1474,7 @@ public class MMObjectBuilder extends MMTable {
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchNumbers(String where) {
@@ -1516,7 +1516,7 @@ public class MMObjectBuilder extends MMTable {
      * @param sorted order in which to return the objects
      * @param in lost of node numbers to filter on
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String sort,String in) {
@@ -1528,7 +1528,7 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param in lost of node numbers to filter on
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String in) {
@@ -1543,7 +1543,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
@@ -1557,7 +1557,7 @@ public class MMObjectBuilder extends MMTable {
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      * @sql
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String in) {
@@ -1591,7 +1591,7 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
@@ -1628,7 +1628,7 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String where,String sorted,String in) {
@@ -1644,7 +1644,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
@@ -1688,8 +1688,8 @@ public class MMObjectBuilder extends MMTable {
      *
      * @since MMBase-1.6
      * @sql
-     * @deprecated Use {@link #getSearchQuery(String,String,String) 
-     *             getSearchQuery()} instead - specifying direction "UP" or 
+     * @deprecated Use <code>getSearchQuery(String,String,String)</code>
+     *             instead - specifying direction "UP" or 
      *             "DOWN" as appropriate.
      * @deprecated-now This method no longer serves a purpose and is called 
      *                 from nowhere.
@@ -1720,8 +1720,8 @@ public class MMObjectBuilder extends MMTable {
      *
      * @since MMBase-1.6
      * @sql
-     * @deprecated Use {@link #getSearchQuery(String,String,String) 
-     *             getSearchQuery()} instead.
+     * @deprecated Use <code>getSearchQuery(String,String,String)</code>
+     *             instead.
      * @deprecated-now This method no longer serves a purpose and is called 
      *                 from nowhere.
      */
@@ -1767,7 +1767,7 @@ public class MMObjectBuilder extends MMTable {
      * the where clause.
      * @param where where clause (SQL-syntax) that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      *             The performance gain is negligible and does not justify
      *             another method.
@@ -1958,7 +1958,7 @@ public class MMObjectBuilder extends MMTable {
      * @vpro replace with a way to sort nodes.
      * @param rs The resultset containing the nodes
      * @return The SortedVector which holds the data
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public SortedVector readSearchResults(ResultSet rs, SortedVector sv) {
