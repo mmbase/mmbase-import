@@ -57,16 +57,13 @@
 <!ATTLIST list fdatapath CDATA #IMPLIED >
 <!ATTLIST list fparentdatapath CDATA #IMPLIED >
 <!ATTLIST list destination NMTOKEN #IMPLIED >
+<!ATTLIST list destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST list hidecommand CDATA #IMPLIED >
 <!ATTLIST list orderby CDATA #IMPLIED >
-<!ATTLIST list ordertype CDATA #IMPLIED >
+<!ATTLIST list ordertype (number | string) #IMPLIED >
 <!ATTLIST list role NMTOKEN #IMPLIED >
-<!ATTLIST list type NMTOKEN #IMPLIED >
-<!ATTLIST list fields CDATA #IMPLIED >
 <!ATTLIST list include CDATA #IMPLIED >
-<!ATTLIST list directions CDATA #IMPLIED >
 <!ATTLIST list searchdir (source | destination | both | all | either) #IMPLIED >
-
 
 <!ELEMENT item ( title | description | field | fieldset | list )* >
 <!ATTLIST item displaytype NMTOKEN #IMPLIED >
