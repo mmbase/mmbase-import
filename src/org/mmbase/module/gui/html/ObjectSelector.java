@@ -226,7 +226,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 						other=(MMObjectNode)h.nextElement();
 						rel=(MMObjectNode)h.nextElement();
 						results.add(name);
-						results.add(rel.parent.getTableName());
+						results.add(obj.mmb.getTypeDef().getValue(rel.getOType()));
 						results.add(""+rel.getIntValue("number"));
 						results.add("");
 						results.add(other.getGUIIndicator());
