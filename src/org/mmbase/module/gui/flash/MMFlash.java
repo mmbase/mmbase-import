@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implements the parsing and generating of dynamic flash files
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.11 2001-09-17 16:01:11 daniel Exp $
+ * @version $Id: MMFlash.java,v 1.12 2001-10-25 11:46:16 vpro Exp $
  */
 public class MMFlash extends Module {
 
@@ -87,42 +87,34 @@ public class MMFlash extends Module {
 	public MMFlash() {
 	}
 
-	public synchronized byte[] getDebugSwt(String url,String query,HttpServletRequest req) {
-		String filename=htmlroot+url;
+	public synchronized byte[] getDebugSwt(scanpage sp) {
+		String filename=htmlroot+sp.req.getRequestURI();
 		byte[] bytes=generateSwtDebug(filename);
 		return(bytes);
 	}
 
-	public synchronized byte[] getScanParsedFlash(String url,String query,HttpServletRequest req) {
-
-	
-		// its generated now load it
+	public synchronized byte[] getScanParsedFlash(scanpage sp) {
+		// Get inputfile
+		String url = sp.req.getRequestURI();
 		String filename=htmlroot+url;
-
     	byte[] inp=readBytesFile(filename);
 		if (inp==null) {
 			log.error( "No valid sxf file ("+filename+") !" );		
 			return(null);
 		}
-		String ibody=new String(inp);
-
+		sp.body = new String(inp);
 
 		// oke try to parse it
 		if (scanp!=null) {
-			scanpage sp=new scanpage();
-			sp.body=ibody;
-			if (query!=null) sp.setParamsLine(query);
-			sp.req=req;
 			try {
-				ibody=scanp.handle_line(sp.body,null,sp);
+				sp.body = scanp.handle_line(sp.body,sp.session,sp);
 			} catch(Exception e) {}
 		} else {
 			log.error("MMFlash-> can't reach scanparser");
 		}
 
-
 		// now feed it to the xml reader
-		CharArrayReader reader=new CharArrayReader(ibody.toCharArray());
+		CharArrayReader reader=new CharArrayReader(sp.body.toCharArray());
 			
 		XMLDynamicFlashReader script=new XMLDynamicFlashReader(reader);
 
@@ -140,26 +132,29 @@ public class MMFlash extends Module {
 
 		// is there a caching option set ?
 		String caching=script.getCaching();
-		if (caching!=null && caching.equals("lru")) {
-			byte[] bytes=(byte[])lru.get(url+query);
-			if (bytes!=null) {
-				return(bytes);
-			} else {
-			}
-		} else if (caching!=null && caching.equals("disk")) {
-			byte[] bytes=(byte[])lru.get(url+query);
-			if (bytes!=null) {
-				log.error("WOW from disk+lru");
-				return(bytes);
-			} else {
-				bytes=loadDiskCache(htmlroot+src,query);
+		String query=sp.req.getQueryString();
+		
+		if (!sp.reload) {
+			if (caching!=null && caching.equals("lru")) {
+				byte[] bytes=(byte[])lru.get(url+query);
 				if (bytes!=null) {
-					log.error("WOW from disk");
-					lru.put(url+query,bytes);
 					return(bytes);
 				}
+			} else if (caching!=null && caching.equals("disk")) {
+				byte[] bytes=(byte[])lru.get(url+query);
+				if (bytes!=null) {
+					log.error("WOW from disk+lru");
+					return(bytes);
+				} else {
+					bytes=loadDiskCache(htmlroot+src,query);
+					if (bytes!=null) {
+						log.error("WOW from disk");
+						lru.put(url+query,bytes);
+						return(bytes);
+					}
+				}
 			}
-		}
+		}// !sp.reload
 
 
 		String scriptpath=src;

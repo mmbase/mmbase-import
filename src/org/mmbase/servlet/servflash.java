@@ -15,8 +15,10 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.gui.flash.*;
+import org.mmbase.util.scanpage;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,6 +31,7 @@ public class servflash extends JamesServlet {
     private static Logger log;
 
     private MMFlash gen;
+	private static sessionsInterface sessions=null;
     
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -37,6 +40,7 @@ public class servflash extends JamesServlet {
         log.info("Init of servlet " + config.getServletName() + ".");
         MMBaseContext.initHtmlRoot();
         gen=(MMFlash)getModule("mmflash");
+		sessions=(sessionsInterface)getModule("SESSION");
     }
 
     /** 
@@ -50,35 +54,33 @@ public class servflash extends JamesServlet {
     * by a user.
      */
     public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
-    {    
-        BufferedOutputStream out=null;
-        try {
-            out=new BufferedOutputStream(res.getOutputStream());
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
-        if (gen!=null) {
-
-            String url=req.getRequestURI();
-            String query=req.getQueryString();
-	    if (url.endsWith(".swt")) {
-        	res.setContentType("text/plain");
-            	byte[] bytes=gen.getDebugSwt(url,query,req);
-		if (bytes!=null) {
-	            	out.write(bytes,0,bytes.length);
-		} else {
-			res.sendError(404);
-		}
-	    } else {
-        	res.setContentType("application/x-shockwave-flash");
-           	 byte[] bytes=gen.getScanParsedFlash(url,query,req);
-		if (bytes!=null) {
-	            	out.write(bytes,0,bytes.length);
-		} else {
-			res.sendError(404);
-		}
-	    }	
-        }
-    }
-
+    {  		incRefCount(req);
+		try {
+			BufferedOutputStream out=null;
+			try {
+				out=new BufferedOutputStream(res.getOutputStream());
+			} catch (Exception e) {
+				log.error(Logging.stackTrace(e));
+			}
+			if (gen!=null) {
+				scanpage sp = new scanpage(this, req, res, sessions);
+				if (req.getRequestURI().endsWith(".swt")) {
+					res.setContentType("text/plain");
+					byte[] bytes=gen.getDebugSwt(sp);
+            		if (bytes!=null) {
+			       		out.write(bytes,0,bytes.length);
+					} else {
+						res.sendError(404);
+					}
+				} else {
+					res.setContentType(sp.mimetype); // application/x-shockwave-flash
+					byte[] bytes=gen.getScanParsedFlash(sp);
+					if (bytes!=null) {
+						out.write(bytes,0,bytes.length);
+					} else {
+						res.sendError(404);
+					}
+				}	
+			}// gen != nul		} finally { decRefCount(req); }
+    }// service
 }
