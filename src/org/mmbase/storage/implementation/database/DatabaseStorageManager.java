@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.67 2004-06-15 21:27:57 robmaris Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.68 2004-07-26 16:56:53 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1994,88 +1994,89 @@ public class DatabaseStorageManager implements StorageManager {
 
     public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-            int result = 0;
-            int fromDatabase = 0;
-            Enumeration builders = factory.getMMBase().getMMObjects();
-            while (builders.hasMoreElements()) {
-                MMObjectBuilder builder = (MMObjectBuilder)builders.nextElement();
-                Iterator fields = builder.getFields().iterator();
-                while (fields.hasNext()) {
-                    FieldDefs field = (FieldDefs)fields.next();
-                    String fieldName = field.getDBName();
-                    if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
-
-                        // check whether it might be in a column
-                        boolean foundColumn = false;
-                        {
-                            try {
-                                getActiveConnection();
-                                String tableName = (String)factory.getStorageIdentifier(builder);
-                                DatabaseMetaData metaData = activeConnection.getMetaData();
-                                ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
+            synchronized(factory) { // there is only on factory. This makes sure that there is only one conversion running
+                int result = 0;
+                int fromDatabase = 0;
+                Enumeration builders = factory.getMMBase().getMMObjects();
+                while (builders.hasMoreElements()) {
+                    MMObjectBuilder builder = (MMObjectBuilder)builders.nextElement();
+                    Iterator fields = builder.getFields().iterator();
+                    while (fields.hasNext()) {
+                        FieldDefs field = (FieldDefs)fields.next();
+                        String fieldName = field.getDBName();
+                        if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
+                            
+                            // check whether it might be in a column
+                            boolean foundColumn = false;
+                            {
                                 try {
-                                    while (columnsSet.next()) {
-                                        if (columnsSet.getString("COLUMN_NAME").equals(fieldName)) {
-                                            foundColumn = true;
-                                            break;
+                                    getActiveConnection();
+                                    String tableName = (String)factory.getStorageIdentifier(builder);
+                                    DatabaseMetaData metaData = activeConnection.getMetaData();
+                                    ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
+                                    try {
+                                        while (columnsSet.next()) {
+                                            if (columnsSet.getString("COLUMN_NAME").equals(fieldName)) {
+                                                foundColumn = true;
+                                                break;
+                                            }
+                                        }
+                                    } finally {
+                                        columnsSet.close();
+                                    }
+                                } catch (java.sql.SQLException sqe) {
+                                    log.error(sqe.getMessage());
+                                } finally {
+                                    releaseActiveConnection();
+                                }
+                            }
+                            
+                            List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
+                            log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
+                            Iterator i = nodes.iterator();
+                            while (i.hasNext()) {
+                                MMObjectNode node = (MMObjectNode)i.next();
+                                File storeFile = getBinaryFile(node, fieldName);
+                                if (!storeFile.exists()) { // not found!
+                                    File legacyFile = getLegacyBinaryFile(node, fieldName);
+                                    if (legacyFile != null) {
+                                        storeFile.getParentFile().mkdirs();
+                                        if (legacyFile.renameTo(storeFile)) {
+                                            log.service("Renamed " + legacyFile + " to " + storeFile);
+                                            result++;
+                                        } else {
+                                            log.warn("Could not rename " + legacyFile + " to " + storeFile);
+                                        }
+                                    } else {
+                                        if (foundColumn) {
+                                            byte[] bytes = readBinaryFromDatabase(node, field);
+                                            node.setValue(fieldName, bytes);
+                                            storeBinaryAsFile(node, field);
+                                            node.setValue(fieldName, null); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                            // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                            result++;
+                                            fromDatabase++;
+                                            log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
                                         }
                                     }
-                                } finally {
-                                    columnsSet.close();
                                 }
-                            } catch (java.sql.SQLException sqe) {
-                                log.error(sqe.getMessage());
-                            } finally {
-                                releaseActiveConnection();
-                            }
-                        }
-
-                        List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
-                        log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
-                        Iterator i = nodes.iterator();
-                        while (i.hasNext()) {
-                            MMObjectNode node = (MMObjectNode)i.next();
-                            File storeFile = getBinaryFile(node, fieldName);
-                            if (!storeFile.exists()) { // not found!
-                                File legacyFile = getLegacyBinaryFile(node, fieldName);
-                                if (legacyFile != null) {
-                                    storeFile.getParentFile().mkdirs();
-                                    if (legacyFile.renameTo(storeFile)) {
-                                        log.service("Renamed " + legacyFile + " to " + storeFile);
-                                        result++;
-                                    } else {
-                                        log.warn("Could not rename " + legacyFile + " to " + storeFile);
-                                    }
-                                } else {
-                                    if (foundColumn) {
-                                        byte[] bytes = readBinaryFromDatabase(node, field);
-                                        node.setValue(fieldName, bytes);
-                                        storeBinaryAsFile(node, field);
-                                        node.setValue(fieldName, null); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
-                                        // node.commit(); no need, because we only changed blob (so no database updates are done)
-                                        result++;
-                                        fromDatabase++;
-                                        log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
-                                    }
-                                }
-                            }
-                        }
+                            } // nodes
+                        } // if type = byte
+                    } // fields
+                } // builders
+                if (result > 0) {
+                    log.info("Converted " + result + " fields " + ((fromDatabase > 0 && fromDatabase < result) ? " of wich  " + fromDatabase + " from database" : ""));
+                    if (fromDatabase > 0) {
+                        log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
                     }
+                    
+                } else {
+                    log.service("Converted no fields");
                 }
-            }
-            if (result > 0) {
-                log.info("Converted " + result + " fields " + ((fromDatabase > 0 && fromDatabase < result) ? " of wich  " + fromDatabase + " from database" : ""));
-                if (fromDatabase > 0) {
-                    log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
-                }
-
-            } else {
-                log.service("Converted no fields");
-            }
-            return result;
+                return result;
+            } // synchronized
         } else {
-
-            //
+            // not configured to store blobs as file
             return -1;
         }
     }
