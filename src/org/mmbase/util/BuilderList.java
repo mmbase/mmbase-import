@@ -29,16 +29,11 @@ import org.w3c.dom.Document;
  * Gives an xml-representation of a dir structure with builders
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.4 2003-02-10 23:44:37 nico Exp $
+ * @version $Id: BuilderList.java,v 1.5 2003-03-04 13:28:50 nico Exp $
  */
 public class BuilderList {
     // logger not used at the moment
     //private static Logger log = Logging.getLoggerInstance(BuilderList.class.getName());
-
-    /**
-     * Empty constructor
-     */
-    public BuilderList () {}
 
    /**
      * Generates the document and writes it to the result object.

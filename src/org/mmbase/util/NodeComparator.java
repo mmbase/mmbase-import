@@ -12,7 +12,6 @@ package org.mmbase.util;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import java.util.Vector;
 
 /**
  * This class implements the Comparator interface for comparing MMObjectNodes.

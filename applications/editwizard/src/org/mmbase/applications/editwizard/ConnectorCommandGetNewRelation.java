@@ -9,15 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
-import java.util.Vector;
-import org.w3c.dom.*;
-
 /**
  * EditWizard
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.5 2002-10-31 08:23:19 pierre Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.6 2003-03-04 13:27:10 nico Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {

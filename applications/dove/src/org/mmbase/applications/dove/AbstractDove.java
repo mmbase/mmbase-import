@@ -13,7 +13,6 @@ package org.mmbase.applications.dove;
 import java.util.*;
 
 import org.w3c.dom.*;
-import javax.xml.parsers.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.bridge.Cloud;
 
@@ -50,7 +49,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.10 2003-02-24 20:41:43 kees Exp $
+ * @version $Id: AbstractDove.java,v 1.11 2003-03-04 13:27:07 nico Exp $
  */
 
 public abstract class AbstractDove {

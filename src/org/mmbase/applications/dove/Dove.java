@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
-import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.bridge.*;
@@ -48,7 +47,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.29 2003-02-25 15:40:18 kees Exp $
+ * @version $Id: Dove.java,v 1.30 2003-03-04 13:27:07 nico Exp $
  */
 
 public class Dove extends AbstractDove {

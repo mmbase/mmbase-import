@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.logging;
 
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
-
 import org.apache.log4j.Category;
 import org.apache.log4j.xml.DOMConfigurator;
 
