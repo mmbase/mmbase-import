@@ -7,7 +7,7 @@
 Perhaps an example with transactions?
 </p>
 <hr />
-<a href='<mm:url page="context\.jsp">
+<a href='<mm:url page="context.jsp">
          <mm:param name="haj"><mm:write referid="alias" />(again)</mm:param>
 	 </mm:url>'>back</a>
 </body>
