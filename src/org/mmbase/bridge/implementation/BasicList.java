@@ -31,26 +31,23 @@ public class BasicList extends ArrayList  {
     BasicList(Collection c) {
          super(c);
     }
-    protected Object convert(Object o, int index) { // 'virtual' method       
-        System.err.println("base");
+    protected Object convert(Object o, int index) { // 'virtual' method
         return o;
     }
-    
-    public Object get(int index) {        
+
+    public Object get(int index) {
         return convert(super.get(index), index);
     }
 
     public Object[] toArray() { // needed when you e.g. want to sort the list.
-        System.err.println("hier");
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
         for (int i = 0; i < this.size(); i++) {
             convert(super.get(i), i);
         }
-        System.err.println("daar");
         return super.toArray();
     }
 
-    // depending on how functions like 'indexOf' and 'lastIndexOf' are implemented (if they use get), 
+    // depending on how functions like 'indexOf' and 'lastIndexOf' are implemented (if they use get),
     // perhaps also those functions must be overrided like toArray.
 
 
@@ -58,11 +55,11 @@ public class BasicList extends ArrayList  {
 
         protected BasicList list;
         protected int index=-1;
-    
+
         BasicIterator(BasicList list) {
             this.list = list;
         }
-    
+
         public boolean hasNext() {
             return  index < (list.size()-1);
         }
@@ -76,15 +73,15 @@ public class BasicList extends ArrayList  {
         public int previousIndex() {
             return index - 1;
         }
-    
+
         public void remove() {
             list.remove(index);
-        }       
+        }
 
         // These have to be implemented with a check if o is of the right type.
-        public abstract void set(Object o); 
+        public abstract void set(Object o);
         public abstract void add(Object o);
-        // normally also e.g. set(Node n); and add(Node n) will be created in 
+        // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
         public Object next() {
@@ -104,7 +101,7 @@ public class BasicList extends ArrayList  {
             }
             return list.get(index);
         }
-    
+
     }
-        
+
 }
