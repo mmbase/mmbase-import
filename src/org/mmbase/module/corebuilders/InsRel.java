@@ -275,7 +275,7 @@ public class InsRel extends MMObjectBuilder {
                     nodenr = node.getIntValue("dnumber");
                 }
                 MMObjectBuilder nodeBuilder = mmb.getBuilder(typedef.getValue(getNodeType(nodenr)));
-                if (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder)) {
+                if (nodeBuilder != null && (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder))) {
                     list.add(node);
                 }                 
             }
