@@ -37,13 +37,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.15 2003-06-24 09:50:51 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.16 2003-07-09 18:14:51 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
-
-    /**
-     * Logging instance
-     */
     private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class);
 
     // map with tables that are known to exist
@@ -284,14 +280,15 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             stmt.setLong(i, node.getLongValue(fieldName));
             break;
         case FieldDefs.TYPE_STRING:;
-        case FieldDefs.TYPE_XML:
-            String stringvalue = node.getStringValue(fieldName);
-            if (stringvalue != null) {
-                setDBText(i, stmt, stringvalue);
+        case FieldDefs.TYPE_XML: {
+            String stringValue = node.getStringValue(fieldName);
+            if (stringValue != null) {
+                setDBText(i, stmt, stringValue);
             } else {
                 setDBText(i, stmt," ");
             }
             break;
+        }
         case FieldDefs.TYPE_BYTE:
             if (getStoreBinaryAsFile()) {
                 String stype = node.getBuilder().getTableName();
@@ -439,13 +436,13 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         StringBuffer fieldValues = null;
 
         // obtain the builder's table fields
-        List fields = builder.getFields();
+        List fields = builder.getFields(); // returns a copy.
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
             if ((field.getDBState() != FieldDefs.DBSTATE_PERSISTENT) &&
                 (field.getDBState() != FieldDefs.DBSTATE_SYSTEM)) {
                 // do not handle this field
-                // remove it from the field list so we need not check on it later
+                // remove it from the field list so we need not check on it later (in trans.executeUpdate)
                 f.remove();
             } else {
                 // skip bytevalues that are written to file
@@ -628,7 +625,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return a list of fields.
      */
     protected List getFieldsOrderCreate(MMObjectBuilder builder) {
-        List fields=builder.getFields();
+        List fields = builder.getFields();
         Collections.sort(fields);
         // Place the "otype" field second place, as this is the convention
         // in older databases, but the builder delivers "otype" as the first field
