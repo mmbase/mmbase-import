@@ -15,7 +15,8 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.gui.html.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
@@ -28,16 +29,19 @@ import org.mmbase.util.logging.*;
  */
 public class Email extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(Email.class.getName());
+
+        private static Logger log = Logging.getLoggerInstance(Email.class.getName());
 	private EmailSendProbe sendprobe;
 	public final static int STATE_UNKNOWN=-1;
 	public final static int STATE_WAITING=0;
 	public final static int STATE_DELIVERED=1;
 	public final static int STATE_FAILED=2;
 	public final static int STATE_SPAMGARDE=3;
+	public final static int STATE_UNDERWAY=4;
 
 	public final static int TYPE_ONESHOT=1;
 	public final static int TYPE_REPEATMAIL=2;
+	public final static int TYPE_ONESHOTKEEP=3;
 
 	public boolean init() {
 		super.init ();
@@ -51,13 +55,30 @@ public class Email extends MMObjectBuilder {
 	*/
 	public boolean nodeChanged(String number,String builder,String ctype) {
 		// check the type of change on the object
-		if (ctype.equals("n")) {
+		if (ctype.equals("d")) {
+			return(true);
 		}
-		// its a new object so lets check if we should mail
+
+		// its a object so lets check if we should mail
 		// not sure if we can signal it on changes too. Since
 		// that means we will 'recheck' them alot
 		MMObjectNode node=getNode(number);
-		sendprobe.putTask(node);	
+
+
+		// if they tell us they are busy we will trust them
+		// and ignore in a positive way.
+		int mailstatus=node.getIntValue("mailstatus");
+		if (mailstatus==STATE_UNDERWAY) {
+			return(true);
+		}
+
+		// if status is unknown or waiting lets mail or schedule
+		// the task for mailing
+		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+			sendprobe.putTask(node);	
+		} else {
+			checkMailNode(node);
+		}
 		return(true);
 	}
 
@@ -66,19 +87,31 @@ public class Email extends MMObjectBuilder {
 	* it mails and removed itself from the cloud when done
 	*/
 	public void checkOneShotMail(MMObjectNode node) {
-
+		// just to make sure lets recheck state
 		int mailstatus=node.getIntValue("mailstatus");
 		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+			// so lets send this node as email
+			sendMailNode(node);
+		}
 
-			mailstatus=sendMailNode(node);
-			if (mailstatus==STATE_DELIVERED) {
+		// if mail is delivered then remove it
+		if (mailstatus==STATE_DELIVERED) {
 				removeNode(node);
-			} else {
-				// set the changes back to the database
-				node.commit();
-			}
 		} 
 		
+	}
+
+
+	/**
+	* check the message object, now if state is 1 (oneshot)
+	*/
+	public void checkOneShotKeepMail(MMObjectNode node) {
+		// just to make sure lets recheck state
+		int mailstatus=node.getIntValue("mailstatus");
+		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+			// so lets send this node as email
+			sendMailNode(node);
+		}
 	}
 
 
@@ -87,29 +120,44 @@ public class Email extends MMObjectBuilder {
 	* it mails and removed itself from the cloud when done
 	*/
 	public void checkRepeatMail(MMObjectNode node) {
+		// just to make sure lets recheck state
 		int mailstatus=node.getIntValue("mailstatus");
 		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
-
+			// so lets send this node as email
 			mailstatus=sendMailNode(node);
-			if (mailstatus==STATE_DELIVERED) {
-				int mailtime=node.getIntValue("mailtime");
-				int repeattime=node.getIntValue("repeattime");
+		// is mail delivered ifso update it for next mail event
+		} else if (mailstatus==STATE_DELIVERED) {
 
-				int nowtime=(int)(System.currentTimeMillis()/1000);
-				int proposedtime=mailtime+repeattime;
-				
-				// if we allready passed the time or repeattime
-				// is less then 60 seconds we ignore as a spam
-				// garde
-				if (repeattime>59 && nowtime<proposedtime) {
-					node.setValue("mailtime",proposedtime);
-					node.setValue("mailstatus",STATE_WAITING);
-				} else {
-					node.setValue("mailstatus",STATE_SPAMGARDE);
-				}
+			// get the mailtime, so we can calc the new
+			// mailtime.
+			int mailtime=node.getIntValue("mailtime");
+
+			// what is the repeat time of the message
+			int repeattime=node.getIntValue("repeattime");
+
+			// calc the new proposed time
+			int proposedtime=mailtime+repeattime;
+
+			// get the current time to make sure we are not 
+			// allready passed the new proposed time
+			int nowtime=(int)(System.currentTimeMillis()/1000);
+			
+			// if we allready passed the time or repeattime
+			// is less then 60 seconds we ignore as a spam
+			// guard
+			if (repeattime>59 && nowtime<proposedtime) {
+				// set the new proposed time
+				node.setValue("mailtime",proposedtime);
+				// signal that we are ready again
+				node.setValue("mailstatus",STATE_WAITING);
+				// commit to the cloud
+				node.commit();
+			} else {
+				// spam guard triggered
+				node.setValue("mailstatus",STATE_SPAMGARDE);
+				// commit to the cloud
+				node.commit();
 			}
-			// set the changes back to the database
-			node.commit();
 		} 
 	}
 
@@ -117,11 +165,17 @@ public class Email extends MMObjectBuilder {
 	/**
 	*/
 	public int sendMailNode(MMObjectNode node) {
+			// first set Node underway
+			node.setValue("mailstatus",STATE_UNDERWAY);
+
+			// commit to the cloud so the others in
+			// the cluster know we are busy
+			node.commit();
+
 			String subject=getSubject(node);
 			String to=getTo(node);
 			String from=node.getStringValue("from");
 			String replyto=node.getStringValue("replyto");
-			//String body=node.getStringValue("body");
 			String body=getBody(node);
 	
 			// now if a url is defined it overrides the body
@@ -134,7 +188,6 @@ public class Email extends MMObjectBuilder {
 				String tmpbody=getPage(url);
 				if (tmpbody!=null) body=tmpbody;
 			}
-	
 
 			StringTokenizer tok = new StringTokenizer(to,",\n\r");
 			while (tok.hasMoreTokens()) {
@@ -151,16 +204,23 @@ public class Email extends MMObjectBuilder {
 					mail.setHeader("Mime-Version","1.0");
 					mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
 				}
-				
-				// send the message to the user defined
-				if (to==null || mmb.getSendMail().sendMail(mail)==false) {
-					log.debug("Email -> mail failed");
-					node.setValue("mailstatus",STATE_FAILED);
-				} else {
-					node.setValue("mailstatus",STATE_DELIVERED);
+			
+				if (body.indexOf("<DONTMAIL>")==-1) {	
+					// send the message to the user defined
+					if (to==null || mmb.getSendMail().sendMail(mail)==false) {
+						log.debug("Email -> mail failed");
+						node.setValue("mailstatus",STATE_FAILED);
+					} else {
+						log.debug("Email -> mail send");
+						node.setValue("mailstatus",STATE_DELIVERED);
+					}
+				} else { 
+					log.debug("Don't mail tag found");
 				}
 			}
 			node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
+			node.commit();
+
 			return(node.getIntValue("mailstatus"));
 	}
 
@@ -178,7 +238,7 @@ public class Email extends MMObjectBuilder {
 				}
 			}
 		}
-		log.debug("TO="+to);
+		//System.out.println("TO="+to);
 		return(to);
 	}
 
@@ -274,6 +334,9 @@ public class Email extends MMObjectBuilder {
 		switch(mailtype) {
 			case TYPE_ONESHOT :
 				checkOneShotMail(node);	
+				break;
+			case TYPE_ONESHOTKEEP :
+				checkOneShotKeepMail(node);	
 				break;
 			case TYPE_REPEATMAIL:
 				checkRepeatMail(node);	
