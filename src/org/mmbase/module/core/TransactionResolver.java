@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.9 2001-02-05 11:41:44 daniel Exp $
+	$Id: TransactionResolver.java,v 1.9.2.1 2001-03-07 09:31:41 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.9  2001/02/05 11:41:44  daniel
+	changed some debug, they did not seem to be errors and resulted in alot of output
+	
 	Revision 1.8  2000/12/30 14:06:06  daniel
 	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
 	
@@ -45,7 +48,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.9 2001-02-05 11:41:44 daniel Exp $
+ * @version $Id: TransactionResolver.java,v 1.9.2.1 2001-03-07 09:31:41 wwwtech Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -93,7 +96,7 @@ public class TransactionResolver {
 						field=fd.getDBName();
 						tmpfield="_"+field;
 						tmpstate=node.getDBState(tmpfield);
-						if (tmpstate==FieldDefs.DBSTATE_VIRTUAL || tmpstate==FieldDefs.DBSTATE_UNKNOWN) {
+						if (tmpstate==FieldDefs.DBSTATE_VIRTUAL) {
 							ikey=node.getIntValue(field);
 							if (ikey<0) {
 								// Key is not set
