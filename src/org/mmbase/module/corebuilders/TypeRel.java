@@ -43,6 +43,22 @@ public class TypeRel extends MMObjectBuilder {
 	}
 
     /**
+    * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
+    * This method indirectly calls {@link #preCommit}.
+    * @param owner The administrator creating the node
+    * @param node The object to insert. The object need be of the same type as the current builder.
+    * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+    */
+    public int insert(String owner, MMObjectNode node) {
+        int snumber=node.getIntValue("snumber");
+        int dnumber=node.getIntValue("dnumber");
+        int result=super.insert(owner,node);
+        // remove from cache, to catch multiple relations between types
+        artCache.remove(""+snumber+" "+dnumber);
+        return result;
+    }
+	
+    /**
     * Remove a node from the cloud.
     * @param node The node to remove.
     */
