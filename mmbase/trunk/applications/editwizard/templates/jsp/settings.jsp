@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.27 2002-08-30 19:12:55 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.28 2002-09-03 16:28:39 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -29,9 +29,6 @@
         // which parameters to use to configure a list page
         public void config(Config.ListConfig c) {
             c.title       = getParam("title", c.title);
-            if (c.template==null) {
-                c.template = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
-            }
             c.pagelength   = getParam("pagelength", new Integer(c.pagelength)).intValue();
             c.maxpagecount   = getParam("maxpagecount", new Integer(c.maxpagecount)).intValue();
             c.wizard      = getParam("wizard", c.wizard);
@@ -107,13 +104,14 @@
         }
     };
 
+%><%
+
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
-Configurator configurator; // Fills the ewconfig if necessary.
+Configurator configurator = null; // Fills the ewconfig if necessary.
 
 String popupId = "";  // default means: 'this is not a popup'
 boolean popup = false;  
-
-%><% 
+ 
 
  boolean done=false;
      Object closedObject=null;
