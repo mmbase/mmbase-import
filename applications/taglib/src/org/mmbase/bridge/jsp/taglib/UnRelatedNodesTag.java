@@ -12,18 +12,18 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
  * Like listnodes tag, but is is also a node-referrer, and substracts the related nodes of the referred node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnRelatedNodesTag.java,v 1.7 2003-12-03 06:57:39 keesj Exp $
+ * @version $Id: UnRelatedNodesTag.java,v 1.8 2003-12-04 18:25:44 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class UnRelatedNodesTag extends ListNodesTag {
-    private static final Logger log = Logging.getLoggerInstance(UnRelatedNodesTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(UnRelatedNodesTag.class);
 
     protected Attribute role        = Attribute.NULL;
     protected Attribute searchDir   = Attribute.NULL;
@@ -42,25 +42,39 @@ public class UnRelatedNodesTag extends ListNodesTag {
         excludeSelf = getAttribute(e);
     }
 
-    protected NodeList getNodes() throws JspTagException {
+
+
+    /**
+     * Performs the search
+     */
+    public int doStartTag() throws JspTagException {
+        int superresult = doStartTagHelper(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
+        }
         // obtain a reference to the node through a parent tag
         Node parentNode = getNode();
         if (parentNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
 
-        NodeList nodes = super.getNodes();
+        NodeQuery query = getQuery();
 
-        NodeList relatedNodes = parentNode.getRelatedNodes(getNodeManager(), (String) role.getValue(this), (String) searchDir.getValue(this));
+        NodeList relatedNodes = parentNode.getRelatedNodes(query.getNodeManager(), (String) role.getValue(this), (String) searchDir.getValue(this));
+
+        NodesAndTrim result = getNodesAndTrim(query, relatedNodes.size() + 1); // query a bit more in case relatedNodes are subtracted
+
 
         if (excludeSelf.getBoolean(this, false)) {
-            nodes.remove(parentNode);
+            result.nodeList.remove(parentNode);
         }
 
-        nodes.removeAll(relatedNodes);
+        result.nodeList.removeAll(relatedNodes);       
 
-        return nodes;
+        return setReturnValues(result.nodeList, result.needsTrim);
+
     }
+
 
 }
 
