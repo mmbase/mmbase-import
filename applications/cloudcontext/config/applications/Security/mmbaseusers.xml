@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mmbaseusers   exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
+	<node number="415" owner="admin" alias="user.admin">
+		<state>0</state>
+		<username>admin</username>
+		<defaultcontext>admin</defaultcontext>
+		<password>admin2k</password>
+	</node>
+
+	<node number="777" owner="admin">
+		<state>0</state>
+		<username>foo</username>
+		<defaultcontext>default</defaultcontext>
+		<password>bar</password>
+	</node>
+
+
+	<node number="1002" owner="admin">
+		<state>0</state>
+		<username>anonymous</username>
+		<defaultcontext>default</defaultcontext>
+		<password></password>
+	</node>
+
+</mmbaseusers>
