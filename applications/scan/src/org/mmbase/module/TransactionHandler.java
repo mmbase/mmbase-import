@@ -504,7 +504,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						throw new TransactionHandlerException(oName + " no id specified");
 					}
 					//delete from temp cloud
-					currentObjectContext = tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(), id);
+					currentObjectContext = (String)transactionInfo.knownObjectContexts.get(id);
 					transactionManager.removeNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					// destroy
 					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
