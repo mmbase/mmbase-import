@@ -108,14 +108,27 @@ notfound="skip"<br />
   countrelations (specified type): <mm:countrelations type="urls" /> (should be 1)<br />
   gui of the relation node (with listrelations),
   should see a number: 
-  <mm:listrelations>
+  <mm:listrelations id="listrelations">
      <mm:field name="gui()" /><br />
      Should see url (with relatednode):
      <mm:relatednode>
           <mm:field name="url" />
       </mm:relatednode>
+  </mm:listrelations>  
+  <p>
+    Reusing the listrelations (inside the node):
+  </p>
+  <mm:listrelations referid="listrelations">
+     <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
   </mm:listrelations>
 </mm:node>
+  <p>
+    Reusing the listrelations (outside the node):
+  </p>
+  <mm:listrelations referid="listrelations">
+     <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+  </mm:listrelations>
+
 <h3>Testing 'element' attribute and list tags</h3>
 <em>see <a href="<mm:url page="${taglibdoc}/node.jsp#node.element" />">element attribute</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/list.jsp" />">list</a></em><br />
