@@ -6,7 +6,8 @@
   <!-- Read customized values if available -->
   <property file="build.properties" />
   <!-- Default values for properties that can be customized -->
-  <property name="source.dir"   location="../../1.6/mmbase" />
+  <property name="mmbase.source.dir" value=".." />
+  <property name="source.dir"   location="${mmbase.source.dir}" />
   <property file="${source.dir}/build.properties" />
 
   <property name="build.dir"    value="${source.dir}/build" />
@@ -21,7 +22,7 @@
   <property name="ui.class" value="junit.textui.TestRunner" />
 
 
-  <target name="init" depends="jar,expand.junit">
+  <target name="init" depends="mmbase,expand.junit">
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
@@ -49,8 +50,9 @@
     </available>  
   </target>
 
-  <target name="jar">
-    <!-- ant dir="${source.dir}" target="jar" /-->
+  <target name="mmbase">
+    <ant dir="${source.dir}" target="jar" />
+    <ant dir="${source.dir}" target="lib.compile" />
   </target>
   
 
@@ -153,13 +155,15 @@
 
     <echo message="copying" />
 
-    <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" >
-      <fileset dir="${tests.source.dir}">
+    <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
+      <fileset dir="${tests.source.dir}" >
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
         <include name="**/*.xml"/>
         <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
       </fileset>
     </copy>
 
@@ -187,7 +191,7 @@
     </java>
   </target>
 
-  <target name="run.bridgetest" depends="compile,init">
+  <target name="run.bridge" depends="compile,init">
     <java 
       classname="${ui.class}"
       fork="true"
@@ -198,12 +202,24 @@
   </target>
 
 
+  <target name="run.convertimage" depends="compile,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="org.mmbase.module.builders.ConvertTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+    </java>
+  </target>
+
+
 
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
-  <target name="run.junit" description="Run the test"
-          depends="run.typerel">
+  <target name="run.junit" description="Run all tests"
+          depends="run.typerel,run.bridge,run.convertimage">
 
   </target>
 
