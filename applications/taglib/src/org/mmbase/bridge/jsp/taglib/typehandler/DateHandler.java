@@ -19,10 +19,11 @@ import java.util.Date;
 
 
 /**
- * The 'date' type does not exist yet, this class is used in IntegerHandler and LongHandler now. 
+ * The 'date' type does not exist yet, this class is used in IntegerHandler and LongHandler now.
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
+ * @version $Id: DateHandler.java,v 1.2 2002-12-17 15:32:10 pierre Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -40,31 +41,31 @@ public class DateHandler extends AbstractTypeHandler {
     private void yearFieldValue(Calendar cal, StringBuffer buffer) {
         if (EXIST_YEAR_0) {
             // the year '0' does not really exist in gregorian, So 4 BC == -3, 1 BC == 0
-            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) { 
+            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) {
                 buffer.append("-");
                 buffer.append(cal.get(Calendar.YEAR) - 1);
             } else {
-                buffer.append(cal.get(Calendar.YEAR)); 
-            }       
+                buffer.append(cal.get(Calendar.YEAR));
+            }
         } else {
             // perhaps this is simpler..
-            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) { 
+            if(cal.get(Calendar.ERA) == java.util.GregorianCalendar.BC) {
                 buffer.append("-");
             }
-            buffer.append(cal.get(Calendar.YEAR)); 
+            buffer.append(cal.get(Calendar.YEAR));
         }
     }
-    
+
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-    	     
+
         StringBuffer buffer = new StringBuffer();
         Calendar cal = Calendar.getInstance();
         if (node !=null) {
-            if (node.getLongValue(field.getName()) != -1) {                    
-                cal.setTime( new Date((long) node.getLongValue( field.getName() ) * DATE_FACTOR)); 
+            if (node.getLongValue(field.getName()) != -1) {
+                cal.setTime( new Date((long) node.getLongValue( field.getName() ) * DATE_FACTOR));
             }
         }
         buffer.append("<input type=\"hidden\" name=\"");
@@ -112,7 +113,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"");
            yearFieldValue(cal, buffer);
             buffer.append("\" />");
-        } 
+        }
         if (options == null || options.indexOf("time") > -1) {
             buffer.append("&nbsp;&nbsp;<select name=\"" + prefix(field.getName() + "_hour") + "\">\n");
             for (int i = 0; i <= 23; i++) {
@@ -125,7 +126,7 @@ public class DateHandler extends AbstractTypeHandler {
                 buffer.append(i + "</option>\n");
             }
             buffer.append("</select> h :");
-            
+
             buffer.append("<select name=\"" + prefix(field.getName() + "_minute") + "\">\n");
             for (int i = 0; i <= 59; i++) {
                 if (cal.get(Calendar.MINUTE) == i) {
@@ -149,11 +150,11 @@ public class DateHandler extends AbstractTypeHandler {
             }
             buffer.append("</select> s");
         } else {
-            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_hour") + "\" value=\"" + cal.get(Calendar.HOUR_OF_DAY) + "\" />");
-            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"" + cal.get(Calendar.MINUTE) + "\" />");
-            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"" + cal.get(Calendar.SECOND) + "\" />");
+            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_hour") + "\" value=\"0\" />");
+            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"0\" />");
+            buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"0\" />");
         }
-        return buffer.toString();            
+        return buffer.toString();
     }
 
     /**
@@ -165,8 +166,8 @@ public class DateHandler extends AbstractTypeHandler {
     protected int checkYear(Integer year, String fieldName) throws JspTagException {
         int y = year.intValue();
         if (! EXIST_YEAR_0) {
-            if (y == 0) throw new JspTagException("The year '0' does not exist and cannot be used for field '" + fieldName + "'"); 
-            if (y < 0) y++; // This makes that year BC 1  =  -1 in stead of BC 1 = 0 (which seems to be the java way)        
+            if (y == 0) throw new JspTagException("The year '0' does not exist and cannot be used for field '" + fieldName + "'");
+            if (y < 0) y++; // This makes that year BC 1  =  -1 in stead of BC 1 = 0 (which seems to be the java way)
         }
         return y;
     }
@@ -175,8 +176,8 @@ public class DateHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
-        
-        String fieldName = field.getName();   
+
+        String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
         try {
             Integer day    = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_day")));
@@ -191,7 +192,7 @@ public class DateHandler extends AbstractTypeHandler {
             throw new JspTagException("Not a valid number (" + e.toString() + ") in field " + fieldName);
         }
         return "";
-    } 
+    }
 
 
     /**
@@ -201,7 +202,7 @@ public class DateHandler extends AbstractTypeHandler {
 
         StringBuffer buffer = new StringBuffer();
         String guitype = field.getGUIType();
-        String fieldName = field.getName();    
+        String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
         try {
             Integer day    = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_day")));
@@ -220,9 +221,9 @@ public class DateHandler extends AbstractTypeHandler {
         } else {
             return null;
         }
-        
-        
+
+
         return buffer.toString();
-    }       
+    }
 
 }
