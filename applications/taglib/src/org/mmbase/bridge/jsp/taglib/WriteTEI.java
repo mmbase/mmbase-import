@@ -21,10 +21,17 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 *
 * @author Michiel Meeuwissen
 */
-public class ExportTEI extends TagExtraInfo {
+public class WriteTEI extends TagExtraInfo {
     
-    public ExportTEI() { 
+    public WriteTEI() { 
         super(); 
+    }
+
+    protected int scope() {
+        return VariableInfo.NESTED;
+    }
+    protected String defaultType() {
+        return "Object";
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {
@@ -36,9 +43,8 @@ public class ExportTEI extends TagExtraInfo {
             variableInfo = new VariableInfo[1];
             
             String typeAttribute    = (String) data.getAttribute("type"); 
-            if (typeAttribute == null) typeAttribute = "Object";
-            
-            String type = "java.lang.Object";
+            if (typeAttribute == null) typeAttribute = defaultType();           
+            String type;
             
             if ("Object".equalsIgnoreCase(typeAttribute)) {
                 type = "java.lang.Object";
@@ -46,17 +52,17 @@ public class ExportTEI extends TagExtraInfo {
                 type = "java.lang.String";
             } else if ("Node".equalsIgnoreCase(typeAttribute)) {
                 type = "org.mmbase.bridge.Node";
+            } else if ("Integer".equalsIgnoreCase(typeAttribute)) {
+                type = "java.lang.Integer";
             } else {
                 //type = "java.lang.Object"; 
                 throw new RuntimeException("Unknown type '" + typeAttribute + "'");
             }
-            
-            
-            
+                        
             variableInfo[0] =  new VariableInfo(jspvarAttribute,
                                                 type,
                                                 true,
-                                                VariableInfo.NESTED);
+                                                scope());
         }
         return variableInfo;
     }        
