@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.13 2003-03-04 17:07:00 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.14 2003-03-06 17:46:21 pierre Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -130,11 +130,11 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      */
     public int getCount(Object key) {
         LRUEntry work = (LRUEntry) super.get(key);
-	if (work != null) {
+        if (work != null) {
             return work.requestCount;
-	} else {
+        } else {
             return -1;
-	}
+        }
     }
 
     /**
@@ -146,7 +146,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         LRUEntry work = (LRUEntry) super.get(key);
         if (work != null) {
             hit++;
-	    work.requestCount++;
+            work.requestCount++;
             Object rtn = work.value;
             removeEntry(work);
             appendEntry(work);
@@ -185,14 +185,14 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         return Collections.unmodifiableSet(super.keySet());
     }
     /**
-     * @see   keySet
+     * @see   #keySet
      * @since MMBase-1.7
      */
     public Set entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
     /**
-     * @see   keySet
+     * @see   #keySet
      * @since MMBase-1.7
      */
     public Collection values() {
@@ -209,7 +209,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Change the maximum size of the table.
      * This may result in removal of entries in the table.
-     * @param size the new desired size 
+     * @param size the new desired size
      */
     public void setSize(int size) {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size of LRUHashtable to negative value");
@@ -317,7 +317,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * not available.
      * Generally a high ratio means the table can be shrunk, while a low ratio
      * means its size needs to be increased.
-     * 
+     *
      * @return A double between 0 and 1 or NaN.
      */
     public double getRatio() {
@@ -361,40 +361,40 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @deprecated use getOrderedEntries
      */
     public Enumeration getOrderedElements() {
-	return getOrderedElements(-1);
+        return getOrderedElements(-1);
     }
 
     /**
      * @deprecated use getOrderedEntries
      */
     public Enumeration getOrderedElements(int maxnumber) {
-	Vector results = new Vector();
-	LRUEntry current = root.next;
-	if (maxnumber != -1) {
+        Vector results = new Vector();
+        LRUEntry current = root.next;
+        if (maxnumber != -1) {
             int i = 0;
             while (current!=null && current!=dangling && i<maxnumber) {
-                results.insertElementAt(current.value,0);	
+                results.insertElementAt(current.value,0);
                 current=current.next;
                 i+=1;
             }
-	} else {
+        } else {
             while (current!=null && current!=dangling) {
-                results.insertElementAt(current.value,0);	
+                results.insertElementAt(current.value,0);
                 current=current.next;
-		}
-	}
-	return results.elements();
+                }
+        }
+        return results.elements();
     }
 
     /**
      * Returns an ordered list of Map.Entry's.
-     * 
+     *
      * @since MMBase-1.6
      */
 
-    public List getOrderedEntries() { 
-        return getOrderedEntries(-1); 
-    } 
+    public List getOrderedEntries() {
+        return getOrderedEntries(-1);
+    }
 
     /**
      * Returns an ordered list of Map.Entry's. This can be used to
@@ -404,15 +404,15 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      */
 
     public List getOrderedEntries(int maxNumber) {
-	List results = new Vector();
-	LRUEntry current = root.next;
+        List results = new Vector();
+        LRUEntry current = root.next;
         int i = 0;
         while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
-            results.add(0, current); 
+            results.add(0, current);
             current = current.next;
             i++;
         }
-	return Collections.unmodifiableList(results);
+        return Collections.unmodifiableList(results);
     }
 
     /**
@@ -420,18 +420,18 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      */
     private static class LRUHashtableEnumerator implements Enumeration {
         private Enumeration superior;
-        
+
         LRUHashtableEnumerator(Hashtable entries) {
             superior = entries.elements();
         }
-        
+
         public boolean hasMoreElements() {
             return superior.hasMoreElements();
         }
-        
+
         public Object nextElement() {
             LRUEntry entry;
-            
+
             entry=(LRUEntry) superior.nextElement();
             return entry.value;
         }
@@ -463,11 +463,11 @@ public class LRUHashtable extends Hashtable implements Cloneable {
          * entry has been requested
          */
         protected int requestCount = 0;
-        
+
         LRUEntry(Object key, Object val) {
             this(key, val, null, null);
         }
-        
+
         LRUEntry(Object key, Object value, LRUEntry prev, LRUEntry next) {
             this.value = value;
             this.next  = next;
@@ -486,7 +486,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         public Object setValue(Object o) {
             throw new UnsupportedOperationException("Cannot change values in LRU Hashtable");
         }
-        
+
         public int getByteSize() {
             return new SizeOf().sizeof(value);
         }
@@ -498,7 +498,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             // TODO: should be fixed.
             return "" + value;
         }
-        
+
     }
 
 
