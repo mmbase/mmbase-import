@@ -29,8 +29,9 @@ import org.mmbase.util.logging.Logging;
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
-    protected Attribute type = Attribute.NULL;
-    protected Attribute role = Attribute.NULL;
+    protected Attribute type      = Attribute.NULL;
+    protected Attribute role      = Attribute.NULL;
+    protected Attribute searchDir = Attribute.NULL;
 
     /**
      * @param type a nodeManager
@@ -44,6 +45,17 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     public void setRole(String role) throws JspTagException {
         this.role = getAttribute(role);
     }
+
+    /**
+     * The search parameter, determines how directionality affects the search.
+     * Possible values are <code>both</code>, <code>destination</code>,
+     * <code>source</code>, and <code>all</code>
+     * @param search the swerach value
+     */
+    public void setSearchdir(String search) throws JspTagException {
+        searchDir = getAttribute(search);
+    }
+
 
     /**
      * Performs the search
@@ -75,7 +87,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (role == Attribute.NULL) {
                 initialnodes = parentNode.getRelatedNodes(type.getString(this));
             } else {
-                initialnodes = parentNode.getRelatedNodes(type.getString(this), role.getString(this), directions.getString(this));
+                initialnodes = parentNode.getRelatedNodes(type.getString(this), role.getString(this), (String) searchDir.getValue(this));
             }
 
             StringBuffer where = null;
@@ -104,7 +116,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 if (role == Attribute.NULL) {
                     nodes = parentNode.getRelatedNodes((String) type.getValue(this));
                 } else {
-                    nodes = parentNode.getRelatedNodes((String) type.getValue(this), (String) role.getValue(this), (String) directions.getValue(this));
+                    nodes = parentNode.getRelatedNodes((String) type.getValue(this), (String) role.getValue(this), (String) searchDir.getValue(this));
                 }
             }
         }
