@@ -78,21 +78,27 @@ public class ListConditionTag extends BodyTagSupport {
                 return EVAL_BODY_TAG;
             } else {
                 return SKIP_BODY;
-            }
+            }            
         } else if ("even".equalsIgnoreCase(value)) {
-            if ((listTag.getIndex() % 2 == 0) != inverse) {
+            if ((listTag.getIndex() % 2 != 0) != inverse) { // not equal 0 because index starts counting at 0 and mortals at 1.
                 return EVAL_BODY_TAG;
             } else {
                 return SKIP_BODY;
             }
         } else if ("odd".equalsIgnoreCase(value)) {
-            if ((listTag.getIndex() % 2 != 0) != inverse) {
+            if ((listTag.getIndex() % 2 == 0) != inverse) {
                 return EVAL_BODY_TAG;
             } else {
                 return SKIP_BODY;
             }
+        } else if ("changed".equalsIgnoreCase(value)) {
+            if (listTag.isChanged() != inverse) {
+                return EVAL_BODY_TAG;
+            }  else {
+                return SKIP_BODY;
+            }
         } else {
-            throw new JspException ("Don't know what do.");  
+            throw new JspException ("Don't know what do (" + value +")");  
         }
     }
     
