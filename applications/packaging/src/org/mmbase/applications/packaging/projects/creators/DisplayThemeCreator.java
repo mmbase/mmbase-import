@@ -26,7 +26,6 @@ import org.w3c.dom.*;
  * DisplayThemePackage, Handler for theme packages
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class DisplayThemeCreator extends BasicCreator implements CreatorInterface {
 

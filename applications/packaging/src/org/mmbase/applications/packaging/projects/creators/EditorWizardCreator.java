@@ -26,7 +26,6 @@ import org.w3c.dom.*;
  * EditorWizardPackage, Handler for editwizards packages
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class EditorWizardCreator extends BasicCreator implements CreatorInterface {
 

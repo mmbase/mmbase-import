@@ -25,7 +25,6 @@ import org.mmbase.util.logging.Logger;
  * background hanlder for sending email, a call backthread
  * that is used to send email (one thread per active email
  * node)
- * @created    July 20, 2004
  */
 public class packageStep {
 
