@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.14 2000-05-25 10:46:32 wwwtech Exp $
+$Id: JamesServlet.java,v 1.15 2000-05-25 12:55:05 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2000/05/25 10:46:32  wwwtech
+Wilbert: minor optimalisation of methods inc & decRefCount()
+
 Revision 1.13  2000/05/22 09:24:56  wwwtech
 Rob: fixed debug methods and variables (Bug submitted by Gerard van Enk)
 
@@ -51,7 +54,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.14 2000-05-25 10:46:32 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.15 2000-05-25 12:55:05 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -339,6 +342,16 @@ public class JamesServlet extends HttpServlet {
 		return(params);
 	}
 
+	/**
+	 * Return URI with QueryString appended
+	 */
+	public static String getRequestURL(HttpServletRequest req)
+	{
+		String result = req.getRequestURI();
+		String queryString = req.getQueryString();
+		if (queryString!=null) result += "?" + queryString;
+		return result;
+	}
 
 	private static int servletCount;
 	private static Object servletCountLock = new Object();
@@ -346,9 +359,7 @@ public class JamesServlet extends HttpServlet {
 	private static int printCount;
 	
 	public void decRefCount(HttpServletRequest req) {
-		String URL = req.getRequestURI();
-		String queryString = req.getQueryString();
-		if( queryString!=null) URL += "?" + queryString;
+		String URL = getRequestURL(req);
 		URL += " " + req.getMethod();
 		synchronized (servletCountLock) {
 			servletCount--;
@@ -365,9 +376,7 @@ public class JamesServlet extends HttpServlet {
 	}
 	
 	public void incRefCount(HttpServletRequest req) {
-		String URL = req.getRequestURI();
-		String queryString = req.getQueryString();
-		if(queryString!=null) URL += "?" + queryString;
+		String URL = getRequestURL(req);
 		URL += " " + req.getMethod();
 		int curCount;
 		synchronized (servletCountLock)	{
