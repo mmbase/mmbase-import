@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
  */
 /*
-$Id: JDBC.java,v 1.20 2001-07-02 15:09:48 pierre Exp $
+$Id: JDBC.java,v 1.21 2001-10-02 14:13:33 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2001/07/02 15:09:48  pierre
+pierre: fixed javadoc @link/@see references
+
 Revision 1.19  2001/06/05 13:55:53  pierre
 pierre: changed JDBC admin routines so username/password info is stripped from a database poolname
 
@@ -74,7 +77,7 @@ import org.mmbase.util.logging.*;
  * JDBC Module the module that provides you access to the loaded JDBC interfaces
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @version $Id: JDBC.java,v 1.20 2001-07-02 15:09:48 pierre Exp $
+ * @version $Id: JDBC.java,v 1.21 2001-10-02 14:13:33 vpro Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -144,11 +147,20 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         driver=null;
         try {
             classdriver=Class.forName(JDBCdriver);
+
+            // marmaa@vpro.nl:
+            // This is how McKoi's JDBC drivers wants itself
+            // to be registered; should have no affect on other drivers
+            Class.forName(JDBCdriver).newInstance();
+
             log.info("getDriver(): Loaded JDBC driver: "+JDBCdriver);
 
-        } catch (ClassNotFoundException e) {
-            log.fatal("getDriver(): JDBC driver not found: "+JDBCdriver);
+        } catch (Exception e) {
+            log.fatal("getDriver(): JDBC driver not found: "+JDBCdriver+": " + e);
         }
+	
+	log.debug("makeUrl(): " + makeUrl());
+
         /* Also get the instance to unload it later */
         for (Enumeration e=DriverManager.getDrivers();e.hasMoreElements();) {
             d=(Driver)e.nextElement();
@@ -159,6 +171,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         if (driver==null) {
+		
             log.fatal("getDriver(): Can't get JDBC driver from DriverManager");
         }
     }
@@ -192,7 +205,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         databasesupportclass=getInitParameter("supportclass");
 
 
-        log.debug("JDBCdriver="+JDBCdriver +
+        log.error("JDBCdriver="+JDBCdriver +
                   "\nJDBCurl="+JDBCurl +
                   "\nJDBChost="+JDBChost +
                   "\ndefaultname="+defaultname +
