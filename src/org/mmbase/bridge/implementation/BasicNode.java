@@ -22,8 +22,14 @@ import java.util.*;
  */
 public class BasicNode implements Node {
 
-    // reference to the Node Type (which also references the Cloud)
-    protected NodeType nodeType;
+    public static final int ACTION_EDIT = 1;     // edit node, or change aliasses
+    public static final int ACTION_REMOVE = 2;   // remove node
+    public static final int ACTION_ADDRELATION = 3; // add relations
+    public static final int ACTION_REMOVERELATION = 4; // remove relations
+
+
+    // reference to the NodeManager (which also references the Cloud)
+    protected NodeManager nodeManager;
 
     // reference to mmbase
     protected org.mmbase.module.core.MMBase mmb;
@@ -34,30 +40,30 @@ public class BasicNode implements Node {
     protected boolean isnew = false;
 
   	BasicNode(MMObjectNode node, Cloud cloud) {
-  	    this.nodeType=cloud.getNodeType(node.parent.oType);
+  	    this.nodeManager=cloud.getNodeManager(node.parent.oType);
   	    this.node=node;
   	    this.mmb = ((BasicCloudContext)cloud.getCloudContext()).mmb;
   	}
   	
-  	BasicNode(MMObjectNode node, NodeType nodeType) {
-  	    this.nodeType=nodeType;
+  	BasicNode(MMObjectNode node, NodeManager nodeManager) {
+  	    this.nodeManager=nodeManager;
   	    this.node=node;
   	    this.isnew=true;
-  	    this.mmb = ((BasicCloudContext)nodeType.getCloud().getCloudContext()).mmb;
+  	    this.mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
   	}
   	
   	/**
      * Retrieves the cloud where this node is part of.
      */
     public Cloud getCloud() {
-        return nodeType.getCloud();
+        return nodeManager.getCloud();
     }
 
 	/**
-     * Retrieves the type of this node
+     * Retrieves the NodeManager of this node
      */
-    public NodeType getNodeType() {
-        return nodeType;
+    public NodeManager getNodeManager() {
+        return nodeManager;
     }
 	
 	/**
@@ -67,12 +73,23 @@ public class BasicNode implements Node {
         return node.getIntValue("number");
     }
 	
-	/** 
+    // Edit his node
+    // Check whether edits are allowed and prepare a node for edits if needed
+    // @param action The action to perform. Not yet used.
+    protected void Edit(int action) {
+	    if (nodeManager instanceof TemporaryNodeManager) {
+            throw new SecurityException("Cannot edit a temporary node.");
+	    }
+
+    }
+	
+	/**
 	 * Set the value of certain attribute
 	 * @param attribute name of field
 	 * @param value of attribute
 	 */
 	public void setValue(String attribute, Object value) {
+	    Edit(ACTION_EDIT);
 	    node.setValue(attribute,value);
 	}
 
@@ -82,7 +99,7 @@ public class BasicNode implements Node {
 	 * @param value of attribute
 	 */
 	public void setIntValue(String attribute, int value) {
-	    node.setValue(attribute,new Integer(value));
+	    setValue(attribute,new Integer(value));
 	}
 
 	/**
@@ -91,7 +108,7 @@ public class BasicNode implements Node {
 	 * @param value of attribute
 	 */
 	public void setFloatValue(String attribute, float value) {
-	    node.setValue(attribute,new Float(value));
+	    setValue(attribute,new Float(value));
 	}
 
 	/**
@@ -100,7 +117,7 @@ public class BasicNode implements Node {
 	 * @param value of attribute
 	 */
 	public void setDoubleValue(String attribute, double value) {
-	    node.setValue(attribute,new Double(value));
+	    setValue(attribute,new Double(value));
 	}
 
 	/**
@@ -109,7 +126,7 @@ public class BasicNode implements Node {
 	 * @param value of attribute
 	 */
 	public void setByteValue(String attribute, byte[] value) {
-	    node.setValue(attribute,value);
+	    setValue(attribute,value);
 	}
 
 	/**
@@ -118,7 +135,7 @@ public class BasicNode implements Node {
 	 * @param value of attribute
 	 */
 	public void setLongValue(String attribute, long value) {
-	    node.setValue(attribute,new Long(value));
+	    setValue(attribute,new Long(value));
 	}
 
 	/**
@@ -127,7 +144,7 @@ public class BasicNode implements Node {
 	 * @param value of attribute
 	 */
 	public void setStringValue(String attribute, String value) {
-	    node.setValue(attribute,value);
+	    setValue(attribute,value);
 	}
 
 	/**
@@ -195,7 +212,6 @@ public class BasicNode implements Node {
 	    return node.getStringValue(attribute);
 	}
 
-
 	/**
 	 * Commit the node to the database
 	 */
@@ -212,9 +228,20 @@ public class BasicNode implements Node {
 	 * Removes the Node
 	 */
 	public void remove() {
-	    node.parent.removeNode(node);
+	    remove(false);
 	};
 
+	/**
+	 * Removes the Node.
+	 * @param removeRelations determines whether attached relations are autiomatically deleted. if <code>false</code>,
+	 *        the remove fails if any relations exist.
+	 */
+	public void remove(boolean removeRelations) {
+        Edit(ACTION_REMOVE);
+        removeRelations();
+	    node.parent.removeNode(node);
+	}
+	
 	/**
 	 * Converts the node to a string
 	 */
@@ -226,6 +253,7 @@ public class BasicNode implements Node {
 	 * Removes all relations of the node
 	 */
 	public void removeRelations() {
+        Edit(ACTION_REMOVERELATION);
 	    node.parent.removeRelations(node);
 	}
 
@@ -234,6 +262,7 @@ public class BasicNode implements Node {
 	 * @param type of relation
 	 */
 	public void removeRelations(String type) {
+        Edit(ACTION_REMOVERELATION);
 	
 	    // This should be handled in a core class,
 	    // for the moment we implement it here
@@ -261,7 +290,7 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Relation node = new BasicRelation(mmnode, nodeType.getCloud());
+	            Relation node = new BasicRelation(mmnode, nodeManager.getCloud());
 	            relvector.add(node);
 	        }
         }
@@ -281,7 +310,7 @@ public class BasicNode implements Node {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
 	            if (mmnode.getIntValue("rnumber")==rType) {
-	                Relation node = new BasicRelation(mmnode, nodeType.getCloud());
+	                Relation node = new BasicRelation(mmnode, nodeManager.getCloud());
 	                relvector.add(node);
 	            }
 	        }
@@ -315,7 +344,7 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Node node = new BasicNode(mmnode, nodeType.getCloud());
+	            Node node = new BasicNode(mmnode, nodeManager.getCloud());
 	            relvector.add(node);
 	        }
 	    }
@@ -323,8 +352,8 @@ public class BasicNode implements Node {
 	};
 
 	/**
-	 * Retrieve all related nodes of a certain type
-	 * @return a code>List</code> of all related nodes of a certain type
+	 * Retrieve all related nodes maintained by a given NodeManager.
+	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
 	public List getRelatedNodes(String type) {
 	    Vector relvector=new Vector();
@@ -332,7 +361,7 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Node node = new BasicNode(mmnode, nodeType.getCloud());
+	            Node node = new BasicNode(mmnode, nodeManager.getCloud());
 	            relvector.add(node);
 	        }
 	    }
@@ -360,6 +389,7 @@ public class BasicNode implements Node {
      * @param aliasName the name of the alias (need to be unique)
      */
     public void addAlias(String aliasName) {
+        Edit(ACTION_EDIT);
         node.parent.createAlias(getNodeID(),aliasName);
     }
 
@@ -368,6 +398,7 @@ public class BasicNode implements Node {
      * @param aliasName the name of the alias
      */
     public void removeAlias(String aliasName) {
+        Edit(ACTION_EDIT);
 	    OAlias alias=mmb.OAlias;
 	    if (alias!=null) {
 	        for(Enumeration e=alias.search("WHERE (destination"+"="+getNodeID()+") AND (name='"+aliasName+"')"); e.hasMoreElements();) {
@@ -380,15 +411,16 @@ public class BasicNode implements Node {
     /**
      * Adds a relation to this node
      * @param destinationNode the node to which you want to relate this node
-	 * @param relationtype The type of relation you want to use
+	 * @param relationManager The relation manager you want to use
 	 * @return the added relation
      */
-    public Relation addRelation(Node destinationNode, RelationType relationType) {
-        // check on insert : cannot craete relation is not committed
+    public Relation addRelation(Node destinationNode, RelationManager relationManager) {
+        Edit(ACTION_ADDRELATION);
+        // check on insert : cannot create relation is not committed
 	    if (isnew) {
 	        return null;
 	    } else {
-	        Relation relation = relationType.addRelation(this,destinationNode);
+	        Relation relation = relationManager.addRelation(this,destinationNode);
             return relation;
         }
     };

@@ -12,20 +12,20 @@ package org.mmbase.bridge;
 
 /**
  * This interface represents a relation constraint (or contex, if you like).
- * More specifically, it represents a relation type (itself a node type) as it applies between two
- * other node types.
- * Some of the information here is retrieved from the node type used to build the catual relation node
- * (the data as described in the xml builder config file). This node type is also referred to as the parent type.
+ * More specifically, it represents a relation manager (itself a node manager) as it applies between bnode belonging to
+ * two other node managers.
+ * Some of the information here is retrieved from the NodeManager used to build the catual relation node
+ * (the data as described in the xml builder config file). This NodeManager is also referred to as the parent.
  * Other data is retrieved from a special (hidden) object that decsribes what relations apply between two nodes.
  * (formerly known as the TypeRel builder).
- * This includes direction and cardinality, and the type of nodes itself. These fields are the only ones that can be changed
- * (node type data cannot be changed except through the use of an administration module).
+ * This includes direction and cardinality, and the NodeManagers of nodes itself. These fields cannot be changed
+ * except through the use of an administration module.
  * This interface is therefor not a real mmbase 'object' in itself - it exists of two objects joined together.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public interface RelationType extends NodeType {
+public interface RelationManager extends NodeManager {
 	/** 
 	 * Directionality constant : uni-directional
      */
@@ -55,19 +55,19 @@ public interface RelationType extends NodeType {
     public int getDirectionality();
 
     /**
-     * Retrieves the type of node that can act as the source of a relation of this type.
-     * @return the source type
+     * Retrieves the NodeManager of node that can act as the source of a relation of this type.
+     * @return the source NodeManager
      */
-    public NodeType getSourceType();
+    public NodeManager getSourceManager();
 
 	/**
      * Retrieves the type of node that can act as the destination of a relation of this type.
-     * @return the destination type
+     * @return the destination NodeManager
      */
-    public NodeType getDestinationType();
+    public NodeManager getDestinationManager();
 
 	/**
-     * Adds a relation from this type
+     * Adds a relation from this type.
      * @param sourceNode the node from which you want to relate
      * @param destinationNode the node to which you want to relate
 	 * @return the added relation

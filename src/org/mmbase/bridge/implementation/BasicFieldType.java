@@ -14,26 +14,26 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
- * This interface represents a node's field type information object.
+ * This class represents a node's field type information object.
  * @author Pierre van Rooden
  */
 
 public class BasicFieldType implements FieldType {
 
-    NodeType nodeType=null;
+    NodeManager nodeManager=null;
     FieldDefs field=null;
 
-  	BasicFieldType(FieldDefs field, NodeType nodeType) {
-  	    this.nodeType=nodeType;
+  	BasicFieldType(FieldDefs field, NodeManager nodeManager) {
+  	    this.nodeManager=nodeManager;
   	    this.field=field;
   	}
   	
     /**
-     * Gets the node type this field belongs to
-     * @return the <code>NodeType</code> object for this field
+     * Gets the NodeManager this field belongs to
+     * @return the <code>NodeManager</code> object for this field
      */
-    public NodeType getNodeType() {
-        return nodeType;
+    public NodeManager getNodeManager() {
+        return nodeManager;
     }
 
 	/**
@@ -47,7 +47,7 @@ public class BasicFieldType implements FieldType {
 	 * Retrieve the field's GUI name
 	 */
     public String getGUIName() {
-        return field.getGUIName(((BasicCloudContext)nodeType.getCloud().getCloudContext()).mmb.getLanguage());
+        return field.getGUIName(((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb.getLanguage());
     }
 
 	/**

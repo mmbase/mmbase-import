@@ -15,16 +15,17 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * This interface represents a node's type information object - what used to be the 'builder'.
+ * This class represents a node's type information object - what used to be the 'builder'.
  * It contains all the field and attribuut information, as well as GUI data for editors and
- * some information on deribed and deriving types.
+ * some information on deribed and deriving types. It also contains some maintenance code - code
+ * to create new nodes, en code to query objects belonging to the same manager.
  * Since node types are normally maintained through use of config files (and not in the database),
  * as wel as for security issues, the data of a nodetype cannot be changed except through
- * the use of an administration module (whcih is why we do not include setXXX methods here).
+ * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public class BasicNodeType implements NodeType {
+public class BasicNodeManager implements NodeManager {
 
     // Cloud for this nodetype
     protected Cloud cloud=null;
@@ -35,10 +36,12 @@ public class BasicNodeType implements NodeType {
     // field types
     protected Hashtable fieldTypes = new Hashtable();
 
-    BasicNodeType() {
+    // empty constructor for overriding constructors
+    BasicNodeManager() {
     }
 
-    BasicNodeType(MMObjectBuilder builder, Cloud cloud) {
+    // constructor for creating a Manager for specific cloud
+    BasicNodeManager(MMObjectBuilder builder, Cloud cloud) {
         init(builder, cloud);
     }
 
@@ -67,21 +70,21 @@ public class BasicNodeType implements NodeType {
     }
 
  	/**
-     * Retrieves the Cloud to which this node type belongs
+     * Retrieves the Cloud to which this manager belongs
      */
     public Cloud getCloud() {
         return cloud;
     }
 
 	/**
-     * Retrieve the type name (identifying name) of the nodetype
+     * Retrieve the identifying name of the NodeManager
      */
     public String getName() {
         return builder.getTableName();
     }
 
  	/**
-	 * Retrieve the name of the nodetype
+	 * Retrieve the descriptive name of the NodeManager
 	 * @param language the language in which you want the name
 	 */
 	public String getGUIName(String language) {
@@ -96,7 +99,7 @@ public class BasicNodeType implements NodeType {
 	}
 
 	/**
-     * Retrieve the name of the nodetype (in the default language defined in mmbaseroot.xml)
+     * Retrieve the descriptive name of the NodeManager (in the default language defined in mmbaseroot.xml)
      * Note: currently, this method returns the nodetype/builder table name!
      */
     public String getGUIName() {
@@ -104,7 +107,7 @@ public class BasicNodeType implements NodeType {
 	}
 
 	/**
-	 * Retrieve the description of the nodetype
+	 * Retrieve the description of the NodeManager
 	 * @param language the language in which you want the description
 	 */
 	public String getDescription(String language) {
@@ -119,15 +122,15 @@ public class BasicNodeType implements NodeType {
 	}
 
 	/** 
-	 * Retrieve the description of the nodetype
+	 * Retrieve the description of the NodeManager. (in the default language defined in mmbaseroot.xml)
 	 */
 	public String getDescription() {
 	    return getDescription(((BasicCloudContext)cloud.getCloudContext()).mmb.getLanguage());
 	}
 
 	/**
-	 * Retrieve all field types of this nodetype
-	 * @return a <code>List</code> of field types
+	 * Retrieve all field types of this NodeManager.
+	 * @return a <code>List</code> of <code>FieldType</code> objects
 	 */
 	public List getFieldTypes() {
 	    Vector res= new Vector(fieldTypes.values());
@@ -135,7 +138,7 @@ public class BasicNodeType implements NodeType {
 	}
 
 	/**
-	 * Retrieve the field type for a gicven field
+	 * Retrieve the field type for a given fieldname.
 	 * @param fieldName name of the field to retrieve
 	 * @return the requested <code>FieldType</code>
 	 */
@@ -145,10 +148,13 @@ public class BasicNodeType implements NodeType {
 	}
 	
 	/**
-     * search nodes of this type
-     * @param where the contraint
-     * @param order the field on which you want to sort
-     * @param direction true=UP false=DOWN
+     * Search nodes beloingin to this NodeManager.
+     * @param where The contraint. this is in essence a SQL where clause.
+     *      Examples: "email IS NOT NULL", "lastname='admin' OR lastname = 'sa'"
+     * @param order the fieldname on which you want to sort.
+     *      Examples: 'lastname', 'number'
+     * @param direction indicates whether the sort is ascending (true) or descending (false).
+     * @return a <code>List</code> of found nodes
      */
     public List search(String where, String sorted, boolean direction) {
   		Vector retval = new Vector();

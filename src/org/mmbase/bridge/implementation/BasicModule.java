@@ -36,14 +36,14 @@ public class BasicModule implements org.mmbase.bridge.Module {
     }
  	
  	/**
-     * Retrieves the Cloud to which this node type belongs
+     * Retrieves the Cloud to which this module belongs
      */
     public CloudContext getCloudContext() {
         return cloudContext;
     }
 
  	/**
-	 * Retrieve the name of the nodetype
+	 * Retrieve the name of the module.
 	 * @param language the language in which you want the name
 	 */
 	public String getName(String language) {
@@ -52,14 +52,14 @@ public class BasicModule implements org.mmbase.bridge.Module {
     }
 
 	/**
-     * Retrieve the name of the nodetype (in the default language defined in mmbaseroot.xml)
+     * Retrieve the name of the module (in the default language defined in mmbaseroot.xml)
      */
     public String getName() {
         return module.getName();
     }
 
 	/**
-	 * Retrieve the description of the nodetype
+	 * Retrieve the description of the module.
 	 * @param language the language in which you want the description
 	 */
 	public String getDescription(String language) {
@@ -68,7 +68,7 @@ public class BasicModule implements org.mmbase.bridge.Module {
     }
 
 	/** 
-	 * Retireve the description of the nodetype
+	 * Retrieve the description of the module.
 	 */
 	public String getDescription() {
         return module.getModuleInfo();
