@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.21 2003-09-09 13:30:38 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.22 2003-09-09 14:08:32 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -263,7 +263,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
-     * @return the retrieved text
+     * @return the retrieved text, <code>null</code> if no text was stored
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
@@ -272,8 +272,8 @@ public class DatabaseStorageManager implements StorageManager {
             field.getStorageType() == Types.BLOB ||
             factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             InputStream inStream = result.getBinaryStream(index);
-            if (inStream == null || result.wasNull()) {
-                return ""; // or null ??
+            if (result.wasNull()) {
+                return null;
             }
             try {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -340,24 +340,30 @@ public class DatabaseStorageManager implements StorageManager {
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
-     * @return the retrieved text
+     * @return the retrieved data, <code>null</code> if no binary data was stored
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected byte[] getBinaryValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
         if (factory.hasOption(Attributes.SUPPORTS_BLOB)) {
             Blob blob = result.getBlob(index);
+            if (result.wasNull()) {
+                return null;
+            }
             return blob.getBytes(0, (int) blob.length());
         } else {
             try {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                InputStream input = result.getBinaryStream(index);
-                int c = input.read();
+                InputStream inStream = result.getBinaryStream(index);
+                if (result.wasNull()) {
+                    return null;
+                }
+                int c = inStream.read();
                 while (c != -1) {
                     bytes.write(c);
-                    c = input.read();
+                    c = inStream.read();
                 }
-                input.close(); // this also closes the underlying stream
+                inStream.close(); // this also closes the underlying stream
                 return bytes.toByteArray();
             } catch (IOException ie) {
                 throw new StorageException(ie);
@@ -402,12 +408,15 @@ public class DatabaseStorageManager implements StorageManager {
      * @todo how to do this in a transaction???
      * @param node the node the binary data belongs to
      * @param field the binary field
-     * @return the byte array containing the binary data
+     * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
      */
     protected byte[] readBinaryFromFile(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
             String fieldName= field.getDBName();
             File binaryFile = getBinaryFile(node, fieldName);
+            if (!binaryFile.exists()) {
+                return null;
+            }
             int fileSize = (int) binaryFile.length();
             byte[] buffer = new byte[fileSize];
             if (fileSize > 0) {
