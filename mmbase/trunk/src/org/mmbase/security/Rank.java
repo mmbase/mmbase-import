@@ -20,7 +20,7 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.9 2003-06-26 20:51:15 michiel Exp $
+ * @version $Id: Rank.java,v 1.10 2003-06-30 12:16:05 michiel Exp $
  */
 public final class Rank {
     private static Logger log = Logging.getLoggerInstance(Rank.class);
@@ -85,6 +85,9 @@ public final class Rank {
         return (Rank) ranks.get(rankDesc);
     }
 
+    /**
+     * @since MMBase-1.6.4
+     */
     protected static Rank registerRank(Rank rank) {
         Rank prev = (Rank) ranks.put(rank.toString(), rank);
         if (prev == null) {
@@ -96,23 +99,32 @@ public final class Rank {
     }
 
     /**
-     * @since MMBase-1.7
+     * Creates and adds a new Rank for the security system.
+     *
+     * @since MMBase-1.6.4
      */
 
-    public static Rank registerRank(int rank, String rankDesc) {
+    public static Rank createRank(int rank, String rankDesc) {
         Rank rankObject = new Rank(rank, rankDesc);
         registerRank(rankObject);
         return rankObject;
     }
 
     /**
-     * @since MMBase-1.7
+     * Removes a rank from the security system.
+     * @since MMBase-1.6.4
      */
 
-    public static Rank unregisterRank(String rankDesc) {
+    public static Rank deleteRank(String rankDesc) {
         return (Rank) ranks.remove(rankDesc);
     }
 
+    /**
+     * Returns all ranks currently known by security implemetation.  Default and to start with there
+     * are three ranks available: 'anonymous', 'basic user' and 'administrator'.  You probably
+     * should never remove them.
+     * @since MMBase-1.6.4
+     */
     public static Set getRanks() {
         return new HashSet(ranks.values());
     }
