@@ -22,19 +22,19 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* A base class for tags which provide a node (And some fields). The
-* general attributes for a NodeProvider are
-* <ul>
-* <li> id: The identifier. Used as a key for the Context. If this
-* attribute is missing, the Node variable will not be imported in the Context. </li>
-* <li> jspvar: An identifier for a jsp variable available in the
-* body. If this attribute is missing, no jsp-variable will be
-* created.</li>
-* </ul>
-*
-* @author Michiel Meeuwissen
-* @author Kees Jongenburger
-**/
+ * A base class for tags which provide a node (And some fields). The
+ * general attributes for a NodeProvider are
+ * <ul>
+ * <li> id: The identifier. Used as a key for the Context. If this
+ * attribute is missing, the Node variable will not be imported in the Context. </li>
+ * <li> jspvar: An identifier for a jsp variable available in the
+ * body. If this attribute is missing, no jsp-variable will be
+ * created.</li>
+ * </ul>
+ *
+ * @author Michiel Meeuwissen
+ * @author Kees Jongenburger
+ **/
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
 
     // a node provider is a nodereferrer as well...
@@ -58,7 +58,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
 
         
     /**
-    * For use by children, they can find the currend 'node' belonging
+    * For use by children, they can find the current 'node' belonging
     * to this tag.
     */
     
@@ -76,14 +76,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         this.node = node;
     }
     
-    /**
-    * @param fields a comma separated list of fields of a node
-    **/
-    public void setFields(String fields){
-        this.fields = fields;
-    }
-    
-    
     abstract public void doInitBody() throws JspTagException;
     
     /**
@@ -92,18 +84,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
      */
 
     protected void fillVars() throws JspTagException {    
-        Enumeration returnFieldEnum = stringSplitter(fields, ",").elements();
-        int j=1;
-        while (returnFieldEnum.hasMoreElements()){
-            String field = (String)returnFieldEnum.nextElement();
-            // michiel: should be deprecated?
-            if (log.isDebugEnabled()) {
-                log.trace("will set " + getSimpleReturnValueName(field) + " to " + node.getStringValue(field));
-            }
-            pageContext.setAttribute(getSimpleReturnValueName(field) , node.getStringValue(field));
-            //pageContext.setAttribute(getPrefix() + "item"+(j++) ,
-            //                         "" + node.getValue(field));
-        }
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, node);
         }

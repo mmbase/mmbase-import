@@ -63,7 +63,7 @@ public class TreeTag extends AbstractNodeListTag {
     }
 
     public void setFields(String fields) {
-        super.setFields(fields);
+        //super.setFields(fields);
         fieldlist= new Vector();
         StringTokenizer st = new StringTokenizer(fields, ",");
         while(st.hasMoreTokens()){
