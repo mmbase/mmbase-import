@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br>
  * Not supported by magic file:<br>
  * - StarOffice<br>
- * @version $Id: Detector.java,v 1.2 2003-01-24 14:24:22 kees Exp $
+ * @version $Id: Detector.java,v 1.3 2003-01-29 13:33:29 michiel Exp $
  */
 
 public class Detector {
@@ -269,20 +269,23 @@ public class Detector {
 	    log.warn("TEST STRING LENGTH ZERO FOR ["+rawinput+"]");
 	    return false;
 	}
-	String compare = lithmusString.substring(offset,offset+test.length());
-	xString = compare;
-	int n;
-	log.debug("test string = '"+test+"' ("+message+")");
-	n = compare.compareTo(test);
-	switch (testComparator) {
-	case '=': return n == 0;
-	case '>':
-	    hasX = true;
-	    return n > 0;
-	case '<':
-	    hasX = true;
-	    return n < 0;
-	}
+        if (lithmusString.length() >= offset + test.length()) {
+            
+            String compare = lithmusString.substring(offset,offset+test.length());
+            xString = compare;
+            int n;
+            log.debug("test string = '"+test+"' ("+message+")");
+            n = compare.compareTo(test);
+            switch (testComparator) {
+            case '=': return n == 0;
+            case '>':
+                hasX = true;
+                return n > 0;
+            case '<':
+                hasX = true;
+                return n < 0;
+            }
+        }
 	return false;
     }
 
