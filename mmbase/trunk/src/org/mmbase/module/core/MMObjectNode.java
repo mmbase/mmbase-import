@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.54 $ $Date: 2002-02-22 13:04:07 $
+ * @version $Revision: 1.55 $ $Date: 2002-02-25 14:57:44 $
  */
 
 public class MMObjectNode {
@@ -272,6 +272,8 @@ public class MMObjectNode {
         if(parent != null) {
             // in case the field is of type XML, it can (must) be validated:
             if(parent.getField(fieldName) != null && parent.getField(fieldName).getDBType() == FieldDefs.TYPE_XML) {
+                // this function does also conversion of old stuff to xml... 
+                // to keep it backwards compatible
                 fieldValue = validateXML(fieldName, fieldValue);
             }
         } else {
@@ -301,11 +303,9 @@ public class MMObjectNode {
      **/
 
     private Element validateXML(String fieldName, Object fieldValue) {
-
         if (log.isDebugEnabled()) {
             log.debug("validating" + getNumber() + "field:" + fieldName);
         }
-
         if (fieldValue instanceof String) {                 
             // Backwards compatibility, if a string is not in XML format (not starting with '<'), then
             // we have a way to convert it to mmxf XML (or something else when we support it).
@@ -336,9 +336,6 @@ public class MMObjectNode {
                 fieldValue = documentBuilder.parse(new java.io.ByteArrayInputStream(completeXML.getBytes(parent.mmb.getEncoding()))).getDocumentElement();
                 // ByteArrayInputStream?
                 // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
-                writeStringToTmpFile(completeXML, fieldName);
-                
-
             }
             catch(javax.xml.parsers.ParserConfigurationException pce) {
 	        String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+completeXML;
@@ -348,8 +345,7 @@ public class MMObjectNode {
             catch(org.xml.sax.SAXException se) {
 	        String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+completeXML;
                 log.error(msg);
-                log.error("wrote to " + writeStringToTmpFile(msg, fieldName));
-	        throw new RuntimeException(msg);	
+	        throw new RuntimeException(msg);
             }
             catch(java.io.IOException ioe) {
 	        String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+completeXML;
@@ -360,6 +356,7 @@ public class MMObjectNode {
             // check if the Element is in concordance with the specified GUIType for this field.
 
             // not yet implemented.
+            throw new RuntimeException("no support for dom.Elements yet");            
             // TODO
 
         } else {
@@ -368,23 +365,6 @@ public class MMObjectNode {
             throw new RuntimeException(msg);
         }
         return (Element) fieldValue;
-
-    }
-
-
-    // for debugging purposes.
-    public String writeStringToTmpFile(String test, String postfix) {
-
-        String fileName = "/tmp/debug." + parent.mmb.getEncoding() + postfix + ".txt";
-        try {
-            java.io.OutputStreamWriter fw = new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName), parent.mmb.getEncoding());        
-            fw.write(test);        
-            fw.close();
-        } catch (Exception e) {
-            log.error(e.toString());
-        }
-        return fileName;
-        
     }
 
 
