@@ -1,7 +1,13 @@
 <!--
-  This translates mmbase XML, normally containing an objects tag.
+  Overrides the default 2xhtml in mm:xslt/2xhtml.xslt
 
-  author: Michiel Meeuwissen   
+  (Show the date if there is one in your news type) and makes the
+  title red)
+
+  @author Michiel Meeuwissen   
+  @version $Id: 2xhtml.xslt,v 1.2 2002-04-04 17:58:23 michiel Exp $
+  @since  MMBase-1.6
+  
 -->
 <xsl:stylesheet xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" version = "1.0" >
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
@@ -16,7 +22,7 @@
   </xsl:template>
 
   <!-- how to present a news node -->
-  <xsl:template match="object[@type='xmlnews' and @complete='true']">
+  <xsl:template match="object[@type=$newstype and @complete='true']">
 	<xsl:apply-templates select="field[@name='title']"  />
 	<h2><font color="green"><xsl:apply-templates select="field[@name='subtitle']" /></font></h2>
 	<xsl:apply-templates select="field[@name='body']" />
