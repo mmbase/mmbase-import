@@ -30,16 +30,16 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.41 2003-12-16 09:36:38 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.42 2004-03-23 17:48:09 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
 
-    public static final int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
+    public static final int MAX_COOKIE_AGE = 60 * 60 * 24 * 30 * 6; // half year
     //public static final String COOKIE_PATH    = "/";
     private static final Logger log = Logging.getLoggerInstance(WriteTag.class);
 
-    private Attribute sessionvar = Attribute.NULL;
+    private Attribute sessionVar = Attribute.NULL;
     private Attribute cookie     = Attribute.NULL;
     // private Attribute page       = Attribute.NULL;
 
@@ -47,7 +47,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     private Attribute container = Attribute.NULL;
 
     public void setSession(String s) throws JspTagException {
-        sessionvar = getAttribute(s);
+        sessionVar = getAttribute(s);
     }
 
     public void setCookie(String s) throws JspTagException {
@@ -101,13 +101,11 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
-        if (sessionvar != Attribute.NULL) {
-            if (sessionvar != Attribute.NULL) {
-                if (pageContext.getSession() == null) {
-                    throw new JspTagException("Cannot write to session if session is disabled");
-                }
-                pageContext.getSession().setAttribute(sessionvar.getString(this), helper.getValue());
-            } 
+        if (sessionVar != Attribute.NULL) {
+            if (pageContext.getSession() == null) {
+                throw new JspTagException("Cannot write to session if session is disabled");
+            }
+            pageContext.getSession().setAttribute(sessionVar.getString(this), helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         if (cookie != Attribute.NULL) {
@@ -132,7 +130,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             int cookiecount = 0;
             Cookie[] cookies = request.getCookies();
             if (cookies != null) { 
-                for (int i=0; i< cookies.length; i++) {
+                for (int i = 0; i< cookies.length; i++) {
                     Cookie c = cookies[i];
                     if (c.getName().equals(cookie)) {
                         cookiecount++;
@@ -143,9 +141,12 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
             {  // on root (keep things simple)
                 Cookie c = new Cookie(cookie.getString(this), cookievalue);
-                c.setPath(request.getContextPath());               
+                String path = request.getContextPath();
+                if (path.length() == 0) path = "/";
+                c.setPath(path);            
                 c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
+
             }
             if (cookiecount > 1) { //also in current dir (in case it was there already)
                 Cookie c = new Cookie(cookie.getString(this), cookievalue);
