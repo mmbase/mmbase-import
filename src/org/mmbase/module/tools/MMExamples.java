@@ -94,6 +94,7 @@ public class MMExamples extends ProcessorModule {
 		if ((String)vars.get("NAME-MyYahoo")!=null) installApplication("MyYahoo");
 		if ((String)vars.get("NAME-Basics")!=null) installApplication("Basics");
 		if ((String)vars.get("NAME-BasicAuth")!=null) installApplication("BasicAuth");
+		if ((String)vars.get("NAME-writetest")!=null) writeApplication("MyYahoo");
 	}
 
 	private boolean installApplication(String applicationname) {
@@ -473,5 +474,12 @@ public class MMExamples extends ProcessorModule {
 				}
 			}
 		}
+	}
+
+	private boolean	writeApplication(String appname) {
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
+		XMLApplicationWriter.writeXMLFile(app,"/tmp",mmb);
+		return(true);
 	}
 }
