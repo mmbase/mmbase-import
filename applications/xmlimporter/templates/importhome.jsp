@@ -30,6 +30,7 @@
 <% try {
       String importDir = System.getProperty("mmbase.config") + "/import/";
       java.io.File dirName = new java.io.File(importDir);
+      dirName.mkdirs(); // Creates directory if not present yet.
       java.io.File[] fileList = dirName.listFiles();
       %><OPTION><%= "" %></OPTION> <% 
       for (int i=0; i < fileList.length; i++) { 
