@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.7 2002-06-26 11:40:53 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.8 2002-06-27 15:57:57 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -178,6 +178,50 @@ public class MMBaseServlet extends  HttpServlet {
         String servletName=(String)associatedServlets.get(topic);
         return servletName;
     }
+
+
+   /**
+     * Get a servlet path. Takes a way the ? and the *. 
+     * @param rootPath the path that serves as the servlet's root
+     * @param association
+     * @param def
+     */
+    public static String getServletPath(String rootPath, String association, String def) {
+        String result;
+        List ls = getServletMappingsByAssociation(association);
+        if (ls != null) {
+            result = (String) ls.get(0);
+            // remove mask
+            int pos = result.lastIndexOf("*");
+            if (pos > 0) {
+                result = result.substring(0, pos);
+            }
+            pos = result.indexOf("*");
+            if (pos == 0) {
+                result = result.substring(pos+1);
+            }
+        } else {
+            result = def;
+        }
+        // remove first slash
+        if (result.startsWith("/")) result = result.substring(1);
+        
+        // add '?' if it wasn't already there (only needed if not terminated with /)
+        if (! result.endsWith("/")) result = result + "?";
+
+        if (rootPath != null) {
+            if (rootPath.endsWith("/")) {
+                result = rootPath + result;
+            } else {
+                result = rootPath + "/" + result;
+            }
+        }
+        log.service(association + " are served on: " + result);
+        return result;
+    }
+    
+
+
 
     /**
      * Associate a given servlet with the the given topic.
