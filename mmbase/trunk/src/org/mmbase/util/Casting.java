@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.24 2004-09-20 12:04:28 pierre Exp $
+ * @version $Id: Casting.java,v 1.25 2004-09-20 16:40:13 pierre Exp $
  */
 
 import java.util.*;
@@ -65,7 +65,7 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static Writer toWriter(Writer writer, Object o) throws java.io.IOException {
-        if (o == null || o instanceof Writer) {
+        if (o == null || o == MMObjectNode.VALUE_NULL || o instanceof Writer) {
             return writer;
         }
 
@@ -101,12 +101,16 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static List toList(Object o) {
-        if (o == null) {
-            return new ArrayList();
-        } else if (o instanceof List) {
+        if (o instanceof List) {
             return (List)o;
+        } else if (o instanceof String) {
+            return StringSplitter.split((String)o);
         } else {
-            return StringSplitter.split(toString(o));
+            List l = new ArrayList();
+            if (o != null && o != MMObjectNode.VALUE_NULL) {
+                l.add(o);
+            }
+            return l;
         }
     }
 
@@ -121,9 +125,8 @@ public class Casting {
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
-
     static public Document toXML(Object o, String documentType, String conversion) {
-        if (o == null || "".equals(o)) return null;
+        if (o == null || o == MMObjectNode.VALUE_NULL || "".equals(o)) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on service.
@@ -133,7 +136,7 @@ public class Casting {
                 String msg = xmltext;
                 if (msg.length() > 20)
                     msg = msg.substring(0, 20);
-                log.service("Object " + msg + "... is not a Document, but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
+                log.service("Object " + msg + "... is not a Document, but a " + o.getClass().getName());
             }
             return convertStringToXML(xmltext, documentType, conversion);
         }
@@ -179,7 +182,7 @@ public class Casting {
             if (nodenumber != -1) {
                 res = parent.getNode(nodenumber);
             }
-        } else if (i != null && !i.equals("")) {
+        } else if (i != null && i != MMObjectNode.VALUE_NULL && !i.equals("")) {
             res = parent.getNode(i.toString());
         }
         return res;
@@ -199,7 +202,7 @@ public class Casting {
             if (nodenumber != -1) {
                 res = cloud.getNode(nodenumber);
             }
-        } else if (i != null && !i.equals("")) {
+        } else if (i != null &&  i != MMObjectNode.VALUE_NULL && !i.equals("")) {
             res = cloud.getNode(i.toString());
         }
         return res;
@@ -234,7 +237,7 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).intValue();
-        } else if (i != null) {
+        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
             try {
                 res = Integer.parseInt("" + i);
             } catch (NumberFormatException e) {
@@ -327,7 +330,11 @@ public class Casting {
             res = ((Number)i).longValue();
         } else if (i instanceof Date) {
             res = ((Date)i).getTime() / 1000;
-        } else if (i != null) {
+        } else if (i instanceof MMObjectNode) {
+            res = ((MMObjectNode)i).getNumber();
+        } else if (i instanceof Node) {
+            res = ((Node)i).getNumber();
+        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
             //keesj:
             //TODO:add Node and MMObjectNode
             try {
@@ -363,7 +370,13 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).floatValue();
-        } else if (i != null) {
+        } else if (i instanceof Date) {
+            res = ((Date)i).getTime() / 1000;
+        } else if (i instanceof MMObjectNode) {
+            res = ((MMObjectNode)i).getNumber();
+        } else if (i instanceof Node) {
+            res = ((Node)i).getNumber();
+        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
             try {
                 res = Float.parseFloat("" + i);
             } catch (NumberFormatException e) {}
@@ -381,11 +394,9 @@ public class Casting {
             return (java.util.Date) i;
         }
         long date = -1;
-        if (i instanceof Integer) {
-            date = ((Integer)i).longValue();
-        } else if (i instanceof Number) {
+        if (i instanceof Number) {
             date = ((Number)i).longValue();
-        } else if (i != null) {
+        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
             try {
                 date = Long.parseLong("" + i);
             } catch (NumberFormatException e) {}
@@ -412,7 +423,13 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).doubleValue();
-        } else if (i != null) {
+        } else if (i instanceof Date) {
+            res = ((Date)i).getTime() / 1000;
+        } else if (i instanceof MMObjectNode) {
+            res = ((MMObjectNode)i).getNumber();
+        } else if (i instanceof Node) {
+            res = ((Node)i).getNumber();
+        } else if (i != null && i != MMObjectNode.VALUE_NULL) {
             try {
                 res = Double.parseDouble("" + i);
             } catch (NumberFormatException e) {}
@@ -427,7 +444,7 @@ public class Casting {
      * @throws RuntimeException When value was null and not allowed by builer, and xml failures.
      */
     static private Document convertStringToXML(String value, String documentType, String conversion) {
-        if (value == null)
+        if (value == null || value == MMObjectNode.VALUE_NULL)
             return null;
         if (value.startsWith("<")) { // _is_ already XML, only presented as a string.
             // removing doc-headers if nessecary
