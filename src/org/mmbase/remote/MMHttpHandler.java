@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.5 2000-11-27 13:12:19 vpro Exp $
+$Id: MMHttpHandler.java,v 1.6 2000-11-27 14:49:48 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/11/27 13:12:19  vpro
+davzev: Added some method comments and changed argument names of method doGet and doXMLSignal, also removed some hardcoded numbers.
+
 */
 package org.mmbase.remote;
 
@@ -21,13 +24,13 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.5 $ $Date: 2000-11-27 13:12:19 $
+ * @version $Revision: 1.6 $ $Date: 2000-11-27 14:49:48 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable {
 
     private String  classname   = getClass().getName();
-    private boolean debug       = RemoteBuilder.debug;
+    private boolean debug       = true;
     private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Thread kicker = null;
