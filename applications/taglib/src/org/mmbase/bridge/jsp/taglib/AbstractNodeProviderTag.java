@@ -131,7 +131,7 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     **/
     public int doAfterBody() throws JspTagException {
         if (modified) {
-            log.error("node was changed ! calling commit");
+            log.service("node was changed ! calling commit");
             node.commit();
         }
         return SKIP_BODY;
