@@ -12,11 +12,11 @@
     <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
   </head>
   <body>
-    <mm:import externid="template">main.jsp</mm:import>
+    <mm:import externid="btemplate">main.jsp</mm:import>
     
     <%@include file="login.jsp" %>
 
-    <mm:include debug="html" page="$template" />      
+    <mm:include debug="html" page="$btemplate" />      
 
   </body>
 </html>
