@@ -77,5 +77,6 @@
           <field name="read" replacement="m_read" />
           <field name="write" replacement="m_write" />
           <field name="column" replacement="m_column" />
+          <field name="order" replacement="m_order" />
 	</disallowed>
 </database>
