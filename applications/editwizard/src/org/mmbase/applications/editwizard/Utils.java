@@ -22,6 +22,7 @@ import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.cache.xslt.*;
@@ -39,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.30 2003-05-27 12:47:13 pierre Exp $
+ * @version $Id: Utils.java,v 1.31 2003-06-10 09:12:50 pierre Exp $
  */
 public class Utils {
 
@@ -74,7 +75,7 @@ public class Utils {
      *
      * @param      file the file to be loaded.
      * @return     The loaded xml Document
-     * @throws     WizardException if someting wend wrong...
+     * @throws     WizardException if the document is invalid
      */
     public static Document loadXMLFile(File file) throws WizardException {
         try {
@@ -254,11 +255,36 @@ public class Utils {
      * @return     The text string.
      */
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
+        return selectSingleNodeText(node, xpath, defaultvalue);
+    }
+    
+    /**
+     * Selects a single node using the given xpath and uses the given node a a starting context and returns the textnode found. 
+     * If no text is found, the default value is given.
+     * If a cloud argument is passed, it is used to select the most approprite text (using xml:lang attributes) depending on 
+     * the cloud's properties.
+     *
+     * @param  node  the contextnode to start the xpath from.
+     * @param  xpath the xpath which should be fired.
+     * @param  defaultvalue  this value will be returned when no node is found using the xpath.
+     * @param  cloud the cloud whose locale is to be used for selecting language-specific texts
+     * @return The text string.
+     */
+    public static String selectSingleNodeText(Node node, String xpath, String defaultvalue, Cloud cloud) {
         try {
-            XObject x=XPathAPI.eval(node, xpath);
-            if (x==null) return defaultvalue;
+            XObject x = null;
+            // select based on cloud locale setting
+            if (cloud != null) {
+                x=XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
+            }
+            // if not found or n.a., just grab the first you can find 
+            if (x == null || (x instanceof XNodeSet && x.nodelist().getLength() < 1)) {
+                x = XPathAPI.eval(node, xpath);
+            }
+            if (x == null || (x instanceof XNodeSet && x.nodelist().getLength() < 1)) {
+                return defaultvalue;
+            }
             if (x instanceof XNodeSet) {
-                if (x.nodelist().getLength()<1) return defaultvalue;
                 try {
                     return getText(x.nodelist().item(0));
                 } catch (Throwable ignore) {
@@ -269,7 +295,7 @@ public class Utils {
                 return x.toString();
             }
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e)+", evaluating xpath:"+xpath);
+            log.error(Logging.stackTrace(e) + ", evaluating xpath:" + xpath);
         }
         return defaultvalue;
     }
@@ -578,7 +604,7 @@ public class Utils {
      * @return    The found node.
      */
     public static Node selectSingleNode(Node contextnode, String xpath) {
-        if (contextnode==null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node which is null");
+        if (contextnode==null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
         try {
             return XPathAPI.selectSingleNode(contextnode, xpath);
         } catch (Exception e) {
@@ -594,7 +620,7 @@ public class Utils {
      * @return    The found nodes in a NodeList.
      */
     public static NodeList selectNodeList(Node contextnode, String xpath) {
-        if (contextnode==null) throw new RuntimeException("context node was null");
+        if (contextnode==null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
         try {
             return XPathAPI.selectNodeList(contextnode, xpath);
         } catch (Exception e) {
