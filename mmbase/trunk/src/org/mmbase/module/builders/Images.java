@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.59 2002-09-06 09:08:38 vpro Exp $
+ * @version $Id: Images.java,v 1.60 2002-09-09 10:21:43 vpro Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -123,7 +123,7 @@ public class Images extends AbstractImages {
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
-            return "Not ready yet";
+            return "...";
         }
         // NOTE that this has to be configurable instead of static like this
         String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
