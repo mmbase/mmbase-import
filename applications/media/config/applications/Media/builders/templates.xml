@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="templates" maintainer="mmbase.org" version="0" extends="object">
+<builder name="templates" maintainer="mediaproject.mmbase.org" version="0" extends="object">
   <names>
     <singular xml:lang="nl">Sjabloon</singular>
     <singular xml:lang="en">Template</singular>
+    <singular xml:lang="eo">Ŝablono</singular>
     <plural xml:lang="nl">Sjablonen</plural>
     <plural xml:lang="en">Templates</plural>
+    <plural xml:lang="eo">Ŝablonoj</plural>
   </names>
   <descriptions>
-    <description xml:lang="nl">Sjablonen. Een sjabloon is een url naar
-    een locale file, die iets kan laten zien.</description>
+    <description xml:lang="nl">Sjablonen. Een sjabloon is een url naar een locale file, die iets kan laten zien.</description>
     <description xml:lang="en">Templates</description>
   </descriptions>
  <fieldlist>

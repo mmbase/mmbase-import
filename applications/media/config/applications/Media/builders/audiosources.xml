@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="audiosources" extends="mediasources">
+<builder name="audiosources" maintainer="mediaproject.mmbase.org" version="0" extends="mediasources">
   <status>active</status>
   
   <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>

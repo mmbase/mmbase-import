@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <posrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="174" owner="media" snumber="122" dnumber="120" rtype="posrel" dir="bidirectional">
-		<pos>1</pos>
-	</node>
 
-	<node number="172" owner="media" snumber="122" dnumber="118" rtype="posrel" dir="bidirectional">
-		<pos>2</pos>
-	</node>
 
-	<node number="170" owner="media" snumber="99" dnumber="96" rtype="posrel" dir="bidirectional">
-		<pos>1</pos>
-	</node>
-
-	<node number="168" owner="media" snumber="94" dnumber="96" rtype="posrel" dir="bidirectional">
-		<pos>2</pos>
-	</node>
-
-	<node number="166" owner="media" snumber="114" dnumber="110" rtype="posrel" dir="bidirectional">
-		<pos>2</pos>
-	</node>
-
-	<node number="164" owner="media" snumber="114" dnumber="112" rtype="posrel" dir="bidirectional">
-		<pos>1</pos>
-	</node> 
-
-	<node number="4007" owner="media" snumber="124" dnumber="122" rtype="posrel" dir="bidirectional">
+  <!-- videofragments->videofragments -->
+  <node number="4100" owner="media" snumber="6020" dnumber="6021" rtype="posrel" dir="bidirectional">
     <pos>1</pos>    
-	</node><!-- videofragments->videofragments -->
+  </node>
+  <node number="4101" owner="media" snumber="6021" dnumber="6022" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+  <node number="4102" owner="media" snumber="6021" dnumber="6023" rtype="posrel" dir="bidirectional">
+    <pos>2</pos>
+  </node>
 
-	<node number="4010" owner="media" snumber="116" dnumber="114"	rtype="posrel" dir="bidirectional">
-     <pos>1</pos>
-	</node><!-- videofragments->videofragments -->
+
+  <!-- videofragments->videofragments -->
+  <node number="4110" owner="media" snumber="6030" dnumber="6031"  rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+  <node number="4111" owner="media" snumber="6031" dnumber="6032" rtype="posrel" dir="bidirectional">
+    <pos>2</pos>
+  </node>
+
+  <node number="4112" owner="media" snumber="6031" dnumber="6033" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node> 
 
 
 
