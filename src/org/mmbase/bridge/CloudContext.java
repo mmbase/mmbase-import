@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.18 2002-09-25 14:57:47 pierre Exp $
+ * @version $Id: CloudContext.java,v 1.19 2002-11-05 14:17:02 pierre Exp $
  */
 public interface CloudContext {
 
@@ -31,12 +31,19 @@ public interface CloudContext {
     /**
      * Returns the module with the specified name.
      *
-     * @param name                      the name of the module to be returned
-     * @return                          the requested module
-     * @throws ModuleNotFoundException  if the specified module could not be
-     *                                  found
+     * @param name                the name of the module to be returned
+     * @return                    the requested module
+     * @throws NotFoundException  if the specified module could not be found
      */
-    public Module getModule(String name);
+    public Module getModule(String name) throws NotFoundException;
+
+    /**
+     * Returns whether the module with the specified name is available.
+     *
+     * @param name                the name of the module
+     * @return                    <code>true</code> if the module is available
+     */
+    public boolean hasModule(String name);
 
     /**
      * Returns the cloud with the specified name.
@@ -50,14 +57,14 @@ public interface CloudContext {
     /**
      * Returns the cloud with the specified name, with authentication
      *
-     * @param name                     the name of the cloud to be returned
-     * @param authenticationtype       the type of authentication, which should be
-     *                                used by the authentication implementation.
-     * @param loginInfo                 the user related login information.
-     * @return                         the requested cloud
-     * @throws CloudNotFoundException  if the specified cloud could not be found
+     * @param name                the name of the cloud to be returned
+     * @param authenticationtype  the type of authentication, which should be
+     *                            used by the authentication implementation.
+     * @param loginInfo           the user related login information.
+     * @return                    the requested cloud
+     * @throws NotFoundException  if the specified cloud could not be found
      */
-    public Cloud getCloud(String name, String authenticationtype, Map loginInfo);
+    public Cloud getCloud(String name, String authenticationtype, Map loginInfo) throws NotFoundException;
 
     /**
      * Returns the names of all the clouds known to the system
