@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.15 2004-03-05 15:18:43 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.16 2004-03-05 21:21:52 michiel Exp $</edition>
 
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
@@ -72,7 +72,6 @@
         <emphasis>The preferred term is MMBase</emphasis></remark></glossdef>
 
         <glossseealso>open source</glossseealso>
-
         <glossseealso>content management</glossseealso>
       </glossentry>
     </glosslist>
@@ -249,9 +248,24 @@
         <glossterm>role</glossterm>
 
         <glossdef>
-          <para>The name of an reldef object.</para>
-
+          <para>
+            The name of an reldef object. Practicly, it serves as extra way of distinguishing
+            relations, and connection a relation builder to it. One could for example define the
+            role `author' (by creating a reldef object). This role could then be used to allow
+            relations between news and people. 
+          </para>
+          <para>
+            The most often roles are `related' and `posrel', which both lack any real-life
+            semantics.
+          </para>
+          <para>
+            Two `related' nodes are just that. Two `posrel' related nodes are also just related, but
+            to the posrel role normally the `posrel' relation builder is associated, which allows
+            for one extra field in the relations; the `pos' field with integer type, which makes it
+            possible to order relations.
+          </para>
           <glossseealso otherterm="reldef"></glossseealso>
+          <glossseealso otherterm="typerel"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -259,9 +273,25 @@
         <glossterm>reldef</glossterm>
 
         <glossdef>
-          <para>The builder defining relation roles.</para>
-
+          <para>
+            The builder defining relation roles. It has several fields, which are not all equally
+            important. The must important fields are `sname', `dir' and `builder'. `sname' is the
+            identifying name of this role. `dir' specifies if relations with this role are uni- or
+            bidirectional, and `builder' defines the relation builder (so the actual fields the
+            relations has, and in which table the relations will be stored).
+          </para>
+          <para>
+            `sguiname' and `dguiname' can be used to attribute names to the source and destination
+            sides of the relations, which can be used in GUI interfaces to describe the
+            relations. The remaining field is `dname' which has no real use. It's original idea
+            would be the `role' as seen from the destination node, but this is not used (in stead,
+            to define that relations must be followed in a certain direction the search direction is
+            stated explicitely).
+          </para>
           <glossseealso otherterm="role"></glossseealso>
+          <glossseealso otherterm="unidirectional"></glossseealso>
+          <glossseealso otherterm="bidirectional"></glossseealso>
+          <glossseealso otherterm="path"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -269,12 +299,14 @@
         <glossterm>insrel</glossterm>
 
         <glossdef>
-          <para>A relation instance. This is special kind of object type which
-          contains relation objects.</para>
+          <para>
+            A relation instance. This is special kind of object type which
+            contains relation objects.
+          </para>
 
           <glossseealso otherterm="builder"></glossseealso>
-
           <glossseealso otherterm="object type"></glossseealso>
+          <glossseealso otherterm="reldef"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -282,19 +314,23 @@
         <glossterm>typerel</glossterm>
 
         <glossdef>
-          <para>Typerel is the MMBase builder which defines the allowed
-          relations. If for example you want to create a certain relation from
-          news node to an URL node, then a corresponding typerel record, which
-          allows that must exist.</para>
-
-          <para>Inheritance is taken into consideration, so if you allow from
-          object to object (with a certain role), then every kind of relation
-          (with that certain role) should be allowed (because all node types
-          extends object).</para>
+          <para>
+            Typerel is the MMBase builder which defines the allowed
+            relations. If for example you want to create a certain relation from
+            news node to an URL node, then a corresponding typerel record, which
+            allows that must exist.
+          </para>
+          <para>
+            Inheritance is taken into consideration, so if you allow from object to object (with a
+            certain role), then every kind of relation (with that certain role) should be allowed
+            (because all node types extends object). It is by the way usually not very prudent to
+            actually do this, because allowing every relation will often enforce MMBase to do very
+            complicated queries, which can be very bad for performance.
+          </para>
 
           <glossseealso otherterm="inheritance"></glossseealso>
-
           <glossseealso otherterm="relation"></glossseealso>
+          <glossseealso otherterm="role"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -320,9 +356,7 @@
           </orderedlist>
 
           <glossseealso otherterm="insrel"></glossseealso>
-
           <glossseealso otherterm="reldef"></glossseealso>
-
           <glossseealso otherterm="typerel"></glossseealso>
         </glossdef>
       </glossentry>
@@ -332,9 +366,10 @@
 
         <glossdef>
           <para>In MMBase object types are objects too. These nodes are stored
-          in the &#39;typedef&#39; builder. It generates a small chicken/egg
-          problem because the typedef type itself is also present a a node of
-          itself. (Normally the typedef node will have to have number 1)</para>
+          in the `typedef' builder. It generates a small chicken/egg
+          problem because the typedef type itself is also present aa a node of
+          itself. (Normally the typedef node will have to have number 1)
+          </para>
         </glossdef>
       </glossentry>
 
@@ -369,8 +404,8 @@
 
         <glossdef>
           <para>MMBase supports inheritance. This means that every
-          &#39;news&#39; node is also an &#39;object&#39; node. You can also
-          extend your &#39;mynews&#39; builder from the &#39;news&#39;
+          `news' node is also an `object' node. You can also
+          extend your `mynews' builder from the `news'
           builder. All fields from news are then inherited to mynews, and
           mynews nodes can be treated as (because they are) news nodes.</para>
 
@@ -419,8 +454,9 @@
         <glossterm>virtual node</glossterm>
 
         <glossdef>
-          <para>A non persistent node. Generally no builder xml is associated witch such a node.</para>
-
+          <para>
+            A non persistent node. Generally no builder xml is associated witch such a node.
+          </para>
           <glossseealso otherterm="clusternode"></glossseealso>
         </glossdef>
       </glossentry>
@@ -479,8 +515,8 @@
           committer on the developers list.</para>
 
           <glossseealso otherterm="plusone"></glossseealso>
-
           <glossseealso otherterm="committer"></glossseealso>
+          <glossseealso otherterm="devlist"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -601,11 +637,10 @@
 
         <glossdef>
           <para>An alternative implementation of the bridge. Can be used to
-          implement life/staging MMBase&#39;s, but can also be useful to
-          inspect/test a running MMBase.</para>
+          implement life/staging MMBase's, but can also be useful to
+          inspect/test a running MMBase, because it can run stand alone, and talks by remote method calls to an MMBase instance.</para>
 
           <glossseealso otherterm="bridge"></glossseealso>
-
           <glossseealso otherterm="wiab"></glossseealso>
         </glossdef>
       </glossentry>
@@ -632,8 +667,10 @@
         <acronym>MMC</acronym>
 
         <glossdef>
-          <para>MMBase committers who are supposed to meet every Thursday to
-          talk about MMBase.</para>
+          <para>
+            MMBase committers who are supposed to meet every Thursday to
+            talk about MMBase.
+          </para>
         </glossdef>
       </glossentry>
 
@@ -656,10 +693,10 @@
 
         <glossdef>
           <para>An XML way to add content to an MMBase cloud. It is hardly
-          used anymore.</para>
+          used anymore.
+          </para>
 
           <glossseealso otherterm="xmlimporter"></glossseealso>
-
           <glossseealso otherterm="scan"></glossseealso>
         </glossdef>
       </glossentry>
@@ -671,18 +708,17 @@
           <para>The original MMBase template language. An interpreted language
           characterized by several parse stages of the source. Commands,
           parameters and variables are recognized by $-symbols. SCAN HTML
-          pages use to be mapped to &#39;.shtml&#39;.</para>
+          pages use to be mapped to `.shtml'.</para>
 
           <para>Use of SCAN is nowadays discouraged in favor of more modern
           and standardized scripting manner like JSP and (MMBase) taglib.</para>
 
           <para>Because the long history of SCAN, SCAN-specific legacy code
           can still be found on a lot of places in the MMBase core code. Even
-          the bridge way to handle with &#39;MMBase modules&#39; is influenced
+          the bridge way to handle with `MMBase modules' is influenced
           by SCAN.</para>
 
           <glossseealso otherterm="mmbasetaglib"></glossseealso>
-
           <glossseealso otherterm="core"></glossseealso>
         </glossdef>
       </glossentry>
@@ -704,7 +740,7 @@
           <orderedlist>
             <listitem>
               <para>In several MMBase security implementations the concept
-              &#39;security context&#39; is stored in the owner field, to
+              `security context' is stored in the owner field, to
               attribute rights to objects.</para>
             </listitem>
 
@@ -937,7 +973,7 @@
         <glossdef>
           <para>
             An exception from an edit wizard. It is called like this, because the error page of an
-            editwizard use(d?) to be introduced with these big friendly letters.
+            editwizard is (was?) introduced with these big friendly letters.
           </para>
           <para>
             Normally, but a bit unexpectedly, this is read as the completely opposite advice.
@@ -982,6 +1018,35 @@
             used by the editwizards, but which one could use for similar purposes.
           </para>
           <glossseealso otherterm="editwizard"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="devlist">
+        <glossterm>developers list</glossterm>
+        <glossdef>
+          <para>
+            The developers@mmbase.org mailing list, sometimes shorthanded to dev-list. This is the
+            most active MMBase mailing list, which is used by the developers community to discuss
+            and answer questions about technical issues. 
+          </para>
+          <para>
+            Information about the subscription and about other mmbase mailing lists can be found on
+            the mmbase web-site.
+          </para>
+          <glossseealso otherterm="vote"></glossseealso>
+          <glossseealso otherterm="irc"></glossseealso>
+        </glossdef>
+      </glossentry>
+      <glossentry id="irc">
+        <glossterm>Internet Relay Chat</glossterm>
+        <acronym>IRC</acronym>
+        <glossdef>
+          <para>
+            The channel #mmbase of the <ulink url="www.slashnet.org">Slashnet IRC network</ulink> is
+            an active scene which is used by MMBase developers to discuss MMBase in a casual way. It
+            is also much used to get help for installation and implementation issues.
+          </para>
+          <glossseealso otherterm="devlist"></glossseealso>
         </glossdef>
       </glossentry>
     </glosslist>
