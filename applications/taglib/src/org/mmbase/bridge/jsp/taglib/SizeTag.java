@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The size of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.12 2003-07-28 09:40:40 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.13 2003-07-29 15:08:52 michiel Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer {
@@ -48,7 +48,7 @@ public class SizeTag extends ListReferrerTag implements Writer {
             count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
             
             Node result = (Node) cloud.getList(count).get(0);
-            helper.setValue(new Integer(result.getIntValue(step.getTableName() + ".number"))); // TODO object.number does not make any sense!!
+            helper.setValue(new Integer(result.getIntValue("number")));
         } else {
             helper.setValue(new Integer(getList().size()));
         }
