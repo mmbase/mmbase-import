@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.38 2003-09-19 14:34:18 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.39 2003-09-23 12:11:44 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -20,7 +20,7 @@ Config.Configurator configurator = null; // Fills the ewconfig if necessary.
 
 String popupId = "";  // default means: 'this is not a popup'
 boolean popup = false;  
- 
+String sessionKey = "editwizard"; 
 
  boolean done=false;
      Object closedObject=null;
@@ -44,7 +44,7 @@ log.trace("done setting headers");
 
 // It is possible to specify an alternatvie 'sessionkey'
 // The sessionkey is used as a key for the session.
-String sessionKey = request.getParameter("sessionkey");
+sessionKey = request.getParameter("sessionkey");
 if (sessionKey == null) sessionKey = "editwizard";
 
 
