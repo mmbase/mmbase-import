@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.24 2003-03-12 16:10:33 vpro Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.25 2003-03-13 12:44:07 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -74,10 +74,9 @@ public class XMLEntityResolver implements EntityResolver {
         publicIDtoResource.put("-//MMBase/DTD module config 1.0//EN",   new Resource(XMLModuleReader.class,   "module_1_0.dtd"));
         publicIDtoResource.put("-//MMBase/ DTD module config 1.0//EN",  new Resource(XMLModuleReader.class,   "module_1_0.dtd"));
         publicIDtoResource.put("-//MMBase/DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD application config 1.1//EN", new Resource(XMLApplicationReader.class, "application_1_1.dtd"));
         publicIDtoResource.put("-//MMBase/DTD application config 1.0//EN", new Resource(XMLApplicationReader.class, "application_1_0.dtd"));
-		publicIDtoResource.put("-//MMBase//DTD builder transactions 1.0//EN", new Resource(org.mmbase.module.TransactionHandler.class,    "transactions_1_0.dtd"));
-
-
+        publicIDtoResource.put("-//MMBase//DTD builder transactions 1.0//EN", new Resource(org.mmbase.module.TransactionHandler.class,    "transactions_1_0.dtd"));
     }
 
     private String dtdpath;
