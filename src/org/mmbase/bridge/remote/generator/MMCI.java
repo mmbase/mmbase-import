@@ -9,120 +9,115 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.remote.generator;
-import nanoxml.*;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.xml.serialize.*;
 import java.io.*;
 import java.util.*;
+import org.mmbase.util.XMLBasicReader;
+
 /**
  * @author Kees Jongenburger <keesj@framfab.nl>
  **/
 public class MMCI{
     Hashtable classes;
     Vector classesVector;
-    
+
     private static MMCI STATIC_MMCI = null;
+
     public MMCI(){
         classes = new Hashtable();
         classesVector = new Vector();
     }
-    
-    
+
     public static MMCI getDefaultMMCI() throws Exception{
             return getDefaultMMCI("MMCI.xml");
     }
+
     public static MMCI getDefaultMMCI(String fileName) throws Exception{
         if (MMCI.STATIC_MMCI == null){
-            File file = new File(fileName);
-            if (!file.exists()){
-                throw new Exception("file {"+ fileName +"} does not exsit");
-            }
-            FileInputStream fis = new FileInputStream(file);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] data = new byte[300];
-            int count = 0;
-            while((count = fis.read(data)) > 0){
-                baos.write(data,0,count);
-            }
-            String xmlString = new String(baos.toByteArray());
-            XMLElement xmle = new XMLElement();
-            xmle.parseString(xmlString);
-            
-            
-            MMCI.STATIC_MMCI =  MMCI.fromXML(xmle);
+            XMLBasicReader reader=new XMLBasicReader(fileName);
+            MMCI.STATIC_MMCI =  MMCI.fromXML(reader);
         }
         return MMCI.STATIC_MMCI;
     }
-    
-    
-    public static MMCI fromXML(XMLElement xmle) throws Exception{
+
+    public static MMCI fromXML(XMLBasicReader reader) throws Exception{
         MMCI mmci =  new MMCI();
-        Enumeration enum = xmle.enumerateChildren();
-        while(enum.hasMoreElements()){
-            XMLElement element = (XMLElement)enum.nextElement();
-            String name = element.getTagName();
-            if (name.equals("class")){
-                XMLClass myClass = XMLClass.fromXML(element);
-                mmci.classes.put(myClass.getName(),myClass);
-                mmci.classesVector.addElement(myClass);
-                
-            }
+        Element xmle=reader.getElementByPath("mmci");
+        for(Enumeration enum = reader.getChildElements(xmle,"class");
+            enum.hasMoreElements();) {
+            Element element = (Element)enum.nextElement();
+            XMLClass myClass = XMLClass.fromXML(element);
+            mmci.classes.put(myClass.getName(),myClass);
+            mmci.classesVector.addElement(myClass);
         }
         return mmci;
     }
-    
+
     public Vector getClasses(){
         return classesVector;
     }
     public XMLClass getClass(String name) throws NotInMMCIException{
         if (classes.get(name) == null){
             throw new NotInMMCIException("Class " + name + " is not known to the MMCI");
-	}
+        }
         return (XMLClass)((XMLClass)classes.get(name)).clone(true);
     }
-    public static void addDefaultBridgeClasses(XMLElement xmle) throws Exception{
+
+    public static void addDefaultBridgeClasses(Element xmle, Document doc) throws Exception {
         //mmbase interfaces
         //xmle.setComment("MMCI XML description file\nCreated on " + new java.util.Date() + "\nby remote.common.MMCI");
-	//should we use BridgeException interface?
-        //xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
+        //should we use BridgeException interface?
+        //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
 
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.Field"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.Module"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.Node"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.NodeIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.NodeList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.NodeManager"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.NodeManagerIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.NodeManagerList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.Relation"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.RelationIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.RelationList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.RelationManager"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.RelationManagerIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.RelationManagerList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.StringIterator"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.StringList"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction"));
-        xmle.addChild(ClassToXML.classToXML("org.mmbase.bridge.User"));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Module",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.ModuleList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Node",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeManager",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeManagerIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeManagerList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Relation",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.RelationIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.RelationList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.RelationManager",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.RelationManagerIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.RelationManagerList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringIterator",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
     }
-    
+
     public static void main(String [] argv) throws Exception{
-	if (argv.length != 1){
-		System.err.println("usage remote.common.MMCI outputfile");
-	} else {
-		XMLElement xmle = new XMLElement();
-		MMCI.addDefaultBridgeClasses(xmle);
-		xmle.setTagName("mmci");
-
-		FileOutputStream fos = new FileOutputStream(argv[0]);
-		fos.write(xmle.toString().getBytes());
-		fos.close();
-	}
+        OutputStream os = System.out;
+        if (argv.length >1){
+            System.err.println("Usage: java org.mmbase.bridge.remote.generator.MMCI <outputfile>");
+        } else {
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            Element xmle =doc.createElement("mmci");
+            doc.appendChild(xmle);
+            MMCI.addDefaultBridgeClasses(xmle, doc);
+            if (argv.length==1) {
+                os = new FileOutputStream(argv[0]);
+            }
+            OutputFormat format = new OutputFormat(doc);
+            format.setIndenting(true);
+            format.setPreserveSpace(false);
+            XMLSerializer prettyXML = new XMLSerializer(os,format);
+            prettyXML.serialize(doc);
+            os.flush();
+        }
     }
-    
+
 }
 
