@@ -45,10 +45,27 @@
           <td></td>
           <td>
             <a name="toc"/>			
-            <xsl:apply-templates select="tag|taginterface" mode="toc" >
+            <xsl:apply-templates select="taginterface" mode="toc" >
 				<xsl:sort select="name" />
    		  	    <xsl:with-param name="last" select="position()" />
             </xsl:apply-templates><br />
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <a name="toc"/>			
+            <xsl:apply-templates select="tag" mode="toc" >
+				<xsl:sort select="name" />
+   		  	    <xsl:with-param name="last" select="position()" />
+            </xsl:apply-templates><br />
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
             <a href="#docinfo">info about the syntax of this document</a>
           </td>
           <td></td>
