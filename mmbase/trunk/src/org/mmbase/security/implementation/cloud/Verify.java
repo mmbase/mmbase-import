@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.6 2002-06-10 12:41:55 eduard Exp $
+ * @version $Id: Verify.java,v 1.7 2002-07-26 08:47:35 vpro Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class.getName());
@@ -132,7 +132,7 @@ public class Verify extends Authorization {
 
     public String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-    assert(user, nodeid, Operation.READ);
+    verify(user, nodeid, Operation.READ);
 
         // and get the value...
     MMObjectNode node = getMMNode(nodeid);
@@ -148,7 +148,7 @@ public class Verify extends Authorization {
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-    assert(user, nodeid, Operation.CHANGECONTEXT);
+    verify(user, nodeid, Operation.CHANGECONTEXT);
 
     // well now really set it...
     MMObjectNode node = getMMNode(nodeid);

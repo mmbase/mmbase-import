@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.20 2002-07-05 14:18:41 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.21 2002-07-26 08:47:34 vpro Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
@@ -125,7 +125,7 @@ public class ContextAuthorization extends Authorization {
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-        assert(user, nodeNumber, Operation.CHANGECONTEXT);
+        verify(user, nodeNumber, Operation.CHANGECONTEXT);
 
         // well now really set it...
         node.setValue("owner", context);
@@ -140,7 +140,7 @@ public class ContextAuthorization extends Authorization {
         if (log.isDebugEnabled()) log.debug("get context on node #"+nodeNumber+" by user: " +user);
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-        assert(user, nodeNumber, Operation.READ);
+        verify(user, nodeNumber, Operation.READ);
 
         // and get the value...
         MMObjectNode node = getMMNode(nodeNumber);
@@ -153,7 +153,7 @@ public class ContextAuthorization extends Authorization {
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
         // TODO: research if we maybe better could use WRITE or CHANGECONTEXT as rights for this operation...
-        assert(user, nodeNumber, Operation.READ);
+        verify(user, nodeNumber, Operation.READ);
 
         // retrieve the current context..
         String currentContext = getContext(user, nodeNumber);
@@ -384,7 +384,7 @@ public class ContextAuthorization extends Authorization {
         return userInGroups(user, fetchedGroups, done);
     }
 
-    public void assert(UserContext user, int nodeNumber, Operation operation) throws SecurityException {
+    public void verify(UserContext user, int nodeNumber, Operation operation) throws SecurityException {
         if (operation.getInt() > Operation.READ_INT ) {
             log.service("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         } else if (log.isDebugEnabled() ) {
@@ -410,7 +410,7 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    public void assert(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
+    public void verify(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
         if (operation == Operation.CREATE) {
             // may link on both nodes
             if(!check(user, srcNodeNumber, "link")) {
@@ -434,7 +434,7 @@ public class ContextAuthorization extends Authorization {
                 log.error(msg);
                 throw new SecurityException(msg);
             }
-            assert(user, nodeNumber, Operation.WRITE);
+            verify(user, nodeNumber, Operation.WRITE);
         } else {
             throw new RuntimeException("Called check with wrong operation " + operation);
         }

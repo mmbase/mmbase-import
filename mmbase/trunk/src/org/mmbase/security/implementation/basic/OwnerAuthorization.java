@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: OwnerAuthorization.java,v 1.6 2002-06-10 12:41:55 eduard Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.7 2002-07-26 08:47:34 vpro Exp $
  */
 public class OwnerAuthorization extends Authorization {
     private static Logger log=Logging.getLoggerInstance(OwnerAuthorization.class.getName());
@@ -143,7 +143,7 @@ public class OwnerAuthorization extends Authorization {
     }
 
     public String getContext(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
-    assert(user, nodeNumber, Operation.READ);
+    verify(user, nodeNumber, Operation.READ);
 
         // and get the value...
     MMObjectNode node = getMMNode(nodeNumber);
@@ -163,7 +163,7 @@ public class OwnerAuthorization extends Authorization {
         }
 
     // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-    assert(user, nodeNumber, Operation.CHANGECONTEXT);
+    verify(user, nodeNumber, Operation.CHANGECONTEXT);
 
     // well now really set it...
     MMObjectNode node = getMMNode(nodeNumber);
