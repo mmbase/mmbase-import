@@ -20,22 +20,15 @@ import org.mmbase.util.FileWatcher;
 import java.util.*;
 import java.io.File;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 import org.w3c.dom.Element;
 
 /**
  * The MediaUrlComposer creates additional information in the url. i.e. an url like
  * rpst://streams.omroep.nl/music/jingle.ra, can be expanded to
  * rpst://streams.omroep.nl/music/jungle.ra?start=234&stop=2422&author=Phil%20%collins.
- *
- * This class will contain some basic functionality to create the URI, this class can
- * be extended to create..........................
- *
- * This first attempt will be an implementation for the VPRO, lateron i will make it
- * more generic.
- *
+ * 
  * @author Rob Vermeulen (VPRO)
- *
  */
 public class MediaUrlComposer {
     
@@ -47,18 +40,101 @@ public class MediaUrlComposer {
     // MediaSource builder
     private static MediaSources mediaSourceBuilder = null;
     
+    // Mime mapping
+    private static Hashtable mimeMapping = null;
+    
+    private FileWatcher configWatcher = new FileWatcher(true) {
+        protected void onChange(File file) {
+            readConfiguration(file);
+        }
+    };
+    
     /**
      * construct the MediaProviderFilter
      */
     public MediaUrlComposer(MediaFragments mf, MediaSources ms) {
+        log.debug("Starting urlcomposer");
         mediaFragmentBuilder = mf;
         mediaSourceBuilder = ms;
+        
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "urlcomposer.xml");
+        if (! configFile.exists()) {
+            log.error("Configuration file for urlcomposer " + configFile + " does not exist");
+            return;
+        }
+        readConfiguration(configFile);
+        configWatcher.add(configFile);
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
+    }
+    /**
+     * read the MediaSourceFilter configuration
+     */
+    private synchronized void readConfiguration(File configFile) {
+        
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString());
+        mimeMapping = new Hashtable();
+        
+        // reading filterchain information
+        for(Enumeration e = reader.getChildElements("urlcomposer.mimemapping","map");e.hasMoreElements();) {
+            Element map=(Element)e.nextElement();
+            String format = reader.getElementAttributeValue(map,"format");
+            String codec = reader.getElementAttributeValue(map,"codec");
+            String mime = reader.getElementValue(map);
+            
+            mimeMapping.put(format+"/"+codec,mime);
+            log.debug("Adding mime mapping "+format+"/"+codec+" -> "+mime);
+        }
     }
     
     /**
-     * just an implemetation
+     * create the url and set the contenttype (probably have to split this)
+     *
      */
-    public String composeUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+    public String composeUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
+        
+        String url = null;
+        int format = mediasource.getIntValue("format");
+        if(format==MediaSources.RM_FORMAT || format==MediaSources.RA_FORMAT) {
+            url = createRealURL(mediafragment, mediasource, request, response, wantedspeed, wantedchannels);
+        }
+        setContentType(mediasource, response);
+        return url;
+    }
+    
+    /**
+     * set the contenttype
+     * @param mediasource the mediasource
+     * @param response the response
+     */
+    private void setContentType(MMObjectNode mediasource, HttpServletResponse response) {
+        String format = mediasource.getStringValue("format");
+        if(format==null || format.equals("")) {
+            log.error("No format was given for mediasource "+mediasource.getStringValue("number"));
+        }
+        String codec = mediasource.getStringValue("codec");
+        if(codec==null || codec.equals("")) {
+            codec="*";
+        }
+        String mimetype = "";
+        if(mimeMapping.containsKey(format+"/"+codec)) {
+            mimetype += mimeMapping.get(format+"/"+codec);
+        } else if (mimeMapping.containsKey(format+"/*")) {
+            mimetype += mimeMapping.get(format+"/*");
+        } else if (mimeMapping.containsKey("*/"+codec)) {
+            mimetype += mimeMapping.get("/"+codec);
+        } else if (mimeMapping.containsKey("*/*")) {
+            mimetype += mimeMapping.get("*/*");
+        }
+        log.debug("Mimetype for mediasource "+mediasource.getStringValue("number")+" is "+mimetype);
+        response.setContentType(mimetype);
+    }
+    
+    /**
+     * Just an implementation of a real url. Maybe we should make this configuratble in the config file.
+     * but i don't know if that makes much sence.
+     */
+    public String createRealURL(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
         Vector params = new Vector();
         String urlpart = "";
         
@@ -108,7 +184,6 @@ public class MediaUrlComposer {
         }
         return urlpart;
     }
-    
     
     /**
      * Replaces all plus characters to procent 20
