@@ -10,12 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.GenericResponseWrapper;
+
+import java.util.Locale;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -24,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.57 2004-04-01 15:21:05 pierre Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.58 2004-06-28 21:37:56 michiel Exp $
  * @see ContextTag
  */
 
@@ -451,6 +455,18 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Locale getLocale() throws JspTagException {
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        if (localeTag != null) {
+            return localeTag.getLocale();
+        } else {
+            return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
+        }
+    }
 
 
     // Writer Implmentation
