@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.15 2002-10-25 18:46:27 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.16 2002-11-04 16:01:47 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -77,10 +77,10 @@ public class MMBaseServlet extends  HttpServlet {
 
     /**
      * On default, servlets are not associated with any function.
-     * 
+     *
      * This function is called in the init method.
      *
-     * @return A map of Strings (function) -> Integer (priority). Never null. 
+     * @return A map of Strings (function) -> Integer (priority). Never null.
      */
 
     protected Map getAssociations() {
@@ -92,7 +92,7 @@ public class MMBaseServlet extends  HttpServlet {
             this(n, null);
         }
         ServletEntry(String n, Integer p) {
-            name = n; 
+            name = n;
             if (p == null) {
                 priority = 0;
             } else {
@@ -142,7 +142,7 @@ public class MMBaseServlet extends  HttpServlet {
                         String pattern=webDotXml.getElementValue(urlPattern);
                         if (!(pattern.equals(""))) {
                             List ls = (List) servletMappings.get(servName);
-                            if (ls == null) { 
+                            if (ls == null) {
                                 ls = new Vector();
                                 servletMappings.put(name, ls);
                             }
@@ -158,7 +158,7 @@ public class MMBaseServlet extends  HttpServlet {
         }
         if (mmbase == null) {
             log.service("Creating MMBase module in " + getServletName());
-            mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");                
+            mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");
             if (mmbase == null) {
                 log.error("Could not find module with name 'MMBASEROOT'!");
             }
@@ -174,7 +174,7 @@ public class MMBaseServlet extends  HttpServlet {
 
     /**
      * Gets all the mappings for a given servlet. So, this is a method to obtain info from web.xml.
-     * 
+     *
      * @param servletName the name of the servlet
      * @return the list of servlet mappings for this servlet, or null if there are none
      */
@@ -184,11 +184,11 @@ public class MMBaseServlet extends  HttpServlet {
     }
 
     /**
-     * Gets all the mappings for a given association. 
+     * Gets all the mappings for a given association.
      *
      * Use this to find out how to call a servlet to handle a certain
      * type of operation or data (i.e 'images', 'attachments').
-     * 
+     *
      *
      * @param topic the topic that deidentifies the type of association
      * @return the list of servlet mappings associated with the topic, or null if there are none
@@ -205,7 +205,7 @@ public class MMBaseServlet extends  HttpServlet {
     /**
      * Gets the name of the servlet that performs actions associated with the
      * the given keyword.
-     *    
+     *
      * Use this to find a servlet to handle a certain type of
      * operation or data (i.e 'imageservlet', 'myimageservlet',
      * 'images');
@@ -358,7 +358,7 @@ public class MMBaseServlet extends  HttpServlet {
                 log.info("Unloaded servlet mappings");
                 associatedServlets.clear();
                 servletMappings.clear();
-                log.info("No servlets leaving, MMBase can be shut down");
+                log.info("No servlets left, MMBase can be shut down");
                 mmbase.shutdown();
             }
         }
