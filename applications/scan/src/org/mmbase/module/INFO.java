@@ -7,54 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: INFO.java,v 1.41 2001-10-24 17:04:51 vpro Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.40  2001/07/16 10:08:07  jaco
-jaco: Moved all configuration stuff to MMBaseContext.
-If needed params not found or incorrect a ServletException with a description isthrown.
-It's now again possible to not redirect System.out and System.err to a file.
-Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
-If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
-
-Revision 1.39  2001/07/08 13:25:54  daniel
-added version test tag
-
-Revision 1.38  2001/07/08 13:21:22  daniel
-added version test tag
-
-Revision 1.37  2001/07/08 13:18:35  daniel
-added version test tag
-
-Revision 1.36  2001/06/23 16:27:19  daniel
-changed inits to MMBaseContext
-
-Revision 1.35  2001/05/21 10:03:55  michiel
-michiel: new logging system
-
-Revision 1.34  2001/05/17 17:10:47  daniel
-sync to make sure, probably some curtime calls added
-
-Revision 1.32  2001/03/19 22:28:16  daniel
-Added PARSETIME (see mailinglists) for maarten
-
-Revision 1.31  2001/03/06 16:18:50  pierre
-pierre: getList() method now set its own ITEMS property (no need to specify these anymore)
-
-Revision 1.30  2001/02/07 16:22:49  daniel
-small fixes on times
-
-Revision 1.29  2001/02/07 10:23:03  daniel
-yet more time methods (yes they should be moved one of these days)
-
-Revision 1.28  2001/02/05 17:01:55  daniel
-added first of many time methods
-
-Revision 1.27  2000/12/15 12:46:26  vpro
-Davzev: Corrected comment for doUser() DOMAIN cmd, added doUser() ISINTERNALVPROADDRESS.
-
-x*/
 package org.mmbase.module;
 
 import java.lang.*;
@@ -83,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Pierre van Rooden
  * @version $Version:$
  *
- * @$Revision: 1.41 $ $Date: 2001-10-24 17:04:51 $
+ * @$Revision: 1.42 $ $Date: 2001-12-19 17:35:09 $
  */
 public class INFO extends ProcessorModule {
 
@@ -523,8 +475,6 @@ public class INFO extends ProcessorModule {
      * COUNTRY, which returns the country name of the remote host ( mmbase.nl -> nl; mmbase.org-> org )<br />
      * DOMAIN, which returns the domain name of the remote host<br />
      * INDOMAIN, which returns YES when remote host has the same domain as us otherwise it returns NO in SCAN    <br />
-     * ISINTERNALVPROADDRESS, returns true when remotehost ipaddress contains vpro domain ip address, else false,
-     * uses sp.isInternalVPROAddress <br />
      * @param tok StringTokenizer with the rest of the cmd.
      * @param sp the scanpage
      * @return a String containing cmd result.
@@ -588,9 +538,6 @@ public class INFO extends ProcessorModule {
                     String servername=getProperty("server","MachineName");
                     return toYesNo(servername.equals(tmp));
                 }
-            }
-            if (cmd.equals("ISINTERNALVPROADDRESS")) {
-                return ""+sp.isInternalVPROAddress();
             }
             return "Illegal user command";    
         } else {

@@ -31,7 +31,7 @@ import org.mmbase.servlet.JamesServlet;
  *
  * @rename Scanpage
   * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.17 2001-12-14 09:33:59 pierre Exp $
+ * @version $Id: scanpage.java,v 1.18 2001-12-19 17:37:56 vpro Exp $
  */
 public class scanpage {
     // logger
@@ -85,14 +85,14 @@ public class scanpage {
      * whether results stored in cache should be used.
      */
     public boolean reload=false;
-	
+
 	/**
 	 *  Empty constructor for code not yet fixed, constructing its own scanpage
 	 *  Should use new constructor if possible.
 	 */
-	
+
 	public scanpage() {}
-	
+
 	/**
 	 * Construct a scanpage for a servlet
 	 */
@@ -101,8 +101,8 @@ public class scanpage {
 		setRes(res);
 		req_line = req.getRequestURI();
 		querystring = req.getQueryString();
-	
-		// needs to be replaced (get the context ones)		
+
+		// needs to be replaced (get the context ones)
 		ServletConfig sc = servlet.getServletConfig();
 		ServletContext sx = sc.getServletContext();
 		mimetype = sx.getMimeType(req_line);
@@ -112,7 +112,7 @@ public class scanpage {
 		if (sessions!=null) session = sessions.getSession(this, sname);
 		CheckEditorReload();
 	}
-	
+
 	/**
 	 * Check whether the page, multilevels etc may be fetched from the caches
 	 * or they should be (re-)calculated/retrieved. The session variable RELOAD
@@ -122,7 +122,7 @@ public class scanpage {
 	 * @return the method returns void and sets the field reload to true or false
      */
 	private final static int EXPIRE = 120;
-	
+
 	void CheckEditorReload() {
 		reload = false;
 		// try to obtain and set the reload mode.
@@ -289,46 +289,11 @@ public class scanpage {
 
 //  ------------------------------------------------------------------------------------------------------------
 
-    private static  boolean     isForVPRO        = true;                // is this class used by vpro or others
-    private static  String      VPRODomain       = "145.58";            // well not quite, but does the trick :)
     private static  String      VPROProxyName    = "vpro6d.vpro.nl";    // name of proxyserver
     private static  String      VPROProxyAddress = "145.58.172.6";      // address of proxyserver
 
     // methods
     // -------
-
-    /**
-     *
-     * uses      : VPROProxyName, VPROProxyAddress, VPRODomain
-     */
-    public boolean isInternalVPROAddress() {
-        boolean intern  = false;
-        String  ip      = req.getRemoteAddr();
-        // computers within vpro domain, use *.vpro.nl as server, instead *.omroep.nl
-        // --------------------------------------------------------------------------
-        if( ip != null && !ip.equals("")) {
-            // is address from proxy?
-            // ----------------------
-            if( ip.indexOf( VPROProxyName )!= -1  || ip.indexOf( VPROProxyAddress )!= -1 ) {
-                // positive on proxy, get real ip
-                // ------------------------------
-                ip = req.getHeader("X-Forwarded-For");
-
-                // come from internal host?
-                // ------------------------
-                if( ip != null && !ip.equals("") && ip.indexOf( VPRODomain ) != -1 ) {
-                    intern = true;
-                }
-            } else {
-                // no proxy, this is the real thing
-                // --------------------------------
-                if( ip.indexOf("145.58") != -1 ) {
-                    intern = true;
-                }
-            }
-        }
-        return intern;
-    }
 
     /**
     * Extract hostname from scanpage, get address and determine the proxies between it.<br>
@@ -338,7 +303,7 @@ public class scanpage {
     * input     : scanpage sp, contains hostname as ipaddress<br>
     * output    : String "clientproxy.clientside.com->dialin07.clientside.com"<br>
     * <br>
-    * uses      : VPROProxyName, VPROProxyAddress, VPRODomain
+    * uses      : VPROProxyName, VPROProxyAddress
     */
     public String getAddress() {
         String  result      = null;

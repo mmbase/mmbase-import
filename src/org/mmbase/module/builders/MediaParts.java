@@ -7,23 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Log: not supported by cvs2svn $
-Revision 1.4  2001/05/04 16:19:43  vpro
-Wilbert: updated nodeLocal/remoteChanged to support machine name
-
-Revision 1.3  2001/04/10 12:20:38  michiel
-michiel: new logging system.
-
-Revision 1.2  2001/02/01 16:05:12  vpro
-Davzev: Added removeRaws to automatically delete rawaudio/videos when audio/videoparts are deleted, implemented through nodeLocalChanged signals
-
-Revision 1.1  2000/12/14 16:19:22  vpro
-davzev: Created MediaParts builder (no table version yet, only java), AudioParts and VideoParts now extend MediaParts.
-
-
-$Id: MediaParts.java,v 1.5 2001-05-08 16:26:46 vpro Exp $
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -46,32 +29,31 @@ import org.mmbase.util.media.audio.*;
 import org.mmbase.module.builders.*;
 */
 /**
- * MediaParts is the main class for mediaobjects. All media type builders (eg. AudioParts) builders 
+ * MediaParts is the main class for mediaobjects. All media type builders (eg. AudioParts) builders
  * extend from this one. MediaParts implements the replace command GETURL to get the url to a mediafile.
- * 
+ *
  * MediaParts also implements an urlCache which comes in handy when queries lots of audioparts at once.
  * (This takes time since urls aren't stored directly in a mediapart but through rawaudios/videos etc..)
  * To use the urlCache you have to set the XML builder property 'UrlCaching' to 'true'. default is false.
  *
  * For each object whos url is requested two types of cache entries will me made. One is for requests coming
  * from the internal www server, and one for requests coming from outside.
- * VPRO uses this to send request from employees who visit the site to a local RealServer instead of the 
+ * VPRO uses this to send request from employees who visit the site to a local RealServer instead of the
  * main RealServer.
  *
  * If an audiopart or videopart node changes locally or remotely, the related UrlCache entries will be removed
  * immediately.
- * 
+ *
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.5 2001-05-08 16:26:46 vpro Exp $
+ * @version $Id: MediaParts.java,v 1.6 2001-12-19 17:32:26 vpro Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 
-
-    private static Logger log = Logging.getLoggerInstance(MediaParts.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(MediaParts.class.getName());
 
 	// Define LRU Cache for video urls.
 	public static LRUHashtable urlCache = new LRUHashtable(1024);
-	
+
 	// Use caching of not, determined by builder property 'CacheUrls'
 	private boolean urlCaching=false;
 
@@ -87,7 +69,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 			urlCaching = (Boolean.valueOf(propValue)).booleanValue();
 		return true;
 	}
-		
+
 	/**
     * Called when a node was changed on a local server.
 	* @param machine Name of the node that was changed.
@@ -99,7 +81,7 @@ public abstract class MediaParts extends MMObjectBuilder {
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         super.nodeLocalChanged(machine,number,builder,ctype);
 		if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);	
+            log.debug("nodeLocalChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
         }
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
@@ -107,10 +89,10 @@ public abstract class MediaParts extends MMObjectBuilder {
 			try {
 				int num=Integer.parseInt(number);
 				boolean success = removeRaws(builder,num);
-				if (!success) 
+				if (!success)
                     log.error("removeRaws was not succesful!");
 			} catch (NumberFormatException nfe) {
-				log.error("nodeLocalChanged: number value(" + number + ") is not an integer."); 
+				log.error("nodeLocalChanged: number value(" + number + ") is not an integer.");
 				nfe.printStackTrace();
 			}
 		}
@@ -128,7 +110,7 @@ public abstract class MediaParts extends MMObjectBuilder {
     public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
 		super.nodeRemoteChanged(machine,number,builder,ctype);
 		if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);	
+            log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
         }
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
@@ -151,19 +133,19 @@ public abstract class MediaParts extends MMObjectBuilder {
 		} catch(NumberFormatException nfe) {
 			log.error("removeFromUrlCache(" + number + ") Invalid number value:" + number);
             log.error(Logging.stackTrace(nfe));
-		}	
+		}
 	}
 
 	/**
-	 * Removes related rawaudio/video objects. 
+	 * Removes related rawaudio/video objects.
 	 * @param buildername the buildername of which type this number is.
-	 * @param number objectnumber of audio/videopart. 
+	 * @param number objectnumber of audio/videopart.
 	 * @return true if remove was succesful, false otherwise.
 	 */
 	public boolean removeRaws(String buildername,int number) {
 		MMObjectBuilder builder = null;
 		Enumeration e = null;
-		
+
 		if (buildername.equals("audioparts")) {
 			if (log.isDebugEnabled()) {
                 log.debug("removeRaws: Deleting all rawaudios where id=" + number);
@@ -179,7 +161,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 			return false;
 		}
 
-		e = builder.search("WHERE id='"+number+"'");	
+		e = builder.search("WHERE id='"+number+"'");
 		MMObjectNode rawNode = null;
 		while (e.hasMoreElements()) {
 			rawNode = (MMObjectNode)e.nextElement();
@@ -195,7 +177,7 @@ public abstract class MediaParts extends MMObjectBuilder {
      * replace all for frontend code
 	 * Replace commands available are GETURL (gets mediafile url for an objectnumber),
 	 * from cache or not depending on builder property.
-	 * @param sp the scanpage	
+	 * @param sp the scanpage
 	 * @param sp the stringtokenizer reference with the replace command.
 	 * @return a String the result value of the replace command or null.
      */
@@ -217,11 +199,11 @@ public abstract class MediaParts extends MMObjectBuilder {
 					else
 						url = getUrl(sp,number,userSpeed,userChannels);
 					if (log.isDebugEnabled()) {
-                        log.debug("replace: GETURL returns: " + url); 
+                        log.debug("replace: GETURL returns: " + url);
                     }
 					return url;
-				} else {                    
-                    log.error("getUrl: No objectnumber defined.");         
+				} else {
+                    log.error("getUrl: No objectnumber defined.");
 					return null;
 				}
             } else if (token.equals("GETURLNOCACHE")) {
@@ -238,7 +220,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 					String url = null;
 					url = getUrl(sp,number,userSpeed,userChannels);
 					if(log.isDebugEnabled()) {
-                        log.debug("replace: GETURLNOCACHE returns: " + url); 
+                        log.debug("replace: GETURLNOCACHE returns: " + url);
                     }
 					return url;
 				} else {
@@ -253,7 +235,7 @@ public abstract class MediaParts extends MMObjectBuilder {
   		log.info("replace: No command defined.");
   		return("No command defined, says the VideoParts builder.");
     }
-	
+
 	/**
 	 * Gets related url from cache if it's not in there, generates it and put it in cache and return it.
 	 * If url generation fails (returns null), no cache entry will be made and null will be returned.
@@ -264,12 +246,10 @@ public abstract class MediaParts extends MMObjectBuilder {
 	 * @return a String with the Url to the file or null.
 	 */
 	String getUrlFromCache(scanpage sp,int number,int userSpeed,int userChannels) {
-		if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 ) 
+		if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 )
 			debug("getUrlFromCache: "+urlCache.getStats());
 		String url = null;
 		int key = number;
-		if (sp.isInternalVPROAddress()) //Internal requests are indexed seperately. 
-			key = -1*number;
 		url = (String) urlCache.get(new Integer(key));
 		if (url == null) {
 			// NOT IN CACHE retrieving & putting in cache now and returning.
@@ -303,7 +283,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 			if (log.isDebugEnabled()) {
                 log.debug("getUrlFromCache : HIT Returning entry: " + url);
             }
-			return url;		
+			return url;
 		} else if (url.startsWith("p")) {
 			// IN CACHE and object is RealPlayer format RA5 or lower.
 			StringBuffer urlsb = new StringBuffer(url);
@@ -327,7 +307,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Retrieves the media file url elated with the object.
 	 * @param sp the scanpage
@@ -339,7 +319,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 	public String getUrl(scanpage sp,int number,int userSpeed,int userChannels) {
 		return doGetUrl(sp,number,userSpeed,userChannels);
 	}
-	
+
 	/**
 	 * Retrieves the media file url elated with the object.
 	 * A subclass must provide an implementation of this method.
@@ -350,7 +330,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 	 * @return a String with url of the media file or null;
 	 */
 	public abstract String doGetUrl(scanpage sp,int number,int userSpeed,int userChannels);
-		
+
 	/**
 	 * Gets minimal speed setting from mediautil
 	 * @return minimal speed setting
@@ -361,7 +341,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 	 * @return minimal channel setting
 	 */
 	public abstract int getMinChannels();
-	
+
 	/**
 	 * Parses the number parameter value.
 	 * @param number the object number as string parameter

@@ -16,5 +16,5 @@ import org.mmbase.util.*;
 
 public interface PlaylistsInterface {
 	public void init();
-	public byte[] getRAMfile(boolean isInternal, Vector params);
+	public byte[] getRAMfile(Vector params);
 }

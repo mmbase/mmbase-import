@@ -36,7 +36,6 @@ public class MediaUtils
 
     private static Logger log = Logging.getLoggerInstance(MediaUtils.class.getName());
 
-    private static  boolean        isForVPRO        = true;
     /**
     * 
     */
@@ -72,22 +71,10 @@ public class MediaUtils
                     // is this class used by VPRO or is it for others
                     // ----------------------------------------------
                     Hashtable     urls             = getUrls( url );
-                    boolean     isInternalVPRO    = false;
-
+                    
                     file = file.trim();
 
-                    if( isForVPRO )
-                    {
-                        // this is the exception 
-                        // ---------------------
-                        if( sp.isInternalVPROAddress() )
-                            // this user has to be redirected to station.vpro.nl 
-                            // if file is there, otherwise to alternative url
-                            // -------------------------------------------------
-                            isInternalVPRO = true;
-                    }
-
-                    u = filterBestUrl(sp, urls,isInternalVPRO);
+                    u = filterBestUrl(sp, urls);
 
                     if( u.endsWith("/") )
                     {
@@ -155,21 +142,13 @@ public class MediaUtils
     }
 
 
-    private static String filterBestUrl( scanpage sp, Hashtable urls, boolean isInternal ) {
+    private static String filterBestUrl( scanpage sp, Hashtable urls) {
         String         result     = null;
         String         key     = null;
         String         value    = null;    
         Enumeration e         = urls.keys();    
 
-        if (log.isDebugEnabled()) { 
-            if( isInternal )
-                log.debug("filterBestUrl("+urls+","+isInternal+"): internal user detected.");
-            else
-                log.debug("filterBestUrl("+urls+","+isInternal+"): external user detected.");
-        }
-
-        while( e.hasMoreElements() )
-        {
+        while( e.hasMoreElements() ) {
             key     = (String) e.nextElement();
             value     = (String) urls.get( key );
 
@@ -178,44 +157,25 @@ public class MediaUtils
             if( checkstring( "filterBestUrl","value",value) )
             {
                 if( value.startsWith("station") || value.startsWith("beep") 
-				        || value.startsWith("streams.vpro.nl"))
-                {
-                    if( isInternal )
-                        // always use this one
-                        // -------------------
+				        || value.startsWith("streams.vpro.nl")) {
+                    
+                       // only use if none better found
+                       // -----------------------------
+                       if( result == null )
+                           result = value;
+                } else if( value.startsWith("streams.omroep.nl") ) {
                         result = value;
-                    else
-                        // only use if none better found
-                        // -----------------------------
-                        if( result == null )
-                            result = value;
-                }
-                else
-                if( value.startsWith("streams.omroep.nl") )
-                {
-                    if( isInternal )
-                    {
-                        // only use if none better found
-                        // -----------------------------
-                        if( result == null )
-                            result = value;
-                    }
-                    else
-                        // always use this one
-                        // -------------------
-                        result = value;
-                }
-                else
-                    log.warn("filterBestUrl("+urls+","+isInternal+"): Found url("+value+") with unknown server!");
+                } else
+                    log.warn("filterBestUrl("+sp+","+urls+"): Found url("+value+") with unknown server!");
             }
         }
 
         if (log.isDebugEnabled()) { 
-            log.debug("filterBestUrl("+urls+","+isInternal+"): found url("+result+")");
+            log.debug("filterBestUrl("+sp+","+urls+"): found url("+result+")");
         }
 
         if( result == null ) {
-            log.error("filterBestUrl("+sp.getUrl()+","+urls+","+isInternal+"): No valid url found in table, urls: ");
+            log.error("filterBestUrl("+sp.getUrl()+","+urls+"): No valid url found in table, urls: ");
             Enumeration e2 = urls.keys();
             int i = 1;
 
@@ -230,10 +190,8 @@ public class MediaUtils
                 }
                 i++;
             }    
-
             result = "beep.vpro.nl";
         }
-
         return result;
     }
 
