@@ -61,6 +61,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
     public void setValue(String v) throws JspTagException {
         value = getAttributeValue(v);
+        if (log.isDebugEnabled()) log.debug("found value " + value);
     }
     
     
