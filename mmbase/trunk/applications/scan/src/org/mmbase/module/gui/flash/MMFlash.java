@@ -17,6 +17,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import org.mmbase.util.*;
 import org.mmbase.module.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.builders.*;
 import org.mmbase.module.gui.html.*;
 
 public class MMFlash extends Module {
@@ -32,6 +34,7 @@ public class MMFlash extends Module {
 	String generatorpath;
 	String generatorprogram;
 	LRUHashtable lru=new LRUHashtable(128);
+	MMBase mmb;
 
 	public void init() {
 		String dtmp=System.getProperty("mmbase.mode");
@@ -41,6 +44,7 @@ public class MMFlash extends Module {
 		} else {
 			htmlroot=System.getProperty("mmbase.htmlroot");
 		}
+		mmb=(MMBase)getModule("MMBASEROOT");
 		scanp=(scanparser)getModule("SCANPARSER");
 		generatortemppath=getInitParameter("generatortemppath");
 		generatorpath=getInitParameter("generatorpath");
@@ -227,6 +231,7 @@ public class MMFlash extends Module {
 
 	private String addDefines(Vector defines,String scriptpath) {
 		String part="";
+		int counter=1;
 		for (Enumeration e=defines.elements();e.hasMoreElements();) {
 			Hashtable rep=(Hashtable)e.nextElement();
 			String type=(String)rep.get("type");
@@ -240,10 +245,12 @@ public class MMFlash extends Module {
 				}
 				String src=(String)rep.get("src");
 				if (src!=null) {
-					if (src.startsWith("/")) {
+					if (src.startsWith("/img.db?")) {
+						String result=mapImage(src.substring(8),counter++);
+						part+=" \""+result+"\"";
+					} else if (src.startsWith("/")) {
 						part+=" \""+htmlroot+src+"\"";
 					} else {
-						System.out.println("REL="+htmlroot+scriptpath+src);
 						part+=" \""+htmlroot+scriptpath+src+"\"";
 					}
 				}
@@ -396,6 +403,36 @@ public class MMFlash extends Module {
 		}
 		//System.out.println("filename="+filename);	
 		
+		File sfile = new File(filename);
+		try {
+			DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+			scan.write(value);
+			scan.flush();
+			scan.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return(true);
+	}
+	
+	String mapImage(String imageline,int counter) {
+		Images bul=(Images)mmb.getMMObject("images");
+		Vector params=new Vector();
+		if (bul!=null) {
+			// rebuild the param
+			StringTokenizer tok = new StringTokenizer(imageline,"+\n\r");
+			while (tok.hasMoreTokens()) {
+				params.addElement(tok.nextToken());
+				scanpage sp=new scanpage();
+				byte[] bytes=bul.getImageBytes(sp,params);
+				saveFile(generatortemppath+"/image"+counter+".jpg",bytes);
+			}
+		}
+		return(generatortemppath+"/image"+counter+".jpg");
+	}
+
+
+	static boolean saveFile(String filename,byte[] value) {
 		File sfile = new File(filename);
 		try {
 			DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
