@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.41 2003-03-07 11:49:18 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.42 2003-08-18 09:14:15 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -123,7 +123,6 @@ public class JamesServlet extends MMBaseServlet {
      */
     public String getCookie(HttpServletRequest req, HttpServletResponse res) {
 
-        String methodName = "getCookie()";
         String HEADERNAME = "COOKIE";
         String MMBASE_COOKIENAME = "MMBase_Ident";
         String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";   // weird date?
@@ -132,7 +131,6 @@ public class JamesServlet extends MMBaseServlet {
         String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
         if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
-            // debug(methodName+": User has a "+MMBASE_COOKIENAME+" cookie, returning it now.");
             StringTokenizer st = new StringTokenizer(cookies, ";");
             while (st.hasMoreTokens()) {
                 String cookie = st.nextToken().trim();
@@ -140,31 +138,23 @@ public class JamesServlet extends MMBaseServlet {
                     return cookie.replace('=','/');
                 }
             }
-            //log.debug("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
             return null;
         } else {
-
             // Added address in output to see if multiple cookies are being requested from same computer.
             // This would imply improper use of our service :)
             //
             // added output to see why certain browsers keep asking for new cookie (giving a cookie
             // with no reference in them with 'MMBASE_COOKIENAME'
             // ------------------------------------------------------------------------------------------
-
-            // debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
-            MMBase mmbase = (MMBase)getModule("MMBASEROOT");
+            MMBase mmbase = MMBase.getMMBase();
             if (mmbase == null) {
-                //log.debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
                 return null;
             }
-
             String mmbaseCookie = MMBASE_COOKIENAME+"="+System.currentTimeMillis();
             domain = mmbase.getCookieDomain();
             if (domain == null) {
-                // debug(methodName+": Using implicit domain.");
                 res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; expires="+FUTUREDATE));
             } else {
-                // debug(methodName+": Using explicit domain: "+domain);
                 res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; domain="+domain+"; expires="+FUTUREDATE));
             }
             return mmbaseCookie.replace('=','/');
