@@ -33,6 +33,7 @@ public class XMLScreenWriter  {
     static String tag_color = "#007700";
     static String attribute_color = "#DD0000";
     static String comment_color = "#FF8000";
+    static String doctype_color = "#6666CC";
 
 
     public XMLScreenWriter(String filename) {
@@ -69,14 +70,16 @@ public class XMLScreenWriter  {
 	    } else if (node.getNodeType() == node.DOCUMENT_TYPE_NODE) {
 		String publicid = ((DocumentType)node).getPublicId();
 		String systemid = ((DocumentType)node).getSystemId();
-		out.write("<font color=\""+tag_color+"\">&lt;!DOCTYPE "+((DocumentType)node).getName());
-		if (publicid != null && !publicid.equals("")) {
-		    out.write(" PUBLIC \""+((DocumentType)node).getPublicId()+"\"");
+		if (!((publicid == null || publicid.equals("")) && (systemid == null || systemid.equals("")))) {
+		    out.write("<font color=\""+doctype_color+"\">&lt;!DOCTYPE "+((DocumentType)node).getName());
+		    if (publicid != null && !publicid.equals("")) {
+			out.write(" PUBLIC \""+((DocumentType)node).getPublicId()+"\"");
+		    }
+		    if (systemid != null && !systemid.equals("")) {
+			out.write(" \""+((DocumentType)node).getSystemId()+"\"");
+		    }
+		    out.write("&gt;</font><br>\n");
 		}
-		if (systemid != null && !systemid.equals("")) {
-		    out.write(" \""+((DocumentType)node).getSystemId()+"\"");
-		}
-		out.write("&gt;</font><br>\n");
 	    } else {
 		boolean is_end_node = isEndNode(node);
 		NamedNodeMap nnm = node.getAttributes();
