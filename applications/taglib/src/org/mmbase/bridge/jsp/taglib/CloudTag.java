@@ -207,7 +207,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (cookies != null) {
                 for (int i=0; i< cookies.length; i++) {
                     if (cookies[i].getName().equals(cookie)) {
-                        log.debug("removing cookie with value " + cookies[i]);
+                        if (log.isDebugEnabled()) log.debug("removing cookie with value " + cookies[i]);
                         cookies[i].setValue("");
                         cookies[i].setMaxAge(0); // remove
                         response.addCookie(cookies[i]);
@@ -222,7 +222,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (session == null) { // try with cookie
             Cookie c = searchCookie();
             if (c != null) {
-                log.debug("found cookie on path = " + c);
+                if (log.isDebugEnabled()) log.debug("found cookie on path = " + c);
                 return c.getValue();
             }
             return null;
@@ -254,7 +254,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             setRealm("MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime());
         }
 
-        log.debug("setting header: " + getRealm());
+        if (log.isDebugEnabled()) log.debug("setting header: " + getRealm());
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealm() + "\"");
 
         //res.setHeader("Authorization", logon);   would ne nice...
@@ -332,6 +332,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (method != METHOD_UNSET || logon != null) { // probably add some more
                 throw new JspTagException ("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
             }
+            log.debug("found cloud with referid");
             cloud = (Cloud) getContextTag().getObject(getReferid());
             return evalBody();
         }
@@ -355,13 +356,14 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             cookies = new Cookie[0];
         }
 
+        log.debug("getting (thus creating) session");
         session  = (HttpSession)pageContext.getSession();
 
         if (session != null) { // some people like to disable their session
             cloud = (Cloud)session.getAttribute(getSessionName());
         }
 
-        log.debug("startTag " + cloud);
+        if(log.isDebugEnabled()) log.debug("startTag " + cloud);
 
         if (method == METHOD_LOGOUT) {
             log.debug("request to log out, remove session atributes, give anonymous cloud.");
@@ -398,7 +400,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             if (logon == null && rank == null && method != METHOD_UNSET) {
                 // authorisation was requested, but not indicated for whom
-                log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
+                if (log.isDebugEnabled()) log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
                 if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
@@ -407,7 +409,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     }
                 }
             } else  if (logon != null) {
-                log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
+                if (log.isDebugEnabled()) log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
                 // a logon name was given, check if logged on as the right one
                 if (! logon.contains(cloud.getUser().getIdentifier())) { // no!
                     log.debug("logged on, but as wrong user. log out first.");
@@ -419,7 +421,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     log.debug("Cloud is ok already");
                 }
             } else if (rank != null) {
-                log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
+                if (log.isDebugEnabled()) log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
                 if (curRank.getInt() < rank.getInt()) {
                     if (log.isDebugEnabled()) {
@@ -445,7 +447,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     log.debug("no realm found, need to log on again");
                     return deny("<h2>Need to log in again</h2> You logged out");
                 }
-                log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
+                if (log.isDebugEnabled()) log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
                 // find logon, password with http authentication
                 String username = null;
                 String password = null;
@@ -499,7 +501,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     if (rank != null) {
                         Rank curRank = Rank.getRank(cloud.getUser().getRank());
                         if (curRank.getInt() < rank.getInt()) {
-                            log.debug("logged on, but rank of user is to low (" + cloud.getUser().getRank() + ". log out first.");
+                            if (log.isDebugEnabled()) log.debug("logged on, but rank of user is to low (" + cloud.getUser().getRank() + ". log out first.");
                             cloud = null;
                             if (session != null) {
                                 session.removeAttribute(getSessionName());
