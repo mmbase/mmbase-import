@@ -1,6 +1,5 @@
 <%@ include file="page_base.jsp"
-%>
-<% urlStack.clear();
+%><% urlStack.clear();
    push(urlStack, "home", request);
  %><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
