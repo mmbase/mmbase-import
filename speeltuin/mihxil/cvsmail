@@ -4,7 +4,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.8 2002-11-08 19:52:55 michiel Exp $
+#  $Id: cvsmail,v 1.9 2002-11-08 19:54:07 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -37,7 +37,7 @@ if ($child = fork()) {
     {
 	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
 	my $logline =  `$cvs log -r $fil | grep author:`;
-	if ($logline =~ /author: (.*)/) {
+	if ($logline =~ /author: (.*?)/) {
 	    $cvsuser = $1;
 	}
     }
