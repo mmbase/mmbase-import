@@ -160,8 +160,16 @@ Upgrade:
       <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
     </taglib>
 
--  Replace all shipped jsps too (e.g. mmeditors, mmexamples, mmadmin)
-   - The editwizard jsp and xsls are in mmbase-editwizard.zip now.
+-  Replace and/org install all shipped jsps too.
+   - generic editors are now shipped under /mmbase/edit/basic. You can follow this new convention
+     and remove /mmeditors.  Or you copy/move the content to the original location /mmeditors/jsp
+
+   - For admin pages goes the same. They are now in /mmbase/admin (used to be /mmadmin/jsp).
+
+   - If you need the examples you could replace /mmexamples by the new content of /mmexamples
+
+   - The editwizard jsp and xsls are shipped in /mmbase/edit/wizard (used to be
+     /mmapps/editwizard). You can also download them seperately in mmbase-editwizard.zip now.
 
 - remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead: 
   <taglib>
