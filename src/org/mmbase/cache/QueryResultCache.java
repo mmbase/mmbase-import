@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.5.2.1 2004-08-26 12:03:10 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.5.2.2 2004-12-13 13:15:51 marcel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -58,7 +58,7 @@ abstract public class QueryResultCache extends Cache {
                 QueryResultCache cache = (QueryResultCache) entry.getValue();
                 Observer observer = (Observer) cache.observers.get(tn);
                 if (observer != null) {
-                    result += observer.nodeChanged();
+                    result += observer.nodeChanged("-1", builder.getTableName());
                 }
             }
             builder = builder.getParentBuilder();
@@ -161,6 +161,8 @@ abstract public class QueryResultCache extends Cache {
          *
          */
         private Set cacheKeys = new HashSet(); // using java default for initial size. Someone tried 50.
+
+        String type = null;
         
         /**
          * Creates a multilevel cache observer for the speficied type
@@ -180,6 +182,8 @@ abstract public class QueryResultCache extends Cache {
             }
             mmb.addLocalObserver (type, this);
             mmb.addRemoteObserver(type, this);
+
+            this.type = type;
         }
 
 
@@ -189,24 +193,36 @@ abstract public class QueryResultCache extends Cache {
          * If something changes this function is called, and the observer multilevel cache entries are removed.
          * @return number of keys invalidated
          */
-        protected int nodeChanged() {
+        protected int nodeChanged(String number, String builder) {
 
-            List removedKeys = new ArrayList();
-            // clear the entries from the cache.
-            synchronized(this) {
-                for (Iterator i = cacheKeys.iterator(); i.hasNext(); ) {
-                    removedKeys.add(i.next());
+            log.error("number("+number+"), type("+type+"): builder("+builder+") changed");
+
+            int result = 0;
+            Set removeKeys = new HashSet();
+            synchronized(this) { 
+                Iterator i = cacheKeys.iterator();
+                QUERY_LOOP: while (i.hasNext()) {
+                    SearchQuery key = (SearchQuery) i.next();
+                    Iterator j = key.getSteps().iterator();
+                    while(j.hasNext()) { 
+                        Step step = (Step)j.next();
+                        if(step.getTableName().equals(builder)) { 
+                            Set nodes = step.getNodes();
+                            if(nodes == null || nodes.size() == 0 || nodes.contains(new Integer(number))) { 
+                                // QueryResultCache.this.remove(key);
+                                removeKeys.add(key); // i.remove();
+                                result++;
+                                // next query
+                                continue QUERY_LOOP;
+                            } 
+                        }
+                    }
                 }
-                cacheKeys.clear();
+                cacheKeys.removeAll(removeKeys);
             }
-            int result = removedKeys.size();
-            if (result == 0) return 0;
-
-            // remove now from Cache (and from other Observers)
-            Iterator i = removedKeys.iterator();
-            while (i.hasNext()) {
-                Object key = i.next();
-                QueryResultCache.this.remove(key);
+            Iterator k = removeKeys.iterator();
+            while(k.hasNext()) { 
+                QueryResultCache.this.remove(k.next());
             }
 
             return result;
@@ -215,13 +231,13 @@ abstract public class QueryResultCache extends Cache {
 
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
-            return nodeChanged() > 0; //machine, number, builder, ctype);
+            return nodeChanged(number,builder) > 0; //machine, number, builder, ctype);
         }
 
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
             // local changes are solved in MMObjectBuilder itself, but something goes wrong then (ImageCaches.getCachedNode code e.g.)
-            return nodeChanged() > 0; //machine, number, builder, ctype);
+            return nodeChanged(number,builder) > 0; //machine, number, builder, ctype);
             //return true;
 
         }
@@ -230,7 +246,7 @@ abstract public class QueryResultCache extends Cache {
          * Start watching the entry with the specified key of this MultilevelCache (for this type).
          * @return true if it already was observing this entry.
          */
-        protected synchronized boolean observe(Object key) {   
+        protected synchronized boolean observe(Object key) { 
             // assert(MultilevelCache.this.containsKey(key));
             return cacheKeys.add(key);
         }
