@@ -1,6 +1,7 @@
 <%@ include file="page_base.jsp"
 %><mm:write referid="style" />
 <mm:import id="configsubmitted" externid="config" from="parameters" />
+
 <mm:present referid="configsubmitted">
  <mm:remove referid="config" /> <!-- remove configuration, and recreate -->
  <mm:context id="config">
@@ -9,9 +10,11 @@
     <mm:import externid="style_sheet" />
     <mm:import externid="lang" />
     <mm:write  referid="lang" cookie="mmjspeditors_language" />
+    <mm:log>Writing lang cookie <mm:write referid="lang" /></mm:log>
  </mm:context>
  <mm:write referid="config" session="mmeditors_config" />
 </mm:present>
+
 <title><%= m.getString("config.config") %></title>
 </head>
 <body class="basic">
@@ -23,8 +26,8 @@
      </tr>
      <tr><td><%= m.getString("config.hidesearch") %></td>
          <td><select name="hide_search">
-             <option <mm:compare referid="config.hide_search" value="false">selected="selected"</mm:compare>><%= m.getString("false") %></option>
-             <option <mm:compare referid="config.hide_search" value="true">selected="selected"</mm:compare>><%= m.getString("true") %></option>
+             <option value="false" <mm:compare referid="config.hide_search" value="false">selected="selected"</mm:compare>><%= m.getString("false") %></option>
+             <option value="true"  <mm:compare referid="config.hide_search" value="true">selected="selected"</mm:compare>><%= m.getString("true") %></option>
              </select></td>
      </tr>
      <tr><td><%= m.getString("config.stylesheet") %></td>
