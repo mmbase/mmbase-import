@@ -18,7 +18,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.2 2003-11-21 20:29:52 michiel Exp $
+ * @version $Id: Parameter.java,v 1.3 2003-11-24 16:08:40 michiel Exp $
  * @see Parameters
  */
 
@@ -87,7 +87,7 @@ public class Parameter {
     }
 
     public String toString() {
-        return type + " " + key;
+        return type.getName() + " " + key;
     }
 
 
