@@ -24,10 +24,10 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.19 2003-08-11 15:27:30 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.20 2003-08-11 17:57:07 michiel Exp $
  */
 
-public class NodeHandler extends IntegerHandler {
+public class NodeHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for NodeHandler.
