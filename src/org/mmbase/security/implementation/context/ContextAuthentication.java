@@ -27,14 +27,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Authentication based on a config..
- * @javadoc
+ * Authentication based on a XML-configuration file. The XML file contains besides users, groups and
+ * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.13 2003-07-28 16:41:36 pierre Exp $
+ * @version $Id: ContextAuthentication.java,v 1.14 2003-08-27 19:37:12 michiel Exp $
+ * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
-    private static Logger log=Logging.getLoggerInstance(ContextAuthentication.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
     private HashMap  loginModules = new HashMap();
     private Document document;
     private long validKey;
@@ -80,12 +81,12 @@ public class ContextAuthentication extends Authentication {
         }
         if (log.isDebugEnabled()) {
             log.debug("loaded: '" +  configFile + "' as config file for authentication");
-            log.debug("gonna load the modules...");
+            log.debug("going to load the modules...");
         }
 
         // do the xpath query...
         String xpath = "/contextconfig/loginmodules/module";
-        if (log.isDebugEnabled()) log.debug("gonna execute the query:" + xpath );
+        if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath );
         NodeIterator found;
         try {
             found = XPathAPI.selectNodeIterator(document, xpath);
@@ -100,7 +101,7 @@ public class ContextAuthentication extends Authentication {
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();
 
-            log.debug("gonna try to load module with the name:"+moduleName+ " with class:" + className);
+            log.debug("going to try to load module with the name:"+moduleName+ " with class:" + className);
             ContextLoginModule module;
             try {
                 Class moduleClass = Class.forName(className);
