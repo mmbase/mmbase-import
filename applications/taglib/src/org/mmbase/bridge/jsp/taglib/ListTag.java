@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.47 2004-02-17 09:40:06 michiel Exp $
+ * @version $Id: ListTag.java,v 1.48 2004-04-27 13:38:01 rob Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -94,7 +94,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         if (nodes != Attribute.NULL) {
             return nodes.getString(this);
         } else {
-            return "-1";
+            return "";
         }
     }
 
