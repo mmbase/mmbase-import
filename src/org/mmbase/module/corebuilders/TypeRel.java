@@ -104,15 +104,14 @@ public class TypeRel extends MMObjectBuilder {
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT rnumber FROM "+mmb.baseName+"_"+tableName+" WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+");");
 			MMObjectNode node;
-			Vector results=new Vector();
 			if (rs.next()) {
-		                int j=rs.getInt(1);
-               			if (rs.next()) {
-                    			artCache.put(""+snum+" "+dnum,new Integer(-1));
-                    			j=-1;
-                		} else {
-                    			artCache.put(""+snum+" "+dnum,new Integer(j));
-                		}
+				int j=rs.getInt(1);
+				if (rs.next()) {
+					artCache.put(""+snum+" "+dnum,new Integer(-1));
+					j=-1;
+				} else {
+					artCache.put(""+snum+" "+dnum,new Integer(j));
+				}
 				stmt.close();
 				con.close();
 				return(j);
@@ -174,43 +173,42 @@ public class TypeRel extends MMObjectBuilder {
 
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
          if (tok.hasMoreTokens()) {
-              String cmd=tok.nextToken();   //Retrieving command.
+              String cmd=tok.nextToken();	//Retrieving command.
               if (cmd.equals("ALLOWEDRELATIONSNAMES")) {
-                try {
-                    String tmp=tagger.Value("TYPE");
-                    int number1=mmb.getTypeDef().getIntValue(tmp);
-                    tmp=tagger.Value("NODE");
-                    int number2=Integer.parseInt(tmp);
-                    MMObjectNode node=getNode(number2);
-                    return(getAllowedRelationsNames(number1,node.getIntValue("otype")));
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-              }
+				try {
+					String tmp=tagger.Value("TYPE");
+					int number1=mmb.getTypeDef().getIntValue(tmp);
+					tmp=tagger.Value("NODE");
+					int number2=Integer.parseInt(tmp);
+					MMObjectNode node=getNode(number2);
+					return(getAllowedRelationsNames(number1,node.getIntValue("otype")));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			  }
          }
         return(null);
     }
 
-
-    public Vector getAllowedRelationsNames(int number1,int number2) {
-        try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE (snumber="+number1+" AND dnumber="+number2+") OR (snumber="+number2+" AND dnumber="+number1+");");
-            MMObjectNode node;
-            Vector results=new Vector();
-            while(rs.next()) {
-                int rnumber=rs.getInt(6);
-                MMObjectNode snode=mmb.getRelDef().getNode(rnumber);
-                results.addElement(snode.getStringValue("sname"));
-            }
-            stmt.close();
-            con.close();
-            return(results);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return(null);
-        }
-    }
+	public Vector getAllowedRelationsNames(int number1,int number2) {
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE (snumber="+number1+" AND dnumber="+number2+") OR (snumber="+number2+" AND dnumber="+number1+");");
+			MMObjectNode node;
+			Vector results=new Vector();
+			while(rs.next()) {
+				int rnumber=rs.getInt(6);
+				MMObjectNode snode=mmb.getRelDef().getNode(rnumber);
+				results.addElement(snode.getStringValue("sname"));
+			}	
+			stmt.close();
+			con.close();
+			return(results);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return(null);
+		}
+	}
 
 }
