@@ -19,17 +19,18 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 /**
  * This struct contains configuration information for the jsps. This
- * thing is put in the session.
+ * thing is put in the session. A subclass 'Configurator' can be used
+ * to fill this struct.
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.4 2002-05-08 08:34:07 pierre Exp $
+ * @version $Id: Config.java,v 1.5 2002-05-08 09:01:11 michiel Exp $
  */
 
 public class Config {
 
     // protocol string to test referrer pages
-    private final static String PROTOCOL="http://";
+    private final static String PROTOCOL = "http://";
 
     public String      sessionKey        = null;
     public URIResolver uriResolver       = null;
@@ -63,7 +64,9 @@ public class Config {
     }
 
     /**
-     * To fill the Config struct, this 'Configurator' exists.
+     * To fill the Config struct, this 'Configurator' exists. You
+     * could extend it to change wich query parameters must be used,
+     * and what are the defaults and so on.
      */
     public abstract static class Configurator {
         private static Logger log = Logging.getLoggerInstance(Config.class.getName());
@@ -76,6 +79,9 @@ public class Config {
             response = res;
             config  = c;
             config.sessionId = res.encodeURL("");
+            // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
+            // It can be specified by a 'referrer' parameter. If this is missing the
+            // 'Referer' http header is tried.
             if (config.backPage == null) {
                 log.debug("No backpage. Getting from parameters");
                 config.backPage = getParam("referrer", "");
@@ -88,25 +94,33 @@ public class Config {
                     config.backPage = "";
                 }
             }
+
+            // if no 'uriResolver' is configured yet, then there is one created right now:
+            // the uriResolver is used to find xml's and xsl's.
             if (config.uriResolver == null) {                
-                log.trace("creating uriresolver (backpage = " + config.backPage + ")");
+                if (log.isDebugEnabled()) {
+                    log.trace("creating uriresolver (backpage = " + config.backPage + ")");
+                }
                 URIResolver.EntryList extraDirs = new URIResolver.EntryList();
                 File refFile;
                 // capture direct reference of http:// and shttp:// referers
                 int protocolPos= config.backPage.indexOf(PROTOCOL);
-                if (protocolPos>=0) { // given absolutely
-                    String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos+PROTOCOL.length()));
+                if (protocolPos >=0 ) { // given absolutely
+                    String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
                     // Using URL.getPath() would be nicer, but is not availeble in java 1.2
                     // suppose it is from the same server, we can find back the directory then:
                     refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
+
+                    // TODO: What if it happened to be not from the same server?
                 } else {
+                    // Was given relatively, that's easy:
                     refFile = new File(request.getRealPath(config.backPage)).getParentFile();
                 }
                 if (refFile != null && refFile.exists()) {
                     extraDirs.add("ref:", refFile);
                 }
-                File jspFileDir = new File(request.getRealPath(request.getServletPath())).getParentFile();
-                File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data");
+                File jspFileDir = new File(request.getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
+                File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data"); // ew default data/xsls is in ../data then
                 extraDirs.add("ew:", basedir);
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
             }
