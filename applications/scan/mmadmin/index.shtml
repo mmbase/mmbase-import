@@ -30,6 +30,9 @@
 		<IF $PARAM1==5>	
    		<FRAME SRC="/mmdemo/$PARAM3.shtml" name="main" scrolling="auto" marginwidth=1 marginheight=0>
 		</IF>
+		<IF $PARAM1==6>	
+   		<FRAME SRC="/mmadmin/tools/$PARAM3/index.shtml" name="main" scrolling="auto" marginwidth=1 marginheight=0>
+		</IF>
 	</FRAMESET>
 	</IF>
 </HTML>
