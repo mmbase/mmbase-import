@@ -28,6 +28,26 @@
   </filter-mapping>
   -->
 
+  <!-- Filter Character Encoding
+  <filter>
+    <filter-name>Set Character Encoding</filter-name>
+    <filter-class>org.mmbase.servlet.CharacterEncodingFilter</filter-class>
+
+    -- Overrides config/module/mmbaseroot.xml#encoding --
+    -- 
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    --
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Set Character Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  -->
+
   <!-- The base MMBase servlet informs about the current MMBase version -->
   <servlet>
     <servlet-name>version</servlet-name>
