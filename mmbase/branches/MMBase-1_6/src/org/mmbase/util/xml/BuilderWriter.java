@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.9.2.2 2002-11-27 15:53:02 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.9.2.3 2003-04-10 07:53:05 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -49,7 +49,7 @@ public class BuilderWriter extends DocumentWriter  {
      * @param builder the builder for which to create an XML document.
      */
     public BuilderWriter(MMObjectBuilder builder) throws DOMException {
-        super("builder", "-//MMBase/DTD builder config 1.1//EN","http://www.mmbase.org/dtd/builder_1_1.dtd");
+        super("builder", "-//MMBase//DTD builder config 1.1//EN","http://www.mmbase.org/dtd/builder_1_1.dtd");
         this.builder=builder;
         getMessageRetriever("org.mmbase.util.xml.resources.builderwriter");
     }
@@ -61,6 +61,7 @@ public class BuilderWriter extends DocumentWriter  {
     protected void generate() throws DOMException {
         Element root=document.getDocumentElement();
         addComment("builder.configuration",builder.getTableName(),root);
+        root.setAttribute("name",""+builder.getTableName());
         root.setAttribute("maintainer",builder.getMaintainer());
         root.setAttribute("version",""+builder.getVersion());
         MMObjectBuilder parent=null;
