@@ -272,6 +272,29 @@ public class Casting {
         return res;
     }
 
+    /**
+     * How to convert mmbase object to a Date object
+     * @since MMBase-1.7
+     */
+
+    static public java.util.Date toDate(Object i) {
+        long date = -1;
+        if (i instanceof Integer) {
+            date = ((Integer) i).longValue();
+        } else if (i instanceof Number) {
+            date = ((Number)i).longValue();
+        } else if (i != null) {
+            try {
+                date = Long.parseLong("" + i);
+            } catch (NumberFormatException e) {}
+        }
+        if (date == -1 ) {
+            return new java.util.Date(-1);
+        } else {
+            return new java.util.Date(date * 1000);
+        }
+    }
+
 
     /**
      * Get a value of a certain field.
