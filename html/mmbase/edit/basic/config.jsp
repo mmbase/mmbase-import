@@ -12,7 +12,6 @@
     <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
     <mm:write cookie="mmjspeditors_language"  referid="lang"         />
     <mm:write cookie="mmjspeditors_country"   referid="country"         />
-    <mm:write cookie="mmjspeditors_method"    referid="method"       />
     <mm:write cookie="mmjspeditors_session"   referid="session"      />
     <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
     <mm:write cookie="mmjspeditors_page_size"   referid="page_size"      />
@@ -63,16 +62,6 @@
         </td>
       </tr>
       <tr>
-        <td><%= m.getString("config.method") %></td>
-        <td>
-          <select name="mmjspeditors_method">
-            <option value="http" <mm:compare referid="config.method" value="http">selected="selected"</mm:compare>>http</option>
-            <option value="loginpage" <mm:compare referid="config.method" value="loginpage">selected="selected"</mm:compare>>loginpage</option>
-            <option value="delegate" <mm:compare referid="config.method" value="delegate">selected="selected"</mm:compare>>delegate</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
         <td><%= m.getString("config.session")%></td>  
         <td><input type="text" size="30" name="mmjspeditors_session" value="<mm:write referid="config.session" />" /></td>
       </tr>
@@ -114,7 +103,7 @@
       <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
     </table>
   </form>
-  <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
+  <mm:cloud method="asis" jspvar="cloud">
     <%@ include file="foot.jsp"  %>      
   </mm:cloud>
 </mm:content>

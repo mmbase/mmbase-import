@@ -1,3 +1,4 @@
+<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.util.functions.DataType" %>
 <%@ include file="page_base.jsp"  
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:write referid="style" escape="none" />
@@ -19,11 +20,34 @@
     </p>
   </mm:compare>
   <table>
+    <%
+      AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
+      String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
+    %>
+    <mm:import externid="authenticate" jspvar="currentType" vartype="string" ><%=authenticationTypes[0]%></mm:import>
+    <tr>
+      <td>Authenticate:</td>
+      <td>
+        <form method="post" name="auth">
+        <select name="authenticate" onChange="document.forms['auth'].submit();">
+          <% for (int i = 0 ; i < authenticationTypes.length; i++) { %>
+          <option value="<%=authenticationTypes[i]%>" <%= currentType.equals(authenticationTypes[i])? " selected='selected'" : ""%>><%=authenticationTypes[i]%></option>
+          <% } %>
+         </select>
+       </form>
+    </tr>
     <form method="post" action="<mm:write referid="referrer" />" >
-    <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
-    <tr><td>Password</td><td><input type="password" name="password"></td></tr>
-    <tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr>
-    <tr><td /><td><input type="submit" name="command" value="login"></td></tr>
+    <% DataType[] params = authentication.createParameters(currentType).getDefinition();
+       for (int j = 0; j < params.length ; j++) {
+         DataType param = params[j];
+         Class type = param.getType();
+         if (type.isAssignableFrom(String.class) && param.isRequired()) {
+    %>
+               <tr><td><%=param.getName()%>:</td><td><input type="text" name="<%=param.getName()%>"></td></tr>
+     <%  }
+        }
+     %>
+    <tr><td /><td><input type="submit" name="command" value="login" /></td></tr>
   </form>
 </table>
 <%@ include file="footfoot.jsp"  %>
