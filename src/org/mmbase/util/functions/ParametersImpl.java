@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ParametersImpl.java,v 1.2 2005-03-01 17:14:31 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -120,6 +120,10 @@ public class ParametersImpl extends AbstractList implements Parameters {
      */
     public void setAutoCasting(boolean autocast) {
         autoCasting = autocast;
+    }
+
+    public DataType[] getDefinition() {
+        return definition;
     }
 
     /**
