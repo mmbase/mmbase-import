@@ -6,6 +6,10 @@
 
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
   <mm:node id="context" referid="context">
+    <mm:import id="current">contexts</mm:import>
+    <%@include file="navigate.div.jsp" %>
+    <%@include file="you.div.jsp" %>
+    <h1><mm:field name="gui()" /></h1>
     Deleted context <mm:field name="gui()" />
     <mm:deletenode deleterelations="true" />
   </mm:node>
