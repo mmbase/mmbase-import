@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.25 2004-02-20 17:43:41 michiel Exp $
+ * @version $Id: Version.java,v 1.26 2004-02-25 15:38:17 michiel Exp $
  */
 public class Version {
 
@@ -79,7 +79,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getNumber() {
-        return getMajor() + "." + getMinor() + "." + getPatchLevel() + "-rc3" + (isRelease() ? "" : getBuildDate());
+        return getMajor() + "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "-" + getReleaseStatus() + " "  : ".")  + getBuildDate();
     }
 
     /**
@@ -88,6 +88,14 @@ public class Version {
      */
     public static boolean isRelease() {
         return false;
+    };
+
+    /**
+     * A String describing the status of this release. Like 'final' or 'rc3'.
+     * @since MMBase-1.7
+     */
+    public static String getReleaseStatus() {
+        return "rc3";
     };
 
     /**
