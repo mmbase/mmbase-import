@@ -21,14 +21,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen 
  *
- * @version $Id: ListReferrerTag.java,v 1.6 2003-08-07 17:21:06 michiel Exp $ 
+ * @version $Id: ListReferrerTag.java,v 1.7 2003-08-27 15:42:07 michiel Exp $ 
  */
 
 public abstract class ListReferrerTag extends ContextReferrerTag  {
     
-    private static Logger log = Logging.getLoggerInstance(ListReferrerTag.class.getName()); 
-    protected Attribute  parentListId = Attribute.NULL;
+    private static Logger log = Logging.getLoggerInstance(ListReferrerTag.class); 
 
+    protected Attribute  parentListId = Attribute.NULL;
     
     public void setList(String l) throws JspTagException {
         parentListId = getAttribute(l);
