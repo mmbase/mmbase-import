@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.115 $ $Date: 2002-02-14 12:32:33 $
+ * @version $Revision: 1.116 $ $Date: 2002-02-21 09:58:21 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -283,7 +283,7 @@ public class MMObjectBuilder extends MMTable {
                 MMObjectNode node=mmb.getTypeDef().getNewNode("system");
                 node.setValue("otype",1);
                 node.setValue("name",tableName);
-                if (description==null) description="not defined in this langauge";
+                if (description==null) description="not defined in this language";
                 node.setValue("description",description);
                 node.insert("system");
                 oType=mmb.getTypeDef().getIntValue(tableName);
@@ -1709,7 +1709,7 @@ public class MMObjectBuilder extends MMTable {
      * on node:  age() <br />
      * on numbers: wrap_&lt;int&gt;, currency_euro <br />
      *
-     * @param node the node whos efields are queries
+     * @param node the node whose fields are queries
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
@@ -1840,12 +1840,11 @@ public class MMObjectBuilder extends MMTable {
                 }
                 rtn = getSmartPath(documentRoot, path, "" + node.getNumber(), version);
             } catch(Exception e) {
-                log.error("Evaluating smartpath for "+node.getNumber()+" went wrong");
+                log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
             }
         } else {
             log.warn("Builder ("+tableName+") unknown function '"+function+"'");
         }
-
         return rtn;
     }
 
@@ -1892,7 +1891,9 @@ public class MMObjectBuilder extends MMTable {
         if (version!=null) nodeNumber+="."+version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
         if ((matches == null) || (matches.length <= 0))
+    	{
             return null;
+	    }
         return path + matches[0] + File.separator;
     }
 
@@ -2358,7 +2359,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Gets Dutch Short name.
-     * Actually returns the builders short name in wither the 'current langauge', or default langauge 'us', whichever is available.
+     * Actually returns the builders short name in either the 'current language', or the default language 'us', whichever is available.
      * If this fails, the value set with {@link #setDutchSName} is used instead.
      * @returns the 'dutch' short name
      * @deprecated use {@link #getSingularName} instead.
@@ -2654,8 +2655,8 @@ public class MMObjectBuilder extends MMTable {
      *  @return <code>true</code> When an update is required(when changed),
      *	<code>false</code> if original value was set back into the field.
      */
-    public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
-        return setValue(node,fieldname);
+    public boolean setValue(MMObjectNode node,String fieldName, Object originalValue) {
+        return setValue(node,fieldName);
     }
 
     /**
@@ -3014,3 +3015,5 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 }
+
+
