@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import java.util.*;
@@ -26,7 +27,7 @@ import java.lang.reflect.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.8 2003-12-18 09:05:41 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.9 2004-01-16 20:21:10 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);

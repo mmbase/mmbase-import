@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.functions;
 
 import javax.servlet.jsp.*;
 
@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: VoidFunctionTag.java,v 1.1 2003-12-21 13:27:50 michiel Exp $
+ * @version $Id: VoidFunctionTag.java,v 1.1 2004-01-16 20:21:12 michiel Exp $
  */
 public class VoidFunctionTag extends AbstractFunctionTag implements FunctionContainerReferrer {
     public int doStartTag() throws JspTagException {             
