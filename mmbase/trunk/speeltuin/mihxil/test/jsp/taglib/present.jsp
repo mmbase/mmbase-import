@@ -2,7 +2,7 @@
 <html>
 <body>
 <h1>Testing taglib</h1>
-<h2>present</h2>
+<h2>Testing import/present/notpresent/compare tags</h2>
 <mm:import externid="a_param" required="true" />
 
 <% try { %>
@@ -79,7 +79,65 @@ With 'integer' <br />
 <mm:compare referid="a3" value="$b3" >Ok <mm:write value="$a3 == $b3" /></mm:compare>
 <mm:compare referid="a3" value="$b3" inverse="true" >WRONG<mm:write value="$a3 != $b3" /></mm:compare>
 <br />
+Testing isgreaterthan/islessthan:<br />
+With decimal<br />
+<mm:import id="a4" vartype="decimal">10</mm:import>
+<mm:import id="b4" vartype="decimal">9</mm:import>
+<mm:isgreaterthan referid="a4" referid2="b4">OK <mm:write value="$a4 &gt; $b4" /><br /></mm:isgreaterthan>
+<mm:islessthan    referid="a4" referid2="b4">WRONG <mm:write value="! $a4 &lt; $b4" /><br /></mm:islessthan>
+With integer<br />
+<mm:import id="a5" vartype="integer">10</mm:import>
+<mm:import id="b5" vartype="integer">9</mm:import>
+<mm:isgreaterthan referid="a5" referid2="b5">OK <mm:write value="$a5 &gt; $b5" /><br /></mm:isgreaterthan>
+<mm:islessthan    referid="a5" referid2="b5">WRONG <mm:write value="$a5 &lt; $b5" /><br /></mm:islessthan>
+With string (default)<br />
+<mm:import id="a6">bcd</mm:import>
+<mm:import id="b6">abc</mm:import>
+<mm:isgreaterthan referid="a6" referid2="b6">OK <mm:write value="$a6 &gt; $b6" /><br /></mm:isgreaterthan>
+<mm:islessthan    referid="a6" referid2="b6">WRONG <mm:write value="$a6 &lt; $b6" /><br /></mm:islessthan>
+Also trying a few with 'writer' functionality (testing $_ too):<br />
+<mm:write referid="a6">
+  <mm:isgreaterthan referid2="b6">OK <mm:write value="$_ &gt; $b6" /><br /></mm:isgreaterthan>
+  <mm:islessthan    referid2="b6">WRONG <mm:write value="$_ &lt; $b6" /><br /></mm:islessthan>
+</mm:write>
+Also with 'value' attribute:<br />
+<mm:write referid="a6">
+  <mm:isgreaterthan value="$b6">OK <mm:write value="$_ &gt; $b6" /><br /></mm:isgreaterthan>
+  <mm:islessthan    value="$b6">WRONG <mm:write value="$_ &lt; $b6" /><br /></mm:islessthan>
+</mm:write>
+<mm:write referid="a5">
+  <mm:isgreaterthan value="$b5">OK <mm:write value="$_ &gt; $b5" /><br /></mm:isgreaterthan>
+  <mm:islessthan    value="$b5">WRONG <mm:write value="$_ &lt; $b5" /><br /></mm:islessthan>
+</mm:write>
 
+Testing writer functionality of field tag<br />
+<mm:import id="node"       externid="testnode"       from="session" />
+<mm:node referid="node">
+<mm:field name="title">
+  <mm:isnotempty>
+    Ok. title is indeed not empty: <mm:write />(should show title)<br />
+  </mm:isnotempty>
+  <mm:isempty>
+    WRONG. Title is certain not empty. <br />
+  </mm:isempty>
+  <mm:isgreaterthan value="zzzz">
+    WRONG. Title is smaller than 'zzz'<br />
+  </mm:isgreaterthan>
+  <mm:islessthan value="zzzz">
+    Ok <mm:write /> is less than 'zzz'<br />
+  </mm:islessthan>
+</mm:field>
+<mm:field name="intro">
+  <mm:isnotempty>
+    WRONG. Intro should be empty.<br />
+  </mm:isnotempty>
+  <mm:isempty>
+    Ok. Intro indeed should be empty.<br />
+  </mm:isempty>
+</mm:field>
+Should see nothing here: <mm:field id="node_title" name="title" write="false" /><br />
+But see the title here: <mm:field referid="node_title" /><br />
+</mm:node>
 
 <hr />
 This link should result an exception: <a href="<mm:url page="present.jsp" />">present.jsp</a><br />
