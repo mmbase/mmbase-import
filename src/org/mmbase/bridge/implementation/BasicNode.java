@@ -194,13 +194,16 @@ public class BasicNode implements Node {
     	}
     }
 	
-	public void setValue(String attribute, Object value) {
-	    Edit(ACTION_EDIT);
-	    if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)) {
-	        throw new BasicBridgeException("Not allowed to change field "+attribute);
-	    }
-	    BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
-	}
+    public void setValue(String attribute, Object value) {
+        Edit(ACTION_EDIT);
+        if ("number".equals(attribute) || "otype".equals(attribute)
+                || "owner".equals(attribute) || "snumber".equals(attribute)
+                || "dnumber".equals(attribute) || "rnumber".equals(attribute)) {
+           throw new BasicBridgeException("Not allowed to change field "
+                                          + attribute);
+        }
+        BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
+    }
 
 	public void setIntValue(String attribute, int value) {
 	    setValue(attribute,new Integer(value));
