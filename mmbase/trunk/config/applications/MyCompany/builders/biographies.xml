@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="biographies" maintainer="mmbase.org" version="0" extends="object">
-	<!-- @version $Id: biographies.xml,v 1.2 2003-04-10 15:18:14 pierre Exp $ -->
+	<!-- @version $Id: biographies.xml,v 1.3 2003-08-28 09:18:27 michiel Exp $ -->
 	<!-- <status>
 		what is the status of this builder options : active or inactive
 -->
@@ -61,7 +61,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">title</name>
+				<name>title</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 			</db>
@@ -93,7 +93,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">subtitle</name>
+				<name>subtitle</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 			</db>
@@ -125,7 +125,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">intro</name>
+				<name>intro</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
 			</db>
@@ -157,7 +157,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">description</name>
+				<name>description</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="64000" notnull="false" key="false">STRING</type>
 			</db>
