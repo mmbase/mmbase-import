@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
   * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash 
   * based on a template and information from within MMBase
-  $ @version $Id: servflash.java,v 1.6.2.1 2002-03-21 16:37:31 johannes Exp $
+  $ @version $Id: servflash.java,v 1.6.2.2 2002-09-25 13:29:09 johannes Exp $
   * @rename Servflash
  */
 public class servflash extends JamesServlet {
@@ -53,7 +53,7 @@ public class servflash extends JamesServlet {
      * service call will be called by the server when a request is done
      * by a user.
      */
-    public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         incRefCount(req);
         try {
             log.service("Parsing FLASH page: " + req.getRequestURI());
