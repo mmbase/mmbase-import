@@ -2,7 +2,7 @@
 <%@ include file="inc_top.jsp" %>
 <mm:cloud name="mmbase" jspvar="wolk" method="http" rank="basic user">
 <% // Twee nieuwe strings 
-String type = "";			// Type of node
+String ntype = "";			// Type of node
 String node_gui = "";		// GUI variable set in builder
 %>
 
@@ -13,15 +13,15 @@ String node_gui = "";		// GUI variable set in builder
 <mm:import externid="alias_name" />
 <mm:node number="<%= nr %>">
 <%-- Get information about the node: type & GUI name --%>
-<mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% type = n_type; %></mm:nodeinfo>
+<mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% ntype = n_type; %></mm:nodeinfo>
 <mm:nodeinfo type="guinodemanager" jspvar="n_gui" vartype="String" write="false"><% node_gui = n_gui; %></mm:nodeinfo>
-<% String path1 = type;		// Eerst stukje van kruimelpad %>
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
 <form enctype="multipart/form-data" method="post" action="<mm:url referids="nr" />">
 <table border="0" cellspacing="0" cellpadding="3" class="table-form">
 <tr bgcolor="#CCCCCC">
-  <td align="right"><mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;type=<%= type %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete> </td>
+  <td align="right"><mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete> </td>
   <td class="title-m"><mm:nodeinfo type="guinodemanager" /> (<mm:nodeinfo type="type" />)</td>
 </tr>
 <mm:present referid="change">
@@ -87,7 +87,7 @@ int i = 0;
     
 	// Relation node
     // En 1 van hen matched met de node_type van deze pagina -> mag je linken
-    if (s_nodes_name.equals(type)) {
+    if (s_nodes_name.equals(ntype)) {
       r_node = wolk.getNode(r_number);			// Soort relatie
       String r_nodes_name = r_node.getStringValue("sname");
       
@@ -95,7 +95,7 @@ int i = 0;
       mayrelate_kind[i] = r_nodes_name;
       i++;
     } 
-    else if (d_nodes_name.equals(type)) {
+    else if (d_nodes_name.equals(ntype)) {
       r_node = wolk.getNode(r_number);
       String r_nodes_name = r_node.getStringValue("sname");
 
@@ -126,9 +126,9 @@ for (int j = 0; j < i; j++) {
 	    <td nowrap width="50" align="right">
 	      <%-- go to node and edit relation (includes delete) --%>
 	      <mm:relatednode>
-	      <a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-left.gif" alt="edit object" width="21" height="20" border="0" /></a>
+	        <mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-left.gif" alt="edit object" width="21" height="20" border="0" /></a></mm:maywrite>
 	      </mm:relatednode>
-		  <a href="edit_relation.jsp?nr=<mm:field name="number" />&amp;ref=<%= nr %>" title="edit relation"><img src="img/mmbase-edit.gif" alt="edit relation" width="21" height="20" border="0" /></a>
+		  <a href="edit_relation.jsp?nr=<mm:field name="number" />&amp;ref=<%= nr %>" title="edit or delete relation"><img src="img/mmbase-edit.gif" alt="edit relation" width="21" height="20" border="0" /></a>
 	    </td>
 	    <td><mm:relatednode> <mm:field name="gui()" /> </mm:relatednode></td>
 	    <td align="right"> <!-- leeg ? --> </td>

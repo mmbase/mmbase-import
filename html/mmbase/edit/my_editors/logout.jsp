@@ -1,7 +1,8 @@
 <% String title = "Log out"; %>
 <%@ include file="inc_top.jsp" %>
 <mm:cloud name="mmbase" method="logout" jspvar="wolk">
-<% String path1 = "";		// Eerst stukje van kruimelpad %>
+<mm:import jspvar="ntype" externid="ntype" />
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
 <% request.getSession().invalidate();	// start all over again %>
