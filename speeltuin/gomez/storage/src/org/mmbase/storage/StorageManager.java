@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.9 2003-07-31 17:19:53 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.10 2003-08-01 08:08:39 pierre Exp $
  */
 public interface StorageManager {
 
@@ -43,18 +43,22 @@ public interface StorageManager {
     /**
      * Starts a transaction on this StorageManager instance.
      * All commands passed to the instance will be treated as being in this transaction.
+     * If transactions are not supported by the storage, no actual storage transaction is started, but the code continues as if it has.
      * @throws StorageException if the transaction could not be created
      */
     public void beginTransaction() throws StorageException;
 
     /**
      * Closes any transaction that was started and commits all changes.
+     * If transactions are not supported by the storage, nothing really happens (as changes are allready committed), but the code continues as if it has.
      * @throws StorageException if a transaction is not currently active, or an error occurred while committing
      */
     public void commit() throws StorageException;
 
     /**
      * Cancels any transaction that was started and rollback changes if possible.
+     * If transactions are not supported by the storage, nothing really happens (as changes are allready committed),
+     * but the code continues as if it has (through in that case it will return false).
      * @return <code>true</code> if changes were rolled back, <code>false</code> if the transaction was
      * canceled but the storage does not support rollback
      * @throws StorageException if a transaction is not currently active, or an error occurred during rollback

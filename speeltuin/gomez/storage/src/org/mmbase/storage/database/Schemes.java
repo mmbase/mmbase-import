@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.3 2003-07-31 16:26:03 pierre Exp $
+ * @version $Id: Schemes.java,v 1.4 2003-08-01 08:08:40 pierre Exp $
  */
 public final class Schemes {
 
@@ -60,6 +60,46 @@ public final class Schemes {
      *  The default scheme for creating a table.
      */
     public static final String CREATE_TABLE_DEFAULT = "CREATE TABLE {1} {4} {5}";
+
+    /**
+     *  Name of the scheme for creating a row type (i.e.. for an OO-database such as Informix)
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder to create the row type for</li>
+     *    <li>{2} the field definitions (excluding index definitions)</li>
+     *  </ul>
+     *
+     * This attribute is optional, and there is no default for this scheme.
+     * An example (for Informix):
+     * <p>
+     *  <code> CREATE ROW TYPE {1}_t ({2}) EXTENDS {3}_t </code>
+     * </p>
+     */
+    public static final String CREATE_OBJECT_ROW_TYPE = "create.object.rowtype.scheme";
+
+    /**
+     *  Name of the scheme for creating a table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder to create the table for</li>
+     *    <li>{2} the field definitions (excluding simple index definitions)</li>
+     *    <li>{3} the simple index definitions</li>
+     *    <li>{4} the field definitions, including simple index definitions</li>
+     *    <li>{5} the composite index definitions</li>
+     *  </ul>
+     *
+     * You can set up your scheme to create extended tables (i.e. in Postgresql).
+     * You also can define indexes or fields seperate (i.e. in HSQL or in a create table after a create row type in Informix)
+     * or in one go (as you might do with MySQL).
+     */
+    public static final String CREATE_OBJECT_TABLE = "create.object.table.scheme";
+
+    /**
+     *  The default scheme for creating a table.
+     */
+    public static final String CREATE_OBJECT_TABLE_DEFAULT = "CREATE TABLE {1} {4} {5}";
 
     /**
      *  Name of the scheme for creating a primary key
