@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.13 2003-09-10 11:16:07 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.14 2003-11-12 17:32:47 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -135,14 +135,8 @@ public class ContentTag extends LocaleTag  {
         InputSource escapersSource = new InputSource(ContentTag.class.getResourceAsStream("resources/taglibcontent.xml"));
         XMLBasicReader reader  = new XMLBasicReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
-        Enumeration e = reader.getChildElements(root, "content");
-        while (e.hasMoreElements()) {
-            Element element = (Element) e.nextElement();
-            String type   = element.getAttribute("type");
-        }
 
-
-        e = reader.getChildElements(root, "escaper");
+        Enumeration e = reader.getChildElements(root, "escaper");
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String id   = element.getAttribute("id");
@@ -159,6 +153,30 @@ public class ContentTag extends LocaleTag  {
             log.service("Found an postprocessor '" + id + "' : " + ct);
             charTransformers.put(id, ct);
         }
+
+        e = reader.getChildElements(root, "content");
+        while (e.hasMoreElements()) {
+            Element element = (Element) e.nextElement();
+            String type           = element.getAttribute("type");
+            String defaultEscaper = element.getAttribute("defaultescaper");
+            if (defaultEscaper != null) {
+                if (charTransformers.containsKey(defaultEscaper)) {
+                    defaultEscapers.put(type, defaultEscaper);
+                } else {
+                    log.warn("Default escaper '" + defaultEscaper + "' for type + '"+ type + "' is not known");
+                }
+            }
+            String defaultPostprocessor = element.getAttribute("defaultpostprocessor");
+            if (defaultPostprocessor != null) {
+                if (charTransformers.containsKey(defaultPostprocessor)) {
+                    defaultPostProcessors.put(type, defaultPostprocessor);
+                } else {
+                    log.warn("Default postprocessor '" + defaultPostprocessor + "' for type + '"+ type + "' is not known");
+                }
+            }
+        }
+
+
     }
     
 
@@ -194,10 +212,20 @@ public class ContentTag extends LocaleTag  {
 
     
 
+    /**
+     * @return A CharTranformer or null if no postprocessing needed
+     * @throws JspTagException can occur if taglibcontent.xml is misconfigured
+     */
     protected CharTransformer getPostProcessor() throws JspTagException {
         if (! postprocessor.getString(this).equals("")) {
             return getCharTransformer(postprocessor.getString(this));
         } else {
+            if (type != Attribute.NULL) {
+                String defaultPostProcessor = (String) defaultPostProcessors.get(type.getString(this));
+                if (defaultPostProcessor != null) {
+                    return getCharTransformer(defaultPostProcessor);                    
+                }
+            }
             return null;
         }
     }
@@ -210,6 +238,11 @@ public class ContentTag extends LocaleTag  {
             return encoding.getString(this);
         }
     }
+
+    /**
+     * @return A CharTransformer
+     * @throws JspTagException if not transformer with given id was configured
+     */
 
     protected static CharTransformer getCharTransformer(String id) throws JspTagException {
         if (id.indexOf(',') > 0) {
@@ -231,13 +264,19 @@ public class ContentTag extends LocaleTag  {
     
     /** 
      * Called by children
+     * @return A CharTransformer (not null)
      */
 
     public CharTransformer getWriteEscaper() throws JspTagException {
         if (! escaper.getString(this).equals("")) { 
             return getCharTransformer(escaper.getString(this));
         } 
-        return getCharTransformer(getType());
+        String defaultEscaper = (String) defaultEscapers.get(getType());
+        if (defaultEscaper != null) {                
+            return getCharTransformer(defaultEscaper);
+        } else {
+            return COPY;
+        }
     }
 
 
@@ -245,7 +284,13 @@ public class ContentTag extends LocaleTag  {
         super.doStartTag();
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         response.setLocale(locale);
-        response.setContentType(getType() + "; charset=" + getEncoding());
+        String enc = getEncoding();
+        if (enc.equals("")) {
+            // should encoding be configured as defaults for type?
+            response.setContentType(getType());
+        } else {
+            response.setContentType(getType() + "; charset=" + getEncoding());
+        }
         if (getPostProcessor() == null) {
             log.debug("no postprocessor");
             //return EVAL_BODY_INCLUDE; // some appserver don't support this (orion)
