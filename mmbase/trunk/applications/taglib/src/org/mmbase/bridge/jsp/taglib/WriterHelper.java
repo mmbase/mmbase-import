@@ -217,7 +217,11 @@ public class WriterHelper  {
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
-        pageContext.setAttribute(jspvar, value);
+        if (value != null) { 
+            // if the underlying implementation uses a Hashtable (TomCat) then the value may not be null
+            // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
+            pageContext.setAttribute(jspvar, value);
+        }
     }
 
 
