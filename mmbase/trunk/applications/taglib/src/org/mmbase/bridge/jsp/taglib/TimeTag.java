@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.8 2002-05-03 10:04:38 eduard Exp $
+ * @version $Id: TimeTag.java,v 1.9 2002-05-03 12:10:47 eduard Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -78,10 +78,13 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     
     // Attributes
     public void setTime(String time) throws JspTagException {
+        if (log.isDebugEnabled()) log.debug("time: '"+time+"'");
         this.time = getAttributeValue(time);
     }
     
     public void setFormat(String f) throws JspTagException {
+        if (log.isDebugEnabled()) log.debug("format: '"+f+"'");
+        
         String format = getAttributeValue(f);
         Locale locale; 
                        
@@ -176,15 +179,12 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * @javadoc
      */
     private String evaluateTime() throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("TIME="+time+" OFFSET="+offset+" FORMAT="+dateFormat+" INPUTFORMAT="+inputformat);
-        }
-
+        if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputformat +"'");
+        
         Date date = null; 
         // If the time attribute is not set, check if referid is used, otherwise check if the parent set the time.
         // Otherwise use current time
         if(time == null) {
-
             if(getReferid() != null) { // try to get it from other time tag
                 time = getString(getReferid());
             } else {                   // try to get it from parent writer.
@@ -196,8 +196,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             if(time == null) { // still not found? Take current time.
                 date = new Date();
             }
-        } else { // time was given in attribute
-
+        } 
+        if(time != null){ // time was given in attribute
             // Is the time given in second from EPOC (UTC)?
             try {
                 long timeFromEpoc = Long.parseLong(time);
@@ -209,6 +209,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 // indeed, using exceptions as if statements is rather low performance.
             }
         }
+        
+        if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputformat +"' date: '" + date + "'");
         
         // Is a day specified, like: monday, tuesday ?
         if(date==null && isDay(time)) {
@@ -244,6 +246,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             }
         }
         
+        if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputformat +"' date: '" + date + "'");
+                
         // At this moment the time has to be a human readable time.
         // If no input format is given try to parse it in three standard ways.
         if(date==null && inputformat==null) {
@@ -269,6 +273,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             }
         }
         
+        if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputformat +"' date: '" + date + "'");
+        
         // Calculate the offset
         if(offset != null) {
             long calculatedDate = date.getTime();
@@ -288,6 +294,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * Check if a certain string is the name of a day.    
      */
     private boolean isDay(String day) {
+        if (log.isDebugEnabled()) log.debug("day: '"+day+"'");
         return days.containsKey(day.toLowerCase());
     }
     
@@ -295,6 +302,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * Check if a certain string is the name of a month.
      */
     private boolean isMonth(String month) {
+        if (log.isDebugEnabled()) log.debug("month: '"+month+"'");
         return months.containsKey(month.toLowerCase());
     }
     
@@ -302,6 +310,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * check if it is a keyword
      */
     private boolean isKeyword(String keyword) {
+        if (log.isDebugEnabled()) log.debug("keyword: '"+keyword+"'");
+        
         return 
             keyword.equalsIgnoreCase("now") ||
             keyword.equalsIgnoreCase("today") ||
@@ -314,9 +324,13 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * i.e. yyyy/mm/dd hh:mm:ss, yyyy/mm/dd, or hh:mm:ss
      */
     private void setTime() throws JspTagException {
+        if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputformat +"'");
+
+        // we have to do something...
+        if(time!=null && inputformat == null) return;
+
         Date date = new Date();
         inputformat="y/M/d H:m:s";
-        
         if(time.length()==8) {
             parseFormat.applyPattern("y/M/d");
             time=parseFormat.format(date)+" "+time;
@@ -324,9 +338,9 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             if(time.length()==10) {
                 parseFormat.applyPattern("H:m:s");
                 time+=" "+parseFormat.format(date);
-            } else {
+            } else {                
                 if(time.length()!=19) {
-                    throw new JspTagException("time it's length was noet equal 19");
+                    throw new JspTagException("time it's length was not equal 19");
                 }
             }
         }
