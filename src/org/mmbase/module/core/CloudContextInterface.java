@@ -20,14 +20,6 @@ import java.util.Enumeration;
 public interface CloudContextInterface {
 
 	/**
-	 * Retrieves the value of an InitParameter
-	 * @param parameter the initparamter
-	 * @return the value of the initparameter
-	 */
-	public String getInitParameter(String parameter);
-
-
-	/**
 	 * Retrieves all the modules available in this context
 	 * @return all available modules
 	 */
