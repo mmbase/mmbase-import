@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version $Id: MMSQL92Node.java,v 1.53 2002-01-23 15:52:51 pierre Exp $
+* @version $Id: MMSQL92Node.java,v 1.54 2002-02-19 19:39:00 michiel Exp $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -123,34 +123,43 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
         int type=node.getDBType(prefix+fieldname);
         switch (type) {
-            case FieldDefs.TYPE_STRING:
-                String tmp=rs.getString(i);
-                if (tmp==null) {
-                    node.setValue(prefix+fieldname,"");
-                } else {
-                    node.setValue(prefix+fieldname,tmp);
-                }
-                break;
-
-            case FieldDefs.TYPE_INTEGER:
-                node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
-                break;
-            case FieldDefs.TYPE_LONG:
-                node.setValue(prefix+fieldname,(Long)rs.getObject(i));
-                break;
-            case FieldDefs.TYPE_FLOAT:
-                // who does this now work ????
-                //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
-                node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
-                break;
-            case FieldDefs.TYPE_DOUBLE:
-                node.setValue(prefix+fieldname,(Double)rs.getObject(i));
-                break;
-            case FieldDefs.TYPE_BYTE:
-                node.setValue(prefix+fieldname,"$SHORTED");
-                break;
+            //case FieldDefs.TYPE_XML:
+        case FieldDefs.TYPE_STRING: {
+            // original:
+            //String tmp=rs.getString(i);
+                                   
+            String tmp = null;
+            try {
+                tmp = new String(rs.getBytes(i), mmb.getEncoding());                
+            } catch (Exception e) {
+                log.error(e.toString());
             }
-            return (node);
+            if (tmp==null) { 
+                node.setValue(prefix+fieldname,"");
+            } else {
+                node.setValue(prefix+fieldname,tmp);
+            }
+            break;
+        }            
+        case FieldDefs.TYPE_INTEGER:
+            node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
+            break;
+        case FieldDefs.TYPE_LONG:
+            node.setValue(prefix+fieldname,(Long)rs.getObject(i));
+            break;
+        case FieldDefs.TYPE_FLOAT:
+            // who does this now work ????
+            //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
+            node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
+            break;
+        case FieldDefs.TYPE_DOUBLE:
+            node.setValue(prefix+fieldname,(Double)rs.getObject(i));
+            break;
+        case FieldDefs.TYPE_BYTE:
+            node.setValue(prefix+fieldname,"$SHORTED");
+            break;
+        }
+        return (node);
         } catch(SQLException e) {
             log.error("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
             log.error(Logging.stackTrace(e));
@@ -209,7 +218,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             value=value.substring(pos+1,value.length()-1);
             like=true;
         }
-        if (dbtype==FieldDefs.TYPE_STRING) {
+        if (dbtype==FieldDefs.TYPE_STRING/* || dbtype==FieldDefs.TYPE_XML*/) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -340,26 +349,27 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         String str=null;
         InputStream inp;
         DataInputStream input;
-        byte[] isochars;
+        byte[] rawchars;
         int siz;
 
         if (0==1) return("");
         try {
-            inp=rs.getAsciiStream(idx);
+            //inp = rs.getAsciiStream(idx);
+            inp = rs.getBinaryStream(idx);
             if (inp==null) {
                 //log.debug("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
-                 return("");
+                return("");
             }
             if (rs.wasNull()) {
-                log.trace("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
+                log.trace("MMObjectBuilder -> MMysql42Node DBtext wasNull " + inp);
                 return("");
             }
             siz=inp.available(); // DIRTY
             if (siz==0 || siz==-1) return("");
-            input=new DataInputStream(inp);
-            isochars=new byte[siz];
-            input.readFully(isochars);
-            str=new String(isochars,"ISO-8859-1");
+            input   =new DataInputStream(inp);
+            rawchars = new byte[siz];
+            input.readFully(rawchars);
+            str = new String(rawchars, mmb.getEncoding());
             input.close(); // this also closes the underlying stream
         } catch (Exception e) {
             log.error("MMObjectBuilder -> MMMysql text  exception "+e);
@@ -550,17 +560,17 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public void setDBText(int i, PreparedStatement stmt,String body) {
-        byte[] isochars=null;
+        byte[] rawchars=null;
         try {
-            isochars=body.getBytes("ISO-8859-1");
+            rawchars=body.getBytes(mmb.getEncoding());
         } catch (Exception e) {
             log.error("MMObjectBuilder -> String contains odd chars");
             log.error(body);
             log.error(Logging.stackTrace(e));
         }
         try {
-            ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
-            stmt.setAsciiStream(i,stream,isochars.length);
+            ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
+            stmt.setBinaryStream(i,stream,rawchars.length);
             stream.close();
         } catch (Exception e) {
             log.error("MMObjectBuilder : Can't set ascii stream");
@@ -669,7 +679,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
                     // for the right type call the right method..
                     if (type==FieldDefs.TYPE_INTEGER) {
-                            stmt.setInt(currentParameter,node.getIntValue(key));
+                        stmt.setInt(currentParameter,node.getIntValue(key));
                     } else if (type==FieldDefs.TYPE_FLOAT) {
                         stmt.setFloat(currentParameter,node.getFloatValue(key));
                     } else if (type==FieldDefs.TYPE_DOUBLE) {
@@ -678,6 +688,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         stmt.setLong(currentParameter,node.getLongValue(key));
                     } else if (type==FieldDefs.TYPE_STRING) {
                         setDBText(currentParameter,stmt,node.getStringValue(key));
+                        //} else if (type==FieldDefs.TYPE_XML) {
+                        //setDBText(currentParameter,stmt,node.getStringValue(key));
                     } else if (type==FieldDefs.TYPE_BYTE) {
                         setDBByte(currentParameter,stmt,node.getByteValue(key));
                     } else {
@@ -945,7 +957,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.setDouble(i, node.getDoubleValue(key));
         } else if (type==FieldDefs.TYPE_LONG) {
             stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING) {
+        } else if (type==FieldDefs.TYPE_STRING/* || type==FieldDefs.TYPE_XML*/) {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
                 setDBText(i, stmt,tmp);
@@ -1638,24 +1650,25 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     if (o==null) {
                         int type=def.getDBType();
                         switch (type) {
-                            case FieldDefs.TYPE_BYTE:
-                                setDBByte(dbpos,stmt2,new byte[0]);
-                                break;
-                            case FieldDefs.TYPE_STRING:
-                                 setDBText(dbpos,stmt2,new String());
-                                 break;
-                            case FieldDefs.TYPE_INTEGER:
-                                stmt2.setInt(dbpos,-1);
-                                break;
-                            case FieldDefs.TYPE_DOUBLE:
-                                stmt2.setDouble(dbpos,-1);
-                                break;
-                            case FieldDefs.TYPE_FLOAT:
-                                stmt2.setFloat(dbpos,-1);
-                                break;
-                            case FieldDefs.TYPE_LONG:
-                                stmt2.setLong(dbpos,-1);
-                                break;
+                        case FieldDefs.TYPE_BYTE:
+                            setDBByte(dbpos,stmt2,new byte[0]);
+                            break;
+                            //case FieldDefs.TYPE_XML:
+                        case FieldDefs.TYPE_STRING:
+                            setDBText(dbpos,stmt2,new String());
+                            break;
+                        case FieldDefs.TYPE_INTEGER:
+                            stmt2.setInt(dbpos,-1);
+                            break;
+                        case FieldDefs.TYPE_DOUBLE:
+                            stmt2.setDouble(dbpos,-1);
+                            break;
+                        case FieldDefs.TYPE_FLOAT:
+                            stmt2.setFloat(dbpos,-1);
+                            break;
+                        case FieldDefs.TYPE_LONG:
+                            stmt2.setLong(dbpos,-1);
+                            break;
                         }
                     } else {
                         int type=def.getDBType();
@@ -1663,6 +1676,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                             case FieldDefs.TYPE_BYTE:
                                 setDBByte(dbpos,stmt2,(byte[])o);
                                 break;
+                                //case FieldDefs.TYPE_XML:
                             case FieldDefs.TYPE_STRING:
                                 if (o instanceof byte[]) {
                                     String s=new String((byte[])o);
