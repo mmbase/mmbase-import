@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicLegacyConstraint extends BasicConstraint 
@@ -49,9 +49,10 @@ implements LegacyConstraint {
      *
      * @param constraint The non-null constraint as it appears in 
      *        the where-clause.
+     * @return This <code>BasicLegacyConstraint</code> instance.
      * @throws IllegalArgumentException When an invalid argument is supplied.
      */
-    public void setConstraint(String constraint) {
+    public BasicLegacyConstraint setConstraint(String constraint) {
         if (log.isDebugEnabled()) {
             log.debug("Legacy constraint: " + constraint);
         }
@@ -62,6 +63,7 @@ implements LegacyConstraint {
         }
         
         this.constraint = constraint;
+        return this;
     }
     
     // javadoc is inherited

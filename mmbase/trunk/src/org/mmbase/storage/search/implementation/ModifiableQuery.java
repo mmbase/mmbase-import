@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {
@@ -88,9 +88,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param maxNumber The maxNumber value, -1 means: use
      * <code>query.getMaxNumber()</code>.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setMaxNumber(int maxNumber) {
+    public ModifiableQuery setMaxNumber(int maxNumber) {
         this.maxNumber = maxNumber;
+        return this;
     }
     
     /**
@@ -98,9 +100,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param offset The offset value, -1 means: use
      * <code>query.getOffset()</code>.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setOffset(int offset) {
+    public ModifiableQuery setOffset(int offset) {
         this.offset = offset;
+        return this;
     }
     
     /**
@@ -108,9 +112,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param constraint The constraint, <code>null</code> means: use
      * <code>query.getConstraint()</code>.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setConstraint(Constraint constraint) {
+    public ModifiableQuery setConstraint(Constraint constraint) {
         this.constraint = constraint;
+        return this;
     }
     
     /**
@@ -118,9 +124,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param fields The fields, <code>null</code> means: use
      * <code>query.getFields()</code>.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setFields(List fields) {
+    public ModifiableQuery setFields(List fields) {
         this.fields = fields;
+        return this;
     }
     
     /**
@@ -128,9 +136,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param sortOrders The sortorders, <code>null</code> means: use
      * <code>query.getSortOrders()</code>.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setSortOrders(List sortOrders) {
+    public ModifiableQuery setSortOrders(List sortOrders) {
         this.sortOrders = sortOrders;
+        return this;
     }
     
     /**
@@ -138,9 +148,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param steps The steps, <code>null</code> means: use
      * <code>query.getSteps()</code.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setSteps(List steps) {
+    public ModifiableQuery setSteps(List steps) {
         this.steps = steps;
+        return this;
     }
     
     /**
@@ -148,9 +160,11 @@ public class ModifiableQuery implements SearchQuery {
      *
      * @param distinct The value of the distinct property, 
      *        <code>null</code> means: use <code>query.isDistinct()</code>.
+     * @return This <code>ModifiableQuery</code> instance.
      */
-    public void setDistinct(Boolean distinct) {
+    public ModifiableQuery setDistinct(Boolean distinct) {
         this.distinct = distinct;
+        return this;
     }
     
     // javadoc is inherited

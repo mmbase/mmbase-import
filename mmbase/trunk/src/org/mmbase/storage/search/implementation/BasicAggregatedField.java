@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicAggregatedField extends BasicStepField
@@ -44,15 +44,17 @@ implements AggregatedField {
      * Sets the aggregation type.
      *
      * @param aggregationType The aggregation type.
+     * @return This <code>BasicAggregatedField</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setAggregationType(int aggregationType) {
+    public BasicAggregatedField setAggregationType(int aggregationType) {
         if (aggregationType < AggregatedField.AGGREGATION_TYPE_GROUP_BY
         || aggregationType > AggregatedField.AGGREGATION_TYPE_MAX) {
             throw new IllegalArgumentException(
             "Invalid aggregationType value: " + aggregationType);
         }
         this.aggregationType = aggregationType;
+        return this;
     }        
     
     /**

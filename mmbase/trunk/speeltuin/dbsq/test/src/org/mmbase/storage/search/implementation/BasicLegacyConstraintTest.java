@@ -2,12 +2,13 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicLegacyConstraintTest extends TestCase {
     
@@ -45,11 +46,12 @@ public class BasicLegacyConstraintTest extends TestCase {
             fail("Null constraint, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
+        BasicLegacyConstraint instance = new BasicLegacyConstraint("");
         for (int i = 0; i < TEST_CONSTRAINTS.length; i++) {
             String constraint = TEST_CONSTRAINTS[i];
-            BasicLegacyConstraint instance 
-                = new BasicLegacyConstraint(constraint);
+            BasicLegacyConstraint result = instance.setConstraint(constraint);
             assertTrue(instance.getConstraint().equals(constraint));
+            assertTrue(result == instance);
         }
     }
     

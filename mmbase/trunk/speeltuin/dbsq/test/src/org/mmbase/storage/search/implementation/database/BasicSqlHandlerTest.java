@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -188,9 +188,9 @@ public class BasicSqlHandlerTest extends TestCase {
         Constraint constraint2 
         = new BasicFieldValueConstraint(field1b, new Integer(123));
         BasicCompositeConstraint constraint3 
-        = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        constraint3.addChild(constraint1);
-        constraint3.addChild(constraint2);
+            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND)
+                .addChild(constraint1)
+                .addChild(constraint2);
         query.setConstraint(constraint3);
         strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
@@ -474,9 +474,9 @@ public class BasicSqlHandlerTest extends TestCase {
         Constraint constraint2 
         = new BasicFieldValueConstraint(field1b, new Integer(123));
         BasicCompositeConstraint constraint3 
-        = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        constraint3.addChild(constraint1);
-        constraint3.addChild(constraint2);
+            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND)
+                .addChild(constraint1)
+                .addChild(constraint2);
         query.setConstraint(constraint3);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicAggregatedFieldTest extends TestCase {
     
@@ -61,9 +61,12 @@ public class BasicAggregatedFieldTest extends TestCase {
     public void testSetAggregationType() {
         assertTrue(instance.getAggregationType() 
         == AggregatedField.AGGREGATION_TYPE_MAX);
-        instance.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+        BasicAggregatedField result = 
+            instance.setAggregationType(
+                AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         assertTrue(instance.getAggregationType() 
-        == AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+            == AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+        assertTrue(result == instance);
         
         try {
             // Invalid aggregation type, should throw IllegalArgumentException.

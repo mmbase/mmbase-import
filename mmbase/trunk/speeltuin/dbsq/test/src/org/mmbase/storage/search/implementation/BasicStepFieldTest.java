@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -101,10 +101,11 @@ public class BasicStepFieldTest extends TestCase {
             fail("Null value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance.setAlias(TEST_ALIAS);
+        BasicStepField result = instance.setAlias(TEST_ALIAS);
         String alias = instance.getAlias();
         assertTrue(alias != null);
         assertTrue(alias.equals(TEST_ALIAS));
+        assertTrue(result == instance);
     }
     
     /** Test of getFieldName method, of class org.mmbase.storage.search.implementation.BasicStepField. */

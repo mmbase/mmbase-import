@@ -11,7 +11,7 @@ import org.mmbase.module.corebuilders.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
     
@@ -117,11 +117,12 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         assertTrue(values.size() == 1);
         assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
         assertTrue(values.indexOf(LONG_TEST_VALUE.toString()) == 0);
-        instance2.addValue(FLOAT_TEST_VALUE2);
+        BasicFieldValueInConstraint result = instance2.addValue(FLOAT_TEST_VALUE2);
         values = new ArrayList(instance2.getValues());
         assertTrue(values.size() == 2);
         assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
         assertTrue(values.indexOf(FLOAT_TEST_VALUE2.toString()) == 1);
+        assertTrue(result == instance2);
     }
     
     /** Test of getValues method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicFieldConstraintTest extends TestCase {
     
@@ -79,8 +79,9 @@ public class BasicFieldConstraintTest extends TestCase {
         
         instance.setCaseSensitive(false);
         assertTrue(!instance.isCaseSensitive());
-        instance.setCaseSensitive(true);
+        BasicFieldConstraint result = instance.setCaseSensitive(true);
         assertTrue(instance.isCaseSensitive());
+        assertTrue(result == instance);
     }
     
     /** Test of isCaseSensitive method, of class org.mmbase.storage.search.implementation.BasicFieldConstraint. */

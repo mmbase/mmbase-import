@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the table name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -57,28 +57,32 @@ public class BasicStep implements Step {
      * Sets alias property.
      *
      * @param alias The alias property.
+     * @return This <code>BasicStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setAlias(String alias) {
+    public BasicStep setAlias(String alias) {
         if (alias == null || alias.trim().length() == 0) {
             throw new IllegalArgumentException(
             "Invalid alias value: " + alias);
         }
         this.alias = alias;
+        return this;
     }
     
     /**
      * Adds node to nodes.
      *
      * @param nodeNumber The nodenumber of the node.
+     * @return This <code>BasicStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void addNode(int nodeNumber) {
+    public BasicStep addNode(int nodeNumber) {
         if (nodeNumber < 0) {
             throw new IllegalArgumentException(
             "Invalid nodeNumber value: " + nodeNumber);
         }
         nodes.add(new Integer(nodeNumber));
+        return this;
     }
     
     // javadoc is inherited

@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint 
@@ -41,9 +41,10 @@ implements FieldCompareConstraint {
      * Sets operator.
      *
      * @param the operator value
+     * @return This <code>BasicFieldCompareConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setOperator(int operator) {
+    public BasicFieldCompareConstraint setOperator(int operator) {
         
         // Test for defined operator value.
         if (operator < FieldValueConstraint.LESS
@@ -62,6 +63,7 @@ implements FieldCompareConstraint {
         }
         
         this.operator = operator;
+        return this;
     }
     
     // javadoc is inherited

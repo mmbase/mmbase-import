@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
@@ -46,15 +46,17 @@ public class BasicSortOrder implements SortOrder {
      * Sets direction.
      *
      * @param direction The direction.
+     * @return This <code>BasicSortOrder</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setDirection(int direction) {
+    public BasicSortOrder setDirection(int direction) {
         if (direction != SortOrder.ORDER_ASCENDING
         && direction != SortOrder.ORDER_DESCENDING) {
             throw new IllegalArgumentException(
             "Invalid direction value: " + direction);
         }
         this.direction = direction;
+        return this;
     }
     
     // javadoc is inherited

@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicConstraint implements Constraint {
@@ -29,10 +29,12 @@ public class BasicConstraint implements Constraint {
     /**
      * Sets inverse.
      *
+     * @return This <code>BasicConstraint</code> instance.
      * @param invers The inverse value.
      */
-    public void setInverse(boolean inverse) {
+    public BasicConstraint setInverse(boolean inverse) {
         this.inverse = inverse;
+        return this;
     }
     
     // javadoc is inherited

@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -118,14 +118,16 @@ public class BasicStepField implements StepField {
      * Sets alias property.
      *
      * @param alias The alias property.
+     * @return This <code>BasicStepField</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setAlias(String alias) {
+    public BasicStepField setAlias(String alias) {
         if (alias == null || alias.trim().length() == 0) {
             throw new IllegalArgumentException(
             "Invalid alias value: " + alias);
         }
         this.alias = alias;
+        return this;
     }
     
     // javadoc is inherited

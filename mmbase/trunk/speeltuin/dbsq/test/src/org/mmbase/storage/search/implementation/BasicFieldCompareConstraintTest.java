@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicFieldCompareConstraintTest extends TestCase {
     
@@ -127,8 +127,10 @@ public class BasicFieldCompareConstraintTest extends TestCase {
         assertTrue(instance1.getOperator() == FieldValueConstraint.GREATER_EQUAL);
         instance2.setOperator(FieldValueConstraint.GREATER_EQUAL);
         assertTrue(instance2.getOperator() == FieldValueConstraint.GREATER_EQUAL);
-        instance1.setOperator(FieldValueConstraint.LIKE);
+        BasicFieldCompareConstraint result 
+            = instance1.setOperator(FieldValueConstraint.LIKE);
         assertTrue(instance1.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(result == instance1);
         try {
             // Like operator for integer type field, should throw IllegalArgumentException.
             instance2.setOperator(FieldValueConstraint.LIKE);

@@ -11,7 +11,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicRelationStepTest extends TestCase {
     
@@ -76,8 +76,10 @@ public class BasicRelationStepTest extends TestCase {
        instance.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
        assertTrue(instance.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
        
-       instance.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+       BasicRelationStep result 
+            = instance.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
        assertTrue(instance.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
+       assertTrue(result == instance);
     }
     
     /** Test of getDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
@@ -128,8 +130,8 @@ public class BasicRelationStepTest extends TestCase {
         + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
          
         // With nodes.
-        instance.addNode(123);
-        instance.addNode(3456);
+        instance.addNode(123)
+            .addNode(3456);
         assertTrue(instance.toString(), 
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
