@@ -144,7 +144,7 @@
 		<gui>
 			<guiname xml:lang="nl">Stop</guiname>
 			<guiname xml:lang="en">Stop</guiname>
-			<guitype>lengtestartstop</guitype>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -152,9 +152,9 @@
 				<!-- position in the input area of the editor -->
 				<input>5</input>
 				<!-- position in list area of the editor -->
-				<list>5</list>
+				<list>-1</list>
 				<!-- position in search area of the editor -->
-				<search>5</search>
+				<search>-1</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -177,7 +177,7 @@
 		<editor>
 			<positions>
 				<!-- position in the input area of the editor -->
-				<input>5</input>
+				<input>6</input>
 				<!-- position in list area of the editor -->
 				<list>-1</list>
 				<!-- position in search area of the editor -->
@@ -205,7 +205,7 @@
 		<editor>
 			<positions>
 				<!-- position in the input area of the editor -->
-				<input>6</input>
+				<input>7</input>
 				<!-- position in list area of the editor -->
 				<list>-1</list>
 				<!-- position in search area of the editor -->
