@@ -18,17 +18,20 @@ import java.io.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.7
- * @version $Id: StringBufferWriter.java,v 1.2 2004-09-30 17:19:49 pierre Exp $
+ * @version $Id: StringBufferWriter.java,v 1.3 2004-10-05 16:00:22 michiel Exp $
  */
 public class StringBufferWriter extends Writer {
 
     protected StringBuffer buffer;
 
     /**
-     * Create a new stringbufferwriter
+     * Create a new StringBufferWriter
+     * @param buffer The StringBuffer to use
+     * @throw java.lang.NullPointerException if <code>buffer</code> is null.
      */
     public StringBufferWriter(StringBuffer buffer) {
-        buffer = buffer;
+        if (buffer == null) throw new NullPointerException("Buffer may not be null");
+        this.buffer = buffer;
         lock = buffer;
     }
 
@@ -97,7 +100,7 @@ public class StringBufferWriter extends Writer {
     }
 
     /**
-     * Closing a <tt>StringWriter</tt> has no effect. The methods in this
+     * Closing a <tt>StringBufferWriter</tt> has no effect. The methods in this
      * class can be called after the stream has been closed without generating
      * an <tt>IOException</tt>.
      */
