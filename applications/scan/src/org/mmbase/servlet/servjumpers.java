@@ -41,7 +41,7 @@ public class servjumpers extends JamesServlet
 	{	
 		String url=null;
 		String tmpr=req.getRequestURI().substring(1);
-		if (tmpr.indexOf('.')==-1) url=getUrl(tmpr);
+		if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
 		if (url!=null) {
 			res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY,"OK");
 			res.setContentType("text/html");
