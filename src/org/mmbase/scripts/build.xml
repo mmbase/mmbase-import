@@ -257,7 +257,7 @@ NetComponents can be found at:
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
     <copy file="${xerces.jar}"         todir="${release.lib.dir}" />  
     <copy file="${xml-apis.jar}"       todir="${release.lib.dir}" />
-    <copy file="${log4j.jar}"          tofile="${release.lib.dir}/logj4.jar" />
+    <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${jspsmartupload.jar}" todir="${release.lib.dir}" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
         
