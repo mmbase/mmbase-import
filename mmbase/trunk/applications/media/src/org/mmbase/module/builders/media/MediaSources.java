@@ -45,6 +45,8 @@ public class MediaSources extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
     
     // Formats
+    public final static int    RA_FORMAT        = 2;
+    public final static int    RM_FORMAT        = 6;
     public final static String FORMATS_RESOURCE = "org.mmbase.module.builders.media.resources.formats";
     // store also in array, for quick access (in init).
     private static String[] formats;
@@ -67,6 +69,7 @@ public class MediaSources extends MMObjectBuilder {
     public final static int DIVX_CODEC   = 5;
     
     // Status
+    public final static int DONE   = 3; // jikes
     public final static String STATUS_RESOURCE = "org.mmbase.module.builders.media.resources.states";
     
     public final static int MONO = 1;
