@@ -49,7 +49,7 @@ public class ListNodesTag extends AbstractNodeListTag {
         }
 
         NodeManager manager=getCloud().getNodeManager(typeString);
-        NodeList nodes = manager.getList(whereString,sortedString,directionString);
+        NodeList nodes = manager.getList(constraints, orderby, directions);
         return setReturnValues(nodes,true);
     }
 

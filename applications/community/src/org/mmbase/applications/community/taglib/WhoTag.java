@@ -63,11 +63,11 @@ public class WhoTag extends AbstractNodeListTag {
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
 
-        if (sortedString!=null) params.put("SORTFIELDS",sortedString);
-        if (directionString!=null) params.put("SORTDIRS",directionString);
-        if (offset>0) params.put("FROMCOUNT",""+offset);
-        if (max>-1) params.put("MAX",""+max);
-        NodeList nodes = community.getList("WHO",params,pageContext.getRequest(),pageContext.getResponse());
+        if (orderby != null)   params.put("SORTFIELDS",orderby);
+        if (directions !=null) params.put("SORTDIRS",  directions);
+        if (offset > 0)        params.put("FROMCOUNT", "" + offset);
+        if (max > -1)          params.put("MAX", "" + max);
+        NodeList nodes = community.getList("WHO", params, pageContext.getRequest(), pageContext.getResponse());
         return setReturnValues(nodes,false);
     }
 }
