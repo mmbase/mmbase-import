@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.14 2002-06-24 12:34:18 pierre Exp $
+     * @version  $Id: list.jsp,v 1.15 2002-06-28 21:25:16 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -255,7 +255,6 @@ if (title != null) params.put("wizardtitle", title);
 if (listConfig.title != null) params.put("title", listConfig.title);
 params.put("username", cloud.getUser().getIdentifier());
 params.put("ew_context", request.getContextPath());
-params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(request.getContextPath()));
 
 log.trace("Doing the transformation for " + listConfig.template);
 Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
