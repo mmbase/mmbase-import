@@ -13,6 +13,7 @@ import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,16 +24,22 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.3 2003-07-14 21:17:20 michiel Exp $
+ * @version $Id: Groups.java,v 1.4 2003-07-18 13:40:22 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Groups.class);
 
+    protected static Cache containsCache = new Cache(200) {
+            public String getName()        { return "CCS:ContainedBy"; }
+            public String getDescription() { return "group + group/user --> boolean"; }
+        };
+
 
     // javadoc inherited
     public boolean init() {
-        
+        containsCache.putCache();
+        CacheInvalidator.getInstance().addCache(containsCache);
         mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
         return super.init();
@@ -51,7 +58,9 @@ public class Groups extends MMObjectBuilder {
      * @todo This could perhaps be just as logicly be implemented in Users rather than Groups (and groups becomes Dummy).
      */
     public boolean contains(MMObjectNode group, User user)  {
-        log.debug("Checking if user " + user + " is contained by group " + group + "(" + group.getNumber() + ")");
+        if (log.isDebugEnabled()) {
+            log.debug("Checking if user " + user + " is contained by group " + group + "(" + group.getNumber() + ")");
+        }
         return contains(group,  user.getNode().getNumber());
     }
     
@@ -62,28 +71,36 @@ public class Groups extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("Checking if user/group " + number + " is contained by group " + group + "(" + group.getNumber() + ")");
         }
-        int role       = mmb.getRelDef().getNumberByName("contains");
-        InsRel insrel =  mmb.getRelDef().getBuilder(role);
-        Enumeration e  = insrel.getRelations(number, getObjectType(), role);
-        while(e.hasMoreElements()) {
-            MMObjectNode relation    = (MMObjectNode) e.nextElement();
-            int source = relation.getIntValue("snumber");
-            //assert(source.parent instanceof Groups);
+        String key = "" + group.getNumber() + "/" + number;
+        Boolean result = (Boolean) containsCache.get(key);
 
-            if (source  == number) continue; // only search 'up', so number must represent destination.
-
-            if (group.getNumber() == source) { // the found source is the requested group, we found it!
-                log.trace("yes!");
-                return true;
-            } else { // recursively call on groups
-                log.trace("recursively");
-                if (contains(group, source)) {
-                    return true;
+        if (result == null) {
+            int role       = mmb.getRelDef().getNumberByName("contains");
+            InsRel insrel =  mmb.getRelDef().getBuilder(role);
+            Enumeration e  = insrel.getRelations(number, getObjectType(), role);
+            result = Boolean.FALSE;
+            while(e.hasMoreElements()) {
+                MMObjectNode relation    = (MMObjectNode) e.nextElement();
+                int source = relation.getIntValue("snumber");
+                //assert(source.parent instanceof Groups);
+                
+                if (source  == number) continue; // only search 'up', so number must represent destination.
+                
+                if (group.getNumber() == source) { // the found source is the requested group, we found it!
+                    log.trace("yes!");
+                    result = Boolean.TRUE;
+                    break;
+                } else { // recursively call on groups
+                    log.trace("recursively");
+                    if (contains(group, source)) {
+                        result = Boolean.TRUE;
+                        break;
+                    }
                 }
             }
+            containsCache.put(key, result);
         }
-        log.trace("no!");
-        return false;
+        return result.booleanValue();
     }
 
     /**

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.7 2003-07-14 21:17:20 michiel Exp $
+ * @version $Id: Contexts.java,v 1.8 2003-07-18 13:40:22 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -36,7 +36,7 @@ public class Contexts extends MMObjectBuilder {
     private boolean readall = true;
 
     protected static Cache contextCache = new Cache(30) {
-            public String getName()        { return "ContextCache"; }
+            public String getName()        { return "CCS:ContextCache"; }
             public String getDescription() { return "Links owner field to Contexts MMObjectNodes"; }
         };
 
