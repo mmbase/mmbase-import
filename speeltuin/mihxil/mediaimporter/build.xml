@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase Media Importer" default="jar" basedir=".">
+  <property name="project.name"    value="mediaimporter" />
+  <property name="project.package" value="nl/omroep/mediaimporter" />
+	<property name="project.extra.path" location="../crontab/build/mmbase-crontab.jar" />
+
+  &base;
+</project>
