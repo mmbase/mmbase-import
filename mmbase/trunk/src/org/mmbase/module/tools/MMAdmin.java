@@ -30,7 +30,7 @@ import org.mmbase.util.xml.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.77 2003-09-18 12:19:01 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.78 2003-09-19 12:55:39 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -143,6 +143,10 @@ public class MMAdmin extends ProcessorModule {
             if (cmd.equals("ISOGUINAMES")) {
                 tagger.setValue("ITEMS", "2");
                 return getISOGuiNames(tok.nextToken(), tok.nextToken());
+            }
+            if (cmd.equals("ISODESCRIPTIONS")) {
+                tagger.setValue("ITEMS", "2");
+                return getISODescriptions(tok.nextToken(), tok.nextToken());
             }
             if (cmd.equals("MODULES")) {
                 tagger.setValue("ITEMS", "4");
@@ -335,6 +339,8 @@ public class MMAdmin extends ProcessorModule {
                 return "" + getBuilderClass(tok.nextToken());
             } else if (cmd.equals("BUILDERDESCRIPTION")) {
                 return "" + getBuilderDescription(tok.nextToken());
+            } else if (cmd.equals("GETDESCRIPTION")) {
+                return getDescription(tok.nextToken(), tok.nextToken(), tok.nextToken());
             } else if (cmd.equals("GETGUINAMEVALUE")) {
                 return getGuiNameValue(tok.nextToken(), tok.nextToken(), tok.nextToken());
             } else if (cmd.equals("GETBUILDERFIELD")) {
@@ -1657,11 +1663,44 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
+    private Vector getISODescriptions(String buildername, String fieldname) {
+        Vector results = new Vector();
+        MMObjectBuilder bul = getMMObject(buildername);
+        if (bul != null) {
+            FieldDefs def = bul.getField(fieldname);
+            Map guinames = def.getDescriptions();
+            for (Iterator h = guinames.entrySet().iterator(); h.hasNext();) {
+                Map.Entry me = (Map.Entry)h.next();
+                results.addElement(me.getKey());
+                results.addElement(me.getValue());
+            }
+        }
+        return results;
+    }
+
+    /**
+     * @javadoc
+     */
     private String getGuiNameValue(String buildername, String fieldname, String key) {
         MMObjectBuilder bul = getMMObject(buildername);
         if (bul != null) {
             FieldDefs def = bul.getField(fieldname);
             String value = def.getGUIName(key);
+            if (value != null) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * @javadoc
+     */
+    private String getDescription(String buildername, String fieldname, String key) {
+        MMObjectBuilder bul = getMMObject(buildername);
+        if (bul != null) {
+            FieldDefs def = bul.getField(fieldname);
+            String value = def.getDescription(key);
             if (value != null) {
                 return value;
             }
@@ -1684,6 +1723,8 @@ public class MMAdmin extends ProcessorModule {
     public void doBuilderPosts(String command, Hashtable cmds, Hashtable vars) {
         if (command.equals("SETGUINAME")) {
             setBuilderGuiName(vars);
+        } else if (command.equals("SETDESCRIPTION")) {
+            setBuilderDescription(vars);
         } else if (command.equals("SETGUITYPE")) {
             setBuilderGuiType(vars);
         } else if (command.equals("SETEDITORINPUT")) {
@@ -1726,6 +1767,27 @@ public class MMAdmin extends ProcessorModule {
         FieldDefs def = bul.getField(fieldname);
         if (def != null) {
             def.setGUIName(country, value);
+        }
+        syncBuilderXML(bul, builder);
+    }
+
+    /**
+     * @javadoc
+     */
+    public void setBuilderDescription(Hashtable vars) {
+        if (kioskmode) {
+            log.warn("refused gui name set, am in kiosk mode");
+            return;
+        }
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String country = (String)vars.get("COUNTRY");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
+            def.setDescription(country, value);
         }
         syncBuilderXML(bul, builder);
     }
