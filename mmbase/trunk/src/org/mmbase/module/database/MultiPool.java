@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.49 2004-03-19 12:13:48 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.50 2004-03-22 10:53:57 michiel Exp $
  */
 public class MultiPool {
 
@@ -285,7 +285,7 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newCon = null;
-                    log.warn("WILL KILL SQL after " + diff + " seconds, because it took too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
+                    log.warn("WILL KILL SQL. It took already " + diff + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
                     try {
                         // get a new connection to replace this one
                         newCon = getMultiConnection();
@@ -499,13 +499,12 @@ public class MultiPool {
          * Close the database connection.
          */
         public void run() {
-            log.debug("Closing connection with ID " + connection.hashCode());
             try {
                 connection.realclose();
             } catch(Exception re) {
                 log.error("Can't close connection with ID " + connection.hashCode() + ", cause: " + re);
             }
-            log.service("Closed connection with ID " + connection.hashCode());
+            log.debug("Closed connection with ID " + connection.hashCode());
         }
     }
 }
