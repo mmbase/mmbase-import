@@ -65,49 +65,18 @@ public class Email extends MMObjectBuilder {
 	*/
 	public void checkOneShotMail(MMObjectNode node) {
 
-		String subject=node.getStringValue("subject");
-		String to=node.getStringValue("to");
-		String from=node.getStringValue("from");
-		String replyto=node.getStringValue("replyto");
-		String body=node.getStringValue("body");
+		int mailstatus=node.getIntValue("mailstatus");
+		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
 
-		// now if a url is defined it overrides the body
-		// it will then send the webpage defined by the
-		// url as the body !! (only  local url's are
-		// now supported that use html or shtml
-		String url=node.getStringValue("url");
-		if (url!=null && !url.equals("")) {
-			// get the page
-			String tmpbody=getPage(url);
-			if (tmpbody!=null) body=tmpbody;
-		}
-
-		// if its a oneshot mail then create mail and send it
-		// at the end remove the object from the cloud
-		// its one shot so lets mail and zap the node
-
-		Mail mail=new Mail(to,from);
-		mail.setSubject(subject);
-		mail.setDate();
-		if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
-		mail.setText(body);
-
-		// little trick if it seems valid html page set
-		// the headers for html mail
-		if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
-			mail.setHeader("Mime-Version","1.0");
-			mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
-		}
+			mailstatus=sendMailNode(node);
+			if (mailstatus==STATE_DELIVERED) {
+				removeNode(node);
+			} else {
+				// set the changes back to the database
+				node.commit();
+			}
+		} 
 		
-		// send the message to the user defined
-		if (mmb.getSendMail().sendMail(mail)==false) {
-			System.out.println("Email -> mail failed");
-		} else {
-			System.out.println("Email -> mail send to : "+to);
-		}
-		
-		// remove message from the cloud
-		removeNode(node);
 	}
 
 
