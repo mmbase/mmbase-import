@@ -15,8 +15,8 @@
 <body  onLoad="document.chatsform.login.focus();">
 <form action="login.jsp" name="chatsform" method="post">
    <table>
-   <tr><td>Loginnaam:</td><td><input type="text" name="login"   size="10" /></td></tr>
-   <tr><td>Wachtwoord:</td><td><input type="password" name="pwd" size="10" /></td></tr>
+   <tr><td>Login:</td><td><input type="text" name="login"   size="10" /></td></tr>
+   <tr><td>Password:</td><td><input type="password" name="pwd" size="10" /></td></tr>
    </table>
 <input type="submit" value="start chat">
 </p>
