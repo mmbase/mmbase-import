@@ -9,10 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.tools.MMAppTool;
 
-import java.lang.*;
-import java.io.*;
-import java.awt.*;
-
 /**
  * Class MMAppTool
  * 
