@@ -1,15 +1,16 @@
 <project name="MMBase" default="rmmci" basedir=".">
 
   <property name="project.jar.dir"    value="build" />
+  <property name="build.dir"          value="../../build" />
 
   <target name="init">
 	  <mkdir dir="build/classes"/>
 	  <available property="dummy" classname="dummy">
 	  <classpath id="classpath">
-		  <fileset dir="../../build/lib"><include name="*.jar"/></fileset>
-		  <fileset dir="../../build/mmbase/mmbase-webapp/WEB-INF/lib"><include name="mmbase.jar"/></fileset>
+		  <fileset dir="${build.dir}/lib"><include name="*.jar"/></fileset>
+		  <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"><include name="mmbase.jar"/></fileset>
 	  </classpath>
-          </available>
+    </available>
 
   </target>
 
@@ -104,8 +105,8 @@
   <!-- =================================================================== -->
   <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
-    <unjar src="../../build/lib/servlet.jar" dest="build/rmmcitmp" />
-    <unjar src="../../build/lib/xml-apis.jar" dest="build/rmmcitmp" />
+    <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp" />
+    <unjar src="${build.dir}/lib/xml-apis.jar" dest="build/rmmcitmp" />
     <echo file="build/rmmcitmp/manifest.mf">
 Name: org/mmbase
 Vendor: MMBase Community
@@ -125,7 +126,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/**"/>
        </fileset>
     </jar>
-    <unjar src="../../build/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" dest="build/rmmcitmp" />
+    <unjar src="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" dest="build/rmmcitmp" />
     <jar jarfile="${project.jar.dir}/rmmci.jar" manifest="build/rmmcitmp/manifest.mf" >
        <fileset dir="build/classes">
         <include name="org/mmbase/bridge/remote/*"/>
