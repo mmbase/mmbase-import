@@ -69,7 +69,8 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public void setSource(Node node) {
         if (node.getCloud() != cloud) {
-            throw new BasicBridgeException("Source and relation are not in the same transaction or from different clouds");
+            throw new BridgeException("Source and relation are not in the same "
+                                      + "transaction or from different clouds");
         }
         edit(ACTION_EDIT);
         ((BasicNode)node).edit(ACTION_LINK);
@@ -86,7 +87,9 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public void setDestination(Node node) {
         if (node.getCloud() != cloud) {
-            throw new BasicBridgeException("Destination and relation are not in the same transaction or from different clouds");
+            throw new BridgeException("Destination and relation are not in the"
+                                      + " same transaction or from different"
+                                      + " clouds");
         }
         edit(ACTION_EDIT);
         ((BasicNode)node).edit(ACTION_LINK);
@@ -120,7 +123,13 @@ public class BasicRelation extends BasicNode implements Relation {
         int rnumber = getNode().getIntValue("rnumber");
         if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
             if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
-                throw new BasicBridgeException("Source and/or Destination node are not of the correct type. (" + cloud.getNode(snumtype).getValue("name") + "," + cloud.getNode(dnumtype).getValue("name") + "," + cloud.getNode(rnumber).getValue("sname"));
+        throw new BridgeException("Source and/or Destination node are "
+                                  + "not of the correct type. ("
+                                  + cloud.getNode(snumtype).getValue("name")
+                                  + ","
+                                  + cloud.getNode(dnumtype).getValue("name")
+                                  + ","
+                                  + cloud.getNode(rnumber).getValue("sname"));
             }
         }
         
