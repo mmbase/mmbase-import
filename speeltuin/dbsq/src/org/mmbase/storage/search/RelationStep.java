@@ -10,10 +10,34 @@ package org.mmbase.storage.search;
  * Note that tables can also be joined using FieldCompareConstraints.
  */
 public interface RelationStep extends Step {
-    // TODO javadoc should make the values available.
-    int DIRECTIONS_SOURCE = 1;
-    int DIRECTIONS_DESTINATION = 2;
-    int DIRECTIONS_BOTH = 3;
+    /** 
+     * Directionality following relations from destination to source. 
+     * E.g. where the previous step is destination and the next step is source.
+     */
+    int DIRECTIONS_SOURCE = 0;
+    
+    /**
+     * Directionality following relations from source to destination.
+     * E.g. where the previous step is source and the next step is destination.
+     */
+    int DIRECTIONS_DESTINATION = 1;
+    
+    /**
+     * Directionality following relations both ways.
+     * E.g. ignoring the direction of the relation.
+     */
+    int DIRECTIONS_BOTH = 2;
+
+    /** 
+     * Directionality names corresponding to the direction values.
+     * As a result DIRECTIONALITY_NAMES[directionality] is the directionality
+     * name: "source", "destination" or "both".
+     */
+     String[] DIRECTIONALITY_NAMES = new String[] {
+            "source",
+            "destination",
+            "both"
+    };
 
     /**
      * Gets the directionality mode used with this relation. This is one of 
@@ -64,7 +88,7 @@ public interface RelationStep extends Step {
      * <li><em>&lt;alias&gt;</em> is the alias returned by {@link #getAlias getAlias()}
      * <li><em>&lt;nodes&gt;</em> is the string representation of the ordered list 
      *      of nodenumbers returned by {@link #getNodes getNodes()}
-     * <li><em>&lt;dir&gt;</em> is the integer representation of 
+     * <li><em>&lt;dir&gt;</em> is the name of 
      *     the directionality returned by 
      *     {@link #getDirectionality getDirectionality()}
      * </ul>

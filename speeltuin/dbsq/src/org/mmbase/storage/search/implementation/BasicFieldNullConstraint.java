@@ -6,7 +6,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicFieldNullConstraint extends BasicFieldConstraint 
 implements FieldNullConstraint {
@@ -46,8 +46,10 @@ implements FieldNullConstraint {
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("FieldNullConstraint(field:");
-        sb.append(getField().getAlias()).
+        StringBuffer sb = new StringBuffer("FieldNullConstraint(inverse:").
+        append(isInverse()).
+        append(", field:").
+        append(getField().getAlias()).
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(")");

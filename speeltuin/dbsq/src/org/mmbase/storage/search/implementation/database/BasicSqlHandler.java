@@ -14,7 +14,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicSqlHandler implements SqlHandler {
     
@@ -38,7 +38,7 @@ public class BasicSqlHandler implements SqlHandler {
      * @param str The input string.
      * @return The modified string.
      */
-    // TODO: perhaps place this somewhere else?
+    // TODO: (later) perhaps place this somewhere else?
     public static String toSqlString(String str) {
         String result = str;
         if (str != null) {
@@ -85,17 +85,17 @@ public class BasicSqlHandler implements SqlHandler {
      *        to allowed alternatives.
      */
     public BasicSqlHandler(Map disallowedValues) {
-        // TODO: test if MMBase is properly initialized first.
+        // TODO: (later) test if MMBase is properly initialized first.
         mmbase = MMBase.getMMBase();
         disallowed2Allowed = new HashMap(disallowedValues);
     }
     
     // javadoc is inherited
-    // TODO: what exception to throw when an unsupported feature is
+    // TODO: (later) what exception to throw when an unsupported feature is
     // encountered (currently throws UnsupportedOperationException).
     public String toSql(SearchQuery query, SqlHandler firstInChain)
     throws SearchQueryException {
-        // XXX TODO: test table and field aliases for uniqueness.
+        // TODO: (later) test table and field aliases for uniqueness.
         
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
@@ -123,8 +123,6 @@ public class BasicSqlHandler implements SqlHandler {
         
         // SELECT
         StringBuffer sbQuery = new StringBuffer("SELECT ");
-        
-        // TODO: throw exception if maxNumber or offset set to non-default values.
         
         // DISTINCT
         if (query.isDistinct()) {
@@ -378,7 +376,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
     
     // javadoc is inherited
-    // TODO: what exception to throw when an unsupported constraint is
+    // TODO: (later) what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException).
     public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite) {

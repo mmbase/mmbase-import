@@ -40,12 +40,14 @@ public interface CompositeConstraint extends Constraint {
     /**
      * Returns a string representation of this CompositeConstraint. 
      * The string representation has the form 
-     * "CompositeConstraint(operator:&lt;operator&gt;, 
+     * "CompositeConstraint(inverse:&lt:inverse&gt;, operator:&lt;operator&gt;, 
      *  childs:&lt;childs&gt;)"
      * where 
      * <ul>
+     * <li><em>&lt;inverse&gt;</em>is the value returned by
+     *      {@link #isInverse isInverse()}
      * <li><em>&lt;operator&gt;</em> is the value returned by 
-     *     {@link #getLogicalOperator getLogicalOperato()}
+     *     {@link #getLogicalOperator getLogicalOperator()}
      * <li><em>&lt;childs&gt;</em> is the value returned by
      *     {@link #getChilds getChilds()}
      * </ul>

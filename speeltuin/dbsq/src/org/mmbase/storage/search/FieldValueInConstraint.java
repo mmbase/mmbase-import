@@ -18,10 +18,12 @@ public interface FieldValueInConstraint extends FieldConstraint {
     /**
      * Returns a string representation of this FieldValueInConstraint. 
      * The string representation has the form 
-     * "FieldValueInConstraint(field:&lt;field&gt;, 
+     * "FieldValueInConstraint(inverse:&lt:inverse&gt;, field:&lt;field&gt;, 
      *  casesensitive:&lt;casesensitive&gt;, values:&lt;values&gt;)"
      * where 
      * <ul>
+     * <li><em>&lt;inverse&gt;</em>is the value returned by
+     *      {@link #isInverse isInverse()}
      * <li><em>&lt;field&gt;</em> is the field alias returned by 
      *     <code>FieldConstraint#getField().getAlias()</code>
      * <li><em>&lt;casesensitive&gt;</em> is the value returned by
