@@ -77,7 +77,7 @@ public class SetFieldTag extends NodeReferrerTag {
         // Get the new value from the body.
         if (node.getNodeManager().getField(fieldname).getType() == Field.TYPE_BYTE) {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
-            node.setValue(fieldname, org.mmbase.util.Encode.decode("BASE64", bodyContent.getString()));
+            node.setByteValue(fieldname, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
 	} else {           
             String newValue = bodyContent.getString();
             node.setValue(fieldname, convert(newValue));
