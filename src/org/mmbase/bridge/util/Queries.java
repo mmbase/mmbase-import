@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.27 2004-02-19 09:14:57 michiel Exp $
+ * @version $Id: Queries.java,v 1.28 2004-02-20 19:27:07 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -411,10 +411,14 @@ public class Queries {
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
 
-            if (fieldName.equals("number")) {
+            if (fieldName.equals("number") || fieldType == Field.TYPE_NODE) {
                 if (value instanceof String) { // it might be an alias!
-                    Node node = cloud.getNode((String)value);
-                    value = new Integer(node.getNumber());
+                    if (cloud.hasNode((String) value)) {
+                        Node node = cloud.getNode((String)value);
+                        value = new Integer(node.getNumber());
+                    } else {
+                        value = new Integer(-1);
+                    }
                 }
             }
 
