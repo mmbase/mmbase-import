@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.100 2003-07-14 10:58:46 johannes Exp $
+ * @version $Id: Wizard.java,v 1.101 2003-09-17 09:34:53 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -915,26 +915,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                   if (fieldDataNode != null) {
                      // create normal formfield.
+                     Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", null));
                      mergeConstraints(field, fieldDataNode);
                      createFormField(form, field, fieldDataNode);
                   } else {
                      String ftype = Utils.getAttribute(field, "ftype");
 
                      if ("function".equals(ftype)) {
-                        log.debug(
-                           "Not an data node, setting number attribute, because it cannot be found with fdatapath");
+                        log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
 
-                        //set number attribute in field ???
-                        Utils.setAttribute(field, "number",
-                           Utils.selectSingleNodeText(data, "object/@number",
-                              null));
+                        //set number attribute in field, then you can use in in wizard.xsl
+                        Utils.setAttribute(field, "number",   Utils.selectSingleNodeText(data, "object/@number", null));
+                        Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", null));
 
                         // create the formfield (should be using the current data node ???)
                         createFormField(form, field, fieldDataNode);
-                     } else if ("startwizard".equals(ftype) ||
-                           "wizard".equals(ftype)) {
+                     } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
                         log.debug("A startwizard!");
-
                         // create the formfield using the current data node
                         createFormField(form, field, data);
                      } else {
@@ -944,8 +941,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         String fname = Utils.getAttribute(field, "name", null);
 
                         if (fname != null) {
-                           throw new WizardException("The field with name '" +
-                              fname + "' does not exist.");
+                           throw new WizardException("The field with name '" + fname + "' does not exist.");
                         }
                      }
                   }
@@ -1176,12 +1172,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                }
             } else {
                if ("number".equals(name)) {
-                  Utils.setAttribute(singleNode, "ftype", "data");
-
-                  // the number field may of course never be edited
-                  fdatapath = "@number";
+                   Utils.setAttribute(singleNode, "ftype", "data");
+                   
+                   // the number field may of course never be edited
+                   fdatapath = "@number";
                } else {
-                  fdatapath = "field[@name='" + name + "']";
+                   fdatapath = "field[@name='" + name + "']";
                }
 
                // normal field or a field inside a list node?
@@ -1212,7 +1208,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          }
 
          String searchString = Utils.getAttribute(singleNode, "searchdir", null);
-         String fdatapath = Utils.getAttribute(singleNode, "fdatapath", null);
+         
+         StringBuffer fdatapath = null;
+         { 
+             String tmp = Utils.getAttribute(singleNode, "fdatapath", null);
+             if (tmp != null) fdatapath = new StringBuffer(tmp);
+         }
 
          if (fdatapath != null) {
             if (searchString != null) {
@@ -1231,19 +1232,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
          } else {
             // determine role                
-            fdatapath = "";
+            fdatapath = new StringBuffer();
 
             if (role != null) {
-               fdatapath = "@role='" + role + "'";
+               fdatapath.append("@role='").append(role).append('\'');
             }
 
             // determine destination type
             if (destination != null) {
-               if (!fdatapath.equals("")) {
-                  fdatapath += " and ";
+               if (fdatapath.length() != 0) {
+                  fdatapath.append(" and ");
                }
 
-               fdatapath += ("object/@type='" + destination + "'");
+               fdatapath.append("object/@type='").append(destination).append('\'');
             }
 
             // determine searchdir
@@ -1254,29 +1255,30 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
 
             if (searchDir == ClusterBuilder.SEARCH_SOURCE) {
-               if (!fdatapath.equals("")) {
-                  fdatapath += " and ";
+               if (fdatapath.length() != 0) {
+                  fdatapath.append(" and ");
                }
 
-               fdatapath += "@source=object/@number";
+               fdatapath.append("@source=object/@number");
             } else if (searchDir == ClusterBuilder.SEARCH_DESTINATION) {
-               if (!fdatapath.equals("")) {
-                  fdatapath += " and ";
+               if (fdatapath.length() != 0) {
+                  fdatapath.append(" and ");
                }
 
-               fdatapath += "@destination=object/@number";
+               fdatapath.append("@destination=object/@number");
             }
 
-            fdatapath = "relation[" + fdatapath + "]";
+            fdatapath.insert(0, "relation[");
+            fdatapath.append(']');
 
             // normal list or a list inside a list?
             String parentname = singleNode.getParentNode().getNodeName();
 
             if (parentname.equals("item")) {
-               fdatapath = "object/" + fdatapath;
+               fdatapath.insert(0, "object/");
             }
 
-            Utils.setAttribute(singleNode, "fdatapath", fdatapath);
+            Utils.setAttribute(singleNode, "fdatapath", fdatapath.toString());
          }
       }
    }
@@ -1640,8 +1642,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          addBinaryData(newField);
       }
 
-      NodeList list = Utils.selectNodeList(field,
-            "optionlist|prompt|description|action|prefix|postfix");
+      NodeList list = Utils.selectNodeList(field, "optionlist|prompt|description|action|prefix|postfix");
       Utils.appendNodeList(list, newField);
 
       // place value
@@ -1658,9 +1659,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             } else {
                log.debug("Probably a new node");
                throw new WizardException("No datanode given for field " +
-                  theValue +
-                  " and ftype does not equal 'function' or 'startwizard'(but " +
-                  ftype + ")");
+                                         theValue + " and ftype does not equal 'function' or 'startwizard'(but " + ftype + ")");
             }
          } else if (dataNode.getNodeType() == Node.ATTRIBUTE_NODE) {
             theValue = dataNode.getNodeValue();
