@@ -9,16 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.Enumeration;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.*;
+import java.io.*;
 
 import org.mmbase.util.ProcessWriter;
 
@@ -30,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.29 2002-03-18 12:19:27 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.30 2002-04-12 08:39:55 pierre Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -39,16 +31,21 @@ public class ConvertImageMagick implements ImageConvertInterface {
     private static String converterRoot    = "/usr/local/";
     private static String converterCommand = "bin/convert";
     private static int colorizeHexScale    = 100;
-	// The modulate scale base holds the builder property to specify the scalebase.
-	// If ModulateScaleBase property is not defined, then value stays max int.
-	private static int modulateScaleBase = Integer.MAX_VALUE; 
-	
+    // The modulate scale base holds the builder property to specify the scalebase.
+    // If ModulateScaleBase property is not defined, then value stays max int.
+    private static int modulateScaleBase = Integer.MAX_VALUE;
+
+    /**
+     * The default image format.
+     */
+    protected String defaultImageFormat="jpeg";
+
     /**
      * This function initalises this class
-     * @param params a <code>Hashtable</code> of <code>String</string>s containing informationn, this should contina the key's
+     * @param params a <code>Map</code> of <code>String</string>s containing informationn, this should contina the key's
      *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root....
      */
-    public void init(Hashtable params) {
+    public void init(Map params) {
         String tmp;
         tmp=(String)params.get("ImageConvert.ConverterRoot");
         if (tmp!=null) converterRoot = tmp;
@@ -112,33 +109,33 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 log.error("Property ImageConvert.ColorizeHexScale should be an integer: "+e.toString()+ "conv.root='"+converterRoot+"' conv.command='"+converterCommand+"'");
             }
         }
-		// See if the modulate scale base is defined. If not defined, it will be ignored.
-		log.debug("Searching for ModulateScaleBase property.");
-		tmp=(String)params.get("ImageConvert.ModulateScaleBase");
+        // See if the modulate scale base is defined. If not defined, it will be ignored.
+        log.debug("Searching for ModulateScaleBase property.");
+        tmp=(String)params.get("ImageConvert.ModulateScaleBase");
         if (tmp!=null) {
             try {
                 modulateScaleBase = Integer.parseInt(tmp);
             } catch (NumberFormatException nfe) {
-				log.error("Property ImageConvert.ModulateScaleBase should be an integer, instead of:'"+tmp+"'"
-						  +", conv.root='"+converterRoot+"' conv.command='"+converterCommand+"'");
-				log.error("Ignoring modulateScaleBase property.");
-				log.error(nfe.getMessage());
+                log.error("Property ImageConvert.ModulateScaleBase should be an integer, instead of:'"+tmp+"'"
+                          +", conv.root='"+converterRoot+"' conv.command='"+converterCommand+"'");
+                log.error("Ignoring modulateScaleBase property.");
+                log.error(nfe.getMessage());
             }
-		} else {
-			log.debug("ModulateScaleBase property not found, ignoring the modulateScaleBase.");
-		}
+        } else {
+            log.debug("ModulateScaleBase property not found, ignoring the modulateScaleBase.");
+        }
     }
 
     /**
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
-     * @param commands a <code>Vector</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
+     * @param commands a <code>List</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
      *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifing the converter root....
      * @return an array of <code>byte</code>s containing the new converted image.
      *
      */
-    public byte[] convertImage(byte[] input,Vector commands) {
-        Vector cmd;
+    public byte[] convertImage(byte[] input,List commands) {
+        List cmd;
         String format;
         byte[] pict=null;
 
@@ -153,19 +150,21 @@ public class ConvertImageMagick implements ImageConvertInterface {
     /**
      * @deprecated Use convertImage
      */
-    public byte[] ConvertImage(byte[] input,Vector commands) {
+    public byte[] ConvertImage(byte[] input,List commands) {
         return convertImage(input, commands);
     }
 
     /**
-     * @javadoc
+     * Obtains the image format from the parameters list.
+     * @param params the list of conversion paarmeters
+     * @return the specified format, or the default image format is unspecified
      */
-    private String getConvertFormat(Vector params) {
-        String format="jpg",key,cmd,type;
+    private String getConvertFormat(List params) {
+        String format=defaultImageFormat,key,cmd,type;
         int pos,pos2;
 
-        for (Enumeration t=params.elements();t.hasMoreElements();) {
-            key=(String)t.nextElement();
+        for (Iterator t=params.iterator();t.hasNext();) {
+            key=(String)t.next();
             pos=key.indexOf('(');
             pos2=key.lastIndexOf(')');
             if (pos!=-1 && pos2!=-1) {
@@ -189,7 +188,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             c = '#' + c.substring(1); // put it back.
         }
         if(c.length() == 6) { // obviously a little to simple now, because color names of 6 letters don't work now
-            return "#" + c.toLowerCase();  
+            return "#" + c.toLowerCase();
         } else {
             return c.toLowerCase();
         }
@@ -208,31 +207,31 @@ public class ConvertImageMagick implements ImageConvertInterface {
         if (a.equals("i"))            return "interlace";
         if (a.equals("q"))            return "quality";
         if (a.equals("mono"))         return "monochrome";
-        if (a.equals("highcontrast")) return "contrast"; 
+        if (a.equals("highcontrast")) return "contrast";
         if (a.equals("flipx"))        return "flop";
         if (a.equals("flipy"))        return "flip";
-        // I don't think that this makes any sense, I dia is not dianegative, 
+        // I don't think that this makes any sense, I dia is not dianegative,
         // can be diapositive as well... But well, we are backwards compatible.
-        if (a.equals("dia"))          return "negate"; 
+        if (a.equals("dia"))          return "negate";
         return a;
-            
+
     }
 
     /**
      * Translates the arguments for img.db to arguments for convert of ImageMagick.
-     * @param params  Vector with arguments. First one is the image's number, which will be ignored.
-     * @return        Vector with convert arguments.
+     * @param params  List with arguments. First one is the image's number, which will be ignored.
+     * @return        List with convert arguments.
      */
-    private Vector getConvertCommands(Vector params) {
+    private List getConvertCommands(List params) {
         StringBuffer cmdstr = new StringBuffer();
-        Vector cmds = new Vector();
+        List cmds = new Vector();
         String key, type;
         String cmd;
         int pos, pos2;
-        Enumeration t = params.elements();
-        if (t.hasMoreElements()) t.nextElement(); // first element is the number, ignore it.
-        while (t.hasMoreElements()) {
-            key=(String)t.nextElement();
+        Iterator t = params.iterator();
+        if (t.hasNext()) t.next(); // first element is the number, ignore it.
+        while (t.hasNext()) {
+            key=(String)t.next();
             pos=key.indexOf('(');
             pos2=key.lastIndexOf(')');
             if (pos != -1 && pos2 != -1) {
@@ -241,10 +240,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 if (log.isDebugEnabled()) {
                     log.debug("getCommands(): type=" + type + " cmd=" + cmd);
                 }
-
-                /*
-                  Following code translates some MMBase specific things to imagemagick's convert arguments.
-                 */
+                // Following code translates some MMBase specific things to imagemagick's convert arguments.
                 type = getAlias(type);
                 // Following code will only be used when ModulateScaleBase builder property is defined.
                 if (type.equals("modulate") && (modulateScaleBase!=Integer.MAX_VALUE)) {
@@ -274,9 +270,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     String g=tok.nextToken();
                     String b=tok.nextToken();
                     cmd = r+"/"+g+"/"+b;
-                } else if (type.equals("pen") || 
+                } else if (type.equals("pen") ||
                            type.equals("transparent") ||
-                           type.equals("fill") || 
+                           type.equals("fill") ||
                            type.equals("bordercolor") ||
                            type.equals("background") ||
                            type.equals("box") ||
@@ -294,11 +290,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
                         // convert needs UTF-8, but Runtime seemingly always writes ISO-8859-1, so we
                         // are going to lie here.
-                        
+
                         // even the value of this doesn't seem to matter
                         if (log.isDebugEnabled()) {
                             log.debug("file.encoding: " + java.lang.System.getProperty("file.encoding"));
-                        } 
+                        }
                     } catch (java.io.UnsupportedEncodingException e) {
                         log.error(e.toString());
                     }
@@ -317,7 +313,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         int y1=Integer.parseInt(tok.nextToken());
                         int x2=Integer.parseInt(tok.nextToken());
                         int y2=Integer.parseInt(tok.nextToken());
-                        type="crop";                        
+                        type="crop";
                         cmd = (x2-x1)+"x"+(y2-y1)+"+"+x1+"+"+y1;
                     } catch (Exception e) {
                         log.error(e.toString());
@@ -330,14 +326,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     if (x>=0) str="+"+x;
                     else str=""+x;
                     if (y>=0) str+="+"+y;
-                    else str+=""+y;                    
+                    else str+=""+y;
                     cmd = str;
                 } else if (type.equals("f")) { // format was already dealt with
                     continue; // ignore this one.
                 }
                 if (log.isDebugEnabled()) log.debug("adding -" + type + " " + cmd);
                 // all other things are recognized as well..
-                cmds.add("-" + type); 
+                cmds.add("-" + type);
                 cmds.add(cmd);
             } else {
                 key = getAlias(key);
@@ -350,7 +346,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 }
             }
         }
-        return cmds; 
+        return cmds;
     }
 
     /**
@@ -361,7 +357,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * In version 5.3.8 the scale ranges from 0 to 100.<br />
      * (absolute, eg. 20% higher, value is 120, 10% lower, value is 90).<br />
      * Now, for different convert versions the scale range can be corrected with the scalebase. <br />
-     * The internal scale range that's used will be from -100 to 100. (eg. modulate 20,-10,0). 
+     * The internal scale range that's used will be from -100 to 100. (eg. modulate 20,-10,0).
      * With the base you can change this, so for v4.2.9 scalebase=0 and for v5.3.9 scalebase=100.
      * @param cmd modulate command string
      * @param scaleBase the scale base value
@@ -378,39 +374,39 @@ public class ConvertImageMagick implements ImageConvertInterface {
         log.debug("Modulate cmd after calculation: "+modCmd);
         return modCmd;
     }
-	
+
     /**
      * Does the actual conversion.
      *
      * @param pict Byte array with the original picture
-     * @param cmd  Vector with convert parameters.
+     * @param cmd  List with convert parameters.
      * @param format The picture format to output to (jpg, gif etc.).
      * @return      The result of the conversion (a picture).
      *
      */
-    private byte[] convertImage(byte[] pict, Vector cmd, String format) {
+    private byte[] convertImage(byte[] pict, List cmd, String format) {
         cmd.add(0, "-");
         cmd.add(0, converterRoot + converterCommand);
         cmd.add(format + ":-");
-        
+
         String command = cmd.toString(); // only for debugging.
 
         if (log.isDebugEnabled()) {
             log.debug("command:" + command + " in " +   new File("").getAbsolutePath());
         }
-        try {            
+        try {
             log.debug("starting program");
             Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]));
             // in grabs the stuff coming from stdout from program...
             InputStream in = p.getInputStream();
-            // err grabs the stuff coming from stderr from program...            
+            // err grabs the stuff coming from stderr from program...
             InputStream err = p.getErrorStream();
-            
+
             ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict),p.getOutputStream());
             log.debug("starting process writer");
             pw.start();
-            log.debug("done with process writer");            
-            
+            log.debug("done with process writer");
+
             ByteArrayOutputStream imagestream=new ByteArrayOutputStream();
             int size=0;
             byte[] inputbuffer=new byte[2048];
@@ -418,8 +414,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 imagestream.write(inputbuffer,0,size);
             }
             log.debug("retrieved all information");
-            byte[] image=imagestream.toByteArray();            
-            
+            byte[] image=imagestream.toByteArray();
+
                 // no bytes in the image thingie
             if(image.length < 1) {
                 log.warn("Imagemagick conversion did not succeed. Returning byte array of " + image.length + " bytes.");
@@ -436,20 +432,20 @@ public class ConvertImageMagick implements ImageConvertInterface {
             }
             byte[]  errorMessage = errorstream.toByteArray();
             if(errorMessage.length > 0) {
-                log.error("From stderr with command '" + command + 
-                          "' in '" + 
-                          new File("").getAbsolutePath() + 
-                          "'  --> '" + 
+                log.error("From stderr with command '" + command +
+                          "' in '" +
+                          new File("").getAbsolutePath() +
+                          "'  --> '" +
                           new String(errorMessage) + "'");
             } else {
                 log.debug("No information on stderr found");
             }
-            
-                     
-            // print some info and return....            
-            log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");            
+
+
+            // print some info and return....
+            log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");
             return image;
-        } 
+        }
         catch (IOException e) {
             log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'");
             log.error(Logging.stackTrace(e));

@@ -15,14 +15,15 @@ package org.mmbase.module.builders;
  * @author Rico Jansen
  */
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public interface ImageConvertInterface {
-    
-    public void init(Hashtable params);
+
+    public void init(Map params);
     /**
      * @deprecated Use convertImage.
      */
-    public byte[] ConvertImage(byte[] input,Vector commands);
-    public byte[] convertImage(byte[] input,Vector commands);
+    public byte[] ConvertImage(byte[] input,List commands);
+    public byte[] convertImage(byte[] input,List commands);
 }
