@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.LocalContext;
 
@@ -91,5 +92,20 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
         } 
         return cloudContext;
     }
+
+
+    public Node getNode(String key) throws JspTagException {        
+        Object n = getObject(key);
+        if (n instanceof Node) {
+            log.debug("found a Node in Context");
+            return (Node) n;
+        } else if (n instanceof String) {
+            log.debug("found a Node Number in Context");
+            return getCloudProviderVar().getNode((String)n);
+        } else {
+            throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
+        }
+    }
+
 
 }
