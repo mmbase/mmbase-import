@@ -36,7 +36,7 @@ Applications build file
   <target name="all16" depends="init,media,bugtracker,email" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all" depends="init,all16,cloudcontext,editwizard,dove,xmlimporter,community,rmmci" />
+  <target name="all" depends="init,all16,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,scan" />
 
 
   <target name="jars" depends="all">
@@ -58,8 +58,8 @@ Applications build file
   </target>
 
 
-  <target name="aselect" depends="mmbase">
-     <ant dir="aselect"      target="package" />
+  <target name="scan" depends="mmbase">
+     <ant dir="scan"      target="package" />
   </target>
 
 
@@ -116,7 +116,7 @@ Applications build file
      <ant dir="community"      target="clean" />
      <ant dir="email"      target="clean" />
      <ant dir="xmlimporter"   target="clean" />
-     <!-- <ant dir="aselect"      target="clean" /> -->
+     <ant dir="scan"      target="clean" />
      <delete dir="${applications.build.dir}" />
   </target>
 
