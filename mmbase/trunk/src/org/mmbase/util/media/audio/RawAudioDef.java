@@ -1,7 +1,7 @@
 /*
 	(c) 2000 VPRO
 */
-
+package org.mmbase.util.media.audio;
 
 import java.util.Vector;
 
