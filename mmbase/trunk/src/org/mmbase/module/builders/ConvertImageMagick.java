@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.32 2002-04-16 14:43:26 eduard Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.33 2002-04-16 15:04:15 eduard Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -84,7 +84,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
         }
         // do a test-run, maybe slow during startup, but when it is done this way, we can also output some additional info in the log about version..
         // and when somebody has failure with converting images, it is much earlier detectable, when it wrong in settings, since it are settings of
-        // the builder... TODO: on error switch to jai????
+        // the builder... 
+        
+        // TODO: on error switch to jai????
+        // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
+        //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
+        
         try {
             log.debug("Starting convert");
             Process process = Runtime.getRuntime().exec(converterPath);
