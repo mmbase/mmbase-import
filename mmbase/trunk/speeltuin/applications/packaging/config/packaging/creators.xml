@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE creators PUBLIC "-//MMBase/DTD creators config 1.0//EN" "http://www.mmbase.org/dtd/creators_1_0.dtd">
+<creators>
+	<creator type="display/html" class="org.mmbase.applications.packaging.projects.creators.DisplayHtmlCreator">
+		<description>Creates mmp files for display/html packages</description>
+	</creator>
+	<creator type="java/jar" class="org.mmbase.applications.packaging.projects.creators.JavaJarCreator">
+		<description>Creates mmp files for java/jar packages</description>
+	</creator>
+	<creator type="cloud/model" class="org.mmbase.applications.packaging.projects.creators.CloudModelCreator">
+		<description>Creates mmp files for cloud/model packages</description>
+	</creator>
+	<creator type="data/apps1" class="org.mmbase.applications.packaging.projects.creators.DataApps1Creator">
+		<description>Creates mmp files for data/apps1 packages</description>
+	</creator>
+	<creator type="function/set" class="org.mmbase.applications.packaging.projects.creators.FunctionSetCreator">
+		<description>Creates mmp files for function/set packages</description>
+	</creator>
+	<creator type="bundle/basic" class="org.mmbase.applications.packaging.projects.creators.BundleBasicCreator">
+		<description>Creates mmp files for function/set packages</description>
+	</creator>
+</creators>
