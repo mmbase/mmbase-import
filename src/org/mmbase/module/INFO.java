@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.28 2001-02-05 17:01:55 daniel Exp $
+$Id: INFO.java,v 1.29 2001-02-07 10:23:03 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.28  2001/02/05 17:01:55  daniel
+added first of many time methods
+
 Revision 1.27  2000/12/15 12:46:26  vpro
 Davzev: Corrected comment for doUser() DOMAIN cmd, added doUser() ISINTERNALVPROADDRESS.
 
@@ -38,7 +41,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.28 $ $Date: 2001-02-05 17:01:55 $
+ * @$Revision: 1.29 $ $Date: 2001-02-07 10:23:03 $
  */
 public class INFO extends ProcessorModule {
 
@@ -1420,10 +1423,37 @@ public class INFO extends ProcessorModule {
 		int curtime=(int)(System.currentTimeMillis()/1000);
 		String cmd=tok.nextToken();
 		if (cmd.equals("NEXTHOUR")) {
+			// gives us the next full hour based on realtime
 			int hours=curtime/3600;
 			hours++;
 			return(""+(hours*3600));
-		}
+		} else if (cmd.equals("NEXTDAY")) {
+			// gives us the next full day based on realtime (00:00)
+			int days=curtime/(3600*24);
+			days++;
+			return(""+(days*(3600*24)));
+		} else if (cmd.equals("NEXTTIME")) {
+			// gives us the next full day at time definedd based on realtime 
+			int days=curtime/(3600*24);
+			days++;
+			if (tok.hasMoreTokens()) {
+				String timestring=tok.nextToken();
+				int pos=timestring.indexOf(":");
+				if (pos!=-1) {
+					String hourstring=timestring.substring(0,pos);
+					String minstring=timestring.substring(pos+1);
+					try {
+						int hours=Integer.parseInt(hourstring)*3600;
+						int min=Integer.parseInt(minstring)*60;
+						int total=(days*3600*24)+hours+min;
+						return(""+total);
+					} catch (Exception e) {
+						System.out.println("Error in NEXTTIME time part make sure its 00:00 format");	
+					}	
+				}
+			}
+			return(""+(days*(3600*24)));
+		}	
 		return("");
 	}
 }
