@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.43 2004-06-30 17:51:53 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.44 2004-07-19 15:29:27 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -120,15 +120,16 @@ public class ImportTag extends ContextReferrerTag {
             }
 
             if (! found && required.getBoolean(this, false)) {
-                if (from.getString(this).equalsIgnoreCase("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
+                String fromString = from.getString(this).toLowerCase();
+                if (fromString.equals("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                     throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
                 }
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + from.getString(this));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : fromString));
             }
             if (found) {
                 value = getObject(useId);
                 if (log.isDebugEnabled()) {
-                    log.debug("found value for " + useId + " " + value);
+                    log.debug("found value for " + useId + " '" + value + "'");
                 }
             }
         }
